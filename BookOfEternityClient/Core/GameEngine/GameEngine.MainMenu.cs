@@ -1106,6 +1106,15 @@ public partial class GameEngine
 
                 WriteInitialGuardianProjectTrackerStateAsync().Wait();
 
+                // Fresh generation has no accepted item/wound identities or history.
+                // Seed their current empty authorities before the first rollback baseline.
+                _fs.WriteFileAtomicAsync(MortalItemIdentityState.StatePath,
+                    MortalItemIdentityState.CreateEmptyRoot().ToJsonString(JsonOpts)).Wait();
+                _fs.WriteFileAtomicAsync(WoundIdentityState.StatePath,
+                    "{\"schemaVersion\":1,\"entries\":[]}").Wait();
+                _fs.WriteFileAtomicAsync(WoundHistoryState.HistoryPath,
+                    "{\"schemaVersion\":1,\"nextOrdinal\":1,\"transitions\":[]}").Wait();
+
                 // Initialize session
                 var chatLog = new
                 {

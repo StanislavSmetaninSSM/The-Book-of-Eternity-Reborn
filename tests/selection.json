@@ -2,8 +2,32 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "gm-console-newgame-cancel-validation",
+      "reason": "Fresh bootstrap current authorities and confirmed initial cancellation cleanup; actual causal1RED",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED",
+        "T041-RUN-FENCE-F2"
+      ]
+    },
+    {
+      "category": "gm-newgame-cancel-affected-guards",
+      "reason": "Only four exact original baseline/source inference/canonical generation guards directly affected",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED",
+        "T041-RUN-FENCE-F2"
+      ]
+    },
+    {
       "category": "gm-daemon-foreground-stop",
-      "reason": "Independent new og4 originalUncertain shutdown hypothesis: actual isolated idle daemon oneCtrlC after originalActive pin, exact pin receipts and realterminal EOF/termios. Other causalbootstrap issue diagnosed separately; no priorcohorts",
+      "reason": "Actual idle daemon soleCtrlC with observedActive original pin causal1RED",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED",
+        "T041-RUN-FENCE-F2"
+      ]
+    },
+    {
+      "category": "gm-main-helper-live-linux",
+      "reason": "All five directly changed helper entrypoint cases including caught-loss EOF Unresolved; independent review requires negative coverage",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED",
         "T041-RUN-FENCE-F2"

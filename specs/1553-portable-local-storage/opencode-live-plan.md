@@ -824,3 +824,21 @@ Proposed reviewed minimum Linux-only SIGINT shielding for the retained C#
 participating-control helper while parent daemon owns actualCtrlC/finally close;
 EOF/partialframe stillunresolved, no replay/reconnect or other signal changes.
 Source/design review requested before implementation.
+
+### Reviewed causal correction WIP after 4cd9e654
+
+Independent Sol DESIGN PASS for the pristine Fresh NewGame correction: seed only
+current empty item identity/wound identity/history after ClearGameState and before
+initial backup; use three existing freeform Guardian roles to meet current schema
+without changing personality inference/rewards; retire only consumed pending
+snapshot after confirmed initial rollback and before deleting backup evidence.
+Original player-turn cancel branch remains unchanged until its own causal case.
+Preserve domain pending contracts and evidence on restore/generation errors.
+Independent Sol DESIGN PASS for Linux-only SIGINT cancellation in validated
+participating-helper entrypoint until actual immutable close. Parent PowerShell
+still owns CtrlC; EOF/partial frames remain Unresolved. No other signals/Windows
+behavior, synthetic close, reconnect or pin mint. A second failure requires
+actual close-path inspection. Selected causal categories plus five directly
+affected helper cases and four exact baseline/generation guards only. Runtime
+WIP unbuilt/unverified; no provider request or accepted game turn. og4 Uncertain
+remains untouched. Catalog edited structurally; validate after final selectors.

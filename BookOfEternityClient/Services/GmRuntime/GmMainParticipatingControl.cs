@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using System.Runtime.InteropServices;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -25,6 +26,12 @@ internal static class GmMainParticipatingControl
         {
             if (args.Length != 3 || args[0] != "--gm-main-operation" || args[1] != "--root" || !Directory.Exists(args[2]))
                 throw new InvalidDataException("Participating control requires an existing explicit root.");
+            // The foreground PowerShell caller owns Ctrl+C and sends the actual
+            // immutable close. Keep this retained connection alive for that close;
+            // stdin loss still follows the ordinary Unresolved path below.
+            using var foregroundInterrupt = OperatingSystem.IsLinux()
+                ? PosixSignalRegistration.Create(PosixSignal.SIGINT, context => context.Cancel = true)
+                : null;
             return await RunAsync(new FileSystemManager(args[2], NullLogger<FileSystemManager>.Instance),
                 Console.OpenStandardInput(), Console.OpenStandardOutput());
         }

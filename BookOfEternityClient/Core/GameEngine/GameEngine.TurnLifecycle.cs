@@ -89,6 +89,7 @@ public partial class GameEngine
             if (HasRollbackCapability(rollbackSnapshot))
             {
                 await RestorePreTurnBackup(rollbackSnapshot!);
+                await CleanupPendingTurnSnapshotAsync();
                 CleanupBackup(rollbackSnapshot!);
                 AnsiConsole.MarkupLine("[dim]Переходный ход отменён. Мир вернулся к состоянию до этого действия; позднее завершение событий останется отложенным.[/]");
             }
