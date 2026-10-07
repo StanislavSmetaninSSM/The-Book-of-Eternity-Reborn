@@ -1,0 +1,60 @@
+{
+  "CodexPath": "/opt/codex/bin/codex",
+  "ResolvedPath": "/opt/codex/bin/codex",
+  "CodexVersion": "codex-cli 0.159.0-alpha.3",
+  "CodexSHA256": "981ade7b03926534c654fd718ced3a9f378b7b2841271e29156f939462d176e9",
+  "CodexBytes": 286016808,
+  "InheritedTERM": "dumb",
+  "Records": [
+    {
+      "Name": "version",
+      "Argv": [
+        "/opt/codex/bin/codex",
+        "--version"
+      ],
+      "ExitCode": 0,
+      "StdoutBytes": 26,
+      "StderrBytes": 103
+    },
+    {
+      "Name": "help",
+      "Argv": [
+        "/opt/codex/bin/codex",
+        "--help"
+      ],
+      "ExitCode": 0,
+      "StdoutBytes": 5769,
+      "StderrBytes": 103
+    },
+    {
+      "Name": "login-status",
+      "Argv": [
+        "/opt/codex/bin/codex",
+        "login",
+        "status"
+      ],
+      "ExitCode": 0,
+      "StdoutBytes": 0,
+      "StderrBytes": 127
+    }
+  ],
+  "PreparationEnvironment": {
+    "SDK": "10.0.401",
+    "Runtimes": [
+      "Microsoft.AspNetCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]",
+      "Microsoft.AspNetCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]",
+      "Microsoft.NETCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]",
+      "Microsoft.NETCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]"
+    ],
+    "PowerShell": "7.5.4",
+    "Architecture": "x86_64",
+    "Glibc": [
+      "glibc",
+      "2.41"
+    ]
+  },
+  "ModelRequests": 0,
+  "NewAuthentication": false,
+  "PrivateStorageReadByWriter": false,
+  "NoDaemonAndCdSupported": true
+}
