@@ -69,7 +69,7 @@
     "Causal inert driver failure detection/phase correction before another attempt",
     "Original client exception/coordinator stop stage not proven",
     "Successful model response and actual game application remain open",
-    "Final metadata review and exact-tip GitHub-only restoration pending"
+    "Final exact-tip GitHub-only restoration/readback is the writer closure check; no additional live attempt"
   ],
   "HistoricalUncertainUnchanged": {
     "og4": "3012a89b7ac3d1915919742d6b5c53485f18805dd5304cde554d71a8d220a5c6",
@@ -77,5 +77,6 @@
     "og10": "3f35b5296b4c35010b82ddda0bad6b0dc4db384db45b434d1020aab906434076"
   },
   "NoNewRuntimeChangesAfterActualAttempt": true,
-  "FreshRestoreScope": "Final exact source tree; no game-state salvage or old input replay"
+  "FreshRestoreScope": "Final exact source tree; no game-state salvage or old input replay",
+  "MetadataReview": "Independent Sol6.1/xhigh PASS at0b97b285c35a81cc77325fda16de531e951adfcb; exact final restore remains separate"
 }
