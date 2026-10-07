@@ -4,6 +4,10 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## T031-DAREN-STANDALONE-LINUX — authorized plan checkpoint
+
+Accepted base953c48f8, same verified clean remote branch/sole writer; [concrete minimal plan](daren-standalone-linux-plan.md). Existing fixed DarenRewardProfileFileStore lifecycle ports via existing trusted-local publisher, original lease/conjunction/outcomes; rules/text remain unchanged. Independent actual Sol6.1/xhigh design review is next before causal implementation. Existing project Spec Kit skills/prerequisites resolved; no reset/init/install. Runtime/tests unchanged. No live/provider/game saves/systemd/native Windows/Q1Q2/settings/auth/network/cold changes.
+
 ## T031-BROWSER-DIRECT-GACHA-LINUX — bounded independent PASS
 
 Accepted LoadUX23a5b669; [reviewed minimal execution plan](browser-direct-gacha-linux-plan.md). Existing Stage/publisher/schema7/pending-turn adoption contract preserved. Runtime d47d3f16, test/catalog acb42795:50distinctPASS (36new+14exact affected), separate historical RED/preparation evidence. Independent actual Sol6.1/xhigh design/source/final evidence/selection PASS at4723ed42, candidate fresh GitHub-only restore20,636files independently verified. Final carrier remote/readback/exact-tip restoration are writer closure. No gameplay/model/GM text/UX change. [Handoff](browser-direct-gacha-linux-handoff.md). Standalone Daren remains separate next task; older next/pending sections below are historical.

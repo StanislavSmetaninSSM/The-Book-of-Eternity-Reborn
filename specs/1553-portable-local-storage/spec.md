@@ -1,5 +1,9 @@
 # Feature Specification: Trusted local storage and cross-platform runtime
 
+## Current authorized standalone Daren Linux slice
+
+Owner accepts direct-gacha953c48f8 and authorizes only existing standalone client reward profile portability, under the unchanged trusted-local player contract, main/worker/generation/session leases and fixed registered path. Existing reward tiers/amounts/economy/text/formats and browser transaction/Windows route remain. [Plan](daren-standalone-linux-plan.md); independent actual Sol6.1/xhigh design review precedes implementation. No new GM-authored contract/API, journal, player-save protection or UX; no GM documentation/example update is needed for this storage-only client-owned port. Isolated actual consumer tests do not qualify live game/provider/saves/systemd/native Windows/cold/fullUS4.
+
 ## Current bounded browser direct-gacha Linux PASS
 
 From accepted LoadUX23a5b669, existing real browser direct ChaosSea gacha publishes the original long-lived pre-spend soul backup through the trusted-local Linux publisher. Namespace recognition grants no turn authority; original Discover uses existing pending manifest/detached authority, exact mapped bytes/hash and current request binding. Preserve original main/worker/generation/UI leases, accepted-turn/history and typed rollback/Uncertain/committed cleanup debt; no gameplay/GM-authored contract change or second journal.50distinct scoped cases PASS (36new+14affected), independent actual Sol6.1/xhigh amended design/source/final evidence/selection PASS at4723ed42; candidate GitHub-only restore20,636files independently verified. Final metadata carrier remote/readback/exact-tip restoration are writer closure. [Plan](browser-direct-gacha-linux-plan.md) · [Handoff](browser-direct-gacha-linux-handoff.md). Standalone Daren/systemd/native Windows/live/cold/fullgame remain open. Historical notes below keep their checkpoint scope.

@@ -5,6 +5,10 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
+## Current authorized slice: standalone Daren Linux
+
+Owner accepts bounded direct-gacha953c48f81f06ef78010bf668133e2b974934e142 and authorizes T031-DAREN-STANDALONE-LINUX. [Minimal source-backed plan](daren-standalone-linux-plan.md). Separate original console/profile store lifecycle remains Windows physical for writes outside declared browser scope; Linux reads already exist. Plan checkpoint only, no runtime/tests yet; independent actual Sol6.1/xhigh review next. Keep fixed client profile, original main/worker/generation/session leases and existing publisher/outcomes; no gameplay/economy/GM text/UX/journal/access expansion. Older next notes below are historical.
+
 ## Current direct browser gacha Linux — bounded independent PASS
 
 Accepted LoadUX23a5b669 → actual BrowserAfterlifeWriteService direct ChaosSea Stage now uses existing trusted-local publisher and retains original long-lived exact pre-spend backup/pending authority. Runtime d47d3f16;50distinctPASS (36new+14exact affected); independent actual Sol6.1/xhigh amended design/source/final evidence/selection PASS at4723ed42. Candidate fresh GitHub-only restore20,636files independently verified; final metadata carrier ordinary remote/readback/exact-tip restoration are writer closure. [Plan](browser-direct-gacha-linux-plan.md) · [Qualification](recovery/browser-direct-gacha-linux-qualification.json) · [Handoff](browser-direct-gacha-linux-handoff.md). No gameplay/currency/odds/rewards/GM text/model/UX change, second journal or player-save protection. StandaloneDaren remains next separate debt. Prior sections below describe historical checkpoints; their direct-gacha/pendingLoadUX next notes do not supersede this current boundary or accepted LoadUX23a5b669. Stop after closure, no next implementation.
