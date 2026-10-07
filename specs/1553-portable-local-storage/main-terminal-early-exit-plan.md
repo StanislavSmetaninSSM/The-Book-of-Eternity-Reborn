@@ -24,6 +24,17 @@ cleanup, retained logical Uncertain. Do not repeat that Codex startup. Systemd W
 
 ## Small implementation sequence
 
+Actual RED at4a16b34b:2completed,1PASS/1FAIL, bothguardianECHILD/0emergency.
+It exposed an earlier shared-native defect: `reap()` seals root-exited and can
+return ECHILD in the same loop iteration, so final StoppedWithinScope is emitted
+without the preceding Stopping phase. Managed owner correctly rejects it as
+status-invalid; do not classify that authority loss as harmless root exit.
+First restore the native ordered phase (emit the omitted Stopping before final
+terminal frame), preserving original exclusive-reap evidence. Rerun the same
+two causal cases to isolate the subsequent status-publication refusal. Add only
+one exact existing native worker-host positive regression for the shared helper.
+No LinuxPtyStream or protocol-parser relaxation.
+
 1. Add two isolated real production-route Linux scenarios using the retained
    original main/worker inventory, configured inert CLI and actual pipe accept
    loop. A bounded fixed `exit-error` command exits the CLI with17; separately
