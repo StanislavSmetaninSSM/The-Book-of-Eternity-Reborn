@@ -986,3 +986,16 @@ runner, no timeout/duplicates, ownedcleanupcomplete. Each independent native
 guardian ECHILD/zeroemergency; caught-loss preserves logicalUncertain. Exact
 main-helper-live-sigint-green receipt archived. New stoptest running separately
 with already-fresh build; no passing cohort repeated. Provider/game still0.
+
+767ef6a7 coordinatedstop actual1/1GREEN at own9a329e8b root: observed Active pin
+211daab8..., four retained original pinsClosedObserved after oneoriginalshutdown;
+durable fullidentityStopped before sole daemonCtrlC. Originalrun94f4633f...;
+shutdown physicalstopped/cleanupcomplete/authorityreleased, daemonexit0/EOF/full
+termios, guardianECHILD/driver0/emergency0/reaped1/failures0/nodeadline.17stest/
+30.71srunner, alreadyfreshNoBuild; no old positive or historicalfailure repeated.
+Exactdaemon-main-first-green receipt archived; inherited labels chronology as
+above. Earlier admission-interrupt failures stay logicalUncertain. Independent
+Sol evidence review pending. Reviewed minimum now applied to live driver cleanup:
+client actualcompletion/normalexit → singleoriginalshutdown/Stopped → daemonCtrlC;
+unknownstop leaves daemontransport alive and cannot be success. Driver-onlyWIP;
+source review before one freshog5 ordinaryNewGame attempt. Runtime same1c64050b.

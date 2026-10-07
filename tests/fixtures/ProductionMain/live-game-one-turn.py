@@ -203,10 +203,6 @@ finally:
             elif client.process.poll() is None:
                 client.send(b'\x03','failure: stop original client foreground');until(lambda:client.process.poll() is not None,6,'client foreground stop')
         except Exception as ex:result['ClientCleanupFailure']=type(ex).__name__+': '+str(ex)
-    if daemon is not None and daemon.process.poll() is None:
-        try:
-            daemon.send(b'\x03','stop original daemon foreground');until(lambda:daemon.process.poll() is not None,8,'daemon original stop')
-        except Exception as ex:result['DaemonCleanupFailure']=type(ex).__name__+': '+str(ex)
     if original is not None:
         try:
             shutdown_attempts+=1
@@ -219,6 +215,12 @@ finally:
             result['LogicalLifecycleVerified']=True
         except Exception as ex:result['CleanupFailure']=type(ex).__name__+': '+str(ex)
     elif bridge is not None:result['CleanupFailure']='Original Running identity unavailable; guardian cannot logical-success'
+    # Keep participating admission transport alive until original fenced settlement.
+    # Lost/unknown ACK retains logical uncertainty; never force a success or replay.
+    if daemon is not None and daemon.process.poll() is None and result['LogicalLifecycleVerified']:
+        try:
+            daemon.send(b'\x03','stop daemon only after original Stopped ACK');until(lambda:daemon.process.poll() is not None,8,'daemon original stop')
+        except Exception as ex:result['DaemonCleanupFailure']=type(ex).__name__+': '+str(ex)
     result['ShutdownAttempts']=shutdown_attempts
     for p in peers:
         if p.process.poll() is not None and p.slave>=0:os.close(p.slave);p.slave=-1
