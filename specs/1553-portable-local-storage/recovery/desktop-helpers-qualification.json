@@ -568,8 +568,8 @@
   "IndependentReviews": {
     "Design": "recovery/desktop-helpers-design-review.json",
     "Source": "recovery/desktop-helpers-source-review.json",
-    "Evidence": "pending",
-    "Metadata": "pending"
+    "Evidence": "recovery/desktop-helpers-evidence-review.json",
+    "Metadata": "recovery/desktop-helpers-metadata-review.json"
   },
   "Remaining": [
     "Native Windows execution and positive managed association/default viewer",

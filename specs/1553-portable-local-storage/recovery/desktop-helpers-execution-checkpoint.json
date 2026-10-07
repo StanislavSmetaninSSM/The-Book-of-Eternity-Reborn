@@ -35,8 +35,7 @@
     "TestsExecuted": 0
   },
   "Pending": [
-    "Independent evidence/metadata reviews",
-    "Final exact-tip carrier remote/byte readback and GitHub-only restoration"
+    "Final carrier exact remote/byte readback and GitHub-only restoration before delivery"
   ],
   "Qualified": "Controlled launch adapter through actual Linux consumers only; no positive desktop/native Windows",
   "RecordCheckpointCommit": "16b0cc1b091bf9f8d8bddebb8e13bc9eaab1a68b",
