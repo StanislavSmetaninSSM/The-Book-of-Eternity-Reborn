@@ -86,4 +86,42 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(fixture.BeforeHistory, File.ReadAllBytes(fixture.Files.ResolvePath("game_state/history/chat_log.json")));
         Assert.Empty(Directory.GetFiles(fixture.Files.GameSessionPath, "*.rollback.fresh_capture", SearchOption.AllDirectories));
     }
+
+    [Theory]
+    [InlineData("absent")]
+    [InlineData("sessionId")]
+    [InlineData("requestId")]
+    [InlineData("turnNumber")]
+    [InlineData("timestamp")]
+    [InlineData("changed-session")]
+    [InlineData("changed-turn")]
+    [InlineData("changed-timestamp")]
+    public async Task DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(string cut)
+    {
+        using var fixture = new BrowserDirectGachaLinuxFixture(_directGachaOutput!, _rootPath);
+        await fixture.InitializeAsync(); Assert.True((await fixture.PullAsync()).Success);
+        var path = fixture.BackupPath(); var bytes = File.ReadAllBytes(path);
+        var manifestPath = fixture.Files.ResolvePath(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath);
+        var authorityPath = fixture.Files.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath);
+        var manifest = File.ReadAllBytes(manifestPath); var authority = File.ReadAllBytes(authorityPath);
+        var requestPath = fixture.Files.ResolvePath(BrowserPendingTurnInspector.TurnRequestPath);
+        if (cut == "absent") File.Delete(requestPath);
+        else
+        {
+            var request = JsonNode.Parse(File.ReadAllText(requestPath))!.AsObject();
+            if (cut.StartsWith("changed-", StringComparison.Ordinal))
+            {
+                var member = cut == "changed-session" ? "sessionId" : cut == "changed-turn" ? "turnNumber" : "timestamp";
+                request[member] = member == "turnNumber" ? JsonValue.Create(88) : JsonValue.Create("different-current-context");
+            }
+            else request.Remove(cut);
+            File.WriteAllText(requestPath, request.ToJsonString());
+        }
+        var engine = CreateGameEngine(fileSystem: fixture.Files);
+        var error = await Assert.ThrowsAsync<InvalidDataException>(() => InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "raw_identity_refusal"));
+        Assert.Contains("direct-gacha", error.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(bytes, File.ReadAllBytes(path)); Assert.Equal(manifest, File.ReadAllBytes(manifestPath)); Assert.Equal(authority, File.ReadAllBytes(authorityPath));
+        Assert.Equal(11, fixture.Feathers());
+        Assert.Empty(Directory.GetFiles(fixture.Files.GameSessionPath, "*.rollback.raw_identity_refusal", SearchOption.AllDirectories));
+    }
 }

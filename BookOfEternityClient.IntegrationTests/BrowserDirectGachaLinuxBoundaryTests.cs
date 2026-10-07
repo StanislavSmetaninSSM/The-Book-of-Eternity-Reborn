@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class BrowserDirectGachaLinuxBoundaryTests(ITestOutputHelper output)
+public sealed partial class BrowserDirectGachaLinuxBoundaryTests(ITestOutputHelper output)
 {
     [Theory]
     [InlineData("stage-staged")]
@@ -68,6 +68,7 @@ public sealed class BrowserDirectGachaLinuxBoundaryTests(ITestOutputHelper outpu
                 Assert.NotNull(stage);
                 blocker = stage[..^"stage".Length] + "undo";
                 Directory.CreateDirectory(blocker); // Controlled namespace fault prevents eager B1 settlement.
+                File.WriteAllBytes(Path.Combine(blocker, "fixture-cut"), [1]); // Retain through original cosmetic empty-directory cleanup.
                 fixture.Publication = null; fixture.Mutation = null;
                 Assert.Equal(published, File.Exists(target));
                 if (!published) Assert.Equal(fixture.BeforeSoul, File.ReadAllBytes(stage));
@@ -83,7 +84,7 @@ public sealed class BrowserDirectGachaLinuxBoundaryTests(ITestOutputHelper outpu
         Assert.True(File.Exists(journalPath)); Assert.Equal(published, File.Exists(target));
         if (!published) Assert.Single(Directory.GetFiles(Path.GetDirectoryName(target)!, ".boe-local-*.stage"));
         Assert.True(Directory.Exists(blocker));
-        fixture.Closing = null; Directory.Delete(blocker!); // Remove only the fixture's known fault, never unknown bytes.
+        fixture.Closing = null; File.Delete(Path.Combine(blocker!, "fixture-cut")); Directory.Delete(blocker!); // Remove only the fixture's known fault.
         var fresh = Fresh(fixture);
         await using (var lease = await fresh.AcquireCanonicalWriteLeaseAsync()) Assert.False(File.Exists(journalPath));
         AssertBefore(fixture); AssertNoTurnOrRollback(fresh);
@@ -97,10 +98,12 @@ public sealed class BrowserDirectGachaLinuxBoundaryTests(ITestOutputHelper outpu
         using var fixture = new BrowserDirectGachaLinuxFixture(output);
         await fixture.InitializeAsync();
         var cuts = 0;
+        var cleanup = false;
         fixture.Mutation = path =>
         {
-            var selected = afterManifest ? path.EndsWith("browser_write_cleanup_committed.intent", StringComparison.Ordinal)
-                : path.EndsWith(".rollback", StringComparison.Ordinal);
+            if (path.EndsWith("browser_write_committed.marker", StringComparison.Ordinal)) cleanup = true;
+            var selected = cleanup && (afterManifest ? path.EndsWith("browser_write_cleanup_committed.intent", StringComparison.Ordinal)
+                : path.EndsWith(".rollback", StringComparison.Ordinal));
             if (selected && (!afterManifest || ++cuts == 2)) throw new InvalidOperationException("schema7 committed cleanup debt");
             return Task.CompletedTask;
         };
@@ -109,6 +112,8 @@ public sealed class BrowserDirectGachaLinuxBoundaryTests(ITestOutputHelper outpu
         Assert.Equal(MainOperationOutcome.Committed, failure.EstablishedOutcome); Assert.True(failure.EstablishedResult.Success);
         Assert.Equal(11, fixture.Feathers());
         var path = fixture.BackupPath(); var request = File.ReadAllBytes(fixture.Files.ResolvePath(BrowserPendingTurnInspector.TurnRequestPath));
+        var pendingManifest = File.ReadAllBytes(fixture.Files.ResolvePath(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath));
+        var authority = File.ReadAllBytes(fixture.Files.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath));
         Assert.Equal(fixture.BeforeSoul, File.ReadAllBytes(path));
         Assert.NotEmpty(Directory.GetFiles(fixture.Files.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root), "*.intent", SearchOption.AllDirectories));
         fixture.Mutation = null; fixture.Closing = null;
@@ -116,7 +121,8 @@ public sealed class BrowserDirectGachaLinuxBoundaryTests(ITestOutputHelper outpu
         await using (var lease = await fresh.AcquireCanonicalWriteLeaseAsync()) Assert.Equal(11, fixture.Feathers());
         Assert.Equal(path, fixture.BackupPath()); Assert.Equal(fixture.BeforeSoul, File.ReadAllBytes(path));
         Assert.Equal(request, File.ReadAllBytes(fresh.ResolvePath(BrowserPendingTurnInspector.TurnRequestPath)));
-        Assert.True(File.Exists(fresh.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)));
+        Assert.Equal(pendingManifest, File.ReadAllBytes(fresh.ResolvePath(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath)));
+        Assert.Equal(authority, File.ReadAllBytes(fresh.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)));
         Assert.Empty(Directory.GetFiles(fresh.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root), "*.intent", SearchOption.AllDirectories));
         Assert.Equal(fixture.BeforeHistory, File.ReadAllBytes(fresh.ResolvePath("game_state/history/chat_log.json")));
     }
@@ -165,11 +171,17 @@ public sealed class BrowserDirectGachaLinuxBoundaryTests(ITestOutputHelper outpu
         using var fixture = new BrowserDirectGachaLinuxFixture(output);
         await fixture.InitializeAsync(); Assert.True((await fixture.PullAsync()).Success);
         var backup = fixture.BackupPath();
+        var request = File.ReadAllBytes(fixture.Files.ResolvePath(BrowserPendingTurnInspector.TurnRequestPath));
+        var manifest = File.ReadAllBytes(fixture.Files.ResolvePath(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath));
+        var authority = File.ReadAllBytes(fixture.Files.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath));
         var path = Path.Combine(Path.GetDirectoryName(backup)!, kind == "scratch" ? ".boe-local-" + Guid.NewGuid().ToString("N") + "-0.stage" : "unknown.rollback.backup");
         byte[] bytes = [255, 0, 12]; File.WriteAllBytes(path, bytes);
         var error = await Record.ExceptionAsync(() => fixture.PullAsync()); // Actual browser entrypoint, not an unavailable-backend oracle.
         Assert.IsType<InvalidDataException>(error); Assert.Equal(bytes, File.ReadAllBytes(path));
         Assert.Equal(fixture.BeforeSoul, File.ReadAllBytes(backup)); Assert.Equal(11, fixture.Feathers());
+        Assert.Equal(request, File.ReadAllBytes(fixture.Files.ResolvePath(BrowserPendingTurnInspector.TurnRequestPath)));
+        Assert.Equal(manifest, File.ReadAllBytes(fixture.Files.ResolvePath(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath)));
+        Assert.Equal(authority, File.ReadAllBytes(fixture.Files.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)));
         Assert.Equal(fixture.BeforeHistory, File.ReadAllBytes(fixture.Files.ResolvePath("game_state/history/chat_log.json")));
     }
 

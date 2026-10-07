@@ -1,0 +1,50 @@
+{
+  "Categories": [
+    "browser-direct-gacha-linux-boundaries"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "06ec730f832c0c7fa492724322e845ad21a51a61",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 54.0037873,
+  "Descriptors": [
+    {
+      "Name": "browser-direct-gacha-linux-boundaries-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "browser-direct-gacha-linux-boundaries",
+      "Categories": [
+        "browser-direct-gacha-linux-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

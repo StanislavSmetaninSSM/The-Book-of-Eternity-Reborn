@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "browser-direct-gacha-linux",
-      "responsibility": "#1553 T031 actual Linux browser direct gacha + long-lived exact pre-spend backup, original queue/authority/turn lifetime and exact adoption refusal.",
+      "responsibility": "#1553 T031 actual Linux browser direct gacha + long-lived exact pre-spend backup, original queue/authority/turn lifetime and exact adoption refusal. Known original publication rollback and typed closing outcomes.",
       "excludes": "No stub browser/Stage, gameplay odds/rewards/currency/GM text changes, live browser/provider/real saves, standalone Daren, Windows or whole-game qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts",
@@ -23,7 +23,9 @@
           "tests": [
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.*",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_*",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_*"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_*",
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence",
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry"
           ]
         }
       ]
@@ -48,7 +50,49 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.*"
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover",
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage",
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes",
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.Actual*",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "browser-direct-gacha-linux-regression",
+      "responsibility": "#1553 direct-gacha delta exact affected schema7 unsupported/orphan/scratch/committed recovery and backup original-evidence routing/receipt debt refusal.",
+      "excludes": "No old whole browser/coordinator/backup/M1/F1-F3/Load cohorts, Windows-only bodies or full suite.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalRecovery.cs"
+      ],
+      "related": [
+        "browser-direct-gacha-linux",
+        "browser-direct-gacha-linux-boundaries"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OldEmptyOrphanCleanupIntent_IsRetainedWithoutMutation",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.ExistingOriginalEvidenceBlocksEvenOrdinaryAbsenceWithoutDeletingEvidence",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget",
+            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence"
           ]
         }
       ]
