@@ -16416,7 +16416,7 @@
     },
     {
       "id": "gm-newgame-cancel-affected-guards",
-      "responsibility": "#1553 T043 directly affected Fresh NewGame baseline order, original generation cleanup and source-owned actor authority guards",
+      "responsibility": "#1553 T043 directly affected Fresh NewGame baseline order, original generation cleanup and source-owned actor authority guards and exact existing attraction retention",
       "excludes": "No general validation/documentation suite, CLI/provider or unrelated item/wound cohorts",
       "changeHints": [
         "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
@@ -16437,6 +16437,12 @@
             "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingTurnSnapshotCleanup_MustNotBypassCanonicalSessionFence",
             "BookOfEternityClient.Tests.ValidationSourceGuardTests.ActorMaterializationAuthority_MustNotUseProseOrGenreKeywordInference",
             "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ClearRotatesGeneration_ThrowsBeforeReplacementMutation"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CleanupAfterCancelledChaosSeaMarkerTurn_PreservesSystemGuardianAttractionForLateResponse"
           ]
         }
       ]

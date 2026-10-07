@@ -1,5 +1,5 @@
 """Controlled ordinary idle daemon PTY, beneath the independent fixture guardian."""
-import errno, fcntl, json, os, pty, select, struct, subprocess, sys, termios, time
+import errno, fcntl, hashlib, json, os, pty, select, struct, subprocess, sys, termios, time
 from pathlib import Path
 
 folder = Path(sys.argv[1]); ship = folder / 'ship'; session = folder / 'root/game_session'
@@ -10,6 +10,20 @@ result = {'SignalCount': 0, 'EOF': False}; process = None
 def own():
     os.setsid(); fcntl.ioctl(slave, termios.TIOCSCTTY, 0); os.tcsetpgrp(slave, os.getpid())
 try:
+    prologue = ship / 'daemon-close-diagnostic.ps1'
+    if prologue.exists():
+        daemon = ship / 'BookOfEternityClient/game_master_daemon.ps1'
+        original = daemon.read_bytes(); prefix = prologue.read_bytes()
+        anchor = b'$ErrorActionPreference = "Stop"'
+        assert original.count(anchor) == 1
+        instrumented = original.replace(anchor, prefix + b'\n' + anchor, 1)
+        daemon.write_bytes(instrumented)
+        (folder / 'daemon-close-instrumentation.json').write_text(json.dumps({
+            'DiagnosticOnly': True, 'OriginalSHA256': hashlib.sha256(original).hexdigest(),
+            'PrologueSHA256': hashlib.sha256(prefix).hexdigest(),
+            'InstrumentedSHA256': hashlib.sha256(instrumented).hexdigest(),
+            'HelperUnmodifiedSHA256': hashlib.sha256((ship / 'BookOfEternityClient/Launcher/gm_main_operation.ps1').read_bytes()).hexdigest()
+        }))
     argv = ['pwsh', '-NoLogo', '-NoProfile', '-File', str(ship / 'BookOfEternityClient/Launcher/bookofeternity.ps1'),
             'start-daemon', 'visible', '--timeout', '30', '--log', str(folder / 'idle-daemon.log'), '-SessionPath', str(session)]
     process = subprocess.Popen(argv, cwd=ship, stdin=slave, stdout=slave, stderr=slave, preexec_fn=own)

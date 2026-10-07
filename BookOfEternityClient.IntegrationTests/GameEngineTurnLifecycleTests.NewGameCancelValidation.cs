@@ -19,20 +19,15 @@ public sealed partial class GameEngineTurnLifecycleTests
         const string guardianPath = "game_state/meta/guardians.json";
         var baseline = await _fs.ReadFileBytesAsync(guardianPath);
         Assert.NotNull(baseline);
-        var library = new SystemGuardianLibraryService(_fs,
-            Microsoft.Extensions.Logging.Abstractions.NullLogger<SystemGuardianLibraryService>.Instance);
-        var presets = await library.GetAvailablePresetsAsync(includeDossier: true);
-        Assert.NotEmpty(presets);
-        await library.WriteAttractionRequestAsync(presets[0]);
         var pending = await _fs.ReadFileBytesAsync(SystemGuardianLibraryService.AttractionRequestPath);
-        Assert.NotNull(pending);
+        Assert.Null(pending);
         Assert.DoesNotContain(await GetPrivateField<ValidationService>(engine, "_validator").ValidateGameStateAsync(),
             issue => issue.Severity == IssueSeverity.Error);
         var staged = false;
         input.Arm(() =>
         {
-            Assert.True(_fs.FileExists("input/turn_request.json"));
-            Assert.True(_fs.FileExists("game_state/control/pending_turn_snapshot.json"));
+            Assert.True(File.Exists(_fs.ResolvePath("input/turn_request.json")));
+            Assert.True(File.Exists(_fs.ResolvePath("game_state/control/pending_turn_snapshot.json")));
             staged = true;
         });
         await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Я осматриваю берег Моря Хаоса.")
@@ -63,18 +58,24 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             const string manifestPath = "game_state/control/pending_turn_snapshot.json";
             const string authorityPath = "game_state/control/pending_turn_snapshot.authority.json";
-            Assert.True(_fs.FileExists("input/turn_request.json"));
-            var manifest = _fs.ReadFileBytesAsync(manifestPath).GetAwaiter().GetResult()!;
+            Assert.True(File.Exists(_fs.ResolvePath("input/turn_request.json")));
+            var manifest = File.ReadAllBytes(_fs.ResolvePath(manifestPath));
             var node = JsonNode.Parse(manifest)!.AsObject();
             var backups = node["rollbackBackups"]!.AsObject().Select(pair => pair.Value!.GetValue<string>()).ToArray();
             Assert.NotEmpty(backups);
-            _fs.WriteFileAtomicAsync(backups[0], "deliberately corrupted own evidence").GetAwaiter().GetResult();
+            string OwnBackup(string path)
+            {
+                var physical = Path.GetFullPath(_fs.ResolvePath(path));
+                Assert.StartsWith(Path.GetFullPath(_rootPath) + Path.DirectorySeparatorChar, physical, StringComparison.Ordinal);
+                return physical;
+            }
+            File.WriteAllText(OwnBackup(backups[0]), "deliberately corrupted own evidence");
             expected.Add(manifestPath, manifest);
-            expected.Add(authorityPath, _fs.ReadFileBytesAsync(authorityPath).GetAwaiter().GetResult()!);
+            expected.Add(authorityPath, File.ReadAllBytes(_fs.ResolvePath(authorityPath)));
             foreach (var backup in backups)
-                expected.Add(backup, _fs.ReadFileBytesAsync(backup).GetAwaiter().GetResult()!);
+                expected.Add(backup, File.ReadAllBytes(OwnBackup(backup)));
         });
-        await Assert.ThrowsAsync<InvalidDataException>(async () =>
+        var failure = await Record.ExceptionAsync(async () =>
         {
             if (ordinaryPlayer)
                 await InvokePrivateTaskAsync(engine, "ProcessPlayerTurn", "Я осматриваю берег Моря Хаоса.")
@@ -84,6 +85,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         });
         Assert.Equal(1, input.EscapeReads);
         Assert.Null(input.CallbackFailure);
+        Assert.IsType<InvalidDataException>(failure);
         Assert.NotEmpty(expected);
         foreach (var (path, bytes) in expected)
             Assert.Equal(bytes, await _fs.ReadFileBytesAsync(path));

@@ -870,3 +870,19 @@ errors must be recorded and still consume the one Escape, then asserted after
 real taskcompletion. Fixture-only correction now catches callback failures and
 preserves their exact type; never treats timeout as success. Exact five artifacts
 retained player-cancel-diagnostic-preparation. No ordinary branch runtime change.
+
+Independent Sol revised diagnostic DESIGN PASS: outer wrapper breakpoints would
+miss the inner pwsh created by ordinary launcher. Own relocated daemon copy only
+gets exact test prologue before dot-source; helper/function bodies and ordinary
+argv unchanged. Pin original/prologue/instrumented hashes, fixed executable-line
+map; trace bounded700events/64KiB with phase/pid/originalpin/op/sequence/bools/type
+only. Missing trace remains inconclusive; instrumented run is diagnosis, not
+positive shipped qualification. No unknown data/messages/frames copied.
+Revised cancellation preparation DESIGN PASS: direct .NET own evidence read/fault
+in callback with root containment and retained post-fault bytes, callbackerror
+asserted before engine refusal. Incompatible attraction injection removed from
+freeform baseline; exact existing attraction-preservation consumer separately
+selected (five affected guards total). No ordinarycancelruntimefix yet.
+An accidental unisolated OpenCode --version refused EROFS creating statehome
+beforeversion; no protected changes or secret contents. Existing own-XDG1.18.35
+version/provenance remain authoritative; no HOME/auth override or newstartup.
