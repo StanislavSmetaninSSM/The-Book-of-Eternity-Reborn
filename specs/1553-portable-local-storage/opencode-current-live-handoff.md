@@ -1,0 +1,18 @@
+# Current bounded live handoff — publication blocker
+
+Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), T043. Sole writer, Sol6.1/xhigh; read-only independent Sol source/design/evidence reviewers. Deferred systemd design remains preserved at63e99009 and unqualified; no systemd setup or backend implementation in this block.
+
+## Verified result
+
+- Component causal RED1/1 atb6742f45 proves HasCurrentSession's recovery-capable FileExists ran before original participating admission. Minimal runtime9744d191 moves only that read into its existing scope. Targeted GREEN2/2, original pins/Stopping refusal/scoped cleanup; independent Sol source/evidence PASS06d63a11. Published component carrierfaf17fd43cf54f3e3b5946c40fae396cc435838d, remote SHA and byte readback verified. Catalog416/11147valid,0executed; no broad reruns.
+- Fresh actual og9 uses the GREEN runtime678files/99,051,782bytes, actual production Bridge AppContext, persistent OpenCode1.18.35 and separate `opencode/ling-3.1-flash-free` profile. Ordinary NewGame/initial cancellation, original Running bootstrap/derived readiness, real daemon bootstrap, Continue and one actual player request succeed. One action: «Я осторожно осматриваю берег Моря Хаоса и спрашиваю моего Хранителя, где я оказался.»
+- The immutable original operation returns DraftUncertain/observation-timeout before submit. No reconstructed input or old-command replay. **Model submissions0, accepted/applied game turns0**; paste reception by CLI is not model reception or game acceptance. Daemon6 noticed/cancelled iterations are not6 submissions. [Exact own public artifacts](recovery/evidence/opencode-live/current-turn-paste-refusal/manifest.json); private CLI auth/config/state is excluded.
+- Same original run04a1b2d09ba44c60b6debd4fe43666d3 reached scoped stop/ACK/durableStopped. Client/bridge/daemon actualexit0, EOF and termios restored. GuardianECHILD, emergency0, failures0, deadlinefalse, driverexit1; elapsed62.276s. Cleanup does not turn the refused input into a successful turn. Historical og4/og5 Uncertain records remain byte-identical.
+
+## Next causal step, not implemented
+
+Independent Sol design PASS: exact completed paste transcript has six composer rows/footer13/cursor11:69, with SGR39/default foreground represented as-1. MiniDraftRegion currently admits only explicit0xe2e8f0. Replay the committed exact VT prefix through the actual parser/predicate and get causal RED. Add one actual pipe/external-observer default-foreground positive and an explicit unsupported-RGB negative. Only after confirmed RED admit the existing -1 sentinel alongside the pinned RGB, keeping placeholder style, frozen outside rows/footer, exact file witness, edges, unknown-sequence refusal, manual/cancel/one-use/admission unchanged. Independent source review/GREEN and normal checkpoint/readback precede another fresh actual NewGame attempt; no replay of og9.
+
+## Persistence blocker
+
+Three ordinary non-force pushes of the local evidence commit received GitHub `Internal Server Error`, including a full non-thin pack; read-only remote still points to faf17fd4. No auth, grants, domain/security/settings changes or force/rebase attempted. Following AGENTS.md remote-persistence guard, runtime implementation and further live attempts stop until publication is restored. Local public evidence/bundle and a fresh GitHub-only restoration of the last published carrier are writer closure deliverables; they must not be described as GitHub recovery of unpublished evidence. No native Windows/systemd/live browser/real-save/cold guarantee or completed Q2 claim.
