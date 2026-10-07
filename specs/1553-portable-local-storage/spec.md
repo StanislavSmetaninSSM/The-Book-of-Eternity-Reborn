@@ -1,4 +1,12 @@
-## Current authorization: bounded real console Codex Q1 → Q2
+## Current authorization: bounded real console CLI Q1 → Q2
+
+Owner subsequently authorizes official workspace OpenCode installation as a fallback,
+without new credentials/grants/payments or main GM-model changes. Installed1.18.35,
+registry/binary provenance verified; installed inventory lists ling-3.1-flash-free.
+[Separate live plan](opencode-live-plan.md); interactive OpenCode/model turns0 at
+installation checkpoint. Original early-exit production defects have bounded
+source9340ff08 source/evidence PASS and6/6 narrow Linux GREEN; historical failed
+Codex startup/Uncertain record remains retained. No overall live-game acceptance.
 
 Owner permits exactly one response y at the previously observed TERM=dumb warning and at most two genuine GM turns using existing authorization/configured command/model in a disposable new console game. Ordinary current-schema initialization is preferred; experimental saves are fixtures, not game history. Honest terminal/profile readiness, original retained owner/fence/T042 and scoped completion remain required. Unexpected permission/trust/login/persistent grant requires a separate decision; no parser bypass, replay or user saves. [Plan](codex-live-q1-q2-plan.md). Systemd design is deferred at63e99009. One y/Enter now executed; Codex failed opening local SQLite state on read-only mount. Zero model/game turns; failed original lifecycle, guardianECHILD with1emergency, retained Uncertain and no Stopped claim. [Actual blocked handoff](codex-live-q1-q2-handoff.md). Runtime/tests unchanged. Earlier Q1 diagnostic limits below describe their historical checkpoint. Source #1553.
 

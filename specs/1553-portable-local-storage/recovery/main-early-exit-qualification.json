@@ -1,7 +1,7 @@
 {
   "SourceCommit": "9340ff081c3a60a8c6b0d6ae0d07d95c555a3664",
   "Task": "T043-EARLY-EXIT",
-  "Verdict": "Six-case bounded Linux GREEN; independent evidence review pending",
+  "Verdict": "BOUNDED LINUX PASS: causal fixes; independent source/evidence PASS, no live readiness/game claim",
   "SourcePins": [
     {
       "Path": "native/linux/boe-lineage-supervisor.c",
@@ -105,5 +105,12 @@
     "native-fixed-status-red/manifest.json",
     "green/manifest.json",
     "cli-diagnostics/manifest.json"
-  ]
+  ],
+  "EvidenceReview": {
+    "Agent": "/root/codex_live_evidence_review",
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "ReviewedCommit": "d7b76f255ecdb191bafec5d2873d074799e3d0c4",
+    "Verdict": "PASS;12source/105artifact entries plus10public-source pins,6guardianECHILD0EMG,6distinctGREEN/10total executions"
+  }
 }

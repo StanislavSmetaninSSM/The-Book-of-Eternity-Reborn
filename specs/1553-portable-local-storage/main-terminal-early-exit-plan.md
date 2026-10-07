@@ -11,6 +11,15 @@ cleanup, retained logical Uncertain. Do not repeat that Codex startup. Systemd W
 
 ## Known facts and hypothesis
 
+Completed bounded source9340ff08: both causally isolated fixes,6/6 distinct narrow
+GREEN,6guardianECHILD/0emergency,10total test executions across three runs.
+Independent actual Sol6.1/xhigh source PASS9340ff08 and evidence PASSd7b76f25;
+12source/105artifact entries verified. [Qualification](recovery/main-early-exit-qualification.json).
+No live provider readiness/gameplay claim; the original Codex Uncertain receipt
+remains unchanged. Owner subsequently authorized official workspace OpenCode
+installation; its separate [live plan](opencode-live-plan.md) supersedes the earlier
+installation-needed boundary at the end of this historical plan.
+
 - The executed driver wrongly requires Running after observing CLI failure and
   therefore sends no original shutdown. This is a proven driver defect; update
   its future cleanup path without rewriting the executed receipt.
