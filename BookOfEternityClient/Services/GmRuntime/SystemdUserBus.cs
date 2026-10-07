@@ -4,15 +4,21 @@ namespace BookOfEternityClient.Services.GmRuntime;
 // Original connection/reference authority; snapshots do not construct this object.
 internal sealed class SystemdUserBus(ISystemdBusTransport transport)
 {
-    private readonly SystemdManagerBinding _manager=transport.Manager;
+    private SystemdManagerBinding? _manager;
+    private Task<string>? _authorityLost;
     private string? _name;
     private SystemdUnitSnapshot? _unit;
     private int _start,_stop;
     internal bool Bound=>_unit!=null;
-    internal Task<string> AuthorityLost=>transport.AuthorityLost;
+    internal Task<string> AuthorityLost=>_authorityLost??transport.AuthorityLost;
+    internal void CaptureOriginal() {
+        if(_manager!=null)throw Invalid();
+        _manager=transport.Manager;_authorityLost=transport.AuthorityLost;RequireManager();
+    }
     internal SystemdUnitSnapshot Unit=>_unit??throw Invalid();
     internal void RequireManager() {
-        if(!ReferenceEquals(_manager,transport.Manager) || transport.AuthorityLost.IsCompleted ||
+        if(_manager==null || !ReferenceEquals(_manager,transport.Manager) ||
+            !ReferenceEquals(_authorityLost,transport.AuthorityLost) || AuthorityLost.IsCompleted ||
             _manager.BusId.Length!=32 || !_manager.BusId.All(Uri.IsHexDigit) ||
             !_manager.UniqueOwner.StartsWith(':') || _manager.UniqueOwner.Length>128 ||
             _manager.UserId!=GmWorkerProcessHostPeerIdentity.CaptureEffectiveUserId() ||

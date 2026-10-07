@@ -12,10 +12,13 @@ internal sealed class SystemdUserScopeOwner
     private int _release;
     internal SystemdUserScopeOwner(NativeLineageOwner original,IOwnedTerminalSession native,SystemdControlledFixture fixture) {
         _original=original;_native=native;_bus=new(fixture.Transport);_cgroup=new(fixture.Cgroup);
-        _=ObserveAuthorityAsync(native.AuthorityLost);_=ObserveAuthorityAsync(_bus.AuthorityLost);
+        // Capture/watch original transport only inside guarded Attach, after wrapper exists.
     }
     internal Task<string> AuthorityLost {get {
-        if(!_disposed && (_native.AuthorityLost.IsCompleted || _bus.AuthorityLost.IsCompleted))MarkUncertain("systemd-original-authority-lost");
+        if(_lost.Task.IsCompleted || _disposed)return _lost.Task;
+        try {
+            if(_native.AuthorityLost.IsCompleted || _bus.AuthorityLost.IsCompleted)MarkUncertain("systemd-original-authority-lost");
+        }catch{MarkUncertain("systemd-original-authority-observation-failed");}
         return _lost.Task;
     }}
     internal void MarkUncertain(string reason)=>_lost.TrySetResult(reason);
@@ -23,6 +26,8 @@ internal sealed class SystemdUserScopeOwner
         try{var reason=await task;if(!_disposed)MarkUncertain(reason);}catch{if(!_disposed)MarkUncertain("systemd-authority-observation-lost");}
     }
     internal async Task AttachAsync(CancellationToken token) {
+        _bus.CaptureOriginal();
+        _=ObserveAuthorityAsync(_native.AuthorityLost);_=ObserveAuthorityAsync(_bus.AuthorityLost);
         _held=NativeHeldTerminalPidfd.FromOriginal(_original);
         using var bound=CancellationTokenSource.CreateLinkedTokenSource(token);bound.CancelAfter(_held.Remaining);
         await _bus.AttachAsync(_held,bound.Token);_cgroup.Bind(_bus.Unit,_held.Pid);

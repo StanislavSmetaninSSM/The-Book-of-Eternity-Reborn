@@ -1,3 +1,13 @@
+# S1 post-held capture causal correction WIP
+
+2dd101dd controlled24:23PASS/1causalFAIL managerCapture getterafterheld
+creation left coordinator without exactterminal; guardianECHILD used1emergency
+signal in thatfailedcase (not logicalstop). NativeDisposeOnce nowGREEN.
+Move originalmanager/taskcapture and watcher setup into guardedAttach after
+SystemdOwnedTerminalSession exists; constructors retainreferencesonly. Latched
+uncertainty getter returns before failedtransport reads; same wrapper native
+cleanup, no fallback/newlauncher. Finalcontrolled24 + affected4 GREEN pending.
+
 # S1 affected fixture preparation failure
 
 3ee96534 planned28, completed4affected:3PASS/1FAIL at own fixture cleanup
