@@ -53,6 +53,11 @@ internal static class ProductionMainLinuxFixture
         // Proposed setting is carried as ordinary profile JSON before the property exists.
         var json=JsonSerializer.Deserialize<Dictionary<string,JsonElement>>(File.ReadAllText(Path.Combine(files.GameSessionPath,"config.json")))!;
         json["GmMainOwnerBackend"]=JsonSerializer.SerializeToElement("NativeLineage");File.WriteAllText(Path.Combine(files.GameSessionPath,"config.json"),JsonSerializer.Serialize(json));
+        if(mode=="production-main-console-runtime") {
+            // Isolated current-schema consumer data, not a real GM response or live history.
+            await files.WriteFileAtomicAsync("game_state/meta/soul_state.json","{\"soulName\":\"Контрольная душа\",\"currentRealm\":\"Chaos Sea\",\"currentIncarnation\":0}");
+            await files.WriteFileAtomicAsync("game_state/history/chat_log.json","{\"sessionId\":\"controlled-console-runtime\",\"messages\":[]}");
+        }
         if(mode.StartsWith("production-main-load-",StringComparison.Ordinal)) {
             var archiveState=PortableSaveFixture.Seed(files);
             if(mode.StartsWith("production-main-load-console",StringComparison.Ordinal)) {

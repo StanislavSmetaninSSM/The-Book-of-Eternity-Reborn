@@ -2,10 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-live-turn-guardian-budget",
-      "reason": "Test-only explicit live-turn guardian300s maximum, legacy30s unchanged, overflow refusal and own positive exclusive ECHILD",
+      "category": "gm-console-runtime-admission",
+      "reason": "Causal ordinary Continue failure: real GameEngine normalization/refresh must borrow and close original connection pins and refuse Stopping before canonical effects; five short existing consumers, no unrelated cohort",
       "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED"
+        "T043-OPENCODE-LIVE-BOUNDED",
+        "T041-RUN-FENCE-F2"
       ]
     }
   ]

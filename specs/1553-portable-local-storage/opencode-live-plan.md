@@ -659,3 +659,15 @@ under filesystem locks, no pin minted from status. Add actual GameEngine methods
 under original production owner with ClosedObserved receipts and Stopping refusal
 before effects, plus selected source invariant if method signature changes.
 Independent Sol plan review pending; no runtime changes yet.
+Independent Sol DESIGN PASS closes concrete short boundaries. Final minimum is
+five existing consumers: four whole-method wrappers above plus HasCurrentSession
+substantive body after unchanged blocked/no-soul exits. Its final direct
+StateManager refresh443 is an additional gap; Continue533 already invokes
+RefreshRuntimeStateAsync, so no second direct-refresh defect or new continuation
+helper is claimed. Direct EnterGameLoop pending-normalizer calls are covered by
+the same whole-method wrappers. Test one new gm-console-runtime-admission case
+on actual original production bridge: invoke all five real GameEngine methods,
+require original ClosedObserved pins, then durable Stopping and all five
+refusals with exact unchanged game-file inventory. Only this category; test
+controlled current-schema soul data is not a live GM/game history. Runtime is
+still unchanged for causal RED; future missing seam cannot count as RED.

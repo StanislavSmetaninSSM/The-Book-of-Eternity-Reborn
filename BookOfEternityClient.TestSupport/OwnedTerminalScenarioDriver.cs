@@ -186,6 +186,10 @@ internal static partial class OwnedTerminalScenarioDriver
                 result["OriginalWorkerInventoryRetained"]=true;
             }
             var originalSession=type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)!;
+            if(mode=="production-main-console-runtime") {
+                await RunConsoleRuntimeAsync(folder,host!,type,Rpc,(IOwnedTerminalSession)originalSession,result);
+                result["Success"]=true;return 0;
+            }
             if(mode.StartsWith("production-main-load-",StringComparison.Ordinal)) {
                 await RunProductionLoadAsync(mode,folder,host,type,Rpc,(IOwnedTerminalSession)originalSession,result);
                 result["Success"]=true; return 0;

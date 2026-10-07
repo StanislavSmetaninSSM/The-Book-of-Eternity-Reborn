@@ -504,7 +504,7 @@
     },
     {
       "id": "daren-standalone-browser-dispatch",
-      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent \u00d7 commit/rollback), no broader browser cohort.",
+      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
       "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
@@ -16314,6 +16314,30 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmLiveTurnGuardianBudgetTests.ActualGuardian_DedicatedLiveBudgetKeepsDefaultBound"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-console-runtime-admission",
+      "responsibility": "#1553 T043 actual console runtime normalization/refresh original participating pins and durable Stopping refusal before effects",
+      "excludes": "No live provider, general game loop, broad F1-F3, systemd or native Windows execution",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmConsoleRuntimeAdmissionTests.*"
           ]
         }
       ]
