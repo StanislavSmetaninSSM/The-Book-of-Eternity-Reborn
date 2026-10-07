@@ -512,3 +512,11 @@ source-pinned eight-cell blocks busy must qualify, old braille must refuse.
 
 Reservation/spinner bfa75be2 preparation failed CS0841 (fixture local declaration
 order),0executed; not causal RED. Fixture-only declaration moved before use.
+
+Reservation/spinner e9d63d04 causal3/3FAIL, all executed: queued Home borrowed a
+pre-reservation repaint; source blocks refused; old braille wrongly qualified.
+Correction captures paste/editor/Home/End observation versions under actual
+original writer reservation, as Enter already did. Exact deduplicated eight-cell
+blocks frames derive from pinned spinner algorithm; no generic spinner/pane
+classifier. Four genuinely affected categories19 cases; other passed boundaries
+excluded. No CLI/provider/game execution yet.

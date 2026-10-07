@@ -93,16 +93,22 @@ internal sealed partial class BridgeHost
 
     private async Task<bool> ObserveMiniDraftAsync(PromptOperation op,CancellationToken token)
     {
-        long version;
-        lock(_sync){if(!PromptStillOwned(op) || !IsMiniEdge(op,false))return false;version=PromptObservationVersion;op.DraftArmed=true;}
-        await WriteMiniGestureAsync(op,"\u0018e",()=>IsMiniEdge(op,false),token);
+        long version=0;
+        await WriteMiniGestureAsync(op,"\u0018e",()=>{
+            if(!IsMiniEdge(op,false))return false;
+            op.DraftArmed=true;version=PromptObservationVersion;return true;
+        },token);
         var proof=await op.DraftProof.Task.WaitAsync(TimeSpan.FromMilliseconds(op.Snapshot.Profile.ObservationTimeoutMilliseconds),token);
         if(!await ObservePromptAsync(op,version,screen=>DraftObservation.IsAbsent(op.Snapshot.Profile.DraftDirectory,proof.Path) && MiniDraftRegion(op,out _,out _,out _),token))return false;
-        lock(_sync){if(!PromptStillOwned(op))return false;version=PromptObservationVersion;}
-        await WriteMiniGestureAsync(op,"\u001b[H",()=>DraftObservation.IsAbsent(op.Snapshot.Profile.DraftDirectory,proof.Path) && MiniDraftRegion(op,out _,out _,out _),token);
+        await WriteMiniGestureAsync(op,"\u001b[H",()=>{
+            if(!DraftObservation.IsAbsent(op.Snapshot.Profile.DraftDirectory,proof.Path) || !MiniDraftRegion(op,out _,out _,out _))return false;
+            version=PromptObservationVersion;return true;
+        },token);
         if(!await ObservePromptAsync(op,version,_=>IsMiniEdge(op,true),token))return false;
-        lock(_sync){if(!PromptStillOwned(op))return false;version=PromptObservationVersion;}
-        await WriteMiniGestureAsync(op,"\u001b[F",()=>DraftObservation.IsAbsent(op.Snapshot.Profile.DraftDirectory,proof.Path) && IsMiniEdge(op,true),token);
+        await WriteMiniGestureAsync(op,"\u001b[F",()=>{
+            if(!DraftObservation.IsAbsent(op.Snapshot.Profile.DraftDirectory,proof.Path) || !IsMiniEdge(op,true))return false;
+            version=PromptObservationVersion;return true;
+        },token);
         if(!await ObservePromptAsync(op,version,_=>IsMiniEdge(op,false),token))return false;
         lock(_sync)op.DraftArmed=false;
         return true;

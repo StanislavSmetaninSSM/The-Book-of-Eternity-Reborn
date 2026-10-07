@@ -3,7 +3,28 @@
   "selections": [
     {
       "category": "gm-connected-mini-reservation-spinner",
-      "reason": "Original queued Home cannot borrow a pre-reservation repaint; source-pinned eight-cell blocks busy and old braille refusal",
+      "reason": "Changed actual mini gesture reservation freshness and pinned busy frames affect positive/unknown and original refusing witness edges; passed native/env/absence/helper/parser cohorts unchanged and excluded",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED"
+      ]
+    },
+    {
+      "category": "gm-connected-mini-transaction",
+      "reason": "Changed actual mini gesture reservation freshness and pinned busy frames affect positive/unknown and original refusing witness edges; passed native/env/absence/helper/parser cohorts unchanged and excluded",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED"
+      ]
+    },
+    {
+      "category": "gm-connected-mini-refusal",
+      "reason": "Changed actual mini gesture reservation freshness and pinned busy frames affect positive/unknown and original refusing witness edges; passed native/env/absence/helper/parser cohorts unchanged and excluded",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED"
+      ]
+    },
+    {
+      "category": "gm-connected-mini-review-boundaries",
+      "reason": "Changed actual mini gesture reservation freshness and pinned busy frames affect positive/unknown and original refusing witness edges; passed native/env/absence/helper/parser cohorts unchanged and excluded",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED"
       ]

@@ -162,7 +162,7 @@ internal sealed partial class BridgeHost
             long version;
             lock (_sync) version = PromptObservationVersion;
             var text = operation.Snapshot.Text.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", profile.NewlineSequence);
-            if(profile.IsMini)await WriteMiniGestureAsync(operation,profile.PasteStart+text+profile.PasteEnd,()=>IsMiniInitialFrame(profile,CaptureTerminalView()),token);
+            if(profile.IsMini)await WriteMiniGestureAsync(operation,profile.PasteStart+text+profile.PasteEnd,()=>{if(!IsMiniInitialFrame(profile,CaptureTerminalView()))return false;version=PromptObservationVersion;return true;},token);
             else await WriteToPtyAsync(operation.Input, profile.PasteStart + text + profile.PasteEnd, false, token);
             lock (_sync) operation.Phase = PromptDeliveryPhase.AwaitingPaste;
             if (!await ObservePromptAsync(operation, version, screen => profile.IsMini ? IsMiniEdge(operation,false) : IsPastedView(profile, screen, text), token))

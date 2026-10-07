@@ -140,9 +140,9 @@ public sealed class GmConnectedMiniTransactionTests
                     });
                 }
             }
-            var busySpinner=mode=="blocks-spinner"?"■⬝⬝⬝⬝⬝⬝⬝":"⠋";
+            var busySpinner=mode=="braille-spinner"?"⠋":"■⬝⬝⬝⬝⬝⬝⬝";
             if(bytes=="\r" && mode=="busy-composer"){
-                screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[6;1H\u001b[K"+" BUILD  ⠋ esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[11;46H\u001b[?2026l"));return;
+                screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[6;1H\u001b[K"+" BUILD  ■⬝⬝⬝⬝⬝⬝⬝ esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[11;46H\u001b[?2026l"));return;
             }
             if(bytes=="\r" && mode=="busy-panel"){
                 screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[2;1H\u001b[KUnexpected decision needed\u001b[13;1H\u001b[K"+(" BUILD  "+busySpinner+" esc interrupt").PadRight(89)+"ctrl+p cmd "+"\u001b[6;1H\u001b[?2026l"));return;

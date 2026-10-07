@@ -60,6 +60,24 @@ internal sealed partial class BridgeHost
             v.Cells[last].AsSpan(v.CursorColumn).IndexOfAnyExcept(' ')<0;
     }
 
+    // Exact deduplicated width=8, blocks, trailSteps=6 frames from pinned
+    // OpenCode53d1eabb packages/tui/src/ui/spinner.ts; not a general spinner/TUI.
+    private static readonly HashSet<string> MiniBusyFrames=new(StringComparer.Ordinal) {
+        "■⬝⬝⬝⬝⬝⬝⬝",
+        "■■⬝⬝⬝⬝⬝⬝",
+        "■■■⬝⬝⬝⬝⬝",
+        "■■■■⬝⬝⬝⬝",
+        "■■■■■⬝⬝⬝",
+        "■■■■■■⬝⬝",
+        "⬝■■■■■■⬝",
+        "⬝⬝■■■■■■",
+        "⬝⬝⬝⬝⬝⬝■■",
+        "⬝⬝⬝⬝⬝■■■",
+        "⬝⬝⬝⬝■■■■",
+        "⬝⬝⬝■■■■■",
+        "⬝⬝⬝⬝⬝⬝⬝⬝",
+    };
+
     private bool IsMiniWorking(GmCliInputProfile p)
     {
         var v=CaptureTerminalView();
@@ -68,8 +86,8 @@ internal sealed partial class BridgeHost
         for(var i=0;i<start;i++)if(p.StartupBannerLines[i].Length>v.Columns || v.Cells[i]!=p.StartupBannerLines[i].PadRight(v.Columns))return false;
         if(v.Cells[start].Any(c=>c!=' ') || v.Cells[start+1].Any(c=>c!=' ') || v.Cells.Skip(footer+1).Any(row=>row.Any(c=>c!=' ')))return false;
         var row=v.Cells[footer];const string suffix="ctrl+p cmd ";const string marker=" esc interrupt";
-        return row.Length>=40 && row.StartsWith(" BUILD  ",StringComparison.Ordinal) && row[8] is >= '\u2800' and <= '\u28ff' &&
-            row.AsSpan(9,marker.Length).SequenceEqual(marker) && row.EndsWith(suffix,StringComparison.Ordinal) &&
-            row.AsSpan(9+marker.Length,row.Length-9-marker.Length-suffix.Length).IndexOfAnyExcept(' ')<0;
+        return row.Length>=40 && row.StartsWith(" BUILD  ",StringComparison.Ordinal) && MiniBusyFrames.Contains(row.Substring(8,8)) &&
+            row.AsSpan(16,marker.Length).SequenceEqual(marker) && row.EndsWith(suffix,StringComparison.Ordinal) &&
+            row.AsSpan(16+marker.Length,row.Length-16-marker.Length-suffix.Length).IndexOfAnyExcept(' ')<0;
     }
 }
