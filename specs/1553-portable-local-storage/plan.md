@@ -1,6 +1,6 @@
 ## Current authorized bounded real console Q1 → Q2
 
-Owner now permits one exact TERM=dumb confirmation and at most two real GM/model turns in an isolated ordinary new console game. [Executable plan](codex-live-q1-q2-plan.md) preserves honest presentation/readiness, configured command/model and original M1/fence/T042. Prefer current NewGameFlow, not experimental fixture saves. Independent feasibility review precedes startup; unexpected trust/access/auth/persistent grants remain separate blockers. No answer or model request yet. Earlier diagnostic prohibition is historical; systemd WIP below is deferred. Source #1553.
+Owner permits one exact TERM=dumb confirmation and at most two real GM/model turns in an isolated ordinary new console game. [Executable plan](codex-live-q1-q2-plan.md) preserves honest presentation/readiness, configured command/model and original M1/fence/T042. After independent feasibility/source review, one y/Enter was sent; Codex failed SQLite14 on read-only local-state mount. Zero model/game turns; original lifecycle failed, guardianECHILD with1emergency, retained Uncertain and no original stopACK/termios claim. [Blocked handoff](codex-live-q1-q2-handoff.md). No runtime/tests or state/auth/config workaround; next gameplay data must use current NewGameFlow, not experimental saves. Earlier diagnostic prohibition is historical; systemd WIP below is deferred. Source #1553.
 
 ## Deferred primary systemd-user source/design WIP
 

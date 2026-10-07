@@ -110,6 +110,8 @@ owner-run checklist и полная игровая acceptance. Это завис
 
 ## Codex Q1: что доступно, что не доказано
 
+Latest authorized continuation: one y/Enter consumed, actual Codex0.159alpha3 loading TUI then SQLite14 unable-open on read-only local-state mount. Q1 readiness/Q2 **BLOCKED**, model/game0; original lifecycle failed, guardianECHILD with1emergency and retained Uncertain/noStoppedACK. [New handoff](codex-live-q1-q2-handoff.md). No runtime/tests/config/auth workaround; ordinary NewGame preferred when unblocked. Systemd design preserved/deferred63e99009. The diagnostic paragraphs below remain historical13cdd evidence.
+
 Новый bounded Q1 после desktop42812722: actual installed `codex-cli0.159.0-alpha.3`, official login `Logged in using ChatGPT`; одна новая обычная M1 startup/stop попытка достигла того же unanswered `TERM=dumb` / `Continue anyway? [y/N]:`. Ввод/ответы/model/queryresponse0; originalRunning→scoped stop/Stopped/ACK/retirement, PTYtermios/EOF/close и guardianECHILD0emergency/failure/deadline подтверждены. [Handoff](codex-q1-handoff.md) / [qualification](recovery/codex-q1-qualification.json). Runtime/VT/profile/tests не менялись. Q1ready/VT **BLOCKED**, не PASS; нужен explicit gate decision и отдельное доказательство presentation, либо другая действительно поддержанная foreground среда. Не повторять неизменённый gate и не подменять TERM.
 
 Ниже сохраняется прежний исторический probe и его границы.
