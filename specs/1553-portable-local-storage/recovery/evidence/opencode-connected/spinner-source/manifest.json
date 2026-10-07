@@ -1,0 +1,14 @@
+{
+  "Source": {
+    "Repository": "anomalyco/opencode",
+    "Commit": "53d1eabb61e21162157817bf677da0a4ad3332e3",
+    "Path": "packages/tui/src/ui/spinner.ts",
+    "LocalFile": "opencode__packages__tui__src__ui__spinner.ts",
+    "GitBlob": "c185ea7b833f2087b4c925aa40feb0b72239a19e",
+    "Bytes": 12412,
+    "Sha256": "fc38b4ea7cfc4c38fe338a2aac9e4a8bae49f4c41335fca1b5298953f4d66992",
+    "URL": "https://github.com/anomalyco/opencode/blob/53d1eabb61e21162157817bf677da0a4ad3332e3/packages/tui/src/ui/spinner.ts"
+  },
+  "FooterSourceSHA256": "c6d630db63a2f4b112c25e45ca7a40b5ac21509e139d386ad39dc5ec57893b1e",
+  "Qualification": "Source-only; width=8, blocks=U+25A0/U+2B1D; no live busy observation"
+}
