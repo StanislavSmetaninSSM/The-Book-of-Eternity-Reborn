@@ -420,10 +420,12 @@ public partial class GameEngine
             _mainMenuSessionWarning = DescribeConsoleLoadOutcome(blocked);
             return false;
         }
-        if (!_fs.FileExists("game_state/meta/soul_state.json"))
-            return false;
-
-        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, HasCurrentSessionCoreAsync);
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+        {
+            if (!_fs.FileExists("game_state/meta/soul_state.json"))
+                return false;
+            return await HasCurrentSessionCoreAsync();
+        });
     }
 
     private async Task<bool> HasCurrentSessionCoreAsync()

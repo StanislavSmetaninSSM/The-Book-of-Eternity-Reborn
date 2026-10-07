@@ -1,3 +1,9 @@
+# Confirmed component cause: availability read before original admission
+
+At source `b6742f4517d47b38b8b834f6b3652ba674e3ef59`, one real deferred trusted-local publication plus actual HasCurrentSession gave causal RED1/1. Exact consumer exception: MainAdmission.AcquireAsync(MainRunFence65) → CompleteCanonicalWriteLeaseAcquisitionAsync3633 → RecoverPendingFilePublicationsBeforeCanonicalRead4153 → FileExists1507 → HasCurrentSessionAsync(MainMenu423). Reader acquired no original pin; real publisher ClosedObserved, pending journal cleared, same original scoped shutdown/ACK and guardianECHILD0emergency/driver1 confirmed.
+
+[RED evidence](recovery/evidence/opencode-live/pending-availability-red/manifest.json). Host context is TestSupport component with actual BridgeHost/pipe/owner; this proves the pending-read scope defect, not og8's exact deployed stack or bootstrap. Minimal source correction moves only the recovery-capable existence read inside the existing participating scope. GREEN/review/deployed acceptance pending. GM prompts/examples unchanged: this is client-owned admission ordering, no game/model/economy/schema contract change. Source#1553/T043-CONTINUE-PENDING-PUBLICATION.
+
 # Current Continue refusal after completed daemon bootstrap
 
 Actual source37b274e8 `/workspace/og8`, exact677bt1runtimefiles. OriginalRun
