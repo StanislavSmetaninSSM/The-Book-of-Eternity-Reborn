@@ -1,0 +1,393 @@
+{
+  "runs": [
+    {
+      "run": "expanded-green",
+      "source": "ae92abc03e5085e6b774ecb73025bf3a52dddc3a",
+      "results": "20261007-223905-396-901680-c770ebababdd4c8da422ddf4f0cb3e55-categories",
+      "tests": {
+        "Total": 33,
+        "Executed": 33,
+        "Passed": 33,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 33,
+        "CompletedCases": 33,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "cleanup": true,
+      "timedOut": false,
+      "exit": 0,
+      "guardians": []
+    },
+    {
+      "run": "disposal-red",
+      "source": "995de14affb8e283abbe09274ab078cef1e6f3a1",
+      "results": "20261007-224324-184-903780-1a7185a4e53c47f4baa93422964974a0-categories",
+      "tests": {
+        "Total": 23,
+        "Executed": 23,
+        "Passed": 22,
+        "Failed": 1
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 23,
+        "CompletedCases": 23,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "cleanup": true,
+      "timedOut": false,
+      "exit": 1,
+      "guardians": []
+    },
+    {
+      "run": "affected-fixture-failure",
+      "source": "3ee965344a77c81f92b1ab7817a6e7a8aa398d23",
+      "results": "20261007-224725-633-905861-de8c303fc46f4910bc5fc282a7cc6695-categories",
+      "tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 3,
+        "Failed": 1
+      },
+      "selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 28,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [
+          "gm-main-systemd-controlled-terminal-unit-002"
+        ],
+        "Complete": false
+      },
+      "cleanup": true,
+      "timedOut": false,
+      "exit": 1,
+      "guardians": []
+    },
+    {
+      "run": "capture-red",
+      "source": "2dd101dd12e432e50ea598450e873fa634068536",
+      "results": "20261007-224941-679-906437-f489bf80074546eea2ca965b88f17fbc-categories",
+      "tests": {
+        "Total": 24,
+        "Executed": 24,
+        "Passed": 23,
+        "Failed": 1
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 24,
+        "CompletedCases": 24,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "cleanup": true,
+      "timedOut": false,
+      "exit": 1,
+      "guardians": []
+    },
+    {
+      "run": "final-green",
+      "source": "b764117fbb15cc999100d42cee37400e0c65f245",
+      "results": "20261007-225218-291-908445-25469031f0d44a638b3ac276eb9e7e0b-categories",
+      "tests": {
+        "Total": 28,
+        "Executed": 28,
+        "Passed": 28,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 28,
+        "CompletedCases": 28,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "cleanup": true,
+      "timedOut": false,
+      "exit": 0,
+      "guardians": []
+    }
+  ],
+  "artifacts": [
+    {
+      "run": "expanded-green",
+      "source": "ae92abc03e5085e6b774ecb73025bf3a52dddc3a",
+      "originalPath": "TestResults/test-categories/20261007-223905-396-901680-c770ebababdd4c8da422ddf4f0cb3e55-categories/Build-unit.log",
+      "file": "expanded-green-Build-unit.log.gz",
+      "bytes": 27708,
+      "sha256": "1f9effc8e45780d703500d0ba2b2e60f612d84f88b396e4c2db3273c01e400e2",
+      "storedBytes": 2117,
+      "storedSha256": "3f27cd56c0a244842d8607040233b3dcfef60fb1009d74c128c5a5619a37bf95"
+    },
+    {
+      "run": "expanded-green",
+      "source": "ae92abc03e5085e6b774ecb73025bf3a52dddc3a",
+      "originalPath": "TestResults/test-categories/20261007-223905-396-901680-c770ebababdd4c8da422ddf4f0cb3e55-categories/gm-main-systemd-contract-unit-001.trx",
+      "file": "expanded-green-gm-main-systemd-contract-unit-001.trx.gz",
+      "bytes": 21336,
+      "sha256": "b512df906657b5f619781a65de6ef76cf7c85be41911305f52ecbd14ec56ac84",
+      "storedBytes": 2993,
+      "storedSha256": "1e41be3f75816d00c9939b3ff8a7631a5a5e8fcf6d1eec638a36585637cd0821"
+    },
+    {
+      "run": "expanded-green",
+      "source": "ae92abc03e5085e6b774ecb73025bf3a52dddc3a",
+      "originalPath": "TestResults/test-categories/20261007-223905-396-901680-c770ebababdd4c8da422ddf4f0cb3e55-categories/dotnet-test.log",
+      "file": "expanded-green-dotnet-test.log.gz",
+      "bytes": 1644072,
+      "sha256": "2467b7d8021cfe4db566273e46907aed2ca70cf253e9fc1268cc9f1ee3fcf41c",
+      "storedBytes": 181364,
+      "storedSha256": "84106a8fb32301a6a7a9092c2defcd2ef78212cf9e966d7b5b8636a1d8d330d5"
+    },
+    {
+      "run": "expanded-green",
+      "source": "ae92abc03e5085e6b774ecb73025bf3a52dddc3a",
+      "originalPath": "TestResults/test-categories/20261007-223905-396-901680-c770ebababdd4c8da422ddf4f0cb3e55-categories/summary.json",
+      "file": "expanded-green-summary.json.gz",
+      "bytes": 1746,
+      "sha256": "706889798804447e85321db671c7dd1f8901f5251cdbf5414cdc8cfed6cfb985",
+      "storedBytes": 653,
+      "storedSha256": "0a1a90555e52d6c00ced0778bd3ff93980d270d36f2688abdbe3879a50ed812d"
+    },
+    {
+      "run": "expanded-green",
+      "source": "ae92abc03e5085e6b774ecb73025bf3a52dddc3a",
+      "originalPath": "TestResults/test-categories/20261007-223905-396-901680-c770ebababdd4c8da422ddf4f0cb3e55-categories/gm-main-systemd-controlled-terminal-unit-002.trx",
+      "file": "expanded-green-gm-main-systemd-controlled-terminal-unit-002.trx.gz",
+      "bytes": 30530,
+      "sha256": "85d846ba718b751d09fdd8c0afac11b52fe69fed3af76b744fe27027cd2fbda0",
+      "storedBytes": 3471,
+      "storedSha256": "69615a0ec3d82404b38fa5f7e31ec68755d6a8e05acabd44c2cc3428d03c1b88"
+    },
+    {
+      "run": "expanded-green",
+      "source": "ae92abc03e5085e6b774ecb73025bf3a52dddc3a",
+      "originalPath": "TestResults/test-categories/20261007-223905-396-901680-c770ebababdd4c8da422ddf4f0cb3e55-categories/plan.json",
+      "file": "expanded-green-plan.json.gz",
+      "bytes": 5354,
+      "sha256": "872f0607b9d7252752cd536138290f941209fa1cf4074e44f512a45ff980470c",
+      "storedBytes": 1042,
+      "storedSha256": "9aed0f5c48607fc4b8d5ff3b7d9eeaf0703457bcfd0696a9c2dfeafcaf9f002d"
+    },
+    {
+      "run": "disposal-red",
+      "source": "995de14affb8e283abbe09274ab078cef1e6f3a1",
+      "originalPath": "TestResults/test-categories/20261007-224324-184-903780-1a7185a4e53c47f4baa93422964974a0-categories/Build-unit.log",
+      "file": "disposal-red-Build-unit.log.gz",
+      "bytes": 27708,
+      "sha256": "5a88034590c99cae326441ce3bfd892e0b631bb2bb52dfa1fc091aa6c5958a00",
+      "storedBytes": 2118,
+      "storedSha256": "2c5baebba490496981a510dfd20722f4e25cb25e0c4e7ffe389c9d9ca801c377"
+    },
+    {
+      "run": "disposal-red",
+      "source": "995de14affb8e283abbe09274ab078cef1e6f3a1",
+      "originalPath": "TestResults/test-categories/20261007-224324-184-903780-1a7185a4e53c47f4baa93422964974a0-categories/dotnet-test.log",
+      "file": "disposal-red-dotnet-test.log.gz",
+      "bytes": 1644862,
+      "sha256": "fc1b95de04f5435ba08d0d8565ff8d0c641e99273a983bbf7018c3e4f646173e",
+      "storedBytes": 181655,
+      "storedSha256": "24fc1e15de854ffb135704a21ea864185bfaad35a878915de8239f1261588ed9"
+    },
+    {
+      "run": "disposal-red",
+      "source": "995de14affb8e283abbe09274ab078cef1e6f3a1",
+      "originalPath": "TestResults/test-categories/20261007-224324-184-903780-1a7185a4e53c47f4baa93422964974a0-categories/summary.json",
+      "file": "disposal-red-summary.json.gz",
+      "bytes": 1479,
+      "sha256": "f59447e5b386546f24d037a668045551df7300b0c17a744263b8a9796b50c0b4",
+      "storedBytes": 622,
+      "storedSha256": "f9f0ea5bacbf4fc52cb9e6d90da9325e4adaa6b8bef6c7f563c07c2817d66bd8"
+    },
+    {
+      "run": "disposal-red",
+      "source": "995de14affb8e283abbe09274ab078cef1e6f3a1",
+      "originalPath": "TestResults/test-categories/20261007-224324-184-903780-1a7185a4e53c47f4baa93422964974a0-categories/gm-main-systemd-controlled-terminal-unit-001.trx",
+      "file": "disposal-red-gm-main-systemd-controlled-terminal-unit-001.trx.gz",
+      "bytes": 38456,
+      "sha256": "b44dc0bbc750553d4d08b61f9c5202da798ad210095c679008f62754a1e68bb4",
+      "storedBytes": 4346,
+      "storedSha256": "9b9bcfb56b5e9146d25a5c139100bd9c7798e977aab869518daa93cb056d3fb6"
+    },
+    {
+      "run": "disposal-red",
+      "source": "995de14affb8e283abbe09274ab078cef1e6f3a1",
+      "originalPath": "TestResults/test-categories/20261007-224324-184-903780-1a7185a4e53c47f4baa93422964974a0-categories/plan.json",
+      "file": "disposal-red-plan.json.gz",
+      "bytes": 1747,
+      "sha256": "04873bba2ae716f45668109e15819b01735bdecc2497f271fe1662f8e14fff00",
+      "storedBytes": 627,
+      "storedSha256": "73c81a0d810ac6b8835a6d84e1066b18b520e5cc9d987800af32db9f3466643d"
+    },
+    {
+      "run": "affected-fixture-failure",
+      "source": "3ee965344a77c81f92b1ab7817a6e7a8aa398d23",
+      "originalPath": "TestResults/test-categories/20261007-224725-633-905861-de8c303fc46f4910bc5fc282a7cc6695-categories/Build-unit.log",
+      "file": "affected-fixture-failure-Build-unit.log.gz",
+      "bytes": 27708,
+      "sha256": "a127db7b994c8edd0af6e1dd1d420aa042a6af7351759d7442c69aac4cb59fb4",
+      "storedBytes": 2112,
+      "storedSha256": "240b17ba0566d25394248bc43a8d0fb2754078f21d224c8b5ef246bc162f4a6d"
+    },
+    {
+      "run": "affected-fixture-failure",
+      "source": "3ee965344a77c81f92b1ab7817a6e7a8aa398d23",
+      "originalPath": "TestResults/test-categories/20261007-224725-633-905861-de8c303fc46f4910bc5fc282a7cc6695-categories/dotnet-test.log",
+      "file": "affected-fixture-failure-dotnet-test.log.gz",
+      "bytes": 1644974,
+      "sha256": "63de92ce0549e7cf7cf8f934fc07533255eb0fddf59516084f8504354135fc77",
+      "storedBytes": 181714,
+      "storedSha256": "e92c4d2c37ad6166caca5af38747ef522bb51c9acade7189c784896786a575da"
+    },
+    {
+      "run": "affected-fixture-failure",
+      "source": "3ee965344a77c81f92b1ab7817a6e7a8aa398d23",
+      "originalPath": "TestResults/test-categories/20261007-224725-633-905861-de8c303fc46f4910bc5fc282a7cc6695-categories/summary.json",
+      "file": "affected-fixture-failure-summary.json.gz",
+      "bytes": 1556,
+      "sha256": "8fff606928ee649c52c899fb11690bd97ce69dc929e68d7530d290eae91b9e2b",
+      "storedBytes": 651,
+      "storedSha256": "a421249efe00f5f73e6dd34ac47b4f5193a92ec8281cdbfd5ce30f53c4b55d72"
+    },
+    {
+      "run": "affected-fixture-failure",
+      "source": "3ee965344a77c81f92b1ab7817a6e7a8aa398d23",
+      "originalPath": "TestResults/test-categories/20261007-224725-633-905861-de8c303fc46f4910bc5fc282a7cc6695-categories/gm-main-systemd-affected-unit-001.trx",
+      "file": "affected-fixture-failure-gm-main-systemd-affected-unit-001.trx.gz",
+      "bytes": 9192,
+      "sha256": "352dd1ab1bdac540727b3c705fcf957388e47f3d310c4364c8fff56806652abb",
+      "storedBytes": 2140,
+      "storedSha256": "31de190884f768a255d0812c68a8bb3c98bd6ce03d6ee6daa8d4ff8f34d1f0e7"
+    },
+    {
+      "run": "affected-fixture-failure",
+      "source": "3ee965344a77c81f92b1ab7817a6e7a8aa398d23",
+      "originalPath": "TestResults/test-categories/20261007-224725-633-905861-de8c303fc46f4910bc5fc282a7cc6695-categories/plan.json",
+      "file": "affected-fixture-failure-plan.json.gz",
+      "bytes": 3534,
+      "sha256": "e651790c26b315bfc1a06aa356d6fca1ae0c0c5f20d8e30cffde286aebf2af29",
+      "storedBytes": 863,
+      "storedSha256": "0e15bdf5729873048ccebaea3d633dd576a059fc02dfec159a6e301fb2c4c442"
+    },
+    {
+      "run": "capture-red",
+      "source": "2dd101dd12e432e50ea598450e873fa634068536",
+      "originalPath": "TestResults/test-categories/20261007-224941-679-906437-f489bf80074546eea2ca965b88f17fbc-categories/Build-unit.log",
+      "file": "capture-red-Build-unit.log.gz",
+      "bytes": 27708,
+      "sha256": "c8c6d94f4525297c7332d954cd14a2b0dd7a9976248e531748a21bcc39449b33",
+      "storedBytes": 2122,
+      "storedSha256": "ced534d41f849fd42f9a7fda09b441cf2577249c0cdb85bc5c007835ee20fe2a"
+    },
+    {
+      "run": "capture-red",
+      "source": "2dd101dd12e432e50ea598450e873fa634068536",
+      "originalPath": "TestResults/test-categories/20261007-224941-679-906437-f489bf80074546eea2ca965b88f17fbc-categories/dotnet-test.log",
+      "file": "capture-red-dotnet-test.log.gz",
+      "bytes": 1645049,
+      "sha256": "fd85880785b3c346efa1c144868dfe27e9ca401795d54f4ad9e1fef153ecf59c",
+      "storedBytes": 181667,
+      "storedSha256": "8ff85372e00053673307b1f23b0e90fb6cba973da4974d7d18ab9598498435b5"
+    },
+    {
+      "run": "capture-red",
+      "source": "2dd101dd12e432e50ea598450e873fa634068536",
+      "originalPath": "TestResults/test-categories/20261007-224941-679-906437-f489bf80074546eea2ca965b88f17fbc-categories/summary.json",
+      "file": "capture-red-summary.json.gz",
+      "bytes": 1480,
+      "sha256": "c54c27d67640b431657ac836841e509faa930c7944eebfa1f3ae6d4f5099f2ed",
+      "storedBytes": 621,
+      "storedSha256": "e954f8a51558b4fdcd77dca2a6b286581951652d92fd448827485919c4877fc2"
+    },
+    {
+      "run": "capture-red",
+      "source": "2dd101dd12e432e50ea598450e873fa634068536",
+      "originalPath": "TestResults/test-categories/20261007-224941-679-906437-f489bf80074546eea2ca965b88f17fbc-categories/gm-main-systemd-controlled-terminal-unit-001.trx",
+      "file": "capture-red-gm-main-systemd-controlled-terminal-unit-001.trx.gz",
+      "bytes": 40028,
+      "sha256": "24edd040afb54a1a5219d9d3dfbe147d017fe41ab0961772e29ceacd6630ebc5",
+      "storedBytes": 4599,
+      "storedSha256": "7a6104a92b944a3a8d5727b23bd06f03eb08c8f0e3ba53912596a574a2d5e2ec"
+    },
+    {
+      "run": "capture-red",
+      "source": "2dd101dd12e432e50ea598450e873fa634068536",
+      "originalPath": "TestResults/test-categories/20261007-224941-679-906437-f489bf80074546eea2ca965b88f17fbc-categories/plan.json",
+      "file": "capture-red-plan.json.gz",
+      "bytes": 1748,
+      "sha256": "75bcdad6678ff3f4fa82d072df9f6f7844a5bea71b4eadf199802c88083fd0f6",
+      "storedBytes": 626,
+      "storedSha256": "843f509e91e01a69bfbd984e84c2ad7ffd598ca9eeb525d981ca719f0e375616"
+    },
+    {
+      "run": "final-green",
+      "source": "b764117fbb15cc999100d42cee37400e0c65f245",
+      "originalPath": "TestResults/test-categories/20261007-225218-291-908445-25469031f0d44a638b3ac276eb9e7e0b-categories/Build-unit.log",
+      "file": "final-green-Build-unit.log.gz",
+      "bytes": 27708,
+      "sha256": "39800b4234974b3d7a3e5ff8998c204bc26fdb51a3fa6aa3c68d303bb2d6cf76",
+      "storedBytes": 2118,
+      "storedSha256": "76a13276e2c83bf7b5126d231ac52e9edbafa0dc56274b5a993fdeb77b369fd0"
+    },
+    {
+      "run": "final-green",
+      "source": "b764117fbb15cc999100d42cee37400e0c65f245",
+      "originalPath": "TestResults/test-categories/20261007-225218-291-908445-25469031f0d44a638b3ac276eb9e7e0b-categories/dotnet-test.log",
+      "file": "final-green-dotnet-test.log.gz",
+      "bytes": 1644889,
+      "sha256": "cc52cfdc5cb9c0140c73587086d93334511a46c229c5e8cb0af7c10cca3fa2a7",
+      "storedBytes": 181407,
+      "storedSha256": "6bef8755b9e5981a69d85df9ee06f9b74b6d30152c652930cc75c88e0ea9225b"
+    },
+    {
+      "run": "final-green",
+      "source": "b764117fbb15cc999100d42cee37400e0c65f245",
+      "originalPath": "TestResults/test-categories/20261007-225218-291-908445-25469031f0d44a638b3ac276eb9e7e0b-categories/summary.json",
+      "file": "final-green-summary.json.gz",
+      "bytes": 1747,
+      "sha256": "215071c6262a779da256f6e35f544d3903bedc5ee34a686b131caf8a7b075e45",
+      "storedBytes": 656,
+      "storedSha256": "6f9d676bdfa34e52f8c663c5873ee1e88b4ac87f6b07eccd6ce81ee6e442d165"
+    },
+    {
+      "run": "final-green",
+      "source": "b764117fbb15cc999100d42cee37400e0c65f245",
+      "originalPath": "TestResults/test-categories/20261007-225218-291-908445-25469031f0d44a638b3ac276eb9e7e0b-categories/gm-main-systemd-controlled-terminal-unit-002.trx",
+      "file": "final-green-gm-main-systemd-controlled-terminal-unit-002.trx.gz",
+      "bytes": 38203,
+      "sha256": "62629cdebd6d5ec88bac6b08807cdbfaa69342aa4d04e45b500c3e7e80c18a50",
+      "storedBytes": 4076,
+      "storedSha256": "67206886acab2967d9d3341b103538ca085a201da2d4eed34340da11818a2034"
+    },
+    {
+      "run": "final-green",
+      "source": "b764117fbb15cc999100d42cee37400e0c65f245",
+      "originalPath": "TestResults/test-categories/20261007-225218-291-908445-25469031f0d44a638b3ac276eb9e7e0b-categories/gm-main-systemd-affected-unit-001.trx",
+      "file": "final-green-gm-main-systemd-affected-unit-001.trx.gz",
+      "bytes": 7347,
+      "sha256": "78acf39cf61071557c784d1833b189377a50684f1889eb2df575f8e56521cc65",
+      "storedBytes": 1728,
+      "storedSha256": "b28627615ab7b27f0be7a8f585d423ba9d4785d0aac503dd6edeb3f929928e08"
+    },
+    {
+      "run": "final-green",
+      "source": "b764117fbb15cc999100d42cee37400e0c65f245",
+      "originalPath": "TestResults/test-categories/20261007-225218-291-908445-25469031f0d44a638b3ac276eb9e7e0b-categories/plan.json",
+      "file": "final-green-plan.json.gz",
+      "bytes": 3534,
+      "sha256": "ebebf766ec60e35f759c7421fd348c6371d5fc4387a55da7c779b9c1e5c0eaeb",
+      "storedBytes": 863,
+      "storedSha256": "8785c972112f79660a0e7d2a561445099d77428b9133c0f08f723c3a194fefe2"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "scope": "T041-SYSTEMD-MAIN-S1 source/controlled only; no actual manager/public backend qualification",
+  "runtimeSource": "b764117fbb15cc999100d42cee37400e0c65f245",
+  "passedDistinct": 42,
+  "passing": {
+    "contract": {
+      "source": "ae92abc03e5085e6b774ecb73025bf3a52dddc3a",
+      "cases": 14,
+      "unchangedRelevantFiles": [
+        "BookOfEternityClient/Services/GmRuntime/SdBusScopeCodec.cs",
+        "BookOfEternityClient/Services/GmRuntime/SystemdCgroupObservation.cs",
+        "BookOfEternityClient/Services/GmRuntime/SystemdScopeContracts.cs",
+        "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
+        "BookOfEternityClient.Tests/GmMainSystemdContractTests.cs"
+      ]
+    },
+    "controlled": 24,
+    "affected": 4
+  },
+  "sourceSha256": {
+    "BookOfEternityClient.TestSupport/MainRunFenceScenarioDriver.cs": "ea62e4d401823159d6ab8cea8fe6ec123d8c96ed375a6b1adc571fc52d25236f",
+    "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs": "166e7ea6930f1c379fc3478df270e9e346009f19da755b2502344f9b2abfd6c2",
+    "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs": "4fe89e0cbf12027eea7bf1a5cfb7ece14f5e3be948940983e1f20ceafc52e56e",
+    "BookOfEternityClient.TestSupport/SystemdControlledScenarioDriver.cs": "3023feb1b2c361e50a683fa52b36218a7782a3dac377ba405ca3e5a45eec6d63",
+    "BookOfEternityClient.Tests/GmMainSystemdContractTests.cs": "69f7030360b85a370594c7764deea06f71a8037cb0a7b23bbb7993914de41c42",
+    "BookOfEternityClient.Tests/GmMainSystemdControlledTests.cs": "f1b51a189a32bace8711983b56cddbbeef2ee4a7d425f4d926cd94c411e4af92",
+    "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs": "a71ecce4a60b8285b91e53f75fd0292b902b860ed664c02fc93695656ce3fda6",
+    "BookOfEternityClient.Tests/GmOwnedTerminalSessionTests.cs": "f14ff108d240ae21abc8b004d4489cd237257253eb3c06248fb2edb86649f96c",
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs": "07eb2a514a792e831c23d23444aec40b3239eb53b752b6a52d44e92b26fa719b",
+    "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs": "524f05673fd4b4f890896e43c06ed46fb11170e5112abcb214e1acecaeae07df",
+    "BookOfEternityClient/Services/GmRuntime/SdBusScopeCodec.cs": "8c18e7739c4f13397914e6060b73bd6c87d98a30c1bc094d99c9e1dd7d09fff1",
+    "BookOfEternityClient/Services/GmRuntime/SystemdCgroupObservation.cs": "0b4243729b0eda83c587ecc68f3508933b6c8eb7b9824e5f25c5005620b77b7b",
+    "BookOfEternityClient/Services/GmRuntime/SystemdOwnedTerminalSession.cs": "c1b902543b297cdefdcd3e9d32047eb124531e7055dbd62e121a0a864679f91e",
+    "BookOfEternityClient/Services/GmRuntime/SystemdScopeContracts.cs": "8e94176cce17c735bd55d8224bd894a85fd8e3ded6151103890b5955f5cb81f1",
+    "BookOfEternityClient/Services/GmRuntime/SystemdSdBusTransport.cs": "e347e655701605376353f8ff2caff2898d6d40f490dbada556b694758973bd07",
+    "BookOfEternityClient/Services/GmRuntime/SystemdUserBus.cs": "89ae5b8ac08556ec8ee5716a91e4410b8161783ac5eee964244b5f4931c50d59",
+    "BookOfEternityClient/Services/GmRuntime/SystemdUserScopeOwner.cs": "1a2d1750e3fb08902c50652867a44d3a1caf977979ca72973000131a2582d31c",
+    "BookOfEternityClient/Services/GmWorkers/NativeHeldTerminalPidfd.cs": "f28605ce42ef70daf610ff24c27a1a9c3d12b6d08a8e38429c4c30ea4ff61e91",
+    "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs": "614a0a4549976569ef779465967c2da0ce0c1502d4d44e960f3ab94842f75d7f",
+    "BookOfEternityGMBridge/Program.cs": "2c1a43334d6391f84726fb54eaebf027f17b19ffd37599862f0c82798099f1d8"
+  },
+  "evidence": "evidence/systemd-main-s1/final/manifest.json",
+  "environment": {
+    "os": "Debian GNU/Linux 13",
+    "architecture": "X64",
+    "sdk": "10.0.401",
+    "runtime": "8.0.31",
+    "PowerShell": "7.5.4",
+    "compiler": "/usr/bin/cc Debian14.2.0-19"
+  },
+  "sourceReview": {
+    "agent": "/root/systemd_s1_source_review",
+    "model": "gpt-6.1-sol",
+    "effort": "xhigh",
+    "source": "b764117fbb15cc999100d42cee37400e0c65f245",
+    "verdict": "PASS"
+  },
+  "evidenceReview": "pending",
+  "metadataReview": "pending",
+  "actualSystemdCalls": 0,
+  "newGmRequests": 0,
+  "publicActivation": false,
+  "remaining": [
+    "S2 concrete pinned read-only cgroup source and actual manager neutral qualification",
+    "S2 native API/FD transport and pruning witness + stop-timeout margin qualification",
+    "S3 qualified ordinary backend selection/consumers; explicitSystemdUser no downgrade",
+    "Separate production worker/nativeWindows/environment obligations",
+    "T043-RELAY-REUSABLE-DESIGN preserved after S1; no provider or universal API claim"
+  ]
+}

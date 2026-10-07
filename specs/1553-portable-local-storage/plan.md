@@ -1,3 +1,17 @@
+# S1 source/controlled closure candidate
+
+Runtime b764117f:24controlled +4exactaffected GREEN28/28, own cleanupcomplete;
+contract14 alreadyGREENae92abc0 with exact relevant-source byteequality retained.
+42distinctPASS total, no unrelated old cohorts. Independent actual Sol6.1/xhigh
+source/selection PASS at b764117f; no remaining S1 finding. Historicalcapture
+RED required1guardian emergency, remainsfailure; final26guardians(24systemd
+controlled+2nativeaffected) requireECHILD0emergency, no logicalpromotion.
+[Qualification](recovery/systemd-main-s1-qualification.json), [full late evidence](recovery/evidence/systemd-main-s1/final/manifest.json).
+Next discovery-only finalPlan/catalog, independent evidence+metadata review,
+normal carrierpush/exactreadback/freshGitHubrestore. No runtime edits planned.
+S2/S3/publicbackend remain open; source native adapterSupportsfalse. Relay
+followup preserved; conditional futuremerge belongs to parent readiness.
+
 # S1 post-held capture causal correction WIP
 
 2dd101dd controlled24:23PASS/1causalFAIL managerCapture getterafterheld
