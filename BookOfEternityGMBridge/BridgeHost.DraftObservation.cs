@@ -37,6 +37,10 @@ internal sealed partial class BridgeHost
             text.Split('\n')[0].Length==0 || text.Any(c=>c!='\n' && !SupportedMiniGlyph(c)))return false;
         var entries=Directory.EnumerateFiles(op.Snapshot.Profile.DraftDirectory).Take(1025).ToArray();
         if(entries.Length>1024)return false;
+        var lines=text.Split('\n');
+        var first=lines[0].Split(' ')[0];var last=lines[^1][(lines[^1].LastIndexOf(' ')+1)..];
+        if(first.Length==0 || last.Length==0)return false;
+        op.FirstEdge=first[..Math.Min(24,first.Length)];op.LastEdge=last[Math.Max(0,last.Length-24)..];
         op.ExistingDrafts=entries;return true;
     }
     private static bool SupportedMiniGlyph(char c)=>c is >= ' ' and <= '~' or >= '\u00a0' and <= '\u024f' or >= '\u0370' and <= '\u052f';
@@ -65,7 +69,6 @@ internal sealed partial class BridgeHost
             var proof=frame.Deserialize<DraftFileProof>(MainOperationReader.Json)??throw new IOException("No actual file proof.");
             if(proof.Path!=request.Path)throw new IOException("Actual proof path mismatch.");
             if(proof!=DraftObservation.Read(op.Snapshot.Profile.DraftDirectory,proof.Path))throw new IOException("Actual proof changed before ACK.");
-            if(proof.ModifiedSeconds*1000+proof.ModifiedNanoseconds/1000000<op.PasteStartedUnixMilliseconds)throw new IOException("Actual file mtime precedes userspace paste time.");
             if(!Convert.FromBase64String(proof.Bytes).AsSpan().SequenceEqual(Encoding.UTF8.GetBytes(op.Snapshot.Text)))throw new IOException("Actual immutable bytes mismatch.");
             lock(_sync)if(!PromptStillOwned(op) || op.Result!=null || !op.DraftArmed)throw new IOException("Original operation revoked before ACK.");
             await MainOperationReader.WriteAsync(stream,new {ok=true},linked.Token);
@@ -87,7 +90,7 @@ internal sealed partial class BridgeHost
         lock(_sync){if(!PromptStillOwned(op) || !IsMiniEdge(op,false))return false;version=PromptObservationVersion;op.DraftArmed=true;}
         await WriteToPtyAsync(op.Input,"\u0018e",false,token);
         var proof=await op.DraftProof.Task.WaitAsync(TimeSpan.FromMilliseconds(op.Snapshot.Profile.ObservationTimeoutMilliseconds),token);
-        if(!await ObservePromptAsync(op,version,_=>!File.Exists(proof.Path) && IsMiniEdge(op,false),token))return false;
+        if(!await ObservePromptAsync(op,version,_=>!File.Exists(proof.Path) && MiniDraftRegion(op,out _,out _,out _),token))return false;
         lock(_sync){if(!PromptStillOwned(op))return false;version=PromptObservationVersion;}
         await WriteToPtyAsync(op.Input,"\u001b[H",false,token);
         if(!await ObservePromptAsync(op,version,_=>IsMiniEdge(op,true),token))return false;

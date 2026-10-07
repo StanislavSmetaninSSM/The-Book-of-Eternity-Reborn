@@ -464,3 +464,15 @@ Production config injects existing packaged observer apphost/owned TMPDIR/absolu
 original endpoint; command/model/args/cwd unchanged. Single Enter stays original
 T042 linearization; all post-paste/post-submit ambiguity retains pause. Source
 and eight GREEN checks pending; no new CLI/provider/game run.
+
+Connected41e34a28 executes8:6PASS/2FAIL, complete cleanup. Fresh e48f21a5
+positive-edge baseline4/4FAIL includes restored cursor and cross-row24char suffix.
+Diagnostic f7505d0d separately proves newly created actual matching file mtime
+precedes userspace paste time: path/identity/fullbytes matched. Remove this invalid
+wallclock chronology assumption; unchanged mtime remains identity metadata,
+before-paste bounded original path inventory plus current typed challenge prevent
+borrowing a previous file. Restored frame only proves complete known region/focus;
+subsequent independent Home/End revisions prove frozen raw first/lastword edges.
+No full Composer reconstruction or text modification. Independent review also
+requires helper success-completion, exact busy footer region and glyph preflight;
+those still need new causal cases before qualification. No CLI/model/game request.

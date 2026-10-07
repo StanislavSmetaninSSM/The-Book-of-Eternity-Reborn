@@ -28,7 +28,7 @@ internal sealed partial class BridgeHost
         public readonly TaskCompletionSource<DraftFileProof> DraftProof=new(TaskCreationOptions.RunContinuationsAsynchronously);
         public bool DraftArmed,DraftClaimed;
         public string[] ExistingDrafts=[];
-        public long PasteStartedUnixMilliseconds;
+        public string FirstEdge="",LastEdge="";
     }
 
     private static PromptDeliveryResult PromptResult(BridgeRequest request, PromptDeliveryDisposition disposition, string reason) =>
@@ -155,7 +155,6 @@ internal sealed partial class BridgeHost
                 _status.LastPromptDispatchState = "Dispatching";
                 _status.LastPromptDispatchStartedAtUtc = DateTimeOffset.UtcNow.ToString("O");
                 operation.Phase = PromptDeliveryPhase.PasteStarted;
-                operation.PasteStartedUnixMilliseconds=DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                 if(operation.Snapshot.Profile.IsMini)operation.Input.MiniPasteAttempted=true;
                 TryWriteInputStatus();
             }
