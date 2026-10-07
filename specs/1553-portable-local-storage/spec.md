@@ -3,10 +3,12 @@
 Owner subsequently authorizes official workspace OpenCode installation as a fallback,
 without new credentials/grants/payments or main GM-model changes. Installed1.18.35,
 registry/binary provenance verified; installed inventory lists ling-3.1-flash-free.
-[Separate live plan](opencode-live-plan.md); two bounded actual OpenCode startup
+[Separate live plan](opencode-live-plan.md); three bounded actual OpenCode startup
 observations retain original stop/StoppedACK and guardianECHILD0emergency. The
-second refused an intermediate empty frame before any manual/editor input;
-readiness remains unsupported and model/game turns0. Original early-exit production defects have bounded
+second refused an intermediate empty frame before any manual/editor input; the
+third proved an actual unchanged full4919B/60line draft through the standard editor
+with no Enter/model request. Automatic profile/readiness remains unsupported and
+model/game turns0. Original early-exit production defects have bounded
 source9340ff08 source/evidence PASS and6/6 narrow Linux GREEN; historical failed
 Codex startup/Uncertain record remains retained. No overall live-game acceptance.
 

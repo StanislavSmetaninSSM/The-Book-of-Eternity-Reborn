@@ -194,3 +194,17 @@ Changed-wait source646681ec was refused before execution because a broad
 RuntimeError catch could swallow the output cap. Correction uses a dedicated
 FrameUnavailable mismatch exception; capture/drain/lifetime/budget failures
 propagate to ObservationFailure and original cleanup. Probe remains unexecuted.
+
+Focused source closure PASS1823aa50 preceded the changed15second diagnostic:
+actual60line/4919B Unicode draft matched CLI-created editor file, unchanged twice;
+observer1, CLI removed file and restored its real mini viewport. ManualRPC input
+4933B (bracketed draft4919+12, editor gesture2); keyboard/model/submit/query/gate
+answers0. Capture7843B/6complete frames,15.401seconds; original scoped stop,
+retirement/StoppedACK, PTY EOF/termios and guardianECHILD/0emergency confirmed.
+[Actual witness receipt](recovery/evidence/opencode-q1/draft-observed/manifest.json).
+Total OpenCode startups3 (original startup1, premature no-input observation1,
+changed witness1). This qualifies the standard witness mechanism only: neutral
+parser/profile remains unsupported/Ready:false, no automatic T042 or real game
+turn. No runtime/tests/catalog changes. Next causal runtime slice must connect
+this witness to original immutable operation and causal post-restoration view;
+actual restored cursor is not assumed from paste cursor or startup row numbers.
