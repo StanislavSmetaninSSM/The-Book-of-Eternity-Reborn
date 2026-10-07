@@ -1,5 +1,17 @@
 # Implementation Plan: Trusted local storage and cross-platform runtime
 
+## Current queue after accepted Daren — source-only checkpoint
+
+Accepted base `d73e2cdf43d63cbda3e9cda033834d0e902ae734`.
+[Current roadmap](roadmap-after-daren.md) maps actual clipboard/audio/launcher,
+primary systemd, production worker and remaining qualification boundaries and
+records ordinary Git provenance of metadata ancestor `5be3aa31` without actor attribution.
+T050-CLIPBOARD-LINUX is the recommended next bounded code block; no implementation
+is started. Q1 requires actual supported terminal/VT qualification without a provider
+prompt; Q2, production workers, systemd/native Windows/live game remain separate.
+Historical pending Load/direct-gacha/Daren labels below are superseded by accepted
+23a5b669/953c48f8/d73e2cdf and the current roadmap. No percentage or new runtime claim.
+
 **Branch**: `codex/1553-load-filesystem` | **Updated**: 2026-10-07
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)

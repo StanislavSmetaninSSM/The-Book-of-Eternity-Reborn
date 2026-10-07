@@ -1,5 +1,15 @@
 # Feature Specification: Trusted local storage and cross-platform runtime
 
+## Current scope after accepted Daren — source-only checkpoint
+
+Owner accepted `d73e2cdf43d63cbda3e9cda033834d0e902ae734`. The current
+[roadmap/inventory](roadmap-after-daren.md) supersedes historical next/pending labels;
+it changes no runtime or product contract. Bounded browser rollback, Load lifecycle,
+direct gacha and standalone Daren are accepted; full game/storage/live/platform
+acceptance remains open. Primary systemd-user is still unimplemented/unqualified;
+explicit NativeLineage does not close it. No tests/CLI/services/probes are run here.
+Recommended next block is T050-CLIPBOARD-LINUX, subject to its next bounded plan/review.
+
 ## Current authorized standalone Daren Linux slice
 
 Bounded standalone Daren lifecycle uses the existing trusted-local player publisher and fixed registered client_profile/qte_showcase_rewards.json, retaining original main/worker/generation/session admission, declared browser/legacy precedence and Windows physical bodies. Runtimeac01f773;41distinctscopedPASS (37new+4affected), actual separate Sol design/source/final evidence PASS at39956419; candidate b97157ef restored independently, exact-tip writer verification follows final carrier publication. No reward tiers/amounts/economy/text/formats/model/UX, second journal or anti-player contract change. [Plan](daren-standalone-linux-plan.md) · [Handoff](daren-standalone-linux-handoff.md) · [Qualification](recovery/daren-standalone-linux-qualification.json). No live game/provider/saves/systemd/native Windows/cold/fullUS4 qualification; earlier pending standalone notes below are historical.

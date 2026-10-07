@@ -5,7 +5,19 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current authorized slice: standalone Daren Linux
+## Current authorized scope: source inventory after accepted Daren
+
+Accepted final Daren `d73e2cdf43d63cbda3e9cda033834d0e902ae734`; prior final-tip
+GitHub-only restore is complete (20,693 tracked file byte comparisons, clean/fsck).
+[Current roadmap](roadmap-after-daren.md) / [source inventory + Git provenance](recovery/roadmap-after-daren-inventory.json)
+maps remaining real consumers and separates implementation debt from unverified
+environments. No CLI/service/probe/build/test runs or next implementation in this
+checkpoint. Recommended next: T050-CLIPBOARD-LINUX; required systemd primary,
+console audio/platform helpers, production workers, Q1/Q2 and platform/live
+qualification remain separate. Metadata actor for `5be3aa31` remains unknown; no
+parallel writer is proved and no repository conflict is observed. No history rewrite.
+
+## Accepted bounded standalone Daren Linux
 
 Current bounded standalone Daren runtimeac01f773 and real sourcef2a7e0e1:41distinctscopedPASS (37new+4affected), actual public console QTE15actions, exact byte store/rollback, normalization/grant, no-op/pre-cancel, original admission and typed recovery/debt. Actual separate Sol design/source/final evidence PASS at39956419; candidate b97157ef restored independently, exact-tip writer verification follows final carrier publication. [Handoff](daren-standalone-linux-handoff.md) · [Qualification](recovery/daren-standalone-linux-qualification.json). Fixed trusted-local profile route, existing B1 journal and worker/storage conditions retained. FullT031/T041/game/liveGM/saves/systemd/native Windows/Q1Q2/cold remain open; older pending standalone notes below are historical.
 
