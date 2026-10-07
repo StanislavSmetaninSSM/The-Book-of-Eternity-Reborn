@@ -29,6 +29,7 @@ internal sealed class BrowserDirectGachaLinuxFixture(ITestOutputHelper output, s
     internal byte[] BeforeDice { get; private set; } = [];
     internal byte[] BeforeHistory { get; private set; } = [];
     internal Exception? StageFailure { get; private set; }
+    internal Exception? ConsumerFailure { get; private set; }
 
     internal async Task InitializeAsync()
     {
@@ -79,6 +80,8 @@ internal sealed class BrowserDirectGachaLinuxFixture(ITestOutputHelper output, s
         {
             if (args.Exception.StackTrace?.Contains("ExplorerLocalTurnRollbackArtifacts.StageFileAsync", StringComparison.Ordinal) == true)
                 StageFailure = args.Exception;
+            if (args.Exception.StackTrace?.Contains("BrowserAfterlife", StringComparison.Ordinal) == true)
+                ConsumerFailure = args.Exception;
         }
         AppDomain.CurrentDomain.FirstChanceException += Observe;
         try { return await Service.TryApplyAsync("/gacha", new Dictionary<string, JsonNode?>

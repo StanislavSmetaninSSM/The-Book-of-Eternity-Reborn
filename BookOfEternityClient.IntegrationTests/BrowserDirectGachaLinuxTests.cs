@@ -16,6 +16,7 @@ public sealed class BrowserDirectGachaLinuxTests(ITestOutputHelper output)
         var result = await fixture.PullAsync();
         output.WriteLine(result.Message);
         if (fixture.StageFailure != null) output.WriteLine("OriginalStageFailure=" + fixture.StageFailure);
+        if (fixture.ConsumerFailure != null) output.WriteLine("OriginalConsumerFailure=" + fixture.ConsumerFailure);
         Assert.True(result.Success, result.Message);
         Assert.Equal(CommandExecutionState.Completed, result.State);
         Assert.Equal(fixture.BeforeSoul, File.ReadAllBytes(fixture.BackupPath()));
