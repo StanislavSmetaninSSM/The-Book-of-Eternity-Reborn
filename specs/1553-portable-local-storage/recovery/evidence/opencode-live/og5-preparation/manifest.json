@@ -1,0 +1,19 @@
+{
+  "Source": "6ce820a9a55f4f2b81b20b3a5847d43eacfdfd0f",
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/og5-preparation/package-manifest.json.gz",
+      "Bytes": 143613,
+      "SHA256": "2ef5a34926839f5ae61db5d7e063a967de306d9b812ef5d51801e1de1f6941c4",
+      "StoredSHA256": "813d33c6b64c1a8f91dae3741cbc0de99062144b251db4e4648c8daf586bf175"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/og5-preparation/package-relocation.json.gz",
+      "Bytes": 404,
+      "SHA256": "d08b6e8906e14fab8d978e36e0904bafcf5b313b99465e591588918c60a89968",
+      "StoredSHA256": "454518aca130e57c6a5a793699fff6f1488d728837e35b1b562b2d9ce2f3d289"
+    }
+  ],
+  "ProviderRequests": 0,
+  "GameTurns": 0
+}

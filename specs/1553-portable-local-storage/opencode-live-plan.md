@@ -999,3 +999,12 @@ Sol evidence review pending. Reviewed minimum now applied to live driver cleanup
 client actualcompletion/normalexit → singleoriginalshutdown/Stopped → daemonCtrlC;
 unknownstop leaves daemontransport alive and cannot be success. Driver-onlyWIP;
 source review before one freshog5 ordinaryNewGame attempt. Runtime same1c64050b.
+
+Freshog5relocated own package678files/99049670bytes, bothactualpublishedDLLs
+byte-identical to freshqualifiedbuild; no source/project/compiler or testSupport
+in playerpackage. Currentprofile/game absent at preparation; originalog4untouched.
+Package provenance/pins archived og5-preparation; same independentlyqualified
+original --live-turn guardian source/budget, no recompile/cohort replay.
+Catalogdiscovery6ce820a9:415categories/11146methods-files,0tests,12.90s,valid,
+cleanupcomplete; NoBuild allinventorysourcefresh from current and unchanged
+priorintegration build. Exactfivecatalogartifacts archived separately.
