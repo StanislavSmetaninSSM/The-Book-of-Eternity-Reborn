@@ -510,6 +510,20 @@
       "Bytes": 102,
       "SHA256": "3d21e9cb5c6d15b9278fbda7e80eb9b212eb743cd509874febf1fb55e7449c9c",
       "StoredSHA256": "236fad5605fc00e755e8a21da844f89e8f6ea34996830e17c1a9ef54a1524cf7"
+    },
+    {
+      "Source": "TestResults/production-main/0a49c71578624822ac5265f64aa12377/root/.boe_runtime/gm-runs/main.json",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/green/0a49c71578624822ac5265f64aa12377-durable-main.json.gz",
+      "Bytes": 410,
+      "SHA256": "5a8e45f6903d1156640cb2a42c43271791389abf4d113c78228687132c17a24f",
+      "StoredSHA256": "712aeffd724a57e04d4976781309f5e4f9631618bc316a3ade22ffddc38d8e96"
+    },
+    {
+      "Source": "TestResults/production-main/bfff634d4565454fbcaa092c2cd577dc/root/.boe_runtime/gm-runs/main.json",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/green/bfff634d4565454fbcaa092c2cd577dc-durable-main.json.gz",
+      "Bytes": 831,
+      "SHA256": "5697d5f95048de35dc1380f50efbdf1c4bec89ed05c9393fe322741edff46571",
+      "StoredSHA256": "e6d6e27a92270a9ad532d9b5050dac1a000c8703ffec667cbdb79b8b2faeaa00"
     }
   ]
 }

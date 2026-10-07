@@ -1,0 +1,109 @@
+{
+  "SourceCommit": "9340ff081c3a60a8c6b0d6ae0d07d95c555a3664",
+  "Task": "T043-EARLY-EXIT",
+  "Verdict": "Six-case bounded Linux GREEN; independent evidence review pending",
+  "SourcePins": [
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "GitBlobAtTestedSource": "40b7a379056f3aa8cbd3df454f0c8848aa740b85",
+      "Bytes": 24566,
+      "SHA256": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "GitBlobAtTestedSource": "8624dac41f0fc82e3d77c67ecb5f260b40db48ec",
+      "Bytes": 17743,
+      "SHA256": "9c874894d4d5582cb50eef401ed3557d23aa84c6ba7259edf88d76d372d2ebbc"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "GitBlobAtTestedSource": "921b8ecbcffd7bf259ce8ac84d003a5a2bf81043",
+      "Bytes": 5169,
+      "SHA256": "68fa7b62e42003ebfe2a47931986c02860448e46adf8bbd597a959230601077a"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+      "GitBlobAtTestedSource": "0278719061fba2a08c30be0f9e45814440f9df94",
+      "Bytes": 4582,
+      "SHA256": "4a685b8c461b7888e8597f3c31b7c921b05d318d7c3a2c9d321e883314791a42"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "GitBlobAtTestedSource": "ef5da87b77b050bbdebf1ce6b3336a2e65393190",
+      "Bytes": 29258,
+      "SHA256": "b2133880640e617b13f6e8963f91ab69f0fac617355031f95ed2c5fedf08ccbd"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.EarlyExit.cs",
+      "GitBlobAtTestedSource": "849095b32d1ed182eba5f942147c3a2cb75facfa",
+      "Bytes": 6254,
+      "SHA256": "71186d99aad684184080e36e6b6463482093082bcc8376736c7d71d766d8e88b"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/configured-neutral-cli.c",
+      "GitBlobAtTestedSource": "35b96d64ac48da3c0fd99afd92f192a5a4979acf",
+      "Bytes": 4525,
+      "SHA256": "1e595dd358cc849e3cafa0574a3e53f3b78b97b92dbd69a7634b13fe9567e005"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs",
+      "GitBlobAtTestedSource": "bfaa119f44a6ce06935a2e55c2d034f4a126b479",
+      "Bytes": 13224,
+      "SHA256": "0c0ae7769600c91409ab77f7eacbc65c19856bddb0ddac8c11c9d95abdc05a50"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainEarlyExitLinuxTests.cs",
+      "GitBlobAtTestedSource": "e9f9ad337dad429d9c2925a630d85c30cf1ea1b0",
+      "Bytes": 341,
+      "SHA256": "8d218dfa93e35f4b8c825732384a4030f611e705882129b5d6fdc71f32f5aa07"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainOperationLinuxTests.cs",
+      "GitBlobAtTestedSource": "56117c3bfb2a03588aad952c1e0931505938ea09",
+      "Bytes": 2820,
+      "SHA256": "fecdff5c5782d63261d2d5f360b1545f1356610cf21e7506d48a4bdd99e55a9c"
+    },
+    {
+      "Path": "tests/categories.json",
+      "GitBlobAtTestedSource": "1326290413c0767c153f658a1a1c3a33f57bfe80",
+      "Bytes": 1149505,
+      "SHA256": "e98a4bfaabb65dee4be6abfbe9844201d29603a8b6f1bf90bf433165f50728b7"
+    },
+    {
+      "Path": "tests/selection.json",
+      "GitBlobAtTestedSource": "3683ec8bb6f155e7dbc4a1dfa518cc0110747752",
+      "Bytes": 836,
+      "SHA256": "2c0ebadf937b83f760e5e721d2c9a045bd82fdef4a931fbb61edc537b0b2cd8a"
+    }
+  ],
+  "NativePhaseRED": "4a16b34b7dc5f023ba3b8c863cf9a31037eab071",
+  "NativeFixedStatusRED": "a7c3dcf1eef3f78cbe1f2fef51e0b45e07153171",
+  "FinalDistinctPassedCases": 6,
+  "TotalExecutedAcrossThreeRuns": 10,
+  "FinalGuardianEchild": 6,
+  "FinalEmergencySignals": 0,
+  "ActualEnvironment": {
+    "SDK": "10.0.401",
+    "Runtime8": "8.0.31",
+    "Runtime10": "10.0.12",
+    "PowerShell": "7.5.4",
+    "Compiler": "Debian cc14.2.0-19 (14.2.0); exact path/hash in fixture package provenance"
+  },
+  "SourceReview": {
+    "Agent": "/root/codex_live_source_review",
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "ReviewedCommit": "9340ff081c3a60a8c6b0d6ae0d07d95c555a3664",
+    "Verdict": "PASS, no consequential findings"
+  },
+  "LiveCodexFailureUnchanged": true,
+  "ProviderReadinessOrGameTurnQualified": false,
+  "NewGMRequests": 0,
+  "HistoricalDriverRetired": true,
+  "EvidenceManifests": [
+    "red/manifest.json",
+    "native-fixed-status-red/manifest.json",
+    "green/manifest.json",
+    "cli-diagnostics/manifest.json"
+  ]
+}
