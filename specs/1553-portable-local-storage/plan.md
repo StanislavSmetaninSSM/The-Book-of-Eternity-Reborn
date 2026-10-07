@@ -1,3 +1,12 @@
+# S1 final constructor/disposal causal boundary
+
+995de14a controlled23:22PASS/1causalFAIL nativeDisposeOnce left adapter
+authority unlatched despite coordinator retention; own cleanupcomplete.
+Read-only Sol confirmed post-held transportManager capture occurs in factory
+constructor outside guardedAttach, losing exactwrapper on error. Added one
+controlledcapture case (0Start/A1, originalwrapper retained required), unrun.
+Both corrections remain pending; exact original pipeline, no fallback.
+
 # S1 catalog preparation correction
 
 Disposal RED attempt at650c1f87 ran0tests: own new related links incorrectly

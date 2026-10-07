@@ -30,7 +30,7 @@ internal static class SystemdControlledScenarioDriver
         var files=new FileSystemManager(bus.Root,NullLogger<FileSystemManager>.Instance);files.EnsureDirectoryStructure();
         var owner=await GmSessionRunCoordinator.OpenNeutralAsync(files);IOwnedTerminalSession? terminal=null;int held=0;
         var facts2=new Dictionary<string,object?> {["Mode"]=mode};
-        var startFailure=mode is "terminal-systemd-start-lost" or "terminal-systemd-start-cancel" or "terminal-systemd-wrong-fd" or "terminal-systemd-wrong-manager" or "terminal-systemd-release-loss" or "terminal-systemd-release-ack" or "terminal-systemd-bind-deadline";
+        var startFailure=mode is "terminal-systemd-capture-error" or "terminal-systemd-start-lost" or "terminal-systemd-start-cancel" or "terminal-systemd-wrong-fd" or "terminal-systemd-wrong-manager" or "terminal-systemd-release-loss" or "terminal-systemd-release-ack" or "terminal-systemd-bind-deadline";
         using var startCancellation=new CancellationTokenSource();
         bus.CancelStart=startCancellation.Cancel;
         bus.Mode=mode;cgroup.Mode=mode;
@@ -46,7 +46,8 @@ internal static class SystemdControlledScenarioDriver
             Require(terminal!=null && held>0,"Missing original held terminal.");
             if(startFailure) {
                 Require(owner.IsUncertain && owner.RetainsAuthority && terminal!.AuthorityLost.IsCompleted,"Ambiguous start lost original authority.");
-                Require(bus.StartCount==1 && owner.Record?.Disposition!=GmSessionRunDisposition.Stopped,"Start replayed/settled.");
+                Require(bus.StartCount==(mode=="terminal-systemd-capture-error"?0:1) && owner.Record?.Disposition!=GmSessionRunDisposition.Stopped,"Start replayed/settled.");
+                Require(ReferenceEquals(terminal,typeof(GmSessionRunCoordinator).GetField("_terminal",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(owner)),"Partial original wrapper replaced/lost.");
             } else {
                 Require(owner.Record?.Disposition==GmSessionRunDisposition.Running,"Scope failed before Running.");
                 if(mode=="terminal-systemd-native-fault") {
@@ -80,7 +81,8 @@ internal static class SystemdControlledScenarioDriver
     internal sealed class ControlledBus : ISystemdBusTransport
     {
         private readonly TaskCompletionSource<string> _lost=new(TaskCreationOptions.RunContinuationsAsynchronously);
-        public SystemdManagerBinding Manager {get;private set;}=new(new string('b',32),":1.42",GmWorkerProcessHostPeerIdentity.CaptureEffectiveUserId(),File.ReadAllText("/proc/sys/kernel/random/boot_id").Trim());
+        private SystemdManagerBinding _manager=new(new string('b',32),":1.42",GmWorkerProcessHostPeerIdentity.CaptureEffectiveUserId(),File.ReadAllText("/proc/sys/kernel/random/boot_id").Trim());
+        public SystemdManagerBinding Manager {get=>Mode=="terminal-systemd-capture-error"?throw new IOException("controlled post-held manager capture failure"):_manager;private set=>_manager=value;}
         public Task<string> AuthorityLost=>_lost.Task;
         public bool SupportsPidfdScopes=>true;
         internal int StartCount,StopCount;internal bool SubscribedBeforeStart,ActualPidfd,Disposed;

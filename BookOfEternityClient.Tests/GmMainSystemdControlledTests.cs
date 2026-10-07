@@ -6,6 +6,7 @@ public sealed class GmMainSystemdControlledTests
     public async Task ActualHeldRoot_AttachesBeforeRunningAndSingleRelease() => await GmOwnedTerminalLinuxTests.RunAsync("terminal-systemd-connected");
     [Theory]
     [InlineData("terminal-systemd-start-lost")]
+    [InlineData("terminal-systemd-capture-error")]
     [InlineData("terminal-systemd-start-cancel")]
     [InlineData("terminal-systemd-wrong-fd")]
     [InlineData("terminal-systemd-wrong-manager")]
