@@ -54,9 +54,9 @@ change main/worker/generation admission.
 The **42 distinct** successful cases are not a single 42-case final rerun.
 The last runtime command executed 28/28 (24 controlled +4 affected) with complete
 selection and cleanup. Its 26 process guardians reached actual ECHILD with zero
-emergency signals, failures or deadlines. Real Bridge/T042 covers two Unicode
-inputs in one original process, manual draft/cancel/takeover/resize and original
-stop/output/disposal/Stopped ACK. Controlled fault cases verify retained original
+emergency signals, failures or deadlines. Real Bridge/T042 covers two inputs,
+including Unicode, in one original process, manual draft/cancel/takeover/resize
+and original stop/output/disposal/Stopped ACK. Controlled fault cases verify retained original
 Uncertain, no release on failed admission and no stop against replacement.
 The Windows check is a source guard, **not native Windows execution**.
 
