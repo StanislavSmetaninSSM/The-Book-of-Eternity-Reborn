@@ -6,6 +6,8 @@ public sealed class GmCliInputProfile
     public string TerminalPresentation { get; set; } = "";
     public string DraftObservation { get; set; } = "";
     public string DraftDirectory { get; set; } = "";
+    public string[] StartupBannerLines { get; set; } = [];
+    public int AutomaticSubmissionLimit { get; set; }
     public string IdleMarker { get; set; } = "";
     public string PromptPrefix { get; set; } = "";
     public string WorkingMarker { get; set; } = "";
@@ -18,8 +20,10 @@ public sealed class GmCliInputProfile
     public string[] BlockedMarkers { get; set; } = ["trust", "update", "authentication", "sign in"];
     public int ObservationTimeoutMilliseconds { get; set; } = 15000;
     public bool IsMini => TerminalPresentation == "synchronized-mini-v1" && DraftObservation == "external-editor-v1" &&
-        !string.IsNullOrEmpty(DraftDirectory) && Path.IsPathFullyQualified(DraftDirectory);
-    public bool IsSupported => !string.IsNullOrEmpty(IdleMarker) && (IsMini || !string.IsNullOrEmpty(PromptPrefix)) &&
+        !string.IsNullOrEmpty(DraftDirectory) && Path.IsPathFullyQualified(DraftDirectory) && AutomaticSubmissionLimit == 1 &&
+        StartupBannerLines.Length is >0 and <=16 && StartupBannerLines.All(s=>s!=null && !s.Any(c=>c<' ')) &&
+        PasteStart=="\u001b[200~" && PasteEnd=="\u001b[201~" && NewlineSequence=="\n" && SubmitSequence=="\r";
+    public bool IsSupported => !string.IsNullOrEmpty(IdleMarker) && (IsMini || (TerminalPresentation=="" && !string.IsNullOrEmpty(PromptPrefix))) &&
         !string.IsNullOrEmpty(WorkingMarker) && !string.IsNullOrEmpty(PasteStart) && !string.IsNullOrEmpty(PasteEnd) &&
         !string.IsNullOrEmpty(NewlineSequence) && !string.IsNullOrEmpty(SubmitSequence) &&
         BlockedMarkers.Length > 0 && BlockedMarkers.All(m => !string.IsNullOrWhiteSpace(m));
@@ -27,6 +31,7 @@ public sealed class GmCliInputProfile
     {
         TerminalPresentation = TerminalPresentation ?? "",
         DraftObservation = DraftObservation ?? "", DraftDirectory = DraftDirectory ?? "",
+        StartupBannerLines=(StartupBannerLines ?? []).ToArray(), AutomaticSubmissionLimit=AutomaticSubmissionLimit,
         IdleMarker = IdleMarker ?? "", PromptPrefix = PromptPrefix ?? "", WorkingMarker = WorkingMarker ?? "",
         PasteStart = PasteStart ?? "", PasteEnd = PasteEnd ?? "", NewlineSequence = NewlineSequence ?? "",
         SubmitSequence = SubmitSequence ?? "", InterruptSequence = InterruptSequence ?? "", ExitSequence = ExitSequence ?? "",

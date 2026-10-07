@@ -437,3 +437,11 @@ Home/End/single Enter are still mandatory. One unknown-panel causal case now
 written before correction; existing executed successes excluded.
 Connected receipt metadata now explicitly pins actual new test/profile/observer
 source and records absent future source files on their historical baseline.
+
+New panel baseline c4609e58 executes1/1 causal FAIL (unknown pane borrowed
+unchanged footer); cleanup complete. Exact initial-only one-use readiness WIP
+now freezes StartupBannerLines, requires every outside cell, styled placeholder,
+and no original manual takeover. MiniPasteAttempted consumes allowance under
+the original PasteStarted lock; no setReady/manual/new operation can rearm it.
+Legacy profiles remain separate. Four causal readiness checks selected; no CLI
+or provider/game run and no full witness/submit qualification yet.

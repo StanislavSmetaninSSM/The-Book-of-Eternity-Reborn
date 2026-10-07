@@ -2,8 +2,15 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "gm-mini-idle-authority",
+      "reason": "Changed full-frame initial-only one-use mini readiness: exact placeholder/manual/blank/panel boundaries",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED"
+      ]
+    },
+    {
       "category": "gm-mini-panel-refusal",
-      "reason": "Independent source finding needs one new causal case; three prior readiness and standalone observer cases excluded",
+      "reason": "Changed full-frame initial-only one-use mini readiness: exact placeholder/manual/blank/panel boundaries",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED"
       ]

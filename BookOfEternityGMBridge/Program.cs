@@ -132,6 +132,7 @@ internal sealed partial class BridgeHost : IDisposable
     {
         public string Id { get; } = Guid.NewGuid().ToString("N");
         public bool ManualTakeover;
+        public bool MiniPasteAttempted;
         public long ManualObservationAfter = -1;
         public CancellationTokenSource? BootstrapCancellation;
         public readonly List<Task> PromptTasks = new();

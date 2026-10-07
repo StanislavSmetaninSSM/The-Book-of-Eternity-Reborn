@@ -149,6 +149,7 @@ internal sealed partial class BridgeHost
                 _status.LastPromptDispatchState = "Dispatching";
                 _status.LastPromptDispatchStartedAtUtc = DateTimeOffset.UtcNow.ToString("O");
                 operation.Phase = PromptDeliveryPhase.PasteStarted;
+                if(operation.Snapshot.Profile.IsMini)operation.Input.MiniPasteAttempted=true;
                 TryWriteInputStatus();
             }
             var profile = operation.Snapshot.Profile;
