@@ -1,4 +1,13 @@
-## Current authorization: bounded real console CLI Q1 → Q2
+## Current bounded result: live GM through test CLI relay
+
+Owner-authorized T043 relay r3 collected after orchestration interruption: one real
+model-generated game action accepted/applied in isolated ordinary NewGame, with
+original M1/fence/T042 and complete original stop/I/O. Final independent review
+and GitHub restoration pending. [Handoff](relay-gm-bounded-handoff.md). This is a
+controlled neutral CLI transport, not installed Codex/OpenCode compatibility;
+systemd remains deferred. Earlier entries below retain their historical scope.
+
+## Historical authorization: bounded real console CLI Q1 → Q2
 
 Owner subsequently authorizes official workspace OpenCode installation as a fallback,
 without new credentials/grants/payments or main GM-model changes. Installed1.18.35,

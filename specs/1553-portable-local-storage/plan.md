@@ -1,3 +1,13 @@
+# Current bounded live relay result
+
+Collected existing r3 without restart/replay: actual model response applied and
+recorded in realm story, original input qualified, queue closed, scoped stop and
+same-identity durable Stopped, all peers exit0/EOF/termios, guardian ECHILD with0
+emergency. Driver BOM fix6/6 previously reviewed; final evidence/metadata review
+and final-tip GitHub restoration pending. [Handoff](relay-gm-bounded-handoff.md)
+and [exact evidence](recovery/evidence/relay-gm/live-r3/manifest.json).
+Prior OpenCode/Codex failures remain unchanged and do not describe relay r3.
+
 Current access boundary after accepted5f663533: owner approval and parent configuration publication are reported, but this workspace's sole no-model GET attempt failed at proxy CONNECT403/curl56 before provider contact. Exact Domain forbidden body was not captured. CLI/NewGame/model/accepted turns0; no retries or changes. [Current handoff](opencode-current-live-handoff.md) / [safe receipt](recovery/evidence/opencode-live/access-after-approval/receipt.json). A fresh workspace from the published configuration may be needed.
 
 # Current T043 boundary: controlled driver correction; provider access pending

@@ -188,4 +188,4 @@ continuation with a clear message. Never resume the old session or replay an unk
 command. Implement in a separate next slice; T031 retains existing low-level refusal.
 No new provider/model request or GM model change is authorized by this decision.
 
-- [ ] T043-RELAY-GM-BOUNDED: owner-authorized isolated real Codex-agent GM through persistent neutral test CLI and existing M1/fence/T042; [review/implementation plan](relay-gm-bounded-plan.md). OpenCode access remains blocked, no retries/bypass.
+- [ ] T043-RELAY-GM-BOUNDED: r3 actual one model-generated action accepted/applied with original input and complete stop/I/O, collected without restart after orchestration interruption. Repair3/3, artifact-stall7/7, BOM driver6/6 reviewed; final r3 evidence/metadata review and final-tip fresh GitHub restoration pending. [Plan](relay-gm-bounded-plan.md), [handoff](relay-gm-bounded-handoff.md). Separate r2 real application1 retains raw counter0/client cleanup failure; historical Uncertain unchanged. Test relay only; OpenCode access/systemd/native Windows remain open.
