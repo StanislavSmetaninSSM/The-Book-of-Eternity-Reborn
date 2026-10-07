@@ -217,6 +217,21 @@
       "Path": "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
       "Bytes": 7977,
       "SHA256": "e64d6de3a210fef5426537636d48a8a8e67b52aad98f10d873c819684ca66f09"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/MainOperationScenarioDriver.cs",
+      "Bytes": 28169,
+      "SHA256": "363a31cd540f526e27d10e8b2bc9ead4a001f09b95562894855e13759c9d0741"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainOperationLinuxTests.cs",
+      "Bytes": 2820,
+      "SHA256": "fecdff5c5782d63261d2d5f360b1545f1356610cf21e7506d48a4bdd99e55a9c"
+    },
+    {
+      "Path": "tests/fixtures/GmMainOperation/live.ps1",
+      "Bytes": 3877,
+      "SHA256": "cad65c211cd162c517a4be2988393d272087acc22bb0fedf0b4376c34f78cd4c"
     }
   ],
   "Artifacts": [

@@ -1012,3 +1012,8 @@ priorintegration build. Exactthreecatalogartifacts archived separately.
 Independent Sol SOURCE PASS live-driver ordering at6ce820a9; one fresh ordinary
 attempt authorized, pending evidence reviewer exact controlledstop/helperreceipts.
 No callback/Ready/auth/gate reconstruction; new210/270/300s limits unchanged.
+
+Independent evidence reviewer verified6actualcases/61artifacts; identified three
+missing directhelper fixture/scenario/test historicalsourcepins. Added exact767
+bytes/hashes to helperreceipt, no runtime/test/resultchange or rerun. Og5all678
+packagebytes rechecked beforestart; initialconfig/game absent.
