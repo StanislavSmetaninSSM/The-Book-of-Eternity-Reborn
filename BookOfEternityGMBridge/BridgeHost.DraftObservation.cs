@@ -63,10 +63,10 @@ internal sealed partial class BridgeHost
             var frame=await reader.ReadAsync<JsonElement>(linked.Token,100000);
             if(frame.GetProperty("nonce").GetString()!=nonce)throw new IOException("Original challenge mismatch.");
             var proof=frame.Deserialize<DraftFileProof>(MainOperationReader.Json)??throw new IOException("No actual file proof.");
-            if(proof.Path!=request.Path || proof!=DraftObservation.Read(op.Snapshot.Profile.DraftDirectory,proof.Path) ||
-                proof.ModifiedSeconds*1000+proof.ModifiedNanoseconds/1000000<op.PasteStartedUnixMilliseconds ||
-                !Convert.FromBase64String(proof.Bytes).AsSpan().SequenceEqual(Encoding.UTF8.GetBytes(op.Snapshot.Text)))
-                throw new IOException("Actual unchanged file does not prove this immutable operation.");
+            if(proof.Path!=request.Path)throw new IOException("Actual proof path mismatch.");
+            if(proof!=DraftObservation.Read(op.Snapshot.Profile.DraftDirectory,proof.Path))throw new IOException("Actual proof changed before ACK.");
+            if(proof.ModifiedSeconds*1000+proof.ModifiedNanoseconds/1000000<op.PasteStartedUnixMilliseconds)throw new IOException("Actual file mtime precedes userspace paste time.");
+            if(!Convert.FromBase64String(proof.Bytes).AsSpan().SequenceEqual(Encoding.UTF8.GetBytes(op.Snapshot.Text)))throw new IOException("Actual immutable bytes mismatch.");
             lock(_sync)if(!PromptStillOwned(op) || op.Result!=null || !op.DraftArmed)throw new IOException("Original operation revoked before ACK.");
             await MainOperationReader.WriteAsync(stream,new {ok=true},linked.Token);
             // Helper only closes this connection after its ACK and final unchanged read.
