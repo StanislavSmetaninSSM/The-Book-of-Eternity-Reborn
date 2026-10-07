@@ -45,13 +45,22 @@ clipboard shortcut check can reread successful clipboard text equal to a shortcu
    paste remain their existing paths. No adapter/composer invokes bridge/daemon/GM.
    Remove late clipboard reinterpretation/read from GetPlayerInput. Clipboard content
    equal to /paste, /вставить or \\p is accepted as the value, not another read gesture.
-5. Add an internal immutable capability/limits constructor for isolated test inputs;
-   no global PATH/display/clipboard override or production test-only executable.
+5. Prefer a new clipboard-only mode in the existing PortableStorageCrashHost test
+   fixture: the public real SystemClipboardService runs under a child-owned PATH/display
+   environment containing only own synthetic readers, never a global override.
+   This permits causal baseline RED without adding a production constructor first.
+   No production test-only executable or second clipboard implementation.
    Fixtures install nothing: own GUID executable names use Python/shebang with
    synthetic bytes, own argument/invocation/PID receipts and independent in-process
    hard lifetime. Real service performs process I/O. Input streams/screens are
    controlled through actual IConsoleInputSource/real GameEngine private entrypoint
    and SpectreExplorerConsole.Ask; no provider or game loop starts.
+   A counted synthetic IClipboardService also isolates the old double-read consumer
+   RED; GREEN additionally consumes the real public service and synthetic executable.
+   ReadLine null/EOF must never count as manual acceptance or multiline terminator;
+   raise a typed closed-input/cancellation carrying the local draft, without logging
+   its text or saving it to a new journal. Confirmed exited/reaped readers receive no
+   later signals; unfinished I/O/original Process stay retained if cleanup is uncertain.
 
 Tool semantics: [wl-clipboard upstream](https://github.com/bugaevc/wl-clipboard),
 [xclip man](https://github.com/astrand/xclip/blob/master/xclip.1),
@@ -75,7 +84,8 @@ read-only environment inventory; no user buffer command ran.
   literal shortcut/one process/manual acceptance and no replay. Own fixtures never
   invoke real clipboard programs or read/mutate user clipboard; no child descendants.
 - [ ] Existing affected normalization/composer/direct-paste tests only; narrow source
-  guard(s) if GetPlayerInput clipboard-help contract is affected. Create two narrow
+  guard PlayerInput_MustExposeClipboardPasteShortcut (which currently requires the
+  late ResolveClipboardPlayerInput helper) must be adapted and selected. Create two narrow
   categories `clipboard-linux-adapter`, `clipboard-console-consumers`; separate exact
   affected regression category if required, no console-explorer/e2e broad cohort.
   Update catalog structurally and current selection. All execution only via
@@ -101,4 +111,8 @@ manual acceptance/no automatic submit and draft retention follow this task's req
 
 ## Execution ledger
 
-WIP design only; no runtime or test edits/execution yet. Independent design review pending.
+Independent actual Sol6.1/xhigh `/root/clipboard_linux_design_review` PASS at
+`02639ebbe21c15619e1714fc3c63ce3e7991dcfb`; EOF, exact late-helper source guard and
+no signal after reap details carried above. Narrow fixture-seam amendment replaces
+the proposed internal constructor with the existing test-host public-service route;
+no runtime/test edits or execution yet. Amendment review precedes execution.
