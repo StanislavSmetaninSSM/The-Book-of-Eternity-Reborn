@@ -6,6 +6,7 @@ using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 using Spectre.Console;
+using System.Diagnostics;
 
 namespace BookOfEternityClient.Tests;
 
@@ -39,15 +40,39 @@ public static class ClipboardConsoleProbe
             Ansi = AnsiSupport.No, ColorSystem = ColorSystemSupport.NoColors,
             Interactive = InteractionSupport.No, Out = new AnsiConsoleOutput(writer)
         });
-        IClipboardService original = request.Provider == "real"
+        Process? captureDeniedRoot = null;
+        var captures = 0;
+        IClipboardService original = request.Mode == "debt"
+            ? new SystemClipboardService(NullLogger<SystemClipboardService>.Instance, process =>
+            {
+                if (++captures == 1) { captureDeniedRoot = process; return null; }
+                return LinuxClipboardReaderIdentity.Capture(process);
+            })
+            : request.Provider == "real"
             ? new SystemClipboardService(NullLogger<SystemClipboardService>.Instance)
             : new Synthetic(request);
         var clipboard = new Counted(original);
         string? value = null, exception = null, draft = null;
         ClipboardReadResult? result = null;
+        string[]? debtOutcomes = null;
+        bool? originalAliveWithDebt = null, originalExitObserved = null;
         try
         {
-            if (request.Mode == "service") result = clipboard.TryReadText();
+            if (request.Mode == "debt")
+            {
+                var first = clipboard.TryReadText();
+                originalAliveWithDebt = captureDeniedRoot != null && !captureDeniedRoot.HasExited;
+                var second = clipboard.TryReadText();
+                if (captureDeniedRoot == null) throw new InvalidOperationException("Missing original capture fixture root.");
+                using var exitDeadline = new CancellationTokenSource(TimeSpan.FromSeconds(6));
+                await captureDeniedRoot.WaitForExitAsync(exitDeadline.Token);
+                originalExitObserved = captureDeniedRoot.HasExited;
+                request.ReaderMode = "text";
+                File.WriteAllText(Path.Combine(root, "request.json"), JsonSerializer.Serialize(request));
+                result = clipboard.TryReadText(); // explicit later gesture after actual exit
+                debtOutcomes = [first.Outcome.ToString(), second.Outcome.ToString(), result.Value.Outcome.ToString()];
+            }
+            else if (request.Mode == "service") result = clipboard.TryReadText();
             else if (request.Mode == "ask")
                 value = new SpectreExplorerConsole(clipboard, input).Ask("[cyan]Текст:[/]", request.DefaultValue);
             else if (request.Mode == "multiline")
@@ -87,6 +112,7 @@ public static class ClipboardConsoleProbe
             Value = value, Result = result, Outcome = outcome, Exception = exception, Draft = draft,
             ClipboardReads = clipboard.Reads, InputReads = input.Reads, Screen = writer.ToString(),
             Provider = request.Provider, Mode = request.Mode, HostPid = Environment.ProcessId
+            , DebtOutcomes = debtOutcomes, OriginalAliveWithDebt = originalAliveWithDebt, OriginalExitObserved = originalExitObserved
         }));
         return 0;
     }

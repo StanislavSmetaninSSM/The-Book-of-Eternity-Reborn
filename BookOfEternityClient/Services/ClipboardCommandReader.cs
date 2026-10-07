@@ -1,16 +1,18 @@
 using System.Diagnostics;
 using System.Text;
+using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityClient.Services;
 
 // Owns only the original foreground read command. External desktop services are not owned here.
-internal sealed class ClipboardCommandReader
+internal sealed class ClipboardCommandReader(Func<Process, SafeFileHandle?> capture)
 {
     private Process? _process;
     private readonly CancellationTokenSource _io = new();
     private Task? _exit;
     private Task<byte[]>? _stdout, _stderr;
     private bool _disposed;
+    private SafeFileHandle? _identity;
 
     internal async Task<ClipboardReadResult> ReadAsync(ProcessStartInfo start, bool windows)
     {
@@ -23,6 +25,7 @@ internal sealed class ClipboardCommandReader
             _exit = _process.WaitForExitAsync();
             _stdout = ReadBounded(_process.StandardOutput.BaseStream, 1024 * 1024, true, _io.Token);
             _stderr = ReadBounded(_process.StandardError.BaseStream, 64 * 1024, false, _io.Token);
+            if (OperatingSystem.IsLinux()) _identity = capture(_process);
             _process.StandardInput.Close(); // readers never consume the client's input
             var pending = new List<Task> { _exit, _stdout, _stderr };
             while (pending.Count > 0)
@@ -56,7 +59,17 @@ internal sealed class ClipboardCommandReader
         _io.Cancel();
         if (_process != null && _exit is not { IsCompletedSuccessfully: true })
         {
-            try { if (!_process.HasExited) _process.Kill(); }
+            try
+            {
+                if (!_process.HasExited)
+                {
+                    if (OperatingSystem.IsLinux())
+                    {
+                        if (_identity != null) LinuxClipboardReaderIdentity.Stop(_identity);
+                    }
+                    else if (OperatingSystem.IsWindows()) _process.Kill();
+                }
+            }
             catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception) { }
         }
         var tasks = OwnedTasks();
@@ -73,6 +86,7 @@ internal sealed class ClipboardCommandReader
             return false;
         foreach (var task in OwnedTasks()) _ = task.Exception; // observe completed canceled/faulted reads
         _process?.Dispose();
+        _identity?.Dispose();
         _io.Dispose();
         _disposed = true;
         return true;

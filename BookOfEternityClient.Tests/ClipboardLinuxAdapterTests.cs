@@ -90,6 +90,20 @@ public sealed class ClipboardLinuxAdapterTests
     }
 
     [Fact]
+    public async Task RealService_CaptureDebtRetainsOriginalAndRefusesUntilActualExit()
+    {
+        using var fixture = new ClipboardLinuxFixture();
+        var r = await fixture.Run(new() { Mode = "debt", ReaderMode = "capture-debt", Text = "Новый явный жест" });
+        Assert.Equal(new[] { "CleanupUncertain", "CleanupUncertain", "Text" },
+            r.GetProperty("DebtOutcomes").EnumerateArray().Select(x => x.GetString()).ToArray());
+        Assert.True(r.GetProperty("OriginalAliveWithDebt").GetBoolean());
+        Assert.True(r.GetProperty("OriginalExitObserved").GetBoolean());
+        Assert.Equal(3, r.GetProperty("ClipboardReads").GetInt32());
+        Assert.Equal(2, fixture.ReadCalls().Length);
+        Assert.Equal("Новый явный жест", r.GetProperty("Result").GetProperty("Text").GetString());
+    }
+
+    [Fact]
     public async Task PublicService_ReadsSyntheticUnicodeAndParagraphs()
     {
         using var fixture = new ClipboardLinuxFixture();

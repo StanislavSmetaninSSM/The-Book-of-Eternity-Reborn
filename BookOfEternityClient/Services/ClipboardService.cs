@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using Microsoft.Win32.SafeHandles;
 
 namespace BookOfEternityClient.Services;
 
@@ -31,10 +32,14 @@ public sealed class SystemClipboardService : IClipboardService
 {
     private readonly object _gate = new();
     private ClipboardCommandReader? _cleanupDebt;
+    private readonly Func<Process, SafeFileHandle?> _capture;
 
-    public SystemClipboardService(ILogger<SystemClipboardService> logger)
+    public SystemClipboardService(ILogger<SystemClipboardService> logger) : this(logger, LinuxClipboardReaderIdentity.Capture) { }
+
+    internal SystemClipboardService(ILogger<SystemClipboardService> logger, Func<Process, SafeFileHandle?> capture)
     {
         ArgumentNullException.ThrowIfNull(logger);
+        _capture = capture;
     }
 
     public ClipboardReadResult TryReadText()
@@ -49,7 +54,9 @@ public sealed class SystemClipboardService : IClipboardService
             }
             var start = SelectReader();
             if (start == null) return ClipboardReadResult.Refused(ClipboardReadOutcome.Unavailable);
-            var reader = new ClipboardCommandReader();
+            if (OperatingSystem.IsLinux() && !LinuxClipboardReaderIdentity.Available())
+                return ClipboardReadResult.Refused(ClipboardReadOutcome.Unavailable);
+            var reader = new ClipboardCommandReader(_capture);
             var result = reader.ReadAsync(start, OperatingSystem.IsWindows()).GetAwaiter().GetResult();
             if (!reader.TrySettle())
             {

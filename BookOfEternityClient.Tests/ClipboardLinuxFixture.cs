@@ -93,6 +93,7 @@ with open(os.path.join(root,'calls.jsonl'),'a',encoding='utf-8') as f:
     f.write(json.dumps({'Pid':os.getpid(),'Identity':stat[stat.rfind(')')+2:].split()[19],'Tool':os.path.basename(sys.argv[0]),'Args':sys.argv[1:]})+'\n')
 mode=request['ReaderMode']
 if mode=='timeout':time.sleep(7)
+if mode=='capture-debt':time.sleep(4.5)
 if mode=='error':sys.stderr.write('synthetic private data must not be displayed');sys.exit(4)
 if mode=='invalid':sys.stdout.buffer.write(b'\xff');sys.exit(0)
 if mode=='stdout-flood':sys.stdout.buffer.write(b'x'*(1024*1024+1));sys.stdout.flush();time.sleep(7)
