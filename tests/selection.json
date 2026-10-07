@@ -15,6 +15,14 @@
         "T043-EARLY-EXIT",
         "F2-original-status-retirement"
       ]
+    },
+    {
+      "category": "worker-native-host-ready",
+      "reason": "One existing actual native host owner/retirement consumer of the shared supervisor phase-order change",
+      "contracts": [
+        "T043-EARLY-EXIT",
+        "NativeLineageHostV2"
+      ]
     }
   ]
 }

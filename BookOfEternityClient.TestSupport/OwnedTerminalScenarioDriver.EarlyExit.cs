@@ -32,7 +32,7 @@ internal static partial class OwnedTerminalScenarioDriver
             result["OriginalIdentity"]=identity;
             var input=await rpc(new{command="addText",text="exit-error\r"});
             Require(input.GetProperty("ok").GetBoolean(),"Actual pipe refused inert CLI exit input.");
-            result["OriginalLeaderExitCode"]=await terminal.RootExited.WaitAsync(TimeSpan.FromSeconds(3));
+            result["OriginalLeaderExit"]=await terminal.RootExited.WaitAsync(TimeSpan.FromSeconds(3));
             result["FixtureRequestedExitCode"]=17;
             Require(!main.AdmissionClosed,"Stop masked the selected early-exit publication.");
             release.TrySetResult();

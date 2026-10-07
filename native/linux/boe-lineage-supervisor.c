@@ -433,6 +433,9 @@ int main(int argc, char **argv) {
         }
         bool empty = reap();
         if (stopping && empty && !exec_pending) {
+            /* reap may seal root-exited and reach ECHILD in this same turn.
+             * Preserve the ordered stopping phase before terminal evidence. */
+            if (!stop_reported) { emit("Stopping", false); stop_reported = true; }
             emit(uncertain ? "Uncertain" : "StoppedWithinScope", true);
             return uncertain ? 2 : 0;
         }
