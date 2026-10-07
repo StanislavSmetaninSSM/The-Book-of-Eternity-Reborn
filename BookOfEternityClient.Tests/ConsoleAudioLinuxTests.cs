@@ -3,6 +3,48 @@ namespace BookOfEternityClient.Tests;
 public sealed class ConsoleAudioLinuxTests
 {
     [Fact]
+    public async Task OwnedFixtureParentTimeout_StopsAndReapsOnlyOriginalHost()
+    {
+        using var f = new AudioLinuxFixture();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => f.Run("fixture-cleanup", TimeSpan.FromMilliseconds(500)));
+        Assert.True(f.OwnedCleanupConfirmed, "Timed out original host must be stopped/reaped before cleanup success.");
+    }
+
+    [Fact]
+    public async Task ConcurrentPlaylistStopSettingsAndDispose_DoNotOverlapOriginalMusic()
+    {
+        using var f = new AudioLinuxFixture(); var r = await f.Run("concurrency");
+        Assert.False(r.GetProperty("HadOverlap").GetBoolean());
+        Assert.Equal(1, r.GetProperty("Active").GetInt32());
+        Assert.DoesNotContain("Main Theme", r.GetProperty("Last").GetString());
+        Assert.True(r.GetProperty("AllDisposed").GetBoolean());
+        Assert.Equal("Disposed", r.GetProperty("Outcome").GetString());
+    }
+
+    [Fact]
+    public async Task MissingAssetsAndMutedRequests_NeverCreateOutput()
+    {
+        using var f = new AudioLinuxFixture(); var r = await f.Run("no-assets");
+        Assert.Equal("NoAssets", r.GetProperty("Music").GetString()); Assert.Equal("NoAssets", r.GetProperty("Cue").GetString());
+        Assert.Equal("Muted", r.GetProperty("Muted").GetString()); Assert.Equal(0, r.GetProperty("Count").GetInt32());
+    }
+
+    [Fact]
+    public async Task SoundSettingsDisableAndZeroVolume_StopAlreadyActiveCues()
+    {
+        using var f = new AudioLinuxFixture(); var r = await f.Run("sound-settings");
+        Assert.True(r.GetProperty("Disabled").GetBoolean()); Assert.True(r.GetProperty("ZeroVolumeDisposed").GetBoolean());
+        Assert.Equal(2, r.GetProperty("Canceled").GetInt32()); Assert.Equal(2, r.GetProperty("Count").GetInt32());
+    }
+
+    [Fact]
+    public async Task ActualMainMenuLayoutsAndSettings_ShowSafeCapabilityMessage()
+    {
+        using var f = new AudioLinuxFixture(); var r = await f.Run("renderer");
+        Assert.Contains("Аудио недоступно", r.GetProperty("Screen").GetString());
+        Assert.Contains(r.GetProperty("SettingsLabels").EnumerateArray(), e => e.GetString()!.Contains("Аудио недоступно"));
+    }
+    [Fact]
     public async Task PublicService_SelectsLinuxAndReportsUnavailableWithoutWindowsOrDeviceCalls()
     {
         using var fixture = new AudioLinuxFixture(); var report = await fixture.Run("console");

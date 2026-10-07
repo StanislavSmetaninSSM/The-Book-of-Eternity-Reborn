@@ -21,7 +21,9 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.*",
-            "BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed"
+            "BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed",
+            "BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload",
+            "BookOfEternityClient.Tests.ConsoleSettingsSessionTests.LastAcceptedEffectsCanBeRestoredWithoutDiscardingOrCertifyingTheDraft"
           ]
         }
       ]

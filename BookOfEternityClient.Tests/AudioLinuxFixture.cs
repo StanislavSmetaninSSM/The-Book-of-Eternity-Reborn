@@ -7,7 +7,8 @@ internal sealed class AudioLinuxFixture : IDisposable
 {
     internal readonly string Root = Path.Combine(Path.GetTempPath(), "boe-audio-" + Guid.NewGuid().ToString("N"));
     private Process? _host;
-    internal async Task<JsonElement> Run(string mode)
+    internal bool OwnedCleanupConfirmed => _host == null || _host.HasExited;
+    internal async Task<JsonElement> Run(string mode, TimeSpan? timeout = null)
     {
         Assert.True(OperatingSystem.IsLinux()); Directory.CreateDirectory(Root);
         var assembly = typeof(AudioLinuxFixture).Assembly.Location;
@@ -18,7 +19,7 @@ internal sealed class AudioLinuxFixture : IDisposable
             Root, "synthetic", "audio", mode }) start.ArgumentList.Add(arg);
         _host = Process.Start(start)!;
         var stdout = _host.StandardOutput.ReadToEndAsync(); var stderr = _host.StandardError.ReadToEndAsync();
-        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+        using var deadline = new CancellationTokenSource(timeout ?? TimeSpan.FromSeconds(15));
         await _host.WaitForExitAsync(deadline.Token);
         Assert.True(_host.ExitCode == 0, "Fixture preparation/execution: " + await stdout + await stderr);
         var report = JsonDocument.Parse(File.ReadAllText(Path.Combine(Root, "probe.json"))).RootElement.Clone();

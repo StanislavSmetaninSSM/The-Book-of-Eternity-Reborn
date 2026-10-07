@@ -6,9 +6,11 @@ internal sealed class ControlledAudioBackend : IAudioPlaybackBackend
 {
     internal readonly ConcurrentQueue<Session> Sessions = new();
     internal bool IgnoreCancellation, FailRun, FailDispose;
+    internal bool HadOverlap;
     public AudioBackendKind Kind => AudioBackendKind.LinuxSdl;
     public IAudioPlaybackSession Create(string path, Func<float> volume)
     {
+        HadOverlap |= Sessions.Any(s => !s.Disposed);
         var session = new Session(path, volume, IgnoreCancellation, FailRun, FailDispose);
         Sessions.Enqueue(session); return session;
     }

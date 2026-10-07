@@ -7,6 +7,7 @@ using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 using NAudio.Wave;
 using NLayer;
+using Spectre.Console;
 
 namespace BookOfEternityClient.Tests;
 
@@ -16,12 +17,63 @@ internal static class AudioLifecycleProbe
     {
         using var deadline = new Timer(_ => Environment.Exit(91), null, TimeSpan.FromSeconds(12), Timeout.InfiniteTimeSpan);
         var root = args[0]; var mode = args[3]; Assets(root);
+        if (mode == "fixture-cleanup") Thread.Sleep(Timeout.Infinite);
         var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
         var settings = new GameSettings { MusicEnabled = true, SoundEnabled = true, MusicVolume = 100, SoundVolume = 50 };
         var backend = new ControlledAudioBackend();
         await using var audio = new AudioService(fs, settings, NullLogger<AudioService>.Instance, backend);
         object report;
-        if (mode == "cues")
+        if (mode == "concurrency")
+        {
+            await audio.PlayMainMenuMusicAsync();
+            await Task.WhenAll(audio.PlayInGameMusicAsync(), audio.PlayMainMenuMusicAsync(), audio.StopAllAsync(), audio.ApplySettingsAsync());
+            await audio.PlayInGameMusicAsync();
+            var active = backend.Sessions.Count(s => !s.Disposed);
+            var last = Path.GetFileName(backend.Sessions.Last().Path);
+            await Task.WhenAll(audio.DisposeAsync().AsTask(), audio.PlayMainMenuMusicAsync(), audio.StopAllAsync());
+            report = new { HadOverlap = backend.HadOverlap, Active = active, Last = last,
+                AllDisposed = backend.Sessions.All(s => s.Disposed), Outcome = audio.Status.Outcome.ToString() };
+        }
+        else if (mode == "no-assets")
+        {
+            Directory.Delete(Path.Combine(root, "Music"), true); Directory.Delete(Path.Combine(root, "Sounds"), true);
+            await audio.PlayMainMenuMusicAsync(); var music = audio.Status.Outcome.ToString();
+            audio.PlayCue(AudioCue.TurnReady); var cue = audio.Status.Outcome.ToString();
+            settings.SoundEnabled = false; audio.PlayCue(AudioCue.TurnReady);
+            report = new { Music = music, Cue = cue, Muted = audio.Status.Outcome.ToString(), Count = backend.Sessions.Count };
+        }
+        else if (mode == "sound-settings")
+        {
+            audio.PlayCue(AudioCue.TurnReady); await Until(() => backend.Sessions.Count == 1 && backend.Sessions.First().Started.Task.IsCompleted);
+            settings.SoundEnabled = false; await audio.ApplySettingsAsync(); var disabled = backend.Sessions.First().Disposed;
+            settings.SoundEnabled = true; audio.PlayCue(AudioCue.TurnReady); await Until(() => backend.Sessions.Count == 2 && backend.Sessions.Last().Started.Task.IsCompleted);
+            settings.SoundVolume = 0; await audio.ApplySettingsAsync();
+            report = new { Disabled = disabled, ZeroVolumeDisposed = backend.Sessions.Last().Disposed,
+                Canceled = backend.Sessions.Count(s => s.Canceled), Count = backend.Sessions.Count };
+        }
+        else if (mode == "renderer")
+        {
+            var state = new StateManager(fs, settings, NullLogger<StateManager>.Instance);
+            await state.BootstrapLocalStorageAsync();
+            var unavailable = new SdlAudioBackend(new RecordingApi(null, "sdl-missing"));
+            await using var failed = new AudioService(fs, settings, NullLogger<AudioService>.Instance, unavailable);
+            failed.PlayCue(AudioCue.TurnReady); await Until(() => failed.Status.Outcome == AudioOutcome.BackendUnavailable);
+            var engine = Engine(fs, state, failed);
+            var writer = new StringWriter();
+            AnsiConsole.Console = AnsiConsole.Create(new AnsiConsoleSettings { Ansi = AnsiSupport.No, ColorSystem = ColorSystemSupport.NoColors,
+                Interactive = InteractionSupport.No, Out = new AnsiConsoleOutput(writer) });
+            var layout = typeof(GameEngine).GetNestedType("MainMenuLayoutMode", BindingFlags.NonPublic)!;
+            var render = typeof(GameEngine).GetMethod("BuildMainMenuStatusRenderable", BindingFlags.NonPublic | BindingFlags.Instance)!;
+            foreach (var value in Enum.GetValues(layout)) AnsiConsole.Write((Spectre.Console.Rendering.IRenderable)render.Invoke(engine, [value])!);
+            var mods = new SystemModService(fs, settings, NullLogger<SystemModService>.Instance);
+            var session = await ConsoleSettingsSession.OpenAsync(fs, state, mods);
+            var build = typeof(GameEngine).GetMethod("BuildOptionsEntriesAsync", BindingFlags.NonPublic | BindingFlags.Instance)!;
+            var task = (Task)build.Invoke(engine, [session])!; await task;
+            var entries = (System.Collections.IEnumerable)task.GetType().GetProperty("Result")!.GetValue(task)!;
+            var labels = entries.Cast<object>().Select(e => (string)e.GetType().GetProperty("Label")!.GetValue(e)!).ToArray();
+            report = new { Screen = writer.ToString(), SettingsLabels = labels, Message = failed.Status.Message };
+        }
+        else if (mode == "cues")
         {
             foreach (var cue in Enum.GetValues<AudioCue>()) audio.PlayCue(cue);
             await Until(() => backend.Sessions.Count == 5 && backend.Sessions.All(s => s.Started.Task.IsCompleted));
@@ -156,7 +208,8 @@ internal static class AudioLifecycleProbe
     private static GameEngine Engine(FileSystemManager fs, StateManager state, AudioService audio) => new(
         fs: fs, stateManager: state, gameLoop: null!, normalizer: null!, progressionSchedule: null!, ui: null!, explorer: null!,
         loc: new LocalizationManager(), saveLoad: null!, imageService: null!, validator: null!, charService: null!, storyService: null!,
-        actorMemoryService: null!, audioService: audio, consoleAppearance: null!, systemModService: null!, systemGuardianLibraryService: null!,
+        actorMemoryService: null!, audioService: audio, consoleAppearance: null!,
+        systemModService: new SystemModService(fs, state.Settings, NullLogger<SystemModService>.Instance), systemGuardianLibraryService: null!,
         criticalStateHealth: null!, worldDirectiveService: null!, scenarioCoreService: null!, afterlifeArchiveCandidateService: null!,
         afterlifeReturnGuardService: null!, rivalSoulArcService: null!, guardianCorrectionService: null!, pendingTurnState: null!,
         qteSceneService: null!, clipboardService: null!, logger: NullLogger<GameEngine>.Instance);

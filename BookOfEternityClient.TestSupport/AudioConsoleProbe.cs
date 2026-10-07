@@ -53,7 +53,7 @@ public static class AudioConsoleProbe
             await host!.Services.GetRequiredService<StateManager>().BootstrapLocalStorageAsync();
             var service = host.Services.GetRequiredService<BrowserAudioService>();
             var response = await service.UpdateSettingsAsync(new(true, 77, true, 35));
-            var saved = JsonSerializer.Deserialize<GameSettings>(File.ReadAllText(Path.Combine(root, "config.json")),
+            var saved = JsonSerializer.Deserialize<GameSettings>(File.ReadAllText(host.Services.GetRequiredService<FileSystemManager>().ResolvePath("config.json")),
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
             committed = response.MusicVolume == 77 && saved.MusicVolume == 77;
             await audio.PlayMainMenuMusicAsync(); await audio.PlayInGameMusicAsync();
