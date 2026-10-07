@@ -101,34 +101,76 @@
   ],
   "Artifacts": [
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/connected-incomplete/Build-unit.log.gz",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/native-environment-green/Build-unit.log.gz",
       "Bytes": 24684,
       "SHA256": "e54b6c592c5e118762e5bc15c694bb91bed6e94af0bd20fcb9bde6121254064d",
       "StoredSHA256": "6a598d52f509fb9fd867947b0d1c011c2a77e30bd14bc40f71f929060448ff60"
     },
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/connected-incomplete/dotnet-test.log.gz",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/native-environment-green/dotnet-test.log.gz",
       "Bytes": 1630039,
       "SHA256": "2a9641aae5f3975a8656e60f4de29a987f570234b05740e145873130c1687f2e",
       "StoredSHA256": "86892fb596b620ccae49b362a6cb1bac897708cd4272b8fb762409bd78c02773"
     },
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/connected-incomplete/summary.json.gz",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/native-environment-green/summary.json.gz",
       "Bytes": 1789,
       "SHA256": "a26860170f62d7d2bc1fba0bf5631c7e45e1af06a1cbe2ca74265a7a717f4720",
       "StoredSHA256": "8dbcdf486e6a987280c855b656270ddde7e56080d47c13167cce9088d30f3da2"
     },
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/connected-incomplete/gm-connected-mini-transaction-unit-001.trx.gz",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/native-environment-green/gm-connected-mini-transaction-unit-001.trx.gz",
       "Bytes": 17939,
       "SHA256": "89376d0be388416a64e5f897cbd678b63cd34fb4c268737ee4f1d1da7b9c956a",
       "StoredSHA256": "406728105191541ffef275b2e3f82e25f28ac063e502f5c15da91561fd10da67"
     },
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/connected-incomplete/plan.json.gz",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/native-environment-green/plan.json.gz",
       "Bytes": 1735,
       "SHA256": "0b86c4a1552c4d1910e3446ec75c7afdc2139777d7d4de7d27e69f8bef9267b0",
       "StoredSHA256": "a95a9abb4b3e23e5f9633a36a483dfd84e04d3855d51df7898c5654c094c263d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/native-environment-green/native/1dea245d1e6049739558aac2986eb9f0/build-provenance.json.gz",
+      "Bytes": 1438,
+      "SHA256": "b217984929b0102c90ad2f26cdc1ba6c84663a61f470293889211c1bcd1a1edd",
+      "StoredSHA256": "2381312d24e0d0503d210fc18b86897b8cca6a61f79fcb6d9a9aec4e3c828d9b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/native-environment-green/native/1dea245d1e6049739558aac2986eb9f0/neutral-terminal-manifest.json.gz",
+      "Bytes": 324,
+      "SHA256": "ac55d988743401dfcb95e63c01032f18947b57cc40ae094d3a584cb8f05fe1a5",
+      "StoredSHA256": "97ed671bbdeda7b11721f1d514511d833787ad1102dd46d324099a97d9922ce5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/native-environment-green/native/1dea245d1e6049739558aac2986eb9f0/guardian.json.gz",
+      "Bytes": 97,
+      "SHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "StoredSHA256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/native-environment-green/native/1dea245d1e6049739558aac2986eb9f0/scenario.json.gz",
+      "Bytes": 93,
+      "SHA256": "110c7d65529f1f7c37ce27ed6ff221ef25ce28c4815f9aab6a41260d00dfbf6e",
+      "StoredSHA256": "d466162a6729918bcd420cfe736913160a2638469eb4538db44c693522cc0584"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/native-environment-green/native/1dea245d1e6049739558aac2986eb9f0/package-manifest.json.gz",
+      "Bytes": 968,
+      "SHA256": "a0f5fe4cf0d9fa5be640be83fa0d3d0c86745b9025115c52755038418026fa6d",
+      "StoredSHA256": "77d84372f2665ab1ba3ce5efbbeeb931fafb84d2f9411475d36cbd731fd7f8bf"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/native-environment-green/native/1dea245d1e6049739558aac2986eb9f0/guardian.log.gz",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredSHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/native-environment-green/native/1dea245d1e6049739558aac2986eb9f0/build.log.gz",
+      "Bytes": 106,
+      "SHA256": "2b01e467defb234cdfc2c3389d7ae3d65402c4a797073f9a5350d56d909632cd",
+      "StoredSHA256": "9c3c20f289022696753624206abb50817f52c39eae2f2fc574d06b8cf48a13e5"
     }
   ],
   "RunSummary": {
@@ -206,6 +248,5 @@
       "Failed": 2
     },
     "DuplicateTests": []
-  },
-  "MetadataCorrection": "Missing four executed41e34a28 source pins added from historic gitshow; raw evidence/results unchanged."
+  }
 }

@@ -528,3 +528,47 @@ these two source-pinned cells. Independent source review also corrects omitted
 held-end frame13: source hold progress gives final singleton;14 exact dedup
 frames, not13. Add this exact controlled positive and explicit41-cell bound.
 Four affected categories20 cases pending; no actualCLI/model/game yet.
+
+Final connected2e9f66e0 fresh20/20GREEN; all4descriptors complete, no
+duplicates/timeouts, owned cleanup complete. Independent Sol bounded SOURCE PASS
+2e9f66e0; evidence review pending. Historical41native environment own scenario
+1dea245d1e6049739558aac2986eb9f0 explicitly captured: actual own-frozen-Ж,
+StoppedWithinScope, guardianECHILD/driver0/emergency0/failures0/no deadline.
+Missing historic41 source pins added via executed gitshow; results unchanged.
+No new CLI/provider/ordinaryNewGame yet.
+
+### One genuine turn driver — ordinary NewGame, bounded persistent CLI
+
+Use a fresh short owned base/game_session with unchanged packaged ordinary client,
+launcher bridge and daemon in3independent100x25 PTYs. Deploy package below
+game_session/_runtime (survives ordinary clear, no sourcecheckout). Existing
+installed1.18.35 command/model stays opencode --mini --pure --no-replay -m
+opencode/ling-3.1-flash-free; childCWD exact game_session. Separate own test
+config disables audio/images/helpers and freezes actual banner/draft descriptor;
+main user model/config unchanged. No auth/history/config reads or copies.
+
+Real client NewGame Enter → name → soul form → freeform guardian1 → description,
+answer each only after the actual fresh prompt. Before any CLI/daemon exists,
+wait current bootstrap input/wait then one Escape. Confirm rollback/unwind and
+fresh Continue menu with no pending request before ordinary original bridge
+launch. Latch original Running identity/retainedstatus before readiness wait;
+noauthority fromlaterPID/status/JSON. Wait original derived Ready (no setReady),
+start ordinary visible daemon in separate terminal, Continue → fresh player
+prompt → exactly one genuine roleplay action. Never reset/rearm/replay/repair
+submission after the one-use profile. No access/trust/terms/auth answers.
+
+Acceptance requires correlated actual GM terminal/output and actual client
+story turn1 exact player action/nonempty narrative plus freshUI/consumedrequest/
+snapshot, not readyfile or daemonlabel alone. Input UnknownOutcome staysunknown
+even if independently accepted file application is proved; ownerUncertain still
+blocks mutation. Preserve before/after metadata and game evidence only.
+
+Source-backed normal stop: fresh playerprompt → /options → fresh Game Menu →
+4/Enter Exit to Menu → fresh Continue-enabled mainmenu →8/Enter Exit. Then
+original daemon foregroundCtrlC/exit, one original bridge shutdown/StoppedACK,
+actualdrain/termios/IOdisposal. Failure branch never manufactures acceptance;
+retains outcome and cancels/settles original client request before ownerstop.
+Test-only guardian dedicated --live-turn mode max300s (existing30sdefault
+unchanged); main game/provider phase bounded≤210s, totaldriver≤270s leaves
+30s independentcleanup reserve. Guardianteardown cannotlogicalsuccess.
+Independent driver source/feasibility review before any actual CLI execution.
