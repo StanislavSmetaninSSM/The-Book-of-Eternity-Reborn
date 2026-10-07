@@ -97,7 +97,7 @@ Primary [NLayer](https://github.com/naudio/NLayer), [package](https://www.nuget.
   DllImport resolvers; the same public constructor/factory is exercised on both sides). RED must observe the
   wrong Windows backend attempt/unreported capability and browser server-output
   attempt, not a missing constructor/compilation failure. Keep preparation separate.
-- [ ] Implement minimal contracts/service/adapters/DI, fresh same cases GREEN,
+- [x] Implement minimal contracts/service/adapters/DI, fresh same cases GREEN (2/2 at 756e2683),
   ordinary WIP push/readback before expanding matrix.
 - [ ] Per-case owned test host/root and independent hard lifetime, no shared mutable
   SDL state across tests. Controlled backend/API adapters prove settings/volume,
