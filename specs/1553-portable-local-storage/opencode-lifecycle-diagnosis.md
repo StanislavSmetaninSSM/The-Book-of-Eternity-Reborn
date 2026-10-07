@@ -1,3 +1,20 @@
+# Timeline correction: earliest og7 failure is driver daemon cutoff
+
+Read-only Astra/xhigh checked exact chunk offsets and source. Driver timed out
+its inherited15s daemon waiting marker at28.091s; original shutdown began28.153s;
+the generic canonical mutation refusal was first observed28.799s. It cannot be
+claimed as an initiating pre-cleanup defect. Original active admission succeeded,
+and ordinary writes correctly refuse after durable Stopping; that shutdown-induced
+refusal fits the trace but is not proved without an original exception.
+
+Minimum correction is phase-aware daemon bootstrap observation through real
+Waiting-for-turns output, own helper/context-pack metadata and stdout progress.
+Apply the same concrete-progress rule to ordinary NewGame/Continue preparation;
+exclude heartbeats/private CLI state. Retain210s overall work,45s no progress and
+all component/cleanup bounds. No runtime mutation fix or exception instrumentation
+is justified yet. If an actual refusal precedes cleanup, capture original exception
+next; do not replay its command. No new live attempt executed at this correction.
+
 # Phase-aware current attempt: distinct canonical mutation refusal
 
 Sourceb7625b8f after independent Sol SOURCE PASS and exactremote/readback, same677

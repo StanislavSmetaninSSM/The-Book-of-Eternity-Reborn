@@ -145,6 +145,33 @@ def staging_signature():
             if p.is_file():rows.append((str(p.relative_to(session)),s.st_size,s.st_mtime_ns))
         except FileNotFoundError:pass # An observed staging cleanup/replacement.
     return tuple(sorted(rows))
+def bootstrap_signature():
+    paths=[session/'game_state/control/gm_turn_helper.bootstrap.ps1']
+    pack=session/'game_state/control/gm_context_pack'
+    if pack.exists():paths+=list(pack.rglob('*'))
+    rows=[]
+    for p in paths:
+        try:
+            s=p.stat()
+            if p.is_file():rows.append((str(p.relative_to(session)),s.st_size,s.st_mtime_ns))
+        except FileNotFoundError:pass
+    return tuple(sorted(rows))
+def preparation_phase(test,label,peer,bootstrap=False):
+    phase=PhaseWait(time.monotonic(),start+210)
+    while True:
+        if time.monotonic()>=phase.total_deadline:raise TimeoutError('Original overall work bound: '+label)
+        if test():
+            journal.append({'At':elapsed(),'ObservedPhase':label+' completed'});return
+        if bootstrap and any(marker in peer.text() for marker in ['Participating canonical mutation refused.',
+            'Original participating admission unavailable','Original operation established a result but continuation is unconfirmed']):
+            journal.append({'At':elapsed(),'ObservedPhase':'daemon failure before cleanup'})
+            raise RuntimeError('Actual daemon bootstrap failure observed before cleanup')
+        if peer.process.poll() is not None:raise RuntimeError(peer.name+' exited during '+label)
+        signature=(len(peer.capture),bootstrap_signature() if bootstrap else staging_signature())
+        if phase.observe(time.monotonic(),signature):
+            journal.append({'At':elapsed(),'ObservedPhase':label+' progress','CapturedBytes':len(peer.capture),
+                'PreparationFiles':len(signature[1]),'PreparationBytes':sum(r[1] for r in signature[1])})
+        pump(.1)
 def current_request(offset):
     global client_failure_offset
     phase=PhaseWait(time.monotonic(),start+210)
@@ -190,12 +217,12 @@ try:
     offset=answer(client,'Опишите форму вашей души:','Человеческий силуэт мягкого синего света.',offset)
     offset=answer(client,'Выберите способ создания Хранителя:','1',offset)
     offset=answer(client,'Опишите вашего хранителя:','Спокойный Хранитель маяка, который встречает душу на берегу Моря Хаоса.',offset)
-    until(lambda:(session/'input/turn_request.json').exists(),10,'ordinary initial request');client_wait=True
+    preparation_phase(lambda:(session/'input/turn_request.json').exists(),'ordinary initial request',client);client_wait=True
     result['InitialBootstrapRequest']=read_json(session/'input/turn_request.json');result['OrdinaryNewGame']=True
     # Observe the actual waiting UI, allow its cancellation listener to start.
     fresh(client,'Мастер игры размышляет...',offset,8);pump(.3)
     offset=len(client.capture);client.send(b'\x1b','cancel initial wait before CLI exists')
-    fresh(client,'Переходный ход отменён.',offset,10);fresh_main(client,offset);client_wait=False
+    preparation_phase(lambda:'Переходный ход отменён.' in client.text(offset) and re.search(r'8\.\s*[^\r\n]*Выход',client.text(offset)) is not None,'ordinary initial cancellation and current main menu',client);client_wait=False
     assert not (session/'input/turn_request.json').exists()
     result['BootstrapCancelledBeforeCli']=True
     launcher=str(ship/'BookOfEternityClient/Launcher/bookofeternity.ps1')
@@ -217,8 +244,9 @@ try:
     until(ready,15,'original derived Ready; no gate/query answers')
     result['ReadinessQualified']=True
     daemon=Terminal('daemon',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-daemon','visible','--timeout','180','--log',str(out/'daemon.log'),'-SessionPath',str(session)])
-    fresh(daemon,'Waiting for turns...',0,15)
-    offset=len(client.capture);client.send(b'\r','observed Continue selected');fresh_player(client,offset,15);client_prompt=True
+    preparation_phase(lambda:'Waiting for turns...' in daemon.text(),'daemon bootstrap',daemon,bootstrap=True)
+    offset=len(client.capture);client.send(b'\r','observed Continue selected')
+    preparation_phase(lambda:'Ваш ход' in client.text(offset) and '🌊 > ' in client.text(offset),'ordinary Continue current player prompt',client);client_prompt=True
     offset=len(client.capture);client.send((action+'\r').encode(),'one genuine game action');result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
     current_request(offset)
     request=read_json(session/'input/turn_request.json');result['ActualRequest']=request;result['ActualRequestSHA256']=hashlib.sha256((session/'input/turn_request.json').read_bytes()).hexdigest()

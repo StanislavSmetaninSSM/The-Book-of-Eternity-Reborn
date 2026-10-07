@@ -1108,3 +1108,17 @@ disposal margin. A progressing client cannot consume the original-owner ACK budg
 No live attempt used the preliminary8c57add1 driver.
 The accepted-turn path also exits the client only through that shared clipped
 finally phase; it cannot bypass the original-owner cleanup reserve.
+
+
+## Daemon timing localization and bounded preparation correction
+
+Og7 first failed its inherited15s daemon marker cutoff; mutation refusal output
+arrived only after original shutdown began. Read-only Astra/xhigh source/timeline
+review supports Stopping as a possible cause, not a proved initiating runtime
+defect. It recommends the minimal driver correction: actual daemon marker plus
+own gm_turn_helper.bootstrap.ps1/context-pack metadata/output progress, within
+unchanged210s/45idle. Ordinary initial NewGame/cancellation and Continue use the
+same phase rule. All fixed original IPC/readiness/stop deadlines and admission
+remain unchanged. A real observed daemon refusal/exit before cleanup aborts;
+no replay or instrumentation unless needed. Source-reviewed exact delta precedes
+a fresh isolated attempt; no source/package rebuild or behavior patch.
