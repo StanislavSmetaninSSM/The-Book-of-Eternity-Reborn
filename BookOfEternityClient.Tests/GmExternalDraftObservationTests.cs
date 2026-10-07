@@ -14,13 +14,7 @@ public sealed class GmExternalDraftObservationTests
     public async Task ActualPipe_MiniEmptyStartupNeedsConsumedProfileAndPlaceholderStyle()
     {
         await using var h=new GmBridgePromptOperationTests.PromptHostFixture();
-        var profile=new {TerminalPresentation="synchronized-mini-v1", DraftObservation="external-editor-v1", DraftDirectory=h.Root,
-            IdleMarker=" BUILD",WorkingMarker="esc interrupt",PromptPrefix="",
-            ObservationTimeoutMilliseconds=1000,BlockedMarkers=new[]{"trust","authentication","sign in"}};
-        File.WriteAllText(Path.Combine(h.Root,"config.json"),JsonSerializer.Serialize(new {GmCliInputProfile=profile}));
-        using var screen=new GmSynchronizedTerminalPresentationTests.ScreenProbe(h.BindingId);
-        h.HostType.GetField("_terminalScreen",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic)!.SetValue(h.Host,screen.Screen);
-        h.HostType.GetField("_promptScreenReader",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic)!.SetValue(h.Host,(Func<string>)(()=>GmSynchronizedTerminalPresentationTests.Value<bool>(screen.Capture(),"Reliable")?GmSynchronizedTerminalPresentationTests.Value<string>(screen.Capture(),"Text"):""));
+        using var screen=InstallMini(h);
         screen.Feed(GmSynchronizedTerminalPresentationTests.ActualTranscript("startup"));
         var reply=await h.Rpc(new {command="setReady",ready=true});
         Assert.True(reply.GetProperty("ok").GetBoolean(),"Actual pinned empty composer requires consumed bounded profile, not a supplied Ready override.");
@@ -28,6 +22,41 @@ public sealed class GmExternalDraftObservationTests
         screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[6;1H\u001b[38;2;226;232;240mAsk anything... \"Fix a TODO in the codebase\"\u001b[6;1H\u001b[?2026l"));
         Assert.False((await h.Rpc(new {command="setReady",ready=true})).GetProperty("ok").GetBoolean());
         Assert.Empty(h.Input.Bytes);
+    }
+
+    private static GmSynchronizedTerminalPresentationTests.ScreenProbe InstallMini(GmBridgePromptOperationTests.PromptHostFixture h)
+    {
+        var profile=new {TerminalPresentation="synchronized-mini-v1", DraftObservation="external-editor-v1", DraftDirectory=h.Root,
+            IdleMarker=" BUILD",WorkingMarker="esc interrupt",PromptPrefix="",
+            ObservationTimeoutMilliseconds=1000,BlockedMarkers=new[]{"trust","authentication","sign in"}};
+        File.WriteAllText(Path.Combine(h.Root,"config.json"),JsonSerializer.Serialize(new {GmCliInputProfile=profile}));
+        var screen=new GmSynchronizedTerminalPresentationTests.ScreenProbe(h.BindingId);
+        h.HostType.GetField("_terminalScreen",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic)!.SetValue(h.Host,screen.Screen);
+        h.HostType.GetField("_promptScreenReader",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic)!.SetValue(h.Host,(Func<string>)(()=>GmSynchronizedTerminalPresentationTests.Value<bool>(screen.Capture(),"Reliable")?GmSynchronizedTerminalPresentationTests.Value<string>(screen.Capture(),"Text"):""));
+        return screen;
+    }
+
+    [Fact]
+    public async Task ActualPipe_FirstBlankFrameCannotBorrowStartupReadiness()
+    {
+        await using var h=new GmBridgePromptOperationTests.PromptHostFixture();using var screen=InstallMini(h);
+        screen.Feed(GmSynchronizedTerminalPresentationTests.ActualTranscript("startup"));
+        screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[6;1H\u001b[K\u001b[?2026l"));
+        Assert.False((await h.Rpc(new {command="setReady",ready=true})).GetProperty("ok").GetBoolean());
+        Assert.Empty(h.Input.Bytes);
+    }
+
+    [Fact]
+    public async Task ActualPipe_ManualMultilineBlankTailPreservesDraftAndTakeover()
+    {
+        await using var h=new GmBridgePromptOperationTests.PromptHostFixture();using var screen=InstallMini(h);
+        screen.Feed(GmSynchronizedTerminalPresentationTests.ActualTranscript("startup"));
+        Assert.True((await h.Rpc(new {command="addText",text="manual draft\n\n"})).GetProperty("ok").GetBoolean());
+        var frame="\u001b[?2026h\u001b[H\u001b[2J\u001b[6;1Hmanual draft\u001b[10;1H"+" BUILD  ".PadRight(89)+"ctrl+p cmd "+"\u001b[8;1H\u001b[?25h\u001b[?2026l";
+        screen.Feed(Encoding.UTF8.GetBytes(frame));
+        Assert.False((await h.Rpc(new {command="setReady",ready=true})).GetProperty("ok").GetBoolean());
+        Assert.Equal("manual draft\n\n",Encoding.UTF8.GetString(h.Input.Bytes));
+        Assert.True((bool)h.Binding.GetType().GetField("ManualTakeover")!.GetValue(h.Binding)!);
     }
 
     [Fact]

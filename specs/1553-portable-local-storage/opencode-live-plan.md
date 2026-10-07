@@ -413,3 +413,11 @@ actual empty/first placeholder style, focused cursor/gap and exact BUILD footer.
 This intermediate work is not automatic transaction qualification: original
 operation observer handler/child environment/causal Home-End/single Enter still
 unimplemented, no CLI/provider/game execution, source/evidence checks pending.
+
+First ebf091a1 connected mechanism2/2GREEN, fresh build/owned cleanup.
+[Receipt](recovery/evidence/opencode-connected/external-observation-first-green/manifest.json).
+Two additional causal cases refuse initial blank frame without actual placeholder
+and a manual multiline draft ending in blank rows. Proposed narrow rule: first
+idle requires actual styled placeholder; subsequent blank idle only follows a
+verified original automatic submission and no manual takeover. No full-draft
+claim derives from visible blank lines. Checks/source review pending.
