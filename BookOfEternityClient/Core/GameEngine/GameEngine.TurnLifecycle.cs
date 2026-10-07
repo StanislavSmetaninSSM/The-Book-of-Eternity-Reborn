@@ -3980,9 +3980,6 @@ public partial class GameEngine
                 PreserveNewlines = true
             });
 
-        if (IsClipboardPasteShortcut(firstLine))
-            return ResolveClipboardPlayerInput();
-
         // Check for slash commands — always single-line, send immediately
         if (!firstLine.Contains('\n') && firstLine.TrimStart().StartsWith('/'))
             return firstLine.Trim();
@@ -4035,25 +4032,6 @@ public partial class GameEngine
         return Task.FromResult(value);
     }
 
-    private static bool IsClipboardPasteShortcut(string input)
-    {
-        var trimmed = input.Trim();
-        return trimmed.Equals("\\p", StringComparison.OrdinalIgnoreCase) ||
-               trimmed.Equals("/paste", StringComparison.OrdinalIgnoreCase) ||
-               trimmed.Equals("/вставить", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private string ResolveClipboardPlayerInput()
-    {
-        var result = _clipboardService.TryReadText();
-        if (!result.Success || string.IsNullOrWhiteSpace(result.Text))
-        {
-            AnsiConsole.MarkupLine($"[yellow]{GameInterface.EscapeMarkup(result.Error ?? "Не удалось прочитать буфер обмена.")}[/]");
-            return string.Empty;
-        }
-
-        return result.Text!;
-    }
     private static int[] GenerateSecureDice() => GameLoop.GenerateSecureRandomDice();
 
     /// <summary>

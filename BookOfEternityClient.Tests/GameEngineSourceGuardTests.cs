@@ -916,7 +916,7 @@ public sealed class GameEngineSourceGuardTests
         var source = ReadGameEngineSource();
 
         Assert.Contains("\\p", source, StringComparison.Ordinal);
-        Assert.Contains("ResolveClipboardPlayerInput()", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("ResolveClipboardPlayerInput", source, StringComparison.Ordinal);
         Assert.Contains("TextComposer.Read", source, StringComparison.Ordinal);
     }
 
