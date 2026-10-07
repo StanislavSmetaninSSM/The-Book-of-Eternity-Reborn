@@ -5,9 +5,9 @@
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current direct browser gacha Linux — bounded execution PASS
+## Current direct browser gacha Linux — bounded independent PASS
 
-Accepted LoadUX23a5b669 → actual BrowserAfterlifeWriteService direct ChaosSea Stage now uses existing trusted-local publisher and retains original long-lived exact pre-spend backup/pending authority. Runtime d47d3f16;50distinctPASS (36new+14exact affected); independent actual Sol6.1/xhigh amended design/source/selection PASS. Final independent evidence review and GitHub-only restoration pending. [Plan](browser-direct-gacha-linux-plan.md) · [Qualification](recovery/browser-direct-gacha-linux-qualification.json) · [Handoff](browser-direct-gacha-linux-handoff.md). No gameplay/currency/odds/rewards/GM text/model/UX change, second journal or player-save protection. StandaloneDaren remains next separate debt. Prior sections below describe historical checkpoints; their direct-gacha/pendingLoadUX next notes do not supersede this current boundary or accepted LoadUX23a5b669. Stop after closure, no next implementation.
+Accepted LoadUX23a5b669 → actual BrowserAfterlifeWriteService direct ChaosSea Stage now uses existing trusted-local publisher and retains original long-lived exact pre-spend backup/pending authority. Runtime d47d3f16;50distinctPASS (36new+14exact affected); independent actual Sol6.1/xhigh amended design/source/final evidence/selection PASS at4723ed42. Candidate fresh GitHub-only restore20,636files independently verified; final metadata carrier ordinary remote/readback/exact-tip restoration are writer closure. [Plan](browser-direct-gacha-linux-plan.md) · [Qualification](recovery/browser-direct-gacha-linux-qualification.json) · [Handoff](browser-direct-gacha-linux-handoff.md). No gameplay/currency/odds/rewards/GM text/model/UX change, second journal or player-save protection. StandaloneDaren remains next separate debt. Prior sections below describe historical checkpoints; their direct-gacha/pendingLoadUX next notes do not supersede this current boundary or accepted LoadUX23a5b669. Stop after closure, no next implementation.
 
 ## Current: Load session lifecycle bounded PASS
 

@@ -26,6 +26,17 @@
     "Selection": "34qualified+2corrected+14exact affected=50distinct/no overlap; actual final execution is separate evidence"
   },
   "FinalEvidence": {
-    "Status": "pending independent review of published complete evidence/checkpoint"
+    "Agent": "/root/direct_gacha_final_evidence_review",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "ReviewedCheckpoint": "4723ed4268c848641bff6b79a721554b53573920",
+    "Verdict": "PASS",
+    "MaterialFindings": [],
+    "Verified": "13manifests550sourcepins62artifacts24gzip;50distinct latestPASS36new14affected;34+2+14selection withoutoverlap/skips/duplicates/underfill;68historicalexec54PASS14FAIL;54exactrootreceipts9genericcleanup5unitDispose; four empty fixtureprefixes; unchangedruntime/executables and precisely reexecuted corrected oracles",
+    "IndependentCandidateRestore": "20,636 writer/restored filebytepairs and restored Gitblob hashes match; clean/tree/parent/accepted ancestry/fullfsck/noalternates confirmed",
+    "SourceBoundaries": "Original actual BrowserStage/queue/pendinglifetime, existingexactauthority/currentrequest adoption, interruptedB1/schema7 originalUIlease retention; sufficient bounded selection",
+    "TestsBuildsProbesEditsNetworkExecutedByReviewer": 0,
+    "CosmeticObservation": "Raw captured tool-version output retains its blank EOF line and original hash",
+    "WriterClosure": "Recordverdict/proof, bounded task completion, ordinary final-carrierpush/remote byte readback and exact-tip freshGitHub-onlyrestore; broader qualificationexcluded"
   }
 }

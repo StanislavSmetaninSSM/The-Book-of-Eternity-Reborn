@@ -2,7 +2,7 @@
 
 Issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 Branch: `codex/1553-load-filesystem`; accepted base `23a5b6695a34752005ffaff6f5d5aedc2ccca797`.
-Status: bounded execution PASS, independent amended design/source/selection PASS; final independent evidence review and fresh GitHub-only restoration pending. Historical sections below retain their exact checkpoint state.
+Status: bounded PASS; independent actual Sol6.1/xhigh amended design/source/final evidence/selection PASS at4723ed42; candidate GitHub-only restore20,636files independently verified. Final metadata carrier publication/exact-tip restoration are writer closure. Historical sections below retain their exact checkpoint state.
 Date: 2026-10-07 UTC. Writer is the sole implementation writer.
 
 ## Intent and retained contract
@@ -118,3 +118,7 @@ Cleanacb42795 fresh build2/2PASS, complete selection/runner cleanup and both own
 ### Final narrow regression GREEN and evidence preparation
 
 Clean4f74e2a7 fresh builds of integration and unit projects; selected14/14PASS (9schema7+5backup), no skip/duplicates/underfill, full runner cleanup. [Evidence](recovery/evidence/direct-gacha-regression-green/manifest.json). Runtime remainedd47d3f16 and executable fixture/test/catalog sources remainedacb42795. Complete latest-case proof is50distinctPASS (36new+14affected), with68historical executions54PASS/14FAIL retained separately (7causal runtimeRED,2unwitnessedconsumer,5cut-preparation/oracle). Three preparation failures execute0tests: one compilation failure and two category refusals.13manifests,550sourcepins,62artifacts,24gzip verified;54exact new fixture root receipts plus9generic regression cleanup receipts, five unit Dispose outcomes and empty scoped prefixes are distinguished. No native/process probe/live browser/provider/model requests. [Qualification](recovery/browser-direct-gacha-linux-qualification.json) · [Handoff](browser-direct-gacha-linux-handoff.md). Final independent evidence verdict and exact GitHub-only restore remain; no further runtime tests intended.
+
+### Independent final bounded PASS and candidate restore
+
+Actual separate gpt-6.1-sol/xhigh /root/direct_gacha_final_evidence_review PASS at4723ed4268c848641bff6b79a721554b53573920, no material findings. Independently checked13manifests/550sourcepins/62artifacthashes/24gzip, exact50latestPASS/36new14affected/34+2+14selection, historical68exec54PASS14FAIL and cleanup classifications; unchangedruntime/executable continuity and selection sufficiency. Candidate fresh GitHub-only clone20,636writer/restored files and restored Gitblob hashes independently match, treef685e2f422bf0d514ca3f0ded76401b7746130ff/parent4f74/clean/fullfsck/noalternates/acceptedLoad ancestry confirmed. [Review](recovery/browser-direct-gacha-linux-reviews.json) · [Restoreproof](recovery/browser-direct-gacha-linux-candidate-restoration.json). Preserve raw tool-version output/hash including cosmetic blank EOF. Mark only bounded subtask complete; final metadata carrier normal push/remoteSHA/byte readback and its own fresh exact-tip restoration follow as writer closure,0tests. Stop before standalone Daren.

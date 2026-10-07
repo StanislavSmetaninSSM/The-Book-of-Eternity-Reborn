@@ -1,6 +1,6 @@
 # T031-BROWSER-DIRECT-GACHA-LINUX — bounded handoff
 
-Accepted base `23a5b6695a34752005ffaff6f5d5aedc2ccca797`; issue [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), branch `codex/1553-load-filesystem`. Sole writer `/root`, actual independent reviewers `gpt-6.1-sol/xhigh`. Runtime `d47d3f16837f56f23e3254e30047dc71d3b3ee17`; executable tests/fixtures/catalog finalized `acb427957792c783800490d07a279319d7ba9fa3`; last clean execution `4f74e2a76d2696c9e8266256407d308c4ee92960`. Bounded execution/design/source/selection PASS; final independent evidence review and GitHub-only restoration pending. Stop after closure before standalone Daren.
+Accepted base `23a5b6695a34752005ffaff6f5d5aedc2ccca797`; issue [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), branch `codex/1553-load-filesystem`. Sole writer `/root`, actual independent reviewers `gpt-6.1-sol/xhigh`. Runtime `d47d3f16837f56f23e3254e30047dc71d3b3ee17`; executable tests/fixtures/catalog finalized `acb427957792c783800490d07a279319d7ba9fa3`; last clean execution `4f74e2a76d2696c9e8266256407d308c4ee92960`. Bounded independent design/source/final evidence/selection PASS at candidate4723ed42; independently verified fresh GitHub-only candidate restoration20,636files. Final metadata-carrier publication/exact-tip restoration are writer closure. Stop after closure before standalone Daren.
 
 ## Implemented boundary
 
@@ -32,7 +32,7 @@ Original GameEngine lifetime methods execute through established reflection test
 
 ## Independent reviews and restoration
 
-[Actual independent reviews](recovery/browser-direct-gacha-linux-reviews.json): amended design PASS atb51f4519 after stale-adoption blocker; runtime source PASS atd47; final focused source/selection PASS atacb42795,34+2+14=50distinct/no overlap. Reviewer corrected generation-loss classification/catalog and confirmed fresh storage recovery cannot release the original UI token. Final separate evidence verdict and exact fresh GitHub-only restoration remain writer closure; ordinary checkpoints have remoteSHA and independent byte readback. No force/rebase/merge/branch deletion/issue closure.
+[Actual independent reviews](recovery/browser-direct-gacha-linux-reviews.json): amended design PASS atb51f4519 after stale-adoption blocker; runtime source PASS atd47; final focused source/selection PASS atacb42795,34+2+14=50distinct/no overlap. Reviewer corrected generation-loss classification/catalog and confirmed fresh storage recovery cannot release the original UI token. Final separate evidence/selection PASS at4723ed42 verified13manifests/550pins/62artifacts/24gzip/50latestPASS and unchanged runtime/executable continuity. [Candidate fresh GitHub-only restoration](recovery/browser-direct-gacha-linux-candidate-restoration.json) independently verified20,636files/blobs, tree/parent/clean/accepted ancestry/fullfsck/noalternates;0tests. Final carrier receives its own ordinary remoteSHA/byte readback and fresh exact-tip restore before writer stop; exact finalSHA/proof are in writer handoff. No force/rebase/merge/branch deletion/issue closure.
 
 ## Historical four F2 IDs remain unpassed
 

@@ -1,8 +1,8 @@
 # Feature Specification: Trusted local storage and cross-platform runtime
 
-## Current bounded browser direct-gacha Linux execution
+## Current bounded browser direct-gacha Linux PASS
 
-From accepted LoadUX23a5b669, existing real browser direct ChaosSea gacha publishes the original long-lived pre-spend soul backup through the trusted-local Linux publisher. Namespace recognition grants no turn authority; original Discover uses existing pending manifest/detached authority, exact mapped bytes/hash and current request binding. Preserve original main/worker/generation/UI leases, accepted-turn/history and typed rollback/Uncertain/committed cleanup debt; no gameplay/GM-authored contract change or second journal.50distinct scoped cases PASS (36new+14affected), independent amended design/source/selection PASS; final evidence/restoration pending. [Plan](browser-direct-gacha-linux-plan.md) · [Handoff](browser-direct-gacha-linux-handoff.md). Standalone Daren/systemd/native Windows/live/cold/fullgame remain open. Historical notes below keep their checkpoint scope.
+From accepted LoadUX23a5b669, existing real browser direct ChaosSea gacha publishes the original long-lived pre-spend soul backup through the trusted-local Linux publisher. Namespace recognition grants no turn authority; original Discover uses existing pending manifest/detached authority, exact mapped bytes/hash and current request binding. Preserve original main/worker/generation/UI leases, accepted-turn/history and typed rollback/Uncertain/committed cleanup debt; no gameplay/GM-authored contract change or second journal.50distinct scoped cases PASS (36new+14affected), independent actual Sol6.1/xhigh amended design/source/final evidence/selection PASS at4723ed42; candidate GitHub-only restore20,636files independently verified. Final metadata carrier remote/readback/exact-tip restoration are writer closure. [Plan](browser-direct-gacha-linux-plan.md) · [Handoff](browser-direct-gacha-linux-handoff.md). Standalone Daren/systemd/native Windows/live/cold/fullgame remain open. Historical notes below keep their checkpoint scope.
 
 ## Current authorized Load session lifecycle — bounded PASS
 

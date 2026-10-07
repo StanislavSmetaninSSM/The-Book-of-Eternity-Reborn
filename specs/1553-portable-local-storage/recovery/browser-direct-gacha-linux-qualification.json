@@ -5,7 +5,7 @@
   "RuntimeSource": "d47d3f16837f56f23e3254e30047dc71d3b3ee17",
   "ExecutableTestAndCatalogSource": "acb427957792c783800490d07a279319d7ba9fa3",
   "LastCleanExecutedSource": "4f74e2a76d2696c9e8266256407d308c4ee92960",
-  "Status": "Bounded execution PASS; independent design/source/selection PASS; final independent evidence review and fresh GitHub-only restore pending",
+  "Status": "Bounded PASS; independent actual Sol6.1/xhigh design/source/final evidence/selection and candidate GitHub-only restoration confirmed; final metadata carrier publication/exact-tip restoration are writer closure",
   "DistinctQualifiedCases": 50,
   "NewCases": 36,
   "ExactAffectedRegressionCases": 14,
@@ -83,7 +83,14 @@
   "NativeWindowsQualification": false,
   "HistoricalFourF2IdsExecuted": 0,
   "NativeCompilerOrLiveCliInvocations": 0,
-  "FreshGitHubOnlyRestoration": "pending; source-only0tests",
+  "FreshGitHubOnlyRestoration": {
+    "CandidateCommit": "4723ed4268c848641bff6b79a721554b53573920",
+    "TrackedFilesByteCompared": 20636,
+    "Proof": "browser-direct-gacha-linux-candidate-restoration.json",
+    "IndependentReview": "PASS; actual Sol6.1/xhigh final evidence reviewer independently verified candidate files/blobs/clean/tree/parent/fsck/noalternates",
+    "TestsExecuted": 0,
+    "FinalTip": "Final metadata carrier receives its own ordinary remoteSHA/byte readback and fresh exact-tip GitHub-only restoration after publication; exact finalSHA/proof returned in writer handoff"
+  },
   "Remaining": [
     "T031-DAREN-STANDALONE-LINUX",
     "Mandatory primary systemd-user backend qualification absent here",
