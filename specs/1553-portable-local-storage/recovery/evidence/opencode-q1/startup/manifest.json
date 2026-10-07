@@ -1,0 +1,74 @@
+{
+  "DriverCandidate": "8e21eb78826bef9aa6e744f1f2665826826ed93f",
+  "TestedShippedRuntimeSource": "9340ff081c3a60a8c6b0d6ae0d07d95c555a3664",
+  "ActualCLI": "OpenCode1.18.35 --mini --pure --no-replay -m opencode/ling-3.1-flash-free",
+  "Verdict": "Original startup/scoped stop qualified; mini presentation observed, parser/profile readiness unsupported; no provider/game turn",
+  "Startups": 1,
+  "ModelPrompts": 0,
+  "KeyboardBytes": 0,
+  "QueryAnswers": 0,
+  "Confirmations": 0,
+  "RawBytes": 3084,
+  "ElapsedSeconds": 12.599,
+  "GuardianEchild": true,
+  "EmergencySignals": 0,
+  "ForegroundPtyEOF": true,
+  "ForegroundTermiosRestored": true,
+  "OriginalStoppedACK": true,
+  "UserOrCodexStateChanged": false,
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/startup/preparation.json.gz",
+      "Bytes": 666,
+      "SHA256": "61848b2e86d4be67daf82e2bc8206e61a3139188ccfaf74f01df4a165fc110e5",
+      "StoredSHA256": "e0cb923ce9c29fb72e129c28a730fa0b592894e81844a7a697d30b283f2ff6c6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/startup/shipped-layout.json.gz",
+      "Bytes": 219724,
+      "SHA256": "6a7c5203fd38b63f051d6a1c77552c5d9273e1c9840da58a06a94d36fc8d279d",
+      "StoredSHA256": "a6a1e8041b72530819fcad490e99dc77f4c1ec88bf67fb115478b1bf3489426d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/startup/guardian.json.gz",
+      "Bytes": 97,
+      "SHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "StoredSHA256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/startup/guardian.log.gz",
+      "Bytes": 119,
+      "SHA256": "3ac872421d1f41d6dfadcb9aea502cb51c928faf5d610d71657d71e04d1beef5",
+      "StoredSHA256": "2a80e029c7b9c7031b99a92105cbae8a702ae0717fbf93ad27223990c97d472f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/startup/probe-result.json.gz",
+      "Bytes": 18523,
+      "SHA256": "27d60a6bc97a07fb763d6a093eaf5a61693e6b3b19c9b5f7dcfbf30d334d8e58",
+      "StoredSHA256": "1d41545ae6d3f7b7c9989325d1c7a351c40f48fb009da77c3e4cdb401f422cae"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/startup/rpc-journal.json.gz",
+      "Bytes": 17897,
+      "SHA256": "6f103905c8d488e3e05ac32a68160221a2a17c41c99db1eb0c92382f630276f5",
+      "StoredSHA256": "d644170968ea0e2542b81c171783e449ca95e5a6ec3342572684cfc283f9b7b8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/startup/startup.raw.gz",
+      "Bytes": 3084,
+      "SHA256": "420e3da8d059a952c087db57e24aedd094c320143ac8904670561f940e954cea",
+      "StoredSHA256": "4512f678d483714b185927d69b6248b33cbaa041d76aefc0f167e7dad0cdac38"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/startup/startup-readable.txt.gz",
+      "Bytes": 3748,
+      "SHA256": "21ebe430acf5654066a5ad43a7d71dca9d9d094a533d0d790dd0ae6d11b41053",
+      "StoredSHA256": "ede7f2844e4142c0e3d31ae593340861688623ade646e4641bd0f7617ccdb74c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/startup/durable-main.json",
+      "Bytes": 763,
+      "SHA256": "7919620c92367b6637a276c990d9daa5bf8947430c1e0b381289b9d35b89cf39"
+    }
+  ]
+}

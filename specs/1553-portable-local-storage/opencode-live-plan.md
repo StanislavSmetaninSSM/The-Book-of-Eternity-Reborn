@@ -68,4 +68,11 @@ PASS; independent evidence review pending separately.
    SHA/byte readback; final GitHub-only restore and handoff. No systemd/worker rollout,
    native Windows/live browser/user saves/security/auth/network config changes.
 
-No model request or interactive OpenCode startup has happened at this plan checkpoint.
+Actual startup receipt at reviewed8e21eb78: one original M1 startup,12.599seconds,
+3084raw bytes, mini Ask-anything composer visible, no auth/access gate observed.
+Zero keyboard/model prompt/confirmation/query response. Original scoped stop,
+actual retirement/Stopped/ACK, foreground EOF/termios/descriptor closure and
+guardianECHILD/0emergency confirmed. Current neutral parser/profile refuses this
+presentation; readiness remains false. [Receipt](recovery/evidence/opencode-q1/startup/manifest.json).
+Next independent source/design review examines only actual pinned mini VT and
+composer/working state needed for T042; no repeat startup or fake readiness.
