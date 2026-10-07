@@ -803,14 +803,8 @@ public partial class GameEngine
             selectedIndex = actions.FindIndex(item => item.Key == choice.Key);
             if (choice.Key == "open_folder")
             {
-                try
-                {
-                    _desktopPathOpener.Open(modsDir);
-                }
-                catch
-                {
-                    AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(modsDir)}[/]");
-                }
+                var result = _desktopPathOpener.OpenFolder(modsDir, createIfMissing: false);
+                AnsiConsole.MarkupLine(result.ToMarkup());
 
                 _inputSource.ReadKey(intercept: true);
                 continue;

@@ -14,6 +14,13 @@
       "contracts": [
         "T050-DESKTOP-HELPERS-PORTABLE"
       ]
+    },
+    {
+      "category": "desktop-launch-contracts",
+      "reason": "Typed capability/request semantics and image suppression/force; same real consumer helper, no broad cohorts",
+      "contracts": [
+        "T050-DESKTOP-HELPERS-PORTABLE"
+      ]
     }
   ]
 }

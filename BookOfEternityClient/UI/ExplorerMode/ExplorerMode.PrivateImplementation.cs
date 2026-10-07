@@ -660,18 +660,9 @@ public partial class ExplorerMode
 
     private void OpenFolderOrPrintPath(string directoryPath)
     {
-        Directory.CreateDirectory(directoryPath);
-
-        try
-        {
-            _desktopPathOpener.Open(directoryPath);
-        }
-        catch
-        {
-            MarkupLine($"[yellow]{Markup.Escape(directoryPath)}[/]");
-            MarkupLine("[dim]Не удалось открыть папку автоматически. Путь выведен выше.[/]");
-            WaitForKey();
-        }
+        var result = _desktopPathOpener.OpenFolder(directoryPath);
+        MarkupLine(result.ToMarkup());
+        if (result.Status != DesktopOpenStatus.Requested) WaitForKey();
     }
 
     internal PendingLocalTurnRollbackSnapshot? ConsumePendingLocalTurnRollbackSnapshot()

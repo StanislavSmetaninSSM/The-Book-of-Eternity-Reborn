@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "desktop-launch-contracts",
+      "responsibility": "Typed managed association outcomes, no display claim/replay, original image suppression/force/path/kind and scope source guards",
+      "excludes": "Real desktop/Linux or Windows native qualification, new shell/dependency/framework, gameplay and other adapters",
+      "changeHints": [
+        "BookOfEternityClient/Services/DesktopPathOpener.cs",
+        "BookOfEternityClient/Services/ImageService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.DesktopLaunchContractTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "desktop-image-consumers",
       "responsibility": "Original ImageService viewer/gallery manual outcomes and display/creation/error boundaries through controlled association adapter",
       "excludes": "Real desktop launch, shell install, browser, GM/storage and unrelated platform adapters",

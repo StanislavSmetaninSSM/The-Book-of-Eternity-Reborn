@@ -2173,18 +2173,9 @@ public partial class GameEngine
 
     private void OpenFolderOrPrintPath(string directoryPath, IConsoleInputSource inputSource)
     {
-        Directory.CreateDirectory(directoryPath);
-
-        try
-        {
-            _desktopPathOpener.Open(directoryPath);
-        }
-        catch
-        {
-            AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(directoryPath)}[/]");
-            AnsiConsole.MarkupLine("[dim]Не удалось открыть папку автоматически. Путь выведен выше.[/]");
-            inputSource.ReadKey(intercept: true);
-        }
+        var result = _desktopPathOpener.OpenFolder(directoryPath);
+        AnsiConsole.MarkupLine(result.ToMarkup());
+        if (result.Status != DesktopOpenStatus.Requested) inputSource.ReadKey(intercept: true);
     }
 
     /// <summary>

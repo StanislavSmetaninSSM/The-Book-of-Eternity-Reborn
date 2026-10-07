@@ -42,4 +42,30 @@ public sealed class DesktopFolderConsumerTests
         var error = Record.Exception(() => DesktopHelpersFixture.Invoke(f.Engine(input), "OpenFolderOrPrintPath", blocker, input));
         Assert.Null(error); Assert.Empty(f.Requests); input.AssertCompleted(); Assert.Contains(blocker, f.Output.ToString());
     }
+    [Theory]
+    [InlineData("requested", 0)]
+    [InlineData("cancelled", 1)]
+    [InlineData("unavailable", 1)]
+    public void ActualMainAndRelatedExplorerFolderHelpersPreservePausePolicy(string mode, int waits)
+    {
+        using var f = new DesktopHelpersFixture(mode);
+        var path = Path.Combine(f.Root, "Папка [yellow] 🌌"); var input = new DesktopInput(waits == 1 ? [ConsoleKey.Enter] : []);
+        DesktopHelpersFixture.Invoke(f.Engine(input), "OpenFolderOrPrintPath", path, input);
+        Assert.Equal(waits, input.Reads); input.AssertCompleted(); Assert.Contains(path, f.Output.ToString()); f.ExactRequest(path);
+        f.Requests.Clear(); var console = new DesktopExplorerConsole();
+        DesktopHelpersFixture.Invoke(f.Explorer(console), "OpenFolderOrPrintPath", path);
+        Assert.Equal(waits, console.KeyReads); Assert.Contains(path, console.Output.ToString()); f.ExactRequest(path);
+    }
+    [Fact]
+    public async Task ActualSettingsRequestedOutcomeRetainsItsOriginalSuccessAcknowledgement()
+    {
+        using var f = new DesktopHelpersFixture(); await f.State.BootstrapLocalStorageAsync();
+        var session = await ConsoleSettingsSession.OpenAsync(f.Files, f.State, f.Mods);
+        var input = new DesktopInput(ConsoleKey.DownArrow, ConsoleKey.Enter, ConsoleKey.Enter, ConsoleKey.Escape);
+        await (Task)DesktopHelpersFixture.Invoke(f.Engine(input), "ShowSystemModsMenu", session,
+            (Func<Task<BrowserPreparedWriteResult>>)(() => throw new InvalidOperationException("No settings save requested")))!;
+        input.AssertCompleted(); Assert.Equal(4, input.Reads); f.ExactRequest(f.Mods.GetModsDirectoryPath());
+        Assert.Contains("Запрос открытия", f.Output.ToString());
+    }
+
 }
