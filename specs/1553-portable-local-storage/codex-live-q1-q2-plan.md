@@ -45,4 +45,10 @@ Review focuses on exact one-answer gating; an unknown terminal sequence after th
 
 Diagnostic-only next startup changes no runtime/tests/catalog: no C#/frontend test executions. A causal implementation defect requires its own source-backed delta, failing real consumer/transcript test and independent review before GREEN. No Fast/PreMerge/full suite or unchanged cohort rerun. Physical desktop/audio, native Windows, primary systemd, cold salvage and unrestricted live-game qualification remain open regardless of this bounded attempt.
 
-Status: WIP; independent feasibility review and new startup have not executed. No answer or model prompt has been sent in this stage.
+## Independent feasibility review before startup
+
+Actual read-only Sol6.1/xhigh review of5217f127: **PASS for the immediate nextscreen-only observation**, not Q2 readiness. This consumes the sole authorized TERM answer. Production BridgeHost freezes its input profile at launch (`Program.cs:454,1489`), and its default markers are unsupported; neither a retained process nor a banner may be upgraded to Ready by editing config. A future runtime/profile fix and restart cannot silently reuse the one-answer approval.
+
+The review also identified a source-level ordinary new-game launch-order gap: initialization correctly requires quiescence, but `NewGameFlow`'s generation-bound `WaitForGmResponse` retains local main admission while awaiting an absent main. A bridge launched later cannot acquire that guard. This is a technical consumer integration task to reproduce causally, not permission to erase/recreate ownership or change the game's model. It remains separate from the immediate transcript observation; no runtime fix or gameplay success is presumed.
+
+Status: WIP; immediate feasibility PASS, diagnostic source review pending; no new startup, answer or model prompt has been sent. Q2 remains conditional and unexecuted.
