@@ -187,3 +187,5 @@ confirmed stop and confirmed successful load. Uncertain stop/load must halt auto
 continuation with a clear message. Never resume the old session or replay an unknown
 command. Implement in a separate next slice; T031 retains existing low-level refusal.
 No new provider/model request or GM model change is authorized by this decision.
+
+- [ ] T043-RELAY-GM-BOUNDED: owner-authorized isolated real Codex-agent GM through persistent neutral test CLI and existing M1/fence/T042; [review/implementation plan](relay-gm-bounded-plan.md). OpenCode access remains blocked, no retries/bypass.

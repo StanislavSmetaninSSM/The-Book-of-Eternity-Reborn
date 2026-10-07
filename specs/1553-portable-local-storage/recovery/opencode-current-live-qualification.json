@@ -167,7 +167,7 @@
     "CliOrNewGameStarted": false,
     "ModelRequests": 0,
     "AcceptedAppliedGameTurns": 0,
-    "IndependentReview": "Pending Sol metadata review",
+    "IndependentReview": "Sol6.1/xhigh PASS 5f663533..0a142b134926a51a79556e42c91d26d7f332541d; read-only opencode_access_receipt_review; no material findings",
     "NoRetriesOrSettingsChanges": true
   }
 }

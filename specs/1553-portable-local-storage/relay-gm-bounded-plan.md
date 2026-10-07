@@ -1,0 +1,33 @@
+# T043-RELAY-GM-BOUNDED — live model, controlled CLI transport
+
+Source [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), accepted driver5f663533 and access receipt0a142b13. The owner explicitly authorized this separate test adapter if OpenCode remains unavailable. OpenCode's sole current credential-free GET failed at CONNECT403; no retries, proxy or endpoint substitution. Independent Sol metadata review of5f663533..0a142b13 passed. Systemd remains deferred.
+
+## Existing route and feasibility
+
+Use the existing `live-game-one-turn.py` ordinary NewGame/client/launcher/daemon route, M1 original NativeLineage owner, schema1 fence and T042 immutable dispatch. Configure only this disposable game's CLI command/model/input profile. No second launcher, mutation journal or authority. Python is already available to this qualification harness; it is not a new player prerequisite.
+
+The relay is a persistent raw-terminal test executable. It emits only the already supported neutral-v1 subset (UTF8, CR/LF, erase+home), observes bracketed paste, renders the exact draft, and creates one immutable queue request only on the subsequent real CR submit. The original Bridge's fresh draft/working observations establish delivery; a queue file never establishes readiness or mutation authority. Use a relay-specific composer prefix and diagnostic blocked marker: the real daemon's prompt itself contains `> ` and `update`, so generic markers would collide with ordinary instruction text.
+
+The daemon's single-line instruction literal at `game_master_daemon.ps1:5835` is already5164 characters before substituted paths/directives. `TerminalScreen.cs` currently refuses columns beyond4096. First reproduce this concrete boundary using the actual neutral view; raise only its bounded logical-line capacity to65536 UTF16 units (128 rows unchanged), retain over-bound and unknown-VT refusal. This neutral logical transcript is not arbitrary-TUI or physical terminal wrapping support.
+
+On submit the relay snapshots exact terminal UTF8 bytes plus the current turn/repair request bytes, SHA256, session/request/turn identifiers and queue ordinal. Those are correlation witnesses, not replacement pins. Before executing a response it rechecks the unchanged request and pending context; mismatch, duplicate, cancel or missing authority refuses execution. It never resubmits input. At most one game action, with bounded repair submissions only if the actual daemon requests them.
+
+A separate Sol6.1 Codex GM agent reads the actual submitted prompt, current game context pack/guides/templates and own game data. Repository source is read-only. It writes a response script and matching reply envelope **only into this queue**. No canned response, provider/network tool, credential access or direct parent edits of final game state. The relay verifies the envelope and executes that freshly model-authored script once as an owned descendant, using the existing session bootstrap/GM_Turn_Helper and ordinary completion/validation/application/history consumers. The test profile explicitly names this Codex-agent adapter; it does not claim OpenCode/Ling compatibility or alter the user's main profile.
+
+## Smallest sequence
+
+1. Independent Sol6.1/xhigh design review. Publish plan/task and access-review closure, ordinary push and remote byte readback.
+2. Causal RED: actual neutral view long Unicode draft, bounded overflow/unknown VT; real relay process paste-before-submit/no-submit queue, exact Unicode/multiline bytes, wrong/stale reply and once-only execution. Controlled transport replies are inert and never counted as live GM. Add one narrow category; select only directly changed view methods and driver phase checks. Implement the relay and optional driver mode after RED.
+3. Independent source review and fresh narrow GREEN/catalog validation. Publish source checkpoint. Prepare a fresh prebuilt package matching current runtime source, without game state; no compiler/source checkout at gameplay startup.
+4. One ordinary NewGame attempt with the reviewed driver and original owner. The separate GM agent starts only after current original SubmissionObserved and a real queue request. Give it the exact request and current instructions. Observe response execution, real terminal signal, validator acceptance, canonical effects, one matching story/history entry and pending/rollback cleanup independently. Do not count prompt echo or synthetic transport as a turn.
+5. Original stop/ACK, actual I/O/disposal, durable same-identity Stopped and guardian ECHILD are separate evidence. Uncertain stays Uncertain. Independent source/evidence/metadata review, push/readback and fresh GitHub-only restore; stop at handoff.
+
+## Bounds and failure handling
+
+Keep existing individual preparation/progress, submit and original stop bounds. For this explicit agent queue, allow at most600 seconds for one live generation (including up to two real repair requests), total work660 seconds, cleanup60 seconds, independent guardian750 seconds. This is a new bounded orchestration class, not an enlarged old category budget or provider retry. Emit queue stages/age and preserve agent task ID. Any unknown submit, lost response, stale request, unexpected access prompt, output overflow or failed stop stops automatic continuation; no cold replay. Relay child stdout/stderr are bounded and saved outside the terminal presentation so PowerShell output cannot advertise unsupported VT. Its descendants remain inside the original NativeLineage scope.
+
+No systemd setup, native Windows qualification, real user saves, live browser, new auth/network/security settings or paid subscription. Existing GM gameplay/output contracts are consumed unchanged; no new GM-authored schema or gameplay rule requires prompt/example edits. This qualifies a controlled transport plus genuinely generated game response, not a production GM CLI distribution.
+
+## Progress
+
+Design pending independent review; implementation/live execution not started. OpenCode access review PASS0a142b13; provider/model calls and accepted turns in that access check0.

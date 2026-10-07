@@ -13,7 +13,7 @@ profile/model and auth/network/security settings unchanged. Existing offline
 14/14 qualification remains accepted; no repeated tests. This is current access
 failure evidence, not a game/runtime failure or new login requirement.
 [Safe request/result receipt](recovery/evidence/opencode-live/access-after-approval/receipt.json).
-Independent Sol metadata review and ordinary checkpoint/readback close separately.
+Independent Sol6.1/xhigh metadata review PASS5f663533..0a142b13; no material findings. Ordinary remote SHA and all changed files were read back exactly at0a142b13. The separately authorized relay fallback is tracked in [its plan](relay-gm-bounded-plan.md).
 
 # T043 driver correction handoff — live provider access pending
 
