@@ -37,7 +37,7 @@ internal sealed partial class BridgeHost
         if(!v.Reliable || !v.CursorVisible || v.PendingWrap || v.Cells==null || v.Foreground==null ||
             v.CursorColumn<0 || v.CursorColumn>=v.Columns || v.CursorRow<start)return false;
         for(var i=0;i<start;i++)if(p.StartupBannerLines[i].Length>v.Columns || v.Cells[i]!=p.StartupBannerLines[i].PadRight(v.Columns))return false;
-        var footers=Enumerable.Range(start+2,Math.Min(6,v.Cells.Length-start-2)).Where(i=>MiniIdleFooter(p,v.Cells[i])).ToArray();
+        var cells=v.Cells;var footers=Enumerable.Range(start+2,Math.Max(0,Math.Min(6,cells.Length-start-2))).Where(i=>MiniIdleFooter(p,cells[i])).ToArray();
         if(footers.Length!=1)return false;var footer=footers[0];last=footer-2;
         if(last-start is <0 or >5 || v.CursorRow>last || v.Cells[footer-1].Any(c=>c!=' ') ||
             v.Cells.Skip(footer+1).Any(r=>r.Any(c=>c!=' ')))return false;

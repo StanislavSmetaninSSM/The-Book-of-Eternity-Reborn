@@ -25,6 +25,27 @@ public sealed class GmConnectedMiniTransactionTests
     [InlineData("unrestored", "draft-uncertain")]
     public Task ActualOriginalPipe_WitnessRefusals(string mode,string expected)=>RunConnectedAsync(mode,expected);
 
+    [Theory]
+    [InlineData("eof", "draft-uncertain")]
+    [InlineData("busy-composer", "unknown-outcome")]
+    [InlineData("busy-panel", "unknown-outcome")]
+    [InlineData("symlink-removal", "draft-uncertain")]
+    [InlineData("queued-enter", "draft-uncertain")]
+    public Task ActualOriginalPipe_ReviewBoundaries(string mode,string expected)=>RunConnectedAsync(mode,expected);
+
+    [Theory]
+    [InlineData("soft\u00adhyphen")]
+    [InlineData("combining\u0483mark")]
+    public async Task ActualOriginalPipe_UnsupportedGlyphIsZeroWrite(string text)
+    {
+        await using var h=new GmBridgePromptOperationTests.PromptHostFixture();using var screen=GmExternalDraftObservationTests.InstallMini(h);
+        screen.Feed(GmSynchronizedTerminalPresentationTests.ActualTranscript("startup"));
+        h.HostType.GetField("_draftLaunchBinding",BindingFlags.Instance|BindingFlags.NonPublic)?.SetValue(h.Host,"own-launch");
+        h.HostType.GetField("_draftLaunchInput",BindingFlags.Instance|BindingFlags.NonPublic)?.SetValue(h.Host,h.Binding);
+        var result=await h.Rpc(h.Request("glyph",text));
+        Assert.Equal("not-written",result.GetProperty("promptDelivery").GetProperty("disposition").GetString());Assert.Empty(h.Input.Bytes);
+    }
+
     private static async Task RunConnectedAsync(string mode,string expected)
     {
         await using var h=new GmBridgePromptOperationTests.PromptHostFixture();
@@ -35,7 +56,7 @@ public sealed class GmConnectedMiniTransactionTests
         var launch="original-launch-"+Guid.NewGuid().ToString("N");
         h.HostType.GetField("_draftLaunchBinding",BindingFlags.Instance|BindingFlags.NonPublic)?.SetValue(h.Host,launch);
         h.HostType.GetField("_draftLaunchInput",BindingFlags.Instance|BindingFlags.NonPublic)?.SetValue(h.Host,h.Binding);
-        Task? observer=null;int? observerExit=null;var editor=false;
+        Task? observer=null,queued=null;int? observerExit=null;var editor=false;
         object Cancel(string command)=>new {command,operationId="one",operationKind="turn",operationRevision="revision-1",inputBindingId=h.BindingId,text,appendEnter=true};
         void Frame(bool home)
         {
@@ -60,6 +81,18 @@ public sealed class GmConnectedMiniTransactionTests
                     if(mode=="cancel")await h.Rpc(Cancel("cancelPrompt"));
                     if(mode=="manual")await h.Rpc(new {command="addText",text="manual"});
                     await File.WriteAllTextAsync(file,mode=="changed"?text+" altered":text,new UTF8Encoding(false));
+                    if(mode=="eof"){
+                        using var pipe=await h.Connect();var reader=new BookOfEternityClient.Services.GmRuntime.MainOperationReader(pipe);
+                        await BookOfEternityClient.Services.GmRuntime.MainOperationReader.WriteAsync(pipe,new {command="observeDraft",binding=launch,path=file},CancellationToken.None);
+                        var hello=await reader.ReadAsync<JsonElement>(CancellationToken.None);
+                        var actual=h.HostType.Assembly.GetType("BookOfEternityGMBridge.DraftObservation")!.GetMethod("Read",BindingFlags.Static|BindingFlags.NonPublic)!.Invoke(null,new object[]{h.Root,file});
+                        var fields=JsonSerializer.SerializeToElement(actual).EnumerateObject().ToDictionary(p=>p.Name,p=>p.Value.Clone());
+                        fields["nonce"]=JsonSerializer.SerializeToElement(hello.GetProperty("nonce").GetString());
+                        await BookOfEternityClient.Services.GmRuntime.MainOperationReader.WriteAsync(pipe,fields,CancellationToken.None);
+                        Assert.True((await reader.ReadAsync<JsonElement>(CancellationToken.None)).GetProperty("ok").GetBoolean());
+                        // Actual helper failure closes exactly like EOF; it must never be success evidence.
+                        pipe.Dispose();observerExit=2;File.Delete(file);Frame(false);return;
+                    }
                     var configuration=new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
                     var start=new ProcessStartInfo(Path.Combine(Environment.GetEnvironmentVariable("DOTNET_ROOT")!,"dotnet")){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
                     foreach(var a in new[]{Path.Combine(TestRepoPaths.RepoRoot,"BookOfEternityGMBridge/bin",configuration,"net8.0/BookOfEternityGMBridge.dll"),"--observe-draft",file})start.ArgumentList.Add(a);
@@ -69,18 +102,38 @@ public sealed class GmConnectedMiniTransactionTests
                     try{await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(7));observerExit=child.ExitCode;}
                     finally{if(!child.HasExited){child.Kill();await child.WaitForExitAsync();}}
                     if(observerExit==0 && mode!="unrestored"){
-                        File.Delete(file);Frame(false);
+                        File.Delete(file);
+                        if(mode=="symlink-removal")File.CreateSymbolicLink(file,Path.Combine(h.Root,"missing-own-target"));
+                        Frame(false);
                         if(mode=="restored-cursor")screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[11;13H\u001b[?2026l"));
                     }
                 });return;
             }
             if(bytes=="\u001b[H")Frame(true);
-            if(bytes=="\u001b[F")Frame(false);
-            if(bytes=="\r")screen.Feed(Encoding.UTF8.GetBytes(mode=="unknown"?"\u001b[?1049h":"\u001b[?2026h\u001b[13;1H\u001b[K"+" BUILD   esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[6;1H\u001b[?2026l"));
+            if(bytes=="\u001b[F"){
+                Frame(false);
+                if(mode=="queued-enter"){
+                    var gate=(SemaphoreSlim)h.Get("_ptyWriteLock")!;var held=gate.WaitAsync();
+                    queued=Task.Run(async()=>{
+                        await held;
+                        try{
+                            await Task.Delay(100);
+                            screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[2;1H\u001b[KUnexpected decision needed\u001b[11;46H\u001b[?2026l"));
+                        }finally{gate.Release();}
+                    });
+                }
+            }
+            if(bytes=="\r" && mode=="busy-composer"){
+                screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[6;1H\u001b[K"+" BUILD  ⠋ esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[11;46H\u001b[?2026l"));return;
+            }
+            if(bytes=="\r" && mode=="busy-panel"){
+                screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[2;1H\u001b[KUnexpected decision needed\u001b[13;1H\u001b[K"+" BUILD  ⠋ esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[6;1H\u001b[?2026l"));return;
+            }
+            if(bytes=="\r")screen.Feed(Encoding.UTF8.GetBytes(mode=="unknown"?"\u001b[?1049h":"\u001b[?2026h\u001b[13;1H\u001b[K"+" BUILD  ⠋ esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[6;1H\u001b[?2026l"));
         };
         Assert.True((await h.Rpc(new {command="setReady",ready=true})).GetProperty("ok").GetBoolean());
         var result=await h.Rpc(h.Request("one",text));
-        if(observer!=null)await observer;
+        if(observer!=null)await observer;if(queued!=null)await queued;
         Assert.True(editor,"Actual original transaction must reach the standard editor gesture before witness/edge verdict.");
         if(mode is "success" or "unknown" or "restored-cursor" or "wrapped-edge"){
             var operations=(System.Collections.IDictionary)h.Get("_promptOperations")!;
@@ -95,7 +148,7 @@ public sealed class GmConnectedMiniTransactionTests
         {
             Assert.Equal(0,observerExit);Assert.Equal("\u001b[200~"+text+"\u001b[201~\u0018e\u001b[H\u001b[F\r",delivered);
         }
-        else Assert.DoesNotContain('\r',delivered);
+        else if(expected=="draft-uncertain")Assert.DoesNotContain('\r',delivered);
         var count=h.Input.Bytes.Length;
         Assert.Equal(expected,(await h.Rpc(h.Request("one",text))).GetProperty("promptDelivery").GetProperty("disposition").GetString());
         screen.Feed(GmSynchronizedTerminalPresentationTests.ActualTranscript("startup"));

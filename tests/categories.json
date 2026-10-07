@@ -16219,6 +16219,32 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-connected-mini-review-boundaries",
+      "responsibility": "T043 actual original EOF completion/false busy region/queued Enter/no-follow disappearance and glyph preflight causal boundaries",
+      "excludes": "Five unchanged refusing witness cases and passed native environment are separate owners; no live qualification",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+        "BookOfEternityGMBridge/DraftObservation.cs",
+        "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmConnectedMiniTransactionTests.ActualOriginalPipe_ReviewBoundaries",
+            "BookOfEternityClient.Tests.GmConnectedMiniTransactionTests.ActualOriginalPipe_UnsupportedGlyphIsZeroWrite"
+          ]
+        }
+      ]
     }
   ]
 }

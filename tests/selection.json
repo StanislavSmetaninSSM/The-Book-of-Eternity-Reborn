@@ -7,6 +7,13 @@
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED"
       ]
+    },
+    {
+      "category": "gm-connected-mini-review-boundaries",
+      "reason": "Independent source findings need seven new causal original-consumer cases before fixes; successful five refusals/native environment excluded",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED"
+      ]
     }
   ]
 }

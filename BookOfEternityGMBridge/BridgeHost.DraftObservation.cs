@@ -90,7 +90,7 @@ internal sealed partial class BridgeHost
         lock(_sync){if(!PromptStillOwned(op) || !IsMiniEdge(op,false))return false;version=PromptObservationVersion;op.DraftArmed=true;}
         await WriteToPtyAsync(op.Input,"\u0018e",false,token);
         var proof=await op.DraftProof.Task.WaitAsync(TimeSpan.FromMilliseconds(op.Snapshot.Profile.ObservationTimeoutMilliseconds),token);
-        if(!await ObservePromptAsync(op,version,_=>!File.Exists(proof.Path) && MiniDraftRegion(op,out _,out _,out _),token))return false;
+        if(!await ObservePromptAsync(op,version,screen=>!File.Exists(proof.Path) && MiniDraftRegion(op,out _,out _,out _),token))return false;
         lock(_sync){if(!PromptStillOwned(op))return false;version=PromptObservationVersion;}
         await WriteToPtyAsync(op.Input,"\u001b[H",false,token);
         if(!await ObservePromptAsync(op,version,_=>IsMiniEdge(op,true),token))return false;
