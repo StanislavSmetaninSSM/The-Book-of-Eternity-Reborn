@@ -108,6 +108,8 @@ public sealed class GmSynchronizedTerminalPresentationTests
     [InlineData("\u001b[1;101H")]
     [InlineData("\u001b]66;w=1; \u001b\\")]
     [InlineData("\u001b]66;s=2; \u001b\\")]
+    [InlineData("\u001b[38;2;1;2;3 m")]
+    [InlineData("\u001bP+q4d73\u0007")]
     public void UnsupportedGrammarOrFirstFrameProbe_RefusesBeforeFirstCommit(string unsupported)
     {
         using var p = new ScreenProbe("original");
