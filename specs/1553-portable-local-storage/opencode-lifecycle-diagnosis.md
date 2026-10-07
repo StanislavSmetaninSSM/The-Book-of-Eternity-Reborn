@@ -150,3 +150,10 @@ trackedfiles/363042586bytes, exacttree/remote/clean/fullfsck0, noalternates, exp
 depth1currenttreeonly. [Archived candidate proof](recovery/bootstrap-diagnosis-restoration.json).
 Final metadata carrier gets separate exact remote/readback and fresh GitHub-only
 restoration before writer handoff; no runtime/fixtures/tests changed by this closure.
+
+
+## First authorized inert standalone trace — cause not reproduced
+
+Source421d01c6, actual standalone relocated ordinary Bridge/AppContext and mini/editor/current NewGame+initialcancel, exception-onlypostfailure logging, strace6.13. Fixedneutral executable for pre-exec question; no Ready/daemon/input/provider. Complete A1send35 at1791379111.360604, managedclose87 at.360935, nativeA1recv35 at.366256, no shutdownsyscall. Original58c1b462f4fb43c28257ad02eed0c31f fullidentityStoppedACK/record and tracer/controlPTY EOF/termios; guardianECHILD/driver0/emergency0/reaped1/failures0/deadlinefalse, elapsed21.616s. All12artifacts and677actualpackage files sourcepinned. [Trace manifest](recovery/evidence/opencode-live/standalone-inert-trace/manifest.json).
+
+This healthy execution does not reproduceog5, prove its initiatingcause, qualify a runtime correction, or permit a realCLI retry before causal gate. Tracer scheduling effect retained. Independent Astra feasibility/Solsource PASS; nextcausal observation under read-onlyreview. No historicalUncertain changes. Provider/game turns0.
