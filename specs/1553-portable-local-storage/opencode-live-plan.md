@@ -1017,3 +1017,14 @@ Independent evidence reviewer verified6actualcases/61artifacts; identified three
 missing directhelper fixture/scenario/test historicalsourcepins. Added exact767
 bytes/hashes to helperreceipt, no runtime/test/resultchange or rerun. Og5all678
 packagebytes rechecked beforestart; initialconfig/game absent.
+
+Independent evidence PASS19a8e7ea:89pins/61artifacts; sixnativeguardians/scoped
+ordering and all678og5packagebytes verified. Actualfreshog5attempt completed
+11.823s: ordinaryNewGame/currentinitialcancel succeeded, originalRunningrecord
+latched a4bce441.../8d44d89c...epoch1, firststatus TerminalUncertain/bootstrap-lost.
+Driver failedbareassert beforeReadiness/daemon/action; modelrequests0/action0/
+accepted0. Singleoriginalshutdown refused ok:false, durableUncertain retained.
+Clientforcedexit-2/EOF/termios; bridgeEOF/termios unconfirmed untilguardian, guardian
+ECHILD/driver1/emergency0/reaped2/failures0/nodeadline. Physical cleanup notlogical
+success. Og5neverreuse/clear; exactoriginal-bootstrap-lost receipt archived.
+No unchanged startup retry; inspect publicownmetadata/nativebootstrapcause first.
