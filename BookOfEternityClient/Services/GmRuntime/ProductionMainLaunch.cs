@@ -8,6 +8,7 @@ namespace BookOfEternityClient.Services.GmRuntime;
 // canonical recovery, configured-directory creation or compilation side effects.
 internal sealed record ProductionMainConfiguration(string Supervisor,string Shell,string Command,string Cwd,TerminalSize Size)
 {
+    internal IReadOnlyDictionary<string,string?>? ChildEnvironment {get;init;}
     internal static ProductionMainConfiguration Resolve(GameSettings settings,string session,TerminalSize size,string? package=null)
     {
         if(!OperatingSystem.IsLinux() || !settings.GmBridgeEnabled || !string.Equals(settings.GmBridgeBackend,"OwnedTerminal",StringComparison.OrdinalIgnoreCase))
@@ -27,6 +28,7 @@ internal sealed record ProductionMainConfiguration(string Supervisor,string Shel
     {
         var start=new ProcessStartInfo(Shell){UseShellExecute=false,WorkingDirectory=Cwd};
         foreach(var arg in new[]{"-NoLogo","-NoProfile","-Command",Command})start.ArgumentList.Add(arg);
+        if(ChildEnvironment!=null)foreach(var item in ChildEnvironment)start.Environment[item.Key]=item.Value;
         return start;
     }
 }

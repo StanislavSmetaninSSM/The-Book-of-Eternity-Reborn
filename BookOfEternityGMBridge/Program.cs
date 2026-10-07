@@ -305,6 +305,10 @@ internal sealed partial class BridgeHost : IDisposable
                         if(reader.LastFrameBytes>65536)throw new InvalidDataException("Load begin exceeds bound.");
                         await ServeLoadSessionAsync(server,reader,request,cancellationToken);return;
                     }
+                    if(string.Equals(request.Command,"observeDraft",StringComparison.OrdinalIgnoreCase)) {
+                        if(reader.LastFrameBytes>65536)throw new InvalidDataException("Draft begin exceeds bound.");
+                        await ServeDraftObservationAsync(server,reader,request,cancellationToken);return;
+                    }
                     if(string.Equals(request.Command,"mainOperationStatus",StringComparison.OrdinalIgnoreCase)) {
                         if(reader.LastFrameBytes>65536)throw new InvalidDataException("Operation lookup exceeds bound.");
                         var known=(_mainRun??_lastMainRun)?.QueryRemoteOperation(request.MainOperationClose??throw new InvalidDataException("Missing close identity.")) ?? new MainOperationReply(false,Error:"Unknown original operation.");
@@ -456,6 +460,7 @@ internal sealed partial class BridgeHost : IDisposable
                 var settings=LoadBridgeConfig();
                 var (columns,rows)=GetConsoleSize();
                 var configuration=ProductionMainConfiguration.Resolve(settings,_sessionPath,new(columns,rows));
+                configuration=ConfigureDraftObservation(configuration,settings.GmCliInputProfile.Snapshot());
                 _terminalLaunchSize=configuration.Size;
                 _productionConfig=settings; _productionConfig.GmCliInputProfile=settings.GmCliInputProfile.Snapshot();
                 _neutralFiles=new BookOfEternityClient.Core.FileSystemManager(_clientRoot,Microsoft.Extensions.Logging.Abstractions.NullLogger<BookOfEternityClient.Core.FileSystemManager>.Instance);
@@ -736,6 +741,7 @@ internal sealed partial class BridgeHost : IDisposable
                 throw new InvalidOperationException("Previous PTY input lifetime has not been drained.");
             var input = new InputLifetime(stream, shellLoopCts);
             _inputLifetime = input;
+            _draftLaunchInput=string.IsNullOrEmpty(_draftLaunchBinding)?null:input;
             _ptyInput = stream;
             _shellLoopCts = shellLoopCts;
             _status.LastInputWriteError = null;
@@ -1829,6 +1835,8 @@ internal sealed partial class BridgeHost : IDisposable
 
 internal sealed class BridgeRequest
 {
+    public string? Binding {get;set;}
+    public string? Path {get;set;}
     public int? Columns { get; set; }
     public int? Rows { get; set; }
     public string? Command { get; set; }

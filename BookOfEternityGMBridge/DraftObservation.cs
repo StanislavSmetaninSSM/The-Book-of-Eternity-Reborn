@@ -35,6 +35,7 @@ internal static class DraftObservation
                 modifiedSeconds=proof.ModifiedSeconds,modifiedNanoseconds=proof.ModifiedNanoseconds},deadline.Token,100000);
             var ack=await reader.ReadAsync<ObserverAck>(deadline.Token)??throw new IOException("Observer acknowledgement lost.");
             if(!ack.Ok)throw new IOException("Original operation rejected draft evidence.");
+            if(Read(directory,args[1])!=proof)throw new IOException("Actual draft changed before observer completion.");
             return 0;
         } catch(Exception ex) { Console.Error.WriteLine("Read-only draft observation refused: "+ex.GetType().Name);return 2; }
     }

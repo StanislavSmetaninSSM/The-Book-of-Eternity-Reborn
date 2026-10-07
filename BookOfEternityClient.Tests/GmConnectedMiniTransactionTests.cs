@@ -65,7 +65,7 @@ public sealed class GmConnectedMiniTransactionTests
             }
             if(bytes=="\u001b[H")Frame(true);
             if(bytes=="\u001b[F")Frame(false);
-            if(bytes=="\r")screen.Feed(Encoding.UTF8.GetBytes(mode=="unknown"?"\u001b[?1049h":"\u001b[?2026h\u001b[13;1H\u001b[K BUILD   esc interrupt\u001b[6;1H\u001b[?2026l"));
+            if(bytes=="\r")screen.Feed(Encoding.UTF8.GetBytes(mode=="unknown"?"\u001b[?1049h":"\u001b[?2026h\u001b[13;1H\u001b[K"+" BUILD   esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[6;1H\u001b[?2026l"));
         };
         Assert.True((await h.Rpc(new {command="setReady",ready=true})).GetProperty("ok").GetBoolean());
         var result=await h.Rpc(h.Request("one",text));

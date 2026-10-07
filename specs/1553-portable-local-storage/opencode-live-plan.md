@@ -451,3 +451,16 @@ New connected baseline adds7 original pipe/witness/causal edge scenarios plus
 1 original native terminal environment under independent guardian. Real observer
 receives only actual file; controlled CLI frames are not live OpenCode evidence.
 Runtime witness/terminal env still unchanged; RED pending.
+
+Connected54908f9b baseline8/8causal FAIL:7 never reached standard editor,
+1 actual native host received blank sentinel despite its original configured
+environment. Guardian ECHILD0emergency; no preparation failure. WIP connects
+once original AwaitingPaste/challenge/actual pipe proof, revalidates full file
+identity/bytes before ACK, waits original EOF plus actual removal/resumed frame,
+then distinct raw Home/End edges. Independent Sol permits exact focused raw
+prefix/suffix spans without full wrap reconstruction; unknown/unprovable edges
+refuse. Terminal-only environment is consumed by original native supervisor.
+Production config injects existing packaged observer apphost/owned TMPDIR/absolute
+original endpoint; command/model/args/cwd unchanged. Single Enter stays original
+T042 linearization; all post-paste/post-submit ambiguity retains pause. Source
+and eight GREEN checks pending; no new CLI/provider/game run.

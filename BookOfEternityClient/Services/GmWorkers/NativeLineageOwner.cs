@@ -146,6 +146,9 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
             RedirectStandardError = true, WorkingDirectory = host.WorkingDirectory,
             CreateNoWindow = true
         };
+        // Terminal launch consumes the original configured child environment.
+        // Worker host-v2 retains its separately owned existing environment path.
+        if(_terminalMode){start.Environment.Clear();foreach(var item in host.Environment)start.Environment[item.Key]=item.Value;}
         foreach (var arg in new[] { _run, "100", "2500", _terminalMode ? "--terminal-v1" : "--host-v2", Path.Combine(_bootstrapDirectory, "owner") }) start.ArgumentList.Add(arg);
         if (_terminalMode) { start.ArgumentList.Add(columns.ToString(System.Globalization.CultureInfo.InvariantCulture)); start.ArgumentList.Add(rows.ToString(System.Globalization.CultureInfo.InvariantCulture)); }
         start.ArgumentList.Add(host.FileName);

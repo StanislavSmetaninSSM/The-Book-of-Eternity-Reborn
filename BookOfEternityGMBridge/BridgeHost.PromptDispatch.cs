@@ -25,6 +25,10 @@ internal sealed partial class BridgeHost
         public PromptDeliveryPhase Phase = PromptDeliveryPhase.Queued;
         public PromptDeliveryResult? Result;
         public Task<PromptDeliveryResult> Task = null!;
+        public readonly TaskCompletionSource<DraftFileProof> DraftProof=new(TaskCreationOptions.RunContinuationsAsynchronously);
+        public bool DraftArmed,DraftClaimed;
+        public string[] ExistingDrafts=[];
+        public long PasteStartedUnixMilliseconds;
     }
 
     private static PromptDeliveryResult PromptResult(BridgeRequest request, PromptDeliveryDisposition disposition, string reason) =>
@@ -144,11 +148,14 @@ internal sealed partial class BridgeHost
                     reason = "not-ready";
                     return FinishPrompt(operation, PromptDeliveryDisposition.NotWritten, reason, watch.ElapsedMilliseconds);
                 }
+                if(operation.Snapshot.Profile.IsMini && !PrepareMiniOperation(operation))
+                    return FinishPrompt(operation,PromptDeliveryDisposition.NotWritten,"unsupported-draft-shape",watch.ElapsedMilliseconds);
                 _status.Ready = false;
                 _status.State = "Busy";
                 _status.LastPromptDispatchState = "Dispatching";
                 _status.LastPromptDispatchStartedAtUtc = DateTimeOffset.UtcNow.ToString("O");
                 operation.Phase = PromptDeliveryPhase.PasteStarted;
+                operation.PasteStartedUnixMilliseconds=DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                 if(operation.Snapshot.Profile.IsMini)operation.Input.MiniPasteAttempted=true;
                 TryWriteInputStatus();
             }
@@ -158,20 +165,22 @@ internal sealed partial class BridgeHost
             var text = operation.Snapshot.Text.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", profile.NewlineSequence);
             await WriteToPtyAsync(operation.Input, profile.PasteStart + text + profile.PasteEnd, false, token);
             lock (_sync) operation.Phase = PromptDeliveryPhase.AwaitingPaste;
-            if (!await ObservePromptAsync(operation, version, screen => IsPastedView(profile, screen, text), token))
+            if (!await ObservePromptAsync(operation, version, screen => profile.IsMini ? IsMiniEdge(operation,false) : IsPastedView(profile, screen, text), token))
                 return FinishPrompt(operation, PromptDeliveryDisposition.DraftUncertain, reason, watch.ElapsedMilliseconds);
+            if(profile.IsMini && !await ObserveMiniDraftAsync(operation,token))
+                return FinishPrompt(operation,PromptDeliveryDisposition.DraftUncertain,"draft-proof-or-restoration-refused",watch.ElapsedMilliseconds);
             lock (_sync)
             {
                 // Linearization precedes the first submit byte. Manual input/cancel shares this lock.
                 if (!PromptStillOwned(operation)) throw new OperationCanceledException(token);
-                if (!IsPastedView(profile, _promptScreenReader(), text))
+                if (!(profile.IsMini ? IsMiniEdge(operation,false) : IsPastedView(profile, _promptScreenReader(), text)))
                     return FinishPrompt(operation, PromptDeliveryDisposition.DraftUncertain, "paste-view-changed", watch.ElapsedMilliseconds);
                 operation.Phase = PromptDeliveryPhase.SubmitStarted;
                 version = PromptObservationVersion;
             }
             await WriteToPtyAsync(operation.Input, profile.SubmitSequence, false, token);
             lock (_sync) operation.Phase = PromptDeliveryPhase.AwaitingSubmission;
-            if (!await ObservePromptAsync(operation, version, screen => !IsBlockedView(profile, screen) &&
+            if (!await ObservePromptAsync(operation, version, screen => profile.IsMini ? IsMiniWorking(profile) : !IsBlockedView(profile, screen) &&
                     screen.Contains(profile.WorkingMarker, StringComparison.Ordinal) && !IsPastedView(profile, screen, text), token))
                 return FinishPrompt(operation, PromptDeliveryDisposition.UnknownOutcome, reason, watch.ElapsedMilliseconds);
             lock (_sync)
