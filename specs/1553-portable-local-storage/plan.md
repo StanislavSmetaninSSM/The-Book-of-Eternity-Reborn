@@ -1,3 +1,7 @@
+## Current authorized bounded real console Q1 → Q2
+
+Owner now permits one exact TERM=dumb confirmation and at most two real GM/model turns in an isolated ordinary new console game. [Executable plan](codex-live-q1-q2-plan.md) preserves honest presentation/readiness, configured command/model and original M1/fence/T042. Prefer current NewGameFlow, not experimental fixture saves. Independent feasibility review precedes startup; unexpected trust/access/auth/persistent grants remain separate blockers. No answer or model request yet. Earlier diagnostic prohibition is historical; systemd WIP below is deferred. Source #1553.
+
 ## Deferred primary systemd-user source/design WIP
 
 From accepted Q1 diagnostic13cdd9ae, [source notes](systemd-main-design-wip.md) preserve checked selector/terminal/M1/fence/pool boundaries and unresolved API/dependency/identity questions. Owner reprioritized isolated real console Q1→Q2; this draft is deferred, unreviewed and not implementation approval. No runtime/tests/services/probes or systemd qualification. Source #1553.

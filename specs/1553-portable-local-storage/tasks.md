@@ -3,6 +3,8 @@
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 Spec: [spec.md](spec.md) | Plan/checkpoint: [plan.md](plan.md)
 
+- [ ] T043-Q1-Q2-LIVE-BOUNDED Owner reprioritized from diagnostic13cdd9ae and deferred systemd WIP63e99009: one exact TERM=dumb confirmation and at most two genuine provider/game turns in an isolated ordinary new console game. Preserve configured GM command/model, original M1/fence/T042 and unknown-sequence refusal; unexpected permission/login/trust/persistent grants require separate decision. Experimental saves are synthetic and not preferred. Independent actual Sol6.1/xhigh feasibility/source/evidence reviews; causal narrow tests only if a demonstrated defect requires changes. [Plan](codex-live-q1-q2-plan.md). No new answer, startup or model request yet; runtime/tests unchanged. Source #1553; FR-009/012/013/014/015; SC-004 remains open.
+
 
 Active verification scope (owner decision, 2026-10-04 15:45 UTC): browser behavior is
 verified through automated actual client/backend tests; live runs use the console

@@ -1,4 +1,8 @@
-## Current bounded Codex Q1 — startup gate observed
+## Current authorization: bounded real console Codex Q1 → Q2
+
+Owner permits exactly one response y at the previously observed TERM=dumb warning and at most two genuine GM turns using existing authorization/configured command/model in a disposable new console game. Ordinary current-schema initialization is preferred; experimental saves are fixtures, not game history. Honest terminal/profile readiness, original retained owner/fence/T042 and scoped completion remain required. Unexpected permission/trust/login/persistent grant requires a separate decision; no parser bypass, replay or user saves. [Plan](codex-live-q1-q2-plan.md). Systemd design is deferred at63e99009; no new answer or model request yet. Earlier Q1 diagnostic limits below describe their historical checkpoint. Source #1553.
+
+## Historical bounded Codex Q1 — startup gate observed
 
 From accepted desktop42812722, one actual ordinary M1 installed Codex startup/stop probe retained original NativeLineage terminal/worker inventory/schema1 fence. Unchanged `TERM=dumb` reached unanswered `Continue anyway? [y/N]:`; zero model/input/confirmation/queryresponse. Same-original scoped stop, actual retirement/Stopped/ACK/PTY cleanup and guardianECHILD confirmed. [Handoff](codex-q1-handoff.md) / [qualification](recovery/codex-q1-qualification.json). Runtime/profile/parser/tests unchanged; Q1 readiness/VT and full FR-013/SC-004 remain open. Need explicit gate decision plus demonstrated presentation, or another supported terminal environment; no TERM-only proof, auth/config workaround or Q2. Source #1553.
 
