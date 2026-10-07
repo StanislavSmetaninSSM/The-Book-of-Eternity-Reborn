@@ -1,5 +1,19 @@
 # Reproduce the cross-platform development environment
 
+## Bounded desktop helper behavior
+
+Image gallery/viewer, both mods-folder menus and main-menu library folder helpers
+use the existing desktop association on Linux/Windows. A returned request does not
+prove a window appeared: each result includes an escaped path that can be opened
+manually. Missing file/association, folder creation failure and cancellation are
+explicit; no shell commands, installation or automatic unknown-file opening.
+Suppressed automatic image display remains suppressed; explicit force still requests
+supported images. Settings acknowledgement and Explorer/menu failure pauses remain.
+Font changes remain limited to classic Windows hosts with the existing fallback note.
+[Handoff](desktop-helpers-portable-handoff.md):23controlled Linux cases, not positive
+desktop/session/native Windows qualification. Do not repeat completed unrelated
+cohorts or start other blocks for this check.
+
 ## Current bounded auxiliary packaged route
 
 T050-AUXILIARY-LAUNCHER-PORTABLE implements existing prepare-turn from relocated

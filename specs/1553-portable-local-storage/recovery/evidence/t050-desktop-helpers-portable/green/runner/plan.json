@@ -1,0 +1,142 @@
+{
+  "Categories": [
+    "desktop-image-consumers",
+    "desktop-folder-consumers",
+    "desktop-launch-contracts"
+  ],
+  "Reasons": [
+    {
+      "category": "desktop-image-consumers",
+      "reason": "Original ImageService viewer/gallery manual outcomes and display/creation/error boundaries through controlled association adapter",
+      "contracts": [
+        "T050-DESKTOP-HELPERS-PORTABLE"
+      ]
+    },
+    {
+      "category": "desktop-folder-consumers",
+      "reason": "Actual settings/Explorer mods-menu and main/related folder manual outcomes, acknowledgements and next-frame visibility",
+      "contracts": [
+        "T050-DESKTOP-HELPERS-PORTABLE"
+      ]
+    },
+    {
+      "category": "desktop-launch-contracts",
+      "reason": "Typed capability/request semantics and image suppression/force; same real consumer helper, no broad cohorts",
+      "contracts": [
+        "T050-DESKTOP-HELPERS-PORTABLE"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "04c9717a5290d001816fb394c276c3a2754f3dad",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.6289537,
+  "Descriptors": [
+    {
+      "Name": "desktop-folder-consumers-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "desktop-folder-consumers",
+      "Categories": [
+        "desktop-folder-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt|FullyQualifiedName=BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainAndRelatedExplorerFolderHelpersPreservePausePolicy|FullyQualifiedName=BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainMenuFolderCreationFailureIsHandledBeforeAssociation|FullyQualifiedName=BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualSettingsModsMenuShowsFailureAndKeepsItsOriginalAcknowledgement|FullyQualifiedName=BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualSettingsRequestedOutcomeRetainsItsOriginalSuccessAcknowledgement",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainAndRelatedExplorerFolderHelpersPreservePausePolicy",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainMenuFolderCreationFailureIsHandledBeforeAssociation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualSettingsModsMenuShowsFailureAndKeepsItsOriginalAcknowledgement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualSettingsRequestedOutcomeRetainsItsOriginalSuccessAcknowledgement",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "desktop-image-consumers-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "desktop-image-consumers",
+      "Categories": [
+        "desktop-image-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.DesktopImageConsumerTests.RealGalleryCreationFailureIsHandledWithManualPath|FullyQualifiedName=BookOfEternityClient.Tests.DesktopImageConsumerTests.RealViewerAssociationFailureGivesVisibleReasonAndManualPath",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopImageConsumerTests.RealGalleryCreationFailureIsHandledWithManualPath",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopImageConsumerTests.RealViewerAssociationFailureGivesVisibleReasonAndManualPath",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "desktop-launch-contracts-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "desktop-launch-contracts",
+      "Categories": [
+        "desktop-launch-contracts"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.DesktopLaunchContractTests.InvalidGalleryKindDoesNotCreateOrOpenUnknownFolder|FullyQualifiedName=BookOfEternityClient.Tests.DesktopLaunchContractTests.RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay|FullyQualifiedName=BookOfEternityClient.Tests.DesktopLaunchContractTests.RealGalleryUsesExactDirectoryAndOnlyOneManagedRequest|FullyQualifiedName=BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerHonoursSuppressionAndExplicitForce|FullyQualifiedName=BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerNeverLaunchesMissingOrUnknownFiles|FullyQualifiedName=BookOfEternityClient.Tests.DesktopLaunchContractTests.SourceKeepsOriginalConsumersAndFontFallbackWithoutShellOrDesktopFramework|FullyQualifiedName=BookOfEternityClient.Tests.DesktopLaunchContractTests.TypedFolderMissingDoesNotCreateWithoutOriginalCreationPermission",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopLaunchContractTests.InvalidGalleryKindDoesNotCreateOrOpenUnknownFolder",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealGalleryUsesExactDirectoryAndOnlyOneManagedRequest",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerHonoursSuppressionAndExplicitForce",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerNeverLaunchesMissingOrUnknownFiles",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopLaunchContractTests.SourceKeepsOriginalConsumersAndFontFallbackWithoutShellOrDesktopFramework",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopLaunchContractTests.TypedFolderMissingDoesNotCreateWithoutOriginalCreationPermission",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

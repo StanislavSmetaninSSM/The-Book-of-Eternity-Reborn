@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="84f18c3e-a098-4175-b146-72af99d541dd" name="@c7669543e9c7 2026-10-07 05:00:43" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-07T05:00:43.1260569+00:00" queuing="2026-10-07T05:00:43.1260569+00:00" start="2026-10-07T05:00:41.0928649+00:00" finish="2026-10-07T05:00:43.2365472+00:00" />
+  <TestSettings name="default" id="2c358dd7-eab3-4f15-bd60-baf824670b54">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-07_05_00_43" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="b573b4fa-37b0-4aed-8db6-7d36fce35404" testId="2cfa8af5-e645-1e58-fc3a-7def4b70e1a6" testName="BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainMenuFolderCreationFailureIsHandledBeforeAssociation" computerName="c7669543e9c7" duration="00:00:00.0048135" startTime="2026-10-07T05:00:43.1015228+00:00" endTime="2026-10-07T05:00:43.1015230+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b573b4fa-37b0-4aed-8db6-7d36fce35404">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   System.IO.IOException: The file '/tmp/boe-desktop-fa951fda12cf4add9c2872b40412cac5/Тест [red]\ud83c\udf0c путь/folder blocker' already exists.
+   at System.IO.FileSystem.CreateDirectory(String fullPath, UnixFileMode unixCreateMode)
+   at System.IO.Directory.CreateDirectory(String path)
+   at BookOfEternityClient.Core.GameEngine.OpenFolderOrPrintPath(String directoryPath, IConsoleInputSource inputSource) in /workspace/native-1553/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs:line 2176
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+--- End of stack trace from previous location ---
+   at BookOfEternityClient.Tests.DesktopHelpersFixture.Invoke(Object target, String method, Object[] args) in /workspace/native-1553/BookOfEternityClient.Tests/DesktopHelpersFixture.cs:line 67
+   at BookOfEternityClient.Tests.DesktopFolderConsumerTests.&lt;&gt;c__DisplayClass2_0.&lt;ActualMainMenuFolderCreationFailureIsHandledBeforeAssociation&gt;b__0() in /workspace/native-1553/BookOfEternityClient.Tests/DesktopFolderConsumerTests.cs:line 42
+   at Xunit.Record.Exception(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 47</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainMenuFolderCreationFailureIsHandledBeforeAssociation() in /workspace/native-1553/BookOfEternityClient.Tests/DesktopFolderConsumerTests.cs:line 43
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="84604cde-af0e-4211-a2ad-292a6d5a7dd3" testId="4e736f72-3de3-0938-4278-e0581ed4bf36" testName="BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt(mode: &quot;unavailable&quot;)" computerName="c7669543e9c7" duration="00:00:00.0134021" startTime="2026-10-07T05:00:43.0667305+00:00" endTime="2026-10-07T05:00:43.0667306+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="84604cde-af0e-4211-a2ad-292a6d5a7dd3">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "╔════════════════════════════════════════"···
+Not found: "/tmp/boe-desktop-265023cf26f84719b6739cf0"···</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/DesktopFolderConsumerTests.cs:line 21
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="aa14fc79-465a-44e4-a708-86ce635f8b4e" testId="2e9e4bb6-b2e2-bd1b-8176-b50d371ceed4" testName="BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt(mode: &quot;requested&quot;)" computerName="c7669543e9c7" duration="00:00:00.2175938" startTime="2026-10-07T05:00:43.0584533+00:00" endTime="2026-10-07T05:00:43.0584667+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aa14fc79-465a-44e4-a708-86ce635f8b4e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "╔════════════════════════════════════════"···
+Not found: "/tmp/boe-desktop-67632e881501442dbeee5218"···</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/DesktopFolderConsumerTests.cs:line 21
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="64b3ecf5-fc3f-4f33-bcc4-1fa0e28e0f2d" testId="924efad2-7a5e-b86d-59c7-b47a6a581b7d" testName="BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualSettingsModsMenuShowsFailureAndKeepsItsOriginalAcknowledgement" computerName="c7669543e9c7" duration="00:00:00.0950210" startTime="2026-10-07T05:00:43.1704071+00:00" endTime="2026-10-07T05:00:43.1704073+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="64b3ecf5-fc3f-4f33-bcc4-1fa0e28e0f2d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "─────────────────────────────────────────"···
+Not found: "Не удалось"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualSettingsModsMenuShowsFailureAndKeepsItsOriginalAcknowledgement() in /workspace/native-1553/BookOfEternityClient.Tests/DesktopFolderConsumerTests.cs:line 35
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt(mode: &quot;requested&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2e9e4bb6-b2e2-bd1b-8176-b50d371ceed4">
+      <Execution id="aa14fc79-465a-44e4-a708-86ce635f8b4e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopFolderConsumerTests" name="ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainMenuFolderCreationFailureIsHandledBeforeAssociation" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2cfa8af5-e645-1e58-fc3a-7def4b70e1a6">
+      <Execution id="b573b4fa-37b0-4aed-8db6-7d36fce35404" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopFolderConsumerTests" name="ActualMainMenuFolderCreationFailureIsHandledBeforeAssociation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualSettingsModsMenuShowsFailureAndKeepsItsOriginalAcknowledgement" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="924efad2-7a5e-b86d-59c7-b47a6a581b7d">
+      <Execution id="64b3ecf5-fc3f-4f33-bcc4-1fa0e28e0f2d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopFolderConsumerTests" name="ActualSettingsModsMenuShowsFailureAndKeepsItsOriginalAcknowledgement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt(mode: &quot;unavailable&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4e736f72-3de3-0938-4278-e0581ed4bf36">
+      <Execution id="84604cde-af0e-4211-a2ad-292a6d5a7dd3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopFolderConsumerTests" name="ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="2cfa8af5-e645-1e58-fc3a-7def4b70e1a6" executionId="b573b4fa-37b0-4aed-8db6-7d36fce35404" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4e736f72-3de3-0938-4278-e0581ed4bf36" executionId="84604cde-af0e-4211-a2ad-292a6d5a7dd3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2e9e4bb6-b2e2-bd1b-8176-b50d371ceed4" executionId="aa14fc79-465a-44e4-a708-86ce635f8b4e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="924efad2-7a5e-b86d-59c7-b47a6a581b7d" executionId="64b3ecf5-fc3f-4f33-bcc4-1fa0e28e0f2d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="4" executed="4" passed="0" failed="4" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.16]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.13]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.14]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.41]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.41]       String:    "╔════════════════════════════════════════"···
+[xUnit.net 00:00:01.41]       Not found: "/tmp/boe-desktop-67632e881501442dbeee5218"···
+[xUnit.net 00:00:01.41]       Stack Trace:
+[xUnit.net 00:00:01.41]         /workspace/native-1553/BookOfEternityClient.Tests/DesktopFolderConsumerTests.cs(21,0): at BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt(String mode)
+[xUnit.net 00:00:01.41]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.42]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.42]       String:    "╔════════════════════════════════════════"···
+[xUnit.net 00:00:01.42]       Not found: "/tmp/boe-desktop-265023cf26f84719b6739cf0"···
+[xUnit.net 00:00:01.42]       Stack Trace:
+[xUnit.net 00:00:01.42]         /workspace/native-1553/BookOfEternityClient.Tests/DesktopFolderConsumerTests.cs(21,0): at BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt(String mode)
+[xUnit.net 00:00:01.42]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.45]       Assert.Null() Failure: Value is not null
+[xUnit.net 00:00:01.45]       Expected: null
+[xUnit.net 00:00:01.45]       Actual:   System.IO.IOException: The file '/tmp/boe-desktop-fa951fda12cf4add9c2872b40412cac5/Тест [red]\ud83c\udf0c путь/folder blocker' already exists.
+[xUnit.net 00:00:01.45]          at System.IO.FileSystem.CreateDirectory(String fullPath, UnixFileMode unixCreateMode)
+[xUnit.net 00:00:01.45]          at System.IO.Directory.CreateDirectory(String path)
+[xUnit.net 00:00:01.45]          at BookOfEternityClient.Core.GameEngine.OpenFolderOrPrintPath(String directoryPath, IConsoleInputSource inputSource) in /workspace/native-1553/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs:line 2176
+[xUnit.net 00:00:01.45]          at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.45]          at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.45]       --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.45]          at BookOfEternityClient.Tests.DesktopHelpersFixture.Invoke(Object target, String method, Object[] args) in /workspace/native-1553/BookOfEternityClient.Tests/DesktopHelpersFixture.cs:line 67
+[xUnit.net 00:00:01.45]          at BookOfEternityClient.Tests.DesktopFolderConsumerTests.&lt;&gt;c__DisplayClass2_0.&lt;ActualMainMenuFolderCreationFailureIsHandledBeforeAssociation&gt;b__0() in /workspace/native-1553/BookOfEternityClient.Tests/DesktopFolderConsumerTests.cs:line 42
+[xUnit.net 00:00:01.45]          at Xunit.Record.Exception(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 47
+[xUnit.net 00:00:01.45]       Stack Trace:
+[xUnit.net 00:00:01.45]         /workspace/native-1553/BookOfEternityClient.Tests/DesktopFolderConsumerTests.cs(43,0): at BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainMenuFolderCreationFailureIsHandledBeforeAssociation()
+[xUnit.net 00:00:01.45]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.45]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.52]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.52]       String:    "─────────────────────────────────────────"···
+[xUnit.net 00:00:01.52]       Not found: "Не удалось"
+[xUnit.net 00:00:01.52]       Stack Trace:
+[xUnit.net 00:00:01.52]         /workspace/native-1553/BookOfEternityClient.Tests/DesktopFolderConsumerTests.cs(35,0): at BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualSettingsModsMenuShowsFailureAndKeepsItsOriginalAcknowledgement()
+[xUnit.net 00:00:01.52]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.53]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T05:00:43.0564340+00:00">
+        <Text>[xUnit.net 00:00:01.40]     BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt(mode: "requested") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T05:00:43.0670351+00:00">
+        <Text>[xUnit.net 00:00:01.42]     BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt(mode: "unavailable") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T05:00:43.1349266+00:00">
+        <Text>[xUnit.net 00:00:01.45]     BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainMenuFolderCreationFailureIsHandledBeforeAssociation [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T05:00:43.1707608+00:00">
+        <Text>[xUnit.net 00:00:01.52]     BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualSettingsModsMenuShowsFailureAndKeepsItsOriginalAcknowledgement [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

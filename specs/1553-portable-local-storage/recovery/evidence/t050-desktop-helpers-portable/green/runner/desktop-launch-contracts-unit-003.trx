@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="5c83d2b2-4256-4dfa-b609-2d4d5d9d2c35" name="@c7669543e9c7 2026-10-07 05:05:16" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-07T05:05:16.1101371+00:00" queuing="2026-10-07T05:05:16.1101372+00:00" start="2026-10-07T05:05:14.0975468+00:00" finish="2026-10-07T05:05:16.1618525+00:00" />
+  <TestSettings name="default" id="296c78a4-e20d-45be-8388-0fa8e7d876e5">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-07_05_05_16" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="c6a0fc2b-2e6e-42a0-8b4b-810e00dae689" testId="4b7d28c9-56c3-544b-da36-909e04541c97" testName="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerNeverLaunchesMissingOrUnknownFiles(name: &quot;unknown.exe&quot;, exists: True, status: Unsupported)" computerName="c7669543e9c7" duration="00:00:00.0008728" startTime="2026-10-07T05:05:16.0866420+00:00" endTime="2026-10-07T05:05:16.0866420+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c6a0fc2b-2e6e-42a0-8b4b-810e00dae689" />
+    <UnitTestResult executionId="6827331b-492b-40da-9881-70c0ced59836" testId="13d383ee-66f3-2a14-a7fd-95a1f95e4827" testName="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerHonoursSuppressionAndExplicitForce(force: True)" computerName="c7669543e9c7" duration="00:00:00.0009708" startTime="2026-10-07T05:05:16.0733119+00:00" endTime="2026-10-07T05:05:16.0733119+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6827331b-492b-40da-9881-70c0ced59836" />
+    <UnitTestResult executionId="84e7cee7-03cf-41c8-83db-b94d8f37d452" testId="c4184bce-3d30-6d65-2678-7d179ed91e21" testName="BookOfEternityClient.Tests.DesktopLaunchContractTests.SourceKeepsOriginalConsumersAndFontFallbackWithoutShellOrDesktopFramework" computerName="c7669543e9c7" duration="00:00:00.0105815" startTime="2026-10-07T05:05:16.0847587+00:00" endTime="2026-10-07T05:05:16.0847589+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="84e7cee7-03cf-41c8-83db-b94d8f37d452" />
+    <UnitTestResult executionId="7588a74d-2a8d-4c0d-937a-a7b6c6402f3a" testId="c5e97492-3e07-5f39-058e-364d3fe340d9" testName="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay(mode: &quot;unavailable&quot;, expected: Unavailable)" computerName="c7669543e9c7" duration="00:00:00.0008014" startTime="2026-10-07T05:05:16.0726020+00:00" endTime="2026-10-07T05:05:16.0726020+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7588a74d-2a8d-4c0d-937a-a7b6c6402f3a" />
+    <UnitTestResult executionId="471747bd-634d-4644-96d8-f95045764d7b" testId="f5611e1b-eb7b-a507-d2e2-0b63d465ed9f" testName="BookOfEternityClient.Tests.DesktopLaunchContractTests.TypedFolderMissingDoesNotCreateWithoutOriginalCreationPermission" computerName="c7669543e9c7" duration="00:00:00.0008538" startTime="2026-10-07T05:05:16.0856894+00:00" endTime="2026-10-07T05:05:16.0856894+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="471747bd-634d-4644-96d8-f95045764d7b" />
+    <UnitTestResult executionId="1f18978f-ca7f-4b37-9a44-60dbf7bd31d3" testId="2f30cf39-97f3-6bbc-4f44-1657f3bae789" testName="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay(mode: &quot;cancelled&quot;, expected: Cancelled)" computerName="c7669543e9c7" duration="00:00:00.0963739" startTime="2026-10-07T05:05:16.0695358+00:00" endTime="2026-10-07T05:05:16.0695502+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1f18978f-ca7f-4b37-9a44-60dbf7bd31d3" />
+    <UnitTestResult executionId="70f2185b-edc1-48b2-9688-9781e30c3738" testId="3ca81e32-f9e0-4700-041b-a84ae6b933fb" testName="BookOfEternityClient.Tests.DesktopLaunchContractTests.InvalidGalleryKindDoesNotCreateOrOpenUnknownFolder" computerName="c7669543e9c7" duration="00:00:00.0044899" startTime="2026-10-07T05:05:16.0979703+00:00" endTime="2026-10-07T05:05:16.0979703+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="70f2185b-edc1-48b2-9688-9781e30c3738" />
+    <UnitTestResult executionId="684782c7-9992-425a-8cf9-c569be6d16da" testId="8778dc5a-4809-416f-5b4b-dd4bb1fcb134" testName="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerNeverLaunchesMissingOrUnknownFiles(name: &quot;missing.png&quot;, exists: False, status: Missing)" computerName="c7669543e9c7" duration="00:00:00.0008328" startTime="2026-10-07T05:05:16.0978628+00:00" endTime="2026-10-07T05:05:16.0978629+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="684782c7-9992-425a-8cf9-c569be6d16da" />
+    <UnitTestResult executionId="dcb10e15-016b-46a6-809f-30d3960a769b" testId="f8a3c823-b8c6-6437-a75e-d7ac24b20c5f" testName="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay(mode: &quot;failed&quot;, expected: Failed)" computerName="c7669543e9c7" duration="00:00:00.0017597" startTime="2026-10-07T05:05:16.0722494+00:00" endTime="2026-10-07T05:05:16.0722496+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dcb10e15-016b-46a6-809f-30d3960a769b" />
+    <UnitTestResult executionId="5a6614c9-0fae-4ecb-8f56-3c27dc2e66d0" testId="bfad494d-74bb-6578-8e81-212b982ae362" testName="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerHonoursSuppressionAndExplicitForce(force: False)" computerName="c7669543e9c7" duration="00:00:00.0007166" startTime="2026-10-07T05:05:16.0740703+00:00" endTime="2026-10-07T05:05:16.0740704+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5a6614c9-0fae-4ecb-8f56-3c27dc2e66d0" />
+    <UnitTestResult executionId="3bb06e85-0493-4827-91b8-b6de4dbadf7e" testId="d728c67f-e45a-c241-411e-19d9ecdabd50" testName="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealGalleryUsesExactDirectoryAndOnlyOneManagedRequest(kind: null, suffix: &quot;&quot;)" computerName="c7669543e9c7" duration="00:00:00.0007169" startTime="2026-10-07T05:05:16.0979401+00:00" endTime="2026-10-07T05:05:16.0979402+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3bb06e85-0493-4827-91b8-b6de4dbadf7e" />
+    <UnitTestResult executionId="fa1755e0-7c2b-4418-8e16-2857085549c2" testId="d02d87d1-887f-97d5-a5b5-f64f2e3f6b43" testName="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealGalleryUsesExactDirectoryAndOnlyOneManagedRequest(kind: &quot;npc&quot;, suffix: &quot;npcs&quot;)" computerName="c7669543e9c7" duration="00:00:00.0040424" startTime="2026-10-07T05:05:16.0979116+00:00" endTime="2026-10-07T05:05:16.0979117+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fa1755e0-7c2b-4418-8e16-2857085549c2" />
+    <UnitTestResult executionId="84e582c3-adf7-4763-b045-a5b3dfc08629" testId="eaa4ee8d-f7e0-f66b-d7a7-138eba7997a9" testName="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay(mode: &quot;requested&quot;, expected: Requested)" computerName="c7669543e9c7" duration="00:00:00.0009025" startTime="2026-10-07T05:05:16.0726362+00:00" endTime="2026-10-07T05:05:16.0726363+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="84e582c3-adf7-4763-b045-a5b3dfc08629" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealGalleryUsesExactDirectoryAndOnlyOneManagedRequest(kind: null, suffix: &quot;&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d728c67f-e45a-c241-411e-19d9ecdabd50">
+      <Execution id="3bb06e85-0493-4827-91b8-b6de4dbadf7e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopLaunchContractTests" name="RealGalleryUsesExactDirectoryAndOnlyOneManagedRequest" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealGalleryUsesExactDirectoryAndOnlyOneManagedRequest(kind: &quot;npc&quot;, suffix: &quot;npcs&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d02d87d1-887f-97d5-a5b5-f64f2e3f6b43">
+      <Execution id="fa1755e0-7c2b-4418-8e16-2857085549c2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopLaunchContractTests" name="RealGalleryUsesExactDirectoryAndOnlyOneManagedRequest" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay(mode: &quot;requested&quot;, expected: Requested)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="eaa4ee8d-f7e0-f66b-d7a7-138eba7997a9">
+      <Execution id="84e582c3-adf7-4763-b045-a5b3dfc08629" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopLaunchContractTests" name="RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerNeverLaunchesMissingOrUnknownFiles(name: &quot;missing.png&quot;, exists: False, status: Missing)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8778dc5a-4809-416f-5b4b-dd4bb1fcb134">
+      <Execution id="684782c7-9992-425a-8cf9-c569be6d16da" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopLaunchContractTests" name="RealViewerNeverLaunchesMissingOrUnknownFiles" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerHonoursSuppressionAndExplicitForce(force: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="13d383ee-66f3-2a14-a7fd-95a1f95e4827">
+      <Execution id="6827331b-492b-40da-9881-70c0ced59836" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopLaunchContractTests" name="RealViewerHonoursSuppressionAndExplicitForce" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopLaunchContractTests.TypedFolderMissingDoesNotCreateWithoutOriginalCreationPermission" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f5611e1b-eb7b-a507-d2e2-0b63d465ed9f">
+      <Execution id="471747bd-634d-4644-96d8-f95045764d7b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopLaunchContractTests" name="TypedFolderMissingDoesNotCreateWithoutOriginalCreationPermission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerHonoursSuppressionAndExplicitForce(force: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bfad494d-74bb-6578-8e81-212b982ae362">
+      <Execution id="5a6614c9-0fae-4ecb-8f56-3c27dc2e66d0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopLaunchContractTests" name="RealViewerHonoursSuppressionAndExplicitForce" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay(mode: &quot;failed&quot;, expected: Failed)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f8a3c823-b8c6-6437-a75e-d7ac24b20c5f">
+      <Execution id="dcb10e15-016b-46a6-809f-30d3960a769b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopLaunchContractTests" name="RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerNeverLaunchesMissingOrUnknownFiles(name: &quot;unknown.exe&quot;, exists: True, status: Unsupported)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4b7d28c9-56c3-544b-da36-909e04541c97">
+      <Execution id="c6a0fc2b-2e6e-42a0-8b4b-810e00dae689" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopLaunchContractTests" name="RealViewerNeverLaunchesMissingOrUnknownFiles" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopLaunchContractTests.InvalidGalleryKindDoesNotCreateOrOpenUnknownFolder" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3ca81e32-f9e0-4700-041b-a84ae6b933fb">
+      <Execution id="70f2185b-edc1-48b2-9688-9781e30c3738" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopLaunchContractTests" name="InvalidGalleryKindDoesNotCreateOrOpenUnknownFolder" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopLaunchContractTests.SourceKeepsOriginalConsumersAndFontFallbackWithoutShellOrDesktopFramework" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c4184bce-3d30-6d65-2678-7d179ed91e21">
+      <Execution id="84e7cee7-03cf-41c8-83db-b94d8f37d452" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopLaunchContractTests" name="SourceKeepsOriginalConsumersAndFontFallbackWithoutShellOrDesktopFramework" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay(mode: &quot;unavailable&quot;, expected: Unavailable)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c5e97492-3e07-5f39-058e-364d3fe340d9">
+      <Execution id="7588a74d-2a8d-4c0d-937a-a7b6c6402f3a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopLaunchContractTests" name="RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.DesktopLaunchContractTests.RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay(mode: &quot;cancelled&quot;, expected: Cancelled)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2f30cf39-97f3-6bbc-4f44-1657f3bae789">
+      <Execution id="1f18978f-ca7f-4b37-9a44-60dbf7bd31d3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DesktopLaunchContractTests" name="RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="4b7d28c9-56c3-544b-da36-909e04541c97" executionId="c6a0fc2b-2e6e-42a0-8b4b-810e00dae689" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="13d383ee-66f3-2a14-a7fd-95a1f95e4827" executionId="6827331b-492b-40da-9881-70c0ced59836" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c4184bce-3d30-6d65-2678-7d179ed91e21" executionId="84e7cee7-03cf-41c8-83db-b94d8f37d452" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c5e97492-3e07-5f39-058e-364d3fe340d9" executionId="7588a74d-2a8d-4c0d-937a-a7b6c6402f3a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f5611e1b-eb7b-a507-d2e2-0b63d465ed9f" executionId="471747bd-634d-4644-96d8-f95045764d7b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2f30cf39-97f3-6bbc-4f44-1657f3bae789" executionId="1f18978f-ca7f-4b37-9a44-60dbf7bd31d3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3ca81e32-f9e0-4700-041b-a84ae6b933fb" executionId="70f2185b-edc1-48b2-9688-9781e30c3738" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8778dc5a-4809-416f-5b4b-dd4bb1fcb134" executionId="684782c7-9992-425a-8cf9-c569be6d16da" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f8a3c823-b8c6-6437-a75e-d7ac24b20c5f" executionId="dcb10e15-016b-46a6-809f-30d3960a769b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bfad494d-74bb-6578-8e81-212b982ae362" executionId="5a6614c9-0fae-4ecb-8f56-3c27dc2e66d0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d728c67f-e45a-c241-411e-19d9ecdabd50" executionId="3bb06e85-0493-4827-91b8-b6de4dbadf7e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d02d87d1-887f-97d5-a5b5-f64f2e3f6b43" executionId="fa1755e0-7c2b-4418-8e16-2857085549c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="eaa4ee8d-f7e0-f66b-d7a7-138eba7997a9" executionId="84e582c3-adf7-4763-b045-a5b3dfc08629" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="13" executed="13" passed="13" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.19]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.38]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.40]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.57]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

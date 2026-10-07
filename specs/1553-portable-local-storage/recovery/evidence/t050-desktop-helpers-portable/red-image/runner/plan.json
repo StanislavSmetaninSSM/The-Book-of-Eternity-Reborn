@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "desktop-image-consumers"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "bd17aa1f5d3e6b55dca4a2abbc0f74552d400a49",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 92.3473657,
+  "Descriptors": [
+    {
+      "Name": "desktop-image-consumers-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "desktop-image-consumers",
+      "Categories": [
+        "desktop-image-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.DesktopImageConsumerTests.RealGalleryCreationFailureIsHandledWithManualPath|FullyQualifiedName=BookOfEternityClient.Tests.DesktopImageConsumerTests.RealViewerAssociationFailureGivesVisibleReasonAndManualPath",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopImageConsumerTests.RealGalleryCreationFailureIsHandledWithManualPath",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopImageConsumerTests.RealViewerAssociationFailureGivesVisibleReasonAndManualPath",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

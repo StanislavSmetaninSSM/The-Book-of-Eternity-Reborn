@@ -2,7 +2,7 @@
 
 ## Current bounded desktop helper slice
 
-T050-DESKTOP-HELPERS-PORTABLE is authorized from auxiliary `65674ee83ddeac9c63e368334ea170cf9b700c54`. [Plan](desktop-helpers-portable-plan.md) preserves existing managed desktop association and Windows route; explicit outcomes/manual paths through actual image/mods/main consumers. Controlled launch adapters only; no desktop positive qualification, font promise or other block. Source: #1553. Implementation/reviews/evidence pending.
+T050-DESKTOP-HELPERS-PORTABLE implements the named original image/mods/main folder consumers from auxiliary `65674ee83ddeac9c63e368334ea170cf9b700c54`. Frozen runtime/tests `04c9717a5290d001816fb394c276c3a2754f3dad`:23/23controlled Linux cases PASS after6causal consumer REDs; one0test preparation collision kept separate. Managed association retained, truthful Requested/manual path, handled creation/cancel/exception, original pauses, `/mods` next-frame visibility; font unchanged. [Plan](desktop-helpers-portable-plan.md) / [handoff](desktop-helpers-portable-handoff.md) / [qualification](recovery/desktop-helpers-qualification.json). Actual independent Sol6.1/xhigh design/source PASS; catalog390/11111methods0executed. Evidence/metadata/final remote readback and GitHub-only restoration pending at this candidate. Positive desktop Linux/native Windows, unrelated helpers/fullT050/systemd/Q1Q2/liveGM remain unqualified/open. Source: #1553.
 
 ## Current auxiliary package contract
 

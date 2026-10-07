@@ -1,0 +1,580 @@
+{
+  "Task": "T050-DESKTOP-HELPERS-PORTABLE",
+  "SourceIssue": 1553,
+  "AcceptedBase": "65674ee83ddeac9c63e368334ea170cf9b700c54",
+  "RuntimeTestCommit": "04c9717a5290d001816fb394c276c3a2754f3dad",
+  "Scope": "Real original Linux managed consumers with controlled launch adapter; no desktop applications/child/viewer/device launched, no positive Linux/Windows desktop qualification",
+  "Phases": [
+    {
+      "Name": "red-image",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category desktop-image-consumers",
+      "WorkingDirectory": "/workspace/native-1553",
+      "SourceCommit": "bd17aa1f5d3e6b55dca4a2abbc0f74552d400a49",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 0,
+        "Failed": 2
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "CleanupComplete": true,
+      "Summary": "recovery/evidence/t050-desktop-helpers-portable/red-image/runner/summary.json",
+      "Cases": [
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopImageConsumerTests.RealGalleryCreationFailureIsHandledWithManualPath",
+          "Outcome": "Failed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopImageConsumerTests.RealViewerAssociationFailureGivesVisibleReasonAndManualPath",
+          "Outcome": "Failed"
+        }
+      ]
+    },
+    {
+      "Name": "red-folder",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category desktop-folder-consumers -NoBuild",
+      "WorkingDirectory": "/workspace/native-1553",
+      "SourceCommit": "bd17aa1f5d3e6b55dca4a2abbc0f74552d400a49",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 0,
+        "Failed": 4
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "CleanupComplete": true,
+      "Summary": "recovery/evidence/t050-desktop-helpers-portable/red-folder/runner/summary.json",
+      "Cases": [
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainMenuFolderCreationFailureIsHandledBeforeAssociation",
+          "Outcome": "Failed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt(mode: \"unavailable\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt(mode: \"requested\")",
+          "Outcome": "Failed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualSettingsModsMenuShowsFailureAndKeepsItsOriginalAcknowledgement",
+          "Outcome": "Failed"
+        }
+      ]
+    },
+    {
+      "Name": "preparation-collision",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly",
+      "WorkingDirectory": "/workspace/native-1553",
+      "SourceCommit": "1329827342276195252873d289895009ca520b61",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "CleanupComplete": true,
+      "Summary": "recovery/evidence/t050-desktop-helpers-portable/preparation-collision/runner/summary.json",
+      "Cases": []
+    },
+    {
+      "Name": "green-plan",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly",
+      "WorkingDirectory": "/workspace/native-1553",
+      "SourceCommit": "04c9717a5290d001816fb394c276c3a2754f3dad",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 0,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 23,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "desktop-folder-consumers-unit-001",
+          "desktop-image-consumers-unit-002",
+          "desktop-launch-contracts-unit-003"
+        ],
+        "Complete": false
+      },
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "CleanupComplete": true,
+      "Summary": "recovery/evidence/t050-desktop-helpers-portable/green-plan/runner/summary.json",
+      "Cases": []
+    },
+    {
+      "Name": "green",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -NoBuild",
+      "WorkingDirectory": "/workspace/native-1553",
+      "SourceCommit": "04c9717a5290d001816fb394c276c3a2754f3dad",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 0,
+      "Tests": {
+        "Total": 23,
+        "Executed": 23,
+        "Passed": 23,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 3,
+        "PlannedCases": 23,
+        "CompletedCases": 23,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "CleanupComplete": true,
+      "Summary": "recovery/evidence/t050-desktop-helpers-portable/green/runner/summary.json",
+      "Cases": [
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualSettingsModsMenuShowsFailureAndKeepsItsOriginalAcknowledgement",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainAndRelatedExplorerFolderHelpersPreservePausePolicy(mode: \"requested\", waits: 0)",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainMenuFolderCreationFailureIsHandledBeforeAssociation",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualSettingsRequestedOutcomeRetainsItsOriginalSuccessAcknowledgement",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainAndRelatedExplorerFolderHelpersPreservePausePolicy(mode: \"cancelled\", waits: 1)",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainAndRelatedExplorerFolderHelpersPreservePausePolicy(mode: \"unavailable\", waits: 1)",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt(mode: \"unavailable\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt(mode: \"requested\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopImageConsumerTests.RealViewerAssociationFailureGivesVisibleReasonAndManualPath",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopImageConsumerTests.RealGalleryCreationFailureIsHandledWithManualPath",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerNeverLaunchesMissingOrUnknownFiles(name: \"unknown.exe\", exists: True, status: Unsupported)",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerHonoursSuppressionAndExplicitForce(force: True)",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopLaunchContractTests.SourceKeepsOriginalConsumersAndFontFallbackWithoutShellOrDesktopFramework",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay(mode: \"unavailable\", expected: Unavailable)",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopLaunchContractTests.TypedFolderMissingDoesNotCreateWithoutOriginalCreationPermission",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay(mode: \"cancelled\", expected: Cancelled)",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopLaunchContractTests.InvalidGalleryKindDoesNotCreateOrOpenUnknownFolder",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerNeverLaunchesMissingOrUnknownFiles(name: \"missing.png\", exists: False, status: Missing)",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay(mode: \"failed\", expected: Failed)",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealViewerHonoursSuppressionAndExplicitForce(force: False)",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealGalleryUsesExactDirectoryAndOnlyOneManagedRequest(kind: null, suffix: \"\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealGalleryUsesExactDirectoryAndOnlyOneManagedRequest(kind: \"npc\", suffix: \"npcs\")",
+          "Outcome": "Passed"
+        },
+        {
+          "Test": "BookOfEternityClient.Tests.DesktopLaunchContractTests.RealAssociationAdapterReturnsExactTypedOutcomeWithoutReplay(mode: \"requested\", expected: Requested)",
+          "Outcome": "Passed"
+        }
+      ]
+    },
+    {
+      "Name": "catalog",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+      "WorkingDirectory": "/workspace/native-1553",
+      "SourceCommit": "16b0cc1b091bf9f8d8bddebb8e13bc9eaab1a68b",
+      "WorkingTreeChangedFiles": 0,
+      "ExitCode": 0,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "PlanOnly": false,
+      "DiscoveryOnly": true,
+      "CleanupComplete": true,
+      "Summary": "recovery/evidence/t050-desktop-helpers-portable/catalog/runner/summary.json",
+      "Cases": []
+    }
+  ],
+  "DistinctPASS": 23,
+  "NewCases": 23,
+  "HistoricalExecuted": 29,
+  "HistoricalPASS": 23,
+  "HistoricalFAIL": 6,
+  "PreparationTestsExecuted": 0,
+  "NoBuildJustification": "red-folder follows fresh successful bd17 build without changes; green follows fresh successful04c PlanOnly build with identical source; selectors unchanged after optional conditional category related links",
+  "Cleanup": "Per-test own mutable root, fixture Dispose removes/asserts absence, restores global console and disposes inert audio; all runner-owned cleanup complete.22GREEN fixture roots plus source-only guard (no root);6causalRED roots. No product launcher/process/device is invoked by controlled adapter.",
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityClient/Services/ImageService.cs",
+      "SHA256": "780e44271a9b594121290cbddd5c66cee83f8ce64b61665546bc49fe8a0fe2b4"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine.cs",
+      "SHA256": "068b82d978b059dea898b23b44cb6a46b1d830bf29528c9aa9d8a60610d63f85"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "SHA256": "a421d0e0d8862ae25da1a24e271b4e30f0c9c3158488feae81e50fab6a715768"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs",
+      "SHA256": "3af0179ee02e06e17ef35cd2acc998feeafe8ed1884a7209b62148387376631d"
+    },
+    {
+      "Path": "BookOfEternityClient/UI/ExplorerMode.cs",
+      "SHA256": "29e0fadf7f25d7399a09d6cde5eb8d4faba0063f3a990c045ab9114b52edba0b"
+    },
+    {
+      "Path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
+      "SHA256": "792c74d2d95396816d539128e7e2b95afa3fb66fce9de2c07b203461b83b4de3"
+    },
+    {
+      "Path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "SHA256": "627df28e383024313748493a16f45b7d4cda12a2e4cfd613dccb2a75faadcad1"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/ConsoleAppearanceService.cs",
+      "SHA256": "b71013c291697e2161e79267772bac75b5601eee5ac77c8c69db7dc670079a23"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/SystemModService.cs",
+      "SHA256": "2bcf79136d7b183b16507c51e0b896250e85c1c3e39afc0a5a31ba3ea07179d5"
+    },
+    {
+      "Path": "AGENTS.md",
+      "SHA256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "Path": "docs/development-workflow.md",
+      "SHA256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "Path": "docs/testing.md",
+      "SHA256": "20ea808053428488ac21e5b1fee9f05b3e981e503dc8f610f0b25f91d44b84a1"
+    },
+    {
+      "Path": ".specify/memory/constitution.md",
+      "SHA256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/DesktopPathOpener.cs",
+      "SHA256": "00e7f0cfcbd04af74fc327b4a5f0d41a97694641d79c3d83278299dbd0052d1d"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/DesktopHelpersFixture.cs",
+      "SHA256": "3a4f2d224218e55ced6a70c6cb537fd804d0d00aab26699597758bad81b94ddd"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/DesktopImageConsumerTests.cs",
+      "SHA256": "d0512d6eaa93d176ecd3e690f3a080d8a534890d78496a96d073f85632c57763"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/DesktopFolderConsumerTests.cs",
+      "SHA256": "c8c067663a3c31751ffb3808451df58b593c92f4c3c30708758da5278b66f467"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/DesktopLaunchContractTests.cs",
+      "SHA256": "2d394f27e9d4f28d01181eabcd0e565f6abbfe9977d5aa3f471cf5d3815a76f4"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "SHA256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/red-image/runner/Build-unit.log.gz",
+      "SHA256": "2a87dfaf3b666d6614dad0fcc745c930240232d19c13ff77d152d4e51a93cf39",
+      "Bytes": 2031
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/red-image/runner/desktop-image-consumers-unit-001.trx",
+      "SHA256": "90a8d5edea796fa4a57428d874e17339f1fc4c9e648aabe70241c6e02733a952",
+      "Bytes": 9466
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/red-image/runner/dotnet-test.log.gz",
+      "SHA256": "8c7750f7bf5cbecbfc1d9ba4faa44cf1fee9d6669821266125d222d22c3354bc",
+      "Bytes": 179127
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/red-image/runner/plan.json",
+      "SHA256": "4975ba8897808edab2ebbb41c49f522c31cd911a24ddfd2250bc83e7138ebfb4",
+      "Bytes": 1370
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/red-image/runner/summary.json",
+      "SHA256": "aef81ba1dc995c44b78ac008a13be0286d70085550f71394fb62775818f8f4e4",
+      "Bytes": 1451
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/red-image/command.log.gz",
+      "SHA256": "d330e58ef51db2d98dd5f83dcd7ad043e8cd3a17c62915ca77192d264d481036",
+      "Bytes": 1448
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/red-folder/runner/desktop-folder-consumers-unit-001.trx",
+      "SHA256": "5fe06606f97cce962c1f8cabb30c5e4cac26da96a2e9b08a523a58e03bcff1a7",
+      "Bytes": 17048
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/red-folder/runner/dotnet-test.log.gz",
+      "SHA256": "131fe64ca90298a1ca722828e239e1357e1fde3a9069b28cfd89a966c81673c2",
+      "Bytes": 177465
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/red-folder/runner/plan.json",
+      "SHA256": "19b954039732c97680fc077a002050785ba51334d19d4a983f30ff1a5a7c49aa",
+      "Bytes": 1721
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/red-folder/runner/summary.json",
+      "SHA256": "ae5bcd4c35f37d8620f45b4c56c08d7124e762f8ba647a27d702b3b5532577a5",
+      "Bytes": 1359
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/red-folder/command.log.gz",
+      "SHA256": "2a1bc527ed15420358c9bc787d80cf12bfc5277a1dd59730b7376e89f437f361",
+      "Bytes": 1794
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/preparation-collision/runner/dotnet-test.log.gz",
+      "SHA256": "a8bd1a851fcfe6f009b0c59cf1ca847023fc6be07839a7d2619ebf3f802671ef",
+      "Bytes": 1247
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/preparation-collision/runner/summary.json",
+      "SHA256": "5b7ac0b921095bbd46395fe092720935cd76c9023f2247773b8d0833976dacf4",
+      "Bytes": 2174
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/preparation-collision/command.log.gz",
+      "SHA256": "3a093411de3636154ffb5f43f7b8df2b93721238e9137b465a379e08dbfd0dc8",
+      "Bytes": 399
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/green-plan/runner/Build-unit.log.gz",
+      "SHA256": "0aacb475d421c460a287b99878da11cdce158e25b41ea18025e9c3b4063f0cf7",
+      "Bytes": 2034
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/green-plan/runner/dotnet-test.log.gz",
+      "SHA256": "bde5d786ec75e8eecbdaa6f7ebf4d8fb11f4123524b5c0bb124f3729b2a675bf",
+      "Bytes": 178572
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/green-plan/runner/plan.json",
+      "SHA256": "1f683b94fb0ef13fef1700771514e14d536804994f88cc2a49032b097c8b20f2",
+      "Bytes": 6836
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/green-plan/runner/summary.json",
+      "SHA256": "b153b75998ba198e9cbc2b766019e969345ae25e89edf2196cbfec41748cbe0d",
+      "Bytes": 2406
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/green-plan/command.log.gz",
+      "SHA256": "8381656328337748ad35941d2cedb89706b29bd77838a85d1b94f13876ff73fe",
+      "Bytes": 1151
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/green/runner/desktop-folder-consumers-unit-001.trx",
+      "SHA256": "84d3e6633b3e369c7590644b26702b24634268280c57aab51ed0923f6051e0d1",
+      "Bytes": 13345
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/green/runner/desktop-image-consumers-unit-002.trx",
+      "SHA256": "017f6b529183a2a81763fa0cad4bd6e8031fb7073dcd61c6af58a266ef5e067e",
+      "Bytes": 4368
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/green/runner/desktop-launch-contracts-unit-003.trx",
+      "SHA256": "16cb75702371cc3ed164bab64a4db809296ec587366bbdabe2b7780e84e0431d",
+      "Bytes": 20737
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/green/runner/dotnet-test.log.gz",
+      "SHA256": "cbcf64d83a85196025b6a6203158bc568eb53f53c31978c4f72d7c1912043ecf",
+      "Bytes": 176929
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/green/runner/plan.json",
+      "SHA256": "5bc64d425675df498ec03434148bf7a4de852d196fa2954cceb3739310b8d79f",
+      "Bytes": 6835
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/green/runner/summary.json",
+      "SHA256": "1cf6b0fc023002c4b40ea854759bc6d88689b61ffc1182c87d232eac2518565a",
+      "Bytes": 2596
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/green/command.log.gz",
+      "SHA256": "d0491801ad3817762ce5fe31f2c025b742e10f5df238410ce282299e0c9540b5",
+      "Bytes": 1350
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/catalog/runner/Build-integration.log.gz",
+      "SHA256": "23d446e2acf37001b9e41441e06a77329cd8909ce0897912012150b1a55f0cb6",
+      "Bytes": 1495
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/catalog/runner/Build-unit.log.gz",
+      "SHA256": "cd0e3bc5fe68a9568039f9dce1ee6506d16f9f4c54e2c10563ac4467fe68a9ea",
+      "Bytes": 1366
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/catalog/runner/catalog-audit.json",
+      "SHA256": "59777a2dc24faf67c0c1a6739b5e775907db9a919b17771c5baa140964b6c8f2",
+      "Bytes": 103
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/catalog/runner/dotnet-test.log.gz",
+      "SHA256": "36c50ea3f07f2cbed8b83c91b076395f93f470f005b8debdf49d6bc40dc95c2e",
+      "Bytes": 350617
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/catalog/runner/summary.json",
+      "SHA256": "b8e2906f8c7b53504b53c52adcc4e93275164023a7823053d9e2667a661ef4f8",
+      "Bytes": 1600
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/catalog/command.log.gz",
+      "SHA256": "8d41d4d05176fd360c8ae3009e5eac739f60c0a0d4bfce362a1a2c234f477ec3",
+      "Bytes": 380
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/provenance/sdk-version.txt",
+      "SHA256": "93c11b5221b72e0032ab2d9f93d28c2c9b7a0bb2557effffcdfef45ab739a0da",
+      "Bytes": 9
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/provenance/dotnet-runtimes.txt",
+      "SHA256": "cfef937639f31d2cd9c502712b96bfc164712f91cade4b7c7994cf1f74050569",
+      "Bytes": 398
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/provenance/powershell-version.txt",
+      "SHA256": "4ebb249704f474d32801b522f624e7c84fdad45da6fbf69e0eec7c1b34c6916b",
+      "Bytes": 6
+    },
+    {
+      "Path": "recovery/evidence/t050-desktop-helpers-portable/provenance/prerequisites.json",
+      "SHA256": "c20a966256a3f75aa40c16a1538446dfbd87dc83015cc10790d1db2f2b3312ac",
+      "Bytes": 151
+    }
+  ],
+  "Provenance": {
+    "SDK": "10.0.401",
+    "PowerShell": "7.5.4",
+    "RuntimeReceipt": "recovery/evidence/t050-desktop-helpers-portable/provenance/dotnet-runtimes.txt",
+    "NativeCompiler": "Not used by this slice"
+  },
+  "IndependentReviews": {
+    "Design": "recovery/desktop-helpers-design-review.json",
+    "Source": "recovery/desktop-helpers-source-review.json",
+    "Evidence": "pending",
+    "Metadata": "pending"
+  },
+  "Remaining": [
+    "Native Windows execution and positive managed association/default viewer",
+    "Positive Linux desktop association/session",
+    "Other desktop folder/profile/map call sites outside named slice",
+    "Full T050/systemd/workers/Q1Q2/liveGM/browser/real saves/cold guarantees"
+  ]
+}

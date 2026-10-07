@@ -1,0 +1,85 @@
+{
+  "Categories": [
+    "desktop-image-consumers",
+    "desktop-folder-consumers",
+    "desktop-launch-contracts"
+  ],
+  "Reasons": [
+    {
+      "category": "desktop-image-consumers",
+      "reason": "Original ImageService viewer/gallery manual outcomes and display/creation/error boundaries through controlled association adapter",
+      "contracts": [
+        "T050-DESKTOP-HELPERS-PORTABLE"
+      ]
+    },
+    {
+      "category": "desktop-folder-consumers",
+      "reason": "Actual settings/Explorer mods-menu and main/related folder manual outcomes, acknowledgements and next-frame visibility",
+      "contracts": [
+        "T050-DESKTOP-HELPERS-PORTABLE"
+      ]
+    },
+    {
+      "category": "desktop-launch-contracts",
+      "reason": "Typed capability/request semantics and image suppression/force; same real consumer helper, no broad cohorts",
+      "contracts": [
+        "T050-DESKTOP-HELPERS-PORTABLE"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "1329827342276195252873d289895009ca520b61",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0546656,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.061714,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1105187,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 23.780439,
+      "Completed": false
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:00:24.1158735",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 0,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 0,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
