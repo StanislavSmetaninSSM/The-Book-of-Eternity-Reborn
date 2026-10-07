@@ -140,6 +140,15 @@ public sealed class GmSynchronizedTerminalPresentationTests
         Assert.False(Value<bool>(p.Capture(), "Reliable"));
     }
 
+    [Fact]
+    public void CompleteRowPendingMargin_CapturesPhysicalCursorAndPendingState()
+    {
+        using var p = new ScreenProbe("original");
+        p.Feed(Encoding.UTF8.GetBytes(Escape + "[?2026h" + new string('A',100) + Escape + "[?25h" + Escape + "[?2026l"));
+        Assert.Equal(99,Value<int>(p.Capture(),"CursorColumn"));
+        Assert.True(Value<bool>(p.Capture(),"PendingWrap"));
+    }
+
     internal static T Value<T>(object obj, string name) => (T)obj.GetType().GetProperty(name)!.GetValue(obj)!;
     internal static byte[] ActualTranscript(string receipt)
     {

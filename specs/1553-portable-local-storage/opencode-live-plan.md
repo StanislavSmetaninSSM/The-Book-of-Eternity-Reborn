@@ -323,7 +323,7 @@ are excluded from this RED. Source qualification withheld pending corrections.
 
 Completed parser source review withholds qualification at7472903c: exact
 CUP/SGR/DCS grammar, initial blank/home OSC66 phase, pending right-margin
-transitions, and geometry reread during launch.14 narrow review-boundary cases
+transitions, and geometry reread during launch.15 narrow review-boundary cases
 now cover these before fixes;9 successful transcript cases excluded from RED.
 Retain original launch size for Attach and resize baseline; default neutral
 factory size80x25, configured production size and Windows creation size. No

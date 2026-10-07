@@ -62,7 +62,8 @@
             "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.UnsupportedGrammarOrFirstFrameProbe_RefusesBeforeFirstCommit",
             "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.UnmodelledPendingMarginTransition_CannotCertifyCellsOrCursor",
             "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.InitialSpaceProbe_RequiresActualBlankHomeStartupState",
-            "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualAttach_UsesRetainedLaunchGeometryInsteadOfRereadingConsole"
+            "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualAttach_UsesRetainedLaunchGeometryInsteadOfRereadingConsole",
+            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.CompleteRowPendingMargin_CapturesPhysicalCursorAndPendingState"
           ]
         }
       ]
