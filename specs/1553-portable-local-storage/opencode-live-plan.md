@@ -150,3 +150,14 @@ separate fact. No runtime/profile/parser/tests/catalog changes.
 Independent installation/startup evidence PASS at09e44350:13+9 artifacts,
 official platform/wrapper archives and installed bytes,1020 shipped pins, exact
 original stop/ACK/guardian closure; catalog listing is not provider acceptance.
+
+First fixture source f05d9832 was BLOCKED before execution: cumulative historical
+labels could survive an unknown/question pane, and a status call could cross the
+observation budget. Corrected candidate drains bounded pending output and examines
+only the last completed synchronized frame, with no trailing/partial output.
+Before paste it requires byte-identical known actual startup frame; before the
+editor gesture it requires a freshly painted exact six-line synthetic draft,
+padding/footer/cursor focus and only a strict observed control grammar. Unknown
+or partial/panel output refuses. Original retained identity/binding and budget
+are rechecked, including immediately before send. This diagnostic gate supplies
+neither production TerminalScreen nor Ready. Runtime/tests unchanged; probe0.

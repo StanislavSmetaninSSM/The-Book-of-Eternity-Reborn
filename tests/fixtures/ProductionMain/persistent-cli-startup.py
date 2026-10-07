@@ -5,6 +5,8 @@ No provider prompt, terminal-query response, confirmation or readiness override.
 """
 import errno
 import base64
+import gzip
+import re
 import fcntl
 import hashlib
 import json
@@ -93,6 +95,8 @@ def rpc(payload, seconds):
     entry = {'AtSeconds': round(elapsed(), 3), 'Request': payload, 'Sent': False}; journal.append(entry)
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as peer:
         peer.settimeout(.5); peer.connect(socket_path)
+        if payload['command'] == 'addtext':
+            assert elapsed() < 12 and process.poll() is None, 'Never write after observation budget/lifetime'
         # Mark the one attempt before send; ambiguous partial send is never retried.
         entry['SendAttempted'] = True; peer.sendall(json.dumps(payload).encode() + b'\n'); entry['Sent'] = True
         peer.setblocking(False); reply = bytearray(); deadline = min(started + 25, time.monotonic() + seconds)
@@ -110,6 +114,71 @@ def rpc(payload, seconds):
 
 def own_foreground():
     os.setsid(); fcntl.ioctl(slave, termios.TIOCSCTTY, 0); os.tcsetpgrp(slave, os.getpid())
+
+def current_diagnostic_frame():
+    # A strict throwaway byte/frame gate; this never supplies TerminalScreen or Ready.
+    # Drain bounded pending foreground output before examining the most recent commit.
+    for _ in range(32):
+        if not select.select([master], [], [], 0)[0]: break
+        receive(0)
+    else: raise RuntimeError('Foreground did not settle within the drain bound')
+    raw = bytes(captured)
+    begin = raw.rfind(b'\x1b[?2026h'); end = raw.rfind(b'\x1b[?2026l')
+    assert begin >= 0 and end > begin and not raw[end + 8:], 'Current complete synchronized frame unavailable'
+    return raw[begin + 8:end]
+
+def expected_draft_frame(frame):
+    # Require this fresh complete known synthetic composer shape, not historical labels.
+    # Partial/unknown/question/permission frames refuse the diagnostic gesture.
+    value = frame.decode('utf-8', errors='strict')
+    cells = {}; row = column = 0; visible = False; i = 0
+    while i < len(value):
+        if value[i] == '\x1b':
+            match = re.match(r'\x1b\[([0-9;? ]*)([A-Za-z])', value[i:])
+            if match:
+                params, code = match.groups(); i += len(match[0])
+                if code == 'H':
+                    numbers = [int(n or '1') for n in params.split(';')]
+                    assert len(numbers) == 2 and 1 <= numbers[0] <= 25 and 1 <= numbers[1] <= 100
+                    row, column = numbers[0] - 1, numbers[1] - 1
+                elif code == 'm':
+                    assert params in ['0', '1', '39', '49'] or re.fullmatch(r'(38|48);2;[0-9]{1,3};[0-9]{1,3};[0-9]{1,3}', params)
+                    assert all(int(n) <= 255 for n in params.split(';'))
+                elif code == 'K' and params in ['', '0', '2']:
+                    for c in range(0 if params == '2' else column, 100): cells[row, c] = ' '
+                elif code in ['h', 'l'] and params == '?25': visible = code == 'h'
+                elif code == 'q' and params == '1 ': pass
+                else: raise RuntimeError('Unknown/partial diagnostic frame; never send editor gesture')
+                continue
+            match = re.match(r'\x1b\]12;#[0-9a-fA-F]{6}\x07', value[i:])
+            assert match, 'Unknown diagnostic control payload'
+            i += len(match[0]); continue
+        c = value[i]; i += 1
+        if c == '\r': column = 0; continue
+        if c == '\n': row += 1; assert row < 25; continue
+        assert c >= ' ' and c != '\x7f' and column < 100
+        # All fixture draft scalars have width one; no general Unicode/TUI claim.
+        assert ord(c) < 0x300 or 0x400 <= ord(c) <= 0x4ff
+        cells[row, column] = c; column += 1
+    line = lambda r: ''.join(cells.get((r, c), '\0') for c in range(100)).rstrip(' ')
+    assert all(line(r) == expected for r, expected in zip(range(5, 11), draft.split('\n')[-6:]))
+    assert line(4) == '' and line(11) == ''
+    assert line(12).startswith(' BUILD ') and line(12).endswith('ctrl+p cmd')
+    assert '\0' not in line(12) and visible
+    assert row == 10 and column == len(draft.split('\n')[-1]), 'Actual composer focus absent'
+
+def before_manual_write(expect_draft):
+    status = rpc({'command': 'status'}, 1)['status']
+    assert status['terminalRunId'] == identity['runId'] and status['terminalOwnerRetained']
+    assert not status['terminalUncertain'] and not status['ready']
+    assert status['inputBindingId'] == result['OriginalRunningStatus']['status']['inputBindingId']
+    frame = current_diagnostic_frame()
+    if expect_draft: expected_draft_frame(frame)
+    else:
+        known = gzip.decompress((Path(__file__).parents[3] / 'specs/1553-portable-local-storage/recovery/evidence/opencode-q1/startup/startup.raw.gz').read_bytes())
+        expected = re.findall(rb'\x1b\[\?2026h(.*?)\x1b\[\?2026l', known, re.S)[-1]
+        assert frame == expected, 'Current mini startup frame changed; never paste'
+    assert elapsed() < 12 and process.poll() is None, 'Original lifetime or observation budget ended'
 
 try:
     args = ['pwsh', '-NoLogo', '-NoProfile', '-File',
@@ -133,11 +202,8 @@ try:
                 identity['backend'] = 2; result['OriginalRunningRecord'] = record; result['OriginalRunningStatus'] = status
         if process.poll() is not None: break
         if draft_mode and identity is not None and elapsed() >= 6:
-            # Presentation gate is diagnostic-only. It never grants readiness.
-            text = captured.decode('utf-8', errors='replace')
-            assert 'Ask anything...' in text and 'BUILD' in text and 'ctrl+p' in text
-            assert not any(gate in text.lower() for gate in ['permission required', 'allow once', 'allow always', 'sign in', 'api key', 'continue anyway', 'trust this'])
             if not draft_pasted:
+                before_manual_write(False)
                 body = '\x1b[200~' + draft + '\x1b[201~'
                 draft_pasted = True # mark before send: no ambiguous replay
                 response = rpc({'command': 'addtext', 'text': body}, 1)
@@ -145,6 +211,7 @@ try:
                 result['ManualRpcInputBytes'] += len(body.encode())
                 result['PasteAcknowledgedAtSeconds'] = round(elapsed(), 3)
             elif not editor_requested and elapsed() >= result['PasteAcknowledgedAtSeconds'] + .8:
+                before_manual_write(True)
                 editor_requested = True # one standard editor gesture, no Enter
                 response = rpc({'command': 'addtext', 'text': '\x18e'}, 1)
                 assert response['ok'] and not response['status']['ready']
