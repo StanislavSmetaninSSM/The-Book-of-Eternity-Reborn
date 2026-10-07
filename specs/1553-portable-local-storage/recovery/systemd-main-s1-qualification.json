@@ -56,7 +56,13 @@
     "source": "b764117fbb15cc999100d42cee37400e0c65f245",
     "verdict": "PASS"
   },
-  "evidenceReview": "pending",
+  "evidenceReview": {
+    "agent": "/root/systemd_s1_evidence_review",
+    "model": "gpt-6.1-sol",
+    "effort": "xhigh",
+    "source": "f0bb821d5ea60999f0533e259441e0633847a344",
+    "verdict": "PASS source/controlled packet; discovery supplement pending"
+  },
   "metadataReview": "pending",
   "actualSystemdCalls": 0,
   "newGmRequests": 0,
@@ -67,5 +73,21 @@
     "S3 qualified ordinary backend selection/consumers; explicitSystemdUser no downgrade",
     "Separate production worker/nativeWindows/environment obligations",
     "T043-RELAY-REUSABLE-DESIGN preserved after S1; no provider or universal API claim"
-  ]
+  ],
+  "discovery": {
+    "source": "f0bb821d5ea60999f0533e259441e0633847a344",
+    "manifest": "evidence/systemd-main-s1/discovery/manifest.json",
+    "plan": {
+      "descriptors": 3,
+      "cases": 42,
+      "executed": 0,
+      "exit": 0
+    },
+    "catalog": {
+      "categories": 427,
+      "methodsFiles": 11176,
+      "executed": 0,
+      "exit": 0
+    }
+  }
 }

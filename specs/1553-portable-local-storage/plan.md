@@ -1,3 +1,15 @@
+# S1 final discovery checkpoint
+
+Frozen runtime `b764117fbb15cc999100d42cee37400e0c65f245` remains unchanged.
+At clean metadata tip `f0bb821d5ea60999f0533e259441e0633847a344`, final
+PlanOnly selected 42 cases/3 descriptors with zero execution; ValidateCatalog
+reported 427 categories/11,176 methods/files with zero execution. Both exit0,
+no timeout and complete owned cleanup. [Discovery artifacts](recovery/evidence/systemd-main-s1/discovery/manifest.json).
+Source/selection and controlled evidence have independent actual Sol6.1/xhigh
+PASS; discovery supplement and final metadata remain to be reviewed. No broader
+test run or runtime change is needed. Next: bounded handoff/verdict, ordinary
+push/readback and fresh GitHub-only restoration; stop before S2/S3.
+
 # S1 source/controlled closure candidate
 
 Runtime b764117f:24controlled +4exactaffected GREEN28/28, own cleanupcomplete;

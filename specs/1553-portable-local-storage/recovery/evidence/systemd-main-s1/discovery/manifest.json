@@ -1,0 +1,159 @@
+{
+  "source": "f0bb821d5ea60999f0533e259441e0633847a344",
+  "runtimeSource": "b764117fbb15cc999100d42cee37400e0c65f245",
+  "runs": [
+    {
+      "label": "plan",
+      "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly -NoBuild",
+      "source": "f0bb821d5ea60999f0533e259441e0633847a344",
+      "results": "20261007-225815-190-911564-4e8ad97423fe4af58a41beee9dbe730e-categories",
+      "exit": 0,
+      "tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 42,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "gm-main-systemd-affected-unit-001",
+          "gm-main-systemd-contract-unit-002",
+          "gm-main-systemd-controlled-terminal-unit-003"
+        ],
+        "Complete": false
+      },
+      "cleanup": true,
+      "timedOut": false,
+      "catalogAudit": null
+    },
+    {
+      "label": "catalog",
+      "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+      "source": "f0bb821d5ea60999f0533e259441e0633847a344",
+      "results": "20261007-225822-101-911683-a02ab29fd3cf4577b83f3c064d96be76-categories",
+      "exit": 0,
+      "tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "cleanup": true,
+      "timedOut": false,
+      "catalogAudit": {
+        "Valid": true,
+        "Methods": 11176,
+        "Categories": 427,
+        "Unmapped": [],
+        "StaleSelectors": []
+      }
+    }
+  ],
+  "historicalPreparation": {
+    "source": "650c1f87f11f39033ba6ae268ce7f68b5bc243f0",
+    "executedTests": 0,
+    "cause": "New category related objects lacked required id/when fields; fixed before causal run at 995de14a"
+  },
+  "artifacts": [
+    {
+      "file": "plan-dotnet-test.log.gz",
+      "originalPath": "/workspace/native-1553/TestResults/test-categories/20261007-225815-190-911564-4e8ad97423fe4af58a41beee9dbe730e-categories/dotnet-test.log",
+      "bytes": 1615174,
+      "sha256": "eee13ae4b9322c1528b6cd8ea653b7d4b9ef963e0219e663c85fecfbe063bfd3",
+      "storedBytes": 179044,
+      "storedSha256": "22bb4c6b55d22c8a4d2fd1a873666dcc285ff53231128add5a38d301269713ef"
+    },
+    {
+      "file": "plan-plan.json.gz",
+      "originalPath": "/workspace/native-1553/TestResults/test-categories/20261007-225815-190-911564-4e8ad97423fe4af58a41beee9dbe730e-categories/plan.json",
+      "bytes": 7984,
+      "sha256": "5dc17f1408f6c577bd1ae534a4fbefd5c68d436dedb829fbeccf0f3a5e3eb20a",
+      "storedBytes": 1545,
+      "storedSha256": "01eb7e4b2c4b6b4de12a8cdd1286a791fc6591261dba0d7daf72b515bfaac780"
+    },
+    {
+      "file": "plan-summary.json.gz",
+      "originalPath": "/workspace/native-1553/TestResults/test-categories/20261007-225815-190-911564-4e8ad97423fe4af58a41beee9dbe730e-categories/summary.json",
+      "bytes": 2380,
+      "sha256": "565720033b64caff4d05348497f3d4b995ca2022fca52b0749d1e820595f12fe",
+      "storedBytes": 942,
+      "storedSha256": "9014f9bc03a95db7734f835f1015c7c8b3af942213de9570ed237855ccf6a175"
+    },
+    {
+      "file": "catalog-Build-integration.log.gz",
+      "originalPath": "/workspace/native-1553/TestResults/test-categories/20261007-225822-101-911683-a02ab29fd3cf4577b83f3c064d96be76-categories/Build-integration.log",
+      "bytes": 16422,
+      "sha256": "5bb1f7880f1a124ef8cd6e91e390e64cd0c24d011ba0ee9850c0802c05210e04",
+      "storedBytes": 1517,
+      "storedSha256": "03f8b2cb71313b7c54f2f6bb547eb79e717187012ed18c67664870b9ee30b241"
+    },
+    {
+      "file": "catalog-Build-unit.log.gz",
+      "originalPath": "/workspace/native-1553/TestResults/test-categories/20261007-225822-101-911683-a02ab29fd3cf4577b83f3c064d96be76-categories/Build-unit.log",
+      "bytes": 19988,
+      "sha256": "919ba84862c81dac49a8cc3550249a82fcc245334a6147ffa27336391bb1bef7",
+      "storedBytes": 1474,
+      "storedSha256": "f4a64cf949684e2c4d262f0c2b08eef4b010e8b0b602b27c35445e5edb23242c"
+    },
+    {
+      "file": "catalog-catalog-audit.json.gz",
+      "originalPath": "/workspace/native-1553/TestResults/test-categories/20261007-225822-101-911683-a02ab29fd3cf4577b83f3c064d96be76-categories/catalog-audit.json",
+      "bytes": 103,
+      "sha256": "b4b83fec75f46c595332220d9a9607e57dae95531471a627454938088377660c",
+      "storedBytes": 103,
+      "storedSha256": "cfef264955567e3c6a6244399166e55a9ff5fff32c533da55a37ea709e902e3c"
+    },
+    {
+      "file": "catalog-dotnet-test.log.gz",
+      "originalPath": "/workspace/native-1553/TestResults/test-categories/20261007-225822-101-911683-a02ab29fd3cf4577b83f3c064d96be76-categories/dotnet-test.log",
+      "bytes": 3171925,
+      "sha256": "ae29cce61614e167b55fbf93d28d3d28540ace55f93ef4765a20d2eb36c11d37",
+      "storedBytes": 353294,
+      "storedSha256": "404902310647e62487ee38a2d43ef6c535af853c45221cc649d150e409e03a0a"
+    },
+    {
+      "file": "catalog-summary.json.gz",
+      "originalPath": "/workspace/native-1553/TestResults/test-categories/20261007-225822-101-911683-a02ab29fd3cf4577b83f3c064d96be76-categories/summary.json",
+      "bytes": 1597,
+      "sha256": "5375604ce72a8b085b0cce867d2b330c9f87483bf896a09f0e306106d1a65c7a",
+      "storedBytes": 640,
+      "storedSha256": "8e1a42b7a219041382deda927c48aa237d580c77b251de0646819ae8114b3e96"
+    },
+    {
+      "file": "plan-stdout.log.gz",
+      "originalPath": "/tmp/systemd-s1/final-plan.log",
+      "bytes": 6332,
+      "sha256": "db1f8fb2cfc436b7fad0914f331b80f38e4fc25a5ec68d95aa02b273271e04fa",
+      "storedBytes": 1336,
+      "storedSha256": "1a20166e25436f279263bc29b43a4bbf0f1e3b111894711e281c751538e46b61"
+    },
+    {
+      "file": "catalog-stdout.log.gz",
+      "originalPath": "/tmp/systemd-s1/catalog.log",
+      "bytes": 682,
+      "sha256": "ac4646648de0f566c317b2fcd4ff7a8d2bf9aab8ecd5a841ebf0672b55f9f8d4",
+      "storedBytes": 383,
+      "storedSha256": "fd068bd6cf47ac179cc5d8c7f02ac1da8b0c6405e657f93000772aac0455941f"
+    },
+    {
+      "file": "historical-catalog-shape-preparation.log.gz",
+      "originalPath": "/tmp/systemd-s1/disposal-red.log",
+      "bytes": 346,
+      "sha256": "0eaa6ea05c01fd8fccfa94cb83c8cd2402e0d9428bf2a085fefebb04e03c556a",
+      "storedBytes": 221,
+      "storedSha256": "6d371b43a14d9f556f35d6e26cde62ce7ea1511e967faaf176f16b518532ede7"
+    }
+  ]
+}
