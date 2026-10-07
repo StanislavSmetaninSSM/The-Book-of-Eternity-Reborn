@@ -33,6 +33,12 @@ public sealed class GmConnectedMiniTransactionTests
     [InlineData("queued-enter", "draft-uncertain")]
     public Task ActualOriginalPipe_ReviewBoundaries(string mode,string expected)=>RunConnectedAsync(mode,expected);
 
+    [Theory]
+    [InlineData("queued-home", "draft-uncertain")]
+    [InlineData("blocks-spinner", "submission-observed")]
+    [InlineData("braille-spinner", "unknown-outcome")]
+    public Task ActualOriginalPipe_ReservationAndPinnedSpinner(string mode,string expected)=>RunConnectedAsync(mode,expected);
+
     [Fact]
     public Task ActualOriginalPipe_DeniedRemovalIsNotAbsence()=>RunConnectedAsync("denied-removal","draft-uncertain");
 
@@ -106,14 +112,21 @@ public sealed class GmConnectedMiniTransactionTests
                     finally{if(!child.HasExited){child.Kill();await child.WaitForExitAsync();}}
                     if(observerExit==0 && mode!="unrestored"){
                         File.Delete(file);
+                        if(mode=="queued-home"){
+                            var gate=(SemaphoreSlim)h.Get("_ptyWriteLock")!;await gate.WaitAsync();
+                            Frame(true);
+                            queued=Task.Run(async()=>{
+                                try{await Task.Delay(100);Frame(true);}finally{gate.Release();}
+                            });
+                        }
                         if(mode=="symlink-removal")File.CreateSymbolicLink(file,Path.Combine(h.Root,"missing-own-target"));
                         if(mode=="denied-removal")File.SetUnixFileMode(h.Root,UnixFileMode.None);
-                        Frame(false);
+                        if(mode!="queued-home")Frame(false);
                         if(mode=="restored-cursor")screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[11;13H\u001b[?2026l"));
                     }
                 });return;
             }
-            if(bytes=="\u001b[H")Frame(true);
+            if(bytes=="\u001b[H" && mode!="queued-home")Frame(true);
             if(bytes=="\u001b[F"){
                 Frame(false);
                 if(mode=="queued-enter"){
@@ -131,9 +144,10 @@ public sealed class GmConnectedMiniTransactionTests
                 screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[6;1H\u001b[K"+" BUILD  ⠋ esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[11;46H\u001b[?2026l"));return;
             }
             if(bytes=="\r" && mode=="busy-panel"){
-                screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[2;1H\u001b[KUnexpected decision needed\u001b[13;1H\u001b[K"+" BUILD  ⠋ esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[6;1H\u001b[?2026l"));return;
+                screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[2;1H\u001b[KUnexpected decision needed\u001b[13;1H\u001b[K"+(" BUILD  "+busySpinner+" esc interrupt").PadRight(89)+"ctrl+p cmd "+"\u001b[6;1H\u001b[?2026l"));return;
             }
-            if(bytes=="\r")screen.Feed(Encoding.UTF8.GetBytes(mode=="unknown"?"\u001b[?1049h":"\u001b[?2026h\u001b[H\u001b[2J\u001b[2;1H█▀▀█  OpenCode\u001b[3;1H█  █  /workspace/qualification-1553-opencode-q1/empty-cli-scratch\u001b[4;1H▀▀▀▀\u001b[8;1H"+" BUILD  ⠋ esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[6;1H\u001b[?2026l"));
+            var busySpinner=mode=="blocks-spinner"?"■⬝⬝⬝⬝⬝⬝⬝":"⠋";
+            if(bytes=="\r")screen.Feed(Encoding.UTF8.GetBytes(mode=="unknown"?"\u001b[?1049h":"\u001b[?2026h\u001b[H\u001b[2J\u001b[2;1H█▀▀█  OpenCode\u001b[3;1H█  █  /workspace/qualification-1553-opencode-q1/empty-cli-scratch\u001b[4;1H▀▀▀▀\u001b[8;1H"+(" BUILD  "+busySpinner+" esc interrupt").PadRight(89)+"ctrl+p cmd "+"\u001b[6;1H\u001b[?2026l"));
         };
         Assert.True((await h.Rpc(new {command="setReady",ready=true})).GetProperty("ok").GetBoolean());
         JsonElement result;

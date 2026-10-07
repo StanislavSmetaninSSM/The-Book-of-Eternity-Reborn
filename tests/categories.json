@@ -16270,6 +16270,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-connected-mini-reservation-spinner",
+      "responsibility": "Original queued Home cannot borrow a pre-reservation repaint; source-pinned eight-cell blocks busy and old braille refusal",
+      "excludes": "Five unchanged refusing witness cases and passed native environment are separate owners; no live qualification",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.DraftObservation.cs",
+        "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmConnectedMiniTransactionTests.ActualOriginalPipe_ReservationAndPinnedSpinner"
+          ]
+        }
+      ]
     }
   ]
 }
