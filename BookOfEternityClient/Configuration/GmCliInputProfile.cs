@@ -3,6 +3,7 @@ namespace BookOfEternityClient.Configuration;
 /// <summary>Controlled input/observation contract, not a qualified live CLI profile or terminal gesture.</summary>
 public sealed class GmCliInputProfile
 {
+    public string TerminalPresentation { get; set; } = "";
     public string IdleMarker { get; set; } = "";
     public string PromptPrefix { get; set; } = "";
     public string WorkingMarker { get; set; } = "";
@@ -20,6 +21,7 @@ public sealed class GmCliInputProfile
         BlockedMarkers.Length > 0 && BlockedMarkers.All(m => !string.IsNullOrWhiteSpace(m));
     public GmCliInputProfile Snapshot() => new()
     {
+        TerminalPresentation = TerminalPresentation ?? "",
         IdleMarker = IdleMarker ?? "", PromptPrefix = PromptPrefix ?? "", WorkingMarker = WorkingMarker ?? "",
         PasteStart = PasteStart ?? "", PasteEnd = PasteEnd ?? "", NewlineSequence = NewlineSequence ?? "",
         SubmitSequence = SubmitSequence ?? "", InterruptSequence = InterruptSequence ?? "", ExitSequence = ExitSequence ?? "",

@@ -2,22 +2,31 @@ using System.Text;
 
 namespace BookOfEternityGMBridge;
 
-internal sealed record TerminalViewObservation(string BindingId, long Revision, string Text, bool Reliable);
+internal sealed record TerminalViewObservation(string BindingId, long Revision, string Text, bool Reliable,
+    string[]? Cells = null, int CursorRow = 0, int CursorColumn = 0, bool CursorVisible = false, int Columns = 0, int Rows = 0);
 
 // Controlled neutral-v1 view only. UTF8, CR/LF/BS, CSI 2J and cursor home.
 // Unknown VT/width/alternate-screen behavior cannot certify an idle composer.
 internal sealed class TerminalScreen(string bindingId)
 {
+    private readonly SynchronizedTerminalScreen? _synchronized;
+    internal TerminalScreen(string bindingId, string presentation, int columns, int rows) : this(bindingId)
+    {
+        if (presentation == "synchronized-mini-v1") _synchronized = new(bindingId, columns, rows);
+        else if (presentation.Length != 0) Fault();
+    }
     private readonly List<StringBuilder> _lines = [new()];
     private int _row, _column, _scalarBytes, _scalarValue, _scalarMinimum;
     private string? _escape;
     private bool _invalid = true, _ended, _awaitingHome;
     private long _revision;
-    internal TerminalViewObservation Capture() => new(bindingId, _revision,
+    internal TerminalViewObservation Capture() => _synchronized?.Capture() ?? new(bindingId, _revision,
         string.Join("\n", _lines.Select(l => l.ToString())).TrimEnd('\n'), !_invalid && !_ended && !_awaitingHome && _scalarBytes == 0 && _escape == null);
-    internal void Fault() { _invalid = true; _ended = true; }
+    internal void Fault() { _synchronized?.Fault(); _invalid = true; _ended = true; }
+    internal void Resize(int columns, int rows) => _synchronized?.Resize(columns, rows);
     internal void Feed(ReadOnlySpan<byte> bytes, ReadOnlySpan<char> text)
     {
+        if (_synchronized != null) { _synchronized.Feed(bytes, text); return; }
         foreach (var b in bytes)
         {
             if (_scalarBytes != 0)

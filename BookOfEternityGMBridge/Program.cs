@@ -373,6 +373,7 @@ internal sealed partial class BridgeHost : IDisposable
                 IOwnedTerminalSession? resizedSession;
                 lock (_sync) resizedSession = _pty;
                 if (resizedSession == null) return BridgeResponse.Failure("No original terminal.", SnapshotStatus());
+                lock (_sync) _terminalScreen?.Resize(request.Columns ?? 80, request.Rows ?? 25);
                 await resizedSession.ResizeAsync(new(request.Columns ?? 80, request.Rows ?? 25), _cts.Token);
                 return BridgeResponse.Success(SnapshotStatus());
             case "addtext":
@@ -521,7 +522,8 @@ internal sealed partial class BridgeHost : IDisposable
         var shellLoopCts = new CancellationTokenSource();
         var input = BeginInputLifetime(session.InputWriter, shellLoopCts);
         if(!admitInput)MarkTerminalUncertain(); // revoke before any keyboard/resize task can run
-        lock (_sync) { _terminalScreen = new(input.Id); _promptScreenReader = () => { var view=CaptureTerminalView(); return view.Reliable ? view.Text : ""; }; }
+        var (columns,rows)=GetConsoleSize();
+        lock (_sync) { _terminalScreen = new(input.Id,LoadBridgeConfig().GmCliInputProfile.TerminalPresentation,columns,rows); _promptScreenReader = () => { var view=CaptureTerminalView(); return view.Reliable ? view.Text : ""; }; }
         // Output has its own lifetime: revoking input must not discard final terminal bytes.
         _outputPumpTask = Task.Run(async () => { try { await PumpOutputAsync(session.OutputReader, output, CancellationToken.None); } catch { MarkTerminalUncertain(); throw; } });
         _terminalAuthorityTask = ObserveTerminalAuthorityAsync(session,input);
@@ -1195,7 +1197,10 @@ internal sealed partial class BridgeHost : IDisposable
             IOwnedTerminalSession? session;
             lock (_sync) session = _pty;
             if (session?.RootExited.IsCompleted == true) return;
-            if (session != null) await session.ResizeAsync(new(current.width, current.height), cancellationToken);
+            if (session != null) {
+                lock (_sync) _terminalScreen?.Resize(current.width,current.height);
+                await session.ResizeAsync(new(current.width, current.height), cancellationToken);
+            }
 
             last = current;
         }
