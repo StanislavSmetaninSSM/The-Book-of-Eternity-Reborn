@@ -3,7 +3,21 @@
   "selections": [
     {
       "category": "auxiliary-launcher-portable",
-      "reason": "Causal real entire auxiliary route from relocated SDK-free runtime package; no old cohort replay",
+      "reason": "Actual relocated runtime-only route, explicit pending replacement, bounded guardian/resource/runtime/main-worker-storage refusal and header status/doc consumers",
+      "contracts": [
+        "T050-AUXILIARY-LAUNCHER-PORTABLE"
+      ]
+    },
+    {
+      "category": "auxiliary-launcher-root-binding",
+      "reason": "Demonstrated existing-directory payload redirection and exact prepare-only explicit-root delta",
+      "contracts": [
+        "T050-AUXILIARY-LAUNCHER-PORTABLE"
+      ]
+    },
+    {
+      "category": "auxiliary-launcher-contract-regressions",
+      "reason": "One exact affected preexisting launcher/options documentation guard; service/M1/fence source unchanged",
       "contracts": [
         "T050-AUXILIARY-LAUNCHER-PORTABLE"
       ]

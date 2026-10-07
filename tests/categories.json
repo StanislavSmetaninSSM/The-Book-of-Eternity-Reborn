@@ -15696,7 +15696,7 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority"
+            "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.*"
           ]
         }
       ]
@@ -15720,6 +15720,29 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "auxiliary-launcher-contract-regressions",
+      "responsibility": "Exact existing documentation consumer for unchanged prepare-turn public launcher options after portable packaged route",
+      "excludes": "No other LiveTurnPreparationService/old fence/M1 cohorts",
+      "changeHints": [
+        "BookOfEternityClient/Launcher/bookofeternity.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.LauncherAndQuickstartDocumentPrepareTurnCommand"
           ]
         }
       ]

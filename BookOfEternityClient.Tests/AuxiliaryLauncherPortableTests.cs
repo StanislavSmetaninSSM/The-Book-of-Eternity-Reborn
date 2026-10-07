@@ -104,6 +104,18 @@ public sealed class AuxiliaryLauncherPortableTests
         Assert.DoesNotContain("Usage:",result.Output);Assert.Equal(before,AuxiliaryLauncherRootBindingTests.Snapshot(f.Files.GameSessionPath));
     }
 
+    [Fact]
+    public void OperationalPrepareInstructions_UseShippedLayoutAndCurrentBoundedLinks()
+    {
+        var docs=File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot,"BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md"));
+        var section=docs[docs.IndexOf("## Подготовка следующего",StringComparison.Ordinal)..docs.IndexOf("## Самая короткая версия",StringComparison.Ordinal)];
+        Assert.Contains("PowerShell 7",section);Assert.Contains("Microsoft.AspNetCore.App 8",section);
+        Assert.Contains("BookOfEternityClient.dll",section);Assert.Contains("/opt/boe/",section);Assert.Contains("C:\\Games",section);
+        Assert.DoesNotContain("dotnet run",section);Assert.DoesNotContain("Debug",section);
+        Assert.Contains("prepare-turn --action",section);Assert.Contains("pending_turn_snapshot.authority.json",section);
+        Assert.Contains("legacy Windows/source",docs);
+    }
+
 }
 
 internal sealed class AuxiliaryPackageFixture : IAsyncDisposable
@@ -166,6 +178,7 @@ internal sealed class AuxiliaryPackageFixture : IAsyncDisposable
         args.AddRange(arguments??["--action",action??"action Ж😀 'quoted'\nsecond line","--session-id","fixture-session","--request-id","fixture-request","--turn-number","7","--dice","14,8,17","--current-realm","Mortal World"]);
         return await Execute(Find("pwsh"),args.ToArray(),label);
     }
+    internal Task<(int Exit,string Output,string Error)> RunClient(string label,string[] arguments)=>Execute(Path.Combine(Runtime,"dotnet"),new[]{Path.Combine(Package,"BookOfEternityClient.dll")}.Concat(arguments).ToArray(),label);
     private async Task Prepare(string exe,string[] args,string label)
     {
         var start=new ProcessStartInfo(exe){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=TestRepoPaths.RepoRoot};foreach(var a in args)start.ArgumentList.Add(a);

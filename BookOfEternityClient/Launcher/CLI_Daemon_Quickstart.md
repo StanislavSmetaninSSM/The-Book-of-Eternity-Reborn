@@ -47,6 +47,12 @@ automatic stop/load/fresh launch UX is undecided. Windows instructions below ret
 the existing route; native Windows execution and Linux browser rollback are separate.
 
 
+## legacy Windows/source recipe
+
+Ниже сохранены отдельные Windows/source инструкции. Они не задают Linux packaged
+startup или prerequisites команды prepare-turn; текущий M1 путь описан выше.
+Старая window/clipboard автовставка не заменяет принятый T042 paste/observe/submit.
+
 ## Шаг 1. Открой окно ГМа и зарегистрируй его
 
 Открой отдельное окно PowerShell и выполни:
@@ -119,22 +125,46 @@ dotnet run
 
 ## Подготовка следующего live-test хода без ручного JSON
 
-Если нужно поставить следующий ход в очередь для живого теста, не собирайте `turn_request.json` и pending snapshot руками. Используйте launcher-команду:
+Это действующая auxiliary-команда существующего launcher. В установленном или
+перенесённом package она запускает `BookOfEternityClient.dll`; нужны PowerShell 7
+и прежние shared runtimes Microsoft.NETCore.App 8 / Microsoft.AspNetCore.App 8.
+Launcher, `gm_main_operation.ps1`, DLL, deps и runtimeconfig поставляются издателем.
+Нет необходимости в checkout, SDK или компиляторе у игрока. Отсутствующий ресурс
+или runtime означает точный отказ до подготовки; автоматической установки нет.
+
+Linux, из любого текущего каталога:
 
 ```powershell
-cd "E:\Games\The Book of Eternity Reborn"
-.\BookOfEternityClient\Launcher\bookofeternity.ps1 -SessionPath "E:\Games\The Book of Eternity Reborn\BookOfEternityClient\game_session" prepare-turn --action "Надеть руническую перчатку и изучить письмо." --dice "14,8,17"
+pwsh -NoProfile -File /opt/boe/BookOfEternityClient/Launcher/bookofeternity.ps1 -SessionPath "/home/player/boe-game/game_session" prepare-turn --action "Надеть руническую перчатку и изучить письмо." --dice "14,8,17"
 ```
 
-Команда создаёт согласованные `input\turn_request.json`, `game_state\control\pending_turn_snapshot.json` и `game_state\control\pending_turn_snapshot.authority.json`, нормализуя пути и исключая служебные bridge/daemon/harness артефакты.
+Windows, тот же поставляемый launcher:
 
-Подготовка выполняется одной generation-bound транзакцией: клиент привязывает
-операцию к текущей сессии до первого чтения, затем под одной канонической
-блокировкой очищает прежние артефакты, снимает no-follow snapshot и публикует
-manifest, authority и запрос хода. Параллельный Load или New Game либо ждёт
-завершения этой транзакции, либо останавливает старую операцию через
-`SessionReplaced`; артефакты старой сессии не попадут в новую. Поэтому не
-собирайте и не очищайте эти файлы вручную.
+```powershell
+pwsh -NoProfile -File "C:\Games\BOE\BookOfEternityClient\Launcher\bookofeternity.ps1" -SessionPath "C:\Games\MyGame\game_session" prepare-turn --action "Надеть руническую перчатку и изучить письмо." --dice "14,8,17"
+```
+
+Корень игры должен быть существующим и подготовленным клиентом. `-SessionPath`
+указывает его `game_session`; тексты/каталоги в `--action` не меняют этот корень.
+Команда не запускает настроенный CLI, не меняет команду/модель/аргументы профиля,
+не вставляет и не отправляет запрос ГМу. Linux не требует регистрации окна.
+Без активного ГМа используется существующее локальное admission; при активном
+ГМе нужен original participating pin. Cold nonterminal, worker или storage debt
+не обходятся; отказ не является поводом очищать запись или повторять неизвестный ход.
+
+Команда создаёт согласованные `input/turn_request.json`,
+`game_state/control/pending_turn_snapshot.json` и
+`game_state/control/pending_turn_snapshot.authority.json`. Подготовка сохраняет
+существующую generation-bound транзакцию, canonical lease, no-follow snapshot
+и исключения служебных bridge/daemon/harness артефактов. Load/New Game не получает
+артефакты старой generation; не собирайте и не очищайте эти файлы вручную.
+
+Действующие bounded Load/browser/clipboard/audio результаты и ограничения — в
+[roadmap](../../specs/1553-portable-local-storage/roadmap-after-daren.md) и
+[auxiliary plan](../../specs/1553-portable-local-storage/auxiliary-launcher-portable-plan.md).
+Load UX принят отдельным срезом: подтверждённые stop + Load + refresh предшествуют
+fresh launch; неопределённость не продолжает старую сессию. Эти helper-инструкции
+не объявляют live GM, физический audio, desktop clipboard или native Windows проверенными.
 
 ## Самая короткая версия
 

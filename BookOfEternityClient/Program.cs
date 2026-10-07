@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -51,9 +51,12 @@ try
         if (!string.IsNullOrWhiteSpace(liveTurnPreparationError))
             throw new ArgumentException(liveTurnPreparationError);
 
-        if (!Directory.Exists(basePath))
-            throw new IOException("Participating preparation requires an existing explicit root.");
-        var fs = new FileSystemManager(basePath, NullLogger<FileSystemManager>.Instance);
+        // Auxiliary launch supplies its root first. Payload values (including an
+        // existing-directory player action) must never select the write root.
+        if (args.Length == 0 || args[0].StartsWith("--", StringComparison.Ordinal) || !Directory.Exists(args[0]))
+            throw new IOException("Participating preparation requires an existing explicit first root.");
+        var preparationBasePath = Path.GetFullPath(args[0]);
+        var fs = new FileSystemManager(preparationBasePath, NullLogger<FileSystemManager>.Instance);
         var result = await SessionOperationContext.RunParticipatingCurrentSessionAsync(fs, async () =>
         {
             fs.EnsureDirectoryStructure();
