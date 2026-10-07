@@ -1,3 +1,13 @@
+# S1 source review final gap — WIP
+
+ae92abc0 fresh33/33GREEN (contract14 + controlled19);19guardianECHILD0emergency.
+Independent Sol source follow-up confirms prior fixes; native DisposeOnce can
+fault outside adapter uncertainty catch (coordinator already retainsUncertain).
+Added native/bus disposal cases and changed unit/invocation refusal, expected
+connection close + durableClosing assertion. Causal disposal RED pending; no
+runtime change yet. Four exact affected checks selected structurally; no old
+cohort/full-suite repeat. sd-bus timeout margin remains explicit S2-only debt.
+
 # S1 causal corrections — WIP
 
 Matrix sourcef4625b2b19cases17PASS/2causalFAIL: post-native manager loss

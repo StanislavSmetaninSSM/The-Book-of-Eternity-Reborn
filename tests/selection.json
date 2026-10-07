@@ -16,6 +16,14 @@
         "T041-SYSTEMD-MAIN-S1",
         "#1553"
       ]
+    },
+    {
+      "category": "gm-main-systemd-affected",
+      "reason": "Four exact checks: unchanged native original durable release, lost A1 receipt, actual I/O-retained stop and Windows ConPTY/Job source ownership; no whole prior cohort",
+      "contracts": [
+        "T041-SYSTEMD-MAIN-S1",
+        "#1553"
+      ]
     }
   ]
 }

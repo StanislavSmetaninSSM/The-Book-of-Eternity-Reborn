@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-main-systemd-affected",
+      "responsibility": "Exact NativeLineage held/release/main-fence/stop and unchanged Windows ownership source boundaries affected by S1 shared seams",
+      "excludes": "No old cohort sequence, full suite, worker qualification or native Windows execution.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+        "BookOfEternityGMBridge/Program.cs"
+      ],
+      "related": [
+        "gm-main-systemd-contract",
+        "gm-main-systemd-controlled-terminal"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement",
+            "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ReleasedOriginal_LostStartedAckRetainsAuthorityAndClosedInput",
+            "BookOfEternityClient.Tests.GmOwnedTerminalSessionTests.ActualStop_RetainsOriginalOwnerWhileScopedStopAndOutputAreUnfinished",
+            "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.WindowsMainSource_HoldsJobBeforeReleaseAndOwnedPseudoConsoleClose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-main-systemd-controlled-terminal",
       "responsibility": "S1 real held PTY/pidfd + original coordinator/Bridge with injected bus/cgroup; no live systemd calls",
       "excludes": "No S2/S3 manager qualification, public SystemdUser/Auto, worker activation, live GM/provider or native Windows claims.",

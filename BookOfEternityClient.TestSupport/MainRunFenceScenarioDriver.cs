@@ -238,6 +238,20 @@ internal static class MainRunFenceScenarioDriver
                     Require(error!=null && (bool)Field("_terminalUncertain")! && owner.RetainsAuthority && Read().Disposition!=GmSessionRunDisposition.Stopped,"Pin timeout retired main or hid uncertainty.");
                 } finally {finish.SetResult();await operation;}
             }
+            else if(mode is "terminal-main-native-dispose-fault" or "terminal-main-bus-dispose-fault") {
+                GmWorkerNativeObservationFault? fault=null;
+                if(mode=="terminal-main-native-dispose-fault") {
+                    var scope=terminal.GetType().GetField("_scope",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(terminal)!;
+                    var native=(NativeLineageOwner)scope.GetType().GetField("_original",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(scope)!;
+                    fault=new(GmWorkerNativeObservationFaultKind.DisposeOnce);native.SetSyntheticObservationFault(fault);
+                }
+                Exception? error=null;try{await Call("StopShellAsync");}catch(Exception e){error=e;}
+                Require(error!=null && owner.RetainsAuthority && ReferenceEquals(terminal,Field("_pty")) && Read().Disposition!=GmSessionRunDisposition.Stopped,"Disposal failure retired original durable owner.");
+                Require(terminal.AuthorityLost.IsCompleted,"Adapter failed to latch original disposal uncertainty.");
+                Require((await terminal.StopAndObserveAsync(CancellationToken.None)).State==GmWorkerStopState.Uncertain,"Adapter promoted failed disposal to successful cached stop.");
+                try{await terminal.DisposeAsync();}catch{}if(fault!=null)Require(fault.DisposeAttempts==1,"Cached failed original disposal replayed.");
+                result["LogicalUncertainRetained"]=true;
+            }
             else if(mode=="terminal-main-stopped-debt-epoch") {
                 Exception? error=null;try{await Call("StopShellAsync");}catch(Exception e){error=e;}
                 Require(error!=null && owner.HasMetadataDebt && Read().Disposition==GmSessionRunDisposition.Stopped && ReferenceEquals(terminal,Field("_pty")),"Visible Stopped retired original before ACK.");

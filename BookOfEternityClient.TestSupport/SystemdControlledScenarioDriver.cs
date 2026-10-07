@@ -14,7 +14,7 @@ internal static class SystemdControlledScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode,string package,string folder)
     {
-        var bus=new ControlledBus {FixtureFolder=folder};var cgroup=new ControlledCgroup(bus);var fixture=new SystemdControlledFixture(bus,cgroup);
+        var bus=new ControlledBus {FixtureFolder=folder,Mode=mode};var cgroup=new ControlledCgroup(bus) {Mode=mode};var fixture=new SystemdControlledFixture(bus,cgroup);
         if(mode=="terminal-systemd-connected") {
             var code=await OwnedTerminalScenarioDriver.RunSystemdBridgeAsync(package,folder,fixture);
             var record=ReadRecord(folder);var facts=JsonSerializer.Deserialize<Dictionary<string,object?>>(File.ReadAllText(Path.Combine(folder,"scenario.json")))!;
@@ -24,7 +24,7 @@ internal static class SystemdControlledScenarioDriver
             var success=code==0 && bus.ActualPidfd && bus.SubscribedBeforeStart && bus.Stages.Contains(GmSessionRunDisposition.Running) && bus.StopCount==1 && bus.Disposed && cgroup.Disposed && record.Disposition==GmSessionRunDisposition.Stopped;
             facts["Success"]=success;File.WriteAllText(Path.Combine(folder,"scenario.json"),JsonSerializer.Serialize(facts));return success?0:1;
         }
-        var ioMode=mode switch {"terminal-systemd-io-drain"=>"terminal-main-output-drain","terminal-systemd-io-fault"=>"terminal-main-output-fault","terminal-systemd-stopped-debt"=>"terminal-main-stopped-debt-epoch",_=>null};
+        var ioMode=mode switch {"terminal-systemd-io-drain"=>"terminal-main-output-drain","terminal-systemd-io-fault"=>"terminal-main-output-fault","terminal-systemd-stopped-debt"=>"terminal-main-stopped-debt-epoch","terminal-systemd-native-dispose-fault"=>"terminal-main-native-dispose-fault","terminal-systemd-bus-dispose-fault"=>"terminal-main-bus-dispose-fault",_=>null};
         if(ioMode!=null)return await MainRunFenceScenarioDriver.RunAsync(ioMode,package,folder,fixture);
         var launch=NeutralTerminalLaunch.Create(package,folder);bus.Root=Directory.GetParent(launch.Scratch)!.FullName;
         var files=new FileSystemManager(bus.Root,NullLogger<FileSystemManager>.Instance);files.EnsureDirectoryStructure();
@@ -59,6 +59,7 @@ internal static class SystemdControlledScenarioDriver
             Require(owner.RetainsAuthority && owner.Record?.Disposition!=GmSessionRunDisposition.Stopped,"Uncertain scope released durable owner.");
             Require(ReferenceEquals(proof,await terminal.StopAndObserveAsync(CancellationToken.None)),"Stop proof/retry changed.");
             Require(bus.StopCount<=1,"StopUnit replayed after uncertain receipt.");
+            if(mode is "terminal-systemd-changed-unit" or "terminal-systemd-changed-invocation")Require(bus.StopCount==0,"Replacement unit received StopUnit.");
             Exception? write=null;try{await terminal.InputWriter.WriteAsync(new byte[]{120});}catch(Exception ex){write=ex;}
             Require(write!=null && terminal.RootExited.IsCompletedSuccessfully,"Uncertain original input open or own root not reaped.");
             var text=System.Text.Encoding.UTF8.GetString(output.ToArray());
@@ -104,11 +105,11 @@ internal static class SystemdControlledScenarioDriver
             if(Mode=="terminal-systemd-release-ack" && Stages.LastOrDefault()==GmSessionRunDisposition.Running){BeforeRelease?.Invoke();BeforeRelease=null;}
             if(Mode=="terminal-systemd-release-loss" && Stages.LastOrDefault()==GmSessionRunDisposition.Running)_lost.TrySetResult("controlled before-A1 manager loss");
             if(Mode=="terminal-systemd-late-loss" && StopCount==1 && fd==null && ++_stopObservations==2)_lost.TrySetResult("controlled after-native manager loss");
-            return Task.FromResult(new SystemdUnitSnapshot("/org/freedesktop/systemd1/unit/controlled",new string('a',32),"/controlled/"+name,Mode=="terminal-systemd-wrong-fd"?"/org/freedesktop/systemd1/unit/other":"/org/freedesktop/systemd1/unit/controlled"));
+            return Task.FromResult(new SystemdUnitSnapshot(Mode=="terminal-systemd-changed-unit" && Stages.LastOrDefault()==GmSessionRunDisposition.Stopping?"/org/freedesktop/systemd1/unit/replacement":"/org/freedesktop/systemd1/unit/controlled",new string(Mode=="terminal-systemd-changed-invocation" && Stages.LastOrDefault()==GmSessionRunDisposition.Stopping?'c':'a',32),"/controlled/"+name,Mode=="terminal-systemd-wrong-fd"?"/org/freedesktop/systemd1/unit/other":"/org/freedesktop/systemd1/unit/controlled"));
         }
         private int _stopObservations;
-        public Task StopScopeAsync(string name,CancellationToken token){StopCount++;ObserveStage(name);if(Mode=="terminal-systemd-stop-lost")throw new IOException("controlled stop receipt lost");return Task.CompletedTask;}
-        public ValueTask DisposeAsync(){Disposed=true;return ValueTask.CompletedTask;}
+        public Task StopScopeAsync(string name,CancellationToken token){StopCount++;ObserveStage(name);Require(Stages[^1] is GmSessionRunDisposition.Stopping or GmSessionRunDisposition.Uncertain,"StopUnit preceded durable closing.");if(Mode=="terminal-systemd-stop-lost")throw new IOException("controlled stop receipt lost");return Task.CompletedTask;}
+        public ValueTask DisposeAsync(){Disposed=true;_lost.TrySetResult("controlled expected original connection closure");if(Mode=="terminal-systemd-bus-dispose-fault")throw new IOException("controlled bus disposal fault");return ValueTask.CompletedTask;}
     }
     internal sealed class ControlledCgroup(ControlledBus bus) : ISystemdCgroupSource
     {
