@@ -1,3 +1,13 @@
+# Reusable relay causal RED preparation
+
+Independent actual Sol6.1/xhigh DESIGN PASS at3a79b040; plain RELAY ERROR marker
+clarified. New contract/main tests and exact category ownership/selection now
+published before RED; no shared runtime implementation yet. Production baseline
+copies accepted old relay/helper into isolated shipped folder and uses original
+Bridge/T042 before attempting missing new worker. Expected causal missing-worker
+failure, original queue-close/scoped cleanup retained. Synthetic packets only,
+no provider/model or S2/S3. After observed RED, extract reviewed shared runtime.
+
 # T043 reusable relay — source/design checkpoint
 
 Accepted S1 `41ecc2c54b538f400bdc180984c29416bec1508f`, remote verified clean.

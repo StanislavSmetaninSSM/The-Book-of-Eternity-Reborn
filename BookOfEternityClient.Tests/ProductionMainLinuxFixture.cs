@@ -14,6 +14,11 @@ internal static class ProductionMainLinuxFixture
     {
         Assert.True(OperatingSystem.IsLinux(),"M1 requires actual Linux execution.");
         var repo=TestRepoPaths.RepoRoot;var folder=Path.Combine(repo,"TestResults/production-main",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(folder);
+        var reusableRelay=mode.StartsWith("production-main-relay-",StringComparison.Ordinal);
+        if(reusableRelay) {
+            var own=Path.Combine("/tmp","reusable-relay-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(own);
+            File.WriteAllText(Path.Combine(folder,"controlled-root.json"),JsonSerializer.Serialize(new{Root=own,OwnFixtureOnly=true}));folder=own;
+        }
         if(mode=="driver-provider-refusal") {
             // TMPDIR contains the native private AF_UNIX bootstrap and managed
             // pipe socket. The controlled package needs a bounded byte-length root.
@@ -80,6 +85,23 @@ internal static class ProductionMainLinuxFixture
         var command="& '"+fixture.Replace("'","''")+"' '--model' 'gm-model-sentinel' '--arg' 'a b'";
         var settings=new GameSettings{GmBridgeBackend="OwnedTerminal",GmCliLaunchCommand=command,GmBridgeShellWorkingDirectory=cwd,GmBridgeAutoStart=false,MusicEnabled=false,SoundEnabled=false,
             GmCliInputProfile=new(){IdleMarker="NEUTRAL READY",PromptPrefix="> ",WorkingMarker="NEUTRAL WORKING",ObservationTimeoutMilliseconds=1800}};
+        if(reusableRelay) {
+            var bundle=Path.Combine(ship,"gm-relay");Directory.CreateDirectory(bundle);var shared=Path.Combine(repo,"tools/gm-relay");
+            if(Directory.Exists(shared)) {
+                foreach(var file in Directory.GetFiles(shared))File.Copy(file,Path.Combine(bundle,Path.GetFileName(file)));
+                settings.GmCliInputProfile=JsonSerializer.Deserialize<BookOfEternityClient.Configuration.GmCliInputProfile>(File.ReadAllBytes(Path.Combine(bundle,"input-profile.json")))!;
+            } else {
+                // Causal baseline: actual accepted persistent relay receives the
+                // real Bridge prompt before the missing shared worker fails.
+                File.Copy(Path.Combine(repo,"tests/fixtures/ProductionMain/codex-gm-relay.py"),Path.Combine(bundle,"relay_cli.py"));
+                File.Copy(Path.Combine(repo,"tests/fixtures/ProductionMain/relay-apply-response.ps1"),Path.Combine(bundle,"relay-apply-response.ps1"));
+                settings.GmCliInputProfile.PromptPrefix="RELAY> ";settings.GmCliInputProfile.BlockedMarkers=["RELAY ERROR"];settings.GmCliInputProfile.ObservationTimeoutMilliseconds=15000;
+            }
+            Directory.CreateDirectory(Path.Combine(folder,"queue"));
+            command="& '/usr/bin/python3' '"+Path.Combine(bundle,"relay_cli.py").Replace("'","''")+"' --session '"+files.GameSessionPath.Replace("'","''")+"' --queue '"+Path.Combine(folder,"queue").Replace("'","''")+"' --model gpt-6.1-sol";
+            settings.GmCliLaunchCommand=command;settings.GmBridgeShellWorkingDirectory=files.GameSessionPath;
+            File.WriteAllText(Path.Combine(folder,"relay-bundle.json"),JsonSerializer.Serialize(new{Baseline=!Directory.Exists(shared),Files=Directory.GetFiles(bundle).ToDictionary(Path.GetFileName,p=>Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(p))).ToLowerInvariant()),ModelRequests=0}));
+        }
         var config=JsonSerializer.SerializeToUtf8Bytes(settings);File.WriteAllBytes(Path.Combine(files.GameSessionPath,"config.json"),config);
         var initialGeneration=await new StateManager(files,settings,NullLogger<StateManager>.Instance).BootstrapLocalStorageAsync();
         // Proposed setting is carried as ordinary profile JSON before the property exists.

@@ -590,7 +590,7 @@
     },
     {
       "id": "daren-standalone-browser-dispatch",
-      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent \u00d7 commit/rollback), no broader browser cohort.",
+      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
       "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
@@ -16836,6 +16836,64 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmRelayAcceptanceTests.ActualDriver_RealStoryAcceptanceAndNormalExit"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-reusable-contract",
+      "responsibility": "T043 shared relay worker exact bytes/request identity, bounded atomic once-only response publication and queue-close/refusal under isolated synthetic data",
+      "excludes": "No model calls, game acceptance, terminal/manager/device/native Windows execution",
+      "changeHints": [
+        "tools/gm-relay",
+        "BookOfEternityClient.Tests/GmRelayReusableTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-reusable-main",
+      "responsibility": "T043 relocated shared relay/worker/fixed real helper through original production Bridge pipe dispatch and original stop/I-O/ACK, success and consumer-error synthetic packets",
+      "excludes": "No genuine new model/gameplay claim, provider/auth, S2/S3 or native Windows",
+      "changeHints": [
+        "tools/gm-relay",
+        "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.Relay.cs",
+        "BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs"
+      ],
+      "related": [
+        {
+          "id": "gm-relay-transport",
+          "when": "Shared persistent transport or forwarding path changes"
+        },
+        {
+          "id": "gm-relay-repair",
+          "when": "Shared fixed consumer/helper forwarding changes"
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayReusableTests.ProductionBridge_RelocatedWorkerConsumerAndOriginalRetirement"
           ]
         }
       ]

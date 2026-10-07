@@ -2,26 +2,34 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-main-systemd-contract",
-      "reason": "S1 transient scope exact sd-bus request/identity/job/cgroup semantics and closed public activation",
+      "category": "gm-relay-reusable-contract",
+      "reason": "New shared exact-byte/identity/atomic publication/close API",
       "contracts": [
-        "T041-SYSTEMD-MAIN-S1",
+        "T043-RELAY-REUSABLE-CONTRACT",
         "#1553"
       ]
     },
     {
-      "category": "gm-main-systemd-controlled-terminal",
-      "reason": "S1 real held PTY/pidfd + original coordinator/Bridge with injected bus/cgroup; no live systemd calls",
+      "category": "gm-relay-reusable-main",
+      "reason": "New relocated shared path through actual original production Bridge/helper and stop/I-O/ACK",
       "contracts": [
-        "T041-SYSTEMD-MAIN-S1",
+        "T043-RELAY-REUSABLE-CONTRACT",
         "#1553"
       ]
     },
     {
-      "category": "gm-main-systemd-affected",
-      "reason": "Four exact checks: unchanged native original durable release, lost A1 receipt, actual I/O-retained stop and Windows ConPTY/Job source ownership; no whole prior cohort",
+      "category": "gm-relay-transport",
+      "reason": "Directly changed persistent transport and legacy forwarder/resources",
       "contracts": [
-        "T041-SYSTEMD-MAIN-S1",
+        "T043-RELAY-REUSABLE-CONTRACT",
+        "#1553"
+      ]
+    },
+    {
+      "category": "gm-relay-repair",
+      "reason": "Fixed consumer relocation/forwarding and current actual repair interface",
+      "contracts": [
+        "T043-RELAY-REUSABLE-CONTRACT",
         "#1553"
       ]
     }

@@ -191,6 +191,9 @@ internal static partial class OwnedTerminalScenarioDriver
                 result["OriginalWorkerInventoryRetained"]=true;
             }
             var originalSession=type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)!;
+            if(mode.StartsWith("production-main-relay-",StringComparison.Ordinal)) {
+                await RunReusableRelayAsync(mode,folder,host!,type,Rpc,result);result["Success"]=true;return 0;
+            }
             if(mode.StartsWith("production-main-daemon-",StringComparison.Ordinal)) {
                 await RunIdleDaemonStopAsync(folder,host!,type,Rpc,result,mode=="production-main-daemon-coordinated-stop");
                 result["Success"]=true;return 0;
