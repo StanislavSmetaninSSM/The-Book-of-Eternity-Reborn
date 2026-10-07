@@ -1,8 +1,12 @@
 # Implementation Plan: Trusted local storage and cross-platform runtime
 
-**Branch**: `codex/1553-load-filesystem` | **Updated**: 2026-10-06
+**Branch**: `codex/1553-load-filesystem` | **Updated**: 2026-10-07
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
+
+## T031-BROWSER-DIRECT-GACHA-LINUX — bounded execution complete
+
+Accepted LoadUX23a5b669; [reviewed minimal execution plan](browser-direct-gacha-linux-plan.md). Existing Stage/publisher/schema7/pending-turn adoption contract preserved. Runtime d47d3f16, test/catalog acb42795:50distinctPASS (36new+14exact affected), separate historical RED/preparation evidence. Independent actual Sol6.1/xhigh design/source/selection PASS; final evidence and GitHub-only restore pending. No gameplay/model/GM text/UX change. [Handoff](browser-direct-gacha-linux-handoff.md). Standalone Daren remains separate next task; older next/pending sections below are historical.
 
 ## T041-LOAD-SESSION-LIFECYCLE — authorized continuation
 

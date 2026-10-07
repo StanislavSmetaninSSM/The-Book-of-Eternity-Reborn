@@ -2,7 +2,7 @@
 
 Issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 Branch: `codex/1553-load-filesystem`; accepted base `23a5b6695a34752005ffaff6f5d5aedc2ccca797`.
-Status: amended design checkpoint after independent Sol6.1/xhigh identified an adoption gap; focused amendment review required before implementation.
+Status: bounded execution PASS, independent amended design/source/selection PASS; final independent evidence review and fresh GitHub-only restoration pending. Historical sections below retain their exact checkpoint state.
 Date: 2026-10-07 UTC. Writer is the sole implementation writer.
 
 ## Intent and retained contract
@@ -114,3 +114,7 @@ Clean52417c86 fresh build22exec:20PASS/2FAIL, complete runner cleanup and22 dist
 ### Interrupted Stage GREEN; affected regression block next
 
 Cleanacb42795 fresh build2/2PASS, complete selection/runner cleanup and both own roots removed. [Evidence](recovery/evidence/direct-gacha-interrupted-green/manifest.json). Both original interrupted Stage phases settle authenticated B1 then schema7 to exact canonical before-images and absent pending/rollback artifacts, while retaining exact unreleased original UI lease bytes. Independent actual Sol6.1/xhigh focused source/selection PASS atacb42795: runtime unchangedd47d3f16,34qualified+2corrected+14affected=50 distinct no-overlap cases. Next only14exact affected schema7/backup regressions, then independent final evidence review and GitHub-only restore.
+
+### Final narrow regression GREEN and evidence preparation
+
+Clean4f74e2a7 fresh builds of integration and unit projects; selected14/14PASS (9schema7+5backup), no skip/duplicates/underfill, full runner cleanup. [Evidence](recovery/evidence/direct-gacha-regression-green/manifest.json). Runtime remainedd47d3f16 and executable fixture/test/catalog sources remainedacb42795. Complete latest-case proof is50distinctPASS (36new+14affected), with68historical executions54PASS/14FAIL retained separately (7causal runtimeRED,2unwitnessedconsumer,5cut-preparation/oracle). Three preparation failures execute0tests: one compilation failure and two category refusals.13manifests,550sourcepins,62artifacts,24gzip verified;54exact new fixture root receipts plus9generic regression cleanup receipts, five unit Dispose outcomes and empty scoped prefixes are distinguished. No native/process probe/live browser/provider/model requests. [Qualification](recovery/browser-direct-gacha-linux-qualification.json) · [Handoff](browser-direct-gacha-linux-handoff.md). Final independent evidence verdict and exact GitHub-only restore remain; no further runtime tests intended.

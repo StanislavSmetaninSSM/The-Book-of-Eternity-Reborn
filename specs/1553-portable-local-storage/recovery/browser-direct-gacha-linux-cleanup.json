@@ -1,0 +1,15 @@
+{
+  "Scope": "Read-only inspection of the exact per-test fixture namespace prefixes; no deletion of unrelated resources",
+  "Prefixes": {
+    "boe-direct-gacha-linux-": [],
+    "boe-gameengine-turnlifecycle-": [],
+    "boe-browser-linux-boundary-": [],
+    "boe-backup-lifecycle-": []
+  },
+  "ExactRemovedNewFixtureRootsFromTRX": 54,
+  "GenericRegressionRemovedRootReceipts": 9,
+  "UnitRegressionDisposalCases": 5,
+  "UnitDisposalEvidence": "Original PortableBackupLifecycleTests.Dispose deletes only its own GUID root; all5 tests passed without disposal error, and no root with that fixture prefix remains. These5 do not have path-level TRX receipts.",
+  "RuntimeOrNativeFixturesStarted": 0,
+  "HistoricalPid1ResourcesTouched": false
+}

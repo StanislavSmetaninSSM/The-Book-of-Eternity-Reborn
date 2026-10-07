@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="54c1d13b-3cc8-4daa-a287-e66fa00b8df1" name="@c7669543e9c7 2026-10-07 00:46:46" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-07T00:46:46.9094097+00:00" queuing="2026-10-07T00:46:46.9094097+00:00" start="2026-10-07T00:46:43.1530187+00:00" finish="2026-10-07T00:46:46.9174259+00:00" />
+  <TestSettings name="default" id="706ee877-080d-4f63-a123-96d5dab03043">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-07_00_46_46" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="fd432bb5-51ae-49e8-9c09-013537953a7e" testId="2d220164-f100-fc29-1929-a5ff529fdd69" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget(originalTarget: False)" computerName="c7669543e9c7" duration="00:00:00.0037930" startTime="2026-10-07T00:46:46.7946701+00:00" endTime="2026-10-07T00:46:46.7946703+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fd432bb5-51ae-49e8-9c09-013537953a7e" />
+    <UnitTestResult executionId="7f7804c3-b890-4d1d-92a7-329de6529db2" testId="2ed20ae6-4ce8-f7e5-f1c7-fef0e3f59b63" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget(originalTarget: True)" computerName="c7669543e9c7" duration="00:00:00.0062474" startTime="2026-10-07T00:46:46.7907443+00:00" endTime="2026-10-07T00:46:46.7907445+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7f7804c3-b890-4d1d-92a7-329de6529db2" />
+    <UnitTestResult executionId="0a0e0429-4e11-434c-8b99-4def75877969" testId="6a9257a0-e6d8-75bf-fea9-5c51898ecc82" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence(unknown: False)" computerName="c7669543e9c7" duration="00:00:00.1916540" startTime="2026-10-07T00:46:46.7565396+00:00" endTime="2026-10-07T00:46:46.7565586+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0a0e0429-4e11-434c-8b99-4def75877969" />
+    <UnitTestResult executionId="3e3ad2e3-4d74-4ca1-a054-b0023d51b631" testId="334d89e0-0ef5-f1f3-66c9-2a46684612c7" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.ExistingOriginalEvidenceBlocksEvenOrdinaryAbsenceWithoutDeletingEvidence" computerName="c7669543e9c7" duration="00:00:00.0090808" startTime="2026-10-07T00:46:46.8039308+00:00" endTime="2026-10-07T00:46:46.8039310+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3e3ad2e3-4d74-4ca1-a054-b0023d51b631" />
+    <UnitTestResult executionId="44c544e4-48f8-4891-bb35-39824d6d8a34" testId="0700ef25-2ca0-f231-946e-c9ee6abbdecd" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence(unknown: True)" computerName="c7669543e9c7" duration="00:00:00.0253821" startTime="2026-10-07T00:46:46.7841024+00:00" endTime="2026-10-07T00:46:46.7841026+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="44c544e4-48f8-4891-bb35-39824d6d8a34" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget(originalTarget: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2ed20ae6-4ce8-f7e5-f1c7-fef0e3f59b63">
+      <Execution id="7f7804c3-b890-4d1d-92a7-329de6529db2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="RestoreCannotMixOriginalEvidenceAndOrdinaryTarget" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence(unknown: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6a9257a0-e6d8-75bf-fea9-5c51898ecc82">
+      <Execution id="0a0e0429-4e11-434c-8b99-4def75877969" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence(unknown: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0700ef25-2ca0-f231-946e-c9ee6abbdecd">
+      <Execution id="44c544e4-48f8-4891-bb35-39824d6d8a34" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget(originalTarget: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2d220164-f100-fc29-1929-a5ff529fdd69">
+      <Execution id="fd432bb5-51ae-49e8-9c09-013537953a7e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="RestoreCannotMixOriginalEvidenceAndOrdinaryTarget" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.ExistingOriginalEvidenceBlocksEvenOrdinaryAbsenceWithoutDeletingEvidence" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="334d89e0-0ef5-f1f3-66c9-2a46684612c7">
+      <Execution id="3e3ad2e3-4d74-4ca1-a054-b0023d51b631" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="ExistingOriginalEvidenceBlocksEvenOrdinaryAbsenceWithoutDeletingEvidence" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="2d220164-f100-fc29-1929-a5ff529fdd69" executionId="fd432bb5-51ae-49e8-9c09-013537953a7e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ed20ae6-4ce8-f7e5-f1c7-fef0e3f59b63" executionId="7f7804c3-b890-4d1d-92a7-329de6529db2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6a9257a0-e6d8-75bf-fea9-5c51898ecc82" executionId="0a0e0429-4e11-434c-8b99-4def75877969" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="334d89e0-0ef5-f1f3-66c9-2a46684612c7" executionId="3e3ad2e3-4d74-4ca1-a054-b0023d51b631" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0700ef25-2ca0-f231-946e-c9ee6abbdecd" executionId="44c544e4-48f8-4891-bb35-39824d6d8a34" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="5" executed="5" passed="5" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.69]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:02.75]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:02.80]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:03.16]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

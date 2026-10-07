@@ -1,0 +1,74 @@
+{
+  "Categories": [
+    "browser-direct-gacha-linux-regression"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4f74e2a76d2696c9e8266256407d308c4ee92960",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 79.6778312,
+  "Descriptors": [
+    {
+      "Name": "browser-direct-gacha-linux-regression-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "browser-direct-gacha-linux-regression",
+      "Categories": [
+        "browser-direct-gacha-linux-regression"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan|FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes|FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OldEmptyOrphanCleanupIntent_IsRetainedWithoutMutation|FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OldEmptyOrphanCleanupIntent_IsRetainedWithoutMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "browser-direct-gacha-linux-regression-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "browser-direct-gacha-linux-regression",
+      "Categories": [
+        "browser-direct-gacha-linux-regression"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.ExistingOriginalEvidenceBlocksEvenOrdinaryAbsenceWithoutDeletingEvidence|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.ExistingOriginalEvidenceBlocksEvenOrdinaryAbsenceWithoutDeletingEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

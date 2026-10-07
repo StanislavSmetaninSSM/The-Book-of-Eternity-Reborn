@@ -1,14 +1,26 @@
 {
   "Task": "T031-BROWSER-DIRECT-GACHA-LINUX",
-  "SourceCommit": "d47d3f16837f56f23e3254e30047dc71d3b3ee17",
+  "SourceCommit": "4f74e2a76d2696c9e8266256407d308c4ee92960",
   "SourceWasCleanBeforeCapture": true,
-  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"browser-direct-gacha-linux\",\"browser-direct-gacha-linux-boundaries\")'",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-direct-gacha-linux-regression",
   "Inputs": [
     {
       "Path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
       "Bytes": 1712,
       "Sha256": "9788117b2081320c7df37fa79114ccc876b2e4e16cca45d933197c99a663bba8",
       "GitBlob": "913fb07886ccbd776a2b0011740f24dc334eef0e"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.Admission.cs",
+      "Bytes": 9851,
+      "Sha256": "fae3613d1660f59dad80cfde1b4db10f6ab8a3f137cab5fe2c8536c641716070",
+      "GitBlob": "41b2ab88fc1126d6203aa0d27111be410883bff6"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.cs",
+      "Bytes": 13977,
+      "Sha256": "97d042d3603e053bc84b48ac51ed1bc874129af8a85628e2f70383e006130856",
+      "GitBlob": "74e973ae0f20550870467aecf988acc643a0a71d"
     },
     {
       "Path": "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxFixture.cs",
@@ -23,10 +35,16 @@
       "GitBlob": "5c4c2e54f81686a01f6f00b9d5c3d9b0af4c8255"
     },
     {
+      "Path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxBoundaryTests.cs",
+      "Bytes": 9700,
+      "Sha256": "4540aae8567ecd3b9124e0838d0a111674c5df495f225e80aa54c455fb5cb03a",
+      "GitBlob": "4001978d4c1d925f9f8ba714ef19ac943021cb77"
+    },
+    {
       "Path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DirectGachaLinux.cs",
-      "Bytes": 5459,
-      "Sha256": "491a134cb897647d351c5be7a1e8d7d7a59ae43d722313069139ad436a05c7e0",
-      "GitBlob": "1baffb606e4d2a8d7051c2e4ec6ab4fb36e90b51"
+      "Bytes": 7825,
+      "Sha256": "7ba157c0fc7eee4cc1b851b19a616de2b4b2484b13fdf0f023efc8f7b5ae250b",
+      "GitBlob": "cfbb867a43791b65ec5bbf9a7e5afc8ad364c1ab"
     },
     {
       "Path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
@@ -39,6 +57,36 @@
       "Bytes": 6991,
       "Sha256": "5b93bdaa9abcbd526cecb140abbb9a5de926e503570ef4eb240d7e04d211711e",
       "GitBlob": "e43f444bc9fe7ef081bb05e4d1f63861dd63cab1"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Bytes": 1682,
+      "Sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "GitBlob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/PortableBackupLifecycleTests.Boundaries.cs",
+      "Bytes": 11300,
+      "Sha256": "fbee43d39e78e82768fdec55c7305d1c13d613e28be88d53eb632419f16ff1b0",
+      "GitBlob": "10cd10f61afad2b88d0496d2f6397f2aa1886fa9"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/PortableBackupLifecycleTests.Publication.cs",
+      "Bytes": 5337,
+      "Sha256": "7876532427e15ee367702e6efcd79cf5d3175e5f57d3ef702c64a4dc5817e481",
+      "GitBlob": "036696431c2144692b933b22c7e6e65529e20594"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/PortableBackupLifecycleTests.Routing.cs",
+      "Bytes": 6627,
+      "Sha256": "23ac58458497e09c4b9f5d6117edc65f5685f96a0c9ddae61459451897b0d01c",
+      "GitBlob": "3047999c440437c19c05ea0011cc3ccd8298d209"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/PortableBackupLifecycleTests.cs",
+      "Bytes": 3971,
+      "Sha256": "ac51c6cf6bac05daaf87f0b7cfb1658a5030c72e2a58b22766eddf4cd10cc2c2",
+      "GitBlob": "4ce3a12857ec7c0e8aab2709ccba352decc25cb1"
     },
     {
       "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
@@ -270,92 +318,56 @@
     },
     {
       "Path": "tests/categories.json",
-      "Bytes": 1126938,
-      "Sha256": "b399d72f05f8df97c3cd30b92538669f025eecdccd5fd8251f41628db32a40c7",
-      "GitBlob": "31e467de8e900469d3ee0ac402d8f56ffff9bf08"
+      "Bytes": 1130136,
+      "Sha256": "99b137eccc840d3aaa9d6e256ae4c74aef3e230236009418857418115ac7a503",
+      "GitBlob": "e5653c85331475ab2c59b0c036b72628387e5143"
     },
     {
       "Path": "tests/selection.json",
-      "Bytes": 703,
-      "Sha256": "51135763d24bfac0a6b11ab7e366d754dc5c3066ccc856b5e2a48d99ef863586",
-      "GitBlob": "bf2e91489f0a49138c074158872c65ba9c871ca6"
+      "Bytes": 1167,
+      "Sha256": "88a34693f7c78e86164f47870137c8727705bbbf57a7d6b70d84d5b5b9d44f3b",
+      "GitBlob": "eb3e974c70ecb9ed6ed5d08b5e740114ce45ab80"
     }
   ],
   "Artifacts": [
     {
-      "Path": "20261007-002800-118-582668-5ba9a6898ba54096950b0606de23fec6-categories/Build-integration.log.gz",
-      "Bytes": 1425,
-      "Sha256": "58223aa721eac321957d13f6875406ddae1626ae271dc5c9072d6f629c343e19",
-      "DecompressedSha256": "29693753f64dcd5136a949c517053c217a8b3bd3fe33ee7cf767c7d2f2c967b0"
+      "Path": "20261007-004521-995-588837-0a146ee41ffb4deabae8ce2be5d7300d-categories/Build-integration.log.gz",
+      "Bytes": 1426,
+      "Sha256": "d8566c809da621a7a62a57a7bdb8bb4e71a8e565687f8ea260fda520146e8179",
+      "DecompressedSha256": "b6b911fe28ea728c8fcfbfda66f69c10bb50091feaaeac0c8e4f73ff6a823bc0"
     },
     {
-      "Path": "20261007-002800-118-582668-5ba9a6898ba54096950b0606de23fec6-categories/browser-direct-gacha-linux-boundaries-integration-002.trx",
-      "Bytes": 10363,
-      "Sha256": "cac87844ccfb8d3a8ee2469bcc36faff07200b65bf6d2753696ad038a8791c0b"
+      "Path": "20261007-004521-995-588837-0a146ee41ffb4deabae8ce2be5d7300d-categories/Build-unit.log.gz",
+      "Bytes": 1346,
+      "Sha256": "7eee275cc29bc6ca3ecbc628076d39781af7d3fc1982be3ea448dd0512d78d33",
+      "DecompressedSha256": "5b804bc58091ac6010fa61c5c34d6e3429d4b0c357fddf0e498798361e4e3539"
     },
     {
-      "Path": "20261007-002800-118-582668-5ba9a6898ba54096950b0606de23fec6-categories/browser-direct-gacha-linux-integration-001.trx",
-      "Bytes": 6867,
-      "Sha256": "86ae4de4d46a401440c0631436d594a8895d219bed2678912a35aac6ee44c421"
+      "Path": "20261007-004521-995-588837-0a146ee41ffb4deabae8ce2be5d7300d-categories/browser-direct-gacha-linux-regression-integration-001.trx",
+      "Bytes": 16963,
+      "Sha256": "8046553f203ca093f2656904c1db7797ab5e4a4d7fc67e16ba416bd19bd4c01a"
     },
     {
-      "Path": "20261007-002800-118-582668-5ba9a6898ba54096950b0606de23fec6-categories/dotnet-test.log.gz",
-      "Bytes": 172703,
-      "Sha256": "3dd90e74ed4bd60ad53459edc7c065b97acd0d3ea8b5d90432a5c28a27f78a1e",
-      "DecompressedSha256": "0109b4f07370d15121d1ecdd8b94ea3a2c77633eb3e4d713c475896423aa3745"
+      "Path": "20261007-004521-995-588837-0a146ee41ffb4deabae8ce2be5d7300d-categories/browser-direct-gacha-linux-regression-unit-002.trx",
+      "Bytes": 8867,
+      "Sha256": "1452b548de8b29d27aa7383c6a9d6722fb7d42a60909022abd5b89a42179802d"
     },
     {
-      "Path": "20261007-002800-118-582668-5ba9a6898ba54096950b0606de23fec6-categories/plan.json",
-      "Bytes": 2688,
-      "Sha256": "2a888b99bd2139995b95ae52a49eaecfc7423ba07a6f932f48e6f5861942938e"
+      "Path": "20261007-004521-995-588837-0a146ee41ffb4deabae8ce2be5d7300d-categories/dotnet-test.log.gz",
+      "Bytes": 347663,
+      "Sha256": "ab734138c4cd0910d4557badaff32cf06b07884383d773c50721bbdce823f441",
+      "DecompressedSha256": "1976e7326d044f3be9fe45af87138f7aa8e6a8d43dbbdcdb4b4d0f2f0dffa549"
     },
     {
-      "Path": "20261007-002800-118-582668-5ba9a6898ba54096950b0606de23fec6-categories/summary.json",
-      "Bytes": 1756,
-      "Sha256": "fde6dc5bcc3ef1ada829c835c9c8021274321cd7f17f62ee3b1fe6ae833d8f0a"
+      "Path": "20261007-004521-995-588837-0a146ee41ffb4deabae8ce2be5d7300d-categories/plan.json",
+      "Bytes": 3641,
+      "Sha256": "5a104fbc70d615b2fc086752f74a84bcd1c8f6ae8d23163f6528240d2c5e8edf"
+    },
+    {
+      "Path": "20261007-004521-995-588837-0a146ee41ffb4deabae8ce2be5d7300d-categories/summary.json",
+      "Bytes": 1679,
+      "Sha256": "60b00dc4437bc3e2a69b417f659cff41a64b395858b93376999b2ef0d9e59610"
     }
   ],
-  "FixtureCleanup": [
-    {
-      "Root": "/tmp/boe-gameengine-turnlifecycle-3df896ebe3764583a4a602c86ef7b686",
-      "ReportedRemoved": true,
-      "ExistsAtCapture": false
-    },
-    {
-      "Root": "/tmp/boe-gameengine-turnlifecycle-ed152a5c55e544e6852125542a6eef16",
-      "ReportedRemoved": true,
-      "ExistsAtCapture": false
-    },
-    {
-      "Root": "/tmp/boe-gameengine-turnlifecycle-17ab14e4798a42ee935dee9f45153616",
-      "ReportedRemoved": true,
-      "ExistsAtCapture": false
-    },
-    {
-      "Root": "/tmp/boe-gameengine-turnlifecycle-c88def1794c94a2e95c6aaa9ef66edb7",
-      "ReportedRemoved": true,
-      "ExistsAtCapture": false
-    },
-    {
-      "Root": "/tmp/boe-gameengine-turnlifecycle-b7bfbbc27a9c400894dab576a4562dbb",
-      "ReportedRemoved": true,
-      "ExistsAtCapture": false
-    },
-    {
-      "Root": "/tmp/boe-direct-gacha-linux-da672beed6a442ab9b9c378f9836b1b2",
-      "ReportedRemoved": true,
-      "ExistsAtCapture": false
-    },
-    {
-      "Root": "/tmp/boe-gameengine-turnlifecycle-d116abde02234c359601188aac14a87e",
-      "ReportedRemoved": true,
-      "ExistsAtCapture": false
-    },
-    {
-      "Root": "/tmp/boe-direct-gacha-linux-7bafc2bc9ce94040957a71ed3549ffc6",
-      "ReportedRemoved": true,
-      "ExistsAtCapture": false
-    }
-  ],
-  "CommandMetadataCorrection": "Literal quoting restored for the already executed successful PowerShell array command; no source, artifact hash, result or execution changed."
+  "FixtureCleanup": []
 }

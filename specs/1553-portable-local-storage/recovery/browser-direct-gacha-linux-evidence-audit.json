@@ -1,0 +1,479 @@
+{
+  "Task": "T031-BROWSER-DIRECT-GACHA-LINUX",
+  "ManifestSets": 13,
+  "ZeroWorkloadPreparationRefusals": 2,
+  "SourcePinsVerified": 550,
+  "ArtifactsVerified": 62,
+  "GzipArtifactsVerified": 24,
+  "DistinctRemovedFixtureRoots": 54,
+  "GenericRemovedFixtureReceiptsWithoutPath": 9,
+  "ExecutionTotalsIncludingSupersededFailures": {
+    "Executed": 68,
+    "Passed": 54,
+    "Failed": 14
+  },
+  "LatestDistinctCases": 50,
+  "LatestDistinctPassedCases": 50,
+  "Runs": [
+    {
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-prep-build/manifest.json",
+      "Source": "1ca1d83f61311ee0a94335fad8249c18b84fe3f3",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-direct-gacha-linux",
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Complete": false,
+      "NewRootCount": 0
+    },
+    {
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-consumer-failure-unwitnessed/manifest.json",
+      "Source": "b0691600377d34531e272b022fb0f5a0cfdd6076",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-direct-gacha-linux",
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "Complete": true,
+      "NewRootCount": 1
+    },
+    {
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-stage-red/manifest.json",
+      "Source": "ed0990605d524d1addc5b93c17c75420adb37f40",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-direct-gacha-linux",
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "Complete": true,
+      "NewRootCount": 1
+    },
+    {
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-route-first-failure/manifest.json",
+      "Source": "069fcd1618f87bee3f7d9af5f1fcde728e3d4a70",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-direct-gacha-linux",
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "Complete": true,
+      "NewRootCount": 1
+    },
+    {
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-refresh-red/manifest.json",
+      "Source": "056b181b6053210aea1f9e1e15954c42b5aa12e3",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-direct-gacha-linux",
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "Complete": true,
+      "NewRootCount": 1
+    },
+    {
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-first-green/manifest.json",
+      "Source": "6663b6cecdaeb8825400cb123beb8ca68851ace5",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-direct-gacha-linux",
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 1,
+        "Failed": 0
+      },
+      "Complete": true,
+      "NewRootCount": 1
+    },
+    {
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-adoption-red/manifest.json",
+      "Source": "b86555d1c0be2f8917d11168e73ef339a6228420",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-direct-gacha-linux-boundaries",
+      "Tests": {
+        "Total": 5,
+        "Executed": 5,
+        "Passed": 0,
+        "Failed": 5
+      },
+      "Complete": true,
+      "NewRootCount": 5
+    },
+    {
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-adoption-green-lifetime/manifest.json",
+      "Source": "d47d3f16837f56f23e3254e30047dc71d3b3ee17",
+      "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"browser-direct-gacha-linux\",\"browser-direct-gacha-linux-boundaries\")'",
+      "Tests": {
+        "Total": 8,
+        "Executed": 8,
+        "Passed": 8,
+        "Failed": 0
+      },
+      "Complete": true,
+      "NewRootCount": 8
+    },
+    {
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-first/manifest.json",
+      "Source": "06ec730f832c0c7fa492724322e845ad21a51a61",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-direct-gacha-linux-boundaries",
+      "Tests": {
+        "Total": 12,
+        "Executed": 12,
+        "Passed": 9,
+        "Failed": 3
+      },
+      "Complete": true,
+      "NewRootCount": 12
+    },
+    {
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-direct-gacha-linux-boundaries",
+      "Tests": {
+        "Total": 22,
+        "Executed": 22,
+        "Passed": 20,
+        "Failed": 2
+      },
+      "Complete": true,
+      "NewRootCount": 22
+    },
+    {
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-interrupted-green/manifest.json",
+      "Source": "acb427957792c783800490d07a279319d7ba9fa3",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-direct-gacha-linux-boundaries",
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "Complete": true,
+      "NewRootCount": 2
+    },
+    {
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-direct-gacha-linux-regression",
+      "Tests": {
+        "Total": 14,
+        "Executed": 14,
+        "Passed": 14,
+        "Failed": 0
+      },
+      "Complete": true,
+      "NewRootCount": 0
+    }
+  ],
+  "LatestCaseOutcomes": {
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserColdMain_RefusesBeforeSideEffects(state: 2)": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserColdMain_RefusesBeforeSideEffects(state: 3)": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserOriginalPreparedWorker_RefusesBeforeSideEffects": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserRevokedGeneration_AfterQueuePublicationRetainsUncertainEvidence": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserUiGuard_OriginalLeaseOrRefusal(mode: \"original\")": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserUiGuard_OriginalLeaseOrRefusal(mode: \"other-owner\")": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserUiGuard_OriginalLeaseOrRefusal(mode: \"stale-token\")": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualStageCommittedPublisherDebt_SettlesWithoutUndoBeforeQueue": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage(afterManifest: False)": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage(afterManifest: True)": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover(published: False)": {
+      "When": 1791333802,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-interrupted-green/manifest.json",
+      "Source": "acb427957792c783800490d07a279319d7ba9fa3"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover(published: True)": {
+      "When": 1791333802,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-interrupted-green/manifest.json",
+      "Source": "acb427957792c783800490d07a279319d7ba9fa3"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry(decision: \"commit\")": {
+      "When": 1791333071,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-first/manifest.json",
+      "Source": "06ec730f832c0c7fa492724322e845ad21a51a61"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry(decision: \"rollback\")": {
+      "When": 1791333071,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-first/manifest.json",
+      "Source": "06ec730f832c0c7fa492724322e845ad21a51a61"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry(decision: \"uncertain\")": {
+      "When": 1791333071,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-first/manifest.json",
+      "Source": "06ec730f832c0c7fa492724322e845ad21a51a61"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes(kind: \"backup\")": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes(kind: \"scratch\")": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence(cut: \"queue\")": {
+      "When": 1791333071,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-first/manifest.json",
+      "Source": "06ec730f832c0c7fa492724322e845ad21a51a61"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence(cut: \"stage-published\")": {
+      "When": 1791333071,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-first/manifest.json",
+      "Source": "06ec730f832c0c7fa492724322e845ad21a51a61"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence(cut: \"stage-staged\")": {
+      "When": 1791333071,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-first/manifest.json",
+      "Source": "06ec730f832c0c7fa492724322e845ad21a51a61"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.FreshOriginalLeases_RetainPendingBackupAndBlockSecondPull": {
+      "When": 1791332831,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-adoption-green-lifetime/manifest.json",
+      "Source": "d47d3f16837f56f23e3254e30047dc71d3b3ee17"
+    },
+    "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn": {
+      "When": 1791332831,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-adoption-green-lifetime/manifest.json",
+      "Source": "d47d3f16837f56f23e3254e30047dc71d3b3ee17"
+    },
+    "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan(afterManifestRemoval: False)": {
+      "When": 1791333911,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960"
+    },
+    "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan(afterManifestRemoval: True)": {
+      "When": 1791333911,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960"
+    },
+    "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: \"malformed\")": {
+      "When": 1791333911,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960"
+    },
+    "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: \"missing-baseline\")": {
+      "When": 1791333911,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960"
+    },
+    "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: \"old-schema\")": {
+      "When": 1791333911,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960"
+    },
+    "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: \"stale-generation\")": {
+      "When": 1791333911,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960"
+    },
+    "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes(mode: \"unknown-evidence\")": {
+      "When": 1791333911,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960"
+    },
+    "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OldEmptyOrphanCleanupIntent_IsRetainedWithoutMutation": {
+      "When": 1791333911,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960"
+    },
+    "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery": {
+      "When": 1791333911,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: \"changed-action\")": {
+      "When": 1791332831,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-adoption-green-lifetime/manifest.json",
+      "Source": "d47d3f16837f56f23e3254e30047dc71d3b3ee17"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: \"changed-bytes\")": {
+      "When": 1791332831,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-adoption-green-lifetime/manifest.json",
+      "Source": "d47d3f16837f56f23e3254e30047dc71d3b3ee17"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: \"changed-request\")": {
+      "When": 1791332831,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-adoption-green-lifetime/manifest.json",
+      "Source": "d47d3f16837f56f23e3254e30047dc71d3b3ee17"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: \"consumed-deletion-debt\")": {
+      "When": 1791332831,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-adoption-green-lifetime/manifest.json",
+      "Source": "d47d3f16837f56f23e3254e30047dc71d3b3ee17"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: \"unmapped\")": {
+      "When": 1791332831,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-adoption-green-lifetime/manifest.json",
+      "Source": "d47d3f16837f56f23e3254e30047dc71d3b3ee17"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: \"absent\")": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: \"changed-session\")": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: \"changed-timestamp\")": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: \"changed-turn\")": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: \"requestId\")": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: \"sessionId\")": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: \"timestamp\")": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: \"turnNumber\")": {
+      "When": 1791333518,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Source": "52417c86d66d80397a856e7f62b4cec833b30e2d"
+    },
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_OriginalCaptureValidatedRollbackAndCleanup": {
+      "When": 1791332831,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-adoption-green-lifetime/manifest.json",
+      "Source": "d47d3f16837f56f23e3254e30047dc71d3b3ee17"
+    },
+    "BookOfEternityClient.Tests.PortableBackupLifecycleTests.ExistingOriginalEvidenceBlocksEvenOrdinaryAbsenceWithoutDeletingEvidence": {
+      "When": 1791333911,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960"
+    },
+    "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget(originalTarget: False)": {
+      "When": 1791333911,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960"
+    },
+    "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget(originalTarget: True)": {
+      "When": 1791333911,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960"
+    },
+    "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence(unknown: False)": {
+      "When": 1791333911,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960"
+    },
+    "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence(unknown: True)": {
+      "When": 1791333911,
+      "Outcome": "Passed",
+      "Manifest": "specs/1553-portable-local-storage/recovery/evidence/direct-gacha-regression-green/manifest.json",
+      "Source": "4f74e2a76d2696c9e8266256407d308c4ee92960"
+    }
+  },
+  "HistoricalWindowsChecksIncluded": 0,
+  "TestsExecutedByAudit": 0
+}

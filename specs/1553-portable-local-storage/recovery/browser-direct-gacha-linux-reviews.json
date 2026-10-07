@@ -1,0 +1,31 @@
+{
+  "Task": "T031-BROWSER-DIRECT-GACHA-LINUX",
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "Writer": "/root; sole writer",
+  "ReviewRecords": "Writer transcription of actual independent reviewer messages; reviewers performed read-only work, no edits/tests/push",
+  "Design": {
+    "Agent": "/root/direct_gacha_design_review",
+    "InitialPlan": "13e6b8b25868f14df63d3ccfa4db1c0613a462ba",
+    "InitialVerdict": "BLOCKER: shape-only storage recognition could reauthorize consumed before-image after swallowed cleanup deletion failure",
+    "AmendedPlan": "b51f4519993317a50f29d00697fb0487214853ae",
+    "Verdict": "PASS",
+    "Resolution": "Separate namespace storage recognition from original exact mapped/hash/current-request adoption; validate all candidates before newest selection; preserve sequential cleanup."
+  },
+  "Source": {
+    "Agent": "/root/direct_gacha_source_review",
+    "Runtime": "d47d3f16837f56f23e3254e30047dc71d3b3ee17",
+    "ReviewedTestAndCatalogSource": "acb427957792c783800490d07a279319d7ba9fa3",
+    "Verdict": "PASS",
+    "Scope": "Original real Stage/queue/coordinator/turn-adoption; existing publisher/schema7/pending authority; main/worker/generation/UI conjunction and Windows route retained. No gameplay/model/text/history/protocol changes.",
+    "Corrections": [
+      "related catalog entries need{id,when}; zero workload refusal preserved",
+      "Generation-loss oracle accepts only exactFailed result or typedUncertain carrier, rejects unrelated exceptions and retains full authority bytes",
+      "Interrupted Stage fresh storage recovery retains exact unreleased original UI lease; recovery has no token to release it"
+    ],
+    "Selection": "34qualified+2corrected+14exact affected=50distinct/no overlap; actual final execution is separate evidence"
+  },
+  "FinalEvidence": {
+    "Status": "pending independent review of published complete evidence/checkpoint"
+  }
+}

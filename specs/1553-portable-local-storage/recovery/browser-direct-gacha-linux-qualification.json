@@ -1,0 +1,96 @@
+{
+  "Task": "T031-BROWSER-DIRECT-GACHA-LINUX",
+  "Issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
+  "AcceptedBase": "23a5b6695a34752005ffaff6f5d5aedc2ccca797",
+  "RuntimeSource": "d47d3f16837f56f23e3254e30047dc71d3b3ee17",
+  "ExecutableTestAndCatalogSource": "acb427957792c783800490d07a279319d7ba9fa3",
+  "LastCleanExecutedSource": "4f74e2a76d2696c9e8266256407d308c4ee92960",
+  "Status": "Bounded execution PASS; independent design/source/selection PASS; final independent evidence review and fresh GitHub-only restore pending",
+  "DistinctQualifiedCases": 50,
+  "NewCases": 36,
+  "ExactAffectedRegressionCases": 14,
+  "SkippedInQualification": 0,
+  "HistoricalExecutionsIncludingSupersededFailures": {
+    "Executed": 68,
+    "Passed": 54,
+    "Failed": 14
+  },
+  "FailuresExcludedFromAcceptance": {
+    "CausalRuntimeRED": 7,
+    "UnwitnessedRealConsumerFailures": 2,
+    "CutPreparationOrOracleFailures": 5,
+    "CompilationPreparationFailureTestsExecuted": 0,
+    "CategoryPreparationRefusalsTestsExecuted": 0
+  },
+  "FinalSelection": {
+    "browser-direct-gacha-linux": 34,
+    "browser-direct-gacha-linux-boundaries": 2,
+    "browser-direct-gacha-linux-regression": 14
+  },
+  "QualifiedEvidence": [
+    {
+      "Manifest": "evidence/direct-gacha-adoption-green-lifetime/manifest.json",
+      "Count": 8,
+      "Scope": "3positive real browser/fresh lease/engine lifetime+5causal adoption negatives"
+    },
+    {
+      "Manifest": "evidence/direct-gacha-boundary-first/manifest.json",
+      "Count": 6,
+      "Scope": "Only unchanged3normalStage/queue rollback+3original typed closing PASS; failed cut-preparation rows excluded; other3PASS are superseded by strengthened final oracles"
+    },
+    {
+      "Manifest": "evidence/direct-gacha-boundary-corrected-first/manifest.json",
+      "Count": 20,
+      "Scope": "All20PASS; twofailed UI-absence assertions excluded and corrected separately"
+    },
+    {
+      "Manifest": "evidence/direct-gacha-interrupted-green/manifest.json",
+      "Count": 2,
+      "Scope": "Corrected originalStageStaged/Published actual B1+schema7 recovery with retained original UI lease"
+    },
+    {
+      "Manifest": "evidence/direct-gacha-regression-green/manifest.json",
+      "Count": 14,
+      "Scope": "9exact schema7 +5exact backup publication admission/receipt regression"
+    }
+  ],
+  "EvidenceAudit": {
+    "Task": "T031-BROWSER-DIRECT-GACHA-LINUX",
+    "ManifestSets": 13,
+    "ZeroWorkloadPreparationRefusals": 2,
+    "SourcePinsVerified": 550,
+    "ArtifactsVerified": 62,
+    "GzipArtifactsVerified": 24,
+    "DistinctRemovedFixtureRoots": 54,
+    "GenericRemovedFixtureReceiptsWithoutPath": 9,
+    "ExecutionTotalsIncludingSupersededFailures": {
+      "Executed": 68,
+      "Passed": 54,
+      "Failed": 14
+    },
+    "LatestDistinctCases": 50,
+    "LatestDistinctPassedCases": 50,
+    "HistoricalWindowsChecksIncluded": 0,
+    "TestsExecutedByAudit": 0
+  },
+  "RunIndex": "browser-direct-gacha-linux-evidence-audit.json",
+  "Reviews": "browser-direct-gacha-linux-reviews.json",
+  "Cleanup": "browser-direct-gacha-linux-cleanup.json",
+  "ToolProvenance": "browser-direct-gacha-linux-tool-provenance.json",
+  "SourceAndFixtureSemantics": "Runtime unchanged since d47; executable tests/fixtures/catalog unchanged after acb; final last4f only metadata/evidence. Original BrowserAfterlifeWriteService real consumer executes, no stub replacement. Original GameEngine capture/validated rollback/scoped cleanup invoked through existing reflective test helpers, not live GM accepted-turn gameplay.",
+  "FrontendTests": "No frontend source/protocol/GM text changed; actual backend consumer and original queue/publication boundaries are exercised. No unrelated frontend or accepted Load cohorts rerun.",
+  "MutationScope": "Isolated current-schema fixture roots; exact original pending authority, typed outcomes, existing B1/schema7, held main/worker/generation/UI conjunction. No new journal, gameplay odds/rewards/currency/rules changes or protection from player.",
+  "NativeWindowsQualification": false,
+  "HistoricalFourF2IdsExecuted": 0,
+  "NativeCompilerOrLiveCliInvocations": 0,
+  "FreshGitHubOnlyRestoration": "pending; source-only0tests",
+  "Remaining": [
+    "T031-DAREN-STANDALONE-LINUX",
+    "Mandatory primary systemd-user backend qualification absent here",
+    "Native Windows execution",
+    "Codex Q1/Q2, renderer/VT and realCLI/provider/gameplay",
+    "Full T031/T041/full game cross-platform acceptance",
+    "Real saves/public rollout/cold exactly-once/reboot/power-loss guarantees"
+  ],
+  "StopBoundary": "Stop after final metadata carrier ordinary push, remoteSHA/byte readback and exact-tip fresh GitHub-only restore; no next-slice implementation"
+}

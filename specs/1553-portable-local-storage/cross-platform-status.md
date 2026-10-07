@@ -1,13 +1,13 @@
 # Cross-platform: текущий статус и восстановление
 
-2026-10-06 · [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553) · ветка `codex/1553-load-filesystem`.
+2026-10-07 · [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553) · ветка `codex/1553-load-filesystem`.
 Этот документ — точка входа после потери контекста. Исторические «next» в старых
 секциях plan/handoff не задают текущую очередь. Spec/tasks остаются требованиями,
 qualification — доказательствами конкретного ограниченного блока.
 
-## Current authorized slice: direct browser gacha Linux
+## Current direct browser gacha Linux — bounded execution PASS
 
-Accepted Load UX23a5b669. T031-BROWSER-DIRECT-GACHA-LINUX is now authorized for planning/implementation after independent Sol6.1/xhigh minimal plan review. [Plan](browser-direct-gacha-linux-plan.md). Actual StageFileAsync pre-spend backup remains long-lived and original pending-turn authority/history/leases are retained. No gameplay/GM text/UX change. Design checkpoint; not yet qualified. Standalone Daren remains separate.
+Accepted LoadUX23a5b669 → actual BrowserAfterlifeWriteService direct ChaosSea Stage now uses existing trusted-local publisher and retains original long-lived exact pre-spend backup/pending authority. Runtime d47d3f16;50distinctPASS (36new+14exact affected); independent actual Sol6.1/xhigh amended design/source/selection PASS. Final independent evidence review and GitHub-only restoration pending. [Plan](browser-direct-gacha-linux-plan.md) · [Qualification](recovery/browser-direct-gacha-linux-qualification.json) · [Handoff](browser-direct-gacha-linux-handoff.md). No gameplay/currency/odds/rewards/GM text/model/UX change, second journal or player-save protection. StandaloneDaren remains next separate debt. Prior sections below describe historical checkpoints; their direct-gacha/pendingLoadUX next notes do not supersede this current boundary or accepted LoadUX23a5b669. Stop after closure, no next implementation.
 
 ## Current: Load session lifecycle bounded PASS
 
