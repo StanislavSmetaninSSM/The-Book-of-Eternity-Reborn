@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "browser-direct-gacha-linux",
+      "responsibility": "#1553 T031 actual Linux BrowserAfterlifeWriteService direct Chaos Sea gacha, long-lived exact pre-spend backup, original queue/pending authority and turn lifetime",
+      "excludes": "No stub browser/Stage, gameplay odds/rewards/currency/GM text changes, live browser/provider/real saves, standalone Daren, Windows or whole-game qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts",
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-load-affected-refresh",
       "responsibility": "Exact existing complete refresh/read/close and console committed-refresh-failure integration consumers",
       "excludes": "No provider/model request, real save, live browser, native Windows/systemd or unrelated cohorts",

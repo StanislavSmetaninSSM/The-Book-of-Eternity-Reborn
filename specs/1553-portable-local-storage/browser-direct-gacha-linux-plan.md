@@ -66,3 +66,7 @@ After bounded blocks: ordinary commit/push, remote SHA and independent byte read
 ## Independent design finding and amendment
 
 Sol6.1/xhigh review of13e6b8b returned BLOCKED for one concrete adoption gap: existing CleanupBackup logs/swallow delete failures; following CleanupPendingTurnSnapshot preserves explorer backups while removing manifest/authority, and later DiscoverBackups selects/rehashes newest matching before-image. Shape-only storage admission would expose that stale adoption path on Linux. Amended step5 separates storage recognition from exact existing-authority/current-request adoption; adds consumed-cleanup/unmapped/hash-conflict negatives and explicit journal-authenticated scratch-only/unauthenticated-scratch tests. No implementation/tests performed yet; focused amendment review next. This is turn/receipt consistency, not protection from player-owned save editing.
+
+## Plan accepted for execution; first real-consumer RED pending
+
+Independent actual Sol6.1/xhigh focused amendment review PASS atb51f4519: existing authority/current-request guard closes the stale adoption blocker. Added first isolated current-schema real BrowserAfterlifeWriteService success oracle and narrow category/selection; runtime unchanged. Fresh runner build/execution next. Tools/provenance and own root cleanup must be retained; preparation failures are not causal RED.
