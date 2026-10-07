@@ -1,0 +1,1 @@
+{"Success": false, "Gate": "Post-TERM bounded presentation captured; readiness unqualified", "Failure": "AssertionError: M1 did not reach acknowledged Running", "KeyboardBytes": 2, "TERMAnswersAttempted": 1, "ElapsedSeconds": 5.477}

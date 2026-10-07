@@ -1,0 +1,332 @@
+{
+  "SchemaVersion": 1,
+  "Issue": "1553",
+  "Task": "T043-Q1-Q2-LIVE-BOUNDED",
+  "AcceptedQ1Base": "13cdd9aedcacaba62e76859c16940583d285c365",
+  "DeferredSystemdWIP": "63e990097570f920dfe615e7fdf1f3542c7a6eb9",
+  "ExecutedDriverCandidate": "b9b3aeb3d8dddc45385aeea319301e6e21eb22c3",
+  "Verdict": "BLOCKED: installed Codex state DB is on read-only mount; original lifecycle qualification FAILED; Q1 readiness/Q2 unexecuted",
+  "RuntimeChanged": false,
+  "TestsOrCatalogChanged": false,
+  "ConfiguredGmCommand": "codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox",
+  "ExecutorModelIsNotGmModel": true,
+  "ActualCodexVersion": "0.159.0-alpha.3 (unchanged binary byte/hash verified against prior official version receipt)",
+  "SourcePins": [
+    {
+      "Path": "AGENTS.md",
+      "Bytes": 11662,
+      "SHA256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "GitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e"
+    },
+    {
+      "Path": "docs/development-workflow.md",
+      "Bytes": 66432,
+      "SHA256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "GitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e"
+    },
+    {
+      "Path": "docs/testing.md",
+      "Bytes": 16759,
+      "SHA256": "20ea808053428488ac21e5b1fee9f05b3e981e503dc8f610f0b25f91d44b84a1",
+      "GitBlob": "eb036aa06c716d19467bc6aadaff5fbd535c4a3a"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GameSettings.cs",
+      "Bytes": 16393,
+      "SHA256": "0191f2f8bc0dead66da78c8e539d09366fc9e30774a7263b2623a94568f5a7c6",
+      "GitBlob": "da1a0e0fcba71a3cfbcdcce86947dcd019289c52"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
+      "Bytes": 1840,
+      "SHA256": "d3a5b5b91d9e9e1621214ee87314b1519308ce548a7d948e5c9a8bdb7e8eabf9",
+      "GitBlob": "301ec89f509fa67d9982c878ec8ee9fc08865c32"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
+      "Bytes": 2819,
+      "SHA256": "66d9bdd12751cc6379f99d65cff43dfeafbc2e80d8ce2e1ec7cfe6d64d10a68b",
+      "GitBlob": "1b27e5ec7d05d3974fe6c2a7639f072bfa9367d7"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "Bytes": 16815,
+      "SHA256": "9b09212427f29d9054468aa13ec962fb05c77d9227fef3ef0748e810c996fade",
+      "GitBlob": "72e7a9f89c13f51a08c0820512bd626e8435c8eb"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "Bytes": 19882,
+      "SHA256": "e3b4a5d8ee83dbce297761c6e1e24b95d438544425b934a67499d8151c0d0dba",
+      "GitBlob": "597bface73e5541b83edb7dd850de343c0da4665"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "Bytes": 13311,
+      "SHA256": "b72c0c17ae10aa3cd9b1e837722fd8d2e0328df9f087fc8f8d16ae7babd921e1",
+      "GitBlob": "35a207806b33149a18936f3e49499478ebf70899"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "Bytes": 165629,
+      "SHA256": "a421d0e0d8862ae25da1a24e271b4e30f0c9c3158488feae81e50fab6a715768",
+      "GitBlob": "2a96ef79aee21a10497acd1ef931427b74426b82"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "Bytes": 260894,
+      "SHA256": "12b2e79a9f59a6c1078b187a949d816066a641e0f56ebe7b846c410f43357334",
+      "GitBlob": "4f359fd8fb7ce1bd9c2d4d84195f18d18b259910"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/bookofeternity.ps1",
+      "Bytes": 42854,
+      "SHA256": "0e05d358847cefdeaf04da6bafab61a67a1b95118de38fdbb161e122faf29ae4",
+      "GitBlob": "cf04a81c0de629cd345ae0a5956076f12c3db648"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 86757,
+      "SHA256": "39ed89a4cab73808d1b5476adaae3fcc33bc2c43570c5cd89591d471565b6974",
+      "GitBlob": "7d0e901d50cfde5e7c007d984742d9b13a61948a"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "Bytes": 3483,
+      "SHA256": "c49951522ebf0f8dca0237e292405c1e0d8273ed614843c904b8cfd7e09c4fbb",
+      "GitBlob": "dba7b27c728d20843aae1c77ee8989f4e4757f7b"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "Bytes": 18951,
+      "SHA256": "5b064ea162664e16c8d3a04d854b77d4cc18fb4ce2e6682797da51ce9f0ec4e5",
+      "GitBlob": "27f99bf8db4b0ee758bce205628c72ec2a509cd6"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Bytes": 9240,
+      "SHA256": "d7963c86632153ec2bf1adf9a7c30dea29e1cea5c274e5fa0ea311a0518cc3db",
+      "GitBlob": "6c3ddbc42282d9b0ee2251764fda61250f97984c"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1147577,
+      "SHA256": "1fa4f322e3be767b5d2eb0d2dc8c020d3bdd3618c248378b94ada61498bd3e46",
+      "GitBlob": "5f3d46ea9f0489a052d83531859a9474d6fe500b"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 844,
+      "SHA256": "2f3fe3ca7e731ba4e366043594f5a5da75cfbd0254490f2d9c76bb7db6ceff5e",
+      "GitBlob": "8c06b9f5721c6ee450bd8ebb7585f79a9cc9d00f"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "recovery/evidence/codex-live-q1/cleanup-closure.json",
+      "Bytes": 773,
+      "SHA256": "de96e9f69daf7b3a19cdce84b53bebe19012536c668ad744c9cd87f38e8604dc"
+    },
+    {
+      "Path": "recovery/evidence/codex-live-q1/gate-preparation.json",
+      "Bytes": 708,
+      "SHA256": "95b26d271027c7b6b4260ad61076309bd7ab4ead952a206b582b962e278d99aa"
+    },
+    {
+      "Path": "recovery/evidence/codex-live-q1/guardian.json",
+      "Bytes": 97,
+      "SHA256": "d45d3983fb5440ecadda899252096a7dd2115d3e98f88aa9ffeff494c01e2ec7"
+    },
+    {
+      "Path": "recovery/evidence/codex-live-q1/guardian.log",
+      "Bytes": 233,
+      "SHA256": "7f1e2b7f34f71a5fb8b1fb636c89ead765998567738c2d99154e80828687056c"
+    },
+    {
+      "Path": "recovery/evidence/codex-live-q1/m1-confirmation-probe.py",
+      "Bytes": 12725,
+      "SHA256": "7f0deefed9e482b78eef2f0c5bdc050802013d92cac444bc80d70d3cb02ea437"
+    },
+    {
+      "Path": "recovery/evidence/codex-live-q1/main-uncertain.json",
+      "Bytes": 378,
+      "SHA256": "0c3706ea50e876e043dbb3a7ff6013e3479f6fe243056fb4fcf920289fb79bfe"
+    },
+    {
+      "Path": "recovery/evidence/codex-live-q1/preparation.json",
+      "Bytes": 838,
+      "SHA256": "d51b2aaca4b0676b7673d13832392aede055cb503555f5e2a839d5c2e167a88f"
+    },
+    {
+      "Path": "recovery/evidence/codex-live-q1/probe-result.json",
+      "Bytes": 5111,
+      "SHA256": "62b433820ab9f1fbd1915072665907dcc0b375101ff15e4369251ea28d21bef6"
+    },
+    {
+      "Path": "recovery/evidence/codex-live-q1/rpc-journal.json",
+      "Bytes": 3348,
+      "SHA256": "983157ecc691831c881ae112f50b0960542431fbc3b5eea82039fc7b637d8890"
+    },
+    {
+      "Path": "recovery/evidence/codex-live-q1/shell-resolution.json",
+      "Bytes": 170,
+      "SHA256": "aa04ffa89d668c83b8800be39633a948f40ff307d3096e2a696217ad2c6d3e21"
+    },
+    {
+      "Path": "recovery/evidence/codex-live-q1/startup-readable.txt",
+      "Bytes": 4226,
+      "SHA256": "c8a165aff080470ecf15685f7642a229b3ca53140141737db274079a4a32ce8f"
+    },
+    {
+      "Path": "recovery/evidence/codex-live-q1/startup.raw",
+      "Bytes": 3570,
+      "SHA256": "e80b848cc61478451434d0c95d048fd36bb07635c37e2b7be14efaafde90aaab"
+    }
+  ],
+  "Executed": {
+    "InteractiveStartups": 1,
+    "TERMAnswersAttempted": 1,
+    "KeyboardBytes": 2,
+    "ModelPromptsSent": 0,
+    "ProviderGameTurns": 0,
+    "OtherConfirmations": 0,
+    "TerminalQueryReplies": 0,
+    "ReadyPromotion": 0,
+    "RepeatedStartup": 0,
+    "OrdinaryNewGameInitializations": 0,
+    "ExperimentalSavesUsed": 0,
+    "CSharpFrontendTests": 0,
+    "CatalogDiscovery": 0,
+    "FreshPublish": 0,
+    "NativeCompiles": 0,
+    "ReusedShippedFilesByteVerified": 677,
+    "InertEvidenceDriverGatePreparationAssertions": 6
+  },
+  "InputJournal": [
+    {
+      "AtSeconds": 1.459,
+      "Kind": "Exact authorized TERM warning",
+      "BytesHex": "790d",
+      "Attempt": 1,
+      "WrittenBytes": 2
+    }
+  ],
+  "OriginalBeforeConfirmation": {
+    "RunningVerified": true,
+    "State": "OperatorNotReady",
+    "Ready": false,
+    "TerminalOwnerRetained": true,
+    "TerminalUncertain": false,
+    "RunId": "8bc88d42b525441097bf6b153dd61cd8"
+  },
+  "Blocker": {
+    "SafeActualMessage": "Codex couldn't start because its local database appears to be damaged.",
+    "ActualCause": "SQLite code14 unable to open database file",
+    "Path": "/run/codex-environment/codex-home/state_5.sqlite",
+    "Interpretation": "CLI wording does not prove corruption; statvfs on parent confirmed read-only mount, no DB/auth/session content inspection",
+    "ReadOnlyMountConfirmed": true,
+    "NoWorkaround": "No CODEX_HOME redirect, auth/config/session copy, doctor/repair/login/install/remount/privilege/settings changes performed",
+    "NextRequirement": "Existing authorized installed Codex must have writable local runtime state in an allowed environment; changed access/config/auth needs owner decision before action"
+  },
+  "Presentation": {
+    "Ready": false,
+    "ProfileSupported": false,
+    "NeutralV1Insufficient": true,
+    "CapturedBytes": 3570,
+    "CSISequencesObserved": [
+      "\u001b[0 q",
+      "\u001b[0m",
+      "\u001b[1;1H",
+      "\u001b[1;41H",
+      "\u001b[1m",
+      "\u001b[22;1H",
+      "\u001b[22;3H",
+      "\u001b[22m",
+      "\u001b[23m",
+      "\u001b[25;3H",
+      "\u001b[25;5H",
+      "\u001b[25;9H",
+      "\u001b[2;1H",
+      "\u001b[2;41H",
+      "\u001b[2m",
+      "\u001b[3;1H",
+      "\u001b[3;41H",
+      "\u001b[3m",
+      "\u001b[4;14H",
+      "\u001b[4;1H",
+      "\u001b[4;24H",
+      "\u001b[5;14H",
+      "\u001b[5;1H",
+      "\u001b[6;1H",
+      "\u001b[6n",
+      "\u001b[7;1H",
+      "\u001b[<1u",
+      "\u001b[<u",
+      "\u001b[>4;0m",
+      "\u001b[>7u",
+      "\u001b[?1000h",
+      "\u001b[?1000l",
+      "\u001b[?1002h",
+      "\u001b[?1002l",
+      "\u001b[?1003h",
+      "\u001b[?1003l",
+      "\u001b[?1004h",
+      "\u001b[?1004l",
+      "\u001b[?1006h",
+      "\u001b[?1006l",
+      "\u001b[?1007l",
+      "\u001b[?1015l",
+      "\u001b[?1049h",
+      "\u001b[?1049l",
+      "\u001b[?2004h",
+      "\u001b[?2004l",
+      "\u001b[?2026h",
+      "\u001b[?2026l",
+      "\u001b[?25h",
+      "\u001b[?25l",
+      "\u001b[?u",
+      "\u001b[J",
+      "\u001b[c",
+      "\u001b[m"
+    ],
+    "OSCColorQueriesObserved": true,
+    "TerminalRepliesSent": 0,
+    "Limits": "Actual post-y loading TUI then DB error; no readiness/provider/model availability proof"
+  },
+  "Cleanup": {
+    "GuardianECHILD": true,
+    "GuardianEmergencySignals": 1,
+    "GuardianReaped": 3,
+    "GuardianFailures": 0,
+    "GuardianDeadline": false,
+    "OwnOrphanPipeWasPresent": true,
+    "OwnOrphanSocketUnlinkedOnlyAfterECHILD": true,
+    "OwnEmptyScratchRemoved": true,
+    "MainRecordDispositionRetained": "Uncertain",
+    "MainRecordSHA256Retained": "0c3706ea50e876e043dbb3a7ff6013e3479f6fe243056fb4fcf920289fb79bfe",
+    "OriginalScopedStopNotProven": true,
+    "ForegroundTermiosRestorationNotProven": true,
+    "ActiveToolSessions": [],
+    "CodexHomeMountReadOnly": true,
+    "CodexHomeObservation": "statvfs mount flag only; no file contents/listing/auth/session reads or writes",
+    "ModelRequests": 0,
+    "GameTurns": 0,
+    "OtherConfirmations": 0,
+    "RepeatedStartup": 0,
+    "TERMAnswers": 1
+  },
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 1,
+    "emergencySignals": 1,
+    "reaped": 3,
+    "failures": 0,
+    "deadline": false
+  },
+  "ProbeFailure": "AssertionError: M1 did not reach acknowledged Running",
+  "OriginalScopedStopACK": false,
+  "OriginalTerminalTermiosRestored": false,
+  "LogicalDisposition": "Uncertain retained; physical guardianECHILD must not convert it to Stopped",
+  "EvidenceDriverDefect": "Post-observation Running assertion prevented the original shutdown attempt after CLI failed early; one guardian emergency signal required. Future driver must attempt original exact-identity cleanup once on failure and preserve Uncertain. Executed driver is kept immutable, no repeat authorized.",
+  "NewGameOrdering": "Source-only initial bootstrap wait guard cycle; existing cancel then Continue fallback candidate needs connected test. Not a causally executed runtime defect in this attempt. Prefer ordinary fresh initialization when Q2 is unblocked."
+}

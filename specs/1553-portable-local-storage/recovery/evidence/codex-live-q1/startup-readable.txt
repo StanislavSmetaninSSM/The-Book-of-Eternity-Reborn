@@ -1,0 +1,23 @@
+
+==============================================
+ Book of Eternity GM Bridge
+==============================================
+Session : /workspace/qualification-1553-codex-live-q1/fixture-root/game_session
+Client  : /workspace/qualification-1553-codex-live-q1/fixture-root
+Repo    : /workspace/qualification-1553-codex-live-q1/ship
+Pipe    : live-q1-49e6140e5de34020a97ffa1ad96c0d87
+This window is the GM CLI host.
+You can type here manually at any time.
+Use `bookofeternity.ps1 ready` after the CLI is fully ready to receive prompts.
+
+WARNING: proceeding, even though we could not create PATH aliases: Read-only file system (os error 30)
+WARNING: TERM is set to "dumb". Codex's interactive TUI may not work in this terminal.
+Continue anyway? [y/N]: 
+y
+<ESC>[?2004h<ESC>[>4;0m<ESC>[>7u<ESC>[?1004h<ESC>[6n<ESC>]10;?<ESC>\<ESC>]11;?<ESC>\<ESC>[?u<ESC>[c<ESC>[?2026h<ESC>[?25l<ESC>[?1049h<ESC>[>4;0m<ESC>[>7u<ESC>[?1007l<ESC>[?1000h<ESC>[?1002h<ESC>[?1006h<ESC>[?1003h<ESC>[?25l<ESC>[1;1H<ESC>[J<ESC>[?2026h<ESC>[?25l<ESC>[1;1H<ESC>[2m╭───────────────────────────────────────╮<ESC>[2;1H│ >_ <ESC>[22m<ESC>[1mOpenAI Codex<ESC>[22m<ESC>[2m<ESC>[2m (v0.159.0-alpha.3)    │<ESC>[3;1H│                                       │<ESC>[4;1H│ model:     <ESC>[3mloading<ESC>[23m   <ESC>[22m/model<ESC>[2m to change │<ESC>[5;1H│ directory: <ESC>[22mloading<ESC>[2m                    │<ESC>[6;1H╰───────────────────────────────────────╯<ESC>[22;1H<ESC>[22m<ESC>[1m›<ESC>[22;3H<ESC>[22m<ESC>[2m<ESC>[2mAsk Codex to do anything<ESC>[25;3H<ESC>[22m<ESC>[1m?<ESC>[25;5H<ESC>[22mfor<ESC>[25;9Hshortcuts<ESC>[m<ESC>[m<ESC>[0m<ESC>[1;1H<ESC>[0 q<ESC>[1;1H<ESC>[2m╭<ESC>[m<ESC>[m<ESC>[0m<ESC>[22;3H<ESC>[?25h<ESC>[?2026l<ESC>[?2026l<ESC>[?2026h<ESC>[m<ESC>[m<ESC>[0m<ESC>[22;3H<ESC>[?25h<ESC>[?2026l<ESC>[?2026h<ESC>[m<ESC>[m<ESC>[0m<ESC>[22;3H<ESC>[?25h<ESC>[?2026l<ESC>[?2026h<ESC>[m<ESC>[m<ESC>[0m<ESC>[22;3H<ESC>[?25h<ESC>[?2026l<ESC>[?2026h<ESC>[m<ESC>[m<ESC>[0m<ESC>[22;3H<ESC>[?25h<ESC>[?2026l<ESC>[?2026h<ESC>[?25l<ESC>[1;41H<ESC>[2m────────╮<ESC>[2;41H        │<ESC>[3;41H        │<ESC>[4;14H  <ESC>[3mloading<ESC>[4;24H<ESC>[23m  <ESC>[22m/model<ESC>[2m to change       │<ESC>[5;14H  <ESC>[22m/workspace/…/empty-codex-scratch<ESC>[2m │<ESC>[6;1H│ permissions: <ESC>[22m<ESC>[1mYOLO mode<ESC>[22m<ESC>[2m<ESC>[2m                        │<ESC>[7;1H╰───────────────────────────────────────────────╯<ESC>[m<ESC>[m<ESC>[0m<ESC>[22;3H<ESC>[?25h<ESC>[?2026l<ESC>[?2026h<ESC>[m<ESC>[m<ESC>[0m<ESC>[22;3H<ESC>[?25h<ESC>[?2026l<ESC>[?2026h<ESC>[m<ESC>[m<ESC>[0m<ESC>[22;3H<ESC>[?25h<ESC>[?2026l<ESC>[?2026h<ESC>[m<ESC>[m<ESC>[0m<ESC>[22;3H<ESC>[?25h<ESC>[?2026l<ESC>[0 q<ESC>[?1006l<ESC>[?1015l<ESC>[?1003l<ESC>[?1002l<ESC>[?1000l<ESC>[<1u<ESC>[?1007l<ESC>[?1049l<ESC>[<1u<ESC>[<u<ESC>[>4;0m<ESC>[?2004l<ESC>[?1004l<ESC>[0 q<ESC>[?25hCodex couldn't start because its local database appears to be damaged.
+Run `codex doctor` to check your setup and get next-step guidance.
+If this keeps happening, share the technical details below when asking for help.
+Technical details:
+  Location: /run/codex-environment/codex-home/state_5.sqlite
+  Cause: failed to initialize state runtime at /run/codex-environment/codex-home: failed to open state DB at /run/codex-environment/codex-home/state_5.sqlite: error returned from database: (code: 14) unable to open database file: error returned from database: (code: 14) unable to open database file: (code: 14) unable to open database file
+ERROR: failed to initialize sqlite local db at /run/codex-environment/codex-home/state_5.sqlite: failed to initialize state runtime at /run/codex-environment/codex-home: failed to open state DB at /run/codex-environment/codex-home/state_5.sqlite: error returned from database: (code: 14) unable to open database file: error returned from database: (code: 14) unable to open database file: (code: 14) unable to open database file
