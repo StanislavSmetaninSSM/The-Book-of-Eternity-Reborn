@@ -145,6 +145,7 @@ try:
     result["StartupStatus"] = status
     result["StartupDiagnostics"] = diagnostics
     assert status["ok"] and not status["status"]["ready"]
+    assert status["status"]["terminalOwnerRetained"] and not status["status"]["terminalUncertain"]
     assert status["status"]["terminalRunId"] == original_identity["runId"]
     assert status["status"]["cliLaunchCommand"] == command
     assert status["status"]["shellWorkingDirectory"] == str(scratch)
@@ -155,7 +156,9 @@ try:
     assert stopped["ok"], "Original stop unconfirmed"
     proof = stopped["status"]["terminalStop"]
     assert proof["identity"]["runId"] == original_identity["runId"]
+    assert proof["state"] == "stopped-within-scope"
     assert proof["cleanupComplete"] and not proof["authorityRetained"]
+    assert not stopped["status"]["terminalOwnerRetained"] and not stopped["status"]["terminalUncertain"]
     while process.poll() is None and elapsed() < 25:
         receive()
     assert process.poll() == 0, "Original launcher did not exit successfully"
