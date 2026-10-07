@@ -177,6 +177,11 @@ public partial class GameEngine
 
     private async Task RefreshRuntimeStateAsync()
     {
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, RefreshRuntimeStateCoreAsync);
+    }
+
+    private async Task RefreshRuntimeStateCoreAsync()
+    {
         await _stateManager.RefreshGameStateAsync();
         await _progressionSchedule.EnsureInitializedAsync();
     }
@@ -1186,6 +1191,11 @@ public partial class GameEngine
 
     private async Task NormalizePendingRepairArtifactsAsync()
     {
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, NormalizePendingRepairArtifactsCoreAsync);
+    }
+
+    private async Task NormalizePendingRepairArtifactsCoreAsync()
+    {
         var repairRequestExists = _fs.FileExists(ValidationRepairRequestPath);
         var repairReadyExists = _fs.FileExists(ValidationRepairReadyPath);
         if (!repairRequestExists && !repairReadyExists)
@@ -1353,6 +1363,11 @@ public partial class GameEngine
 
     private async Task NormalizePendingTerminalProtocolFailureArtifactsAsync()
     {
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, NormalizePendingTerminalProtocolFailureArtifactsCoreAsync);
+    }
+
+    private async Task NormalizePendingTerminalProtocolFailureArtifactsCoreAsync()
+    {
         if (!_fs.FileExists(TerminalProtocolFailureRequestPath))
             return;
 
@@ -1383,6 +1398,11 @@ public partial class GameEngine
     /// A task completing after startup normalization and any diagnostic evidence retirement attempt.
     /// </returns>
     private async Task NormalizeRuntimeUiArtifactsAsync()
+    {
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, NormalizeRuntimeUiArtifactsCoreAsync);
+    }
+
+    private async Task NormalizeRuntimeUiArtifactsCoreAsync()
     {
         await _stateManager.RefreshGameStateAsync();
         var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
@@ -2274,4 +2294,3 @@ public partial class GameEngine
         ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
     }
 }
-

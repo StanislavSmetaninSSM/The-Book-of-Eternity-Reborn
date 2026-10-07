@@ -671,3 +671,10 @@ require original ClosedObserved pins, then durable Stopping and all five
 refusals with exact unchanged game-file inventory. Only this category; test
 controlled current-schema soul data is not a live GM/game history. Runtime is
 still unchanged for causal RED; future missing seam cannot count as RED.
+
+Actual80f695b8 newcategory1/1causalFAIL after successful preparation: first
+real NormalizeRuntimeUiArtifacts → StateManager.Refresh → mainAcquire65 refused
+Running outside participating scope. OriginalScopedRetired/guardianECHILD0EMG,
+runner cleanup complete/no timeout/unique1. No provider/game. Minimal5wrappers
+now reuse existing RunParticipatingCurrentSessionAsync with unchanged cores;
+HasCurrentSession blocked/no-soul stays outside. GREEN and source closure pending.

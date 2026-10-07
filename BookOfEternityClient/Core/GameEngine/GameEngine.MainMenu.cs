@@ -423,6 +423,11 @@ public partial class GameEngine
         if (!_fs.FileExists("game_state/meta/soul_state.json"))
             return false;
 
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, HasCurrentSessionCoreAsync);
+    }
+
+    private async Task<bool> HasCurrentSessionCoreAsync()
+    {
         await NormalizeRuntimeUiArtifactsAsync();
         await EnsureClientOwnedSystemFilesHealthyAsync(ordinaryEntry: true);
         var sessionHealth = await _criticalStateHealth.AssessCurrentSessionHealthAsync();
