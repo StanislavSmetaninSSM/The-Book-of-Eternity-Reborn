@@ -1,3 +1,13 @@
+## Bounded reusable relay — reviewed source/evidence
+
+Frozen1350a16c shared developer transport/local worker/fixed real consumer:
+32uniquecontrolledPASS,14originalscenario guardiansECHILD0emergency,
+actualSol6.1/xhigh design/source/evidencePASS. [Handoff](relay-reusable-handoff.md).
+Client-owned transport alters no game/GM-authored schema, rule, prompt or example.
+Acceptedr3 liveevidence preserved; no freshmodel/provider calls or universalAPI
+claim. Finalmetadata and delivery gates pending; systemdS2/S3 unavailable/off,
+productionworkersseparate, nativeWindows plannedpostmerge. Source#1553.
+
 ## Current scope: maintained reusable CLI relay
 
 Owner-authorized T043-RELAY-REUSABLE-DESIGN from accepted S1 `41ecc2c5`:

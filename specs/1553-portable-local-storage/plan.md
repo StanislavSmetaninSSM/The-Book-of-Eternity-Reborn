@@ -1,3 +1,14 @@
+# Reusable relay evidence/discovery PASS — final metadata review next
+
+Actual independentSol6.1/xhigh evidence/selectionPASS eb96b9ce:595stored/decompressed
+artifactrecords,27exactfrozen/current sourcepins,32uniquePASS,14ownedscenario
+ECHILD0emergency and3actualoriginalBridge/helper/stopACKcases allverified.
+PlanOnly32/4 andcatalog429/11178 execute0;37acceptedr3 files+driver unchanged.
+Writerindependently inspected diff/artifacts/counts/cleanup, no further runtime/tests.
+[Handoff](relay-reusable-handoff.md) andqualification updated; separate finalmetadata
+review pending. T043checkboxes waitthatverdict; ordinarycarrierpush/readback/fresh
+GitHubrestore thenstop. NativeWindows aftermerge; S2/S3off/unavailable; no merge.
+
 # Reusable relay handoff candidate / metadata gates
 
 [Handoff](relay-reusable-handoff.md) and [qualification](recovery/relay-reusable-qualification.json)

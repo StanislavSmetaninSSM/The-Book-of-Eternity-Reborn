@@ -80,9 +80,10 @@ Verified versions: Python3.12.14, SDK10.0.401, runtime8.0.31, PowerShell7.5.4,
 cc Debian14.2.0-19. Preparation compiler provenance is separate from player startup.
 
 Actual independent gpt-6.1-sol/xhigh design PASS `3a79b040`, narrow P1/P2 correction
-design PASS, source/selection followup PASS `1350a16c`. Separate evidence/discovery
-and metadata reviews remain pending for this candidate. Current qualification
-records their exact final verdicts when received. Normal publication/readback and
+design PASS, source/selection followup PASS `1350a16c`. Separate actual Sol6.1/xhigh evidence/discovery review PASS at
+`eb96b9ce2df1da3396a206af25c900476a2b15a5`, independently verified all595 artifacts,
+27 exact frozen/current pins,32 unique PASS and discovery0execution. Final metadata
+review remains pending for this candidate; qualification records its final verdict. Normal publication/readback and
 fresh direct GitHub-only restoration are final writer delivery gates.
 
 ## Preserved live evidence and remaining work

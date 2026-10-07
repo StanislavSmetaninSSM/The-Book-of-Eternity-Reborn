@@ -55,7 +55,12 @@
       "model": "gpt-6.1-sol",
       "effort": "xhigh",
       "agent": "relay_reusable_evidence_review",
-      "verdict": "PENDING"
+      "verdict": "PASS",
+      "source": "eb96b9ce2df1da3396a206af25c900476a2b15a5",
+      "artifactsVerified": 595,
+      "sourcePinsVerified": 27,
+      "uniquePASS": 32,
+      "discoveryExecuted": 0
     },
     "metadata": {
       "model": "gpt-6.1-sol",

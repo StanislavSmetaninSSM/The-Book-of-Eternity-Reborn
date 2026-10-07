@@ -1,5 +1,20 @@
 # Cross-platform: текущий статус и восстановление
 
+## Latest bounded maintained relay / pending delivery gates
+
+T043 shareddeveloper relay at frozen1350a16c:32/32 controlledPASS through exact
+worker protocol and actual productionBridge/helper,14 ownscenario guardians
+ECHILD/emergency0. Actual independentSol6.1/xhigh design/source/evidencePASS,
+finalmetadata and exacttipwriter restoration stillpending. [Handoff](relay-reusable-handoff.md)
+and [qualification](recovery/relay-reusable-qualification.json).
+Acceptedlive-r3 one genuinely generated/applied action and37artifacts remain
+unchanged; extraction makes0newmodel requests and no newlive/provider claim.
+SystemdS1 remains accepted controlled only;mandatoryS2/S3 unavailable/unqualified,
+backendoff and productionworkersclosed. NativeWindows is parentplanned **after
+completion/merge** in «Лориан-Codex bridge», notpremergePASSgate. No HOME-PC
+access or merge here. Earlier sections retain their original checkpoint scope.
+
+
 ## Current bounded desktop helper slice
 
 T050-DESKTOP-HELPERS-PORTABLE implements the named original image/mods/main folder consumers from auxiliary `65674ee83ddeac9c63e368334ea170cf9b700c54`. Frozen runtime/tests `04c9717a5290d001816fb394c276c3a2754f3dad`:23/23controlled Linux cases PASS after6causal consumer REDs; one0test preparation collision kept separate. Managed association retained, truthful Requested/manual path, handled creation/cancel/exception, original pauses, `/mods` next-frame visibility; font unchanged. [Plan](desktop-helpers-portable-plan.md) / [handoff](desktop-helpers-portable-handoff.md) / [qualification](recovery/desktop-helpers-qualification.json). Actual independent Sol6.1/xhigh design/source/evidence/metadata PASS; catalog390/11111methods0executed. Final carrier exact remote/byte readback and fresh GitHub-only restore remain writer closure guards before delivery. Positive desktop Linux/native Windows, unrelated helpers/fullT050/systemd/Q1Q2/liveGM remain unqualified/open. Source: #1553.
