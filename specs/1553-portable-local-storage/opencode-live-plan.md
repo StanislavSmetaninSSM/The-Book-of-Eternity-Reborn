@@ -909,3 +909,13 @@ failure excludes continuation from successful body. RegisteredPhase is mapping
 label only; no invented actual line. Public pinned PS7.5.4 source references:
 https://raw.githubusercontent.com/PowerShell/PowerShell/v7.5.4/src/System.Management.Automation/engine/debugger/Breakpoint.cs
 and debugger.cs in the same folder. No runtimefunctionbody edit.
+
+Actual1c64050b eightcases7PASS1FAIL: ordinary cancellation+initial/player genuine
+corrupt backup refusal3GREEN, attractionretention1GREEN, three sourceguardsGREEN.
+The old BoundWriter_ClearRotatesGeneration_ThrowsBeforeReplacementMutation failed
+preparation: attempts ClearGameState while originalRunBound retains accepted
+quiescentmain guard, so owner.lock correctlyrefuses before replacement. This is
+a stale fixture premise, not causalnewruntimefailure or qualified generation
+negative. Preserve exactID/result; reviewer deciding a truthful own generation
+fault plus actualheldClear refusal with unconditional awaited fixture release.
+No runtime/fence weakening. Exact8artifacts archived player-cancel-green-affected-gap.
