@@ -1,3 +1,16 @@
+# Reusable relay frozen GREEN / source PASS
+
+Frozen runtime/tests1350a16c:32/32PASS (17contract+3actualmain+9transport+3repair),
+complete unique selection/no timeout,14 ownscenario guardiansECHILD with0emergency/
+failure/deadline. All3production cases originaldispatch, actualfixedconsumer,
+APIqueueclose before originalScopedStop/I/O/StoppedACK. [Finalpacket](recovery/evidence/relay-reusable/final/manifest.json).
+Independent actualSol6.1/xhigh source/selection followupPASS1350a16c, P1/P2resolved.
+FivefocusedAPIcases and2causalorder/errorcases added; earlier30planned typo
+corrected32. Originalacceptedr3 artifacts37/profile/driver unchanged. No newliveGM.
+Next discovery-only catalog/PlanOnly, separate evidence/metadata review, final
+carrier/remote/readback/freshGitHubrestore. S2/S3 stay unavailable/backendoff;
+Windows is parent-coordinated postmerge, notpremergePASSgate. No merge now.
+
 # Reusable relay reviewed minimal corrections WIP
 
 Causal transportRED at86f7df13:9executed/7PASS/2FAIL, exactclosebefore snapshot
@@ -8,7 +21,7 @@ serializes close vs finalopencheck/snapshot; neverunlinklockinode. Gate failure
 refuses execution/ACK; afterauthorizedsnapshot existingchildsettles. P2 keeps
 active/child and recordsactualexit/I/O+MetadataFailure, staysRELAY ERROR.
 Controlledmain closes via workerAPI; affected heldchildcase usesAPIclose.
-Five tiny API negatives/repair/gatecases nowadded; selection30distinct planned.
+Five tiny API negatives/repair/gatecases nowadded; selection32distinct planned.
 GREEN and independent followup source/evidence/metadata pending; no liveGM.
 
 # Reusable relay second source finding — post-start metadata
