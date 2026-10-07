@@ -1,0 +1,210 @@
+{
+  "Source": "9d83cc3b4403198837a7cd629e63d776284e1d65",
+  "ProviderRequests": 0,
+  "GameTurns": 0,
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 87624,
+      "SHA256": "a21e3df33537a932b6ede3a1be2bba85c4ac3ace937cc5ea7239af62495d0067"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "Bytes": 4193,
+      "SHA256": "37e74991a4b62c1716d1305c3a8a72514fecf2d65470babf820c1a55f76bc5e0"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+      "Bytes": 10035,
+      "SHA256": "d8cb44a0b7651a1b61783702566045ffd56c2deb9424f74ddadf6d53a8a225a7"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmSynchronizedTerminalPresentationTests.cs",
+      "Bytes": 12745,
+      "SHA256": "96563620411e7379a9cbf7d0fe351765f23d87f153711a0708f67ca0f0f0257c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs",
+      "Bytes": 12449,
+      "SHA256": "a0719afb67d9eba1f5d39aa13ac171b873d4d491d1de7ff71675e8faebeb8df9"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+      "Bytes": 6411,
+      "SHA256": "bfb9f02e673c2babcea07b3d65736a2af114dbf8fe150b57c2b0d73503b1d7d3"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "Bytes": 29258,
+      "SHA256": "b2133880640e617b13f6e8963f91ab69f0fac617355031f95ed2c5fedf08ccbd"
+    },
+    {
+      "Path": "tests/fixtures/LinuxTerminal/foreground.py",
+      "Bytes": 5372,
+      "SHA256": "655c94f24d786087beb8925ea20ce35737335e5c29830c3f9fe9f4da8c797766"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1156106,
+      "SHA256": "600b654243ede9c21f24dfda9838e08439368b2184515bc24e67409bb938276a"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 382,
+      "SHA256": "e73b888fd514746452351f4fe95a5c98eca31c66f59407c60096ae4fbdb3950e"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/foreground-final-green/Build-unit.log.gz",
+      "Bytes": 24684,
+      "SHA256": "c6e84a9e1e74e5c0d32b0513c295e4091ff522b99acb3252b4a724b645128f3b",
+      "StoredSHA256": "381db98ae75c609ee1bf8357612e4f04946e978ebc4006ee6e24ae0da0af6830"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/foreground-final-green/dotnet-test.log.gz",
+      "Bytes": 1625997,
+      "SHA256": "e24137023fc62c82949beb6f8981b828b24a01b9a0e713db24e128b523af3fda",
+      "StoredSHA256": "f799a31737f7b44b0d26776fce0e567d62e70e9d4ff52263918f85d8704999d3"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/foreground-final-green/summary.json.gz",
+      "Bytes": 1570,
+      "SHA256": "d2bd3256a504926afabda54e8ff7040a5b2ab0ec4b88bad76b2cbdeda85f846a",
+      "StoredSHA256": "312f5269feb511fc23aa849e587bc7dcb39829b951d3a4813fefa1987c83335f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/foreground-final-green/gm-synchronized-terminal-foreground-unit-001.trx.gz",
+      "Bytes": 2979,
+      "SHA256": "0e116940bf3e943994d86b47603abe05c810e87aa3473adccd7e4134b907b715",
+      "StoredSHA256": "1442ff3e4b9c20a2cb163e280fd2f9e5ba50a2f5a2fea31ecb68cdce54f3d873"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/foreground-final-green/plan.json.gz",
+      "Bytes": 1129,
+      "SHA256": "62d0acf3bbcff5bd078578b8d758bb0799bd4349317aaf4e18713a74f4896684",
+      "StoredSHA256": "c7ca21e1d7123a4a5dbd3119267ed504f03a44a81fce400f2f216e1089305949"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/foreground-final-green/native/345c51d74f19473ab4692eb1b5f6df93/build-provenance.json.gz",
+      "Bytes": 1438,
+      "SHA256": "b217984929b0102c90ad2f26cdc1ba6c84663a61f470293889211c1bcd1a1edd",
+      "StoredSHA256": "2381312d24e0d0503d210fc18b86897b8cca6a61f79fcb6d9a9aec4e3c828d9b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/foreground-final-green/native/345c51d74f19473ab4692eb1b5f6df93/neutral-terminal-manifest.json.gz",
+      "Bytes": 324,
+      "SHA256": "ac55d988743401dfcb95e63c01032f18947b57cc40ae094d3a584cb8f05fe1a5",
+      "StoredSHA256": "97ed671bbdeda7b11721f1d514511d833787ad1102dd46d324099a97d9922ce5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/foreground-final-green/native/345c51d74f19473ab4692eb1b5f6df93/guardian.json.gz",
+      "Bytes": 97,
+      "SHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "StoredSHA256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/foreground-final-green/native/345c51d74f19473ab4692eb1b5f6df93/scenario.json.gz",
+      "Bytes": 1954,
+      "SHA256": "39b870ba0f11323ba5c350ce80ef4df56a8de0e8f8ad23624b1de097589ec36c",
+      "StoredSHA256": "223a9d429a476c6ffe317eb563c5974db67283eb79ffd8cea5e9a1780456f725"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/foreground-final-green/native/345c51d74f19473ab4692eb1b5f6df93/package-manifest.json.gz",
+      "Bytes": 968,
+      "SHA256": "d0a1daf0fa9a18f2e1f390554f0f9e329e2c89d68b2f87f1d2db79708dc2875a",
+      "StoredSHA256": "e74ddf90acbe562683edea0d223cd7f96103710bafffa8897dbbcb618bc567a3"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/foreground-final-green/native/345c51d74f19473ab4692eb1b5f6df93/guardian.log.gz",
+      "Bytes": 1642,
+      "SHA256": "0e21d23617e5c807db4aac292e3c2cf2cb31f2b10b17ecd8b39af8bd648e82b4",
+      "StoredSHA256": "26b8564262dbd40f4a96d721a3233e27c8193611cccc96075d3e99cd7844154d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/foreground-final-green/native/345c51d74f19473ab4692eb1b5f6df93/build.log.gz",
+      "Bytes": 106,
+      "SHA256": "040f730428d6ad9165190c1d5c6210792baa810bfb55c58af0dcbe7fad251fc5",
+      "StoredSHA256": "703db155d09ef134aa3077966c64724f65952e9bfea150e23c60a4bc4f8ae455"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/foreground-final-green/native/345c51d74f19473ab4692eb1b5f6df93/foreground.log.gz",
+      "Bytes": 1157,
+      "SHA256": "573c4ed7a86a455d1277203a3c560d65314d09f6fddb6ec7cd7bf0446e011475",
+      "StoredSHA256": "7587d6ed3b94cb045082a7894186cc1f83b1870cbe1bfd899bc96eed590c8c48"
+    }
+  ],
+  "RunSummary": {
+    "Categories": [
+      "gm-synchronized-terminal-foreground"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "9d83cc3b4403198837a7cd629e63d776284e1d65",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "gm-synchronized-terminal-foreground",
+        "Seconds": 6.8281709,
+        "BudgetMinutes": 2,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0829193,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0744634,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1472937,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 42.9545102,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.005956,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 7,
+    "WallTime": "00:00:56.2476484",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 1,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

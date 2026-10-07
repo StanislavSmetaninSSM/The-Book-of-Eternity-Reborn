@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-synchronized-terminal-foreground",
-      "reason": "Changed failure-only shutdown branch must refuse missing original identity and retain transport-stage failure;32 successful checks not repeated",
+      "category": "gm-external-draft-observation",
+      "reason": "First causal baseline actual original pipe/file and pinned mini empty-versus-draft observation; legacy successful cohorts excluded",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED",
-        "T041-original-main-fence"
+        "T042-input-transaction"
       ]
     }
   ]

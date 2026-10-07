@@ -377,3 +377,20 @@ not automatic Ready/witness/provider/game. Foreground fixture final failure-only
 correction refuses any shutdown without its already-latched original identity,
 records transport stage and never replays. One exact fresh category selected;
 32 unchanged passing cases are excluded.
+
+Final9d83cc3b foreground driver1/1PASS, fresh build, exact original Running
+expectation/Stopped shutdown ACK/termios and guardianECHILD0emergency confirmed.
+[Receipt](recovery/evidence/opencode-connected/foreground-final-green/manifest.json).
+Independent Sol source PASS closes driver changes; old affected category prose
+now accurately names its three remaining methods. Evidence review pending.
+
+Connected continuation first two causal cases now written, unexecuted:
+actual pinned startup versus identical manually typed placeholder must use cell
+foreground attributes; text alone never proves empty. Existing bridge observer
+mode must send actual unchanged strict UTF8 bytes on the original absolute pipe
+despite a distinct child TMPDIR, without expected prompt bytes. Official .NET8
+[PipeStream.Unix](https://github.com/dotnet/runtime/blob/v8.0.0/src/libraries/System.IO.Pipes/src/System/IO/Pipes/PipeStream.Unix.cs)
+supports absolute pipe names; no custom transport/private runtime reflection is
+needed. Subsequent causal cases will bind this typed connection to the original
+AwaitingPaste operation, cancellation/takeover and single submit. Runtime and
+automatic Ready remain unchanged before these REDs.

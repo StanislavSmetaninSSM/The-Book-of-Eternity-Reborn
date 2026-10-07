@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-external-draft-observation",
+      "responsibility": "Actual existing bridge observer mode and original pipe, bounded actual-file bytes plus consumed mini profile/empty placeholder evidence",
+      "excludes": "Provider/gameplay, arbitrary TUI, Windows, production workers and old cohorts",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+        "BookOfEternityGMBridge/Program.cs",
+        "BookOfEternityClient/Configuration/GmCliInputProfile.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmExternalDraftObservationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-synchronized-terminal-foreground",
       "responsibility": "Exact original foreground fixture latches complete Running expectation, actual inputs/resize/EOF and sole typed shutdown",
       "excludes": "No other legacy cohort, CLI/provider/gameplay or native Windows",
@@ -117,7 +142,7 @@
     },
     {
       "id": "gm-synchronized-terminal-affected",
-      "responsibility": "Four exact affected original default Attach/output/EOF, frozen profile, foreground and pipe resize consumers after shared geometry/presentation changes",
+      "responsibility": "Three exact affected default Attach/output/EOF, frozen profile and pipe resize consumers after shared geometry/presentation changes",
       "excludes": "All other prior terminal/input/fence/worker cohorts, live provider/game and native Windows",
       "changeHints": [
         "BookOfEternityGMBridge/Program.cs",
