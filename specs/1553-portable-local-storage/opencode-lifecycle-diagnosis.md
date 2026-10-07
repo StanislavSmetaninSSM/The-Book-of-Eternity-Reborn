@@ -4,7 +4,7 @@ Fresh og9 atfaf17fd4 / runtime9744d191, actual678files/99,051,782bytes. Ordinary
 
 OriginalRun04a1b2d09ba44c60b6debd4fe43666d3 reached same-identity scoped stop/ACK/durableStopped; actual client/bridge/daemon exit0, allEOF/restoredtermios. GuardianECHILD0emergency/driver1/failures0/deadlinefalse; elapsed62.276. [Public evidence](recovery/evidence/opencode-live/current-turn-paste-refusal/manifest.json); private CLI state excluded. Historical og4/og5 Uncertain unchanged.
 
-Next source hypothesis: actual pasted composer emits SGR39/default foreground (-1); MiniDraftRegion currently admits only explicit0xe2e8f0. Confirm exact child VT prefix through actual parser/matcher, then if causal narrow style support, real pipe/draft-file positive and unknownstyle/sequence negative tests. No fresh live until causal correction/review/GREEN. Source#1553/T043; no general VT promise, provider/config/auth/environment change or gameplay schema/text/model change.
+Confirmed component cause: exact completed og9 child VT emits SGR39/default foreground (-1), rejected by the former RGB-only draft predicate. Causal RED at2bce5e08 executed5 (3FAIL/2PASS), then sole predicate fix82a6ef70 and fresh GREEN5/5, complete cleanup; independent Sol source/evidence PASS. Actual original pipe/full-file proof/single submit plus unsupportedRGB/unknownsequence/cancel/no-replay are covered. Catalog417/11152 valid,0executed. [Pinned artifacts](recovery/evidence/opencode-live/default-foreground-green/manifest.json). Publication recovered. Next is one fresh actual production NewGame attempt; og9 is never replayed. No general VT/defaultRGB promise or gameplay/schema/model change; current accepted game turns remain0.
 
 # Component fix verified; deployed live continuation next
 

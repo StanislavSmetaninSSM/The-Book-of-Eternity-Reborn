@@ -1,3 +1,7 @@
+# Current T043 default draft correction — component qualified, fresh live next
+
+Causal RED5=3FAIL/2PASS, minimal82a6ef70 predicate fix, fresh GREEN5/5 complete/cleanup, independent Sol source/evidence PASS. Catalog417/11152 valid,0executed. Freshog10 installed package prepared678files/99,051,790bytes with exact fresh DLL bytes and unchanged accepted native helper; no game state seeded, no provider/CLI started yet. Next: one ordinary isolated NewGame/action/application/cleanup attempt using existing original owner/fence/T042. Historical og9 DraftUncertain and og4/og5 Uncertain remain unchanged.
+
 # Bounded OpenCode fallback Q1 → Q2
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).

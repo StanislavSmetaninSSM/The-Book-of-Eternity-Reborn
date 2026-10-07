@@ -122,6 +122,45 @@
       "StoredPath": "red-plan-summary.json.gz",
       "StoredBytes": 803,
       "StoredSHA256": "964018284a2b256c108651e128ffda3060cdbee0c1045212165472fbbc48a745"
+    },
+    {
+      "Path": "catalog/summary.json",
+      "Bytes": 1601,
+      "SHA256": "b119249a55171f90202ebaa21c33c32724ed20c9fa7d2055b8c4ddd9864a3471",
+      "StoredPath": "catalog-summary.json.gz",
+      "StoredBytes": 644,
+      "StoredSHA256": "a59921b056372e2273baa2d390ddf66ca233181698f0d153abcd2f039cfa68ef"
+    },
+    {
+      "Path": "catalog/catalog-audit.json",
+      "Bytes": 103,
+      "SHA256": "448fc8c5fb8ca618eb6f1f74618d415c1f87d96cd70c77c9c854c2b88eb576e4",
+      "StoredPath": "catalog-catalog-audit.json.gz",
+      "StoredBytes": 103,
+      "StoredSHA256": "296535f7a495f20e3fc293cb1339b05a4b7fb7faeda369ed59054f6605b8a62f"
+    },
+    {
+      "Path": "catalog/Build-unit.log",
+      "Bytes": 27708,
+      "SHA256": "b48867ad4e1ddbfd6fe8729a7b1584d9590f92336b39f0fd74a1527300b65efc",
+      "StoredPath": "catalog-Build-unit.log.gz",
+      "StoredBytes": 2114,
+      "StoredSHA256": "93a5b669f6a698d223656193b12c4ac80beedf730fa3a082ee2a6b27d6b00d82"
+    },
+    {
+      "Path": "catalog/Build-integration.log",
+      "Bytes": 8702,
+      "SHA256": "ba3ccab98e1bdc01415f24b5b0f63dfc199d252a5c4a7a86c073544ff62e670a",
+      "StoredPath": "catalog-Build-integration.log.gz",
+      "StoredBytes": 722,
+      "StoredSHA256": "0897fe398b402f3a82a5b9808181aaee24cbb74f12cca118512ba6f99a1981bb"
     }
-  ]
+  ],
+  "Catalog": {
+    "Valid": true,
+    "Categories": 417,
+    "MethodsFiles": 11152,
+    "TestsExecuted": 0,
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog"
+  }
 }
