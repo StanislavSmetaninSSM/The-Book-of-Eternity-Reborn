@@ -1,11 +1,15 @@
-# Current canonical mutation exception diagnosis
+# Current bounded phase-aware live continuation
 
-The reviewed phase-aware fresh attempt passed original bootstrap/derivedReady,
-then daemon bootstrap returned a concrete canonical mutation refusal before any
-player action. Original cause is suppressed by the existing C# operation helper.
-Original stop/Stopped/ACK/I-O and guardianECHILD0emergency verified; game/model0.
-Obtain actual exception in a bounded inert original-owner consumer before changing
-behavior or another model attempt. [Currentfacts](opencode-lifecycle-diagnosis.md).
+Current source/timeline review shows og7 first hit the inherited15s daemon marker
+cutoff. Generic mutation refusal was observed after original shutdown began; no
+initiating runtime defect established. Continue with reviewed driver-only phase
+observation for daemon/NewGame/Continue, same exact677 bt1runtimefiles, fresh root,
+unchanged210s work/45idle/230clientclose/270total/300guardian and actual
+admission/readiness/currentoperation. No runtime patch or missing-exception gate
+is justified yet; a real pre-cleanup refusal stops its attempt without replay.
+[Current timeline/diagnosis](opencode-lifecycle-diagnosis.md). Model/acceptedturns0
+so far; systemd deferred and old Uncertain byte-identical. Historical entries below
+retain their original context and do not reinstate superseded owner gates.
 
 # Fresh attempt recorded; client/request diagnosis in progress
 

@@ -1,4 +1,4 @@
-Current T043 state (2026-10-07): owner superseded the historical bootstrap reproduction prerequisite for one fresh actual attempt. That attempt passed current bootstrap/derived Ready, but failed driver request observation and client settlement; provider/acceptedgame0. Specific client/request diagnosis open; old Uncertain unchanged. [Evidence](recovery/evidence/opencode-live/fresh-current-bootstrap/manifest.json).
+Current T043 state (2026-10-07): two fresh ordinary attempts passed bootstrap/derivedReady; og6 hit an8s request cutoff without timed preparation output, og7 hit inherited15s daemon bootstrap cutoff and received a generic refusal only after stop began. No initiating runtime defect or accepted turn established. Phase-aware driver-only correction under the unchanged overall/cleanup bounds is authorized; historical Uncertain untouched. [Current diagnosis](opencode-lifecycle-diagnosis.md).
 
 # Tasks: Trusted local storage and cross-platform runtime
 

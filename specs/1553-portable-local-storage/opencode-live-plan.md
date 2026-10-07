@@ -1122,3 +1122,7 @@ same phase rule. All fixed original IPC/readiness/stop deadlines and admission
 remain unchanged. A real observed daemon refusal/exit before cleanup aborts;
 no replay or instrumentation unless needed. Source-reviewed exact delta precedes
 a fresh isolated attempt; no source/package rebuild or behavior patch.
+Source-review required correction: each phase checks process exit and fresh
+failure before accepting its completion marker. Client checks use the current
+phase byte offset; a prompt followed by a current error in the same capture
+cannot authorize action input. No preliminary daemon-wait driver was executed.
