@@ -1,3 +1,7 @@
+## Deferred primary systemd-user source/design WIP
+
+From accepted Q1 diagnostic13cdd9ae, [source notes](systemd-main-design-wip.md) preserve checked selector/terminal/M1/fence/pool boundaries and unresolved API/dependency/identity questions. Owner reprioritized isolated real console Q1→Q2; this draft is deferred, unreviewed and not implementation approval. No runtime/tests/services/probes or systemd qualification. Source #1553.
+
 # Current bounded Codex Q1 startup — readiness blocker
 
 Accepted desktop42812722; one new actual ordinary M1 Codex startup/stop observation completed with retained original owner/main fence and unchanged `TERM=dumb`. Exact gate `Continue anyway? [y/N]:` remained unanswered; keyboard/model/confirmation/queryresponse0. Same-original Running→scoped stop/Stopped/retirement, actual I/O/PTY termios/close, guardianECHILD0emergency/failure/deadline; no replay. Installed0.159.0-alpha.3/officiallogin status confirmed. [Plan](codex-q1-plan.md) / [handoff](codex-q1-handoff.md) / [qualification](recovery/codex-q1-qualification.json). Runtime/parser/profile/tests/catalog unchanged, no cohort reruns. Actual independent Sol6.1/xhigh design/source/evidence/metadata PASS for bounded startup/stop evidence; writer final-carrier exact-tip remote/restoration closure required before delivery. Q1 VT/readiness, Q2, systemd/nativeWindows/live game remain open. Source #1553.
