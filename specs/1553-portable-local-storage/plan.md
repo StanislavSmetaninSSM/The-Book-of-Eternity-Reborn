@@ -1,3 +1,18 @@
+# T043 reusable relay final bounded verdict carrier
+
+Actual separateSol6.1/xhigh metadataPASS atclean15a5ccae, no requiredfixes.
+Design/source/evidence/metadata allPASS; frozenruntime1350a16c,32uniquecontrolled
+PASS,14scenario guardiansECHILD0emergency/failure/deadline,595verifiedartifacts,
+27runtimepins and37unchangedr3files/driver. Catalog429/11178 andPlanOnly32/4 both
+executed0. [Reviewedhandoff](relay-reusable-handoff.md) andqualification recordfacts.
+CloseonlyT043-RELAY-REUSABLE-DESIGN/CONTRACT; overallT043/T041/platform debtopen.
+No more runtime/tests/modelrequests. Finalwritergate: ordinarypush, exactremote/
+changedbytes, freshdirectGitHubclean/filebytes/tree/fsck; exactSHA/proofdelivery.
+SystemdS2/S3 unavailable/off, enabledproductionworkersclosed; nativeWindows AFTER
+completion/merge in parentexisting «Лориан-Codex bridge», notpremergePASSgate.
+Parentcoordinatesoverallreadiness/defaultbranch/conditionalmerge. No merge here;
+stopafterhandoff before S2/S3 or provider adapters.
+
 # Reusable relay evidence/discovery PASS — final metadata review next
 
 Actual independentSol6.1/xhigh evidence/selectionPASS eb96b9ce:595stored/decompressed

@@ -65,7 +65,9 @@
     "metadata": {
       "model": "gpt-6.1-sol",
       "effort": "xhigh",
-      "verdict": "PENDING"
+      "verdict": "PASS",
+      "agent": "relay_reusable_metadata_review",
+      "source": "15a5ccae174a1520b8c063f51f30e6355dece9a0"
     }
   },
   "packets": {
@@ -117,7 +119,8 @@
     "normalPushRequired": true,
     "exactRemoteAndByteReadbackRequired": true,
     "freshGitHubOnlyRestoreRequired": true,
-    "pending": true
+    "pendingAtCarrier": true,
+    "confirmationLocation": "Writer final delivery: exact carrier SHA and external fresh GitHub-only clean/tree/file-byte/fsck proof."
   },
   "remaining": [
     "Systemd S2/S3 unavailable/unqualified/backend off; positive already-running manager environment required",
@@ -126,5 +129,9 @@
     "Applicable physical desktop/device/provider qualifications separate",
     "Future provider adapters need separate design/authorization; no new integrations/grants/proxy"
   ],
-  "noMerge": true
+  "noMerge": true,
+  "closedTasks": [
+    "T043-RELAY-REUSABLE-DESIGN",
+    "T043-RELAY-REUSABLE-CONTRACT"
+  ]
 }

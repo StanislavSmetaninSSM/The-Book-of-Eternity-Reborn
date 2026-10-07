@@ -1,4 +1,4 @@
-# T043 maintained reusable relay — bounded handoff candidate
+# T043 maintained reusable relay — bounded handoff
 
 Source [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 Branch `codex/1553-load-filesystem`, sole writer; accepted S1 base
@@ -82,8 +82,9 @@ cc Debian14.2.0-19. Preparation compiler provenance is separate from player star
 Actual independent gpt-6.1-sol/xhigh design PASS `3a79b040`, narrow P1/P2 correction
 design PASS, source/selection followup PASS `1350a16c`. Separate actual Sol6.1/xhigh evidence/discovery review PASS at
 `eb96b9ce2df1da3396a206af25c900476a2b15a5`, independently verified all595 artifacts,
-27 exact frozen/current pins,32 unique PASS and discovery0execution. Final metadata
-review remains pending for this candidate; qualification records its final verdict. Normal publication/readback and
+27 exact frozen/current pins,32 unique PASS and discovery0execution. Separate actual Sol6.1/xhigh final metadata PASS at
+`15a5ccae174a1520b8c063f51f30e6355dece9a0`; no required fixes. Qualification records
+all verdicts; only the reusable design/contract tasks close. Normal publication/readback and
 fresh direct GitHub-only restoration are final writer delivery gates.
 
 ## Preserved live evidence and remaining work
@@ -96,7 +97,8 @@ qualify Codex/OpenCode/provider compatibility or arbitrary APIs. Future adapters
 need separate provider-specific design/authorization/qualification and ordinary
 permitted access. Relay adds no credentials, grants, proxy or network bypass.
 
-Only T043 reusable scope closes after final reviews/restoration. Remaining overall
+Only the reviewed T043 reusable design/contract scope closes; final writer
+push/readback/restore confirmation accompanies delivery. Remaining overall
 obligations for parent-coordinated completion/merge:
 
 1. Mandatory primary systemd **S2/S3 remain unavailable, unqualified and off**.

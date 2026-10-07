@@ -1,11 +1,12 @@
 # Cross-platform: текущий статус и восстановление
 
-## Latest bounded maintained relay / pending delivery gates
+## Latest bounded maintained relay / final carrier
 
 T043 shareddeveloper relay at frozen1350a16c:32/32 controlledPASS through exact
 worker protocol and actual productionBridge/helper,14 ownscenario guardians
-ECHILD/emergency0. Actual independentSol6.1/xhigh design/source/evidencePASS,
-finalmetadata and exacttipwriter restoration stillpending. [Handoff](relay-reusable-handoff.md)
+ECHILD/emergency0. Actual independentSol6.1/xhigh design/source/evidence/metadataPASS. Only reusable
+design/contract tasksclose; final exacttipwriter remote/readback/restoration
+confirmation accompanies delivery. [Handoff](relay-reusable-handoff.md)
 and [qualification](recovery/relay-reusable-qualification.json).
 Acceptedlive-r3 one genuinely generated/applied action and37artifacts remain
 unchanged; extraction makes0newmodel requests and no newlive/provider claim.
