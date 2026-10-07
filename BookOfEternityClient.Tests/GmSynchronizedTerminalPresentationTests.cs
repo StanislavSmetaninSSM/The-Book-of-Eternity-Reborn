@@ -103,6 +103,18 @@ public sealed class GmSynchronizedTerminalPresentationTests
         Assert.Equal("NEUTRAL READY\n> ", Value<string>(p.Capture(), "Text"));
     }
 
+    [Theory]
+    [InlineData("\u001b[1;2 H")]
+    [InlineData("\u001b[1;101H")]
+    [InlineData("\u001b]66;w=1; \u001b\\")]
+    [InlineData("\u001b]66;s=2; \u001b\\")]
+    public void UnsupportedGrammarOrFirstFrameProbe_RefusesBeforeFirstCommit(string unsupported)
+    {
+        using var p = new ScreenProbe("original");
+        p.Feed(Encoding.UTF8.GetBytes(Escape + "[?2026h" + unsupported + Escape + "[6;1Hcomposer" + Escape + "[?25h" + Escape + "[?2026l"));
+        Assert.False(Value<bool>(p.Capture(), "Reliable"), "An unsupported sequence cannot certify even the first synchronized frame.");
+    }
+
     internal static T Value<T>(object obj, string name) => (T)obj.GetType().GetProperty(name)!.GetValue(obj)!;
     internal static byte[] ActualTranscript(string receipt)
     {

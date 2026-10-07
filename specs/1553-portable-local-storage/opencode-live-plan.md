@@ -315,3 +315,8 @@ owned cleanup, no CLI/process/provider/game execution. Actual output pump feeds
 the parser and raw forwarding stays byte-identical; default legacy unchanged.
 [GREEN receipt](recovery/evidence/opencode-connected/presentation-green/manifest.json).
 Independent source review pending; no connected witness/automatic Ready claim.
+
+Independent parser review found unsupported acceptance: spaced CUP parameters,
+CUP column Columns+1 and initial OSC66 probes inside the first frame. Four
+new causal boundaries have their own narrow category;9 unchanged successes
+are excluded from this RED. Source qualification withheld pending corrections.

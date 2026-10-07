@@ -10,7 +10,12 @@
         "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
         "BookOfEternityClient.Tests/GmSynchronizedTerminalPresentationTests.cs"
       ],
-      "related": [],
+      "related": [
+        {
+          "id": "gm-synchronized-terminal-boundaries",
+          "when": "Bounded VT grammar/position/probe-phase acceptance changes; check actual transcript observations and exact rejection boundaries together after correction."
+        }
+      ],
       "requirements": {
         "frontendBuild": false,
         "exclusive": true
@@ -21,7 +26,40 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.*"
+            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.ActualOutputPump_PinnedStartup_CommitsFocusedUnicodeCapableFrame",
+            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.ActualEditorTranscript_DynamicFooterAndUnicode_NoPasteCursorAssumption",
+            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.UnknownSequenceGeometryOrWidth_CannotBeClearedByAnotherKnownFrame",
+            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.SplitUtf8AndSynchronizedFrame_DoNotExposePartialObservations",
+            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.ResizeAndFault_WithdrawOriginalObservationPermanently",
+            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.LegacyNeutral_ViewRemainsSeparateFromOptionalPresentation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-synchronized-terminal-boundaries",
+      "responsibility": "Exact CUP grammar/right-edge and initial OSC66 phase refusals in original synchronized view; independent source-review causal deltas",
+      "excludes": "Provider/CLI/process/input witness and arbitrary terminal emulation",
+      "changeHints": [
+        "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs"
+      ],
+      "related": [
+        {
+          "id": "gm-synchronized-terminal-presentation",
+          "when": "Bounded VT grammar/position/probe-phase acceptance changes; preserve consumed actual transcripts after correction."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.UnsupportedGrammarOrFirstFrameProbe_RefusesBeforeFirstCommit"
           ]
         }
       ]

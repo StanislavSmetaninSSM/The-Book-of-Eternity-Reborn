@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-synchronized-terminal-presentation",
-      "reason": "New consumed bounded VT/frame/cursor observation from pinned actual startup/editor transcripts; causal parser RED, no native/model startup",
+      "category": "gm-synchronized-terminal-boundaries",
+      "reason": "Four new independent-review acceptance gaps get causal RED without re-executing the nine unchanged successful transcript checks",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED",
         "T041-owned-terminal-view"
