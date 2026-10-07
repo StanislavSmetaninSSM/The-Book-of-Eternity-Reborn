@@ -161,3 +161,11 @@ padding/footer/cursor focus and only a strict observed control grammar. Unknown
 or partial/panel output refuses. Original retained identity/binding and budget
 are rechecked, including immediately before send. This diagnostic gate supplies
 neither production TerminalScreen nor Ready. Runtime/tests unchanged; probe0.
+
+Reassessed the diagnostic gate after two source-review refusals, rather than
+loosening it to obtain a positive probe. The candidate now requires exact
+known footer bytes/padding, refuses any unexpected nonblank painted region,
+and repeats the bounded current-frame drain/check after the socket connects,
+immediately before its one send. A legitimate partial/full redraw outside this
+strict fixture shape is allowed to fail observation; it must not be retried or
+reported as readiness. Runtime renderer qualification remains separate.

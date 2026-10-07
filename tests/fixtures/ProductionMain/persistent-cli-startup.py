@@ -90,12 +90,14 @@ def receive(delay=.02):
         captured.extend(data)
         if len(captured) > 524288: raise RuntimeError('Bounded startup output exceeded512KiB')
 
-def rpc(payload, seconds):
+def rpc(payload, seconds, expected_frame=None):
     assert payload['command'] in ['status', 'diagnostics', 'shutdown'] or (draft_mode and payload['command'] == 'addtext')
     entry = {'AtSeconds': round(elapsed(), 3), 'Request': payload, 'Sent': False}; journal.append(entry)
     with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as peer:
         peer.settimeout(.5); peer.connect(socket_path)
         if payload['command'] == 'addtext':
+            assert expected_frame in ['startup', 'draft']
+            check_manual_frame(expected_frame == 'draft')
             assert elapsed() < 12 and process.poll() is None, 'Never write after observation budget/lifetime'
         # Mark the one attempt before send; ambiguous partial send is never retried.
         entry['SendAttempted'] = True; peer.sendall(json.dumps(payload).encode() + b'\n'); entry['Sent'] = True
@@ -163,15 +165,12 @@ def expected_draft_frame(frame):
     line = lambda r: ''.join(cells.get((r, c), '\0') for c in range(100)).rstrip(' ')
     assert all(line(r) == expected for r, expected in zip(range(5, 11), draft.split('\n')[-6:]))
     assert line(4) == '' and line(11) == ''
-    assert line(12).startswith(' BUILD ') and line(12).endswith('ctrl+p cmd')
+    assert line(12) == ' BUILD ' + ' ' * 82 + 'ctrl+p cmd'
+    assert all(c == ' ' or r in [5, 6, 7, 8, 9, 10, 12] for (r, _), c in cells.items()), 'Unexpected pane text outside composer/footer'
     assert '\0' not in line(12) and visible
     assert row == 10 and column == len(draft.split('\n')[-1]), 'Actual composer focus absent'
 
-def before_manual_write(expect_draft):
-    status = rpc({'command': 'status'}, 1)['status']
-    assert status['terminalRunId'] == identity['runId'] and status['terminalOwnerRetained']
-    assert not status['terminalUncertain'] and not status['ready']
-    assert status['inputBindingId'] == result['OriginalRunningStatus']['status']['inputBindingId']
+def check_manual_frame(expect_draft):
     frame = current_diagnostic_frame()
     if expect_draft: expected_draft_frame(frame)
     else:
@@ -179,6 +178,13 @@ def before_manual_write(expect_draft):
         expected = re.findall(rb'\x1b\[\?2026h(.*?)\x1b\[\?2026l', known, re.S)[-1]
         assert frame == expected, 'Current mini startup frame changed; never paste'
     assert elapsed() < 12 and process.poll() is None, 'Original lifetime or observation budget ended'
+
+def before_manual_write(expect_draft):
+    status = rpc({'command': 'status'}, 1)['status']
+    assert status['terminalRunId'] == identity['runId'] and status['terminalOwnerRetained']
+    assert not status['terminalUncertain'] and not status['ready']
+    assert status['inputBindingId'] == result['OriginalRunningStatus']['status']['inputBindingId']
+    check_manual_frame(expect_draft)
 
 try:
     args = ['pwsh', '-NoLogo', '-NoProfile', '-File',
@@ -206,14 +212,14 @@ try:
                 before_manual_write(False)
                 body = '\x1b[200~' + draft + '\x1b[201~'
                 draft_pasted = True # mark before send: no ambiguous replay
-                response = rpc({'command': 'addtext', 'text': body}, 1)
+                response = rpc({'command': 'addtext', 'text': body}, 1, 'startup')
                 assert response['ok'] and not response['status']['ready']
                 result['ManualRpcInputBytes'] += len(body.encode())
                 result['PasteAcknowledgedAtSeconds'] = round(elapsed(), 3)
             elif not editor_requested and elapsed() >= result['PasteAcknowledgedAtSeconds'] + .8:
                 before_manual_write(True)
                 editor_requested = True # one standard editor gesture, no Enter
-                response = rpc({'command': 'addtext', 'text': '\x18e'}, 1)
+                response = rpc({'command': 'addtext', 'text': '\x18e'}, 1, 'draft')
                 assert response['ok'] and not response['status']['ready']
                 result['ManualRpcInputBytes'] += 2
                 result['EditorGestureAcknowledgedAtSeconds'] = round(elapsed(), 3)
