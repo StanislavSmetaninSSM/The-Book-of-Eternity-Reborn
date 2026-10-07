@@ -1,3 +1,13 @@
+# Current source hypothesis: console admission before recovery-capable existence read
+
+Progress-aware og8 completed actual daemon bootstrap, then Continue immediately
+reported original-owner admission refusal. No model/game action; originalmain
+scoped stop/ACK/I-O and guardianECHILD0emergency verified. No more unchanged live
+attempt. Check HasCurrentSession pre-scope FileExists against a controlled real
+trusted-local publication under the original owner, trace its exact exception,
+then only a confirmed minimal scope correction/causalGREEN allows another attempt.
+[Current facts](opencode-lifecycle-diagnosis.md). Source#1553/T043.
+
 # Current bounded phase-aware live continuation
 
 Current source/timeline review shows og7 first hit the inherited15s daemon marker

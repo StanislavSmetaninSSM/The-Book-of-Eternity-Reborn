@@ -1,3 +1,28 @@
+# Current Continue refusal after completed daemon bootstrap
+
+Actual source37b274e8 `/workspace/og8`, exact677bt1runtimefiles. OriginalRun
+`4d2e4647e8dc443392efaaa57717e778`. Currentbootstrap/derivedReady passed.
+Real daemon context pack advanced37metadatafiles/1,856,601bytes (includes helper),
+then fresh Waiting-for-turns observed25.129s. No pre-cleanup daemon refusal.
+
+Continue input25.129s immediately produced actual main-menu error at25.174s:
+`Main run metadata or original owner admission is unavailable.` No player prompt
+or action. Driver recognizes only GameLoop error captions, so it subsequently
+stopped after45s no progress; that delay is a diagnostic gap, not the initiating
+client refusal. Error log absent, original client stack unavailable.
+OriginalScopedStop/ACK/durableStopped and allpeerEOF/restoredtermios confirmed;
+client foreground SIGINTexit-2, bridge/daemonexit0. GuardianECHILD0emergency/
+driverExit1/failures0/deadlinefalse; elapsed71.832s. Model/acceptedturns0.
+[Exact public artifacts](recovery/evidence/opencode-live/progress-current-continue-refusal/manifest.json).
+
+Source hypothesis to causally check: HasCurrentSessionAsync first calls FileExists
+before its participating scope. FileExists recovers when a concurrent daemon
+trusted-local publication exists; its unbound recovery lease then correctly refuses
+a Running main. Prior quiescent consumer evidence does not prove this interleaving.
+No runtime fix made. Proposed narrow realpublisher/originalowner/actualconsumer
+controlled causal case is under independent Sol review; no fakejournal or ownership
+weakening. Historical og4/og5 Uncertain unchanged; historical cause remains unknown.
+
 # Timeline correction: earliest og7 failure is driver daemon cutoff
 
 Read-only Astra/xhigh checked exact chunk offsets and source. Driver timed out
