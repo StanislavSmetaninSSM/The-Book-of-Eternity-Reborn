@@ -1,0 +1,15 @@
+{
+  "Run": "initial-green",
+  "Source": "756e2683bb751933d26a864b82f54701eb86c800",
+  "Command": "pwsh -NoProfile scripts/test-csharp.ps1 -Category console-audio-linux,browser-audio-isolation",
+  "Result": "GREEN2/2",
+  "EvidenceDirectory": "recovery/evidence/console-audio-linux-initial-green",
+  "Tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "ExitCode": 0,
+  "OwnedTreeCleanupSucceeded": true
+}

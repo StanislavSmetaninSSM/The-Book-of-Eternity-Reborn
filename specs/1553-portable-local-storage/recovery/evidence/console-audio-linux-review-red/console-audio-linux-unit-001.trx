@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="e1fd0ea4-cd97-4d31-b336-3e81c8a06063" name="@c7669543e9c7 2026-10-07 03:37:07" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-07T03:37:07.6883245+00:00" queuing="2026-10-07T03:37:07.6883246+00:00" start="2026-10-07T03:37:04.5406431+00:00" finish="2026-10-07T03:37:16.6637880+00:00" />
+  <TestSettings name="default" id="490b0c2a-83a5-4807-9a57-420a484e3535">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-07_03_37_07" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="12b5beb7-79e4-4cf0-92f3-eb0604312cb7" testId="689d6dc5-35e3-72fc-e070-0f2b2615fef4" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.PublicService_SelectsLinuxAndReportsUnavailableWithoutWindowsOrDeviceCalls" computerName="c7669543e9c7" duration="00:00:00.1350783" startTime="2026-10-07T03:37:16.5782448+00:00" endTime="2026-10-07T03:37:16.5782450+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="12b5beb7-79e4-4cf0-92f3-eb0604312cb7" />
+    <UnitTestResult executionId="856c293c-47e2-4c4b-babb-df49260d3e13" testId="63997860-3e23-5b7f-8493-3b707201161f" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.MissingAssetsAndMutedRequests_NeverCreateOutput" computerName="c7669543e9c7" duration="00:00:00.1538945" startTime="2026-10-07T03:37:09.6726952+00:00" endTime="2026-10-07T03:37:09.6726954+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="856c293c-47e2-4c4b-babb-df49260d3e13" />
+    <UnitTestResult executionId="33b59452-ba68-4f2d-8f0e-31a6a6758cfd" testId="40ee6e54-751b-f2b8-3e34-908b4535136a" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup(mode: &quot;sdl-queue-error&quot;, outcome: &quot;Error&quot;, opens: 1, closes: 1, quits: 1)" computerName="c7669543e9c7" duration="00:00:00.1720053" startTime="2026-10-07T03:37:07.6516181+00:00" endTime="2026-10-07T03:37:07.6516183+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="33b59452-ba68-4f2d-8f0e-31a6a6758cfd" />
+    <UnitTestResult executionId="fbd38b51-e3e2-4862-ab8b-b561ae7aad69" testId="14c70289-d99c-25ac-9993-851f2943e8c1" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed" computerName="c7669543e9c7" duration="00:00:00.0366460" startTime="2026-10-07T03:37:06.5430493+00:00" endTime="2026-10-07T03:37:06.5430622+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fbd38b51-e3e2-4862-ab8b-b561ae7aad69" />
+    <UnitTestResult executionId="c01c825a-db53-457e-a776-7ac4ada15305" testId="2c36ef8e-b9a7-604e-0890-63c451738a8d" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload(rejectedReload: False)" computerName="c7669543e9c7" duration="00:00:00.0208870" startTime="2026-10-07T03:37:06.7619253+00:00" endTime="2026-10-07T03:37:06.7619255+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c01c825a-db53-457e-a776-7ac4ada15305">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload(Boolean rejectedReload) in /workspace/native-1553/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 337
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="66e9c5f3-93cd-4498-b4e3-9ebad268aa93" testId="546df025-ed8d-b1e0-15e0-3e138642729d" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.AllRealCues_StopAllMuteThrottleAndDisposeOwnEverySession" computerName="c7669543e9c7" duration="00:00:00.3393215" startTime="2026-10-07T03:37:08.1666540+00:00" endTime="2026-10-07T03:37:08.1666542+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="66e9c5f3-93cd-4498-b4e3-9ebad268aa93" />
+    <UnitTestResult executionId="42cba841-24f6-457c-b3fc-8b225ae1a256" testId="ecc74de3-5c7c-6f40-b173-a93d6cbfc8ba" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.StopTimeout_RetainsOriginalAuthorityAndBlocksReplacementUntilActualCompletion(mode: &quot;debt&quot;, later: 2, after: &quot;Playing&quot;)" computerName="c7669543e9c7" duration="00:00:02.2383351" startTime="2026-10-07T03:37:11.9114145+00:00" endTime="2026-10-07T03:37:11.9114150+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="42cba841-24f6-457c-b3fc-8b225ae1a256" />
+    <UnitTestResult executionId="c8870611-0c2d-44e3-965e-213cd7bd4742" testId="7bd163e7-c3a7-301e-3ddc-6774203db61a" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ExplicitNativeDummyOnly_RealWavAndPositiveMp3DecodeQueueDrainAndClose" computerName="c7669543e9c7" duration="00:00:01.5707021" startTime="2026-10-07T03:37:15.7448999+00:00" endTime="2026-10-07T03:37:15.7449001+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c8870611-0c2d-44e3-965e-213cd7bd4742" />
+    <UnitTestResult executionId="f30ed783-8c85-4f3f-b572-248ec3ac13ac" testId="2c7c3a76-db43-2bd7-29db-1fb094977f83" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlQueueBackend_StreamsPcmAndChangesGainWithoutReopen" computerName="c7669543e9c7" duration="00:00:00.2151015" startTime="2026-10-07T03:37:06.7189343+00:00" endTime="2026-10-07T03:37:06.7189345+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f30ed783-8c85-4f3f-b572-248ec3ac13ac" />
+    <UnitTestResult executionId="4aa2c73e-7fab-4ef0-909f-9c52600b75d7" testId="c8f636ca-a550-7559-3b97-1be220550b8b" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.OriginalMusic_NonrepeatContextVolumeAndMuteDoNotReopenCurrentTrack" computerName="c7669543e9c7" duration="00:00:00.1833082" startTime="2026-10-07T03:37:08.3479599+00:00" endTime="2026-10-07T03:37:08.3479601+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4aa2c73e-7fab-4ef0-909f-9c52600b75d7" />
+    <UnitTestResult executionId="618c280c-dd15-4c36-a1f3-73e407eaf010" testId="c7b1ec2a-e526-4b5b-59d2-3b0c5e396982" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.StopTimeout_RetainsOriginalAuthorityAndBlocksReplacementUntilActualCompletion(mode: &quot;dispose-debt&quot;, later: 1, after: &quot;Disposed&quot;)" computerName="c7669543e9c7" duration="00:00:02.2445126" startTime="2026-10-07T03:37:14.1638297+00:00" endTime="2026-10-07T03:37:14.1638300+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="618c280c-dd15-4c36-a1f3-73e407eaf010" />
+    <UnitTestResult executionId="5266a1c0-d8c2-414f-9161-52c55be04aa9" testId="7b15251b-cd1b-1cfb-242d-9a0e66d07bf7" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ActualMainMenuLayoutsAndSettings_ShowSafeCapabilityMessage" computerName="c7669543e9c7" duration="00:00:00.4524045" startTime="2026-10-07T03:37:09.0718236+00:00" endTime="2026-10-07T03:37:09.0718238+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5266a1c0-d8c2-414f-9161-52c55be04aa9" />
+    <UnitTestResult executionId="00b8e848-c59d-4ed4-b7f8-cc708517c7d7" testId="33f14184-047d-175a-e7f5-961ab6b6ea41" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.LastAcceptedEffectsCanBeRestoredWithoutDiscardingOrCertifyingTheDraft" computerName="c7669543e9c7" duration="00:00:00.1834692" startTime="2026-10-07T03:37:06.7436531+00:00" endTime="2026-10-07T03:37:06.7436533+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="00b8e848-c59d-4ed4-b7f8-cc708517c7d7">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.LastAcceptedEffectsCanBeRestoredWithoutDiscardingOrCertifyingTheDraft() in /workspace/native-1553/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 400
+   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.LastAcceptedEffectsCanBeRestoredWithoutDiscardingOrCertifyingTheDraft() in /workspace/native-1553/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 408
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c139d20c-28f3-4e7d-a3b5-c963920593c3" testId="d681ba8d-2099-22b2-2642-f14cf0c7b9eb" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup(mode: &quot;sdl-missing&quot;, outcome: &quot;BackendUnavailable&quot;, opens: 0, closes: 0, quits: 0)" computerName="c7669543e9c7" duration="00:00:00.2281679" startTime="2026-10-07T03:37:07.4790016+00:00" endTime="2026-10-07T03:37:07.4790018+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c139d20c-28f3-4e7d-a3b5-c963920593c3" />
+    <UnitTestResult executionId="3898ca4e-cbd8-4cb6-9971-43eee152fb3b" testId="6616a3c7-05aa-40d0-9162-4aeca84176c8" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup(mode: &quot;sdl-close-error&quot;, outcome: &quot;CleanupUncertain&quot;, opens: 1, closes: 1, quits: 0)" computerName="c7669543e9c7" duration="00:00:00.3332126" startTime="2026-10-07T03:37:07.2497753+00:00" endTime="2026-10-07T03:37:07.2497757+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3898ca4e-cbd8-4cb6-9971-43eee152fb3b" />
+    <UnitTestResult executionId="dd652609-2406-4bff-a3cb-cb9dc6ec62ec" testId="bbdb99c5-7876-8e9c-91ed-6266d2a23feb" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.PlaybackAndCleanupFailures_NoRetryAndNoReplacementWithCleanupDebt" computerName="c7669543e9c7" duration="00:00:00.2695941" startTime="2026-10-07T03:37:08.6185798+00:00" endTime="2026-10-07T03:37:08.6185800+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dd652609-2406-4bff-a3cb-cb9dc6ec62ec" />
+    <UnitTestResult executionId="da76f330-38c5-4acf-8592-a8865af896ed" testId="e45f127f-13bc-a114-ec29-3f48765372a1" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ConcurrentPlaylistStopSettingsAndDispose_DoNotOverlapOriginalMusic" computerName="c7669543e9c7" duration="00:00:00.1829644" startTime="2026-10-07T03:37:15.9297751+00:00" endTime="2026-10-07T03:37:15.9297753+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="da76f330-38c5-4acf-8592-a8865af896ed" />
+    <UnitTestResult executionId="46537b32-f871-4950-b243-046b67132aaf" testId="8d2a2607-762d-7e2a-f9a6-3878ecd95b98" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup(mode: &quot;sdl-no-device&quot;, outcome: &quot;DeviceUnavailable&quot;, opens: 1, closes: 0, quits: 1)" computerName="c7669543e9c7" duration="00:00:00.1711722" startTime="2026-10-07T03:37:07.8236781+00:00" endTime="2026-10-07T03:37:07.8236783+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="46537b32-f871-4950-b243-046b67132aaf" />
+    <UnitTestResult executionId="f4a94ede-09ef-43e3-a7a2-911bcefa8530" testId="f235c9ef-7a37-758b-271a-d133f014bb60" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.OwnedFixtureParentTimeout_StopsAndReapsOnlyOriginalHost" computerName="c7669543e9c7" duration="00:00:00.5083050" startTime="2026-10-07T03:37:16.4435409+00:00" endTime="2026-10-07T03:37:16.4435418+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f4a94ede-09ef-43e3-a7a2-911bcefa8530">
+      <Output>
+        <ErrorInfo>
+          <Message>Timed out original host must be stopped/reaped before cleanup success.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.ConsoleAudioLinuxTests.OwnedFixtureParentTimeout_StopsAndReapsOnlyOriginalHost() in /workspace/native-1553/BookOfEternityClient.Tests/ConsoleAudioLinuxTests.cs:line 10
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7d0d040c-b4b2-4201-bad9-ed906de5989f" testId="fd67b85b-d969-1518-b151-e0e7b9baea04" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ActualEngineRefreshAndExceptionExit_PreviewRestoresVolumeAndFinallyStopsAll" computerName="c7669543e9c7" duration="00:00:00.4416813" startTime="2026-10-07T03:37:09.5149254+00:00" endTime="2026-10-07T03:37:09.5149257+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7d0d040c-b4b2-4201-bad9-ed906de5989f" />
+    <UnitTestResult executionId="b353030e-e2be-4d8c-8162-ef4d31926149" testId="fa038f2b-3dcd-0666-9fdd-e4f66acc2d84" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload(rejectedReload: True)" computerName="c7669543e9c7" duration="00:00:00.0181352" startTime="2026-10-07T03:37:06.7806456+00:00" endTime="2026-10-07T03:37:06.7806458+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b353030e-e2be-4d8c-8162-ef4d31926149">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload(Boolean rejectedReload) in /workspace/native-1553/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs:line 337
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="31f1f88b-e63d-45fb-ad54-941e20eedcd5" testId="8ff6c982-4676-2279-eb04-1a583eb9182a" testName="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.SoundSettingsDisableAndZeroVolume_StopAlreadyActiveCues" computerName="c7669543e9c7" duration="00:00:00.1936653" startTime="2026-10-07T03:37:06.9143759+00:00" endTime="2026-10-07T03:37:06.9143761+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="31f1f88b-e63d-45fb-ad54-941e20eedcd5" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup(mode: &quot;sdl-missing&quot;, outcome: &quot;BackendUnavailable&quot;, opens: 0, closes: 0, quits: 0)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d681ba8d-2099-22b2-2642-f14cf0c7b9eb">
+      <Execution id="c139d20c-28f3-4e7d-a3b5-c963920593c3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlQueueBackend_StreamsPcmAndChangesGainWithoutReopen" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2c7c3a76-db43-2bd7-29db-1fb094977f83">
+      <Execution id="f30ed783-8c85-4f3f-b572-248ec3ac13ac" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="RealSdlQueueBackend_StreamsPcmAndChangesGainWithoutReopen" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup(mode: &quot;sdl-no-device&quot;, outcome: &quot;DeviceUnavailable&quot;, opens: 1, closes: 0, quits: 1)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8d2a2607-762d-7e2a-f9a6-3878ecd95b98">
+      <Execution id="46537b32-f871-4950-b243-046b67132aaf" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.StopTimeout_RetainsOriginalAuthorityAndBlocksReplacementUntilActualCompletion(mode: &quot;dispose-debt&quot;, later: 1, after: &quot;Disposed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c7b1ec2a-e526-4b5b-59d2-3b0c5e396982">
+      <Execution id="618c280c-dd15-4c36-a1f3-73e407eaf010" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="StopTimeout_RetainsOriginalAuthorityAndBlocksReplacementUntilActualCompletion" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.PublicService_SelectsLinuxAndReportsUnavailableWithoutWindowsOrDeviceCalls" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="689d6dc5-35e3-72fc-e070-0f2b2615fef4">
+      <Execution id="12b5beb7-79e4-4cf0-92f3-eb0604312cb7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="PublicService_SelectsLinuxAndReportsUnavailableWithoutWindowsOrDeviceCalls" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ConcurrentPlaylistStopSettingsAndDispose_DoNotOverlapOriginalMusic" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e45f127f-13bc-a114-ec29-3f48765372a1">
+      <Execution id="da76f330-38c5-4acf-8592-a8865af896ed" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="ConcurrentPlaylistStopSettingsAndDispose_DoNotOverlapOriginalMusic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.SoundSettingsDisableAndZeroVolume_StopAlreadyActiveCues" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8ff6c982-4676-2279-eb04-1a583eb9182a">
+      <Execution id="31f1f88b-e63d-45fb-ad54-941e20eedcd5" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="SoundSettingsDisableAndZeroVolume_StopAlreadyActiveCues" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ActualMainMenuLayoutsAndSettings_ShowSafeCapabilityMessage" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7b15251b-cd1b-1cfb-242d-9a0e66d07bf7">
+      <Execution id="5266a1c0-d8c2-414f-9161-52c55be04aa9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="ActualMainMenuLayoutsAndSettings_ShowSafeCapabilityMessage" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.PlaybackAndCleanupFailures_NoRetryAndNoReplacementWithCleanupDebt" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bbdb99c5-7876-8e9c-91ed-6266d2a23feb">
+      <Execution id="dd652609-2406-4bff-a3cb-cb9dc6ec62ec" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="PlaybackAndCleanupFailures_NoRetryAndNoReplacementWithCleanupDebt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload(rejectedReload: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fa038f2b-3dcd-0666-9fdd-e4f66acc2d84">
+      <Execution id="b353030e-e2be-4d8c-8162-ef4d31926149" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ExplicitNativeDummyOnly_RealWavAndPositiveMp3DecodeQueueDrainAndClose" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7bd163e7-c3a7-301e-3ddc-6774203db61a">
+      <Execution id="c8870611-0c2d-44e3-965e-213cd7bd4742" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="ExplicitNativeDummyOnly_RealWavAndPositiveMp3DecodeQueueDrainAndClose" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup(mode: &quot;sdl-queue-error&quot;, outcome: &quot;Error&quot;, opens: 1, closes: 1, quits: 1)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="40ee6e54-751b-f2b8-3e34-908b4535136a">
+      <Execution id="33b59452-ba68-4f2d-8f0e-31a6a6758cfd" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.MissingAssetsAndMutedRequests_NeverCreateOutput" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="63997860-3e23-5b7f-8493-3b707201161f">
+      <Execution id="856c293c-47e2-4c4b-babb-df49260d3e13" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="MissingAssetsAndMutedRequests_NeverCreateOutput" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="14c70289-d99c-25ac-9993-851f2943e8c1">
+      <Execution id="fbd38b51-e3e2-4862-ab8b-b561ae7aad69" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.OriginalMusic_NonrepeatContextVolumeAndMuteDoNotReopenCurrentTrack" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c8f636ca-a550-7559-3b97-1be220550b8b">
+      <Execution id="4aa2c73e-7fab-4ef0-909f-9c52600b75d7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="OriginalMusic_NonrepeatContextVolumeAndMuteDoNotReopenCurrentTrack" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.LastAcceptedEffectsCanBeRestoredWithoutDiscardingOrCertifyingTheDraft" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="33f14184-047d-175a-e7f5-961ab6b6ea41">
+      <Execution id="00b8e848-c59d-4ed4-b7f8-cc708517c7d7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="LastAcceptedEffectsCanBeRestoredWithoutDiscardingOrCertifyingTheDraft" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ActualEngineRefreshAndExceptionExit_PreviewRestoresVolumeAndFinallyStopsAll" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fd67b85b-d969-1518-b151-e0e7b9baea04">
+      <Execution id="7d0d040c-b4b2-4201-bad9-ed906de5989f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="ActualEngineRefreshAndExceptionExit_PreviewRestoresVolumeAndFinallyStopsAll" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup(mode: &quot;sdl-close-error&quot;, outcome: &quot;CleanupUncertain&quot;, opens: 1, closes: 1, quits: 0)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6616a3c7-05aa-40d0-9162-4aeca84176c8">
+      <Execution id="3898ca4e-cbd8-4cb6-9971-43eee152fb3b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.StopTimeout_RetainsOriginalAuthorityAndBlocksReplacementUntilActualCompletion(mode: &quot;debt&quot;, later: 2, after: &quot;Playing&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ecc74de3-5c7c-6f40-b173-a93d6cbfc8ba">
+      <Execution id="42cba841-24f6-457c-b3fc-8b225ae1a256" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="StopTimeout_RetainsOriginalAuthorityAndBlocksReplacementUntilActualCompletion" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.OwnedFixtureParentTimeout_StopsAndReapsOnlyOriginalHost" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f235c9ef-7a37-758b-271a-d133f014bb60">
+      <Execution id="f4a94ede-09ef-43e3-a7a2-911bcefa8530" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="OwnedFixtureParentTimeout_StopsAndReapsOnlyOriginalHost" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleAudioLinuxTests.AllRealCues_StopAllMuteThrottleAndDisposeOwnEverySession" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="546df025-ed8d-b1e0-15e0-3e138642729d">
+      <Execution id="66e9c5f3-93cd-4498-b4e3-9ebad268aa93" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleAudioLinuxTests" name="AllRealCues_StopAllMuteThrottleAndDisposeOwnEverySession" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload(rejectedReload: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2c36ef8e-b9a7-604e-0890-63c451738a8d">
+      <Execution id="c01c825a-db53-457e-a776-7ac4ada15305" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="689d6dc5-35e3-72fc-e070-0f2b2615fef4" executionId="12b5beb7-79e4-4cf0-92f3-eb0604312cb7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="63997860-3e23-5b7f-8493-3b707201161f" executionId="856c293c-47e2-4c4b-babb-df49260d3e13" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="40ee6e54-751b-f2b8-3e34-908b4535136a" executionId="33b59452-ba68-4f2d-8f0e-31a6a6758cfd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="14c70289-d99c-25ac-9993-851f2943e8c1" executionId="fbd38b51-e3e2-4862-ab8b-b561ae7aad69" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2c36ef8e-b9a7-604e-0890-63c451738a8d" executionId="c01c825a-db53-457e-a776-7ac4ada15305" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="546df025-ed8d-b1e0-15e0-3e138642729d" executionId="66e9c5f3-93cd-4498-b4e3-9ebad268aa93" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ecc74de3-5c7c-6f40-b173-a93d6cbfc8ba" executionId="42cba841-24f6-457c-b3fc-8b225ae1a256" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7bd163e7-c3a7-301e-3ddc-6774203db61a" executionId="c8870611-0c2d-44e3-965e-213cd7bd4742" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2c7c3a76-db43-2bd7-29db-1fb094977f83" executionId="f30ed783-8c85-4f3f-b572-248ec3ac13ac" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c8f636ca-a550-7559-3b97-1be220550b8b" executionId="4aa2c73e-7fab-4ef0-909f-9c52600b75d7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c7b1ec2a-e526-4b5b-59d2-3b0c5e396982" executionId="618c280c-dd15-4c36-a1f3-73e407eaf010" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7b15251b-cd1b-1cfb-242d-9a0e66d07bf7" executionId="5266a1c0-d8c2-414f-9161-52c55be04aa9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="33f14184-047d-175a-e7f5-961ab6b6ea41" executionId="00b8e848-c59d-4ed4-b7f8-cc708517c7d7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d681ba8d-2099-22b2-2642-f14cf0c7b9eb" executionId="c139d20c-28f3-4e7d-a3b5-c963920593c3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6616a3c7-05aa-40d0-9162-4aeca84176c8" executionId="3898ca4e-cbd8-4cb6-9971-43eee152fb3b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bbdb99c5-7876-8e9c-91ed-6266d2a23feb" executionId="dd652609-2406-4bff-a3cb-cb9dc6ec62ec" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e45f127f-13bc-a114-ec29-3f48765372a1" executionId="da76f330-38c5-4acf-8592-a8865af896ed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8d2a2607-762d-7e2a-f9a6-3878ecd95b98" executionId="46537b32-f871-4950-b243-046b67132aaf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f235c9ef-7a37-758b-271a-d133f014bb60" executionId="f4a94ede-09ef-43e3-a7a2-911bcefa8530" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fd67b85b-d969-1518-b151-e0e7b9baea04" executionId="7d0d040c-b4b2-4201-bad9-ed906de5989f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fa038f2b-3dcd-0666-9fdd-e4f66acc2d84" executionId="b353030e-e2be-4d8c-8162-ef4d31926149" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8ff6c982-4676-2279-eb04-1a583eb9182a" executionId="31f1f88b-e63d-45fb-ad54-941e20eedcd5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="22" executed="22" passed="18" failed="4" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.35]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.49]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.51]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.79]       System.NullReferenceException : Object reference not set to an instance of an object.
+[xUnit.net 00:00:01.79]       Stack Trace:
+[xUnit.net 00:00:01.79]         /workspace/native-1553/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(400,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.LastAcceptedEffectsCanBeRestoredWithoutDiscardingOrCertifyingTheDraft()
+[xUnit.net 00:00:01.79]         /workspace/native-1553/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(408,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.LastAcceptedEffectsCanBeRestoredWithoutDiscardingOrCertifyingTheDraft()
+[xUnit.net 00:00:01.79]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.81]       System.NullReferenceException : Object reference not set to an instance of an object.
+[xUnit.net 00:00:01.81]       Stack Trace:
+[xUnit.net 00:00:01.81]         /workspace/native-1553/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(337,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload(Boolean rejectedReload)
+[xUnit.net 00:00:01.81]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.83]       System.NullReferenceException : Object reference not set to an instance of an object.
+[xUnit.net 00:00:01.83]       Stack Trace:
+[xUnit.net 00:00:01.83]         /workspace/native-1553/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs(337,0): at BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload(Boolean rejectedReload)
+[xUnit.net 00:00:01.83]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:11.49]       Timed out original host must be stopped/reaped before cleanup success.
+[xUnit.net 00:00:11.49]       Stack Trace:
+[xUnit.net 00:00:11.49]         /workspace/native-1553/BookOfEternityClient.Tests/ConsoleAudioLinuxTests.cs(10,0): at BookOfEternityClient.Tests.ConsoleAudioLinuxTests.OwnedFixtureParentTimeout_StopsAndReapsOnlyOriginalHost()
+[xUnit.net 00:00:11.49]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:11.63]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T03:37:06.7468878+00:00">
+        <Text>[xUnit.net 00:00:01.79]     BookOfEternityClient.Tests.ConsoleSettingsSessionTests.LastAcceptedEffectsCanBeRestoredWithoutDiscardingOrCertifyingTheDraft [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T03:37:06.7622532+00:00">
+        <Text>[xUnit.net 00:00:01.81]     BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload(rejectedReload: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T03:37:06.7826623+00:00">
+        <Text>[xUnit.net 00:00:01.83]     BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload(rejectedReload: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T03:37:16.4463544+00:00">
+        <Text>[xUnit.net 00:00:11.49]     BookOfEternityClient.Tests.ConsoleAudioLinuxTests.OwnedFixtureParentTimeout_StopsAndReapsOnlyOriginalHost [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

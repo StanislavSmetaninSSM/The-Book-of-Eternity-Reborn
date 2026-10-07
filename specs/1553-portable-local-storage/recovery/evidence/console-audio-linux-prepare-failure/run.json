@@ -1,0 +1,15 @@
+{
+  "Run": "prepare-failure",
+  "Source": "d61faa65147dad8676907f413601afbf4994ccb8",
+  "Command": "pwsh -NoProfile scripts/test-csharp.ps1 -Category console-audio-linux,browser-audio-isolation",
+  "Result": "preparationFAIL0 executed; missing fixture namespace",
+  "EvidenceDirectory": "recovery/evidence/console-audio-linux-prepare-failure",
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "ExitCode": 1,
+  "OwnedTreeCleanupSucceeded": true
+}

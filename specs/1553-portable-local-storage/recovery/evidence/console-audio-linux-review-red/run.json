@@ -1,0 +1,15 @@
+{
+  "Run": "review-red",
+  "Source": "29681bdf4c78686b02c57cca62649e63cbd62453",
+  "Command": "pwsh -NoProfile scripts/test-csharp.ps1 -Category console-audio-linux",
+  "Result": "22executed18PASS4causalRED; preview3+parenttimeout1",
+  "EvidenceDirectory": "recovery/evidence/console-audio-linux-review-red",
+  "Tests": {
+    "Total": 22,
+    "Executed": 22,
+    "Passed": 18,
+    "Failed": 4
+  },
+  "ExitCode": 1,
+  "OwnedTreeCleanupSucceeded": true
+}

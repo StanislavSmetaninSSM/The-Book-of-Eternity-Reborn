@@ -1,0 +1,15 @@
+{
+  "Run": "browser-proof-failure",
+  "Source": "b785619a12d962acd326c427114f0911944a2c4c",
+  "Command": "pwsh -NoProfile scripts/test-csharp.ps1 -Category console-audio-linux,browser-audio-isolation",
+  "Result": "executed5:4PASS1fixtureproofFAIL wrong direct config path; actual commit successful",
+  "EvidenceDirectory": "recovery/evidence/console-audio-linux-browser-proof-failure",
+  "Tests": {
+    "Total": 5,
+    "Executed": 5,
+    "Passed": 4,
+    "Failed": 1
+  },
+  "ExitCode": 1,
+  "OwnedTreeCleanupSucceeded": true
+}

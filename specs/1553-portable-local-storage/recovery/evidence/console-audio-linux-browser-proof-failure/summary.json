@@ -1,0 +1,71 @@
+{
+  "Categories": [
+    "console-audio-linux",
+    "browser-audio-isolation"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "b785619a12d962acd326c427114f0911944a2c4c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "browser-audio-isolation",
+      "Seconds": 4.091998,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0530349,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0580972,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0882682,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 37.2564367,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:47.0439601",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 19,
+    "CompletedCases": 5,
+    "UnderfilledDescriptors": [
+      "console-audio-linux-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 5,
+    "Executed": 5,
+    "Passed": 4,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}
