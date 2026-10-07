@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="e55e50c7-2b49-472d-a747-fa4a1b99b11e" name="@c7669543e9c7 2026-10-07 01:18:10" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-07T01:18:10.3816205+00:00" queuing="2026-10-07T01:18:10.3816206+00:00" start="2026-10-07T01:18:07.1413066+00:00" finish="2026-10-07T01:18:10.3878858+00:00" />
+  <TestSettings name="default" id="2181c89c-dfa5-4ebe-97f1-a68832a14e53">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-07_01_18_10" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="5e1f49d6-187b-438a-9ea0-44401e2689bc" testId="3c1079c0-45f0-a08d-8935-d7edcc93b435" testName="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant" computerName="c7669543e9c7" duration="00:00:00.3881504" startTime="2026-10-07T01:18:10.2676951+00:00" endTime="2026-10-07T01:18:10.2677092+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5e1f49d6-187b-438a-9ea0-44401e2689bc">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-daren-standalone-linux-e936d489bd024af88064ae57f0a66682 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3c1079c0-45f0-a08d-8935-d7edcc93b435">
+      <Execution id="5e1f49d6-187b-438a-9ea0-44401e2689bc" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DarenStandaloneLinuxTests" name="RealProfileService_CreateUpgradeFreshReadAndOriginalGrant" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="3c1079c0-45f0-a08d-8935-d7edcc93b435" executionId="5e1f49d6-187b-438a-9ea0-44401e2689bc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.45]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.10]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.14]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.61]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "daren-standalone-linux",
-      "reason": "First causal oracle reaches actual standalone DarenQteRewardProfileService and original store on Linux; no earlier whole cohorts selected",
+      "reason": "Only six new real consumer/no-effect cases; first service oracle already GREEN at ac01f773 and is not repeated without runtime change.",
       "contracts": [
         "T031-DAREN-STANDALONE-LINUX",
         "original fixed client profile/lease and trusted-local publisher"

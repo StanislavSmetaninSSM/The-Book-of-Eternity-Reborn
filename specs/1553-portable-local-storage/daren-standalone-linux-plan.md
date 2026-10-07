@@ -58,3 +58,7 @@ Independent actual Sol6.1/xhigh /root/daren_standalone_design_review focused ame
 ## First causal RED and minimal adapter WIP
 
 At00ce5557b743cb8779923c93ea120b006fa25d00 fresh category daren-standalone-linux executed1/1 FAIL (0skip,0duplicate,complete). Actual RecordCompletionBoundAsync→store line113→EnsureAuthorityFilePublicationSupported threw PlatformNotSupportedException for Daren descriptor-bound create-only publication. Bootstrap/read completed; not a preparation failure. Owned root removed and runner cleanup complete. Hash-pinned first-red artifacts retained. Minimal fixed standalone adapter, default-false private publication option and Linux dispatch now added per reviewed design; runtime GREEN unrun. Windows physical bodies, declared browser dispatch, reward/profile/QTE rules and common B1 format/recovery unchanged. No game operations.
+
+## First GREEN and next6 new consumer cases
+
+Same oracle GREEN1/1 onac01f7733761e74daa258de3528f835963735016, fresh build,0skip/duplicate,complete,rootremoved,runnercleanupcomplete. Real service create/upgrade/fresh-read/one-time grant reached original portable writer. New6 cases added: public console QTE resolver from unbootstrapped root (bounded64 actions), exact store + original QTE rollback2rows, normalization2rows, support/no-op/pre-cancel with absent generation1. First successful oracle excluded from next selection because runtime unchanged; retained evidence and later final category membership restore ownership. These new cases remain unrun WIP. No runtime/gameplay/frontend change.
