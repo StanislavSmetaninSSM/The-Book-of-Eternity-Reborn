@@ -16,9 +16,18 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         var input = new NewGameCancelInput();
         var engine = await CreateOrdinaryCancelledBootstrapAsync(input);
-        const string guardianPath = "game_state/afterlife/guardians.json";
+        const string guardianPath = "game_state/meta/guardians.json";
         var baseline = await _fs.ReadFileBytesAsync(guardianPath);
+        Assert.NotNull(baseline);
+        var library = new SystemGuardianLibraryService(_fs,
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<SystemGuardianLibraryService>.Instance);
+        var presets = await library.GetAvailablePresetsAsync(includeDossier: true);
+        Assert.NotEmpty(presets);
+        await library.WriteAttractionRequestAsync(presets[0]);
         var pending = await _fs.ReadFileBytesAsync(SystemGuardianLibraryService.AttractionRequestPath);
+        Assert.NotNull(pending);
+        Assert.DoesNotContain(await GetPrivateField<ValidationService>(engine, "_validator").ValidateGameStateAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
         var staged = false;
         input.Arm(() =>
         {
