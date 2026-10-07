@@ -309,3 +309,9 @@ checks,5PASS/4FAIL, complete/owned cleanup. Three causal parser failures; one
 new legacy fixture LF-vs-real-CRLF error corrected before GREEN, not a runtime
 defect. [Exact baseline](recovery/evidence/opencode-connected/presentation-red/manifest.json).
 Runtime still9340ff08; no CLI/provider/game startup.
+
+First presentation runtime7472903c:9/9 narrow fresh-build GREEN, complete
+owned cleanup, no CLI/process/provider/game execution. Actual output pump feeds
+the parser and raw forwarding stays byte-identical; default legacy unchanged.
+[GREEN receipt](recovery/evidence/opencode-connected/presentation-green/manifest.json).
+Independent source review pending; no connected witness/automatic Ready claim.
