@@ -394,3 +394,11 @@ supports absolute pipe names; no custom transport/private runtime reflection is
 needed. Subsequent causal cases will bind this typed connection to the original
 AwaitingPaste operation, cancellation/takeover and single submit. Runtime and
 automatic Ready remain unchanged before these REDs.
+
+Connected first baseline c2970f3b executes2/2FAIL: no observer mode exits1
+before pipe connect; mini descriptor is unsupported because legacy requires
+PromptPrefix. [Receipt](recovery/evidence/opencode-connected/external-observation-red/manifest.json).
+Fixture IdleMarker corrected to actual observed BUILD footer before implementation;
+100-column mini does not show model name there. Model configuration unchanged.
+Foreground final evidence included; current parser source/evidence independent
+Sol PASS at9d83cc3b (32GREEN, historic failures not hidden). No model/game request.

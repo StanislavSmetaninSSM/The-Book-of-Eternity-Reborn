@@ -15,7 +15,7 @@ public sealed class GmExternalDraftObservationTests
     {
         await using var h=new GmBridgePromptOperationTests.PromptHostFixture();
         var profile=new {TerminalPresentation="synchronized-mini-v1", DraftObservation="external-editor-v1", DraftDirectory=h.Root,
-            IdleMarker=" BUILD  Ling 3.1 Flash Free  OpenCode Zen",WorkingMarker="esc interrupt",PromptPrefix="",
+            IdleMarker=" BUILD",WorkingMarker="esc interrupt",PromptPrefix="",
             ObservationTimeoutMilliseconds=1000,BlockedMarkers=new[]{"trust","authentication","sign in"}};
         File.WriteAllText(Path.Combine(h.Root,"config.json"),JsonSerializer.Serialize(new {GmCliInputProfile=profile}));
         using var screen=new GmSynchronizedTerminalPresentationTests.ScreenProbe(h.BindingId);
