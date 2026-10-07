@@ -2014,8 +2014,13 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
                      .Distinct(StringComparer.OrdinalIgnoreCase))
         {
             var safeName = CreateSafeBackupFileName(trackedFile);
-            var match = fs.EnumerateFiles(writeLease, $"{safeName}.rollback.*")
+            var candidates = fs.EnumerateFiles(writeLease, $"{safeName}.rollback.*")
                 .Where(path => path.StartsWith($"{Root}/", StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+            if (OperatingSystem.IsLinux())
+                foreach (var candidate in candidates.Where(IsLocalDirectGachaBackup))
+                    RequireCurrentDirectGachaAdoption(fs, writeLease, trackedFile, candidate);
+            var match = candidates
                 .OrderByDescending(GetTransactionTicks)
                 .ThenByDescending(static path => path, StringComparer.OrdinalIgnoreCase)
                 .FirstOrDefault();

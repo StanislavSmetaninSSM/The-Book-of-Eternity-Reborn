@@ -88,3 +88,7 @@ Clean056b181b1/1FAIL pins next causal boundary: actual after-spend StateManager 
 ### First real browser GREEN; adoption RED pending
 
 Clean6663b6ce fresh build1/1PASS [evidence](recovery/evidence/direct-gacha-first-green/manifest.json): real Stage/queue/spend/payload/manifest/authority/history/schema7 cleanup. Add original fresh read/mutation lease + pending inspector/duplicate refusal, real engine capture/validated rollback/scoped cleanup and5authority-context/deletion-debt adoption negatives. Runtime guard still absent; next execute only these new cases, not the unchanged successful first oracle.
+
+### Original adoption causal RED; guard WIP
+
+Cleanb86555d1 fresh build5/5FAIL [evidence](recovery/evidence/direct-gacha-adoption-red/manifest.json); every real browser pull succeeded, then original CreatePreTurnBackup incorrectly returned without refusal for consumed-deletion-debt/unmapped/changed-bytes/changed-request/changed-action. All own roots removed. The consumed case exercised original swallowed cleanup failure and actual terminal manifest/authority/request cleanup. Add Linux-only original Discover guard using existing typed manifest + detached authority/exact hashes + persisted current session/request/turn/action/timestamp. Validate all direct candidates before newest selection; no authority from JSON defaults/name/schema7. Next:5negative GREEN and3positive lifetime cases; full boundary matrix still pending.
