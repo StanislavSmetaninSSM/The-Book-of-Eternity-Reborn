@@ -25,6 +25,18 @@ def read(path,limit=1048576):
 relay_cli.read_bounded=read
 sys.exit(relay_cli.main())
 ''')
+elif mode=='started-metadata-failure':
+ wrapper=own/'started-fault.py'
+ wrapper.write_text('''import sys
+sys.path.insert(0,sys.argv.pop(1))
+import relay_cli
+original=relay_cli.save
+def save(path,value):
+    if path.name=='started.json':raise OSError('Controlled started metadata publication failure')
+    original(path,value)
+relay_cli.save=save
+sys.exit(relay_cli.main())
+''')
 if mode=='guardian-budgets':
     for prefix,limit,expected in [([],30000,0),([],30001,64),(['--live-turn'],300000,0),(['--live-turn'],300001,64),(['--relay-turn'],750000,0),(['--relay-turn'],750001,64)]:
         p=subprocess.run([guardian,*prefix,str(own/('g-'+str(limit)+'.json')),str(limit),'/usr/bin/true','owned-budget-probe'],capture_output=True,timeout=3)
@@ -58,7 +70,7 @@ def until(test,label,seconds=5):
   assert p.poll() is None,(label,p.returncode,bytes(capture))
   assert time.monotonic()<stop,(label,bytes(capture));pump()
 try:
- entry=[str(own/'read-barrier.py'),str(repo/'tools/gm-relay')] if mode=='close-before-snapshot' else [str(relay)]
+ entry=[str(wrapper),str(repo/'tools/gm-relay')] if mode in ['close-before-snapshot','started-metadata-failure'] else [str(relay)]
  p=subprocess.Popen(['/usr/bin/python3',*entry,'--session',str(session),'--queue',str(queue),'--model','inert-transport-no-model'],stdin=slave,stdout=slave,stderr=slave,env=env)
  until(lambda:b'NEUTRAL READY' in capture,'real initial presentation')
  prompt=('real draft Ж🙂 update > \nsecond line '+('x'*9000)).encode()
@@ -94,6 +106,8 @@ try:
    if mode in ['wrong-reply','stale']:assert not execution['Executed'] and not (session/'applied').exists(),execution
    else:
     assert execution['Executed'] and execution['ExitCode']==0,execution
+    if mode=='started-metadata-failure':
+     assert execution['MetadataFailure'] and execution['ChildExited'] and execution['IoDrained'],execution
     os.write(master,b'\r');pump();assert len(list(queue.glob('request-*')))==1 and (session/'applied').read_text()=='once'
    (queue/'close-request.json').write_text('{}');until(lambda:(queue/'closed.json').exists(),'close receipt')
   # A late reply after closure must never execute again.

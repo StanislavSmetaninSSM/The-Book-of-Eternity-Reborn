@@ -1,3 +1,13 @@
+# Reusable relay second source finding — post-start metadata
+
+Sol source review aa5d7b16:changesrequired P1 close/start and P2 preservedstarted
+metadata failure falsely records Executed=false then discards child context.
+Add controlled actualcore started.json publication fault beside close readbarrier;
+intended RED must retain originalguardian cleanup. Minimal correction keeps
+originalchild/request until realexit/I/O and reports metadataerror, neverfalse
+nonexecution or Ready. No new product scope, mainauthority or liveGM. Bothcases
+belong to directly affected narrowtransport category; no fixedbudget change.
+
 # Reusable relay source review close/start finding — causal check next
 
 FirstGREENaa5d7b16:25/25 allfour selected categories, original3main ScopedStop/I/O/

@@ -19,6 +19,7 @@ public sealed class GmRelayTransportTests
     [InlineData("stale")]
     [InlineData("close-held-child")]
     [InlineData("close-before-snapshot")]
+    [InlineData("started-metadata-failure")]
     [InlineData("guardian-budgets")]
     public async Task RealRelay_IsolatedTransportAndClosure(string mode)
     {
