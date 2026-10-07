@@ -154,13 +154,45 @@ restoration before writer handoff; no runtime/fixtures/tests changed by this clo
 
 ## First authorized inert standalone trace — cause not reproduced
 
-Source421d01c6, actual standalone relocated ordinary Bridge/AppContext and mini/editor/current NewGame+initialcancel, exception-onlypostfailure logging, strace6.13. Fixedneutral executable for pre-exec question; no Ready/daemon/input/provider. Complete A1send35 at1791379111.360604, managedclose87 at.360935, nativeA1recv35 at.366256, no shutdownsyscall. Original58c1b462f4fb43c28257ad02eed0c31f fullidentityStoppedACK/record and tracer/controlPTY EOF/termios; guardianECHILD/driver0/emergency0/reaped1/failures0/deadlinefalse, elapsed21.616s. All12artifacts and677actualpackage files sourcepinned. [Trace manifest](recovery/evidence/opencode-live/standalone-inert-trace/manifest.json).
+Executed source `421d01c6`; actual standalone relocated launcher and Bridge,
+mini/editor environment, ordinary NewGame and initial cancellation. Only an
+opt-in exception sink after failure was added. Native and owner behavior stayed
+unchanged. The configured executable was the existing neutral fixture; no Ready
+request, daemon, input gesture or provider was involved.
 
-This healthy execution does not reproduceog5, prove its initiatingcause, qualify a runtime correction, or permit a realCLI retry before causal gate. Tracer scheduling effect retained. Independent Astra feasibility/Solsource PASS; nextcausal observation under read-onlyreview. No historicalUncertain changes. Provider/game turns0.
+| Diagnostic | Release observation | Original stop and cleanup | Cause verdict |
+| --- | --- | --- | --- |
+| bt1, strace6.13, 21.616s | A1 send35 at1791379111.360604; close87 at.360935; native receive35 at.366256; no shutdown syscall | Full original Stopped ACK/record, PTY EOF/termios, guardian ECHILD/driver0/emergency0 | Failure not reproduced; tracing perturbs scheduling |
+| bt2, untraced, 7.069s | Original launch returned; no initiating exception; no syscall trace | Full original Stopped ACK/record, PTY EOF/termios, guardian ECHILD/driver0/emergency0 | Failure not reproduced; no historical cause proof |
 
+The [bt1 manifest](recovery/evidence/opencode-live/standalone-inert-trace/manifest.json)
+retains all12 artifacts and the677-file package manifest. Bridge, tracer and native
+root identities are recorded separately. Initial silent build cancellation and
+Python-cache clean-readback refusal were preparation failures; fresh build succeeded
+in11.77s with11 warnings and0 errors. No runtime diagnostic ran before that build.
 
-## Single untraced contrast — not reproduced; causal gate blocked
+Bt1 was freshly built and is **not byte-identical to og5**: rebuilt Client DLL/PDB
+bytes differ, and one XML file is absent, in addition to the expected Bridge change.
+Client source, native helper and owner behavior did not change. This is not an exact
+og5 deployment qualification. The observed close-before-receive sequence disproves
+unconditional queued-A1 loss only in this successful execution.
 
-Source d3a8630f, exact677bt1runtimefiles/97510857bytes reused withoutrebuild, sameordinary standalone/mini/editor/current NewGame+initialcancel, onlytracerremoved with truthful PID/artifactbookkeeping. Freshbt2root/path/newgameidentities recorded. No Ready/daemon/input/provider. Healthy original71cacfeaa433498b81884cd8abca3c05; elapsed7.069s, originalscopeStoppedACK/fullsameidentityStopped/EOF/termios and guardianECHILD/driver0/emergency0/reaped1/failures0/deadlinefalse. [Nineartifact manifest](recovery/evidence/opencode-live/standalone-inert-untraced/manifest.json).
+## Single untraced contrast — causal gate blocked
 
-No exception occurred in either newinert execution. Cause remainsunproved; no causalRED, lifecyclefix or relatedtestGREEN may be claimed, and no game/liveCLI retry performed. Bothhealthy observations neither explainog5 nor convert itsUncertain. Stopidenticalretries; blocking missingevidence is the initiatingexception/nativefailure from a reproduced originalcomposition. SolsourcePASS/Astra minimalnextobservation approved this singlecomparison; separateevidence review pending. No new grants/auth/privatehome/network/services/gameplaychanges.
+Read-only Astra recommended exactly one comparison without ptrace. Executed driver
+source `d3a8630f` reused all677 bt1 runtime files /97,510,857 bytes without rebuild.
+Fresh root, CWD/XDG/TMP paths and new game/run identities necessarily differ. Only
+the tracer and its bookkeeping were removed. Sol source review passed before both
+runs. [Bt2's nine-artifact manifest](recovery/evidence/opencode-live/standalone-inert-untraced/manifest.json)
+records the full original identity, ACK/Stopped, public outputs and guardian outcome.
+
+Neither execution produced an exception. The initiating cause of og5 remains
+unproved; no causal RED, lifecycle correction, related test GREEN or live game
+qualification exists. Identical retries stop here. The blocking missing evidence
+is the initiating exception/native failure from a reproduced original composition.
+
+Historical Uncertain records remain unchanged. There were no grants, auth/private
+home reads, network/service settings or gameplay changes. Provider requests and
+accepted game turns remain0. Source/evidence reviews cover only the diagnostic
+scope; the actual gameplay task remains open. The exception-enabled diagnostic
+build is available for a future failing observation, without replaying old input.
