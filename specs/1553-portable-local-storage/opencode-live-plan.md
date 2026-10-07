@@ -20,7 +20,7 @@ Codex remains blocked by read-only original state home before model requests;
 its one allowed TERM answer is consumed and its failed Uncertain receipt retained.
 No Codex retry, state/history/auth copy, sqlite redirect or login. Systemd design
 remains deferred. Early-exit source9340ff08 has6/6 bounded Linux GREEN and source
-PASS; independent evidence review pending separately.
+PASS; independent evidence review at d7b76f25 also PASS.
 
 ## Small next slices
 
@@ -76,3 +76,66 @@ guardianECHILD/0emergency confirmed. Current neutral parser/profile refuses this
 presentation; readiness remains false. [Receipt](recovery/evidence/opencode-q1/startup/manifest.json).
 Next independent source/design review examines only actual pinned mini VT and
 composer/working state needed for T042; no repeat startup or fake readiness.
+
+## Connected draft-observation slice (source plan, before implementation)
+
+Pinned OpenCode1.18.35 (`53d1eabb61e21162157817bf677da0a4ad3332e3`) mini keeps
+the actual pasted textarea text, but displays at most six word-wrapped rows.
+The ordinary daemon's full turn message cannot satisfy the legacy prefix/tail
+screen comparison. Standard TUI collapses large pastes and is no smaller route.
+Independent Sol6.1/xhigh feasibility and source consultation recommend the
+standard external-editor read-only witness; model-side file indirection is not
+selected. This changes observation, while the original operation/wire text,
+controller, game contract and sole submit remain unchanged.
+
+Source map: `packages/opencode/src/cli/cmd/run/footer.prompt.tsx:815` synchronizes
+actual `area.plainText`; `runtime.lifecycle.ts:257` invokes the standard editor;
+`packages/tui/src/editor.ts:26` writes full UTF8 into owned TMPDIR, suspends the
+renderer, spawns VISUAL before EDITOR (Unix shell:false), reads after exit0,
+removes the file and resumes. Ctrl+X then e is the pinned standard gesture.
+Normalization strips one final LF/CRLF only from otherwise single-line content;
+affected operations must refuse, rather than claim unchanged restored bytes.
+The observer receives no expected prompt bytes. It only reads the actual
+CLI-created regular bounded temporary file, proves unchanged bytes and exits.
+
+1. **One necessary zero-submit feasibility probe.** Reuse the exact9340ff08 shipped
+   runtime and original M1/guardian, with a new reviewed fixture mode. Keep current
+   unsupported input profile/Ready:false. Configure both child-only VISUAL/EDITOR
+   to the same owned no-space absolute observer executable. Through real `addText`
+   manual takeover, paste one synthetic multiline/Unicode draft, then Ctrl+X/e;
+   never send Enter, prompt a model, answer queries or gates. Observer reads only
+   the argv file beneath the owned TMPDIR (regular/no-follow/max64KiB/strictUTF8),
+   records actual bytes/hash, leaves it unchanged and exits0. Bound startup/draft
+   observation to12seconds, driver25seconds, guardian30seconds, original cleanup
+   attempted once with the latched Running identity. Capture actual suspend/resume
+   VT and editor-file cleanup. This proves a witness mechanism, not Ready or Q2.
+2. **Causal narrow runtime qualification after that receipt.** Preserve legacy
+   prefix profiles. Add deeply frozen optional bounded composer-region and
+   external-editor observation descriptors to the existing profile/controller.
+   A one-use live challenge belongs to the retained original operation/input
+   lifetime; JSON/PID/status never mint authority. Actual full bytes/hash and
+   unchanged-file/exit evidence must be separate from screen evidence; never
+   synthesize Composer(screen) from a file. Require a newer reliable restored
+   mini composer frame, live binding and no manual/cancel/gate before sole Enter.
+   Any failure after paste is DraftUncertain; after submit UnknownOutcome; no replay.
+3. Implement only the pinned observed terminal subset with bounded cells/cursor,
+   geometry and synchronized-frame commit. Unknown sequences/width, incomplete
+   frames, resize, EOF or authority loss deny readiness. Queries remain unanswered;
+   OSC66 probes need explicit semantics. Derive region from actual repaint/footer,
+   not permanent startup row6/8 or a fabricated2J. Placeholder is first-turn-only;
+   BUILD is also busy. Actual gate panels remain refusals; words such as
+   UpdateGuardians in the verified draft must not masquerade as an update gate.
+4. Tests must reach original TerminalScreen/profile/DispatchPromptAsync and real
+   pipe accept loop: actual startup/editor transcripts, exact long/Unicode draft,
+   unchanged/changed/partial/stale/failed observer, normalization, fresh restored
+   frame, manual/cancel/revocation, one submit and unknown/gate refusal. Select only
+   new narrow categories and precisely affected existing consumers via
+   scripts/test-csharp.ps1; structural catalog/discovery. Independent Sol plan,
+   source and evidence review before claiming qualification. Ordinary isolated
+   NewGame and at most2 genuine GM turns remain the next acceptance step.
+
+No new player dependency is selected by the probe's Python test adapter. Packaged
+runtime observation, if qualified, must use existing .NET8/PowerShell7 prerequisites.
+No CLI/gameplay/controller bypass, private session/auth/config read, new grant,
+main profile/model change or systemd setup. Source plan and first probe receive
+their own checkpoint/readback; runtime and new tests are still unimplemented.
