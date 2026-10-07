@@ -603,3 +603,12 @@ Independent driver SOURCE PASS6dffd5e9. Small driver delta stops immediately on
 actualunsupported-shape NotWritten or DraftUncertain (no manual reconstruction),
 while UnknownOutcome may still observe independentgameapplication without input
 qualification. Catalog discovery pending; noactualCLI/provider/game yet.
+
+Driver delta SOURCE PASS54bd84af. Catalog VALID407categories/11139methods/files,
+0test execution; prep cleanup complete. Exact own deployed package678files/
+99035258B at /workspace/og1/play/game_session/_runtime; both actualpublished
+DLLs match freshbuild, prebuilt helper provenance and allfilebytepins retained.
+No second package/TestSupport/client sourcecheckout atplayerstartup. Next actual
+ordinary one-turn experiment under guardian --live-turn300000; one action maximum,
+noReadyoverride/auth/accessanswers. Package/driver source/evidence pins explicit,
+model/provider/game0 before execution.
