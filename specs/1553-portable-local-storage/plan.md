@@ -1,3 +1,9 @@
+# Current production blocker: first original submit, provider domain denial
+
+Fresh og10 at21a2010e/runtime82a6ef70 qualifies original production startup/readiness/daemon/Continue and observes one full-draft original CLI SubmissionObserved. CLI then displays `Forbidden: Domain forbidden` at44.895s; provider successful response/model reception and accepted/applied game turn are not proven (accepted0). Driver misses this error and the163.857s client error; late shutdown230.069s returnsokfalse. Same original durable recordUncertain, request/pending retained; guardianECHILD4reaped0emergency is physical cleanup only. No new attempt, input replay, auth/grant/network change. [Current evidence and limits](opencode-lifecycle-diagnosis.md) / [handoff](opencode-current-live-handoff.md).
+
+The sole default-foreground predicate fix82a6ef70 has causal RED5 (3FAIL/2PASS), fresh GREEN5/5 and independent Sol source/evidence PASS; catalog417/11152 valid with0tests. Systemd design remains deferred and unqualified. Official provider endpoint metadata and current original-stop diagnostic are separate remaining prerequisites; no gameplay/text/model contract changed.
+
 # Current production continuation: actual turn request, paste observation refusal
 
 Fresh deployed og9 atfaf17fd4/runtime9744d191 passes ordinary NewGame/currentbootstrap/readiness/daemon/Continue and creates real player request. Paste returns originalDraftUncertain/observation-timeout; submit/model/accepted0. OriginalscopeStoppedACK/allpeersnormalexit0+EOF/termios/ECHILD0emergency. Next: independently reviewed exacttranscript causalcheck of known SGR39 draftstyle, minimumfix ifconfirmed and narrow GREEN before another freshattempt; no unchangedretry. [Facts/evidence](opencode-lifecycle-diagnosis.md). Existing oldUncertain remains unchanged.
