@@ -109,6 +109,12 @@ internal sealed class DarenRewardProfileFileStore
             return;
         }
 
+        if (OperatingSystem.IsLinux())
+        {
+            await _fs.PublishStandaloneDarenProfileAsync(writeLease, content, cancellationToken);
+            return;
+        }
+
         var destinationEntry = ProbeProfileEntry();
         _fs.EnsureAuthorityFilePublicationSupported(
             destinationEntry,
@@ -193,6 +199,12 @@ internal sealed class DarenRewardProfileFileStore
             return;
         }
 
+        if (OperatingSystem.IsLinux())
+        {
+            _fs.RequireStandaloneDarenProfile(writeLease);
+            return;
+        }
+
         _fs.EnsureAuthorityFilePublicationSupported(
             ProbeProfileEntry(),
             AuthorityName);
@@ -206,6 +218,11 @@ internal sealed class DarenRewardProfileFileStore
         if (writeLease.ExternalPublicationContext is ExplorerLocalTurnRollbackArtifacts.LocalBrowserTransaction)
         {
             await _fs.PublishLocalDarenProfileAsync(writeLease, content);
+            return;
+        }
+        if (OperatingSystem.IsLinux() && writeLease.ExternalPublicationContext == null)
+        {
+            await _fs.PublishStandaloneDarenProfileAsync(writeLease, content);
             return;
         }
         if (content != null)
