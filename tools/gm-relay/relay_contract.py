@@ -59,9 +59,13 @@ def execution_gate(queue):
                 raise RelayGateUnavailable('Queue serialization unavailable') from ex
         yield
     finally:
-        if acquired:
-            fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
-        stream.close()
+        try:
+            if acquired:
+                fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
+        except OSError as ex:
+            raise RelayGateUnavailable('Queue serialization release unconfirmed') from ex
+        finally:
+            stream.close()
         # Never unlink: contenders must retain the same inode for this queue lifetime.
 
 

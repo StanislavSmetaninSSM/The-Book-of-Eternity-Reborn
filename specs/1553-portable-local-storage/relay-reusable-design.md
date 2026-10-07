@@ -114,6 +114,18 @@ script execution or changes to client model/command settings.
 
 ## Completion limits / merge coordination
 
+Source-review refinement after first25/25 GREEN: one stable POSIX queue-local
+lock serializes protocol close publication and the final open-check/snapshot.
+Bound acquisition1s, no unlink/split inode; unavailable/unconfirmed gate refuses
+execution/ACK. It adds no journal or main authority. Snapshot reservation releases
+before Popen; already-authorized child may settle after close. Historical direct
+file close writers retain their evidence without stronger serialization claims;
+new controlled production close uses workerAPI. Actual-core last-witness barrier
+and post-start metadata fault yielded2 causal REDs before correction. After Popen,
+started metadata failure retains active/child until real exit/I/O, records
+MetadataFailure and keeps RELAY ERROR; subsequent unpersisted outcome remains
+unresolved/noACK. No Ready or false nonexecution, no new live model requests.
+
 Successful controlled packet publication/helper completion is not live model
 generation or full game acceptance; accepted r3 remains the existing proof of
 one genuinely generated and applied action. Systemd S2/S3 require an available

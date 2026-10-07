@@ -99,12 +99,23 @@ it. Publication is **not** execution/acceptance. The relay rechecks witnesses,
 takes an immutable executing snapshot and starts only the one fixed child.
 `execution.json` distinguishes refusal from actual consumer exit/I-O; a zero
 exit is still not proof that the game's acceptance/history pipeline accepted a
-turn. Check those game outcomes independently.
+turn. Check those game outcomes independently. If `started.json` publication fails
+after the child was started, the relay keeps that child/request until actual exit
+and I/O. The settled record includes `MetadataFailure`, and the presentation stays
+`RELAY ERROR`; it never reports false nonexecution or restores readiness. Failure
+to persist the subsequent outcome retains an unresolved state without close ACK.
 
 ## Close, errors and original cleanup
 
 Ask the queue to close before cancellation/rollback. `close` requests closure;
-it does not claim ACK. New execution is disabled; a child whose start was already
+it does not claim ACK. API close publication and final open-check/immutable
+execution-snapshot publication serialize through one stable POSIX queue-local
+`.execution.lock`. Its inode remains for the queue lifetime; it is neither a
+journal nor ownership. Acquisition is bounded to one second. Unavailable, timed
+out or unconfirmed serialization refuses execution/ACK (`RelayGateUnavailable`).
+Legacy direct-file close writers are retained without claiming this stronger
+gated ordering; new workers must use the shared API/entrypoint. New execution is
+disabled; a child whose start was already
 linearized must finish and drain stdout/stderr. `read_close` returns `None` until
 `closed.json` confirms ExecutionDisabled + ChildExited + IoDrained, and refuses
 inconsistent ACK. A response racing close may remain inert. The CLI remains alive
