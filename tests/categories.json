@@ -16518,6 +16518,34 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-console-pending-availability",
+      "responsibility": "#1553 T043 actual HasCurrentSession with a genuine deferred trusted-local publication: original participating pipe admission before recovery, exact receipts and scoped retirement. TestSupport host context is component-only.",
+      "excludes": "No deployed bootstrap reproduction, provider/model/turn, broad lifecycle cohort, systemd or native Windows",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs"
+      ],
+      "related": [
+        {
+          "id": "gm-console-runtime-admission",
+          "when": "When changing the existing HasCurrentSession participating boundary, verify original pins and durable Stopping refusal of the actual console wrappers."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmConsoleRuntimeAdmissionTests.ActualHasCurrentSession_DeferredPublicationRetainsOriginalAdmission"
+          ]
+        }
+      ]
     }
   ]
 }

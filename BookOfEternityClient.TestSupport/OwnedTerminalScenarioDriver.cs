@@ -190,6 +190,10 @@ internal static partial class OwnedTerminalScenarioDriver
                 await RunIdleDaemonStopAsync(folder,host!,type,Rpc,result,mode=="production-main-daemon-coordinated-stop");
                 result["Success"]=true;return 0;
             }
+            if(mode=="production-main-console-pending-availability") {
+                await RunPendingAvailabilityAsync(folder,host!,type,Rpc,(IOwnedTerminalSession)originalSession,result);
+                result["Success"]=true;return 0;
+            }
             if(mode=="production-main-console-continue") {
                 await RunActualConsoleContinueAsync(folder,host!,type,Rpc,(IOwnedTerminalSession)originalSession,result);
                 result["Success"]=true;return 0;

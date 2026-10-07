@@ -2,50 +2,18 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-console-newgame-cancel-validation",
-      "reason": "Fresh bootstrap current authorities and confirmed initial cancellation cleanup; actual causal1RED",
+      "category": "gm-console-pending-availability",
+      "reason": "New causal real pending publisher / actual HasCurrentSession scope boundary; component-only host context",
       "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED",
+        "T043-CONTINUE-PENDING-PUBLICATION",
         "T041-RUN-FENCE-F2"
       ]
     },
     {
-      "category": "gm-newgame-cancel-affected-guards",
-      "reason": "Only four exact original baseline/source inference/canonical generation guards directly affected",
+      "category": "gm-console-runtime-admission",
+      "reason": "Directly affected existing availability wrapper and original pin settlement / durable Stopping refusal",
       "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED",
-        "T041-RUN-FENCE-F2"
-      ]
-    },
-    {
-      "category": "gm-daemon-coordinated-stop",
-      "reason": "Original main-first shutdown drains actual participating handshake before separate daemon CtrlC; prior forced admission interruption remains historical Uncertain",
-      "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED",
-        "T041-RUN-FENCE-F2"
-      ]
-    },
-    {
-      "category": "gm-main-helper-live-linux",
-      "reason": "All five directly changed helper entrypoint cases including caught-loss EOF Unresolved; independent review requires negative coverage",
-      "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED",
-        "T041-RUN-FENCE-F2"
-      ]
-    },
-    {
-      "category": "gm-console-player-cancel-authority",
-      "reason": "Independent reviewed actual ordinary cancellation causal positive and two actual initial/player corrupt-backup negatives; ordinary runtime branch remains unchanged until RED",
-      "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED",
-        "T041-RUN-FENCE-F2"
-      ]
-    },
-    {
-      "category": "gm-owned-generation-fault",
-      "reason": "Only repaired stale fixture: actual held main guard refusal plus isolated valid generation fault; old ID remains historical failed, no runtime weakening",
-      "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED",
+        "T043-CONTINUE-PENDING-PUBLICATION",
         "T041-RUN-FENCE-F2"
       ]
     }
