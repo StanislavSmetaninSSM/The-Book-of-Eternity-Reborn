@@ -1,4 +1,4 @@
-Current T043 state: progress-aware og8 passed currentbootstrap/derivedReady/daemonbootstrap, then exactContinue original-owner admission refusal before playerprompt/action. OriginalscopeStoppedACK/allEOF/restoredtermios/ECHILD0emergency. Proposed causal realpublication/HasCurrentSession pre-existence-read check; no runtimefix/model/gameaccepted yet. [Diagnosis](opencode-lifecycle-diagnosis.md).
+Current T043 state: og9 ordinary NewGame/currentbootstrap/readiness/daemon/Continue produced actual request; original paste DraftUncertain before submit, model/accepted0. Component availability scope fix causal RED1/GREEN2 and independent source/evidence PASS are published atfaf17fd4. Original current scoped stop/ACK/allpeerexit0+EOF/termios/ECHILD0emergency; historical Uncertain unchanged. Exact transcript default-foreground hypothesis independently design-reviewed, not yet tested/implemented. New evidence publication currently blocked by four GitHub Internal Server Error refusals; no further runtime/live work until persistence returns. [Handoff](opencode-current-live-handoff.md).
 
 # Tasks: Trusted local storage and cross-platform runtime
 
