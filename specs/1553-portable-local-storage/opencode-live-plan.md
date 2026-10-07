@@ -1,19 +1,4 @@
-## Current access check after owner approval — blocked (2026-10-07)
-
-From accepted5f663533, the owner authorized opencode.ai and the parent reported
-publication of that host-only configuration. One credential-free/no-model-prompt
-GET attempt to the documented Zen endpoint at19:21:15UTC failed before TLS/HTTP
-provider contact: proxy `HTTP/1.1 403 Forbidden`, curl56/CONNECT tunnel failed,
-curl HTTP status000. Header declares16 body bytes, but curl did not capture the
-CONNECT body; **no exact Domain forbidden text or provider status is established**.
-Access is not confirmed in this workspace. A fresh workspace from the published
-configuration may be needed; no bypass or second network attempt here.
-CLI/NewGame/provider/accepted turns0; runtime/tests, historical pending/Uncertain,
-profile/model and auth/network/security settings unchanged. Existing offline
-14/14 qualification remains accepted; no repeated tests. This is current access
-failure evidence, not a game/runtime failure or new login requirement.
-[Safe request/result receipt](recovery/evidence/opencode-live/access-after-approval/receipt.json).
-Independent Sol metadata review and ordinary checkpoint/readback close separately.
+Current access boundary after accepted5f663533: owner approval and parent configuration publication are reported, but this workspace's sole no-model GET attempt failed at proxy CONNECT403/curl56 before provider contact. Exact Domain forbidden body was not captured. CLI/NewGame/model/accepted turns0; no retries or changes. [Current handoff](opencode-current-live-handoff.md) / [safe receipt](recovery/evidence/opencode-live/access-after-approval/receipt.json). A fresh workspace from the published configuration may be needed.
 
 ## T043-DRIVER-PROVIDER-FAILURE — controlled qualification (2026-10-07)
 

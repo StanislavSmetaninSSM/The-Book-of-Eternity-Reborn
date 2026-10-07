@@ -1,21 +1,6 @@
-## Current access check after owner approval — blocked (2026-10-07)
+Current access boundary after accepted5f663533: owner approval and parent configuration publication are reported, but this workspace's sole no-model GET attempt failed at proxy CONNECT403/curl56 before provider contact. Exact Domain forbidden body was not captured. CLI/NewGame/model/accepted turns0; no retries or changes. [Current handoff](opencode-current-live-handoff.md) / [safe receipt](recovery/evidence/opencode-live/access-after-approval/receipt.json). A fresh workspace from the published configuration may be needed.
 
-From accepted5f663533, the owner authorized opencode.ai and the parent reported
-publication of that host-only configuration. One credential-free/no-model-prompt
-GET attempt to the documented Zen endpoint at19:21:15UTC failed before TLS/HTTP
-provider contact: proxy `HTTP/1.1 403 Forbidden`, curl56/CONNECT tunnel failed,
-curl HTTP status000. Header declares16 body bytes, but curl did not capture the
-CONNECT body; **no exact Domain forbidden text or provider status is established**.
-Access is not confirmed in this workspace. A fresh workspace from the published
-configuration may be needed; no bypass or second network attempt here.
-CLI/NewGame/provider/accepted turns0; runtime/tests, historical pending/Uncertain,
-profile/model and auth/network/security settings unchanged. Existing offline
-14/14 qualification remains accepted; no repeated tests. This is current access
-failure evidence, not a game/runtime failure or new login requirement.
-[Safe request/result receipt](recovery/evidence/opencode-live/access-after-approval/receipt.json).
-Independent Sol metadata review and ordinary checkpoint/readback close separately.
-
-Current T043 state: bounded driver correction source0a3d963f has causal REDs and fresh14/14 controlled GREEN, independent Sol source/evidence/metadata PASS; catalog419/11156 valid0executed. Actual controlled ordinary NewGame/client/daemon/Bridge cancellation reaches original Stopped ACK/allpeer I/O. Separate held original pin proves drain timeout before lifecycle acquisition and retained logical Uncertain despite physical cleanup. Production runtime unchanged; historical og10 Uncertain/request/pending unchanged; exact og10 client cause unproven. No provider retry/network/auth change, new provider calls0/acceptedGMturns0. Parent's opencode.ai approval pending; ordinary publication/readback recovered765be16f; final carrier restore closes separately. [Handoff](opencode-current-live-handoff.md).
+Current T043 state: bounded driver correction source0a3d963f has causal REDs and fresh14/14 controlled GREEN, independent Sol source/evidence/metadata PASS; catalog419/11156 valid0executed. Actual controlled ordinary NewGame/client/daemon/Bridge cancellation reaches original Stopped ACK/allpeer I/O. Separate held original pin proves drain timeout before lifecycle acquisition and retained logical Uncertain despite physical cleanup. Production runtime unchanged; historical og10 Uncertain/request/pending unchanged; exact og10 client cause unproven. No provider retry/network/auth change, new provider calls0/acceptedGMturns0. Owner approval/config publication reported; current CONNECT check blocked403. Accepted5f663533 has completed publication/restore; new access receipt closes separately. [Handoff](opencode-current-live-handoff.md).
 
 # Tasks: Trusted local storage and cross-platform runtime
 
