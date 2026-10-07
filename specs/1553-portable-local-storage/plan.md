@@ -1,3 +1,15 @@
+# Reusable relay implementation WIP before GREEN
+
+From published causal RED7725eae: one shared tools/gm-relay transport/fixed helper,
+small frozen worker contract and credential-free inspect/answer/close entrypoint,
+exact historical profile and developer installation/worker/cleanup documentation.
+Legacy fixtures forward; atomic no-overwrite response/reply and own-temp cleanup;
+partial publication remains unresolved. Confirmed LF->CRLF display correction only;
+immutable prompt bytes and original parser/admission/owner remain unchanged.
+No new provider/model requests, S2/S3 or public backend activation. Design actual
+Sol6.1/xhigh PASS; GREEN/source/evidence/metadata still pending. Selection remains
+two new categories plus directly changed transport/repair; no extra cohorts.
+
 # Reusable relay causal baseline established
 
 Source2feb7272 main3/3causalFAIL: two originalSubmissionObserved then missing

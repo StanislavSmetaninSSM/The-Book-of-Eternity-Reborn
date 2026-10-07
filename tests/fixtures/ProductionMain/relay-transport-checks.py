@@ -40,7 +40,7 @@ try:
  until(lambda:b'NEUTRAL READY' in capture,'real initial presentation')
  prompt=('real draft Ж🙂 update > \nsecond line '+('x'*9000)).encode()
  os.write(master,b'\x1b[200~'+prompt+b'\x1b[201~')
- until(lambda:prompt in capture,'exact pasted view');assert not list(queue.glob('request-*')),'Paste alone submitted'
+ until(lambda:prompt.replace(b'\n',b'\r\n') in capture,'exact pasted view');assert not list(queue.glob('request-*')),'Paste alone submitted'
  os.write(master,b'\r');until(lambda:bool(list(queue.glob('request-*/request.json'))),'actual submit')
  q=next(queue.glob('request-*'));req=json.loads((q/'request.json').read_text());assert (q/'prompt.txt').read_bytes()==prompt
  assert req['PromptSHA256']==hashlib.sha256(prompt).hexdigest() and req['TurnIdentity']==turn

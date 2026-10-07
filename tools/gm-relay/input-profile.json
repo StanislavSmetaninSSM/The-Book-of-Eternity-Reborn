@@ -1,0 +1,7 @@
+{
+  "IdleMarker": "NEUTRAL READY",
+  "PromptPrefix": "RELAY> ",
+  "WorkingMarker": "NEUTRAL WORKING",
+  "BlockedMarkers": ["RELAY ERROR"],
+  "ObservationTimeoutMilliseconds": 15000
+}
