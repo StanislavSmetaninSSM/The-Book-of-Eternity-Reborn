@@ -919,3 +919,16 @@ a stale fixture premise, not causalnewruntimefailure or qualified generation
 negative. Preserve exactID/result; reviewer deciding a truthful own generation
 fault plus actualheldClear refusal with unconditional awaited fixture release.
 No runtime/fence weakening. Exact8artifacts archived player-cancel-green-affected-gap.
+
+759c1618 instrumented daemon1FAIL with actual originalUncertain/ECHILD0emergency:
+trace consumed its cap on preparation before the active failingpin, so actual
+close cause INCONCLUSIVE. Original/prologue/instrumented/helper hashes retained;
+24 owned artifacts include trace. The old trace reached65657bytes: pre-append
+length check allowed one line beyond64KiB. Correct exactbytecap and arm only on
+the existing owner stop-request marker after observedActive; no budget increase,
+no runtime change. Independent Sol approved same diagnostic source beforefirst
+run; revised narrower traffic gate needed to observe cause, not an unchanged
+retry. Old generation fixture revised per independent Sol DESIGN PASS into one
+renamed ExternalGenerationChange test: prove heldClear refusal/unchangedbytes,
+fault only own validgeneration+sentinel, always release+observe originalTask,
+require SessionReplaced before oldwrite. Historic oldID remains failed.

@@ -23,10 +23,13 @@ public sealed class SessionOperationContextTests : IDisposable
     }
 
     [Fact]
-    public async Task BoundWriter_ClearRotatesGeneration_ThrowsBeforeReplacementMutation()
+    public async Task BoundWriter_ExternalGenerationChange_ThrowsBeforeReplacementMutation()
     {
         const string sentinelPath = "game_state/world/replacement.json";
         var generation = await GetOrCreateSessionGenerationAsync(_fs);
+        await _fs.WriteFileAtomicAsync(sentinelPath, "{\"owner\":\"before\"}");
+        var originalGeneration = File.ReadAllBytes(_fs.SessionGenerationPath);
+        var originalSentinel = File.ReadAllBytes(_fs.ResolvePath(sentinelPath));
         var operationStarted = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously);
         var releaseOldOperation = new TaskCompletionSource(
@@ -42,12 +45,28 @@ public sealed class SessionOperationContextTests : IDisposable
                 await _fs.WriteFileAtomicAsync(sentinelPath, "{\"owner\":\"old\"}");
             }));
 
-        await operationStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        await _fs.ClearGameStateAsync();
-        await _fs.WriteFileAtomicAsync(sentinelPath, "{\"owner\":\"replacement\"}");
-        releaseOldOperation.TrySetResult();
-
-        await Assert.ThrowsAsync<SessionReplacedException>(() => oldOperation);
+        Exception? failure = null;
+        try
+        {
+            await operationStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            // Original bound work retains the main quiescent guard. A legitimate
+            // replacement cannot cross it, so the old fixture's Clear premise
+            // no longer describes the accepted lifecycle.
+            await Assert.ThrowsAsync<IOException>(() => _fs.ClearGameStateAsync());
+            Assert.Equal(originalGeneration, File.ReadAllBytes(_fs.SessionGenerationPath));
+            Assert.Equal(originalSentinel, File.ReadAllBytes(_fs.ResolvePath(sentinelPath)));
+            // Explicit fault injection in this owned fixture only, not an admitted
+            // replacement API or protection from the player.
+            File.WriteAllText(_fs.SessionGenerationPath,
+                System.Text.Json.JsonSerializer.Serialize(new { schemaVersion = 1, generationId = Guid.NewGuid().ToString("N") }));
+            File.WriteAllText(_fs.ResolvePath(sentinelPath), "{\"owner\":\"replacement\"}");
+        }
+        finally
+        {
+            releaseOldOperation.TrySetResult();
+            failure = await Record.ExceptionAsync(() => oldOperation).WaitAsync(TimeSpan.FromSeconds(5));
+        }
+        Assert.IsType<SessionReplacedException>(failure);
         Assert.Equal(
             "{\"owner\":\"replacement\"}",
             await _fs.ReadFileAsync(sentinelPath));

@@ -40,6 +40,14 @@
         "T043-OPENCODE-LIVE-BOUNDED",
         "T041-RUN-FENCE-F2"
       ]
+    },
+    {
+      "category": "gm-owned-generation-fault",
+      "reason": "Only repaired stale fixture: actual held main guard refusal plus isolated valid generation fault; old ID remains historical failed, no runtime weakening",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED",
+        "T041-RUN-FENCE-F2"
+      ]
     }
   ]
 }

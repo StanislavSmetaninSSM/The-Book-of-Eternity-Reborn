@@ -12841,7 +12841,7 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ClearRotatesGeneration_ThrowsBeforeReplacementMutation",
+            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ExternalGenerationChange_ThrowsBeforeReplacementMutation",
             "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_FenceAppliesAcrossFileSystemManagerInstancesForSameRoot",
             "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_LeafSwallowsWriteFailure_OuterBoundaryStillThrows",
             "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ReplacementWithoutLaterWrite_FinalCheckStillThrows",
@@ -12910,7 +12910,7 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_CurrentGeneration_UsesOrdinaryCanonicalWriter",
-            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ClearRotatesGeneration_ThrowsBeforeReplacementMutation",
+            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ExternalGenerationChange_ThrowsBeforeReplacementMutation",
             "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_FenceAppliesAcrossFileSystemManagerInstancesForSameRoot",
             "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_LeafSwallowsWriteFailure_OuterBoundaryStillThrows",
             "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ReplacementWithoutLaterWrite_FinalCheckStillThrows",
@@ -16436,7 +16436,7 @@
             "BookOfEternityClient.Tests.GameEngineSourceGuardTests.NewGameBootstrap_MustCreateGuardianProjectRollbackBaselineBeforeInitialDispatch",
             "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingTurnSnapshotCleanup_MustNotBypassCanonicalSessionFence",
             "BookOfEternityClient.Tests.ValidationSourceGuardTests.ActorMaterializationAuthority_MustNotUseProseOrGenreKeywordInference",
-            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ClearRotatesGeneration_ThrowsBeforeReplacementMutation"
+            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ExternalGenerationChange_ThrowsBeforeReplacementMutation"
           ]
         },
         {
@@ -16467,6 +16467,29 @@
           "tests": [
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OrdinaryPlayerCancel_RealStagingRetiresOnlyConsumedSnapshot",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualCancellation_RestoreFailurePreservesPendingAuthorityAndEvidence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-owned-generation-fault",
+      "responsibility": "#1553 T043 actual bound main-quiescent Clear refusal and controlled own generation fault rejection before old write",
+      "excludes": "Other legacy fixture assumptions and unchanged sourceguards",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SessionOperationContextTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ExternalGenerationChange_ThrowsBeforeReplacementMutation"
           ]
         }
       ]
