@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "browser-direct-gacha-linux",
-      "responsibility": "#1553 T031 actual Linux browser direct gacha + long-lived exact pre-spend backup, original queue/authority/turn lifetime and exact adoption refusal. Known original publication rollback and typed closing outcomes.",
+      "responsibility": "#1553 T031 actual Linux browser direct gacha + long-lived exact pre-spend backup, original queue/authority/turn lifetime and exact adoption refusal. Known original publication rollback and typed closing outcomes. Qualified exact raw authority and main/worker/generation/UI/debt/refusal boundaries.",
       "excludes": "No stub browser/Stage, gameplay odds/rewards/currency/GM text changes, live browser/provider/real saves, standalone Daren, Windows or whole-game qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts",
@@ -25,14 +25,18 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_*",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_*",
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence",
-            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry"
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry",
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage",
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes",
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.Actual*",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_*"
           ]
         }
       ]
     },
     {
       "id": "browser-direct-gacha-linux-boundaries",
-      "responsibility": "#1553 T031 actual Linux direct gacha fault/admission and original turn adoption exact pending authority; rollback/Uncertain/committed cleanup debt, main/worker/generation/UI conjunction.",
+      "responsibility": "#1553 T031 interrupted real Stage B1 authenticated scratch/storage recovery preserves original unreleased typed UI lease; two exact cases.",
       "excludes": "No stub browser/Stage, gameplay odds/rewards/currency/GM text changes, live browser/provider/real saves, standalone Daren, Windows or whole-game qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts",
@@ -50,11 +54,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover",
-            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage",
-            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes",
-            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.Actual*",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_*"
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover"
           ]
         }
       ]

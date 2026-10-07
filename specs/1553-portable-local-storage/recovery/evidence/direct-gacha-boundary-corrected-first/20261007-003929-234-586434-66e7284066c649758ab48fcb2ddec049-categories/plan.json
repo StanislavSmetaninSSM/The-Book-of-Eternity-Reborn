@@ -1,0 +1,66 @@
+{
+  "Categories": [
+    "browser-direct-gacha-linux-boundaries"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "52417c86d66d80397a856e7f62b4cec833b30e2d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 60.7526879,
+  "Descriptors": [
+    {
+      "Name": "browser-direct-gacha-linux-boundaries-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "browser-direct-gacha-linux-boundaries",
+      "Categories": [
+        "browser-direct-gacha-linux-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserColdMain_RefusesBeforeSideEffects|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserOriginalPreparedWorker_RefusesBeforeSideEffects|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserRevokedGeneration_AfterQueuePublicationRetainsUncertainEvidence|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserUiGuard_OriginalLeaseOrRefusal|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualStageCommittedPublisherDebt_SettlesWithoutUndoBeforeQueue|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 22,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserColdMain_RefusesBeforeSideEffects",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserOriginalPreparedWorker_RefusesBeforeSideEffects",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserRevokedGeneration_AfterQueuePublicationRetainsUncertainEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserUiGuard_OriginalLeaseOrRefusal",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualStageCommittedPublisherDebt_SettlesWithoutUndoBeforeQueue",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity",
+          "Cases": 8
+        }
+      ]
+    }
+  ]
+}

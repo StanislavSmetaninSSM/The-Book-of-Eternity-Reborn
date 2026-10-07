@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="8412bd98-3019-4cc0-b012-50f61def26fa" name="@c7669543e9c7 2026-10-07 00:40:35" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-07T00:40:35.4280128+00:00" queuing="2026-10-07T00:40:35.4280128+00:00" start="2026-10-07T00:40:31.1714436+00:00" finish="2026-10-07T00:40:43.8437486+00:00" />
+  <TestSettings name="default" id="7c8c8c68-7c07-44ff-9f7f-299426e511a8">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-07_00_40_35" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="b76f6e7a-c1b7-4d21-a9ae-e23e38d6de6f" testId="a94bb284-0305-2553-99ce-92f0ad0a28d6" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;absent&quot;)" computerName="c7669543e9c7" duration="00:00:00.6253087" startTime="2026-10-07T00:40:39.9075034+00:00" endTime="2026-10-07T00:40:39.9075047+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b76f6e7a-c1b7-4d21-a9ae-e23e38d6de6f">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-9edc4331fb7249edb105a3b3e746175a rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0df061c7-84e8-4abf-9258-18d34a7ac28f" testId="b3051b30-b579-4a32-0a0b-a68c0b5d7dbf" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;turnNumber&quot;)" computerName="c7669543e9c7" duration="00:00:00.5056998" startTime="2026-10-07T00:40:39.2814969+00:00" endTime="2026-10-07T00:40:39.2814971+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0df061c7-84e8-4abf-9258-18d34a7ac28f">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-8212654c47e04d54a8e9177c877627b9 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="58db9f02-32c7-4dac-b737-a0dfff6ebdaf" testId="973b1ccd-f1fb-2a32-a7b0-c63e19115cb3" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserOriginalPreparedWorker_RefusesBeforeSideEffects" computerName="c7669543e9c7" duration="00:00:00.1501319" startTime="2026-10-07T00:40:37.6943647+00:00" endTime="2026-10-07T00:40:37.6943649+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="58db9f02-32c7-4dac-b737-a0dfff6ebdaf">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-47e6e95dc2094ee58646c07754c102a4 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0aa75272-cf0b-4fd3-b733-0f2edd0e66be" testId="80f1e9b5-986e-76cd-b073-e036891801d8" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserRevokedGeneration_AfterQueuePublicationRetainsUncertainEvidence" computerName="c7669543e9c7" duration="00:00:00.3450162" startTime="2026-10-07T00:40:38.0370882+00:00" endTime="2026-10-07T00:40:38.0370883+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0aa75272-cf0b-4fd3-b733-0f2edd0e66be">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-d8c4afa3fae34cbf9c3a8b0a65f21fc0 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b6706518-f1f5-4c91-8082-3c723947bbe2" testId="fbcc83ec-3e1d-1a00-92ec-d850d2ba62b4" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover(published: True)" computerName="c7669543e9c7" duration="00:00:00.3071240" startTime="2026-10-07T00:40:35.1485273+00:00" endTime="2026-10-07T00:40:35.1485275+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b6706518-f1f5-4c91-8082-3c723947bbe2">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-36e27872f480440181a5efe875ea82ac rootRemoved=True</StdOut>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.AssertNoTurnOrRollback(FileSystemManager files) in /workspace/native-1553/BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.cs:line 201
+   at BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover(Boolean published) in /workspace/native-1553/BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.cs:line 90
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ae2f3e5d-9de3-4b4c-8c1b-b2bd7fa2949a" testId="107bf627-f049-e44c-33e9-d6b5b47b2672" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualStageCommittedPublisherDebt_SettlesWithoutUndoBeforeQueue" computerName="c7669543e9c7" duration="00:00:00.3958907" startTime="2026-10-07T00:40:38.7698506+00:00" endTime="2026-10-07T00:40:38.7698508+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ae2f3e5d-9de3-4b4c-8c1b-b2bd7fa2949a">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-d9088523fc954ec991f7c95ca192ce9a rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="fd3643f9-a627-47e2-9d67-01e4ce272825" testId="7e0b4269-030f-5406-e47d-a6e21b6c46a9" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes(kind: &quot;scratch&quot;)" computerName="c7669543e9c7" duration="00:00:00.3856628" startTime="2026-10-07T00:40:37.1650910+00:00" endTime="2026-10-07T00:40:37.1650912+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fd3643f9-a627-47e2-9d67-01e4ce272825">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-c1a98e67b8aa4564b1f3bf598c2370b3 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c92bea3a-91cf-4bff-9472-e120d3428a1f" testId="21be27fa-474e-0bc6-81c0-b17506f1b7d4" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserUiGuard_OriginalLeaseOrRefusal(mode: &quot;other-owner&quot;)" computerName="c7669543e9c7" duration="00:00:00.1151291" startTime="2026-10-07T00:40:36.0204593+00:00" endTime="2026-10-07T00:40:36.0204595+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c92bea3a-91cf-4bff-9472-e120d3428a1f">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-e32c7681c867481c897a2e1453322b74 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="88e6efa6-af91-4e60-8270-903b7efb4565" testId="80ba7e2e-de15-585f-c0f4-577963c380fb" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserColdMain_RefusesBeforeSideEffects(state: 2)" computerName="c7669543e9c7" duration="00:00:00.1974977" startTime="2026-10-07T00:40:38.2428133+00:00" endTime="2026-10-07T00:40:38.2428135+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="88e6efa6-af91-4e60-8270-903b7efb4565">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-157535f9ee0943418a60056e601ce8e2 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4926bd80-5883-46ee-8a47-25fec70aa8fe" testId="54ecd1ee-5f33-022e-759f-0144d016b92f" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserColdMain_RefusesBeforeSideEffects(state: 3)" computerName="c7669543e9c7" duration="00:00:00.1299523" startTime="2026-10-07T00:40:38.3733223+00:00" endTime="2026-10-07T00:40:38.3733225+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4926bd80-5883-46ee-8a47-25fec70aa8fe">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-aa9828f7f7644c378e8a51a26a97e9cc rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="635f147b-01a5-486f-9418-0faa555b3e78" testId="5bff032d-9616-101f-3d2c-82df402b3939" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;changed-turn&quot;)" computerName="c7669543e9c7" duration="00:00:00.6282891" startTime="2026-10-07T00:40:41.9151947+00:00" endTime="2026-10-07T00:40:41.9151950+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="635f147b-01a5-486f-9418-0faa555b3e78">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-cb8f32eadea6438ab20336b323d04af7 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="21a95b1f-2fe2-4a31-ad7b-99d232614e65" testId="05c334dd-7bcf-5592-7768-6e1dd8440cd1" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage(afterManifest: True)" computerName="c7669543e9c7" duration="00:00:00.3813039" startTime="2026-10-07T00:40:36.4025568+00:00" endTime="2026-10-07T00:40:36.4025570+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="21a95b1f-2fe2-4a31-ad7b-99d232614e65">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-6dc35a3d7acb40b494fee20d2b810c4d rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3dbf2897-3375-4339-ac94-2e5fd199f353" testId="1fded2ec-2dc4-c4f5-189a-5916650cd9f6" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserUiGuard_OriginalLeaseOrRefusal(mode: &quot;stale-token&quot;)" computerName="c7669543e9c7" duration="00:00:00.1119605" startTime="2026-10-07T00:40:35.9044527+00:00" endTime="2026-10-07T00:40:35.9044528+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3dbf2897-3375-4339-ac94-2e5fd199f353">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-e22ae574322d43569bad32332fc8fc7c rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="53b88bce-658d-487c-8eaf-4946d3c884b9" testId="b0476580-204d-804c-d45e-a4c3f9b015fe" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover(published: False)" computerName="c7669543e9c7" duration="00:00:00.9904368" startTime="2026-10-07T00:40:34.8430386+00:00" endTime="2026-10-07T00:40:34.8430534+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="53b88bce-658d-487c-8eaf-4946d3c884b9">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-4b5528fe64744efbbeb42cb41e8b40f2 rootRemoved=True</StdOut>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.AssertNoTurnOrRollback(FileSystemManager files) in /workspace/native-1553/BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.cs:line 201
+   at BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover(Boolean published) in /workspace/native-1553/BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.cs:line 90
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="86bfdcd3-d151-499b-9784-bb586a2751e0" testId="c915952b-3165-1473-c656-06a38d4e0873" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;timestamp&quot;)" computerName="c7669543e9c7" duration="00:00:00.6242955" startTime="2026-10-07T00:40:42.5402726+00:00" endTime="2026-10-07T00:40:42.5402728+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="86bfdcd3-d151-499b-9784-bb586a2751e0">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-f7605592fe1e406290ce79ceaada78b2 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f377c213-ef5e-4ec2-8175-2f1de3df4be8" testId="5d3002c0-9b11-a402-aac9-6e7a36c1b76e" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage(afterManifest: False)" computerName="c7669543e9c7" duration="00:00:00.3755632" startTime="2026-10-07T00:40:36.7787390+00:00" endTime="2026-10-07T00:40:36.7787392+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f377c213-ef5e-4ec2-8175-2f1de3df4be8">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-d34dfb3e9c9547cd816daa118ae187ee rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="afd18c03-254f-4960-8b52-41a844430e68" testId="de3c6512-bd05-3557-0629-5d013170fd69" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;changed-timestamp&quot;)" computerName="c7669543e9c7" duration="00:00:00.6252364" startTime="2026-10-07T00:40:43.7673234+00:00" endTime="2026-10-07T00:40:43.7673236+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="afd18c03-254f-4960-8b52-41a844430e68">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-2ad7efe4087c434e97668d33c263e328 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3d02de33-96ea-4e4b-8e8e-7905cc025b25" testId="e02d9f78-e68e-9047-3b57-8c99df4f6ca3" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes(kind: &quot;backup&quot;)" computerName="c7669543e9c7" duration="00:00:00.3747441" startTime="2026-10-07T00:40:37.5406882+00:00" endTime="2026-10-07T00:40:37.5406884+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3d02de33-96ea-4e4b-8e8e-7905cc025b25">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-aeaffc9839694db4a9ebc6faed5415f0 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6a2cb3ca-a889-42b4-9b3a-2fdf1b8cc172" testId="06199588-211c-e764-fb53-16a7126ac1a4" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;changed-session&quot;)" computerName="c7669543e9c7" duration="00:00:00.6006810" startTime="2026-10-07T00:40:43.1424370+00:00" endTime="2026-10-07T00:40:43.1424372+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6a2cb3ca-a889-42b4-9b3a-2fdf1b8cc172">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-8b6cf7bed85e4e7bada4113007d21fa4 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="535b692c-91b4-4df3-83cf-ad37c778c7cf" testId="86528e03-ca07-4fb4-f57c-50d6be5d506b" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;sessionId&quot;)" computerName="c7669543e9c7" duration="00:00:00.6923091" startTime="2026-10-07T00:40:41.2864602+00:00" endTime="2026-10-07T00:40:41.2864604+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="535b692c-91b4-4df3-83cf-ad37c778c7cf">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-3e57b4d9ee7f4b27a7a4be2de8b068a7 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3144c29b-c9fa-42cc-b3a8-2e7b5ea8e75e" testId="eb7e300d-3b92-eb79-dce7-aa53c86a79cb" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;requestId&quot;)" computerName="c7669543e9c7" duration="00:00:00.6850851" startTime="2026-10-07T00:40:40.5932905+00:00" endTime="2026-10-07T00:40:40.5932907+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3144c29b-c9fa-42cc-b3a8-2e7b5ea8e75e">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-dec539abd1ee4d68b99407ceaef16cc7 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="43337bb6-63da-4e21-b19d-0d7ef2753109" testId="5d038bd4-3d6e-d593-285c-21c57ebc8222" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserUiGuard_OriginalLeaseOrRefusal(mode: &quot;original&quot;)" computerName="c7669543e9c7" duration="00:00:00.6417280" startTime="2026-10-07T00:40:35.7926837+00:00" endTime="2026-10-07T00:40:35.7926839+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="43337bb6-63da-4e21-b19d-0d7ef2753109">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-fce31f48b2d945b59b47320babbc7b08 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserUiGuard_OriginalLeaseOrRefusal(mode: &quot;other-owner&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="21be27fa-474e-0bc6-81c0-b17506f1b7d4">
+      <Execution id="c92bea3a-91cf-4bff-9472-e120d3428a1f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests" name="ActualBrowserUiGuard_OriginalLeaseOrRefusal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;changed-timestamp&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="de3c6512-bd05-3557-0629-5d013170fd69">
+      <Execution id="afd18c03-254f-4960-8b52-41a844430e68" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes(kind: &quot;backup&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e02d9f78-e68e-9047-3b57-8c99df4f6ca3">
+      <Execution id="3d02de33-96ea-4e4b-8e8e-7905cc025b25" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests" name="RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;sessionId&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="86528e03-ca07-4fb4-f57c-50d6be5d506b">
+      <Execution id="535b692c-91b4-4df3-83cf-ad37c778c7cf" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserRevokedGeneration_AfterQueuePublicationRetainsUncertainEvidence" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="80f1e9b5-986e-76cd-b073-e036891801d8">
+      <Execution id="0aa75272-cf0b-4fd3-b733-0f2edd0e66be" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests" name="ActualBrowserRevokedGeneration_AfterQueuePublicationRetainsUncertainEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserOriginalPreparedWorker_RefusesBeforeSideEffects" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="973b1ccd-f1fb-2a32-a7b0-c63e19115cb3">
+      <Execution id="58db9f02-32c7-4dac-b737-a0dfff6ebdaf" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests" name="ActualBrowserOriginalPreparedWorker_RefusesBeforeSideEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserUiGuard_OriginalLeaseOrRefusal(mode: &quot;stale-token&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1fded2ec-2dc4-c4f5-189a-5916650cd9f6">
+      <Execution id="3dbf2897-3375-4339-ac94-2e5fd199f353" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests" name="ActualBrowserUiGuard_OriginalLeaseOrRefusal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserColdMain_RefusesBeforeSideEffects(state: 2)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="80ba7e2e-de15-585f-c0f4-577963c380fb">
+      <Execution id="88e6efa6-af91-4e60-8270-903b7efb4565" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests" name="ActualBrowserColdMain_RefusesBeforeSideEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;changed-session&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="06199588-211c-e764-fb53-16a7126ac1a4">
+      <Execution id="6a2cb3ca-a889-42b4-9b3a-2fdf1b8cc172" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualStageCommittedPublisherDebt_SettlesWithoutUndoBeforeQueue" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="107bf627-f049-e44c-33e9-d6b5b47b2672">
+      <Execution id="ae2f3e5d-9de3-4b4c-8c1b-b2bd7fa2949a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests" name="ActualStageCommittedPublisherDebt_SettlesWithoutUndoBeforeQueue" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes(kind: &quot;scratch&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7e0b4269-030f-5406-e47d-a6e21b6c46a9">
+      <Execution id="fd3643f9-a627-47e2-9d67-01e4ce272825" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests" name="RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;requestId&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="eb7e300d-3b92-eb79-dce7-aa53c86a79cb">
+      <Execution id="3144c29b-c9fa-42cc-b3a8-2e7b5ea8e75e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage(afterManifest: False)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5d3002c0-9b11-a402-aac9-6e7a36c1b76e">
+      <Execution id="f377c213-ef5e-4ec2-8175-2f1de3df4be8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests" name="CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage(afterManifest: True)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="05c334dd-7bcf-5592-7768-6e1dd8440cd1">
+      <Execution id="21a95b1f-2fe2-4a31-ad7b-99d232614e65" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests" name="CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;timestamp&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c915952b-3165-1473-c656-06a38d4e0873">
+      <Execution id="86bfdcd3-d151-499b-9784-bb586a2751e0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;absent&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a94bb284-0305-2553-99ce-92f0ad0a28d6">
+      <Execution id="b76f6e7a-c1b7-4d21-a9ae-e23e38d6de6f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover(published: True)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="fbcc83ec-3e1d-1a00-92ec-d850d2ba62b4">
+      <Execution id="b6706518-f1f5-4c91-8082-3c723947bbe2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests" name="InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserUiGuard_OriginalLeaseOrRefusal(mode: &quot;original&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5d038bd4-3d6e-d593-285c-21c57ebc8222">
+      <Execution id="43337bb6-63da-4e21-b19d-0d7ef2753109" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests" name="ActualBrowserUiGuard_OriginalLeaseOrRefusal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;turnNumber&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b3051b30-b579-4a32-0a0b-a68c0b5d7dbf">
+      <Execution id="0df061c7-84e8-4abf-9258-18d34a7ac28f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ActualBrowserColdMain_RefusesBeforeSideEffects(state: 3)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="54ecd1ee-5f33-022e-759f-0144d016b92f">
+      <Execution id="4926bd80-5883-46ee-8a47-25fec70aa8fe" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests" name="ActualBrowserColdMain_RefusesBeforeSideEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;changed-turn&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5bff032d-9616-101f-3d2c-82df402b3939">
+      <Execution id="635f147b-01a5-486f-9418-0faa555b3e78" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover(published: False)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b0476580-204d-804c-d45e-a4c3f9b015fe">
+      <Execution id="53b88bce-658d-487c-8eaf-4946d3c884b9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests" name="InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="a94bb284-0305-2553-99ce-92f0ad0a28d6" executionId="b76f6e7a-c1b7-4d21-a9ae-e23e38d6de6f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b3051b30-b579-4a32-0a0b-a68c0b5d7dbf" executionId="0df061c7-84e8-4abf-9258-18d34a7ac28f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="973b1ccd-f1fb-2a32-a7b0-c63e19115cb3" executionId="58db9f02-32c7-4dac-b737-a0dfff6ebdaf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="80f1e9b5-986e-76cd-b073-e036891801d8" executionId="0aa75272-cf0b-4fd3-b733-0f2edd0e66be" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fbcc83ec-3e1d-1a00-92ec-d850d2ba62b4" executionId="b6706518-f1f5-4c91-8082-3c723947bbe2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="107bf627-f049-e44c-33e9-d6b5b47b2672" executionId="ae2f3e5d-9de3-4b4c-8c1b-b2bd7fa2949a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7e0b4269-030f-5406-e47d-a6e21b6c46a9" executionId="fd3643f9-a627-47e2-9d67-01e4ce272825" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="21be27fa-474e-0bc6-81c0-b17506f1b7d4" executionId="c92bea3a-91cf-4bff-9472-e120d3428a1f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="80ba7e2e-de15-585f-c0f4-577963c380fb" executionId="88e6efa6-af91-4e60-8270-903b7efb4565" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="54ecd1ee-5f33-022e-759f-0144d016b92f" executionId="4926bd80-5883-46ee-8a47-25fec70aa8fe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5bff032d-9616-101f-3d2c-82df402b3939" executionId="635f147b-01a5-486f-9418-0faa555b3e78" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="05c334dd-7bcf-5592-7768-6e1dd8440cd1" executionId="21a95b1f-2fe2-4a31-ad7b-99d232614e65" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1fded2ec-2dc4-c4f5-189a-5916650cd9f6" executionId="3dbf2897-3375-4339-ac94-2e5fd199f353" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b0476580-204d-804c-d45e-a4c3f9b015fe" executionId="53b88bce-658d-487c-8eaf-4946d3c884b9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c915952b-3165-1473-c656-06a38d4e0873" executionId="86bfdcd3-d151-499b-9784-bb586a2751e0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5d3002c0-9b11-a402-aac9-6e7a36c1b76e" executionId="f377c213-ef5e-4ec2-8175-2f1de3df4be8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="de3c6512-bd05-3557-0629-5d013170fd69" executionId="afd18c03-254f-4960-8b52-41a844430e68" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e02d9f78-e68e-9047-3b57-8c99df4f6ca3" executionId="3d02de33-96ea-4e4b-8e8e-7905cc025b25" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="06199588-211c-e764-fb53-16a7126ac1a4" executionId="6a2cb3ca-a889-42b4-9b3a-2fdf1b8cc172" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="86528e03-ca07-4fb4-f57c-50d6be5d506b" executionId="535b692c-91b4-4df3-83cf-ad37c778c7cf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="eb7e300d-3b92-eb79-dce7-aa53c86a79cb" executionId="3144c29b-c9fa-42cc-b3a8-2e7b5ea8e75e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5d038bd4-3d6e-d593-285c-21c57ebc8222" executionId="43337bb6-63da-4e21-b19d-0d7ef2753109" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="22" executed="22" passed="20" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.45]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.99]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.03]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:03.07]       Assert.False() Failure
+[xUnit.net 00:00:03.07]       Expected: False
+[xUnit.net 00:00:03.07]       Actual:   True
+[xUnit.net 00:00:03.07]       Stack Trace:
+[xUnit.net 00:00:03.07]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.cs(201,0): at BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.AssertNoTurnOrRollback(FileSystemManager files)
+[xUnit.net 00:00:03.07]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.cs(90,0): at BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover(Boolean published)
+[xUnit.net 00:00:03.07]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.07]       Output:
+[xUnit.net 00:00:03.07]         FixtureCleanup root=/tmp/boe-direct-gacha-linux-4b5528fe64744efbbeb42cb41e8b40f2 rootRemoved=True
+[xUnit.net 00:00:03.38]       Assert.False() Failure
+[xUnit.net 00:00:03.38]       Expected: False
+[xUnit.net 00:00:03.38]       Actual:   True
+[xUnit.net 00:00:03.38]       Stack Trace:
+[xUnit.net 00:00:03.38]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.cs(201,0): at BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.AssertNoTurnOrRollback(FileSystemManager files)
+[xUnit.net 00:00:03.38]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.cs(90,0): at BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover(Boolean published)
+[xUnit.net 00:00:03.38]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.38]       Output:
+[xUnit.net 00:00:03.38]         FixtureCleanup root=/tmp/boe-direct-gacha-linux-36e27872f480440181a5efe875ea82ac rootRemoved=True
+[xUnit.net 00:00:12.00]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T00:40:34.8430455+00:00">
+        <Text>[xUnit.net 00:00:03.07]     BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover(published: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T00:40:35.1482757+00:00">
+        <Text>[xUnit.net 00:00:03.38]     BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.InterruptedActualStage_AuthenticatedScratchAndOriginalTransactionRecover(published: True) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

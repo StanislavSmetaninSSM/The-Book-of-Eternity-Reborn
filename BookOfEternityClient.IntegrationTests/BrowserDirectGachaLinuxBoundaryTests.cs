@@ -84,10 +84,13 @@ public sealed partial class BrowserDirectGachaLinuxBoundaryTests(ITestOutputHelp
         Assert.True(File.Exists(journalPath)); Assert.Equal(published, File.Exists(target));
         if (!published) Assert.Single(Directory.GetFiles(Path.GetDirectoryName(target)!, ".boe-local-*.stage"));
         Assert.True(Directory.Exists(blocker));
+        var retainedUiLease = File.ReadAllBytes(fixture.Files.ResolvePath(LocalUiSessionLockService.LockPath));
         fixture.Closing = null; File.Delete(Path.Combine(blocker!, "fixture-cut")); Directory.Delete(blocker!); // Remove only the fixture's known fault.
         var fresh = Fresh(fixture);
         await using (var lease = await fresh.AcquireCanonicalWriteLeaseAsync()) Assert.False(File.Exists(journalPath));
-        AssertBefore(fixture); AssertNoTurnOrRollback(fresh);
+        AssertBefore(fixture); AssertNoTurnOrRollback(fresh, requireUiReleased: false);
+        // Recovery owns storage settlement, not the original UI lease whose release failed.
+        Assert.Equal(retainedUiLease, File.ReadAllBytes(fresh.ResolvePath(LocalUiSessionLockService.LockPath)));
     }
 
     [Theory]
@@ -193,11 +196,11 @@ public sealed partial class BrowserDirectGachaLinuxBoundaryTests(ITestOutputHelp
         Assert.Equal(fixture.BeforeDice, File.ReadAllBytes(fixture.Files.ResolvePath(PendingTurnStateService.PendingDiceStatePath)));
         Assert.Equal(fixture.BeforeHistory, File.ReadAllBytes(fixture.Files.ResolvePath("game_state/history/chat_log.json")));
     }
-    private static void AssertNoTurnOrRollback(FileSystemManager files)
+    private static void AssertNoTurnOrRollback(FileSystemManager files, bool requireUiReleased = true)
     {
         foreach (var path in new[] { BrowserPendingTurnInspector.TurnRequestPath, BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath })
             Assert.False(File.Exists(files.ResolvePath(path)));
         Assert.False(Directory.Exists(files.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root)) && Directory.EnumerateFileSystemEntries(files.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root)).Any());
-        Assert.False(File.Exists(files.ResolvePath(LocalUiSessionLockService.LockPath)));
+        if (requireUiReleased) Assert.False(File.Exists(files.ResolvePath(LocalUiSessionLockService.LockPath)));
     }
 }
