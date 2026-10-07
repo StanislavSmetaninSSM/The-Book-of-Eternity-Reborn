@@ -63,10 +63,11 @@ internal sealed class SystemdUserScopeOwner
     }
     internal async ValueTask DisposeAsync() {
         if(_disposed)return;if(AuthorityLost.IsCompleted)throw new InvalidOperationException("Uncertain scope retains original authorities.");
-        await _native.DisposeAsync();
-        if(AuthorityLost.IsCompleted)throw new InvalidOperationException("Original scope lost before disposal.");
-        _disposed=true; // expected connection closure only after actual native I/O/disposal
-        try{await _bus.DisposeAsync();_cgroup.Dispose();_held?.Dispose();}
-        catch{_disposed=false;MarkUncertain("systemd-disposal-unconfirmed");throw;}
+        try {
+            await _native.DisposeAsync();
+            if(AuthorityLost.IsCompleted)throw new InvalidOperationException("Original scope lost before disposal.");
+            _disposed=true; // expected connection closure only after actual native I/O/disposal
+            await _bus.DisposeAsync();_cgroup.Dispose();_held?.Dispose();
+        }catch{_disposed=false;MarkUncertain("systemd-disposal-unconfirmed");throw;}
     }
 }

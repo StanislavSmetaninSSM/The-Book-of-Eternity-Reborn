@@ -1,3 +1,10 @@
+# S1 disposal correction and capture causal verification WIP
+
+OriginalnativeDispose now inside same stickyUncertain catch as manager/cgroup/
+held disposal; causal995de14a nativeDisposeOnce preserved. Next narrow controlled
+24 plus four exact affected cases proves disposalGREEN and post-held captureRED
+without another old cohort; constructorcapture fix not yet applied.
+
 # S1 final constructor/disposal causal boundary
 
 995de14a controlled23:22PASS/1causalFAIL nativeDisposeOnce left adapter
