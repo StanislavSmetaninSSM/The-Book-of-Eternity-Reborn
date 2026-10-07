@@ -1028,3 +1028,10 @@ Clientforcedexit-2/EOF/termios; bridgeEOF/termios unconfirmed untilguardian, gua
 ECHILD/driver1/emergency0/reaped2/failures0/nodeadline. Physical cleanup notlogical
 success. Og5neverreuse/clear; exactoriginal-bootstrap-lost receipt archived.
 No unchanged startup retry; inspect publicownmetadata/nativebootstrapcause first.
+
+Ownerrequestedpause beforeanymorechanges: wholechain factmatrix/sourcecomparison
+and read-onlyAstra/xhigh lifecycle diagnosis. No additional runtime/test/CLI
+changes or executions afterog5. [Compact diagnosis](opencode-lifecycle-diagnosis.md)
+links allavailable20og5artifacts, distinguishes missinginitiatingexception from
+bootstrap-lost symptom, preserves priorcausal/preparation/cleanup classifications.
+Review pending, no proposedfix/live retry. OriginalUncertainunchanged.

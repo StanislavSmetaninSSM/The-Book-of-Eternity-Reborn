@@ -1,3 +1,11 @@
+# Active live lifecycle diagnosis pause
+
+Owner2026-10-07 requests systematic whole-chain review after og5 bootstrap-lost.
+[Fact matrix and source/deadline/deployment comparison](opencode-lifecycle-diagnosis.md)
+are under read-only Astra/xhigh diagnosis; Sol6.1/xhigh remains sole writer.
+No initiating cause established, no live retry or runtime patch pending that gate.
+Historical Uncertain retained; actual provider/game turns0. Deferred systemd unchanged.
+
 # Current CLI fallback and causal early-exit closure
 
 Source #1553: [OpenCode live plan](opencode-live-plan.md) tracks owner-authorized
