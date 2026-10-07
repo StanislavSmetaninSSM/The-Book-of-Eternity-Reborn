@@ -572,3 +572,8 @@ Test-only guardian dedicated --live-turn mode max300s (existing30sdefault
 unchanged); main game/provider phase bounded≤210s, totaldriver≤270s leaves
 30s independentcleanup reserve. Guardianteardown cannotlogicalsuccess.
 Independent driver source/feasibility review before any actual CLI execution.
+
+Independent Sol feasibility/design PASS74d1662b, conditional driver source
+closure. New actual ordinaryPTY driver and dedicated guardian-budget causal
+fixture WIP. Driver matches fresh offsets, waits exact thinking UI before Escape,
+no Readyoverride, original latched shutdown once. LiveCLI still unexecuted.

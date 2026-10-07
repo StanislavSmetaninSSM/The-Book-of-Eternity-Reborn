@@ -2,29 +2,8 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-connected-mini-reservation-spinner",
-      "reason": "Changed actual mini gesture reservation freshness and pinned busy frames affect positive/unknown and original refusing witness edges; passed native/env/absence/helper/parser cohorts unchanged and excluded",
-      "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED"
-      ]
-    },
-    {
-      "category": "gm-connected-mini-transaction",
-      "reason": "Changed actual mini gesture reservation freshness and pinned busy frames affect positive/unknown and original refusing witness edges; passed native/env/absence/helper/parser cohorts unchanged and excluded",
-      "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED"
-      ]
-    },
-    {
-      "category": "gm-connected-mini-refusal",
-      "reason": "Changed actual mini gesture reservation freshness and pinned busy frames affect positive/unknown and original refusing witness edges; passed native/env/absence/helper/parser cohorts unchanged and excluded",
-      "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED"
-      ]
-    },
-    {
-      "category": "gm-connected-mini-review-boundaries",
-      "reason": "Changed actual mini gesture reservation freshness and pinned busy frames affect positive/unknown and original refusing witness edges; passed native/env/absence/helper/parser cohorts unchanged and excluded",
+      "category": "gm-live-turn-guardian-budget",
+      "reason": "Test-only explicit live-turn guardian300s maximum, legacy30s unchanged, overflow refusal and own positive exclusive ECHILD",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED"
       ]

@@ -16294,6 +16294,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-live-turn-guardian-budget",
+      "responsibility": "Test-only explicit live-turn guardian300s maximum, legacy30s unchanged, overflow refusal and own positive exclusive ECHILD",
+      "excludes": "Production owner, old guardian actor matrix, CLI/provider and real game are not executed",
+      "changeHints": [
+        "tests/fixtures/LinuxHost/host-guardian.c"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLiveTurnGuardianBudgetTests.ActualGuardian_DedicatedLiveBudgetKeepsDefaultBound"
+          ]
+        }
+      ]
     }
   ]
 }

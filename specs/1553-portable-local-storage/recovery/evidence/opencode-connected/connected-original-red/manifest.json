@@ -77,6 +77,21 @@
       "Path": "BookOfEternityGMBridge/DraftObservation.cs",
       "Bytes": 7262,
       "SHA256": "a45ef94ad16bc4418f4ebf7d951ce81c3c64172ed5d2a2a20f1ee48917cd8ee6"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmConnectedMiniTransactionTests.cs",
+      "Bytes": 6110,
+      "SHA256": "32ee3221ddb199ee5226706c5a764bfae7de522045b0bb0ff5bda598e4b88ad3"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "Bytes": 22418,
+      "SHA256": "cac9672ce457e406ad77dadf823656b55bf6a2079296d69d957735c32fa46eda"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
+      "Bytes": 2819,
+      "SHA256": "66d9bdd12751cc6379f99d65cff43dfeafbc2e80d8ce2e1ec7cfe6d64d10a68b"
     }
   ],
   "Artifacts": [
@@ -228,5 +243,9 @@
       "Failed": 8
     },
     "DuplicateTests": []
-  }
+  },
+  "MetadataCorrection": "Missing three baseline source pins from executed54908f9b gitshow; observer handler genuinely absent. Raw artifacts/results unchanged.",
+  "AbsentSources": [
+    "BookOfEternityGMBridge/BridgeHost.DraftObservation.cs"
+  ]
 }
