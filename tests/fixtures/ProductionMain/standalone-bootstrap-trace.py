@@ -13,6 +13,7 @@ assert not (session / 'game_state').exists()
 assert os.environ.get('TERM') == 'dumb'
 binary = Path('/workspace/qualification-1553-opencode-install/package/node_modules/opencode-linux-x64-baseline/bin/opencode')
 assert hashlib.sha256(binary.read_bytes()).hexdigest() == '77b2cfe4b97df6f15c3673b22100b9f79c711f25ecb9bf513bb82526b15d24fa'
+untraced = os.environ.get('BOE_BOOTSTRAP_UNTRACED') == '1'
 pipe = 'og-' + uuid.uuid4().hex[:12]
 quote = lambda v: "'" + str(v).replace("'", "''") + "'"
 command = '& ' + quote(out/'configured-neutral-cli') + ' --model inert-no-provider'
@@ -41,7 +42,7 @@ class Terminal:
         fcntl.ioctl(self.slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0));self.initial=termios.tcgetattr(self.slave)
         def own():
             os.setsid();fcntl.ioctl(self.slave,termios.TIOCSCTTY,0);os.tcsetpgrp(self.slave,os.getpid())
-        if name=='bridge':
+        if name=='bridge' and not untraced:
             args=['/usr/bin/strace','-f','-ttt','-s','100','-e','trace=sendmsg,recvmsg,shutdown,close','-o',str(out/'bootstrap.strace'),*args]
         self.process=subprocess.Popen(args,cwd=ship,env=env,stdin=self.slave,
             stdout=subprocess.PIPE if captured_output else self.slave,
@@ -144,7 +145,9 @@ try:
     result['InertStandaloneTrace']=True
     result['ProviderRequests']=0
     result['NoCliInput']=True
-    result['TracerPid']=bridge.process.pid
+    result['TracerPid']=None if untraced else bridge.process.pid
+    result['ForegroundWrapperPid']=bridge.process.pid
+    result['UntracedComparison']=untraced
     result['OriginalBridgePid']=status['status']['helperPid']
     result['ActualAppContext']=str(ship/'BookOfEternityGMBridge')
     # Never request Ready or start daemon. Allow the one original release attempt
@@ -207,7 +210,8 @@ finally:
         for fd in [p.master,p.slave]:
             if fd>=0:os.close(fd)
     result['ElapsedSeconds']=elapsed();result['TraceComplete']=(out/'bootstrap.strace').exists() and (out/'bootstrap.strace').stat().st_size<8388608
-    result['Success']=result['TraceComplete'] and result.get('InertStandaloneTrace',False) and result['LogicalLifecycleVerified'] and not any(k.endswith('Failure') for k in result) and all(v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
+    result['ObservationComplete']=untraced or result['TraceComplete']
+    result['Success']=result['ObservationComplete'] and result.get('InertStandaloneTrace',False) and result['LogicalLifecycleVerified'] and not any(k.endswith('Failure') for k in result) and all(v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     (out/'rpc-journal.json').write_text(json.dumps(journal,indent=2,ensure_ascii=False)+'\n')
     (out/'probe-result.json').write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n')
     print(json.dumps({k:result.get(k) for k in ['Success','AcceptedGameTurns','GenuineActionsSent','Failure','CleanupFailure','ElapsedSeconds']}))
