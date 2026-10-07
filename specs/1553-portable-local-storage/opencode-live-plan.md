@@ -248,6 +248,13 @@ to T043-OPENCODE-LIVE-BOUNDED, not a new game contract or public CLI rollout.
    Reject wrong/duplicate/stale observer, disconnect/late completion, path escape,
    changed bytes, normalization-incompatible single-line final newline and all
    observation uncertainty. No expected prompt bytes are passed to the observer.
+   Consumed env seam: `NativeLineageOwner.StartAsync` constructs a new supervisor
+   ProcessStartInfo and currently drops `host.Environment`. Propagate the actual
+   frozen terminal environment only in `_terminalMode`; worker host behavior is
+   unchanged. Add an original-terminal sentinel regression with its own guardian.
+   Pipe transport location is the original bridge's actual .NET Unix endpoint,
+   supplied separately from the allowed CLI draft TMPDIR; never resolve the
+   original server using the observer child's different TMPDIR.
 3. **Connected T042 sequence.** Keep the original immutable operation/hash and
    paste wire content. Before Ctrl+X/e require a fresh reliable visible tail of
    that paste in the idle textarea. Retain the original gate/lifetime throughout
