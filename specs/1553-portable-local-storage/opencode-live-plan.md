@@ -1100,3 +1100,11 @@ continuous progress;3/3 passed,0 processes/runtime tests/provider requests. No
 C# category/catalog change justified for this diagnostic fixture-only delta.
 Source review and ordinary remote preservation precede one fresh isolated attempt
 authorized by the latest owner instruction; no unchanged short-timeout retry.
+
+Source-review correction before any execution: all client cleanup waits/sends are
+clipped at230s from driver start, reserving40s within the unchanged270s cap for
+the sole original shutdown12s, bridge exit8s, daemon exit8s, EOF5s and connection/
+disposal margin. A progressing client cannot consume the original-owner ACK budget.
+No live attempt used the preliminary8c57add1 driver.
+The accepted-turn path also exits the client only through that shared clipped
+finally phase; it cannot bypass the original-owner cleanup reserve.

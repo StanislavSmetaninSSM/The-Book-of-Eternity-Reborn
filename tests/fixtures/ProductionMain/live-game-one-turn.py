@@ -56,7 +56,7 @@ env.update(NPM_CONFIG_USERCONFIG=str(install/'empty-user.npmrc'),NPM_CONFIG_GLOB
         'StartupBannerLines':['','█▀▀█  OpenCode','█  █  '+str(session),'▀▀▀▀',''],'AutomaticSubmissionLimit':1,
         'IdleMarker':' BUILD','WorkingMarker':'interrupt','ObservationTimeoutMilliseconds':15000}
 },indent=2,ensure_ascii=False)+'\n')
-start=time.monotonic(); peers=[]; journal=[]; original=None; original_record=None; shutdown_attempts=0;cleaning=False;client_exit_attempted=False;client_failure_offset=None
+start=time.monotonic(); peers=[]; journal=[]; original=None; original_record=None; shutdown_attempts=0;cleaning=False;client_exit_attempted=False;client_failure_offset=None;active_phase_deadline=None
 result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswers':0,'ConfiguredModel':'opencode/ling-3.1-flash-free',
         'ConfiguredCommand':command,'ConfiguredCwd':str(session),'NoReadyOverride':True,'OrdinaryNewGame':False,'LogicalLifecycleVerified':False}
 action='Я осторожно осматриваю берег Моря Хаоса и спрашиваю моего Хранителя, где я оказался.'
@@ -76,6 +76,7 @@ class Terminal:
             'OutputMode':'captured-pipe' if captured_output else 'original-pty','StdinMode':'original-controlling-pty'})
     def send(self,data,phase):
         assert elapsed()<(270 if cleaning else 210) and self.process.poll() is None
+        assert active_phase_deadline is None or time.monotonic()<active_phase_deadline
         journal.append({'At':elapsed(),'Terminal':self.name,'Phase':phase,'Input':data.decode('utf-8')})
         assert os.write(self.master,data)==len(data), 'Ambiguous partial foreground write; never replay'
     def text(self,offset=0):
@@ -100,6 +101,7 @@ def pump(delay=.02):
     if elapsed()>270:raise TimeoutError('Driver total bound')
 def until(test,seconds,label):
     deadline=min(start+(270 if cleaning else 210),time.monotonic()+seconds)
+    if active_phase_deadline is not None:deadline=min(deadline,active_phase_deadline)
     while not test():
         if time.monotonic()>deadline:raise TimeoutError(label)
         pump()
@@ -253,13 +255,16 @@ try:
         if (session/'ready/turn_error.json').exists():
             result['ActualTerminalError']=read_json(session/'ready/turn_error.json');raise RuntimeError('Actual game terminal error; no automatic replay')
     if result['AcceptedGameTurns']!=1:raise TimeoutError('One-turn phase ended without actual game acceptance')
-    cleaning=True;exit_client(client);client_prompt=False
+    # The shared finally performs client exit under its reserved cleanup bound.
 except Exception as ex:
     result['Failure']=type(ex).__name__+': '+str(ex)
 finally:
     cleaning=True
     # Settle participating client wait before original owner stop; never replay its action.
     if client is not None and client.process.poll() is None:
+        # Reserve40s of the existing270s cap for the sole original shutdown12s,
+        # bridge exit8s, daemon exit8s, EOF5s and connection/disposal margin.
+        active_phase_deadline=start+230
         try:
             if client_wait:
                 offset=client_failure_offset if client_failure_offset is not None else len(client.capture)
@@ -270,7 +275,7 @@ finally:
                     # a GM trust/access/update gate. Acknowledge at most once.
                     text=client.text(offset)
                     return not (session/'input/turn_request.json').exists() and ('Продолжить' in text or ('Ваш ход' in text and '🌊 > ' in text))
-                settlement=PhaseWait(time.monotonic(),start+270)
+                settlement=PhaseWait(time.monotonic(),active_phase_deadline)
                 while not settled():
                     text=client.text(offset)
                     if 'Нажмите любую клавишу для продолжения...' in text:
@@ -288,6 +293,7 @@ finally:
             elif client.process.poll() is None:
                 client.send(b'\x03','failure: stop original client foreground');until(lambda:client.process.poll() is not None,6,'client foreground stop')
         except Exception as ex:result['ClientCleanupFailure']=type(ex).__name__+': '+str(ex)
+        finally:active_phase_deadline=None
     if original is not None:
         try:
             shutdown_attempts+=1
