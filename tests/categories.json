@@ -16364,6 +16364,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-console-newgame-cancel-validation",
+      "responsibility": "#1553 T043 real ordinary NewGame bootstrap, initial wait cancellation and player preflight diagnostic",
+      "excludes": "No provider, CLI, prior console cohort or weakening of validation",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OrdinaryNewGameCancel_RealBootstrapRetainsValidPlayerPreflight"
+          ]
+        }
+      ]
     }
   ]
 }

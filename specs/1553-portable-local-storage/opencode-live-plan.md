@@ -763,7 +763,7 @@ No test cohort repeated. Actual acceptance remains unexecuted before og4.
 Actual d8492fd1 fresh og4 ordinary NewGame/derivedReady/Continue reached real
 player prompt. One action entered the actual client; no turn_request was created,
 no provider request or accepted turn. Client shows contract-validation refusal
-before staging, not the prior Continue cause. Need exact validator/source proof: 
+before staging, not the prior Continue cause. Need exact validator/source proof:
 approved driver cancels initial NewGame bootstrap before CLI; whether that leaves
 unmaterialized required Guardian state must be checked before runtime changes.
 Original shutdown attempted once, returned ok:false/terminalUncertain despite
@@ -774,3 +774,14 @@ Exact owned artifacts archived action-request-gap; no replay or original-root
 clear. Independent Sol source/driver cause review requested. Next requires
 causal controlled consumer diagnostics and source-backed bootstrap route,
 not an unchanged actual startup or admission weakening.
+
+Independent Sol DESIGN PASS for one new controlled diagnostic category
+gm-console-newgame-cancel-validation: existing real lifecycle fixture with
+collecting ILogger, exact ordinary og4 InitializeChaosSea inputs, one Escape
+through actual WaitForGmResponse, awaited rollback completion. Preserve structured
+validator Error sets before/after and assert post-cancel real preflight succeeds
+plus request absent. No external CLI/provider, no runtime change. Source confirms
+canonical Guardian/profile seeded by NewGame; initial materialization hypothesis
+not established. Existing wait retains cold main guard, so owner-start during
+that wait or racing its boundary is not a supported alternative. If diagnostic
+sets clean, separately reproduce changed M1/daemon boundary; no speculative fix.
