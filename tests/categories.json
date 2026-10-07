@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-synchronized-terminal-presentation",
+      "responsibility": "Consumed TerminalScreen and actual output pump with immutable pinned mini startup/editor bytes; completed frame/cell/cursor/UTF8 evidence and fail-closed geometry/unknown controls",
+      "excludes": "Automatic input/witness or real CLI/provider/gameplay qualification, arbitrary TUI, native Windows/systemd and old unrelated cohorts",
+      "changeHints": [
+        "BookOfEternityGMBridge/TerminalScreen.cs",
+        "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+        "BookOfEternityClient.Tests/GmSynchronizedTerminalPresentationTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "desktop-launch-contracts",
       "responsibility": "Typed managed association outcomes, no display claim/replay, original image suppression/force/path/kind and scope source guards",
       "excludes": "Real desktop/Linux or Windows native qualification, new shell/dependency/framework, gameplay and other adapters",
