@@ -356,3 +356,15 @@ now has no physical resize authority; real RPC resize remains. Independent Sol
 verified both affected failure causes and source plan. Foreground fixture waits
 for its own endpoint before first connect and latches its sole shutdown before
 send. Four categories plan32 narrow checks; fresh GREEN/source review pending.
+
+Source e722339e independent Sol PASS for presentation only. Its32-case run
+stopped after4:3PASS/1FAIL,28unexecuted; pipe original stop/guardian0 now passes.
+[Receipt](recovery/evidence/opencode-connected/affected-identity-incomplete/manifest.json).
+Foreground original inputs/resize/EOF/scoped stop passed, then its obsolete bare
+shutdown was refused by F1 original identity guard; guardianemergency1/deadline
+means no lifecycle acceptance. Driver now latches its own acknowledged Running
+record before input and supplies that unchanged expectation for shutdown once.
+This corrects a legacy fixture gap; runtime stop identity admission is unchanged.
+Independent consultation rejected stock manual Q2 shortcut: daemon exposes no
+exact generated payload and typed refusal exits normal response wait. Continue
+connected original-operation witness; never reinterpret NotWritten as delivery.

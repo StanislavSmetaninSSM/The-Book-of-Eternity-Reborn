@@ -6,7 +6,7 @@ master,slave=pty.openpty()
 fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,80,0,0))
 original=termios.tcgetattr(slave)
 pipe='neutral-ui-'+uuid.uuid4().hex
-transcript=bytearray(); result={}; guardian=None; started=time.monotonic(); shutdown_attempted=False
+transcript=bytearray(); result={}; guardian=None; started=time.monotonic(); shutdown_attempted=False; original_identity=None
 def own_ui_terminal():
  # This new child session owns only the fixture's outer UI terminal. TIOCSCTTY(0)
  # never steals another session's tty; foreground ownership delivers SIGWINCH.
@@ -37,7 +37,11 @@ def shutdown_once():
  global shutdown_attempted
  if shutdown_attempted: return None
  shutdown_attempted=True
- return rpc({'command':'shutdown'})
+ request={'command':'shutdown'}
+ if original_identity is not None:
+  request.update(expectedMainIdentity=original_identity,rootKey=original_identity['rootKey'])
+ response=rpc(request);result['ShutdownReceipt']=response
+ return response
 try:
  guardian=subprocess.Popen([str(package/'host-guardian'),str(package/'guardian.json'),'15000',str(dotnet),str(bridge),
   '--host','--sessionPath',str(package/'ignored-session'),'--pipeName',pipe,'--neutralPackage',str(package)],cwd=repo,stdin=slave,stdout=slave,stderr=slave,preexec_fn=own_ui_terminal)
@@ -50,6 +54,14 @@ try:
    raise TimeoutError('Original foreground pipe did not become available.')
   receive()
  first=rpc({'command':'status'})['status']; binding=first['inputBindingId']; pid=first['shellPid']
+ # Metadata is only an expectation for this already-acknowledged original
+ # live owner. Never obtain a replacement identity during cleanup.
+ record_path=Path(first['sessionPath']).parent/'.boe_runtime/gm-runs/main.json'
+ record=json.loads(record_path.read_bytes())
+ assert record['Disposition']=='Running' and record['Identity']['RunId']==first['terminalRunId'] and first['terminalOwnerRetained']
+ original_identity={k[0].lower()+k[1:]:v for k,v in record['Identity'].items()}
+ original_identity['backend']=2
+ result['OriginalRunningRecord']=record
  os.write(master,'one Ж😀\r'.encode()); until('RESULT1:one Ж😀'.encode())
  os.write(master,b'two\r'); until(b'RESULT2:two')
  same=rpc({'command':'status'})['status']; assert same['inputBindingId']==binding and same['shellPid']==pid
