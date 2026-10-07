@@ -331,21 +331,22 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
         session.Draft.Language = "en"; session.Draft.ConsoleFontSize = 30;
         session.Draft.MusicEnabled = true; session.Draft.MusicVolume = 50;
         var loc = new BookOfEternityClient.UI.LocalizationManager { CurrentLanguage = "ru" };
-        var audio = new AudioService(_files, _live, NullLogger<AudioService>.Instance);
+        var music = Path.Combine(_files.BasePath, "Music"); Directory.CreateDirectory(music);
+        File.WriteAllText(Path.Combine(music, "Main Theme.mp3"), "synthetic controlled decoder-free asset");
+        var backend = new ControlledAudioBackend();
+        await using var audio = new AudioService(_files, _live, NullLogger<AudioService>.Instance, backend);
         var appearance = new ConsoleAppearanceService(_live, NullLogger<ConsoleAppearanceService>.Instance);
-        using var cts = new CancellationTokenSource();
-        typeof(AudioService).GetField("_musicCts", BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(audio, cts);
         var restoredPlayback = false;
         var failure = await Record.ExceptionAsync(async () =>
         {
             await using var preview = new ConsoleSettingsPreview(_live, session.Draft, loc, audio, appearance, settings =>
             {
                 if (ReferenceEquals(settings, _live)) restoredPlayback = true;
-                return Task.CompletedTask;
+                return settings.MusicEnabled ? audio.PlayMainMenuMusicAsync() : audio.StopMusicAsync();
             });
             await preview.ApplyAsync();
             Assert.Equal("en", loc.CurrentLanguage); Assert.Equal("ru", _live.Language);
-            Assert.Equal(acceptedFont, _live.ConsoleFontSize); Assert.False(cts.IsCancellationRequested);
+            Assert.Equal(acceptedFont, _live.ConsoleFontSize); Assert.False(backend.Sessions.Last().Disposed);
             if (rejectedReload)
             {
                 File.Delete(_files.SessionGenerationPath);
@@ -356,7 +357,7 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
         if (rejectedReload) Assert.IsType<SessionReplacedException>(failure);
         else Assert.IsType<ApplicationException>(failure);
         Assert.Equal("ru", loc.CurrentLanguage); Assert.Equal(acceptedFont, _live.ConsoleFontSize);
-        Assert.True(cts.IsCancellationRequested); Assert.True(restoredPlayback);
+        Assert.True(backend.Sessions.All(s => s.Disposed)); Assert.True(restoredPlayback);
     }
 
     [Fact]
@@ -391,22 +392,25 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
         session.Draft.Language = "en"; session.Draft.ConsoleFontSize = 30;
         session.Draft.MusicEnabled = true; session.Draft.MusicVolume = 50;
         var loc = new BookOfEternityClient.UI.LocalizationManager();
-        var audio = new AudioService(_files, _live, NullLogger<AudioService>.Instance);
+        var music = Path.Combine(_files.BasePath, "Music"); Directory.CreateDirectory(music);
+        File.WriteAllText(Path.Combine(music, "Main Theme.mp3"), "synthetic controlled decoder-free asset");
+        var backend = new ControlledAudioBackend();
+        await using var audio = new AudioService(_files, _live, NullLogger<AudioService>.Instance, backend);
         var appearance = new ConsoleAppearanceService(_live, NullLogger<ConsoleAppearanceService>.Instance);
-        var field = typeof(AudioService).GetField("_musicCts", BindingFlags.NonPublic | BindingFlags.Instance)!;
-        using var first = new CancellationTokenSource(); using var second = new CancellationTokenSource();
-        await using (var preview = new ConsoleSettingsPreview(_live, session.Draft, loc, audio, appearance, _ => Task.CompletedTask))
+        ControlledAudioBackend.Session? second = null;
+        await using (var preview = new ConsoleSettingsPreview(_live, session.Draft, loc, audio, appearance,
+            settings => settings.MusicEnabled ? audio.PlayMainMenuMusicAsync() : audio.StopMusicAsync()))
         {
-            field.SetValue(audio, first); await preview.ApplyAsync();
-            Assert.Equal("en", loc.CurrentLanguage); Assert.False(first.IsCancellationRequested);
+            await preview.ApplyAsync(); var first = backend.Sessions.Last();
+            Assert.Equal("en", loc.CurrentLanguage); Assert.False(first.Disposed);
             await preview.RestoreLastAcceptedEffectsAsync();
-            Assert.Equal("ru", loc.CurrentLanguage); Assert.True(first.IsCancellationRequested);
+            Assert.Equal("ru", loc.CurrentLanguage); Assert.True(first.Disposed);
             Assert.Equal(font, _live.ConsoleFontSize); Assert.Equal("en", session.Draft.Language);
             Assert.True(session.Draft.MusicEnabled); // Restoration is not draft discard or a disk-state proof.
-            field.SetValue(audio, second); await preview.ApplyAsync();
-            Assert.Equal("en", loc.CurrentLanguage); Assert.False(second.IsCancellationRequested);
+            await preview.ApplyAsync(); second = backend.Sessions.Last();
+            Assert.Equal("en", loc.CurrentLanguage); Assert.False(second.Disposed);
         }
-        Assert.Equal("ru", loc.CurrentLanguage); Assert.True(second.IsCancellationRequested);
+        Assert.Equal("ru", loc.CurrentLanguage); Assert.True(second!.Disposed);
     }
 
     [Theory]
