@@ -1,3 +1,17 @@
+# Current actual provider failure — og10
+
+| Boundary | Captured result | Limit |
+|---|---|---|
+| production bootstrap/readiness/daemon/Continue | succeeded, originalrun3e25952e77d2408ab2d673e08fd173a6 | nativefallback only |
+| request/draft/submit | one action/request79d054ac, one originalcf534683 SubmissionObserved | modelreception not proven |
+| CLI provider result | `Forbidden: Domain forbidden` at44.895s, displayed1.9s | no received/applied response |
+| client result | error pause beforecleanup; no persisted originalexception | no precise client runtimecause claim |
+| driver | missed provider/clientfailure, expired201.106s; originalshutdown230.069s | no unchanged retry |
+| originalstop | okfalse, durableUncertain, retainedrequest/pending | never reinterpretnativeempty aslogicalsuccess |
+| guardian | ECHILD,4reaped,0emergency,0failures,driver1 | peerexit/EOF/termios incomplete in driver |
+
+[Exact public artifacts](recovery/evidence/opencode-live/provider-domain-refusal/manifest.json). Official endpoint metadata forselectedmodel: [OpenCode Zen](https://opencode.ai/docs/zen/) `https://opencode.ai/zen/v1/chat/completions`; actualURL/headers notcaptured, nosecrets/privateCLIstate read. No newnetwork/auth/grants/config or provider retries. Oldog9DraftUncertain andog4/og5 remain unchanged. Independent diagnosis/review pending; no runtimepatch for this newfailure.
+
 # Current production route reaches real turn, paste observation remains refused
 
 Fresh og9 atfaf17fd4 / runtime9744d191, actual678files/99,051,782bytes. Ordinary NewGame, initial cancellation, original Running bootstrap/derivedReady, real daemon bootstrap, Continue/playerprompt and one genuine action/request succeed. Actual immutable prompt operation2f1200d067ec4f458ee35899bbf63fbe returned DraftUncertain/observation-timeout before submit; no reconstructed input/replay. Accepted game turns0; modelsubmission0. Daemon's6 noticed/cancelled turn iterations do not establish6 submissions.
