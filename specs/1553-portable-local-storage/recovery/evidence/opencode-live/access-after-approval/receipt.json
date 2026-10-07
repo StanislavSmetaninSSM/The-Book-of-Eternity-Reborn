@@ -1,0 +1,46 @@
+{
+  "Task": "#1553/T043-OPENCODE-LIVE-BOUNDED",
+  "ExecutionCheckpoint": "5f6635332393c55a1aef946665bdb9a8f8286311",
+  "ObservedAtUTC": "2026-10-07T19:21:15.138087+00:00",
+  "Request": {
+    "Method": "GET",
+    "Endpoint": "https://opencode.ai/zen/v1/chat/completions",
+    "Command": "curl -q --silent --show-error --connect-timeout 10 --max-time 20 --proto '=https' --request GET --dump-header <own>/response-headers.txt --output <own>/response-body.txt --write-out 'http_status=%{http_code}\\n' https://opencode.ai/zen/v1/chat/completions",
+    "ExplicitCredentialsProvided": false,
+    "ModelPromptProvided": false,
+    "FollowRedirects": false,
+    "Attempts": 1
+  },
+  "Observed": {
+    "CurlExitCode": 56,
+    "CurlDiagnostic": "CONNECT tunnel failed, response 403",
+    "CurlReportedHttpStatus": "000",
+    "ProxyStatusLine": "HTTP/1.1 403 Forbidden",
+    "ProviderEndpointReached": false,
+    "ProviderHTTPStatus": null,
+    "DeclaredConnectBodyBytes": 16,
+    "ResponseBodyCaptured": false,
+    "DomainForbiddenBodyTextCaptured": false,
+    "ProviderResponseReceived": false
+  },
+  "Adjudication": {
+    "OwnerHostApprovalReported": true,
+    "ParentPublishedConfigReported": true,
+    "PublishedConfigId": "Not supplied; not inferred",
+    "CurrentWorkspaceAccessConfirmed": false,
+    "Cause": "Proxy CONNECT refusal; exact policy/config cause unproved",
+    "NextStep": "Parent may need a fresh workspace from the published configuration before a separately authorized reachability check; no bypass or provider retry here",
+    "StopDependentLiveStage": true,
+    "CliStarted": false,
+    "NewGameStarted": false,
+    "ModelRequests": 0,
+    "AcceptedAppliedGameTurns": 0,
+    "HistoricalPendingOrUncertainChanged": false,
+    "NetworkAuthSecuritySettingsChangedByExecutor": false
+  },
+  "Artifact": {
+    "Path": "response-headers.txt",
+    "Bytes": 143,
+    "SHA256": "cd69c12c0b8803538e185817c949655260472c69aba9dcf90207b908cddb1d11"
+  }
+}

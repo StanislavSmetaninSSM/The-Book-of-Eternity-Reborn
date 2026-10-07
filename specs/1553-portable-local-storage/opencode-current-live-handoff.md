@@ -1,3 +1,20 @@
+## Current access check after owner approval — blocked (2026-10-07)
+
+From accepted5f663533, the owner authorized opencode.ai and the parent reported
+publication of that host-only configuration. One credential-free/no-model-prompt
+GET attempt to the documented Zen endpoint at19:21:15UTC failed before TLS/HTTP
+provider contact: proxy `HTTP/1.1 403 Forbidden`, curl56/CONNECT tunnel failed,
+curl HTTP status000. Header declares16 body bytes, but curl did not capture the
+CONNECT body; **no exact Domain forbidden text or provider status is established**.
+Access is not confirmed in this workspace. A fresh workspace from the published
+configuration may be needed; no bypass or second network attempt here.
+CLI/NewGame/provider/accepted turns0; runtime/tests, historical pending/Uncertain,
+profile/model and auth/network/security settings unchanged. Existing offline
+14/14 qualification remains accepted; no repeated tests. This is current access
+failure evidence, not a game/runtime failure or new login requirement.
+[Safe request/result receipt](recovery/evidence/opencode-live/access-after-approval/receipt.json).
+Independent Sol metadata review and ordinary checkpoint/readback close separately.
+
 # T043 driver correction handoff — live provider access pending
 
 Authorized workflow: one writer, Sol6.1/xhigh implementer and read-only reviews.
@@ -72,8 +89,9 @@ actor. No private session storage was consulted. This provenance limitation rema
 
 ## Next boundary
 
-Parent's separate opencode.ai allowlist request is unanswered. No provider retry
-or new CLI/model request in this block. After approval, use a new isolated ordinary
-NewGame/root and current original readiness/operation; never replay og10 input.
+Owner approval and parent configuration publication are now reported, but the
+current workspace's sole CONNECT check refuses403. No CLI/model request followed.
+After actual access is confirmed in an applicable workspace, use a new isolated
+ordinary NewGame/root and current original readiness/operation; never replay og10 input.
 Successful provider response and actual accepted/applied1–2 turns remain open.
 No systemd/native Windows/live browser/user saves/cold guarantees or other block.

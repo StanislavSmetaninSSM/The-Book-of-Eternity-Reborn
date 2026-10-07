@@ -62,10 +62,13 @@
     "OfficialSource": "https://opencode.ai/docs/zen/",
     "WireEndpointOrHttpStatusCaptured": false,
     "NoNetworkAuthGrantChanges": true,
-    "NoProviderRetry": true
+    "NoProviderRetry": true,
+    "OwnerApprovalReported": true,
+    "ParentConfigPublicationReported": true,
+    "CurrentWorkspaceAccessConfirmed": false
   },
   "Remaining": [
-    "Parent opencode.ai access approval is pending; no provider retry",
+    "Owner approved opencode.ai and parent published configuration; current workspace still fails proxy CONNECT403. Actual reachability in an applicable/fresh workspace remains required; no bypass or provider retry here.",
     "Exact historical client exception/coordinator pin stage remains unproven; controlled held-pin mechanism does not repair historical outcome",
     "Graceful active-turn stop beyond controlled early cancellation remains unqualified; uncertainty is retained",
     "Successful provider response and actual game application remain open",
@@ -152,5 +155,19 @@
       "ReadOnlyReviewersReportNoMutation": true,
       "NoAttributionFromGitAuthor": true
     }
+  },
+  "AccessAfterApproval": {
+    "ExecutionCheckpoint": "5f6635332393c55a1aef946665bdb9a8f8286311",
+    "Receipt": "evidence/opencode-live/access-after-approval/receipt.json",
+    "Attempts": 1,
+    "ProxyConnectStatus": 403,
+    "CurlExitCode": 56,
+    "ProviderHTTPStatus": null,
+    "DomainForbiddenBodyTextCaptured": false,
+    "CliOrNewGameStarted": false,
+    "ModelRequests": 0,
+    "AcceptedAppliedGameTurns": 0,
+    "IndependentReview": "Pending Sol metadata review",
+    "NoRetriesOrSettingsChanges": true
   }
 }
