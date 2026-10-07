@@ -15,6 +15,10 @@ sha=lambda b:hashlib.sha256(b).hexdigest()
 prompt='exact Ж🙂\nline two'.encode();request_bytes=(session/paths[0]).read_bytes()
 header=dict(QueueId=q.name,Kind='turn',Model='inert-worker',SessionPath=str(session),RequestPath=paths[0],PromptSHA256=sha(prompt),RequestSHA256=sha(request_bytes),TurnRequestSHA256=sha(request_bytes),TurnIdentity=turn,Witnesses={p:sha((session/p).read_bytes()) for p in paths},OriginalRelayPid=1,SubmittedMonotonic=0)
 (q/'request.json').write_text(json.dumps(header));(q/'prompt.txt').write_bytes(prompt);(q/'game-request.json').write_bytes(request_bytes)
+if mode=='repair-read':
+    source='game_state/control/validation_repair_request.json';data=json.dumps(dict(turn,attempt=1)).encode();(session/source).write_bytes(data)
+    header.update(Kind='repair',RequestPath=source,RequestSHA256=sha(data));header['Witnesses'][source]=sha(data)
+    (q/'request.json').write_text(json.dumps(header));(q/'game-request.json').write_bytes(data);request_bytes=data
 packet=b'{"Completion":"turn","Writes":[],"FilesModified":[]}'
 def raises(kind,operation):
     try:operation()
@@ -26,10 +30,26 @@ elif mode=='changed-prompt':
     (q/'prompt.txt').write_bytes(b'foreign');raises(c.RelayMismatch,lambda:c.read_request(queue,q))
 elif mode=='wrong-queue':
     header['QueueId']='foreign';(q/'request.json').write_text(json.dumps(header));raises(c.RelayMismatch,lambda:c.read_request(queue,q))
+elif mode=='wrong-turn':
+    header['TurnIdentity']['requestId']='foreign';(q/'request.json').write_text(json.dumps(header));raises(c.RelayMismatch,lambda:c.read_request(queue,q))
 else:
     request=c.read_request(queue,q);assert request.prompt==prompt and request.game_request==request_bytes
-    if mode=='read':
+    if mode in ['read','repair-read']:
         assert request.model=='inert-worker' and request.turn_identity==turn
+        if mode=='repair-read':
+            c.publish_response(request,b'{"Completion":"repair","Writes":[]}',adapter_id='inert-repair')
+            assert json.loads((q/'reply.json').read_bytes())['RequestSHA256']==sha(request_bytes)
+    elif mode=='malformed-packet':
+        raises(c.RelayMismatch,lambda:c.publish_response(request,b'{invalid',adapter_id='inert'))
+        assert not (q/'response.json').exists()
+    elif mode=='changed-authority':
+        (session/paths[2]).write_bytes(b'{"changed":true}')
+        raises(c.RelayMismatch,lambda:c.publish_response(request,packet,adapter_id='inert'))
+        assert not (q/'response.json').exists()
+    elif mode=='close-gate-timeout':
+        with c.execution_gate(queue):
+            raises(c.RelayGateUnavailable,lambda:c.request_close(queue))
+        assert not (queue/'close-request.json').exists() and c.read_close(queue) is None
     elif mode=='changed-request':
         (session/paths[0]).write_bytes(b'{}');raises(c.RelayMismatch,lambda:c.publish_response(request,packet,adapter_id='inert'))
         assert not (q/'response.json').exists()

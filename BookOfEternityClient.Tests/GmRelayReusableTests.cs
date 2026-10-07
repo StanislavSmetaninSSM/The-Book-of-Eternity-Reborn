@@ -18,6 +18,11 @@ public sealed class GmRelayReusableTests
     [InlineData("atomic-no-replace")]
     [InlineData("partial-publication")]
     [InlineData("close-unconfirmed")]
+    [InlineData("malformed-packet")]
+    [InlineData("wrong-turn")]
+    [InlineData("changed-authority")]
+    [InlineData("repair-read")]
+    [InlineData("close-gate-timeout")]
     public async Task WorkerContract_ExactBytesIdentityPublicationAndClose(string scenario)
     {
         var own=Path.Combine(TestRepoPaths.RepoRoot,"TestResults/relay-reusable",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(own);

@@ -1,3 +1,16 @@
+# Reusable relay reviewed minimal corrections WIP
+
+Causal transportRED at86f7df13:9executed/7PASS/2FAIL, exactclosebefore snapshot
+stillstarts and post-Popen startedmetadata falselyExecuted=false. All8 own
+guardiansECHILD0emergency/failure/deadline. [Trace](recovery/evidence/relay-reusable/close-red/manifest.json).
+Independent Sol narrow correctiondesignPASS: stable boundedPOSIX queuegate
+serializes close vs finalopencheck/snapshot; neverunlinklockinode. Gate failure
+refuses execution/ACK; afterauthorizedsnapshot existingchildsettles. P2 keeps
+active/child and recordsactualexit/I/O+MetadataFailure, staysRELAY ERROR.
+Controlledmain closes via workerAPI; affected heldchildcase usesAPIclose.
+Five tiny API negatives/repair/gatecases nowadded; selection30distinct planned.
+GREEN and independent followup source/evidence/metadata pending; no liveGM.
+
 # Reusable relay second source finding — post-start metadata
 
 Sol source review aa5d7b16:changesrequired P1 close/start and P2 preservedstarted

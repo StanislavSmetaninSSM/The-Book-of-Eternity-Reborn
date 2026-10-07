@@ -1,10 +1,12 @@
 """Bounded local worker contract. Queue evidence is never main-run authority."""
 from dataclasses import dataclass
+from contextlib import contextmanager
 import hashlib
 import json
 import os
 from pathlib import Path
 import tempfile
+import time
 from types import MappingProxyType
 
 LIMIT = 1048576
@@ -28,6 +30,39 @@ class RelayClosed(RelayError):
 
 class RelayAnswered(RelayError):
     """A response winner already exists, including unresolved partial publication."""
+
+
+class RelayGateUnavailable(RelayMismatch):
+    """Close/start serialization is unconfirmed; no execution or ACK is permitted."""
+
+
+@contextmanager
+def execution_gate(queue):
+    """Stable queue-local POSIX lock, no journal or owner identity; bounded acquisition."""
+    try:
+        import fcntl
+        stream = (Path(queue) / '.execution.lock').open('ab')
+    except (ImportError, OSError) as ex:
+        raise RelayGateUnavailable('Queue serialization unavailable') from ex
+    acquired = False
+    try:
+        deadline = time.monotonic() + 1
+        while not acquired:
+            try:
+                fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                acquired = True
+            except BlockingIOError as ex:
+                if time.monotonic() >= deadline:
+                    raise RelayGateUnavailable('Queue serialization timeout') from ex
+                time.sleep(.01)
+            except OSError as ex:
+                raise RelayGateUnavailable('Queue serialization unavailable') from ex
+        yield
+    finally:
+        if acquired:
+            fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
+        stream.close()
+        # Never unlink: contenders must retain the same inode for this queue lifetime.
 
 
 def sha(data):
@@ -165,10 +200,11 @@ def publish_response(request: RelayRequest, packet: bytes, *, adapter_id: str):
 
 def request_close(queue: Path):
     queue = Path(queue)
-    try:
-        atomic_write_once(queue / 'close-request.json', b'{}\n')
-    except FileExistsError:
-        pass
+    with execution_gate(queue):
+        try:
+            atomic_write_once(queue / 'close-request.json', b'{}\n')
+        except FileExistsError:
+            pass
 
 
 def read_close(queue: Path):

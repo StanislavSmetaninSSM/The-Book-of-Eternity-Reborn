@@ -69,7 +69,7 @@ internal static partial class OwnedTerminalScenarioDriver
             result["RealWorkerAndHelperConsumer"]=true;
         } finally {
             // Controlled baseline/failed worker also closes before original stop.
-            File.WriteAllText(Path.Combine(queue,"close-request.json"),"{}");
+            await Worker("close",queue);
             for(var i=0;i<300 && !File.Exists(Path.Combine(queue,"closed.json"));i++)await Task.Delay(10);
             using var closed=JsonDocument.Parse(await File.ReadAllBytesAsync(Path.Combine(queue,"closed.json")));
             Require(new[]{"ExecutionDisabled","ChildExited","IoDrained"}.All(k=>closed.RootElement.GetProperty(k).GetBoolean()),"Queue closure/I-O unconfirmed.");

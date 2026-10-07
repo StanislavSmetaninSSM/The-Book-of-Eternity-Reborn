@@ -96,7 +96,10 @@ try:
    until(lambda:(queue/'closed.json').exists(),'closed ACK after refused later start')
    assert not (q/'executing-response.json').exists() and not (q/'started.json').exists() and not (session/'applied').exists(),'Close preceded snapshot but real consumer started'
   elif mode=='close-held-child':
-   until(lambda:(session/'child-entered').exists(),'actual child entered');(queue/'close-request.json').write_text('{}')
+   until(lambda:(session/'child-entered').exists(),'actual child entered')
+   sys.path.insert(0,str(repo/'tools/gm-relay'))
+   from relay_contract import request_close
+   request_close(queue)
    for _ in range(6):pump()
    assert not (queue/'closed.json').exists(),'Close ACK before held consumer exit'
    until(lambda:(queue/'closed.json').exists(),'actual child exited/drained');assert (session/'applied').read_text()=='once'
@@ -108,6 +111,9 @@ try:
     assert execution['Executed'] and execution['ExitCode']==0,execution
     if mode=='started-metadata-failure':
      assert execution['MetadataFailure'] and execution['ChildExited'] and execution['IoDrained'],execution
+     until(lambda:capture.count(b'RELAY ERROR')>=2,'metadata error remains blocked after actual EOF')
+     for _ in range(6):pump()
+     assert capture.rsplit(b'\x1b[2J\x1b[H',1)[-1].startswith(b'RELAY ERROR'),'Metadata error falsely restored readiness'
     os.write(master,b'\r');pump();assert len(list(queue.glob('request-*')))==1 and (session/'applied').read_text()=='once'
    (queue/'close-request.json').write_text('{}');until(lambda:(queue/'closed.json').exists(),'close receipt')
   # A late reply after closure must never execute again.

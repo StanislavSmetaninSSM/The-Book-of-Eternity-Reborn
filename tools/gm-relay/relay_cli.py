@@ -5,7 +5,7 @@ This process and its fixed helper child are owned by the original M1 terminal.
 """
 import argparse,hashlib,json,os,select,signal,subprocess,sys,termios,time,tty,uuid
 from pathlib import Path
-from relay_contract import atomic_write_once
+from relay_contract import atomic_write_once, execution_gate, RelayGateUnavailable
 def sha(data):return hashlib.sha256(data).hexdigest()
 def write_once(path,data):
     atomic_write_once(path,data)
@@ -19,7 +19,7 @@ def main():
     args=parser.parse_args();session=Path(args.session).resolve();queue=Path(args.queue).resolve();queue.mkdir(exist_ok=True)
     if any(queue.iterdir()):raise ValueError('Relay requires its original fresh queue; no replay')
     fd=sys.stdin.fileno();initial=termios.tcgetattr(fd);tty.setraw(fd)
-    stop=False;closing=False;active=None;child=None;output=bytearray();draft=bytearray();paste=None;escape=bytearray();ordinal=0
+    stop=False;closing=False;active=None;child=None;output=bytearray();draft=bytearray();paste=None;escape=bytearray();ordinal=0;metadata_error=None
     def stopped(*unused):
         nonlocal stop;stop=True
     signal.signal(signal.SIGTERM,stopped);signal.signal(signal.SIGINT,stopped)
@@ -58,8 +58,11 @@ def main():
                     if len(output)>1048576:raise ValueError('Response child output bound exceeded')
                     if not part and child.poll() is not None:
                         child.stdout.close();code=child.returncode;child=None
-                        write_once(active/'consumer.log',bytes(output));record_execution(dict(Executed=True,ExitCode=code,ChildExited=True,IoDrained=True));output.clear()
-                        if code:render('RELAY ERROR')
+                        write_once(active/'consumer.log',bytes(output))
+                        settled=dict(Executed=True,ExitCode=code,ChildExited=True,IoDrained=True)
+                        if metadata_error:settled['MetadataFailure']=metadata_error
+                        record_execution(settled);output.clear()
+                        if code or metadata_error:render('RELAY ERROR')
                         elif not closing:render()
             if closing and child is None:
                 close_ack();render('RELAY CLOSED')
@@ -75,13 +78,24 @@ def main():
                     if reply.get('ResponseSHA256')!=sha(packet):raise ValueError('Response bytes mismatch')
                     for path,witness in req['Witnesses'].items():
                         if not (session/path).is_file() or sha(read_bounded(session/path))!=witness:raise ValueError('Original request/pending changed')
-                    write_once(active/'executing-response.json',packet)
+                    # Shared API close and this reservation serialize on the same stable inode.
+                    # Release after snapshot: an already-authorized original child may settle.
+                    with execution_gate(queue):
+                        if (queue/'close-request.json').exists() or (queue/'closed.json').exists():
+                            closing=True
+                            continue
+                        write_once(active/'executing-response.json',packet)
                     consumer=Path(__file__).with_name('relay-apply-response.ps1')
                     child=subprocess.Popen(['pwsh','-NoLogo','-NoProfile','-File',str(consumer),'-SessionPath',str(session),'-RequestPath',str(active/'request.json'),'-ResponsePath',str(active/'executing-response.json')],
                         cwd=session,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
                     save(active/'started.json',dict(ChildPid=child.pid,ResponseSHA256=sha(packet),AgentTask=reply['AgentTask'],Model=reply['Model']))
+                except RelayGateUnavailable:
+                    raise # Serialization uncertainty cannot mint execution or a close ACK.
                 except Exception as ex:
-                    record_execution(dict(Executed=False,Failure=type(ex).__name__+': '+str(ex)));render('RELAY ERROR')
+                    failure=type(ex).__name__+': '+str(ex)
+                    if child is None:record_execution(dict(Executed=False,Failure=failure))
+                    else:metadata_error=failure # Popen succeeded; retain active/child until actual exit/I-O.
+                    render('RELAY ERROR')
             if not select.select([fd],[],[],.02)[0]:continue
             data=os.read(fd,16384)
             if not data:break
