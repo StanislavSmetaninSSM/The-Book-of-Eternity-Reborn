@@ -16245,6 +16245,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-connected-mini-absence-boundary",
+      "responsibility": "T043 original source File.Exists error-vs-absence through denied own fixture parent, no protected path",
+      "excludes": "Five unchanged refusing witness cases and passed native environment are separate owners; no live qualification",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+        "BookOfEternityGMBridge/DraftObservation.cs",
+        "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmConnectedMiniTransactionTests.ActualOriginalPipe_DeniedRemovalIsNotAbsence"
+          ]
+        }
+      ]
     }
   ]
 }

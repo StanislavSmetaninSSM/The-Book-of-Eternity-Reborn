@@ -476,3 +476,12 @@ subsequent independent Home/End revisions prove frozen raw first/lastword edges.
 No full Composer reconstruction or text modification. Independent review also
 requires helper success-completion, exact busy footer region and glyph preflight;
 those still need new causal cases before qualification. No CLI/model/game request.
+
+2d9b04ab preparation failed before discovery/execution (out parameter captured
+in lambda, discard shadowed by lambda parameter);0tests, not causal RED. Syntax
+corrected73a56dce. Its reviewed seven cases execute1PASS6causalFAIL;4positive
+cases were unexecuted after category failure. EOF, composer/unknown-pane busy,
+queued Enter and combining/format glyph failures now causally established. Broken
+symlink is already treated as present; one new isolated denied-parent removal
+case tests the actual access-error-vs-absence defect before changing that boundary.
+No protected permissions/system settings or CLI/model/game requests.

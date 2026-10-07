@@ -2,15 +2,8 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-connected-mini-transaction",
-      "reason": "Two current positive witness failures need diagnostics; two new causal restored-cursor/wrapped-edge cases; five unchanged refusals and passed native environment excluded",
-      "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED"
-      ]
-    },
-    {
-      "category": "gm-connected-mini-review-boundaries",
-      "reason": "Independent source findings need seven new causal original-consumer cases before fixes; successful five refusals/native environment excluded",
+      "category": "gm-connected-mini-absence-boundary",
+      "reason": "Seven reviewed boundaries execute1PASS6causalFAIL; broken symlink already retained as present, need one new causal inaccessible own parent for real File.Exists false; previous cases excluded",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED"
       ]

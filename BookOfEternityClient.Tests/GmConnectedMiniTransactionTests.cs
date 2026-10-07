@@ -33,6 +33,9 @@ public sealed class GmConnectedMiniTransactionTests
     [InlineData("queued-enter", "draft-uncertain")]
     public Task ActualOriginalPipe_ReviewBoundaries(string mode,string expected)=>RunConnectedAsync(mode,expected);
 
+    [Fact]
+    public Task ActualOriginalPipe_DeniedRemovalIsNotAbsence()=>RunConnectedAsync("denied-removal","draft-uncertain");
+
     [Theory]
     [InlineData("soft\u00adhyphen")]
     [InlineData("combining\u0483mark")]
@@ -104,6 +107,7 @@ public sealed class GmConnectedMiniTransactionTests
                     if(observerExit==0 && mode!="unrestored"){
                         File.Delete(file);
                         if(mode=="symlink-removal")File.CreateSymbolicLink(file,Path.Combine(h.Root,"missing-own-target"));
+                        if(mode=="denied-removal")File.SetUnixFileMode(h.Root,UnixFileMode.None);
                         Frame(false);
                         if(mode=="restored-cursor")screen.Feed(Encoding.UTF8.GetBytes("\u001b[?2026h\u001b[11;13H\u001b[?2026l"));
                     }
@@ -132,7 +136,9 @@ public sealed class GmConnectedMiniTransactionTests
             if(bytes=="\r")screen.Feed(Encoding.UTF8.GetBytes(mode=="unknown"?"\u001b[?1049h":"\u001b[?2026h\u001b[13;1H\u001b[K"+" BUILD  ⠋ esc interrupt".PadRight(89)+"ctrl+p cmd "+"\u001b[6;1H\u001b[?2026l"));
         };
         Assert.True((await h.Rpc(new {command="setReady",ready=true})).GetProperty("ok").GetBoolean());
-        var result=await h.Rpc(h.Request("one",text));
+        JsonElement result;
+        try{result=await h.Rpc(h.Request("one",text));}
+        finally{if(mode=="denied-removal")File.SetUnixFileMode(h.Root,UnixFileMode.UserRead|UnixFileMode.UserWrite|UnixFileMode.UserExecute);}
         if(observer!=null)await observer;if(queued!=null)await queued;
         Assert.True(editor,"Actual original transaction must reach the standard editor gesture before witness/edge verdict.");
         if(mode is "success" or "unknown" or "restored-cursor" or "wrapped-edge"){
