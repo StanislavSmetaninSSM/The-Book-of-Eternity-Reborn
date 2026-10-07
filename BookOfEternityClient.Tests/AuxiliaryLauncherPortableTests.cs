@@ -116,6 +116,22 @@ public sealed class AuxiliaryLauncherPortableTests
         Assert.Contains("legacy Windows/source",docs);
     }
 
+    [Fact]
+    public async Task ObservationTimeout_RetainsOriginalGuardianUntilActualExclusiveReap()
+    {
+        var f=await AuxiliaryPackageFixture.Create();
+        try
+        {
+            await Assert.ThrowsAsync<TimeoutException>(()=>f.RunObservationTimeout());
+            var report=f.LastCleanup;
+            Assert.True(report.GetProperty("echild").GetBoolean());Assert.True(report.GetProperty("deadline").GetBoolean());
+            Assert.Equal(0,report.GetProperty("failures").GetInt32());Assert.Equal(1,report.GetProperty("emergencySignals").GetInt32());
+            Assert.True(report.GetProperty("reaped").GetInt32()>=1);
+        }
+        finally {await f.DisposeAsync();}
+        Assert.False(Directory.Exists(f.Root),"Root removal requires actual exclusive cleanup, never observation timeout alone.");
+    }
+
 }
 
 internal sealed class AuxiliaryPackageFixture : IAsyncDisposable
@@ -125,6 +141,8 @@ internal sealed class AuxiliaryPackageFixture : IAsyncDisposable
     internal string Runtime => Path.Combine(Root, "player-bin");
     internal FileSystemManager Files = null!;
     private readonly List<JsonElement> _cleanups = [];
+    private readonly HashSet<int> _unsettled = [];
+    internal JsonElement LastCleanup=>_cleanups[^1];
     private int _sequence;
     private string Guardian => Path.Combine(Root, "guardian");
     private static string Evidence => Environment.GetEnvironmentVariable("BOE_AUXILIARY_EVIDENCE") ?? Path.Combine(Path.GetTempPath(), "boe-auxiliary-evidence");
@@ -179,6 +197,7 @@ internal sealed class AuxiliaryPackageFixture : IAsyncDisposable
         return await Execute(Find("pwsh"),args.ToArray(),label);
     }
     internal Task<(int Exit,string Output,string Error)> RunClient(string label,string[] arguments)=>Execute(Path.Combine(Runtime,"dotnet"),new[]{Path.Combine(Package,"BookOfEternityClient.dll")}.Concat(arguments).ToArray(),label);
+    internal Task<(int Exit,string Output,string Error)> RunObservationTimeout()=>Execute(Find("pwsh"),["-NoLogo","-NoProfile","-Command","[Threading.Thread]::Sleep(60000)"],"observed-timeout",500,TimeSpan.FromMilliseconds(1));
     private async Task Prepare(string exe,string[] args,string label)
     {
         var start=new ProcessStartInfo(exe){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=TestRepoPaths.RepoRoot};foreach(var a in args)start.ArgumentList.Add(a);
@@ -186,21 +205,26 @@ internal sealed class AuxiliaryPackageFixture : IAsyncDisposable
         var log=await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(p,TimeSpan.FromSeconds(50),Path.Combine(Root,label+".log"));
         Assert.True(p.ExitCode==0,"Preparation failure, not causal RED: "+log);
     }
-    private async Task<(int Exit,string Output,string Error)> Execute(string exe,string[] args,string label)
+    private async Task<(int Exit,string Output,string Error)> Execute(string exe,string[] args,string label,int guardianLimit=20000,TimeSpan? observation=null)
     {
         var n=++_sequence;var report=Path.Combine(Root,$"guardian-{n}.json");
         var start=new ProcessStartInfo(Guardian){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true,WorkingDirectory=Root};
-        foreach(var a in new[]{report,"20000",exe}.Concat(args))start.ArgumentList.Add(a);
+        foreach(var a in new[]{report,guardianLimit.ToString(System.Globalization.CultureInfo.InvariantCulture),exe}.Concat(args))start.ArgumentList.Add(a);
         start.Environment["PATH"]=Runtime;start.Environment["DOTNET_ROOT"]=Runtime;start.Environment["DOTNET_MULTILEVEL_LOOKUP"]="0";
         start.Environment.Remove("BOE_GM_MAIN_OPERATION");start.Environment.Remove("BOE_GM_MAIN_BINDING");
-        using var p=Process.Start(start)!;var output=p.StandardOutput.ReadToEndAsync();var error=p.StandardError.ReadToEndAsync();
+        using var p=Process.Start(start)!;_unsettled.Add(n);var output=p.StandardOutput.ReadToEndAsync();var error=p.StandardError.ReadToEndAsync();
         // Independent guardian owns timed descendants and cannot exit until exclusive ECHILD.
-        await p.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(30));
+        var exit=p.WaitForExitAsync();TimeoutException? observationFailure=null;
+        try {await exit.WaitAsync(observation??TimeSpan.FromSeconds(30));}
+        catch(TimeoutException e) {observationFailure=e;await exit;} // retain original guardian/drains through its scoped deadline/reap
+
         var stdout=await output;var stderr=await error;
         Assert.True(File.Exists(report),"Independent guardian report missing; cleanup unqualified.");
         var cleanup=JsonDocument.Parse(File.ReadAllText(report)).RootElement.Clone();_cleanups.Add(cleanup);
+        if(p.ExitCode==0&&cleanup.GetProperty("echild").GetBoolean()&&cleanup.GetProperty("failures").GetInt32()==0)_unsettled.Remove(n);
         Directory.CreateDirectory(Evidence);
-        File.WriteAllText(Path.Combine(Evidence,Path.GetFileName(Root)+$"-{n}-{label}.json"),JsonSerializer.Serialize(new {Label=label,GuardianExit=p.ExitCode,Report=cleanup,Output=stdout,Error=stderr,PlayerSdkPresent=Directory.Exists(Path.Combine(Runtime,"sdk")),PlayerPath=Runtime}));
+        File.WriteAllText(Path.Combine(Evidence,Path.GetFileName(Root)+$"-{n}-{label}.json"),JsonSerializer.Serialize(new {Label=label,ObservationTimedOut=observationFailure!=null,GuardianExit=p.ExitCode,Report=cleanup,Output=stdout,Error=stderr,PlayerSdkPresent=Directory.Exists(Path.Combine(Runtime,"sdk")),PlayerPath=Runtime}));
+        if(observationFailure!=null)System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(observationFailure).Throw();
         Assert.Equal(0,p.ExitCode);Assert.True(cleanup.GetProperty("echild").GetBoolean());Assert.Equal(0,cleanup.GetProperty("failures").GetInt32());Assert.False(cleanup.GetProperty("deadline").GetBoolean());Assert.Equal(0,cleanup.GetProperty("emergencySignals").GetInt32());
         return (cleanup.GetProperty("driverExitCode").GetInt32(),stdout,stderr);
     }
@@ -209,9 +233,9 @@ internal sealed class AuxiliaryPackageFixture : IAsyncDisposable
     {
         Directory.CreateDirectory(Evidence);
         foreach(var p in Directory.Exists(Root)?Directory.GetFiles(Root,"*.log"):[])File.Copy(p,Path.Combine(Evidence,Path.GetFileName(Root)+"-"+Path.GetFileName(p)),true);
-        var settled=_cleanups.All(c=>c.GetProperty("echild").GetBoolean()&&c.GetProperty("failures").GetInt32()==0);
+        var settled=_unsettled.Count==0&&_cleanups.All(c=>c.GetProperty("echild").GetBoolean()&&c.GetProperty("failures").GetInt32()==0);
         if(settled&&Directory.Exists(Root))Directory.Delete(Root,true);
-        File.WriteAllText(Path.Combine(Evidence,Path.GetFileName(Root)+"-cleanup.json"),JsonSerializer.Serialize(new{Root,Removed=!Directory.Exists(Root),ExclusiveEchild=settled,Runs=_cleanups.Count}));
+        File.WriteAllText(Path.Combine(Evidence,Path.GetFileName(Root)+"-cleanup.json"),JsonSerializer.Serialize(new{Root,Removed=!Directory.Exists(Root),ExclusiveEchild=settled,UnsettledRuns=_unsettled.Count,Runs=_cleanups.Count}));
         return ValueTask.CompletedTask;
     }
 }

@@ -42,9 +42,12 @@ T042 automatic submission requires the configured reliable idle view and an empt
 draft; unknown results pause without replay. Unsupported VT/TUI, trust/access or
 TERM prompts require separate qualification; do not auto-confirm or substitute TERM.
 Confirmed scoped stop/disposal/Stopped ACK must precede restart. Uncertain owner,
-worker inventory or storage debt keeps refusal. Load keeps current low-level refusal;
-automatic stop/load/fresh launch UX is undecided. Windows instructions below retain
-the existing route; native Windows execution and Linux browser rollback are separate.
+worker inventory or storage debt keeps refusal. Accepted bounded Load UX requires
+confirmed original stop + successful Load + current-owner refresh before a fresh
+configured launch; uncertain/failed decisions pause without old-session continuation.
+Linux browser rollback/gacha/Daren portability is accepted in isolated automated
+checks; native Windows and live GM remain separate unqualified environments.
+Windows instructions below retain their existing route.
 
 
 ## legacy Windows/source recipe
@@ -160,8 +163,8 @@ pwsh -NoProfile -File "C:\Games\BOE\BookOfEternityClient\Launcher\bookofeternity
 артефакты старой generation; не собирайте и не очищайте эти файлы вручную.
 
 Действующие bounded Load/browser/clipboard/audio результаты и ограничения — в
-[roadmap](../../specs/1553-portable-local-storage/roadmap-after-daren.md) и
-[auxiliary plan](../../specs/1553-portable-local-storage/auxiliary-launcher-portable-plan.md).
+[repository roadmap](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/codex/1553-load-filesystem/specs/1553-portable-local-storage/roadmap-after-daren.md) и
+[repository auxiliary plan](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/codex/1553-load-filesystem/specs/1553-portable-local-storage/auxiliary-launcher-portable-plan.md).
 Load UX принят отдельным срезом: подтверждённые stop + Load + refresh предшествуют
 fresh launch; неопределённость не продолжает старую сессию. Эти helper-инструкции
 не объявляют live GM, физический audio, desktop clipboard или native Windows проверенными.
