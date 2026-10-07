@@ -1,0 +1,1110 @@
+{
+  "Schema": 1,
+  "Task": "T050-CONSOLE-AUDIO-LINUX",
+  "Issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
+  "AcceptedBase": "499ca652f367ec7dc5da5e85abb731793e5e47a5",
+  "RuntimeAndTestsCheckpoint": "cf787a8f7873e83e7c02e96504ad8e7ff2d9870c",
+  "DesignReview": {
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "Verdict": "PASS",
+    "Revision": "0394ffaeb79486bdc7c2eec41dcfcdd3ab2133e3"
+  },
+  "SourceReview": {
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "Verdict": "PASS",
+    "Revision": "cf787a8f7873e83e7c02e96504ad8e7ff2d9870c"
+  },
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityClient.TestSupport/AudioConsoleProbe.cs",
+      "Blob": "e0877dca24904d4aef956b84c99d7e49e1ee478f",
+      "Bytes": 4283,
+      "SHA256": "ef70b428a5c092c8b735b1d9b81e4114f043bd33ff98712c4c38661af1a3b194"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/AudioLifecycleProbe.cs",
+      "Blob": "e95827d93b0ce6e4a900e1e68b2f4d2b7881585a",
+      "Bytes": 16612,
+      "SHA256": "99fda805c28797fb20f5a9e9b3595df6d0d47e55e4d3f11b9c73f9d7e2dbfda8"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/ControlledAudioBackend.cs",
+      "Blob": "a3adfd1cbe699b778b1199aea9967704f5fc33ec",
+      "Bytes": 1954,
+      "SHA256": "a2ab294abbcc8cccc9fdafb482e6ba2f1cc42e2ae3625c3703bed5d2063036e2"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/AudioLinuxFixture.cs",
+      "Blob": "cdf6a8659ccbfb5f12ca7d5da621ea916910e704",
+      "Bytes": 3574,
+      "SHA256": "b63ef5c916f9cb2798b15e6529d59142b7ed5badf0efbef19ff0abe5067728d8"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/BrowserAudioIsolationTests.cs",
+      "Blob": "269e68fed2617ecf19b884c426afd44f6f325802",
+      "Bytes": 1039,
+      "SHA256": "9fb6d0406053e4b049b3ec44ae14eb42ac17b8d7237a76f2faa50ee525845478"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/ConsoleAudioLinuxTests.cs",
+      "Blob": "5288381783ba7210295f88b51dcbe0feaccb5b04",
+      "Bytes": 8425,
+      "SHA256": "a41063d46179144a3f31c922e97ca5ae497e6bffe86c7de6c55f56a6242f7f8c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs",
+      "Blob": "411ca47055fb1020f579f4399a6954bbb4f61e8a",
+      "Bytes": 29969,
+      "SHA256": "9feac4d7c5881ef1d913f6340f7df0ecec88006ef72faf0de66bf30786f3e6eb"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/components/AudioPanel.tsx",
+      "Blob": "e1c113ae7194eea2421273f0c3f399319a9c05df",
+      "Bytes": 12659,
+      "SHA256": "5f32239885f8bf030d9e3df848df378c55e299efa8caeac35675177ac8e71fae"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Blob": "e4f778864060557b6a9c783238c271fa88b63645",
+      "Bytes": 5795,
+      "SHA256": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/ConsoleSettingsPreview.cs",
+      "Blob": "049e9711cf40a2dea48d5e4bc8b3908c32c12421",
+      "Bytes": 2553,
+      "SHA256": "20b72aa471c57b9bb8224bff51412d254458052e96a71ffd86644b85009b107a"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine.cs",
+      "Blob": "5eb1380b2274c1feadaf03223e20406c18fe12d1",
+      "Bytes": 10232,
+      "SHA256": "b94f77072b7d329c4b3e6cd940f97c52964d9c6b9bb3352fdfaa578c38a8ee21"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "Blob": "6832c505ec157d3776e0e30f6f6143a809a4b6e0",
+      "Bytes": 165984,
+      "SHA256": "8b67cdc2777322bc20d540bb90e785c38fa762cdd3b11c0ea99cdc34a3eb741a"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs",
+      "Blob": "05c1d0e6b7eb0e160da609be51098cca92eac92a",
+      "Bytes": 56660,
+      "SHA256": "a66a8cc6de44cd62af4760106fafccde4fd68a569996c06f9ff492533660a419"
+    },
+    {
+      "Path": "BookOfEternityClient/Program.cs",
+      "Blob": "30e6f6cfac5550a530698c5564e8ac4996573c18",
+      "Bytes": 16377,
+      "SHA256": "019c979a1c53cb30ca4ce9436337664c699e31fb101b30710e38d5c7e4652494"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/Audio/AudioPlayback.cs",
+      "Blob": "7823f61ec7681598c3d4bbee3e27f041519241b9",
+      "Bytes": 2459,
+      "SHA256": "89d1e081ca831f3e527c6d9935effb2a3a80e7893eee265be1c400cfe2a4bd70"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/Audio/SdlAudioApi.cs",
+      "Blob": "e708ea2af6373b71ca01f18c68acf1a87833b298",
+      "Bytes": 4714,
+      "SHA256": "2dfeed17806d5857fae83246993341414a9e934f9e4bee7d654c54b12079c701"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/Audio/SdlAudioBackend.cs",
+      "Blob": "291d5621869bb1dd38bee33481eeca181f13cf6e",
+      "Bytes": 2962,
+      "SHA256": "f30e0eebf191b25a5f948af3ecc48484c6fa9082188c718c8b2273bd7c380258"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/Audio/WindowsAudioBackend.cs",
+      "Blob": "453bc9c9b41b6703cd2840f51f00c01078a41896",
+      "Bytes": 1737,
+      "SHA256": "a76353f36c3c12d9006e296b11bd7277921b66efab7158886ae14efb76dcd5c9"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/AudioService.SettingsPreview.cs",
+      "Blob": "95cf390d25e47f88b703308b1072fe4e1c0da518",
+      "Bytes": 1103,
+      "SHA256": "1a46760f41f901b4b2ac58606cc7900285c3c9b3284498a4be247599ac59dd35"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/AudioService.cs",
+      "Blob": "d4695f126952f31a2695c514ae48a5c9594b397a",
+      "Bytes": 14340,
+      "SHA256": "2236f56e7f3c6b626d249a480eb6065abe8fe4dbb311386606dbe40949d3f67c"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/LinuxClipboardReaderIdentity.cs",
+      "Blob": "099e79aba99c63626ba286e4ed3dc292c1aa2229",
+      "Bytes": 2316,
+      "SHA256": "bd98d3bcb2dfca55412e2ee90d43ad68de11a2ec6c7196e78975465702d1b927"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/BrowserAudioService.cs",
+      "Blob": "9a5c5f9a629627dfdec5ecb5ab816a8a66fec08b",
+      "Bytes": 14025,
+      "SHA256": "18ce7d62ee0671c069ba3ffa20fa4c8a8db8940e8a5918c6ecc9a4c7f46788df"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/BrowserClientSettingsService.cs",
+      "Blob": "5c11ae57ce808dcb8bba68a6f25eec9e3ae2c464",
+      "Bytes": 13333,
+      "SHA256": "5145b901bff15ff9a652f31646a4243b229fcb760584ea48fc14b92a2017daa7"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+      "Blob": "cf79fa1304c67dc0816183ed86b916339c3d1124",
+      "Bytes": 17056,
+      "SHA256": "9465af8840824cd3c0b0e662252be52f8f06d30f272085bf05e53bdfa11ad634"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Blob": "425a365cfb6caa9163d0403c08dc509b374ed212",
+      "Bytes": 1139417,
+      "SHA256": "099efe169893a81339d7c3f864f5982439ecbe9a5f4e1ac91dca80a543947912"
+    },
+    {
+      "Path": "tests/fixtures/PortableStorageCrashHost/Program.cs",
+      "Blob": "d2ca681152bde46bd8c8779f9ab612e95927abc8",
+      "Bytes": 2226,
+      "SHA256": "68b7eb2430de31df4ff11d1f8ffcf4ece3f6feae1b19a1ce5ebbb3b12cd83a99"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Blob": "1a5e3f79b7faff08738710ee149a556101fb47d7",
+      "Bytes": 536,
+      "SHA256": "88a576e24bb44aa5e62f0e2c3e7fa2bca79aa3f3a79cfdb6888ed5f6e523eeab"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "recovery/evidence/console-audio-linux-browser-proof-failure/Build-unit.log.gz",
+      "Bytes": 2025,
+      "SHA256": "8063c5d25d3639b51499db5d3fc124364bb92f4d8dd5a8d5342e49c07872eddf"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-browser-proof-failure/browser-audio-isolation-unit-001.trx",
+      "Bytes": 13765,
+      "SHA256": "96782dad1ec671e4584ceeb267b92cc692a9957898ce55d7423f98adddd89e83"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-browser-proof-failure/command.log.gz",
+      "Bytes": 2098,
+      "SHA256": "ddab992b96232f95b460a01610adca17c073463a8895f1212e802dd1f0e125e8"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-browser-proof-failure/dotnet-test.log.gz",
+      "Bytes": 178427,
+      "SHA256": "1b36f995d5dd4f0d412044d9f6acf470649c0abf90158cb863dc11c731dc14ca"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-browser-proof-failure/plan.json",
+      "Bytes": 5675,
+      "SHA256": "e83c9b07fe460e15521df5418bd06103fe42cd39bbdbf4d62ea22be02ee8dcb2"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-browser-proof-failure/run.json",
+      "Bytes": 719,
+      "SHA256": "c8f83f14e30a0ef159ff8479a291b4d11f81f463c76e034026bc398cde4b8ac9"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-browser-proof-failure/summary.json",
+      "Bytes": 1521,
+      "SHA256": "32dfa10e17be7a84680577aea6fe6393eb93fc41194f1ad8665f2b16acff8cf0"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-catalog/Build-integration.log.gz",
+      "Bytes": 739,
+      "SHA256": "b04dce6a844e0d71005051338b68398c465e3e359ab675a7ca34ed8f061bab5b"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-catalog/Build-unit.log.gz",
+      "Bytes": 293,
+      "SHA256": "eb96012528e1175635f98a7a88384bc3cae5e75f326d1fc8471663970ab1bff7"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-catalog/catalog-audit.json",
+      "Bytes": 103,
+      "SHA256": "079221d0c195493a7eadf11297bca16c5715090015863143a13580ee1eeb0bd3"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-catalog/command.log.gz",
+      "Bytes": 382,
+      "SHA256": "7f948553848e54903ab8085dbfa91e2fde58a77b7188ed63f82a9c0750848498"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-catalog/dotnet-test.log.gz",
+      "Bytes": 347643,
+      "SHA256": "8a458f7c4f79093365d01b2edc2625b95ddfffce28c0ca55080577cb3d3b2010"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-catalog/run.json",
+      "Bytes": 542,
+      "SHA256": "97c7c9e5bf9ab91acb169521a73d8d89d285c7d1d1d4ed682b7898d88d2fd444"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-catalog/summary.json",
+      "Bytes": 1599,
+      "SHA256": "6a997010d02663bb53294598b07f375271f2dd3aeacee4ec181b979b62111c21"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-catalog-repeat/command.log.gz",
+      "Bytes": 382,
+      "SHA256": "a007c8f4ba540f54803d29dcee81695282c8c45b7cf7067b3fceb3ffacc6ebd6"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-catalog-repeat/run.json",
+      "Bytes": 561,
+      "SHA256": "f783b5e1640626714ad237995674d95f5706de72049d84f301720b233b85e2fd"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-catalog-repeat/summary.json",
+      "Bytes": 1600,
+      "SHA256": "71666ad8b2be59aa113946c4e16be5532c67f5fbabfdff6da0e50bf28ff73310"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-05e13c75a5694aa5b1f99361f2f610e0-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "426799fa77c1aaa84603705ff53697478dea0fe86756fe0e56255f412f20d6d8"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-05e13c75a5694aa5b1f99361f2f610e0.json",
+      "Bytes": 188,
+      "SHA256": "0c666236d2ae5ed6fad3b2f6bdf39fa77b3d29afffaa466410b7065c187cc32d"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-09892a68a3464cae954ac9a7679b3f25-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "740d17d5fc9fbb24e74c6c2e9476d212f4ccc7a12393b758c4ff3e7abadea68c"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-09892a68a3464cae954ac9a7679b3f25.json",
+      "Bytes": 178,
+      "SHA256": "9f9180ad4733bcdf9067273b163914a982819a624dece035dae0f7cbbc930467"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-11ca3f19093047a589792b0671fa8aed-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "137fea4ef72ca1f2096b98edf73ca9e8bc6c2e9d12148fdf8f1ef6eac092fb17"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-11ca3f19093047a589792b0671fa8aed.json",
+      "Bytes": 138,
+      "SHA256": "63332a527df3799074d3e200a895f7ff6d94ba54c31193d20669e82dfbfc10ec"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-13266b3a8b3147b296c96a0bbea49907-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "766a436859677cfec27ec622af8c991760143e096d2295cff2c90df60e368b54"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-13266b3a8b3147b296c96a0bbea49907.json",
+      "Bytes": 249,
+      "SHA256": "4577269b7f12d33b763c3dce3df5dde54bc28a6f7b57f0c5ff2f82b7c015e730"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-1ea6211a774848dc9a4b70121a503e0f-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "d36dac7fd268e4867a15ab0e4b8fd4206e1bec755289b875ac865dc0389da6e6"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-1ea6211a774848dc9a4b70121a503e0f.json",
+      "Bytes": 237,
+      "SHA256": "a2cce9cea453694eac32ca7e285b4668c8bd3fc0be08b8733dfc2515c66caa0d"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-26824b6fe56242698fb54be4a3c18342-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "53d2e50433b53be0cb00c09483254f265e26c7689408cf530359193964ef24be"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-26824b6fe56242698fb54be4a3c18342.json",
+      "Bytes": 9714,
+      "SHA256": "995466579385d7b268659b90785e165226557446c57a1c8a5e118cebf17a853e"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-583f10d7a00743358e5e281dfe5dd6c6-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "d283954cd2746f472c2aa9c6b26bfb958930d5908735d2a43020ddbed7ce42b4"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-583f10d7a00743358e5e281dfe5dd6c6.json",
+      "Bytes": 151,
+      "SHA256": "2633aac21a5a78a2a6688a8c4e78a5c6d4dcd4052dc1871774babf2dd9714c17"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-63ff9571da48420aa243a2fd12ce7587-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "1e33147fb58dcf0c8b6ce51cd362298440b784dc1ac488037b3a2b1a3abad8dc"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-63ff9571da48420aa243a2fd12ce7587.json",
+      "Bytes": 184,
+      "SHA256": "432a99cbe6e1801911d3a9af5e8f4c55dc06ce4013de677a47ec529fbfc2197a"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-694a278e0b0c4ac8b8bc9ec77200728a-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "3b2730f3a7f02cf02ed76e052815a7b8c779f7591702dd429421ac470d428b3b"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-694a278e0b0c4ac8b8bc9ec77200728a.json",
+      "Bytes": 87,
+      "SHA256": "a7b7ba9fbe3c9088f9f00dc8dda9932bc1d5160c4c8a176c8bfe52e38ecedcb8"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-70cd220fb9d24651bf177025b52a8a31-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "59dc8e2047b7def9915c57f2efb2be522fb2e9b26ef6cd131b53cad8bd94a781"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-70cd220fb9d24651bf177025b52a8a31.json",
+      "Bytes": 112,
+      "SHA256": "f867242d9a1eb2f3b3ad73aab0d6f8f89c1dee4a39cad64de1f074f9b674856d"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-853af6d114c84da4b62a0b4839b40ee1-cleanup.json",
+      "Bytes": 186,
+      "SHA256": "b5f509d0eb64220e26ef919b9c7c4211fcb3990213245424935ad1a8aa57e1a9"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-965bb306e2db4bbea423a90826386039-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "bb53ce1376be39d9d3943d0ee37a2af9fc6a0051812d00a3c8da393555b14c93"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-965bb306e2db4bbea423a90826386039.json",
+      "Bytes": 192,
+      "SHA256": "8640c3dc09a1b95ca21e70e07958f2a74bb51cdb030e580f6518420066ec860d"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-b87d8c21a9b845ab8f5f01e0889420bc-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "c85bda556ca0e24b63eb0ce51fbba59447d10e7ca0e7c443aee47b3d7d26dcaa"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-b87d8c21a9b845ab8f5f01e0889420bc.json",
+      "Bytes": 252,
+      "SHA256": "c65c3e6836d76f4417a6bae334866cd4b2117c7c501a9cd4ca5616828eda5558"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-bd9af15336d24419b532206c59b1731b-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "48ac09c6679550202eee50e68f13f2fc1dd244aca15c7d6c30f3de2a19b9ca38"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-bd9af15336d24419b532206c59b1731b.json",
+      "Bytes": 115,
+      "SHA256": "992cee858f7035931a2401be28e698d1a8fd8cf5fc02204e267315244ff37065"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-c814c5c4ce3b4c499ad1edd742aa14d8-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "ed216cf6f7e696f3a633e549736fb24f48f8b26e919f21dc9ac8c9918328d582"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-c814c5c4ce3b4c499ad1edd742aa14d8.json",
+      "Bytes": 153,
+      "SHA256": "a19e02f8d4275d0c06ea86cdc2fb1d85b0d5f217c401095bf40990f992e0a2cc"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-da5b41bcb7364a4192fff52138458492-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "8d90dd73deddd390bbee7e431a95da42a3eabc96ee4b6d61c35cab482a12a995"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-da5b41bcb7364a4192fff52138458492.json",
+      "Bytes": 251,
+      "SHA256": "989b77ba55e72576ad007c939834cb78044f72e6706dcafdcc08d9224c0325dd"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-e2a365f7ab4048b0ab8a6a40c7fa20a6-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "4c9a815063ed419d9534c675ef9a4a01d2f97f3c39a5ebcfd67d32475938c027"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-e2a365f7ab4048b0ab8a6a40c7fa20a6.json",
+      "Bytes": 225,
+      "SHA256": "deaf501fb2afcc2e9d952d4a36e0a5c337bd1d4d2a61c4db61d52531d3ed6be3"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-e56bb8244d4c4ac5bc9430fa92335c36-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "9a542d418a1eead502a8c7a1588b69d6f95cb42ca898e5404d7f57570de5d889"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-e56bb8244d4c4ac5bc9430fa92335c36.json",
+      "Bytes": 90,
+      "SHA256": "17e096404660acd615f135a2c3720d2aafdc7b3277cae62e1dab6b028d01eee0"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-ef7185080f6b4219b7b788f2eb20a744-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "5864a1054f906d45ea6cd620132e47229af5f32a8471014fe4f799ed249c7c2b"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-ef7185080f6b4219b7b788f2eb20a744.json",
+      "Bytes": 234,
+      "SHA256": "e7aa29b0ffa64367f03b38bbb6af614459e33e24c10bdae53279412f63d1eebb"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-f40a47fb8e434e36b42b57a4d611eaf2-cleanup.json",
+      "Bytes": 187,
+      "SHA256": "bc4c2beeb6e437b75c727d2c62b73f08742b57d357e3147a02a7c55deb4ef6c3"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-cases/boe-audio-f40a47fb8e434e36b42b57a4d611eaf2.json",
+      "Bytes": 157,
+      "SHA256": "69096e1518c184621af573e9cb1ef62ae5b6916535565e55afd8cf2d9ee4335f"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-selected/Build-unit.log.gz",
+      "Bytes": 2028,
+      "SHA256": "daa596d22cd4dd676701c5678c8bb0b47ccd9bdc9ef8713fcc5a6a739ff4dc2e"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-selected/browser-audio-isolation-unit-001.trx",
+      "Bytes": 8761,
+      "SHA256": "a6ebfe88dc7e6135e11b7d2777c118f09db4f1ea16eb3ac6861e1b74924f2193"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-selected/command.log.gz",
+      "Bytes": 1693,
+      "SHA256": "11d0bbeca4ae5d339ea960196fb2a76387137b6171b792cb0b707869c14d96e1"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-selected/console-audio-linux-unit-002.trx",
+      "Bytes": 34132,
+      "SHA256": "25878c6abe20ffe7bb1fa113bd139b1a0e601e9cc2185fc78766c6b40ca81b89"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-selected/dotnet-test.log.gz",
+      "Bytes": 177852,
+      "SHA256": "1c61b709bed78f6ec42b4e96f1700508b1485f9a8104f5c2419fe1640ee053f7"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-selected/plan.json",
+      "Bytes": 7825,
+      "SHA256": "c0805e9f91249d17816357894c4f0c7de83b83b24cbcea2b59e263fdc25a090e"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-selected/run.json",
+      "Bytes": 656,
+      "SHA256": "8264ad4e53705a9bbbbe8adbb12bc4e9fd572515033bdfa9d3ef310b8d0e7889"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-final-selected/summary.json",
+      "Bytes": 1713,
+      "SHA256": "a435d43997bf3639e40ce15f3b92db7d799a4cfcccbdd63bd8b27ba045424ad5"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-green-cases/boe-audio-221e29b16934454d9587f8ea735dbf88-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-green-cases/boe-audio-221e29b16934454d9587f8ea735dbf88.json",
+      "Bytes": 166,
+      "SHA256": "2b633c6d252345f3c498323be2c627825a6fd40e2c38a07cad5fd2cdb5dc9457"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-green-cases/boe-audio-6767738a9f25465581539f67ecdfcb74-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-green-cases/boe-audio-6767738a9f25465581539f67ecdfcb74.json",
+      "Bytes": 170,
+      "SHA256": "4eb6db36bbd322106f3adc026aa46584c242d35cb39a4b8a6d39d3277b27bb5e"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-initial-green/Build-unit.log.gz",
+      "Bytes": 2155,
+      "SHA256": "e4611eeac4e7256715c6e6a23dec207d58a45a84651614f521467e464dd0f506"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-initial-green/browser-audio-isolation-unit-001.trx",
+      "Bytes": 3015,
+      "SHA256": "a0cb4bfd4b4a4e0b1e6d692ed60453a4d5b9af076e6bcc8dae08aeea276c2db0"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-initial-green/command.log.gz",
+      "Bytes": 859,
+      "SHA256": "75146875525e4b074d41361104b8f03f64b0ba0b1373643a529daaa08e55c01d"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-initial-green/console-audio-linux-unit-002.trx",
+      "Bytes": 3015,
+      "SHA256": "3702722f3b3145ced5be46b687d6217c4d6a3ad4ad36db5079cb7316ec611510"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-initial-green/dotnet-test.log.gz",
+      "Bytes": 177435,
+      "SHA256": "f937df20e215a4edc18edd6d8c441852234d229fc008227498cf7d470086f880"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-initial-green/plan.json",
+      "Bytes": 1900,
+      "SHA256": "608b822319ef8acba17f150db2b77a58bfbeb9798bd6f29ba2c9704184680287"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-initial-green/run.json",
+      "Bytes": 628,
+      "SHA256": "6409d6e3b9d0bf3bbb355d79ae4e8c2ce39e69101705307330eaf7b852bda1df"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-initial-green/summary.json",
+      "Bytes": 1706,
+      "SHA256": "60c346fccddf1571db3d0ef3cac531bace61fdad4e8aa94185521fab242e4be5"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-matrix-cases/boe-audio-16ad40b4f5df49ad95a49011522d0352-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-matrix-cases/boe-audio-16ad40b4f5df49ad95a49011522d0352.json",
+      "Bytes": 184,
+      "SHA256": "dec249081f059fa5a4301f9db822f1202d32268cb2b68ab3fd80f06a891d8ee4"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-matrix-cases/boe-audio-d8eb5430464c47fcab77f9503f82f681-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-prepare-failure/command.log.gz",
+      "Bytes": 390,
+      "SHA256": "41d7710e64e4c44ebf56e81af2b5fe9d54d55c2af25ebf5c7aeed65d2de0734f"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-prepare-failure/dotnet-test.log.gz",
+      "Bytes": 2178,
+      "SHA256": "c2d9d99d91f4de883a57ff19f892bf11e101d52c67b8a74973f208dc73443079"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-prepare-failure/run.json",
+      "Bytes": 676,
+      "SHA256": "264af1552c51dd2647ab617884108f67ca149c11e185d062f178ae29c007ded4"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-prepare-failure/summary.json",
+      "Bytes": 1341,
+      "SHA256": "65ae2a2d836ad396ea308b2f0bb96ab261ff9d00800adf34b8a49548132f44c7"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-provenance/historical-fixture-root-settlement.json",
+      "Bytes": 478,
+      "SHA256": "0028cfac809a633dbb062ce9127f12131b9a55537ce7739933bf56d5d4bd3a52"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-provenance/package-native.json",
+      "Bytes": 836,
+      "SHA256": "1349925a7f7acffe243e3ac20ec724cfd7150db09137d6e8efc7dda3fa12925d"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-provenance/versions.txt",
+      "Bytes": 413,
+      "SHA256": "ee2714bcee59ae98bc32bbcb42e0e22eaf61380bf3024c06c620fe0bbad32f98"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-browser/Build-unit.log.gz",
+      "Bytes": 2027,
+      "SHA256": "89c1cc263edd03257a37854a777acb90f6e37fa56ab8e0d35f78ed72daee3a55"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-browser/browser-audio-isolation-unit-001.trx",
+      "Bytes": 4363,
+      "SHA256": "6a10114a617b31dcb41f8fd039a7b3b4b6640e19e2cff1036ae67ea44b192ee3"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-browser/command.log.gz",
+      "Bytes": 1022,
+      "SHA256": "729ca9863aece55a453d51c24b05e9502cfc8a33912bcbc6ef820d8138a7b603"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-browser/dotnet-test.log.gz",
+      "Bytes": 177492,
+      "SHA256": "72522f08b80360d75eedebd5188d67a0f5deb4436c3ccc7f09d005831ad4f7bf"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-browser/plan.json",
+      "Bytes": 1900,
+      "SHA256": "e56159ba51b1529cd03c50b11953ca702ecc07e54af6a293b5da98655ea58767"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-browser/run.json",
+      "Bytes": 667,
+      "SHA256": "470b290620479ad4be875dc0cb9ef0a47ac400206194e9797967fa64c5a72abd"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-browser/summary.json",
+      "Bytes": 1520,
+      "SHA256": "6bede868189101e710d806c83abb0393b656d89ab99ca08ab3bfcf43a5042431"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-cases/boe-audio-4514992f6f304595ace491fe39dda329-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-cases/boe-audio-4514992f6f304595ace491fe39dda329.json",
+      "Bytes": 154,
+      "SHA256": "61f2795513d09bfdf9de91f9dc6e231db4768ceb4d73f52765f6bdaeb8066548"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-cases/boe-audio-bd88868494d34c25bf7659becf6980be-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-cases/boe-audio-bd88868494d34c25bf7659becf6980be.json",
+      "Bytes": 154,
+      "SHA256": "0f0e6001ef1318d5fd2fffd4a15c4a22cb0e05fe5cb8c3d60a01baf239223e44"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-console/command.log.gz",
+      "Bytes": 922,
+      "SHA256": "492b20a7d6f362fdf544ff0c8c9b0834a6c94a292f4588c5552f65fb566afa64"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-console/console-audio-linux-unit-001.trx",
+      "Bytes": 4355,
+      "SHA256": "4bd38747d8829ea4d23e366bb65c72121087132afefa216594c5da464701d030"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-console/dotnet-test.log.gz",
+      "Bytes": 175480,
+      "SHA256": "b92e038e2145d12c09f66356699248fa2ca618e048744e14ccf0955f9f4db435"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-console/plan.json",
+      "Bytes": 1090,
+      "SHA256": "6ff59cb4e423ade851ae27af4a1983192cc53495136b3b8b444ceff740e02e32"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-console/run.json",
+      "Bytes": 629,
+      "SHA256": "9665f58ce557fa294c3edc23d881d261a14f22aa4675aab53ad07a4d9dc725d1"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-red-console/summary.json",
+      "Bytes": 1348,
+      "SHA256": "14a9263644dfec71c0a47f7ef93e3686dd042f37f36b7a2ac029226871cde27f"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red/Build-unit.log.gz",
+      "Bytes": 2031,
+      "SHA256": "6febf971759d1f7d9d0fa124140e25c76929ab997370652c8c138c8be5665cf1"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red/command.log.gz",
+      "Bytes": 1812,
+      "SHA256": "2898067556da1ddd2b8d678a2614857a460eecee9fc2fccf21baae8abc6ac2dd"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red/console-audio-linux-unit-001.trx",
+      "Bytes": 39939,
+      "SHA256": "95b80a2303cf42f4a33cbb4232e5122b823ef901b89c1a1efc0a85c4e9c7aea0"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red/dotnet-test.log.gz",
+      "Bytes": 178292,
+      "SHA256": "2229a46f6e065d3a4869f94b21013226700cc80cd55ecc053e94ed38ddcb8f3b"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red/plan.json",
+      "Bytes": 6078,
+      "SHA256": "a021f5722521b48bc7296a01dcedebe12e7b70077e8d8f4f7cc4f030e5505a48"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red/run.json",
+      "Bytes": 626,
+      "SHA256": "bca9415de2ed14d05d1b309a1f8e45a38a3e3dca73d1cb59398e100432c4036a"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red/summary.json",
+      "Bytes": 1447,
+      "SHA256": "a50f08109eb58f2b350ef1984ddda9d21f4dbb868e9bc0937fb726291137ef1a"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-01da2ac4b9b34598a27017a4f8c40863-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-01da2ac4b9b34598a27017a4f8c40863.json",
+      "Bytes": 252,
+      "SHA256": "c65c3e6836d76f4417a6bae334866cd4b2117c7c501a9cd4ca5616828eda5558"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-0b908b1391a04b77a5c6f8dd28db6b19-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-0b908b1391a04b77a5c6f8dd28db6b19.json",
+      "Bytes": 9714,
+      "SHA256": "995466579385d7b268659b90785e165226557446c57a1c8a5e118cebf17a853e"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-105224363e9f482fb5acaf8c63238198-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-105224363e9f482fb5acaf8c63238198.json",
+      "Bytes": 178,
+      "SHA256": "d0a029ac2f617fb4e2a6ab2ddfb94e7c79b069fe420ef7545fca1e929521c55d"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-17e1e779641a4ae6ac365424ca6087ba-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-17e1e779641a4ae6ac365424ca6087ba.json",
+      "Bytes": 151,
+      "SHA256": "80cccdfb0a59fe09ab36812919d9be88bbb522f2e563776478f458f19420c18a"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-2522ba2db1994299bae6ab7a4d56192a-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-2522ba2db1994299bae6ab7a4d56192a.json",
+      "Bytes": 112,
+      "SHA256": "f867242d9a1eb2f3b3ad73aab0d6f8f89c1dee4a39cad64de1f074f9b674856d"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-318891f19bb942d0b00f509be32caabc-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-318891f19bb942d0b00f509be32caabc.json",
+      "Bytes": 237,
+      "SHA256": "a2cce9cea453694eac32ca7e285b4668c8bd3fc0be08b8733dfc2515c66caa0d"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-3cc773d975264391b559c267b9b66973-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-3cc773d975264391b559c267b9b66973.json",
+      "Bytes": 157,
+      "SHA256": "69096e1518c184621af573e9cb1ef62ae5b6916535565e55afd8cf2d9ee4335f"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-4716b07f95454d9ca8dd3946f8f73aa0-cleanup.json",
+      "Bytes": 51,
+      "SHA256": "0c9e0b5f3a4e2c6046d328034e342f85ca3c17c36dd3cf9e7ed7445e0929bd7d"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-6120b61fb2634235a222066eb4824637-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-6120b61fb2634235a222066eb4824637.json",
+      "Bytes": 138,
+      "SHA256": "63332a527df3799074d3e200a895f7ff6d94ba54c31193d20669e82dfbfc10ec"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-63886c177f234e908ef437d325b7c0aa-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-63886c177f234e908ef437d325b7c0aa.json",
+      "Bytes": 87,
+      "SHA256": "a7b7ba9fbe3c9088f9f00dc8dda9932bc1d5160c4c8a176c8bfe52e38ecedcb8"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-6669faa15ec147f58320a417f799e859-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-6669faa15ec147f58320a417f799e859.json",
+      "Bytes": 249,
+      "SHA256": "4577269b7f12d33b763c3dce3df5dde54bc28a6f7b57f0c5ff2f82b7c015e730"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-906e992c450f42c8a6db39e44fe5ab31-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-906e992c450f42c8a6db39e44fe5ab31.json",
+      "Bytes": 188,
+      "SHA256": "287f5abfec92cf1ec8847ddb7e439749de5f837f12790d9ee48fc2d912d20eea"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-99833c7e1cf441898aac054d1da3d694-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-99833c7e1cf441898aac054d1da3d694.json",
+      "Bytes": 251,
+      "SHA256": "989b77ba55e72576ad007c939834cb78044f72e6706dcafdcc08d9224c0325dd"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-a6bd15756dfb439e92287249349fa709-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-a6bd15756dfb439e92287249349fa709.json",
+      "Bytes": 115,
+      "SHA256": "992cee858f7035931a2401be28e698d1a8fd8cf5fc02204e267315244ff37065"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-b2c8b6e729564af8aa6534e1187bbcdd-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-b2c8b6e729564af8aa6534e1187bbcdd.json",
+      "Bytes": 234,
+      "SHA256": "e7aa29b0ffa64367f03b38bbb6af614459e33e24c10bdae53279412f63d1eebb"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-c0bc2178376b4410834d3bf87fe00029-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-c0bc2178376b4410834d3bf87fe00029.json",
+      "Bytes": 152,
+      "SHA256": "1bae091e60c03f04b55613b3ca707e555071f076f79d66b5d140775ca1d29d13"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-d5179cb06c4644fc86bb7d0ca903ac80-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-d5179cb06c4644fc86bb7d0ca903ac80.json",
+      "Bytes": 225,
+      "SHA256": "deaf501fb2afcc2e9d952d4a36e0a5c337bd1d4d2a61c4db61d52531d3ed6be3"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-e62df3e02bae4ecca2a3d32c5c917c45-cleanup.json",
+      "Bytes": 49,
+      "SHA256": "5731b8d4517a689dfd964c5147c4a1084882ae1047103bae5769b15c80995e25"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-e62df3e02bae4ecca2a3d32c5c917c45.json",
+      "Bytes": 90,
+      "SHA256": "17e096404660acd615f135a2c3720d2aafdc7b3277cae62e1dab6b028d01eee0"
+    }
+  ],
+  "Runs": [
+    {
+      "Run": "red-browser",
+      "Source": "211e4f58d14a94ca1899472b8665401d8c23b297",
+      "Command": "pwsh -NoProfile -Command \"& ./scripts/test-csharp.ps1 -Category @('console-audio-linux','browser-audio-isolation')\"",
+      "Result": "causal RED; fail-fast executed browser1 of planned2",
+      "EvidenceDirectory": "recovery/evidence/console-audio-linux-red-browser",
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "OwnedTreeCleanupSucceeded": true,
+      "Environment": {
+        "Activation": "source /workspace/.onboarding/activate.sh",
+        "AudioEvidence": "Own per-run BOE_AUDIO_EVIDENCE root; synthetic data only"
+      }
+    },
+    {
+      "Run": "red-console",
+      "Source": "211e4f58d14a94ca1899472b8665401d8c23b297",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category console-audio-linux -NoBuild",
+      "Result": "causal RED console1 fresh successful samebuild",
+      "EvidenceDirectory": "recovery/evidence/console-audio-linux-red-console",
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "OwnedTreeCleanupSucceeded": true,
+      "Environment": {
+        "Activation": "source /workspace/.onboarding/activate.sh",
+        "AudioEvidence": "Own per-run BOE_AUDIO_EVIDENCE root; synthetic data only"
+      }
+    },
+    {
+      "Run": "initial-green",
+      "Source": "756e2683bb751933d26a864b82f54701eb86c800",
+      "Command": "pwsh -NoProfile -Command \"& ./scripts/test-csharp.ps1 -Category @('console-audio-linux','browser-audio-isolation')\"",
+      "Result": "GREEN2/2",
+      "EvidenceDirectory": "recovery/evidence/console-audio-linux-initial-green",
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "OwnedTreeCleanupSucceeded": true,
+      "Environment": {
+        "Activation": "source /workspace/.onboarding/activate.sh",
+        "AudioEvidence": "Own per-run BOE_AUDIO_EVIDENCE root; synthetic data only"
+      }
+    },
+    {
+      "Run": "prepare-failure",
+      "Source": "d61faa65147dad8676907f413601afbf4994ccb8",
+      "Command": "pwsh -NoProfile -Command \"& ./scripts/test-csharp.ps1 -Category @('console-audio-linux','browser-audio-isolation')\"",
+      "Result": "preparationFAIL0 executed; missing fixture namespace",
+      "EvidenceDirectory": "recovery/evidence/console-audio-linux-prepare-failure",
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "ExitCode": 1,
+      "OwnedTreeCleanupSucceeded": true,
+      "Environment": {
+        "Activation": "source /workspace/.onboarding/activate.sh",
+        "AudioEvidence": "Own per-run BOE_AUDIO_EVIDENCE root; synthetic data only"
+      }
+    },
+    {
+      "Run": "browser-proof-failure",
+      "Source": "b785619a12d962acd326c427114f0911944a2c4c",
+      "Command": "pwsh -NoProfile -Command \"& ./scripts/test-csharp.ps1 -Category @('console-audio-linux','browser-audio-isolation')\"",
+      "Result": "executed5:4PASS1fixtureproofFAIL wrong direct config path; actual commit successful",
+      "EvidenceDirectory": "recovery/evidence/console-audio-linux-browser-proof-failure",
+      "Tests": {
+        "Total": 5,
+        "Executed": 5,
+        "Passed": 4,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "OwnedTreeCleanupSucceeded": true,
+      "Environment": {
+        "Activation": "source /workspace/.onboarding/activate.sh",
+        "AudioEvidence": "Own per-run BOE_AUDIO_EVIDENCE root; synthetic data only"
+      }
+    },
+    {
+      "Run": "review-red",
+      "Source": "29681bdf4c78686b02c57cca62649e63cbd62453",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category console-audio-linux",
+      "Result": "22executed18PASS4causalRED; preview3+parenttimeout1",
+      "EvidenceDirectory": "recovery/evidence/console-audio-linux-review-red",
+      "Tests": {
+        "Total": 22,
+        "Executed": 22,
+        "Passed": 18,
+        "Failed": 4
+      },
+      "ExitCode": 1,
+      "OwnedTreeCleanupSucceeded": true,
+      "Environment": {
+        "Activation": "source /workspace/.onboarding/activate.sh",
+        "AudioEvidence": "Own per-run BOE_AUDIO_EVIDENCE root; synthetic data only"
+      }
+    },
+    {
+      "Run": "final-selected",
+      "Source": "cf787a8f7873e83e7c02e96504ad8e7ff2d9870c",
+      "Command": "pwsh -NoProfile -Command \"& ./scripts/test-csharp.ps1 -Category @('console-audio-linux','browser-audio-isolation')\"",
+      "Result": "27PASS=20new+7preciselyaffected",
+      "EvidenceDirectory": "recovery/evidence/console-audio-linux-final-selected",
+      "Tests": {
+        "Total": 27,
+        "Executed": 27,
+        "Passed": 27,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "OwnedTreeCleanupSucceeded": true,
+      "Environment": {
+        "Activation": "source /workspace/.onboarding/activate.sh",
+        "AudioEvidence": "Own per-run BOE_AUDIO_EVIDENCE root; synthetic data only"
+      }
+    },
+    {
+      "Run": "catalog",
+      "Source": {
+        "Head": "cf787a8f7873e83e7c02e96504ad8e7ff2d9870c",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+      "TestsExecuted": 0,
+      "CatalogAudit": {
+        "Valid": true,
+        "Methods": 11088,
+        "Categories": 383,
+        "Unmapped": [],
+        "StaleSelectors": []
+      },
+      "ExitCode": 0,
+      "EvidenceDirectory": "recovery/evidence/console-audio-linux-catalog"
+    },
+    {
+      "Run": "catalog-repeat",
+      "Source": "70594282c8df744cb6f2b6066f9f39f1e878ea86",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+      "Result": "Supplemental discovery-only after context recovery; prior unchanged inventory success already existed; no runtime tests repeated",
+      "TestsExecuted": 0,
+      "ExitCode": 0,
+      "CatalogAudit": {
+        "Valid": true,
+        "Methods": 11088,
+        "Categories": 383,
+        "Unmapped": [],
+        "StaleSelectors": []
+      },
+      "EvidenceDirectory": "recovery/evidence/console-audio-linux-catalog-repeat"
+    }
+  ],
+  "FinalQualification": {
+    "Executed": 27,
+    "Passed": 27,
+    "New": 20,
+    "PreciselyAffected": 7,
+    "Skipped": 0,
+    "Duplicates": 0,
+    "Console": 22,
+    "Browser": 5,
+    "FixtureHosts": 20,
+    "FinalOwnedCleanupConfirmed": 20,
+    "FinalRootsRemoved": 20,
+    "OriginalPidfdTimeoutStop": 1,
+    "NativeDummyDecodedSamples": 8192,
+    "NativeDummyOpens": 2,
+    "NativeDummyCloses": 2,
+    "PhysicalPlaybackQualified": false,
+    "NativeWindowsQualified": false,
+    "DefaultDeviceAccessed": false
+  },
+  "Limits": [
+    "SDL2 remains optional capability; bundled NLayer requires no player installation",
+    "Controlled unavailable/device errors are synthetic; real default device availability is unprobed",
+    "Dummy queue/drain proves synthetic lifecycle only, no physical audio",
+    "Windows retained in source, no native Windows execution",
+    "Frontend/HTML Audio unchanged; no frontend/live-browser execution",
+    "No fullT050/systemd/provider/GM/Codex/gameplay/real saves qualification"
+  ],
+  "EvidenceReview": "pending",
+  "FreshGitHubRestore": "pending"
+}

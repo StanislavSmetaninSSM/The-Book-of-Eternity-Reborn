@@ -90,7 +90,7 @@ Primary [NLayer](https://github.com/naudio/NLayer), [package](https://www.nuget.
 - [x] Publish plan/task checkpoint; independent Sol6.1/xhigh design PASS at
   0394ffaeb79486bdc7c2eec41dcfcdd3ab2133e3 (blob c5d2d5b99c82909820002e280dc7735b65a4a3cb).
   Actual console finally and driver-asserted dummy seam are required; no device/physical claims.
-- [ ] New narrow categories `console-audio-linux` and `browser-audio-isolation`;
+- [x] New narrow categories `console-audio-linux` and `browser-audio-isolation`;
   initial child fixture reaches real AudioService.PlayCue on synthetic WAV and
   real browser registered service. Child-only guard prevents any native output
   device call (legacy Windows and SDL bindings are denied/recorded before init by child-only
@@ -99,13 +99,13 @@ Primary [NLayer](https://github.com/naudio/NLayer), [package](https://www.nuget.
   attempt, not a missing constructor/compilation failure. Keep preparation separate.
 - [x] Implement minimal contracts/service/adapters/DI, fresh same cases GREEN (2/2 at 756e2683),
   ordinary WIP push/readback before expanding matrix.
-- [ ] Per-case owned test host/root and independent hard lifetime, no shared mutable
+- [x] Per-case owned test host/root and independent hard lifetime, no shared mutable
   SDL state across tests. Controlled backend/API adapters prove settings/volume,
   menu/game context, all cues/throttle, natural end, failure, concurrent replacement,
   cancellation, StopAll/Dispose and retained timeout debt/eventual settlement.
   Real BrowserAudioService.UpdateSettings + original coordinator/config receipt
   proves accepted values and no server output; original guards/held leases unchanged.
-- [ ] Linux native SDL dummy-only child replaces the initialization seam itself with
+- [x] Linux native SDL dummy-only child replaces the initialization seam itself with
   SDL_AudioInit("dummy"), asserts SDL_GetCurrentAudioDriver()=="dummy" before
   every open, and never subsequently calls normal SDL_InitSubSystem. This avoids
   SDL2 default reinitialization replacing the dummy driver. Native source: [SDL.c](https://github.com/libsdl-org/SDL/blob/SDL2/src/SDL.c),
@@ -115,7 +115,7 @@ Primary [NLayer](https://github.com/naudio/NLayer), [package](https://www.nuget.
   queue/drain/volume/scoped close; negative controlled open0/absent library exercises
   explicit capability. Dummy is synthetic output, not physical device qualification.
   If dummy unavailable, record exact limit rather than touch a user device.
-- [ ] Select only existing affected AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed,
+- [x] Select only existing affected AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed,
   PortableBrowserSettings audio config/rollback/cleanup outcomes and precise changed
   console renderer/source guards. Adapt the old reflection-only CTS preview fixture
   if needed into actual controlled lifecycle. No unrelated clipboard/settings/full
