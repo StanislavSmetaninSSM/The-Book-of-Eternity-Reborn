@@ -79,6 +79,17 @@ public sealed class ClipboardLinuxAdapterTests
     }
 
     [Fact]
+    public async Task PublicService_LimitCountsUtf8BytesRatherThanCharacters()
+    {
+        using var fixture = new ClipboardLinuxFixture();
+        var text = new string('Ж', 600_000);
+        Assert.True(text.Length < 1024 * 1024);
+        var r = await fixture.Run(new() { Text = text });
+        Assert.Equal("TooLarge", r.GetProperty("Outcome").GetString());
+        Assert.Single(fixture.ReadCalls());
+    }
+
+    [Fact]
     public async Task PublicService_ReadsSyntheticUnicodeAndParagraphs()
     {
         using var fixture = new ClipboardLinuxFixture();

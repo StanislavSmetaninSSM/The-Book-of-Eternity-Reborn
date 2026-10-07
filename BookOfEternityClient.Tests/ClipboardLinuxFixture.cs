@@ -8,6 +8,7 @@ internal sealed class ClipboardLinuxFixture : IDisposable
 {
     internal readonly string Root = Path.Combine(Path.GetTempPath(), "boe-clipboard-" + Guid.NewGuid().ToString("N"));
     private readonly List<string> _cases = [];
+    private Process? _host;
     internal ClipboardLinuxFixture()
     {
         Assert.True(OperatingSystem.IsLinux(), "This synthetic executable fixture qualifies Linux only.");
@@ -22,7 +23,7 @@ internal sealed class ClipboardLinuxFixture : IDisposable
         foreach (var tool in tools ?? ["wl-paste"])
         {
             var path = Path.Combine(Root, "bin", tool);
-            File.WriteAllText(path, request.ReaderMode == "bad-start" ? "#!/nonexistent-boe-synthetic-reader\n" : "#!/usr/bin/python3\n" + Reader);
+            File.WriteAllText(path, request.ReaderMode == "bad-start" && tool == "wl-paste" ? "#!/nonexistent-boe-synthetic-reader\n" : "#!/usr/bin/python3\n" + Reader);
             File.SetUnixFileMode(path, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
         }
         var assembly = typeof(ClipboardLinuxFixture).Assembly.Location;
@@ -36,19 +37,11 @@ internal sealed class ClipboardLinuxFixture : IDisposable
         start.Environment.Remove("WAYLAND_DISPLAY"); start.Environment.Remove("DISPLAY");
         if (wayland != null) start.Environment["WAYLAND_DISPLAY"] = wayland;
         if (display != null) start.Environment["DISPLAY"] = display;
-        using var process = Process.Start(start) ?? throw new InvalidOperationException("Owned clipboard probe did not start.");
+        var process = _host = Process.Start(start) ?? throw new InvalidOperationException("Owned clipboard probe did not start.");
         var stdout = process.StandardOutput.ReadToEndAsync(); var stderr = process.StandardError.ReadToEndAsync();
         using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(15));
-        try { await process.WaitForExitAsync(deadline.Token); }
-        finally
-        {
-            if (!process.HasExited)
-            {
-                process.Kill(); // only this original host, after the reader's independent8s lifetime
-                using var cleanup = new CancellationTokenSource(TimeSpan.FromSeconds(1));
-                await process.WaitForExitAsync(cleanup.Token);
-            }
-        }
+        // The host has its own independent12s exit timer. Parent sends no numeric PID signals.
+        await process.WaitForExitAsync(deadline.Token);
         Assert.True(process.ExitCode == 0, "Probe preparation/execution failed: " + await stdout + await stderr);
         var calls = ReadCalls();
         foreach (var call in calls)
@@ -75,12 +68,18 @@ internal sealed class ClipboardLinuxFixture : IDisposable
 
     public void Dispose()
     {
-        if (Directory.Exists(Root)) Directory.Delete(Root, true);
+        var settled = _host == null || _host.HasExited;
+        if (settled)
+        {
+            _host?.Dispose();
+            if (Directory.Exists(Root)) Directory.Delete(Root, true);
+        }
+        // On failure retain the original host reference/root and report debt, never claim cleanup.
         var evidence = Environment.GetEnvironmentVariable("BOE_CLIPBOARD_EVIDENCE") ?? Path.Combine(Path.GetTempPath(), "boe-clipboard-evidence");
         Directory.CreateDirectory(evidence);
         File.WriteAllText(Path.Combine(evidence, Path.GetFileName(Root) + "-cleanup.json"), JsonSerializer.Serialize(new
         {
-            FixtureRoot = Root, Removed = !Directory.Exists(Root), Cases = _cases
+            FixtureRoot = Root, Removed = !Directory.Exists(Root), OwnedHostCleanupConfirmed = settled, Cases = _cases
         }));
     }
 

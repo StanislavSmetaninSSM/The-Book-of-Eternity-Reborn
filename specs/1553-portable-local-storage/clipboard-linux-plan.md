@@ -35,8 +35,12 @@ clipboard shortcut check can reread successful clipboard text equal to a shortcu
    are generic Error (stderr content is not logged/displayed). Linux .NET reaps its
    children independently, so managed Process plus HasExited cannot authorize a PID
    signal. Preflight pidfd on own self before reader creation; after Process.Start,
-   acquire a pidfd for the returned PID and then check the original managed
-   Process.HasExited. Reject the descriptor if original exit is observed: this
+   acquire a pidfd for the returned PID, then force `HasExited` on a newly created
+   `Process.GetCurrentProcess()` (own self only), then check the original managed
+   Process.HasExited. In .NET8 this own-self observation creates a Holder and crosses
+   the managed child-table lock held across reaping and exit caching, including
+   the PID1/original-SIGCHLD-ignored `reapAll` branch. Bare self construction is
+   insufficient; explicit HasExited is required. Reject the descriptor if original exit is observed: this
    excludes a descriptor opened on an already recycled PID. Retain a validated
    pidfd as stable incarnation identity; Linux cleanup uses pidfd_send_signal only,
    never Process.Kill/PID/tree fallback. A concurrent exit yields ESRCH, never a
@@ -133,3 +137,15 @@ and [exclusive child reaping/cache source](https://raw.githubusercontent.com/dot
 support this correction; no runtime source patch, privilege or signal-permission
 change is proposed. Own synthetic timeout/flood readers have independent8s
 lifetime, so test cleanup remains bounded if pidfd capture is refused.
+For the negative capture/debt case only, an internal instance constructor injects
+the capture function (no public/global setting). It receives the real started
+Process and may return no descriptor; all ordinary fixtures use the unchanged
+public constructor. The controlled child then proves two CleanupUncertain results
+with only one reader, retained original Process, actual natural exit, and a later
+explicit gesture that settles the debt and launches once. This seam cannot claim
+kernel race reproduction; stable identity remains a source-backed guarantee.
+The self-observation barrier depends on the pinned .NET8 Process/Holder/reaper
+implementation, not a public guarantee that Process retains an unreaped child.
+Future runtime changes require rechecking that dependency. Test-host cleanup sends
+no numeric PID signal and uses its existing independent12s lifetime; unconfirmed
+exit retains original host/root and reports failure/debt, not successful cleanup.

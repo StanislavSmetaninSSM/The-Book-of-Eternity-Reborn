@@ -102,7 +102,7 @@ public sealed class ClipboardConsoleConsumerTests
         var r = await fixture.Run(new() { Mode = "ask", Text = text, Lines = ["\\p", ""] });
         Assert.Equal(text, r.GetProperty("Value").GetString());
         Assert.True(r.GetProperty("Screen").GetString()!.Length < 1200);
-        Assert.DoesNotContain("\u001b", r.GetProperty("Screen").GetString());
+        Assert.DoesNotContain("\u001b", r.GetProperty("Screen").GetString(), StringComparison.Ordinal);
     }
 
     [Fact]
