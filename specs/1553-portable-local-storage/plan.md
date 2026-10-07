@@ -1,3 +1,15 @@
+# S1 causal baseline preserved
+
+At08827080: contract1/1 causalFAIL (missing PIDFDs); controlled1/1 causalFAIL
+after actualheldPID897416 (missing scope attachment, Start0/noRunning/noRelease).
+Independentguardian ECHILDtrue/emergency0/failures0/deadlinefalse/driver1.
+Malformed -File category array0tests and relocated bin AppContext1executed
+pre-child failure are preparation failures, not RED. Test/driver/Bridge bin
+physical paths restored; obj/client bin preserved in /tmp. Local Git-excludes
+cover own build-output symlinks; no source/settings change. Readback13 clean.
+[Exact evidence](recovery/evidence/systemd-main-s1/red/manifest.json).
+Next only S1 implementation; no public activation or live systemd.
+
 # Current T041-SYSTEMD-MAIN-S1 execution WIP
 
 Owner accepted0868b805 and authorizes S1 only. Original held PTY/pidfd scope

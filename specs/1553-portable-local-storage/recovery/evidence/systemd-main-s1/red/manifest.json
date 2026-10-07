@@ -1,0 +1,150 @@
+{
+  "SourceCommit": "08827080aef350f7a879d4b32e29d8cf8ee54153",
+  "CausalRedCompleted": 2,
+  "CausalRedFailed": 2,
+  "PreparationFailure": "Malformed -File array0tests; relocated bin AppContext1executed failure before child, excluded from causal RED. Original bin restored.",
+  "Controlled": {
+    "ActualHeldPid": 897416,
+    "StartCount": 0,
+    "Running": false,
+    "Release": false,
+    "Echild": true,
+    "EmergencySignals": 0,
+    "GuardianDriverExitCode": 1
+  },
+  "Artifacts": [
+    {
+      "Source": "TestResults/test-categories/20261007-221536-475-896822-3240438e89f044e4b80a44de7b3e28a3-categories/gm-main-systemd-contract-unit-001.trx",
+      "Bytes": 4821,
+      "SHA256": "03f83333835714b7f65f1cf44d550f3fb52b1e5947a3643c1ffdaff631a2e33a",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/0-gm-main-systemd-contract-unit-001.trx.gz",
+      "StoredSHA256": "9846afacf5285764c9d54bd4967d113512233ceb430d366f37b852f3b86aa948"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-221536-475-896822-3240438e89f044e4b80a44de7b3e28a3-categories/dotnet-test.log",
+      "Bytes": 1611784,
+      "SHA256": "cd8d0835bdaf2e0c33e934ee242700ab1f5c2b5bf69841b41edf5f5be1f30973",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/0-dotnet-test.log.gz",
+      "StoredSHA256": "4869dd4a16772d3d3fc948f5c044136fec4a4b2e78b62978ccdaab8e7d084fa3"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-221536-475-896822-3240438e89f044e4b80a44de7b3e28a3-categories/summary.json",
+      "Bytes": 1461,
+      "SHA256": "836582d78e151bb2933e7b10952ea2482f150ed294e4ee69b935c485d688c619",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/0-summary.json.gz",
+      "StoredSHA256": "b6bdcc6b228875ffbe36da5f5f6312029d0b0452b8729964ca07b4ec2b1b08ec"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-221536-475-896822-3240438e89f044e4b80a44de7b3e28a3-categories/plan.json",
+      "Bytes": 1902,
+      "SHA256": "5099a2115997c5ac1876a6359c03ed55b04e8f85d30de09eb730bf4139e2ae9d",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/0-plan.json.gz",
+      "StoredSHA256": "38447be8ff94984f2e4988b7a49b2a1ffa77021aa8a54a252b07cb0e9d197593"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-221551-800-896993-b75bcedb2c7d427ebd4d3ba8495b6333-categories/dotnet-test.log",
+      "Bytes": 1612103,
+      "SHA256": "bc2b5e551371897aba665cac86924561044250ec222424e52652dedbcd829fcf",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/1-dotnet-test.log.gz",
+      "StoredSHA256": "763857861ed1e78151e916675101372233f0bb5524ba966644b3c8c957ee7834"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-221551-800-896993-b75bcedb2c7d427ebd4d3ba8495b6333-categories/summary.json",
+      "Bytes": 1379,
+      "SHA256": "bfc3844a2c32f9a069f2567e42160556a952e8d70e2970a2735cef6146eaa92b",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/1-summary.json.gz",
+      "StoredSHA256": "ca06c78852472f5926fded9d0519c258febfb8a612a5250afabe5f42f28a7a50"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-221551-800-896993-b75bcedb2c7d427ebd4d3ba8495b6333-categories/gm-main-systemd-controlled-terminal-unit-001.trx",
+      "Bytes": 5396,
+      "SHA256": "fb3769029685c907de08d64130bac79fe2ea08140ebd9b5f27a94cb0d189979b",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/1-gm-main-systemd-controlled-terminal-unit-001.trx.gz",
+      "StoredSHA256": "e750164386ad011306339314bfc6b2458e28b01b7492929aa12f3597f61b9354"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-221551-800-896993-b75bcedb2c7d427ebd4d3ba8495b6333-categories/plan.json",
+      "Bytes": 1121,
+      "SHA256": "b660305eda182720dd699c0b837817b0f198c8ba962111c8545a920e70d9654e",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/1-plan.json.gz",
+      "StoredSHA256": "bc4d0486cda790847085c86bb20f45992e2e22868ba4d82e2603d2dad6135e7f"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-221725-398-897206-ad803bb65c5b46a586db030c2a9467bf-categories/dotnet-test.log",
+      "Bytes": 1611744,
+      "SHA256": "54717570fc458e17eb8e27fe1b479c65c5b9e4c95617760c4c336f1a0b4c53ef",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/2-dotnet-test.log.gz",
+      "StoredSHA256": "b9df9d3fcebd1a484ba2f47468b6169adfa3e3551dbde9978b7a8a339a714cb7"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-221725-398-897206-ad803bb65c5b46a586db030c2a9467bf-categories/summary.json",
+      "Bytes": 1380,
+      "SHA256": "b0fbe3c73b7f2df4a8712336c8782747b4ea664d7b78ed483119028903c72d38",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/2-summary.json.gz",
+      "StoredSHA256": "2e9c307f5c62779ad7e6b9843eb60437981c6431ab3736d78baadc22e4d14eb4"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-221725-398-897206-ad803bb65c5b46a586db030c2a9467bf-categories/gm-main-systemd-controlled-terminal-unit-001.trx",
+      "Bytes": 4692,
+      "SHA256": "9628c7e0b6f08cd084636357e44b1235b0b1a54ed0f75c5d3344c2e23d24ec72",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/2-gm-main-systemd-controlled-terminal-unit-001.trx.gz",
+      "StoredSHA256": "1718206c7b5189c2a97f80bbc53352c3ece3d40cdb49b179e22e969295f63964"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-221725-398-897206-ad803bb65c5b46a586db030c2a9467bf-categories/plan.json",
+      "Bytes": 1121,
+      "SHA256": "952e8161c53f1a43bf55208fd6b7937e82bcb32a2db3252124d8575e184c0730",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/2-plan.json.gz",
+      "StoredSHA256": "e59e1b0a8c6fe22b756a198ca72c4f180cd8cc36bc39f2553988346b1527feca"
+    },
+    {
+      "Source": "TestResults/native-terminal/05e3aa11f2284c62a2df513784bd9e0a/build-provenance.json",
+      "Bytes": 1438,
+      "SHA256": "32b07bbf573601b5cd7cf3deff422189a94a52fefc08dd54c5ad39a4e86e7d5d",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/3-build-provenance.json.gz",
+      "StoredSHA256": "2c2f65564b06633fb293ba3ed19d2fed50c4c8c8e4fefdfd33317eba702d3530"
+    },
+    {
+      "Source": "TestResults/native-terminal/05e3aa11f2284c62a2df513784bd9e0a/neutral-terminal-manifest.json",
+      "Bytes": 324,
+      "SHA256": "ac55d988743401dfcb95e63c01032f18947b57cc40ae094d3a584cb8f05fe1a5",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/3-neutral-terminal-manifest.json.gz",
+      "StoredSHA256": "97ed671bbdeda7b11721f1d514511d833787ad1102dd46d324099a97d9922ce5"
+    },
+    {
+      "Source": "TestResults/native-terminal/05e3aa11f2284c62a2df513784bd9e0a/guardian.json",
+      "Bytes": 97,
+      "SHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/3-guardian.json.gz",
+      "StoredSHA256": "4a3b0059fa67390b10d972bcdc68fb8a39a3a11f5a922f20018e3c4660692a35"
+    },
+    {
+      "Source": "TestResults/native-terminal/05e3aa11f2284c62a2df513784bd9e0a/scenario.json",
+      "Bytes": 543,
+      "SHA256": "9477327a618231bfb74ae864c61c516fe7fa94616a0e700c1f0e8dab303b7950",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/3-scenario.json.gz",
+      "StoredSHA256": "2b4d2fc8eee5b311b20990d98bef19a81618a184e874c7969b8dbb83d0eb30e2"
+    },
+    {
+      "Source": "TestResults/native-terminal/05e3aa11f2284c62a2df513784bd9e0a/package-manifest.json",
+      "Bytes": 968,
+      "SHA256": "5841c477e10c1165e22b0c469e42caf588edd9b9e382a8999ae50460fb30d72f",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/3-package-manifest.json.gz",
+      "StoredSHA256": "9ea4d43801cb32116bbeb9d2ca12b215463718f0ad94b82dc29893464b248d58"
+    },
+    {
+      "Source": "TestResults/native-terminal/05e3aa11f2284c62a2df513784bd9e0a/guardian.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/3-guardian.log.gz",
+      "StoredSHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Source": "TestResults/native-terminal/05e3aa11f2284c62a2df513784bd9e0a/build.log",
+      "Bytes": 106,
+      "SHA256": "7173e3fdcc2647da88a098241b471ca724e50868b4af81415bff1737c513a99c",
+      "Stored": "specs/1553-portable-local-storage/recovery/evidence/systemd-main-s1/red/3-build.log.gz",
+      "StoredSHA256": "a55b298e4385e92cd1c5e5b285aba91dd05c331df1ee7354b40eef7e81d2d477"
+    }
+  ]
+}
