@@ -260,11 +260,14 @@ to T043-OPENCODE-LIVE-BOUNDED, not a new game contract or public CLI rollout.
    that paste in the idle textarea. Retain the original gate/lifetime throughout
    the editor roundtrip. Full-file proof is separate from screen proof. After
    actual editor-file deletion and resumed rendering, send standard buffer-Home,
-   require a fresh frame showing the full draft's first viewport at buffer start;
-   send buffer-End and require a fresh frame showing its last viewport/end cursor.
+   require a fresh frame showing its exact visible prefix/start cursor;
+   send buffer-End and require its exact visible suffix/end cursor in a fresh frame.
    These gestures change neither draft nor history nor submission. The pinned
    source's unchanged restore plus these causal observations qualify the restored
-   composer; merely a new revision after editor exit is insufficient. Geometry
+   composer; Home/End alone do not prove unseen content or exact callback time.
+   Account for paddingRight=2 and word wrapping; do not emulate the whole viewport
+   by fixed-column chunks or trim whitespace to reconcile a mismatch. Refuse
+   unsupported width, tabs and newline/normalization cases before paste. Geometry
    must remain unchanged. Recheck original authority, manual takeover, cancel,
    current view and gates at each write and the sole Enter linearization. Failure
    after paste is DraftUncertain; after Enter UnknownOutcome. No replay/auto clear.
@@ -290,3 +293,13 @@ must be representable by the CLI's shell:false editor tokenizer; unsupported
 package-path spelling is an explicit optional-profile capability refusal, not
 a change to the player's ordinary launcher. No prompt/docs/example game update
 is needed: this is client-owned input evidence, no GM-authored field/rule changes.
+
+Independent actual Sol6.1/xhigh design PASS at aa5e8200 plus these recorded
+clarifications. Launch binding is reusable only for the original input lifetime;
+each operation creates a fresh one-use witness/connected awaiter. Old connections
+remain tied to the old operation; reused paths and late completions are refused.
+The witness handler must not acquire `_promptGate` held by its awaiting dispatch;
+bound reads/ACK/helper waits and join cancellation/retirement. Each gesture retains
+the original write reservation and current observation. The bounded parser causal
+RED may proceed independently; it cannot qualify automatic dispatch before the
+connected witness/operation qualification.
