@@ -25,6 +25,7 @@ import uuid
 out, ship = (Path(v).resolve() for v in sys.argv[1:3])
 draft_mode = len(sys.argv) == 4 and sys.argv[3] == '--observe-draft'
 assert len(sys.argv) == 3 or draft_mode
+observation_seconds = 15 if draft_mode else 12
 install = Path('/workspace/qualification-1553-opencode-install')
 binary = install / 'package/node_modules/opencode-linux-x64-baseline/bin/opencode'
 assert hashlib.sha256(binary.read_bytes()).hexdigest() == '77b2cfe4b97df6f15c3673b22100b9f79c711f25ecb9bf513bb82526b15d24fa'
@@ -98,7 +99,7 @@ def rpc(payload, seconds, expected_frame=None):
         if payload['command'] == 'addtext':
             assert expected_frame in ['startup', 'draft']
             check_manual_frame(expected_frame == 'draft')
-            assert elapsed() < 12 and process.poll() is None, 'Never write after observation budget/lifetime'
+            assert elapsed() < observation_seconds and process.poll() is None, 'Never write after observation budget/lifetime'
         # Mark the one attempt before send; ambiguous partial send is never retried.
         entry['SendAttempted'] = True; peer.sendall(json.dumps(payload).encode() + b'\n'); entry['Sent'] = True
         peer.setblocking(False); reply = bytearray(); deadline = min(started + 25, time.monotonic() + seconds)
@@ -177,7 +178,15 @@ def check_manual_frame(expect_draft):
         known = gzip.decompress((Path(__file__).parents[3] / 'specs/1553-portable-local-storage/recovery/evidence/opencode-q1/startup/startup.raw.gz').read_bytes())
         expected = re.findall(rb'\x1b\[\?2026h(.*?)\x1b\[\?2026l', known, re.S)[-1]
         assert frame == expected, 'Current mini startup frame changed; never paste'
-    assert elapsed() < 12 and process.poll() is None, 'Original lifetime or observation budget ended'
+    assert elapsed() < observation_seconds and process.poll() is None, 'Original lifetime or observation budget ended'
+
+def known_frame_available(expect_draft):
+    # Waiting observes only; it neither authorizes input nor swallows a write failure.
+    try:
+        check_manual_frame(expect_draft)
+        return True
+    except (AssertionError, RuntimeError):
+        return False
 
 def before_manual_write(expect_draft):
     status = rpc({'command': 'status'}, 1)['status']
@@ -194,7 +203,7 @@ try:
     result['OriginalLauncherPid'] = process.pid
     # Latch original identity while its real retained owner acknowledges Running,
     # before observation can fail. Never reconstruct authority from later metadata.
-    while elapsed() < 12:
+    while elapsed() < observation_seconds:
         receive()
         if identity is None and record_path.exists() and Path(socket_path).exists():
             record = json.loads(record_path.read_bytes())
@@ -207,8 +216,8 @@ try:
                 running_identity = record['Identity']; identity = {k[0].lower() + k[1:]: v for k, v in running_identity.items()}
                 identity['backend'] = 2; result['OriginalRunningRecord'] = record; result['OriginalRunningStatus'] = status
         if process.poll() is not None: break
-        if draft_mode and identity is not None and elapsed() >= 6:
-            if not draft_pasted:
+        if draft_mode and identity is not None:
+            if not draft_pasted and known_frame_available(False):
                 before_manual_write(False)
                 body = '\x1b[200~' + draft + '\x1b[201~'
                 draft_pasted = True # mark before send: no ambiguous replay
@@ -216,7 +225,7 @@ try:
                 assert response['ok'] and not response['status']['ready']
                 result['ManualRpcInputBytes'] += len(body.encode())
                 result['PasteAcknowledgedAtSeconds'] = round(elapsed(), 3)
-            elif not editor_requested and elapsed() >= result['PasteAcknowledgedAtSeconds'] + .8:
+            elif draft_pasted and not editor_requested and known_frame_available(True):
                 before_manual_write(True)
                 editor_requested = True # one standard editor gesture, no Enter
                 response = rpc({'command': 'addtext', 'text': '\x18e'}, 1, 'draft')
@@ -246,7 +255,8 @@ finally:
     try:
         if identity is None: raise RuntimeError('Original stop identity unobserved; guardian cleanup cannot certify it')
         shutdown_attempts += 1
-        stop = rpc({'command': 'shutdown', 'rootKey': identity['rootKey'], 'expectedMainIdentity': identity}, 12)
+        stop = rpc({'command': 'shutdown', 'rootKey': identity['rootKey'], 'expectedMainIdentity': identity},
+                   10 if draft_mode else 12)
         result['ShutdownReceipt'] = stop
         assert stop['ok'], 'Original stop unconfirmed'
         proof = stop['status']['terminalStop']

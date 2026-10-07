@@ -180,3 +180,12 @@ driverExit1 reflects observation refusal, not a cleanup failure.
 This is an early observation-driver failure, not causal RED for a runtime defect.
 The next driver must wait boundedly for the known completed startup frame instead
 of asserting readiness of its presentation at second6. No unchanged retry.
+
+Narrow changed-driver continuation: zero-input wait for the known completed
+startup frame, then separately for the exact known synthetic draft frame. A false
+preliminary observation check only waits; final checks after socket connection
+still refuse and never retry a send. Draft mode observation15seconds/cleanup10,
+same total25/guardian30; startup-only historical mode remains12/12. No budget
+increase beyond the existing total lifecycle bound. Unknown/gate/partial frames
+receive no input and remain failure if the deadline expires. This source change
+addresses the actual premature assertion, not a runtime defect or Ready override.
