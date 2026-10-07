@@ -1,3 +1,32 @@
+## T043-DRIVER-PROVIDER-FAILURE — bounded implementation plan (2026-10-07)
+
+Source #1553; accepted base174761a17, sole Sol6.1/xhigh writer. Provider retries,
+network/auth/settings changes and all historical game-root mutations are excluded.
+This is client-owned diagnostic-driver behavior; no GM prompt/schema/rules change.
+
+1. Pin og10's public denial/error-pause trace. The current provider loop misses
+   both errors; cleanup starts after the old pause and incorrectly requires request
+   disappearance. Test the actual driver loop/cleanup, including fresh-output scope,
+   process exit, retained pending, one gesture and one identity-bound stop attempt.
+2. Localize stop separately: actual daemon `Process-Turn` retains an original pin
+   across its wait (daemon5776/5912); processing heartbeat60s versus coordinator
+   drain5s is a causal hypothesis, not the proven historical client exception.
+   Do not interrupt its helper, delete pending or loosen drain/admission. A late
+   error-pause may legitimately retain Uncertain; physical cleanup cannot pass it.
+3. Add narrow `gm-live-driver-failure` causal tests through scripts/test-csharp.ps1:
+   actual og10 provider failure, current client failure/process exit, error-pause
+   with retained request, unknown stop/no replay, and one fresh ordinary NewGame
+   controlled early-refusal path using real production launcher/client/daemon,
+   original native owner/I/O, and fixed inert CLI (no provider or accepted response).
+   Immediate failure → actual client cancellation/rollback → normal client exit →
+   sole original shutdown/Stopped ACK → daemon interrupt/EOF. No pre-ACK daemon kill.
+4. Minimal driver correction only after causal RED; change production lifecycle
+   only for a separately reproduced defect. Negative error-pause/unknown stop
+   preserves pending/Uncertain, even when the independent guardian reaches ECHILD.
+5. Independent Sol plan/source/evidence review, category inventory validation,
+   ordinary checkpoints with remote SHA/byte readback and fresh GitHub-only restore.
+   Live GM remains blocked pending the owner's separate opencode.ai access decision.
+
 ## Final bounded review disposition
 
 Independent Sol source diagnosis confirms real original SubmissionObserved at42.983s, earliestproviderdenial44.895s, clienterror163.857s, misseddriverclassification and ESC acknowledgment of the olderrorpause at201.106s followedbyplayerprompt201.349s. This is notcancellation/rollbackproof. Exactfailedpin/clientexception/coordinatorstage remainsunproven. Failed-receipt EVIDENCE PASS at53cebb3d verifies54artifacts,678files/99,051,790bytes, originalcorrelation anduncertaintylimits. No providerretry/runtimepatch after thedenial. [Current qualification](recovery/opencode-current-live-qualification.json). Independent Sol metadata PASS at0b97b285: all54curatedartifacts/pins/links, endpoint attribution and uncertainty limits verified. Final exact-tip GitHub-only restore remains the writer closure check. No runtime/test/driver changes afterog10.
