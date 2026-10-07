@@ -33,5 +33,6 @@ public sealed class GmRelayReusableTests
     [Theory]
     [InlineData("production-main-relay-reusable")]
     [InlineData("production-main-relay-consumer-error")]
+    [InlineData("production-main-relay-multiline")]
     public Task ProductionBridge_RelocatedWorkerConsumerAndOriginalRetirement(string mode)=>ProductionMainLinuxFixture.RunAsync(mode);
 }

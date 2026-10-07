@@ -1,3 +1,17 @@
+# Reusable relay RED and causal presentation boundary
+
+At6fbc133f contract12/12causalFAIL missing sharedcontract. Main2/2FAIL are fixture
+preparation for intendedworkerRED: ownRPC3s expired while qualifiedprofile permits
+15s draftobservation. Original2guardiansECHILD/emergency0; actual originalstop
+retired, notmainPASS. Retainedrawpresentation shows multiline LF withoutCR;
+TerminalScreen keepscolumn onLF, so composer includes indentation and refuses
+exactdraft. No queue/submit. Ruling: newrelay-onlyRPC18s covers existing15s
+profile without changing owner/production deadlines. Add exactmultilinecase and
+use singleline for two workerconsumer cases; next mainRED separates typed
+presentationrefusal from missingworker afteractualSubmissionObserved. No runtime
+fix yet, no replay of failedroots. Sharedrender will need CRLF for observed LF
+while immutable prompt/request bytes remain unchanged; existingVTsubset suffices.
+
 # Reusable relay causal RED preparation
 
 Independent actual Sol6.1/xhigh DESIGN PASS at3a79b040; plain RELAY ERROR marker

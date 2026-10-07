@@ -28,7 +28,7 @@ internal static partial class OwnedTerminalScenarioDriver
             return true;
         });
         var status=(await rpc(new{command="status"})).GetProperty("status");var binding=status.GetProperty("inputBindingId").GetString();
-        var prompt="controlled current request Ж🙂\nRead current turn/pending before responding.";
+        var prompt="controlled current request Ж🙂"+(mode=="production-main-relay-multiline"?"\n":" ")+"Read current turn/pending before responding.";
         var frame=new{command="dispatchPrompt",operationId="relay-one",operationKind="turn",operationRevision="neutral-1",inputBindingId=binding,text=prompt,appendEnter=true};
         var sent=await rpc(frame);result["OriginalDispatch"]=sent;
         Require(sent.GetProperty("promptDelivery").GetProperty("disposition").GetString()=="submission-observed","Original relay submission not observed.");

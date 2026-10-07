@@ -119,7 +119,7 @@ internal static partial class OwnedTerminalScenarioDriver
         object? Invoke(string name, params object?[] args) => type.GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)!.Invoke(host, args);
         async Task<JsonElement> Rpc(object request)
         {
-            using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(mode=="production-main-driver-held-pin"?12:3));
+            using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(mode.StartsWith("production-main-relay-",StringComparison.Ordinal)?18:mode=="production-main-driver-held-pin"?12:3));
             using var peer = new NamedPipeClientStream(".", pipe, PipeDirection.InOut, PipeOptions.Asynchronous);
             await peer.ConnectAsync(deadline.Token);
             await peer.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(request) + "\n"), deadline.Token);

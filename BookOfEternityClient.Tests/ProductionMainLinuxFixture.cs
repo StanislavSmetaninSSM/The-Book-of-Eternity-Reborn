@@ -100,7 +100,7 @@ internal static class ProductionMainLinuxFixture
             Directory.CreateDirectory(Path.Combine(folder,"queue"));
             command="& '/usr/bin/python3' '"+Path.Combine(bundle,"relay_cli.py").Replace("'","''")+"' --session '"+files.GameSessionPath.Replace("'","''")+"' --queue '"+Path.Combine(folder,"queue").Replace("'","''")+"' --model gpt-6.1-sol";
             settings.GmCliLaunchCommand=command;settings.GmBridgeShellWorkingDirectory=files.GameSessionPath;
-            File.WriteAllText(Path.Combine(folder,"relay-bundle.json"),JsonSerializer.Serialize(new{Baseline=!Directory.Exists(shared),Files=Directory.GetFiles(bundle).ToDictionary(Path.GetFileName,p=>Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(p))).ToLowerInvariant()),ModelRequests=0}));
+            File.WriteAllText(Path.Combine(folder,"relay-bundle.json"),JsonSerializer.Serialize(new{Baseline=!Directory.Exists(shared),Files=Directory.GetFiles(bundle).ToDictionary(p=>Path.GetFileName(p),p=>Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(p))).ToLowerInvariant()),ModelRequests=0}));
         }
         var config=JsonSerializer.SerializeToUtf8Bytes(settings);File.WriteAllBytes(Path.Combine(files.GameSessionPath,"config.json"),config);
         var initialGeneration=await new StateManager(files,settings,NullLogger<StateManager>.Instance).BootstrapLocalStorageAsync();
