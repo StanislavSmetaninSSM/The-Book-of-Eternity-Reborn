@@ -577,3 +577,11 @@ Independent Sol feasibility/design PASS74d1662b, conditional driver source
 closure. New actual ordinaryPTY driver and dedicated guardian-budget causal
 fixture WIP. Driver matches fresh offsets, waits exact thinking UI before Escape,
 no Readyoverride, original latched shutdown once. LiveCLI still unexecuted.
+
+Guardian3cd3a190 executed1FAIL but source review shows test-driver argc defect:
+/bin/true needs one harmless argv to reach established numeric-budget check.
+This is driver failure, not causal native behavior RED. Corrected baseline
+retains default guardian source; independent driver review fixes fresh eight-item
+menu/current composer anchors, separate210/270 work/cleanup bounds and confirmed
+cancel/rollback settlement. Actual one-use delivery outcome remains independently
+recorded; Input Unknown never promoted by story acceptance. Source review pending.

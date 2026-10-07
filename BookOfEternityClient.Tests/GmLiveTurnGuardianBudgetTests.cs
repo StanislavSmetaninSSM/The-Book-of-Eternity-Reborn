@@ -17,7 +17,7 @@ public sealed class GmLiveTurnGuardianBudgetTests
         {
             var start=new ProcessStartInfo(binary){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
             foreach(var arg in prefix)start.ArgumentList.Add(arg);
-            start.ArgumentList.Add("/bin/true");using var child=Process.Start(start)!;
+            start.ArgumentList.Add("/bin/true");start.ArgumentList.Add("own-no-op");using var child=Process.Start(start)!;
             await LinuxFallbackSupervisorTests.NativeRun.ObserveBuild(child,TimeSpan.FromSeconds(10),Path.Combine(folder,label+".log"));return child.ExitCode;
         }
         Assert.Equal(64,await Run("default-refusal",Path.Combine(folder,"default.json"),"300000"));

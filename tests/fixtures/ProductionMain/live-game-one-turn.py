@@ -30,7 +30,7 @@ env.update(NPM_CONFIG_USERCONFIG=str(install/'empty-user.npmrc'),NPM_CONFIG_GLOB
         'StartupBannerLines':['','█▀▀█  OpenCode','█  █  '+str(session),'▀▀▀▀',''],'AutomaticSubmissionLimit':1,
         'IdleMarker':' BUILD','WorkingMarker':'interrupt','ObservationTimeoutMilliseconds':15000}
 },indent=2,ensure_ascii=False)+'\n')
-start=time.monotonic(); peers=[]; journal=[]; original=None; original_record=None; shutdown_attempts=0
+start=time.monotonic(); peers=[]; journal=[]; original=None; original_record=None; shutdown_attempts=0;cleaning=False
 result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswers':0,'ConfiguredModel':'opencode/ling-3.1-flash-free',
         'ConfiguredCommand':command,'ConfiguredCwd':str(session),'NoReadyOverride':True,'OrdinaryNewGame':False,'LogicalLifecycleVerified':False}
 action='Я осторожно осматриваю берег Моря Хаоса и спрашиваю моего Хранителя, где я оказался.'
@@ -43,9 +43,9 @@ class Terminal:
         self.process=subprocess.Popen(args,cwd=ship,env=env,stdin=self.slave,stdout=self.slave,stderr=self.slave,preexec_fn=own)
         peers.append(self);journal.append({'At':elapsed(),'Entrypoint':name,'Argv':args,'OriginalPid':self.process.pid})
     def send(self,data,phase):
-        assert elapsed()<250 and self.process.poll() is None
+        assert elapsed()<(270 if cleaning else 210) and self.process.poll() is None
         journal.append({'At':elapsed(),'Terminal':self.name,'Phase':phase,'Input':data.decode('utf-8')})
-        os.write(self.master,data)
+        assert os.write(self.master,data)==len(data), 'Ambiguous partial foreground write; never replay'
     def text(self,offset=0):
         return re.sub(r'\x1b\[[0-9;? ]*[A-Za-z~]','',self.capture[offset:].decode('utf-8',errors='replace'))
 def elapsed():return round(time.monotonic()-start,3)
@@ -63,7 +63,7 @@ def pump(delay=.02):
         if len(p.capture)>4194304:raise RuntimeError('Bounded foreground capture exceeded4MiB')
     if elapsed()>270:raise TimeoutError('Driver total bound')
 def until(test,seconds,label):
-    deadline=min(start+250,time.monotonic()+seconds)
+    deadline=min(start+(270 if cleaning else 210),time.monotonic()+seconds)
     while not test():
         if time.monotonic()>deadline:raise TimeoutError(label)
         pump()
@@ -92,9 +92,14 @@ def rpc(payload,seconds=2):
                 item['Response']=json.loads(reply);return item['Response']
         raise TimeoutError('Original RPC outcome unknown; never replay')
 def read_json(p):return json.loads(p.read_text(encoding='utf-8-sig'))
+def fresh_main(client,offset):
+    fresh(client,'Продолжить',offset)
+    until(lambda:re.search(r'8\.\s*[^\r\n]*Выход',client.text(offset)) is not None,8,'fresh eight-item main menu')
+def fresh_player(client,offset,seconds=12):
+    fresh(client,'Ваш ход',offset,seconds);fresh(client,'🌊 > ',offset,seconds)
 def exit_client(client):
     offset=len(client.capture);client.send(b'/options\r','current prompt: game menu');fresh(client,'Игровое меню',offset)
-    offset=len(client.capture);client.send(b'4\r','observed game menu: exit to menu');fresh(client,'Тренировка QTE',offset)
+    offset=len(client.capture);client.send(b'4\r','observed game menu: exit to menu');fresh_main(client,offset)
     client.send(b'8\r','observed eight-item main menu: exit');until(lambda:client.process.poll() is not None,8,'client normal exit')
     assert client.process.returncode==0
 client=bridge=daemon=None;client_wait=False;client_prompt=False
@@ -110,7 +115,7 @@ try:
     # Observe the actual waiting UI, allow its cancellation listener to start.
     fresh(client,'Мастер игры размышляет...',offset,8);pump(.3)
     offset=len(client.capture);client.send(b'\x1b','cancel initial wait before CLI exists')
-    fresh(client,'Переходный ход отменён.',offset,10);fresh(client,'Тренировка QTE',offset,10);client_wait=False
+    fresh(client,'Переходный ход отменён.',offset,10);fresh_main(client,offset);client_wait=False
     assert not (session/'input/turn_request.json').exists()
     result['BootstrapCancelledBeforeCli']=True
     launcher=str(ship/'BookOfEternityClient/Launcher/bookofeternity.ps1')
@@ -130,12 +135,12 @@ try:
     result['ReadinessQualified']=True
     daemon=Terminal('daemon',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-daemon','visible','--timeout','180','--log',str(out/'daemon.log'),'-SessionPath',str(session)])
     fresh(daemon,'Waiting for turns...',0,15)
-    offset=len(client.capture);client.send(b'\r','observed Continue selected');fresh(client,'Enter = отправить',offset,15);client_prompt=True
+    offset=len(client.capture);client.send(b'\r','observed Continue selected');fresh_player(client,offset,15);client_prompt=True
     offset=len(client.capture);client.send((action+'\r').encode(),'one genuine game action');result['GenuineActionsSent']=1;client_prompt=False;client_wait=True
     until(lambda:(session/'input/turn_request.json').exists(),8,'genuine game request')
     request=read_json(session/'input/turn_request.json');result['ActualRequest']=request
     assert request['playerAction']==action
-    (out/'actual-turn-request.json').write_text(json.dumps(request,indent=2,ensure_ascii=False)+'\n')
+    (out/'actual-turn-request.json').write_bytes((session/'input/turn_request.json').read_bytes())
     story=session/'stories/chaos_sea.jsonl';provider_deadline=min(start+210,time.monotonic()+170)
     while time.monotonic()<provider_deadline:
         pump()
@@ -145,10 +150,16 @@ try:
             entries=[json.loads(line) for line in story.read_text().splitlines() if line.strip()]
             accepted=[e for e in entries if e.get('turn')==1 and e.get('player')==action and e.get('narrative','').strip()]
             if accepted:
-                fresh(client,'Enter = отправить',offset,10)
+                fresh_player(client,offset,10)
                 assert not (session/'input/turn_request.json').exists()
                 assert not (session/'game_state/control/pending_turn_snapshot.json').exists()
-                result['AcceptedGameTurns']=1;result['AcceptedStory']=accepted[0];client_wait=False;client_prompt=True;break
+                result['AcceptedGameTurns']=1;result['AcceptedStory']=accepted[0];client_wait=False;client_prompt=True
+                delivery=current.get('promptDelivery');result['OriginalPromptDelivery']=delivery
+                result['InputQualified']=bool(delivery and delivery.get('disposition')=='submission-observed' and
+                    delivery.get('inputBindingId')==result['OriginalRunningStatus']['status']['inputBindingId'] and
+                    delivery.get('operationKind')=='turn' and delivery.get('operationRevision')==hashlib.sha256((out/'actual-turn-request.json').read_bytes()).hexdigest())
+                # Revision is the actual original request bytes, not this pretty diagnostic copy.
+                break
         if any(marker in bridge.text()[-4000:].lower() for marker in ['permission required','allow this','trust this','sign in','authorize access']):
             raise RuntimeError('Unexpected CLI access/auth gate; no answer supplied')
         if (session/'ready/turn_error.json').exists():
@@ -158,13 +169,17 @@ try:
 except Exception as ex:
     result['Failure']=type(ex).__name__+': '+str(ex)
 finally:
+    cleaning=True
     # Settle participating client wait before original owner stop; never replay its action.
     if client is not None and client.process.poll() is None:
         try:
             if client_wait:
                 offset=len(client.capture);client.send(b'\x1b','failure: cancel original wait once')
-                until(lambda:not (session/'input/turn_request.json').exists(),10,'original cancellation settlement');client_wait=False
-                pump(.3)
+                def settled():
+                    text=client.text(offset)
+                    return not (session/'input/turn_request.json').exists() and ('Продолжить' in text or ('Ваш ход' in text and '🌊 > ' in text))
+                until(settled,12,'completed original cancellation/rollback and fresh menu/player screen');client_wait=False
+                client_prompt='Ваш ход' in client.text(offset) and '🌊 > ' in client.text(offset)
             if client_prompt:exit_client(client)
             elif client.process.poll() is None:
                 client.send(b'\x03','failure: stop original client foreground');until(lambda:client.process.poll() is not None,6,'client foreground stop')
@@ -198,7 +213,7 @@ finally:
         (out/(p.name+'.raw')).write_bytes(p.capture)
         for fd in [p.master,p.slave]:
             if fd>=0:os.close(fd)
-    result['ElapsedSeconds']=elapsed();result['Success']=result['AcceptedGameTurns']==1 and result['LogicalLifecycleVerified'] and 'Failure' not in result and all(v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
+    result['ElapsedSeconds']=elapsed();result['Success']=result['AcceptedGameTurns']==1 and result.get('InputQualified',False) and result['LogicalLifecycleVerified'] and 'Failure' not in result and all(v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
     (out/'rpc-journal.json').write_text(json.dumps(journal,indent=2,ensure_ascii=False)+'\n')
     (out/'probe-result.json').write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n')
     print(json.dumps({k:result.get(k) for k in ['Success','AcceptedGameTurns','GenuineActionsSent','Failure','CleanupFailure','ElapsedSeconds']}))
