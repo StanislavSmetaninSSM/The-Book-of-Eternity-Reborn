@@ -803,8 +803,8 @@ public partial class GameEngine
             selectedIndex = actions.FindIndex(item => item.Key == choice.Key);
             if (choice.Key == "open_folder")
             {
-                var result = _desktopPathOpener.OpenFolder(modsDir, createIfMissing: false);
-                AnsiConsole.MarkupLine(result.ToMarkup());
+                var desktopResult = _desktopPathOpener.OpenFolder(modsDir, createIfMissing: false);
+                AnsiConsole.MarkupLine(desktopResult.ToMarkup());
 
                 _inputSource.ReadKey(intercept: true);
                 continue;
