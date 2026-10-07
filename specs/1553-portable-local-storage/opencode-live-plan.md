@@ -612,3 +612,14 @@ No second package/TestSupport/client sourcecheckout atplayerstartup. Next actual
 ordinary one-turn experiment under guardian --live-turn300000; one action maximum,
 noReadyoverride/auth/accessanswers. Package/driver source/evidence pins explicit,
 model/provider/game0 before execution.
+
+Actual325b ordinary driver12.042s before NewGame/menu: client hero899rawB,
+threeESC[6n CPR queries, no bridge/daemon/CLI started;0gameactions/provider/turns.
+Original client foregroundCtrlC exit-2, actualEOF/termios restored; independent
+guardianECHILD/driver1/emergency0/failures0/no deadline. This is incomplete
+client presentation/driver observation, not qualification or proven production
+hang. Official.NET8.0.31 ConsolePal.Unix cursor probe first100deciseconds then10;
+redirectedstdout skips CPR. No terminal answers fabricated. Investigate an honest
+normalconsole client stdinPTY + capturedstdout route before changed freshprobe;
+keep actual originalbridge/CLI and daemonTTYs/terminalparser unchanged. No
+runtime fix without causal production defect; source/driver review pending.
