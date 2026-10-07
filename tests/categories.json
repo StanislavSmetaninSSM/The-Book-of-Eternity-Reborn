@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-synchronized-terminal-probe-authority",
+      "responsibility": "Exact remaining startup OSC66 probe phase and unmodelled cursor refusal before paint/save/commit",
+      "excludes": "No general terminal emulation, automatic witness/dispatch, CLI/provider/gameplay or old cohorts",
+      "changeHints": [
+        "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.InitialSpaceProbe_UnmodelledCursorCannotPaintSaveOrCommit",
+            "BookOfEternityClient.Tests.GmSynchronizedTerminalPresentationTests.InitialSpaceProbe_EmptyOscCannotBecomeThirdProbe"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-synchronized-terminal-presentation",
       "responsibility": "Consumed TerminalScreen and actual output pump with immutable pinned mini startup/editor bytes; completed frame/cell/cursor/UTF8 evidence and fail-closed geometry/unknown controls",
       "excludes": "Automatic input/witness or real CLI/provider/gameplay qualification, arbitrary TUI, native Windows/systemd and old unrelated cohorts",
@@ -385,7 +409,7 @@
     },
     {
       "id": "daren-standalone-browser-dispatch",
-      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
+      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent \u00d7 commit/rollback), no broader browser cohort.",
       "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",

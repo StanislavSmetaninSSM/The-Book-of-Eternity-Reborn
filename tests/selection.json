@@ -2,28 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-synchronized-terminal-presentation",
-      "reason": "Shared parser grammar/cursor correction requires actual startup/editor/UTF8/unknown/resize/EOF transcripts plus legacy view after change",
+      "category": "gm-synchronized-terminal-probe-authority",
+      "reason": "Four remaining independent source findings get causal baseline without repeating successful cohorts",
       "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED",
-        "T041-owned-terminal-view"
-      ]
-    },
-    {
-      "category": "gm-synchronized-terminal-boundaries",
-      "reason": "All fifteen independent-review causal refusals and actual Attach launch geometry after minimal fixes",
-      "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED",
-        "T041-owned-terminal-view"
-      ]
-    },
-    {
-      "category": "gm-synchronized-terminal-affected",
-      "reason": "Independent reviewer chose four exact impacted default Attach/profile/foreground and pipe resize entrypoints; no old aggregate/cohort rerun",
-      "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED",
-        "T041-owned-terminal-view",
-        "T042-input-lifetime"
+        "T043-OPENCODE-LIVE-BOUNDED"
       ]
     }
   ]

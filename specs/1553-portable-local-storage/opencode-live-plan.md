@@ -336,3 +336,13 @@ pre-frame probes only, physical pending-margin cursor with refusal of unmodelled
 transitions, retained original launch size/resize baseline. Three categories
 select9 transcript +15 boundary +4 exact independently selected affected methods;
 no automatic witness, provider or game acceptance follows. Checks pending.
+
+97c9 affected run planned28 but stopped after4:2PASS/2FAIL,24unexecuted.
+[Receipt](recovery/evidence/opencode-connected/affected-incomplete/manifest.json).
+Native pipe fixture proves an invented resize from redirected Console80x10
+against actual neutral80x25. Foreground driver connected before its actual pipe
+was created; guardian emergency1/deadline means logical failure, not stop success.
+Independent source review closes grammar/margin/geometry, but withholds PASS for
+empty OSC accepted as a third probe and unmodelled post-probe cursor evidence.
+Four new isolated probe cases have a separate exact category, causal RED pending.
+No new CLI or provider request; automatic witness remains unimplemented.

@@ -1,0 +1,284 @@
+{
+  "Source": "97c9c882d91115c85a3a293c4823bb4bbc07f865",
+  "ProviderRequests": 0,
+  "GameTurns": 0,
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 87422,
+      "SHA256": "b6e52cb4f47d0304ac49ad3b98d8327090452e3f5f909a21009be4989bdd3cbe"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "Bytes": 4193,
+      "SHA256": "37e74991a4b62c1716d1305c3a8a72514fecf2d65470babf820c1a55f76bc5e0"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+      "Bytes": 9592,
+      "SHA256": "bd6bd8316c6e54db1285d7576b4a5c7a69f3b3b618fd964b60e009bb9c85722a"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmSynchronizedTerminalPresentationTests.cs",
+      "Bytes": 11680,
+      "SHA256": "9ae1a15e2441ed74fac0df949dcef605797f4bf2f6a838c275bc038840426761"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs",
+      "Bytes": 12449,
+      "SHA256": "a0719afb67d9eba1f5d39aa13ac171b873d4d491d1de7ff71675e8faebeb8df9"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+      "Bytes": 6411,
+      "SHA256": "bfb9f02e673c2babcea07b3d65736a2af114dbf8fe150b57c2b0d73503b1d7d3"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "Bytes": 29258,
+      "SHA256": "b2133880640e617b13f6e8963f91ab69f0fac617355031f95ed2c5fedf08ccbd"
+    },
+    {
+      "Path": "tests/fixtures/LinuxTerminal/foreground.py",
+      "Bytes": 3728,
+      "SHA256": "b212657af90afcca9a6fadcca20934c04a2d5904f8c8c828008a016e7a23e7d0"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1154484,
+      "SHA256": "44ba49415fea547705189f9052a84e6bf9f556ba6960f257ca01ef64d11e7433"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 1029,
+      "SHA256": "77add6a8af6fcd435b18c8c687b88ebd47f5b51596c5273916c2ab3303da2872"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/Build-unit.log.gz",
+      "Bytes": 24684,
+      "SHA256": "9ed25cd9f4c470ba2a7d95356d24fd07995f257e4199e9bd705b18185582a532",
+      "StoredSHA256": "6a6460c5014a3c3db75938c199b4fc8d26c616b064b9fcf6eebad43f5c346ce3"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/dotnet-test.log.gz",
+      "Bytes": 1627227,
+      "SHA256": "a220035bb8ca64446566b24e121bc52a7a3446f8b8c497fc52a792178cdc45ac",
+      "StoredSHA256": "83de52073f81ab9217f4930757368aa21ff66427e675fda73677f337058199a9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/summary.json.gz",
+      "Bytes": 2660,
+      "SHA256": "6fd60fd173bfe932972ab8ef6d8d4d1fdd5a13012352010210f69ae031bb7283",
+      "StoredSHA256": "fc1a92c8a39004398abb06ca06daa5c75e9fb0f1da6fdfda87c7588bdfd79c67"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/gm-synchronized-terminal-affected-unit-001.trx.gz",
+      "Bytes": 10626,
+      "SHA256": "bee273e59c05488875762ad8b332797e74677b33e461858a2908c04bc2d3428b",
+      "StoredSHA256": "9c5cacbe8e0f840f0c898e14be707ba416cf3185329e20262020553413491c44"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/plan.json.gz",
+      "Bytes": 7779,
+      "SHA256": "0576ee083c198123e46d3d01e364421b52011985c51571a5a43212992b76d7d9",
+      "StoredSHA256": "b91ca48b45acfab05bae4048a64bf082522ef17ee268f885c45072eb9afebf58"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/78b4400d13e9496892952178c47da1c0/build-provenance.json.gz",
+      "Bytes": 1438,
+      "SHA256": "b217984929b0102c90ad2f26cdc1ba6c84663a61f470293889211c1bcd1a1edd",
+      "StoredSHA256": "2381312d24e0d0503d210fc18b86897b8cca6a61f79fcb6d9a9aec4e3c828d9b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/78b4400d13e9496892952178c47da1c0/neutral-terminal-manifest.json.gz",
+      "Bytes": 324,
+      "SHA256": "ac55d988743401dfcb95e63c01032f18947b57cc40ae094d3a584cb8f05fe1a5",
+      "StoredSHA256": "97ed671bbdeda7b11721f1d514511d833787ad1102dd46d324099a97d9922ce5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/78b4400d13e9496892952178c47da1c0/guardian.json.gz",
+      "Bytes": 97,
+      "SHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "StoredSHA256": "4a3b0059fa67390b10d972bcdc68fb8a39a3a11f5a922f20018e3c4660692a35"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/78b4400d13e9496892952178c47da1c0/scenario.json.gz",
+      "Bytes": 1218,
+      "SHA256": "9a091c5069a6b3480793d79300bb07b000022c94522bb435a128f05cb1cef4f3",
+      "StoredSHA256": "11d2869e2cdfa2403b56476f28dd163a1218af5623043560ff83c73450a817eb"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/78b4400d13e9496892952178c47da1c0/package-manifest.json.gz",
+      "Bytes": 968,
+      "SHA256": "67439351d6723ee064a170c64ffaf508f5a24eb9105ea172979c87ff8b8f1e7e",
+      "StoredSHA256": "aa31327b32f1cd0630c00c82d6f13c4837f7668578247621a5f51b6359e0a40d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/78b4400d13e9496892952178c47da1c0/config.json.gz",
+      "Bytes": 149,
+      "SHA256": "75b22699dcc26eb51ea5bf8ac8ae1cb5a4ee3b97cc577d1ff2ad1650bd04e64e",
+      "StoredSHA256": "0e0636650ce817a81bb28bc63514f53ed7501086f4f12cadfe1c4e1cb2a480f1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/78b4400d13e9496892952178c47da1c0/guardian.log.gz",
+      "Bytes": 81,
+      "SHA256": "046582c0acff980b4ef8d9d72bff8ad1c3e58537ddc1ad1a9b8e42e6967dce92",
+      "StoredSHA256": "8f4dddb6fbd12d2611f67b51c7a227cc711853e82f3ecac618578b59f48435d4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/78b4400d13e9496892952178c47da1c0/build.log.gz",
+      "Bytes": 106,
+      "SHA256": "2eae603c2d23e53d9544888404bc13ed521b3dfa07ecb5ee6e6b8b4caff2b811",
+      "StoredSHA256": "9e39ce7a55af0cdb8b17cd67bc45a567a77537ebca4f55cefa67f873ef90344c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/8d545fa43fc64a02aca2a09b6deb3eb5/build-provenance.json.gz",
+      "Bytes": 1438,
+      "SHA256": "b217984929b0102c90ad2f26cdc1ba6c84663a61f470293889211c1bcd1a1edd",
+      "StoredSHA256": "2381312d24e0d0503d210fc18b86897b8cca6a61f79fcb6d9a9aec4e3c828d9b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/8d545fa43fc64a02aca2a09b6deb3eb5/neutral-terminal-manifest.json.gz",
+      "Bytes": 324,
+      "SHA256": "ac55d988743401dfcb95e63c01032f18947b57cc40ae094d3a584cb8f05fe1a5",
+      "StoredSHA256": "97ed671bbdeda7b11721f1d514511d833787ad1102dd46d324099a97d9922ce5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/8d545fa43fc64a02aca2a09b6deb3eb5/guardian.json.gz",
+      "Bytes": 98,
+      "SHA256": "08264df9939d32049a9505dcc2acb3c4cea2aaddaf6a18c1c3bbda8000c4aa22",
+      "StoredSHA256": "b03bbcbd4cb03db97c78349e7230a614963a653abd796fe3915035b3563dd3b1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/8d545fa43fc64a02aca2a09b6deb3eb5/scenario.json.gz",
+      "Bytes": 74,
+      "SHA256": "a1100de77121af6f162b53de8d4aee5303463a5dc09204fef13ef42b9aa31e52",
+      "StoredSHA256": "953c087f03ffef849f30e60a104e00ecce0be9784d27ddcd3aaed908c3db16c6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/8d545fa43fc64a02aca2a09b6deb3eb5/package-manifest.json.gz",
+      "Bytes": 968,
+      "SHA256": "67439351d6723ee064a170c64ffaf508f5a24eb9105ea172979c87ff8b8f1e7e",
+      "StoredSHA256": "aa31327b32f1cd0630c00c82d6f13c4837f7668578247621a5f51b6359e0a40d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/8d545fa43fc64a02aca2a09b6deb3eb5/guardian.log.gz",
+      "Bytes": 70,
+      "SHA256": "d1f6983202b194072ab6f6e80540925e3c81a158ead3be86ed8034ef33306533",
+      "StoredSHA256": "a4a29855625879b7330581366a7e686d4096f177bea4490b751aec9cd381cc66"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/8d545fa43fc64a02aca2a09b6deb3eb5/build.log.gz",
+      "Bytes": 106,
+      "SHA256": "bf9b887f8ffc363c9d4b01fe9ed043bf665d4af0e0d7063657ae83dc11ade7f3",
+      "StoredSHA256": "34ee7dfe3ab2777bca6fc9190b12f9359e5abde80d5d952c01fa62a3f51f8ca1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/affected-incomplete/native/8d545fa43fc64a02aca2a09b6deb3eb5/foreground.log.gz",
+      "Bytes": 688,
+      "SHA256": "95afe19b25599f6ae648ba99caa1fecfe2453a0c88b6eec93e80a15ec40e840e",
+      "StoredSHA256": "bfc3f2ca3d3973268006fdbcf5078feec9533efbc81d8c3119a9576630434174"
+    }
+  ],
+  "RunSummary": {
+    "Categories": [
+      "gm-synchronized-terminal-presentation",
+      "gm-synchronized-terminal-boundaries",
+      "gm-synchronized-terminal-affected"
+    ],
+    "Reasons": [
+      {
+        "category": "gm-synchronized-terminal-presentation",
+        "reason": "Shared parser grammar/cursor correction requires actual startup/editor/UTF8/unknown/resize/EOF transcripts plus legacy view after change",
+        "contracts": [
+          "T043-OPENCODE-LIVE-BOUNDED",
+          "T041-owned-terminal-view"
+        ]
+      },
+      {
+        "category": "gm-synchronized-terminal-boundaries",
+        "reason": "All fifteen independent-review causal refusals and actual Attach launch geometry after minimal fixes",
+        "contracts": [
+          "T043-OPENCODE-LIVE-BOUNDED",
+          "T041-owned-terminal-view"
+        ]
+      },
+      {
+        "category": "gm-synchronized-terminal-affected",
+        "reason": "Independent reviewer chose four exact impacted default Attach/profile/foreground and pipe resize entrypoints; no old aggregate/cohort rerun",
+        "contracts": [
+          "T043-OPENCODE-LIVE-BOUNDED",
+          "T041-owned-terminal-view",
+          "T042-input-lifetime"
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "97c9c882d91115c85a3a293c4823bb4bbc07f865",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "gm-synchronized-terminal-affected",
+        "Seconds": 24.1461004,
+        "BudgetMinutes": 3,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.1141834,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0962345,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1529866,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 46.0830338,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 14,
+    "WallTime": "00:01:15.4053325",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 3,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 28,
+      "CompletedCases": 4,
+      "UnderfilledDescriptors": [
+        "gm-synchronized-terminal-boundaries-unit-002",
+        "gm-synchronized-terminal-presentation-unit-003"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 4,
+      "Executed": 4,
+      "Passed": 2,
+      "Failed": 2
+    },
+    "DuplicateTests": []
+  }
+}

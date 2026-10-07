@@ -154,6 +154,27 @@ public sealed class GmSynchronizedTerminalPresentationTests
         Assert.True(Value<bool>(p.Capture(),"PendingWrap"));
     }
 
+    [Theory]
+    [InlineData("X")]
+    [InlineData("\u001b[s")]
+    [InlineData("")]
+    public void InitialSpaceProbe_UnmodelledCursorCannotPaintSaveOrCommit(string unsafeTransition)
+    {
+        using var p = new ScreenProbe("original");
+        p.Feed(Encoding.UTF8.GetBytes(Escape + "[s" + Escape + "]66;w=1; " + Escape + "\\" + Escape + "[?2026h" + unsafeTransition + Escape + "[?2026l"));
+        Assert.False(Value<bool>(p.Capture(), "Reliable"));
+        p.Feed(Encoding.UTF8.GetBytes(Escape + "[?2026h" + Escape + "[H" + "Known" + Escape + "[?2026l"));
+        Assert.False(Value<bool>(p.Capture(), "Reliable"));
+    }
+
+    [Fact]
+    public void InitialSpaceProbe_EmptyOscCannotBecomeThirdProbe()
+    {
+        using var p = new ScreenProbe("original");
+        p.Feed(Encoding.UTF8.GetBytes(Escape + "[s" + Escape + "]66;w=1; " + Escape + "\\" + Escape + "[H" + Escape + "]66;s=2; " + Escape + "\\" + Escape + "[u" + Escape + "]\u0007" + Escape + "[?2026hKnown" + Escape + "[?2026l"));
+        Assert.False(Value<bool>(p.Capture(), "Reliable"));
+    }
+
     internal static T Value<T>(object obj, string name) => (T)obj.GetType().GetProperty(name)!.GetValue(obj)!;
     internal static byte[] ActualTranscript(string receipt)
     {
