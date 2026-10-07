@@ -46,10 +46,12 @@ public partial class FileSystemManager
             if (OperatingSystem.IsLinux() && root == ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root))
             {
                 if (allowPortableBrowser) continue; // The original handler preflights schema7 before any recovery.
-                if (ownedBrowser?.BrowserLocalAccess is { } access)
+                if (ownedBrowser != null)
                 {
-                    access.Validate();
-                    if (ListBrowserStorageEvidence(ownedBrowser).All(path => access.OwnsArtifact(path))) continue;
+                    ownedBrowser.BrowserLocalAccess?.Validate();
+                    if (ListBrowserStorageEvidence(ownedBrowser).All(path =>
+                        ExplorerLocalTurnRollbackArtifacts.IsLocalDirectGachaBackup(path) ||
+                        ownedBrowser.BrowserLocalAccess?.OwnsArtifact(path) == true)) continue;
                 }
             }
             throw new InvalidDataException("Unresolved legacy storage evidence requires its original supported recovery handler: " + root);
@@ -68,6 +70,8 @@ public partial class FileSystemManager
             if (access.OwnsArtifact(relative)) return true;
         }
         var path = ResolvePath(relativePath);
+        if (OperatingSystem.IsLinux() && ExplorerLocalTurnRollbackArtifacts.IsLocalDirectGachaPath(
+                GetLocalRelativePath(GameSessionPath, path, false))) return true;
         var root = ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root);
         var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         return !path.Equals(root, comparison) && !path.StartsWith(root + Path.DirectorySeparatorChar, comparison);

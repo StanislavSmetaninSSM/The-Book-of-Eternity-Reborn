@@ -54,6 +54,16 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         var result = new List<LocalBrowserEvidence>();
         foreach (var root in roots)
         {
+            // Long-lived pending-turn backup is not a schema7 transaction.
+            // The original publisher alone authenticates any interrupted Stage
+            // scratch here; acquiring a lease never retires this before-image.
+            if (root.StartsWith(DirectGachaRoot + "/", StringComparison.Ordinal))
+            {
+                if (!IsLocalDirectGachaPath(root) || files.Where(path => path.StartsWith(root + "/", StringComparison.Ordinal))
+                    .Any(path => !IsLocalDirectGachaBackup(path) && !pendingScratch.Contains(path, StringComparer.Ordinal)))
+                    throw new InvalidDataException("Unrecognized direct-gacha evidence; original bytes retained.");
+                continue;
+            }
             var parts = root.Split('/');
             var rootParts = Root.Split('/');
             if (parts.Length != rootParts.Length + 2 || !root.StartsWith(Root + "/", StringComparison.Ordinal) ||
