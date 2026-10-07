@@ -16575,6 +16575,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-live-driver-failure",
+      "responsibility": "T043 actual live-driver current provider/client failure and phase-correct original cleanup; inert public transcript and controlled original owner without provider",
+      "excludes": "No provider retries, historical mutation, OpenCode or game acceptance, settings/network, systemd/Windows or unchanged cohorts",
+      "changeHints": [
+        "tests/fixtures/ProductionMain/live-game-one-turn.py"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmLiveDriverFailureTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

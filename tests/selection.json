@@ -1,12 +1,10 @@
 {
-  "schemaVersion": 1,
-  "selections": [
+  "categories": [
     {
-      "category": "gm-mini-default-foreground",
-      "reason": "Only changed draft foreground predicate; exact captured prefix causal case, actual original pipe with full external file proof, and affected style/unknown-output/cancel refusals",
+      "id": "gm-live-driver-failure",
+      "reason": "Changed actual provider wait/error-pause/one original stop; causal committed trace and controlled original lifecycle only",
       "contracts": [
-        "T043-MINI-DEFAULT-DRAFT",
-        "T042-INPUT-TRANSACTION"
+        "T043-DRIVER-PROVIDER-FAILURE"
       ]
     }
   ]
