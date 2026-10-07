@@ -1188,6 +1188,9 @@ internal sealed partial class BridgeHost : IDisposable
 
     private async Task PumpResizeAsync(CancellationToken cancellationToken)
     {
+        // A redirected Console has no physical terminal geometry. Its clamped
+        // fallback dimensions must not resize the original owned session.
+        if (Console.IsOutputRedirected) return;
         try {
         var last = _terminalLaunchSize;
         while (!cancellationToken.IsCancellationRequested)

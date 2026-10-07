@@ -14,6 +14,7 @@ internal sealed class SynchronizedTerminalScreen
     private int _row, _column, _savedRow, _savedColumn, _scalarBytes, _scalarValue, _scalarMinimum;
     private bool _saved, _visible, _inFrame, _committed, _dirty = true, _unsupported, _ended, _hasPainted;
     private int _spaceProbePhase;
+    private bool _probeCursorUnknown;
     private long _revision;
     private int _frameCharacters;
     private string? _escape;
@@ -30,7 +31,7 @@ internal sealed class SynchronizedTerminalScreen
     {
         var cells = _cells.Select(row => new string(row)).ToArray();
         return new(_binding, _revision, string.Join("\n", cells.Select(row => row.TrimEnd(' '))).TrimEnd('\n'),
-            _committed && !_unsupported && !_ended && !_dirty && !_inFrame && _escape == null && _scalarBytes == 0,
+            _committed && !_unsupported && !_ended && !_dirty && !_inFrame && !_probeCursorUnknown && _escape == null && _scalarBytes == 0,
             cells, _row, Math.Min(_column, _columns-1), _visible, _columns, _rows, _column == _columns);
     }
     internal void Fault() => _ended = true;
@@ -44,9 +45,9 @@ internal sealed class SynchronizedTerminalScreen
             if (_inFrame && ++_frameCharacters > 1048576) _unsupported = true;
             if (_escape != null) { FeedEscape(c); continue; }
             if (c == '\u001b') { _escape = "\u001b"; continue; }
-            if (c == '\r') { _column = 0; _dirty = true; continue; }
-            if (c == '\n') { if (_column == _columns) _unsupported = true; else Move(_row + 1, _column); continue; }
-            if (c == '\b') { if (_column == _columns) _unsupported = true; else Move(_row, Math.Max(0, _column - 1)); continue; }
+            if (c == '\r') { if (_probeCursorUnknown) _unsupported = true; _column = 0; _dirty = true; continue; }
+            if (c == '\n') { if (_probeCursorUnknown || _column == _columns) _unsupported = true; else Move(_row + 1, _column); continue; }
+            if (c == '\b') { if (_probeCursorUnknown || _column == _columns) _unsupported = true; else Move(_row, Math.Max(0, _column - 1)); continue; }
             if (!SupportedCell(c)) { _unsupported = true; continue; }
             Paint(c);
         }
@@ -113,13 +114,13 @@ internal sealed class SynchronizedTerminalScreen
                 if (_inFrame) _unsupported = true;
                 _inFrame = true; _frameCharacters = 0; return;
             case "?2026l":
-                if (!_inFrame) { _unsupported = true; return; }
+                if (!_inFrame || _probeCursorUnknown) { _unsupported = true; return; }
                 _inFrame = false; _dirty = false; _committed = true; _revision++; return;
             case "?25h": _visible = true; _dirty = true; return;
             case "?25l": _visible = false; _dirty = true; return;
-            case "s": if (_column == _columns) { _unsupported = true; return; } _savedRow = _row; _savedColumn = _column; _saved = true; return;
-            case "u": if (!_saved) _unsupported = true; else Move(_savedRow, _savedColumn); return;
-            case "H": Move(0, 0); return;
+            case "s": if (_probeCursorUnknown || _column == _columns) { _unsupported = true; return; } _savedRow = _row; _savedColumn = _column; _saved = true; return;
+            case "u": if (!_saved) _unsupported = true; else Realign(_savedRow, _savedColumn); return;
+            case "H": Realign(0, 0); return;
             case "K": if (_column == _columns) { _unsupported = true; return; } EraseRow(_row, _column); return;
             case "2K": EraseRow(_row, 0); return;
             case "J": if (_column == _columns) { _unsupported = true; return; } EraseRow(_row, _column); for (var row = _row + 1; row < _rows; row++) EraseRow(row, 0); return;
@@ -133,7 +134,7 @@ internal sealed class SynchronizedTerminalScreen
         {
             var fields = code[..^1].Split(';');
             if (fields.Length == 2 && fields.All(DecimalField) && int.TryParse(fields[0], out var row) && int.TryParse(fields[1], out var column) && row > 0 && row <= _rows && column > 0 && column <= _columns)
-            { Move(row - 1, column - 1); return; }
+            { Realign(row - 1, column - 1); return; }
         }
         if (code.EndsWith('m') && Sgr(code[..^1])) return;
         _unsupported = true;
@@ -158,12 +159,17 @@ internal sealed class SynchronizedTerminalScreen
         // The observed initial space-size probes are not composer content and
         // cannot certify a frame. No response/capability is generated. They may
         // only precede the first real synchronized repaint and remain untrusted.
-        if (!_committed && !_inFrame && !_hasPainted && _row == 0 && _column == 0 && _saved && _savedRow == 0 && _savedColumn == 0 &&
-            payload == (_spaceProbePhase == 0 ? "66;w=1; " : _spaceProbePhase == 1 ? "66;s=2; " : ""))
-        { _spaceProbePhase++; _dirty = true; return; }
+        if (_spaceProbePhase < 2 && !_probeCursorUnknown && !_committed && !_inFrame && !_hasPainted && _row == 0 && _column == 0 && _saved && _savedRow == 0 && _savedColumn == 0 &&
+            payload == (_spaceProbePhase == 0 ? "66;w=1; " : "66;s=2; "))
+        { _spaceProbePhase++; _probeCursorUnknown = true; _dirty = true; return; }
         _unsupported = true;
     }
 
+    private void Realign(int row, int column)
+    {
+        Move(row, column);
+        if (!_unsupported) _probeCursorUnknown = false;
+    }
     private void Move(int row, int column)
     {
         _dirty = true;
@@ -172,13 +178,13 @@ internal sealed class SynchronizedTerminalScreen
     }
     private void Paint(char c)
     {
-        if (_column == _columns) { _unsupported = true; return; } // No implicit-wrap model in this pinned subset.
+        if (_probeCursorUnknown || _column == _columns) { _unsupported = true; return; } // No implicit-wrap model in this pinned subset.
         if (_row >= _rows || _column >= _columns) { _unsupported = true; return; }
         _cells[_row][_column++] = c; _dirty = true; _hasPainted = true;
     }
     private void EraseRow(int row, int start)
     {
-        if (_column == _columns) { _unsupported = true; return; }
+        if (_probeCursorUnknown || _column == _columns) { _unsupported = true; return; }
         if (row < 0 || row >= _rows || start < 0 || start > _columns) { _unsupported = true; return; }
         Array.Fill(_cells[row], ' ', start, _columns - start); _dirty = true;
     }

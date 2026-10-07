@@ -6,7 +6,7 @@ master,slave=pty.openpty()
 fcntl.ioctl(slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,80,0,0))
 original=termios.tcgetattr(slave)
 pipe='neutral-ui-'+uuid.uuid4().hex
-transcript=bytearray(); result={}; guardian=None; started=time.monotonic()
+transcript=bytearray(); result={}; guardian=None; started=time.monotonic(); shutdown_attempted=False
 def own_ui_terminal():
  # This new child session owns only the fixture's outer UI terminal. TIOCSCTTY(0)
  # never steals another session's tty; foreground ownership delivers SIGWINCH.
@@ -33,10 +33,22 @@ def rpc(request):
    if not block: raise EOFError('Original pipe response closed.')
    reply.extend(block)
   return json.loads(reply)
+def shutdown_once():
+ global shutdown_attempted
+ if shutdown_attempted: return None
+ shutdown_attempted=True
+ return rpc({'command':'shutdown'})
 try:
  guardian=subprocess.Popen([str(package/'host-guardian'),str(package/'guardian.json'),'15000',str(dotnet),str(bridge),
   '--host','--sessionPath',str(package/'ignored-session'),'--pipeName',pipe,'--neutralPackage',str(package)],cwd=repo,stdin=slave,stdout=slave,stderr=slave,preexec_fn=own_ui_terminal)
  until(b'NEUTRAL READY')
+ # Child output precedes creation of the host's accept loop. Wait without any
+ # input for this exact owned endpoint; never retry a connected request.
+ listener_deadline=time.monotonic()+2
+ while not Path('/tmp/CoreFxPipe_'+pipe).exists():
+  if guardian.poll() is not None or time.monotonic()>listener_deadline:
+   raise TimeoutError('Original foreground pipe did not become available.')
+  receive()
  first=rpc({'command':'status'})['status']; binding=first['inputBindingId']; pid=first['shellPid']
  os.write(master,'one Ж😀\r'.encode()); until('RESULT1:one Ж😀'.encode())
  os.write(master,b'two\r'); until(b'RESULT2:two')
@@ -48,7 +60,7 @@ try:
  stopped=rpc({'command':'stopTerminal'});proof=stopped['status']['terminalStop']
  assert stopped['ok'] and proof['state']=='stopped-within-scope' and proof['cleanupComplete'] and not stopped['status']['terminalOwnerRetained']
  result['ActualScopedStop']=True
- assert rpc({'command':'shutdown'})['ok']
+ assert shutdown_once()['ok']
  guardian.wait(timeout=3);assert guardian.returncode==0
  result['OuterInputModeRestored']=termios.tcgetattr(slave)==original
  assert result['OuterInputModeRestored']
@@ -60,7 +72,7 @@ finally:
  # Actual guardian retains independent cleanup even when any UI assertion fails.
  if guardian is not None:
   try:
-   if guardian.poll() is None: rpc({'command':'shutdown'})
+   if guardian.poll() is None: shutdown_once()
   except Exception: pass
   while guardian.poll() is None:
    receive()

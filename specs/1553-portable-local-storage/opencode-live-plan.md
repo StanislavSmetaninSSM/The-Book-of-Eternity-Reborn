@@ -346,3 +346,13 @@ Independent source review closes grammar/margin/geometry, but withholds PASS for
 empty OSC accepted as a third probe and unmodelled post-probe cursor evidence.
 Four new isolated probe cases have a separate exact category, causal RED pending.
 No new CLI or provider request; automatic witness remains unimplemented.
+
+Four residual probe tests at ac0ec726 are4/4 causal FAIL, no preparation failure.
+[Receipt](recovery/evidence/opencode-connected/probe-authority-red/manifest.json).
+Minimal correction retains unknown probe cursor until actual CUP/Home/original
+saved restore and refuses intervening paint/save/commit/relative movement.
+Explicit phase<2 prevents an empty OSC third probe. Redirected console polling
+now has no physical resize authority; real RPC resize remains. Independent Sol
+verified both affected failure causes and source plan. Foreground fixture waits
+for its own endpoint before first connect and latches its sole shutdown before
+send. Four categories plan32 narrow checks; fresh GREEN/source review pending.

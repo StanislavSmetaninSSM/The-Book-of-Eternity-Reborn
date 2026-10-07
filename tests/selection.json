@@ -3,9 +3,34 @@
   "selections": [
     {
       "category": "gm-synchronized-terminal-probe-authority",
-      "reason": "Four remaining independent source findings get causal baseline without repeating successful cohorts",
+      "reason": "Changed shared probe cursor, grammar, retained geometry and redirected resize; exact affected consumer failures and transcript contracts need fresh GREEN",
       "contracts": [
-        "T043-OPENCODE-LIVE-BOUNDED"
+        "T043-OPENCODE-LIVE-BOUNDED",
+        "T041-owned-terminal-view"
+      ]
+    },
+    {
+      "category": "gm-synchronized-terminal-presentation",
+      "reason": "Changed shared probe cursor, grammar, retained geometry and redirected resize; exact affected consumer failures and transcript contracts need fresh GREEN",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED",
+        "T041-owned-terminal-view"
+      ]
+    },
+    {
+      "category": "gm-synchronized-terminal-boundaries",
+      "reason": "Changed shared probe cursor, grammar, retained geometry and redirected resize; exact affected consumer failures and transcript contracts need fresh GREEN",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED",
+        "T041-owned-terminal-view"
+      ]
+    },
+    {
+      "category": "gm-synchronized-terminal-affected",
+      "reason": "Changed shared probe cursor, grammar, retained geometry and redirected resize; exact affected consumer failures and transcript contracts need fresh GREEN",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED",
+        "T041-owned-terminal-view"
       ]
     }
   ]
