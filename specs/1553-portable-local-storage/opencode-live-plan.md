@@ -585,3 +585,12 @@ retains default guardian source; independent driver review fixes fresh eight-ite
 menu/current composer anchors, separate210/270 work/cleanup bounds and confirmed
 cancel/rollback settlement. Actual one-use delivery outcome remains independently
 recorded; Input Unknown never promoted by story acceptance. Source review pending.
+
+Corrected guardian84df3e9c actual1/1causalFAIL: original argc sufficient,
+explicit --live-turn unsupported (64); default over-budget refusal retained.
+Dedicated test-only Cmode now shifts only explicit complete argv and caps300s;
+all production/exclusive child/reap logic unchanged, default30s. Driver uses
+actual daemon operationRevision literal live (sourceHash is separate), records
+original request byte SHA, and begins270s cleanup before normal clientexit.
+Ambiguous UI-close sequence is attempted once, never replayed. GuardianGREEN,
+catalogdiscovery and independent driver closure pending; CLI/model/game still0.

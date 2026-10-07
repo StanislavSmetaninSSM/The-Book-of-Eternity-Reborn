@@ -1,5 +1,5 @@
 {
-  "Source": "3cd3a190af00511083a04caef9b82a3f7f952069",
+  "Source": "84df3e9cc08028eb2552dcd49a2311daab1d65ef",
   "ProviderRequests": 0,
   "GameTurns": 0,
   "SourcePins": [
@@ -105,45 +105,45 @@
     },
     {
       "Path": "BookOfEternityClient.Tests/GmLiveTurnGuardianBudgetTests.cs",
-      "Bytes": 2376,
-      "SHA256": "f7790f2a2ac7b12e25f9c4d84c061343c53d1d6bf06ee4c7ace0c5c00852a778"
+      "Bytes": 2412,
+      "SHA256": "94b40ee2f0768c99a2b4a84e6a5e2cff758c51b5edaae55da2d936d31e664c35"
     },
     {
       "Path": "tests/fixtures/ProductionMain/live-game-one-turn.py",
-      "Bytes": 15911,
-      "SHA256": "2512c1fdf5c9d6043bd6617ae4d996905efdc747884420ec9551d2c8fa4e7630"
+      "Bytes": 17259,
+      "SHA256": "69865d2514d68029090d3b450283284ee46fb63f7d326bcc20f64213c40c8308"
     }
   ],
   "Artifacts": [
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/guardian-driver-red/Build-unit.log.gz",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/guardian-budget-red/Build-unit.log.gz",
       "Bytes": 27176,
-      "SHA256": "508c8bcae3fb25e7eb649c60f54cf99ae005a5c987aae6027a3c44ec84f293f8",
-      "StoredSHA256": "2e6423ad96a19d002e4a2606f5105008ee01150a3d28a3c035dbda7ccf2c21ee"
+      "SHA256": "d4e7abb33bda6c22b65acbc70574b536ca20e3fd95ef0f5564b15b7497ef9da3",
+      "StoredSHA256": "82528276ee08aa5d5cf164da8969ea91c6fc72e268bc97de1a8a3d5945cdfbc4"
     },
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/guardian-driver-red/dotnet-test.log.gz",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/guardian-budget-red/dotnet-test.log.gz",
       "Bytes": 1633187,
-      "SHA256": "a9f30a804dec38c6ba5a1a426bbdbf68def23a3c41640bd0f54f73e509b6d91a",
-      "StoredSHA256": "c535db95091c10afb11ec88f141ff460dd7d692cd955ad31508b6473caeea5b8"
+      "SHA256": "66da66d5174a9254749dc5936e439072fe9e465ad815ba3727f454395db3bfd9",
+      "StoredSHA256": "e869b62fe1600b61d174668905f18766fac54e9152a7e99a46cd9b281b3d227c"
     },
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/guardian-driver-red/summary.json.gz",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/guardian-budget-red/summary.json.gz",
       "Bytes": 1733,
-      "SHA256": "f19b1fa2c152a3215f842643ccdbf7cb66808e80863006eec325165998d9a1f2",
-      "StoredSHA256": "6b74125f45f01f1def8c655b3f299676c5941c81c2561ebb99d6b76c3c08482e"
+      "SHA256": "f9679236a5be4f663c44b9fb54af0c76b13fe493315428ae25eabd023a91ecac",
+      "StoredSHA256": "3ffafc736d8d143f509b1df98e79233fab3c55cb401185866d40c6ee0053f041"
     },
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/guardian-driver-red/gm-live-turn-guardian-budget-unit-001.trx.gz",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/guardian-budget-red/gm-live-turn-guardian-budget-unit-001.trx.gz",
       "Bytes": 4277,
-      "SHA256": "4ebaabf53ea79a91e585cc57eab1a1fdeda6aa5331d947267fb8d76d16ca6815",
-      "StoredSHA256": "3da2e8f823a809584dac7f13e57ee39b4f37e85470226ea8cd7eec710f04fe17"
+      "SHA256": "3abd5046ac063ba6de823a48c817e981352fed40819ab73c086bf9e844c564c0",
+      "StoredSHA256": "797455133f5192a22fe211e4ddd5e2df461e2306394586bd4c0be9d58287ad3d"
     },
     {
-      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/guardian-driver-red/plan.json.gz",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/guardian-budget-red/plan.json.gz",
       "Bytes": 1367,
-      "SHA256": "3e090e38b91555138b2aeac7c0567b6293a7997bde0c75787e23adeea49df97e",
-      "StoredSHA256": "639df43413a6084af77bed0e80491d7262dac33d470af3fce22d6169919b333a"
+      "SHA256": "a22c61f0416638ec352be0dd2d19082bd48a4d962415f131ff1000719332e104",
+      "StoredSHA256": "6117847c55d793ea0bf7e6884073524cd238edc1eb65fca28c28a3fb25df2c9b"
     }
   ],
   "RunSummary": {
@@ -162,7 +162,7 @@
     "DiscoveryOnly": false,
     "PlanOnly": false,
     "Revision": {
-      "Head": "3cd3a190af00511083a04caef9b82a3f7f952069",
+      "Head": "84df3e9cc08028eb2552dcd49a2311daab1d65ef",
       "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
       "ChangedFiles": 0
     },
@@ -170,7 +170,7 @@
     "CategoryResults": [
       {
         "Category": "gm-live-turn-guardian-budget",
-        "Seconds": 4.7988328,
+        "Seconds": 4.7136851,
         "BudgetMinutes": 4,
         "Completed": false
       }
@@ -179,28 +179,28 @@
     "PhaseResults": [
       {
         "Name": "Revision",
-        "Seconds": 0.0850487,
+        "Seconds": 0.0844429,
         "Completed": true
       },
       {
         "Name": "Changed-paths",
-        "Seconds": 0.0764329,
+        "Seconds": 0.0756561,
         "Completed": true
       },
       {
         "Name": "New-paths",
-        "Seconds": 0.1058994,
+        "Seconds": 0.1734188,
         "Completed": true
       },
       {
         "Name": "Build-unit",
-        "Seconds": 44.4952318,
+        "Seconds": 46.8972654,
         "Completed": true
       }
     ],
     "Strategy": "SelectedCategories",
     "TimeoutMinutes": 9,
-    "WallTime": "00:00:55.3794263",
+    "WallTime": "00:00:56.4108584",
     "ExitCode": 1,
     "TimedOut": false,
     "OwnedTreeCleanupSucceeded": true,
@@ -221,6 +221,5 @@
       "Failed": 1
     },
     "DuplicateTests": []
-  },
-  "Qualification": "Executed1failed due wrong test driver argc; not causal budget RED. Corrected baseline follows."
+  }
 }

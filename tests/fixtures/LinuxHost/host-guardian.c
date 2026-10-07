@@ -155,6 +155,10 @@ int main(int argc, char **argv) {
          * has returned its checked owner. Never enter the managed host here. */
         for (;;) pause();
     }
+    /* Explicit fixture-only real-provider budget. Existing short fixtures keep
+     * their 30s maximum; no production owner or reaping authority changes. */
+    bool live_turn = argc >= 6 && !strcmp(argv[1], "--live-turn");
+    if (live_turn) { argc--; argv++; }
     if (argc < 5) return 64;
     signal(SIGCHLD, SIG_DFL); signal(SIGPIPE, SIG_IGN);
     sigset_t empty; sigemptyset(&empty);
@@ -164,7 +168,7 @@ int main(int argc, char **argv) {
     if (pidfd_send_signal(self, 0, NULL, 0)) return 78;
     close(self);
     char *end; long limit = strtol(argv[2], &end, 10);
-    if (*end || limit < 50 || limit > 30000) return 64;
+    if (*end || limit < 50 || limit > (live_turn ? 300000 : 30000)) return 64;
     FILE *report = fopen(argv[1], "we"); if (!report) return 78;
     int gate[2]; if (pipe2(gate, O_CLOEXEC)) return 78;
     pid_t driver = fork(); if (driver < 0) return 78;
