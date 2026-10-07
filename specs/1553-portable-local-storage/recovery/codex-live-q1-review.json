@@ -1,0 +1,23 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T043-Q1-Q2-LIVE-BOUNDED",
+  "Feasibility": {
+    "Agent": "/root/codex_live_feasibility",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Candidate": "5217f127fd9b14c394a2a9de95395159333ca248",
+    "Verdict": "PASS for immediate nextscreen-only Q1 observation; not readiness/Q2",
+    "ConfirmedScope": "One exact TERM warning answer y CR; unchanged TERM/source-default command/profile/parser; original M1 identity/status, bounded capture and scoped stop/retirement/ECHILD",
+    "Limitations": [
+      "Consumes sole authorized TERM answer; no automatic second acceptance",
+      "Default profile unsupported and frozen by production BridgeHost",
+      "Initial NewGame live-launch ordering gap is source-backed, not causally executed",
+      "Existing cancel-initial-wait then Continue candidate needs connected verification",
+      "No model/game turn accepted; systemd design remains deferred"
+    ],
+    "ReviewCommands": "Read-only source inspection; zero CLI/tests/processes/edits"
+  },
+  "Source": {"Status": "Pending independent actual Sol6.1/xhigh review at89d11509"},
+  "Evidence": {"Status": "Unexecuted"},
+  "Metadata": {"Status": "Pending"}
+}
