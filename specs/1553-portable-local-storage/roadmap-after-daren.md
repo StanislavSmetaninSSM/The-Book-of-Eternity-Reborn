@@ -1,5 +1,22 @@
 # Остаток переноса после принятого Daren
 
+## Current bounded T050 console audio checkpoint
+
+Runtime/tests `cf787a8f7873e83e7c02e96504ad8e7ff2d9870c`:27distinct scoped PASS
+(20new+7affected), actual console lifecycle/Linux backend and real browser
+server-output isolation. [Handoff](console-audio-linux-handoff.md) /
+[qualification](recovery/console-audio-linux-qualification.json) pin typed
+capabilities, original cleanup/debt, two causal phases and dummy-only native
+WAV/MP3 evidence. Separate actual Sol6.1/xhigh design/source/evidence/metadata PASS;
+candidate GitHub-only20917file restore clean/fullfsck verified. Final metadata
+carrier exact-tip push/readback/fresh restore remains the delivery guard.
+SDL2 optional, NLayer bundled; no mandatory player installation or device access.
+Physical/default-device Linux, native Windows, live HTML Audio and full T050 remain
+open, as do primary systemd/launcher helpers/Q1/Q2/production/live-game boundaries.
+Prior clipboard/Daren source inventories below remain historical; no repeated
+unrelated audits or qualification claims.
+
+
 Текущая clipboard delta: runtime/tests `b5255b1fb96e405eb1ed195c6437b16ad5788246`
 дают50 distinct scoped PASS через синтетические reader bytes и реальные console
 consumers; [handoff](clipboard-linux-handoff.md) / [receipts](recovery/clipboard-linux-qualification.json).

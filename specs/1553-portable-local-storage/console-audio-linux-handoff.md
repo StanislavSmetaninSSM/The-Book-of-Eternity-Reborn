@@ -61,8 +61,13 @@ SDK10.0.401/.NET8.0.31/PowerShell7.5.4; package/native bytes and SHA256 are pinn
 No native compiler/system audio package/audio service installation was used.
 
 Independent actual Sol6.1/xhigh: designPASS0394ffae; sourcePASS cf787a8f after causal
-review fixes. Evidence/metadata verdict and fresh GitHub-only restoration are pending
-this checkpoint; no complete-task claim until those gates are verified.
+review fixes; evidence/metadata PASS at b84ffe321c9c8a9ed879990d29c7c5cd1c702f5b.
+Candidate fresh GitHub-only restore byte-compared20917 tracked files,27source and145artifact
+pins, clean/fullfsck/no shallow history or alternates. [Saved proof](recovery/evidence/console-audio-linux-restoration/candidate-proof.json).
+Final verdict carrier requires exact remote SHA/readback, fresh final-tip clone and
+[restore verifier](recovery/console-audio-linux-restore-verifier.py) before final delivery.
+The final proof is delivered separately with the final SHA, avoiding a self-referencing
+commit. Restoration executes no tests, CLI, audio APIs or services.
 
 ## Remaining qualification
 

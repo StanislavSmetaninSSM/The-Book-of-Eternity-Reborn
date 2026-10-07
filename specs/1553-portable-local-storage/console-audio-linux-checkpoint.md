@@ -20,3 +20,7 @@ Catalog discovery, final sourcepins/artifactmanifest, independent evidence/metad
 ## Evidence inventory checkpoint
 
 Catalog discovery valid383 categories/11088methods,0executed at cf787a8f. Supplemental unchanged discovery after context recovery also executes0 and is kept separately. Qualification pins27 source files and145 artifacts; all prior381 category definitions semantically unchanged. Evidence/metadata verdicts and fresh exact-tip restoration remain pending. [Handoff](console-audio-linux-handoff.md).
+
+## Verified verdict carrier
+
+Independent actual Sol6.1/xhigh design/source/evidence/metadata PASS, source cf787a8f and evidence/metadata b84ffe32. Correct package byte SHA512 and NuGetContentHash are separately named. Final27PASS and27source pins unchanged;145 reviewed evidence artifacts plus1 pinned candidate-restoration proof=146. Candidate GitHub-only restore20917files/clean/fullfsck/source27/artifacts145 verified. Bounded audio task can close; physical/default-device/nativeWindows/HTML live/fullT050 remain open. Final metadata-only carrier exact remote/readback and fresh final-tip restoration precede final writer handoff; no runtime rerun.

@@ -905,6 +905,11 @@
       "Path": "recovery/evidence/console-audio-linux-review-red-cases/boe-audio-e62df3e02bae4ecca2a3d32c5c917c45.json",
       "Bytes": 90,
       "SHA256": "17e096404660acd615f135a2c3720d2aafdc7b3277cae62e1dab6b028d01eee0"
+    },
+    {
+      "Path": "recovery/evidence/console-audio-linux-restoration/candidate-proof.json",
+      "Bytes": 1460,
+      "SHA256": "cf2a0492b1dd434e2f3f32cb634385ecc8512a9517cc803736b2783a589c2365"
     }
   ],
   "Runs": [
@@ -1105,6 +1110,29 @@
     "Frontend/HTML Audio unchanged; no frontend/live-browser execution",
     "No fullT050/systemd/provider/GM/Codex/gameplay/real saves qualification"
   ],
-  "EvidenceReview": "pending",
-  "FreshGitHubRestore": "pending"
+  "EvidenceReview": {
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "Verdict": "PASS",
+    "Revision": "b84ffe321c9c8a9ed879990d29c7c5cd1c702f5b",
+    "Runtime": "cf787a8f7873e83e7c02e96504ad8e7ff2d9870c",
+    "ReviewedSourcePins": 27,
+    "ReviewedArtifactPins": 145,
+    "ProvenanceFinding": "Package SHA512 distinguished from NuGetContentHash; independently verified correction"
+  },
+  "FreshGitHubRestore": {
+    "CandidateCommit": "b84ffe321c9c8a9ed879990d29c7c5cd1c702f5b",
+    "CandidateProof": "recovery/evidence/console-audio-linux-restoration/candidate-proof.json",
+    "TrackedFilesByteCompared": 20917,
+    "SourcePinsVerified": 27,
+    "EvidenceArtifactsVerified": 145,
+    "FinalExactTipRestore": "Required after final verdict carrier push; final proof delivered with exact SHA, no runtime tests"
+  },
+  "MetadataReview": {
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "Verdict": "PASS",
+    "Revision": "b84ffe321c9c8a9ed879990d29c7c5cd1c702f5b",
+    "FinalCarrierFollowup": "Required after final push and exact-tip restoration"
+  }
 }

@@ -121,7 +121,9 @@ Primary [NLayer](https://github.com/naudio/NLayer), [package](https://www.nuget.
   if needed into actual controlled lifecycle. No unrelated clipboard/settings/full
   cohorts or frontend tests when frontend unchanged. Structural catalog update and
   ValidateCatalog discovery only. All test execution via scripts/test-csharp.ps1.
-- [ ] Independent source/evidence/metadata PASS, exact source/command/count/cleanup/
+- [x] Independent source/evidence/metadata PASS and candidate fresh GitHub-only
+  restoration verified. Final carrier exact-tip restoration remains the writer
+  delivery guard. Exact source/command/count/cleanup/
   tool/package/native-library provenance, ordinary push/remote byte readback,
   fresh GitHub-only source restore, verified handoff and stop.
 
