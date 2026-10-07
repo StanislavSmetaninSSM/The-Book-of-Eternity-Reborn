@@ -31,6 +31,19 @@ PASS; independent evidence review pending separately.
    CWD, disposable diagnostic game root and separate profile; main user command/
    model unchanged. Existing ordinary M1 original owner/main+worker inventory/
    schema1 fence, prebuilt helper, caller foreground PTY, independent guardian.
+   XDG isolates standard state/auth, not all config discovery. Metadata confirms
+   ~/.opencode and relevant workspace ancestor config paths absent. Set child-only
+   OPENCODE_DISABLE_PROJECT_CONFIG=1 and OPENCODE_DISABLE_AUTOUPDATE=1, documented
+   vendor flags, plus owned TMPDIR and NPM_CONFIG_USERCONFIG/GLOBALCONFIG/CACHE.
+   Own distinct empty npmrc files prevent private npm configuration reads; no HOME
+   override. Config plugin dependency install (ignoreScripts=true) is confined to
+   the owned discovery set and falls within authorized OpenCode installation.
+   Also OPENCODE_DISABLE_EXTERNAL_SKILLS=1, OPENCODE_DISABLE_CLAUDE_CODE=1,
+   NPM_CONFIG_IGNORE_SCRIPTS=true and exclude inherited OPENCODE config/auth/DB/
+   permission/share overrides without printing values. Actual independent Sol
+   feasibility PASS: v1.18.35 official53d1eabb/OpenTUI0.4.5, startup-only conditional
+   on these guards. Mini still queries capabilities/palette/Kitty; no compatibility
+   claim. Capture bounded12seconds, guardian40seconds, shutdown12seconds/max35total.
    Zero prompt/auto confirmation/query response; exact original shutdown attempted
    once even after CLI early exit/observation failure. Actual stop/I/O/disposal/
    ACK and guardian closure are separately recorded. Unexpected access/trust/login
