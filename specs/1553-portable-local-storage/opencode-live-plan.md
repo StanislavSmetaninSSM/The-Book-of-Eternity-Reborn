@@ -594,3 +594,12 @@ actual daemon operationRevision literal live (sourceHash is separate), records
 original request byte SHA, and begins270s cleanup before normal clientexit.
 Ambiguous UI-close sequence is attempted once, never replayed. GuardianGREEN,
 catalogdiscovery and independent driver closure pending; CLI/model/game still0.
+
+Independent connected EVIDENCE PASS3cd3a190 for executed2e9f66e0
+20/20; historic pin omissions/nativepositive archive closed. Dedicated guardian
+6dffd5e9 actual1/1GREEN: explicit300s own /bin/true accepted andexclusiveECHILD/
+noemergency; default300s andlive300001 refused, no blanket bound increase.
+Independent driver SOURCE PASS6dffd5e9. Small driver delta stops immediately on
+actualunsupported-shape NotWritten or DraftUncertain (no manual reconstruction),
+while UnknownOutcome may still observe independentgameapplication without input
+qualification. Catalog discovery pending; noactualCLI/provider/game yet.

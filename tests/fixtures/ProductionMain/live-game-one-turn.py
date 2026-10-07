@@ -150,6 +150,11 @@ try:
         pump()
         current=rpc({'command':'status'})['status'];result['LastBridgeStatus']=current
         if current['terminalUncertain'] or not current['terminalOwnerRetained']:raise RuntimeError('Original owner uncertainty; acceptance remains blocked')
+        refused=current.get('promptDelivery')
+        if refused and (refused.get('disposition')=='draft-uncertain' or
+            (refused.get('disposition')=='not-written' and refused.get('reason')=='unsupported-draft-shape')):
+            result['OriginalPromptDelivery']=refused
+            raise RuntimeError('Actual original automatic input refused; no manual reconstruction or replay')
         if story.exists():
             entries=[json.loads(line) for line in story.read_text().splitlines() if line.strip()]
             accepted=[e for e in entries if e.get('turn')==1 and e.get('player')==action and e.get('narrative','').strip()]
