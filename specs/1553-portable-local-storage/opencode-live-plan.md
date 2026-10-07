@@ -899,3 +899,13 @@ cleanup; errors skip cleanup. New runtime WIP/unbuilt; three-case GREEN pending.
 No game/GM rules, schemas or authoring surfaces changed: repairs seed existing
 client-owned authorities and consume existing confirmed rollback; no prompt/
 example contract update required. Original fences/validator/stop remain strict.
+
+Instrumented diagnostic source correction before execution: independent Sol
+found $_ in nonbreaking PowerShell debugger Action is the Breakpoint object,
+not caller ErrorRecord; PSDebugContext is unavailable without stopping. Trace
+now uses named $failure after actual catch completion: existing Data closeerror
+or exact continuation InnerException, otherwise not-observed. Separate body
+failure excludes continuation from successful body. RegisteredPhase is mapping
+label only; no invented actual line. Public pinned PS7.5.4 source references:
+https://raw.githubusercontent.com/PowerShell/PowerShell/v7.5.4/src/System.Management.Automation/engine/debugger/Breakpoint.cs
+and debugger.cs in the same folder. No runtimefunctionbody edit.
