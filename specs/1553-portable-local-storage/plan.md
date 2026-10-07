@@ -1,3 +1,13 @@
+# Reusable relay handoff candidate / metadata gates
+
+[Handoff](relay-reusable-handoff.md) and [qualification](recovery/relay-reusable-qualification.json)
+now summarize maintained sharedentrypoint/contract,32GREEN,14originalscenario
+cleanup,595hash-checked artifacts,37preservedr3 and discovery0execution.
+Independent actualSol design/sourcePASS; separate evidence/discovery andmetadata
+pending. Runtime1350a16c frozen, no moretests/modelcalls. Finalnormalpush/readback/
+freshGitHubrestoration remainsdeliverygate; T043tasks remainunchecked untilreviews.
+SystemdS2/S3 unavailable/off; nativeWindows parentplannedaftermerge, notpremerge.
+
 # Reusable relay discovery supplement
 
 Source70e50948 discovery-only:PlanOnly32cases/4descriptors, catalog429categories/
