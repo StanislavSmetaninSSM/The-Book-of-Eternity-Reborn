@@ -2,6 +2,30 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "daren-standalone-linux",
+      "responsibility": "#1553 T031 real Linux standalone Daren profile service/create/upgrade/fresh exact read/original grant; current independent roots and original publisher/leases.",
+      "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
+        "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant"
+          ]
+        }
+      ]
+    },
+    {
       "id": "browser-direct-gacha-linux",
       "responsibility": "#1553 T031 actual Linux browser direct gacha + long-lived exact pre-spend backup, original queue/authority/turn lifetime and exact adoption refusal. Known original publication rollback and typed closing outcomes. Qualified exact raw authority and main/worker/generation/UI/debt/refusal boundaries.",
       "excludes": "No stub browser/Stage, gameplay odds/rewards/currency/GM text changes, live browser/provider/real saves, standalone Daren, Windows or whole-game qualification.",

@@ -2,27 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "browser-direct-gacha-linux",
-      "reason": "Real Linux browser gacha original Stage/queue/lifetime/adoption and typed known decisions; independent source selection reviewed",
+      "category": "daren-standalone-linux",
+      "reason": "First causal oracle reaches actual standalone DarenQteRewardProfileService and original store on Linux; no earlier whole cohorts selected",
       "contracts": [
-        "T031-BROWSER-DIRECT-GACHA-LINUX",
-        "existing trusted-local publication + pending-turn/history ownership"
-      ]
-    },
-    {
-      "category": "browser-direct-gacha-linux-boundaries",
-      "reason": "Real Stage authenticated scratch/durable commit cleanup, original schema7 retained backup authority bytes, admission/generation/UI and raw-request negatives",
-      "contracts": [
-        "T031-BROWSER-DIRECT-GACHA-LINUX",
-        "original pending-turn authority and accepted-turn/history ownership"
-      ]
-    },
-    {
-      "category": "browser-direct-gacha-linux-regression",
-      "reason": "Independent Sol source review selected14exact affected schema7 and backup gate/receipt regression cases; no broad old cohorts",
-      "contracts": [
-        "T031-BROWSER-DIRECT-GACHA-LINUX",
-        "original supported recovery and worker/storage/main conjunction"
+        "T031-DAREN-STANDALONE-LINUX",
+        "original fixed client profile/lease and trusted-local publisher"
       ]
     }
   ]
