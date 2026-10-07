@@ -1,3 +1,14 @@
+# Reusable relay causal baseline established
+
+Source2feb7272 main3/3causalFAIL: two originalSubmissionObserved then missing
+sharedworker; multiline originalDraftUncertain/observation-timeout beforequeue.
+Original5mainfixture guardiansECHILD/emergency0/failure0/deadlinefalse across
+preparation+causalruns; scopedoriginalretirement retained. Contract12 missing
+sharedcontract FAIL at6fbc133f. [ExactRED/preparation](recovery/evidence/relay-reusable/red/manifest.json).
+Now implement reviewed shared worker/entrypoints, and minimal renderLF->CRLF
+presentation correction without touching immutablepromptbytes orparser/policy.
+Accepted r3 artifacts37 are pinned unchanged; no live generation/replay.
+
 # Reusable relay RED and causal presentation boundary
 
 At6fbc133f contract12/12causalFAIL missing sharedcontract. Main2/2FAIL are fixture
