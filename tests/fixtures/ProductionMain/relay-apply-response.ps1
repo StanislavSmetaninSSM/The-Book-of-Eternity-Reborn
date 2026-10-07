@@ -31,4 +31,4 @@ foreach ($write in $packet.Writes) {
 }
 Assert-RelayWitnesses
 if ($request.Kind -ceq 'turn') { Complete-BoeTurn -FilesModified @($packet.FilesModified) }
-else { Complete-BoeValidationRepair -FilesModified @($packet.FilesModified) }
+else { Complete-BoeValidationRepair }

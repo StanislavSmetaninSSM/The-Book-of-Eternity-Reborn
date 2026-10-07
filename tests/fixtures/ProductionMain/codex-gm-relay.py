@@ -32,8 +32,8 @@ def main():
     def capture_request():
         nonlocal ordinal,active,draft
         if not draft or closing or active is not None or child is not None:return
-        text=bytes(draft).decode('utf8');kind='repair' if text.startswith('REPAIR MODE:') else 'turn'
-        source='input/validation_repair_request.json' if kind=='repair' else 'input/turn_request.json'
+        text=bytes(draft).decode('utf8');kind='repair' if text.startswith('REPAIR MODE for rejected turn #') else 'turn'
+        source='game_state/control/validation_repair_request.json' if kind=='repair' else 'input/turn_request.json'
         paths=[source,'input/turn_request.json','game_state/control/pending_turn_snapshot.json','game_state/control/pending_turn_snapshot.authority.json']
         witnesses={p:sha(read_bounded(session/p)) for p in dict.fromkeys(paths)}
         turn=json.loads(read_bounded(session/'input/turn_request.json'));pending=json.loads(read_bounded(session/'game_state/control/pending_turn_snapshot.json'))
