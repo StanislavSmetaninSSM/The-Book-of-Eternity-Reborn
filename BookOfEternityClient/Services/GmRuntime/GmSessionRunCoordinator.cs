@@ -119,8 +119,23 @@ internal sealed partial class GmSessionRunCoordinator
         if(finalization && _closed && _record?.Disposition is GmSessionRunDisposition.Stopping or GmSessionRunDisposition.Uncertain)return;
         _productionWorkers?.RequireMainQuiescence();
         if(!_released || _uncertain || _persistence.HasDebt || _record?.Disposition!=GmSessionRunDisposition.Running ||
-            _terminal?.AuthorityLost.IsCompleted==true || _terminal?.RootExited.IsCompleted==true)throw GmSessionRunPersistence.Invalid();
+            _terminal?.AuthorityLost.IsCompleted==true)throw GmSessionRunPersistence.Invalid();
+        RefuseOriginalRootExit();
     }
+    private sealed class OriginalRootExitRefusal(GmSessionRunCoordinator owner,IOwnedTerminalSession terminal)
+        : IOException("Original main root exited; ordinary operation admission is withdrawn.")
+    {
+        internal readonly GmSessionRunCoordinator Owner=owner;
+        internal readonly IOwnedTerminalSession Terminal=terminal;
+    }
+    private void RefuseOriginalRootExit()
+    {
+        if(_terminal?.RootExited.IsCompletedSuccessfully==true)throw new OriginalRootExitRefusal(this,_terminal);
+        if(_terminal?.RootExited.IsCompleted==true)throw GmSessionRunPersistence.Invalid();
+    }
+    internal bool IsOriginalRootExitRefusal(Exception failure)=>failure is OriginalRootExitRefusal exit &&
+        ReferenceEquals(exit.Owner,this) && ReferenceEquals(exit.Terminal,_terminal) &&
+        _terminal.RootExited.IsCompletedSuccessfully && !_terminal.AuthorityLost.IsCompleted && !_uncertain && !_persistence.HasDebt;
     internal Task<IOwnedTerminalSession> LaunchNeutralAsync(NeutralTerminalLaunch launch,CancellationToken token,Action<int>? held=null)=>LaunchAsync((id)=>OwnedTerminalSessionFactory.PrepareNeutralAsync(launch,id,token,held),token);
     internal Task<IOwnedTerminalSession> LaunchProductionAsync(ProductionMainConfiguration configuration,CancellationToken token,Action<int>? held=null)=>
         LaunchAsync(id=>OwnedTerminalSessionFactory.PrepareProductionAsync(new(this,configuration),id,token,held),token);

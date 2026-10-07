@@ -34,6 +34,7 @@ internal static partial class OwnedTerminalScenarioDriver
             Require(input.GetProperty("ok").GetBoolean(),"Actual pipe refused inert CLI exit input.");
             result["OriginalLeaderExit"]=await terminal.RootExited.WaitAsync(TimeSpan.FromSeconds(3));
             result["FixtureRequestedExitCode"]=17;
+            Require(!terminal.AuthorityLost.IsCompleted,"Original root exit lost native authority; cannot classify as lifecycle withdrawal.");
             Require(!main.AdmissionClosed,"Stop masked the selected early-exit publication.");
             release.TrySetResult();
             Exception? publicationFailure=null;
@@ -79,6 +80,8 @@ internal static partial class OwnedTerminalScenarioDriver
             // Physical scope empty is not logical success or a metadata clear.
             var cleanup=await terminal.StopAndObserveAsync(CancellationToken.None);
             result["OriginalPhysicalCleanup"]=cleanup;
+            Require(cleanup.State==GmWorkerStopState.StoppedWithinScope && cleanup.CleanupComplete,
+                "Original physical cleanup unconfirmed; guardian closure is insufficient.");
         }
     }
 }

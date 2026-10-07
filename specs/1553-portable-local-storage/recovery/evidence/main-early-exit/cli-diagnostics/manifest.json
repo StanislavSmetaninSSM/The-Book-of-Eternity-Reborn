@@ -1,0 +1,126 @@
+{
+  "CodexVersion": "0.159.0-alpha.3",
+  "OfficialTag": "rust-v0.159.0-alpha.3",
+  "OfficialCommit": "3b01b36fa5eb96ba82a776bd3c2fc57f8969181f",
+  "HelpOnlyInvocations": 2,
+  "InteractiveStartupRepeats": 0,
+  "NewModelRequests": 0,
+  "PrivateStoreReadsOrCopies": 0,
+  "ProtectedWritesOrOverrides": 0,
+  "DoctorFullInvoked": false,
+  "SqliteOnlyRelocation": "NOT EXECUTED: source shows existing rollout backfill and unchanged new-rollout directory",
+  "SafeCodexNextStep": "Owner-provided writable isolated already-authorized CLI environment, or separate authorization for official isolated login; no credential copy",
+  "OpenCodeExecutable": "Not found in activated PATH or checked standard installation binary locations",
+  "AccountModelInventoryInvocations": 0,
+  "OfficialModelCandidate": "opencode/ling-3.1-flash-free",
+  "ModelCandidateAvailability": "Public listed candidate only; actual environment/account availability unverified",
+  "OfficialOpenCodeSources": [
+    "https://opencode.ai/docs/cli/",
+    "https://opencode.ai/docs/zen/"
+  ],
+  "MainGmProfileChanged": false,
+  "PublicSources": [
+    {
+      "Path": "codex-rs/cli/src/doctor.rs",
+      "GitBlob": "d7014312c5756447b096340503f91807c4cfbe88",
+      "SHA256": "02eb0d79f961167b75fe6afd6c7e3c3255f0f0d2a7429d88b7e9137b66eedaac",
+      "Bytes": 153637,
+      "URL": "https://github.com/openai/codex/blob/3b01b36fa5eb96ba82a776bd3c2fc57f8969181f/codex-rs/cli/src/doctor.rs"
+    },
+    {
+      "Path": "codex-rs/core/src/config/mod.rs",
+      "GitBlob": "85e23836217f05b912aa9504fe18239045b686c1",
+      "SHA256": "9dbba31f23b8c3faf4317200f00f615bf5b8730db4c9d92bc312e54fa3cf4a85",
+      "Bytes": 199493,
+      "URL": "https://github.com/openai/codex/blob/3b01b36fa5eb96ba82a776bd3c2fc57f8969181f/codex-rs/core/src/config/mod.rs"
+    },
+    {
+      "Path": "codex-rs/core/src/config/requirements.rs",
+      "GitBlob": "c6a4e0149953148a85390227610ffabee71e5e14",
+      "SHA256": "756ba19bc88333f9b2a3f05fd4214d91c77d42900f4c3548af98a47725566543",
+      "Bytes": 5762,
+      "URL": "https://github.com/openai/codex/blob/3b01b36fa5eb96ba82a776bd3c2fc57f8969181f/codex-rs/core/src/config/requirements.rs"
+    },
+    {
+      "Path": "codex-rs/rollout/src/metadata.rs",
+      "GitBlob": "c2469d0d708efd3284e3086fe13aa38cf2f6e17d",
+      "SHA256": "ea04fb804a717722db62d9384f9a13752187c8b7ef8c160484c0f5d6e542f711",
+      "Bytes": 18214,
+      "URL": "https://github.com/openai/codex/blob/3b01b36fa5eb96ba82a776bd3c2fc57f8969181f/codex-rs/rollout/src/metadata.rs"
+    },
+    {
+      "Path": "codex-rs/rollout/src/recorder.rs",
+      "GitBlob": "cd05f6149b3d0ff97addf43ec243b7452a9de343",
+      "SHA256": "3a12d4f9813ceede9e6f616d4b669ba1b4af4c03d5e89c0f4a1c30704f53933d",
+      "Bytes": 76185,
+      "URL": "https://github.com/openai/codex/blob/3b01b36fa5eb96ba82a776bd3c2fc57f8969181f/codex-rs/rollout/src/recorder.rs"
+    },
+    {
+      "Path": "codex-rs/rollout/src/state_db.rs",
+      "GitBlob": "439a1e62ba26cd7e87d802eba57e9919303e0e32",
+      "SHA256": "22bb1352fffb26b1ca2e2183a7521b7aa1bc458d4fa8054dfa94f385c91a6ad5",
+      "Bytes": 24777,
+      "URL": "https://github.com/openai/codex/blob/3b01b36fa5eb96ba82a776bd3c2fc57f8969181f/codex-rs/rollout/src/state_db.rs"
+    },
+    {
+      "Path": "codex-rs/state/src/extract.rs",
+      "GitBlob": "b761940061fb2e5e06b05dcfa45e6a5ebcd45a4e",
+      "SHA256": "a5aa95315bdb316055fec8c3dba81c6f7ada1090131a4f194d6ec6f44e368447",
+      "Bytes": 33880,
+      "URL": "https://github.com/openai/codex/blob/3b01b36fa5eb96ba82a776bd3c2fc57f8969181f/codex-rs/state/src/extract.rs"
+    },
+    {
+      "Path": "codex-rs/state/src/paths.rs",
+      "GitBlob": "65458cb9e93fe96b42241f56f6d66f973558edf3",
+      "SHA256": "86f495097074276daf5f7cd220deb2042a030b5a713e87bd8ce24ae22c038d44",
+      "Bytes": 295,
+      "URL": "https://github.com/openai/codex/blob/3b01b36fa5eb96ba82a776bd3c2fc57f8969181f/codex-rs/state/src/paths.rs"
+    },
+    {
+      "Path": "codex-rs/state/src/runtime/backfill.rs",
+      "GitBlob": "1acbf012743470039a2a3c3000ee27548006bba0",
+      "SHA256": "1341af9476af71abc5b6245c75b701f0b3fbf8cb7fe2570f22753fec9ad83458",
+      "Bytes": 9450,
+      "URL": "https://github.com/openai/codex/blob/3b01b36fa5eb96ba82a776bd3c2fc57f8969181f/codex-rs/state/src/runtime/backfill.rs"
+    },
+    {
+      "Path": "codex-rs/state/src/runtime.rs",
+      "GitBlob": "376ad682ed10c22f489b793c7db220784d7f9628",
+      "SHA256": "cc074712e6b22f37f12df1c1af831d97c65536de7c500797246c3c22b695f002",
+      "Bytes": 27263,
+      "URL": "https://github.com/openai/codex/blob/3b01b36fa5eb96ba82a776bd3c2fc57f8969181f/codex-rs/state/src/runtime.rs"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/cli-diagnostics/doctor-help.stdout",
+      "Bytes": 1217,
+      "SHA256": "857cd5ce5a784b8c0338d03e4f3ed2d8a7f1d4f487e33a853f24156a9e8ffec6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/cli-diagnostics/doctor-help.stderr",
+      "Bytes": 103,
+      "SHA256": "d47a06d59aba2814c3fb7460049fc2ccbfc834196c956d6c6558e8be8b079e24"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/cli-diagnostics/exec-help.stdout",
+      "Bytes": 4031,
+      "SHA256": "0e82cfde0122715250e93dc65866caa956b2ac5b9d0b20ec4ad4f9e81486509e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/cli-diagnostics/exec-help.stderr",
+      "Bytes": 103,
+      "SHA256": "d47a06d59aba2814c3fb7460049fc2ccbfc834196c956d6c6558e8be8b079e24"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/cli-diagnostics/help-receipts.json",
+      "Bytes": 389,
+      "SHA256": "1c7bc364ca4c1020507d6b318f228975ead54125f138021f747de1d6e1e8ce5a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/cli-diagnostics/opencode-installation-metadata.json",
+      "Bytes": 646,
+      "SHA256": "545401c319efdb274098af4a6f3a6afff9aa883adf3e5646c979be0cdd465448"
+    }
+  ]
+}

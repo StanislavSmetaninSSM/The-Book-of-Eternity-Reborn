@@ -1,0 +1,118 @@
+{
+  "SourceCommit": "a7c3dcf1eef3f78cbe1f2fef51e0b45e07153171",
+  "Planned": 3,
+  "Executed": 2,
+  "Passed": 1,
+  "Failed": 1,
+  "WorkerRegressionNotExecuted": "runner stopped after causal failure",
+  "OriginalPhysicalCleanupConfirmed": 2,
+  "GuardianEchild": 2,
+  "EmergencySignals": 0,
+  "Artifacts": [
+    {
+      "Source": "TestResults/test-categories/20261007-063526-602-695033-615654d9a7964a298fa5f711447946b9-categories/Build-unit.log",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/20261007-063526-602-695033-615654d9a7964a298fa5f711447946b9-categories-Build-unit.log.gz",
+      "Bytes": 24684,
+      "SHA256": "31d25741a30fde6ed02d8a1c20d4f277554d15c044da8a2d30c5a2155177bffe",
+      "StoredSHA256": "fe15d7ef3f3c783d43baef142d1a4202fc1a5880bbfdc2ad35be83f85eb97b98"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-063526-602-695033-615654d9a7964a298fa5f711447946b9-categories/dotnet-test.log",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/20261007-063526-602-695033-615654d9a7964a298fa5f711447946b9-categories-dotnet-test.log.gz",
+      "Bytes": 1633528,
+      "SHA256": "9f144fdbb209c47694529531fc1b64d176a06e3270a67001a719979eb7de9b27",
+      "StoredSHA256": "9d7322e87f8bf1260177eb4f375dd06278b0596f635af5eac5e07da43a09a593"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-063526-602-695033-615654d9a7964a298fa5f711447946b9-categories/summary.json",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/20261007-063526-602-695033-615654d9a7964a298fa5f711447946b9-categories-summary.json.gz",
+      "Bytes": 1546,
+      "SHA256": "60f51e5b42411a396725e120e94db8e3f22244535a0b5d50737e39f6c59d3c62",
+      "StoredSHA256": "381d6fa49c7d0068aa62c42e2026d812300fc291ff5fa288114524aa5deb80c4"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-063526-602-695033-615654d9a7964a298fa5f711447946b9-categories/main-terminal-early-exit-linux-unit-001.trx",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/20261007-063526-602-695033-615654d9a7964a298fa5f711447946b9-categories-main-terminal-early-exit-linux-unit-001.trx.gz",
+      "Bytes": 27723,
+      "SHA256": "75d718ee4c42c1dace8f2fdc1ee7ab812dfd9276b0de4602f448c04159d3e4ec",
+      "StoredSHA256": "12ac6c9c0d8fdfb03a898d010c36e91a80cde72c36b537117a85f0da7e3e884d"
+    },
+    {
+      "Source": "TestResults/test-categories/20261007-063526-602-695033-615654d9a7964a298fa5f711447946b9-categories/plan.json",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/20261007-063526-602-695033-615654d9a7964a298fa5f711447946b9-categories-plan.json.gz",
+      "Bytes": 1877,
+      "SHA256": "ba09b379569361019f4cd8da3bb224b9ca4af80dd5761157f1b005ff01e57acc",
+      "StoredSHA256": "be58c1c97f82503665affb9a86566c059140af914cd1e1a49546e8292b14a75b"
+    },
+    {
+      "Source": "TestResults/production-main/11ac97427902408db5ac8e99387907bf/scenario.json",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/11ac97427902408db5ac8e99387907bf-scenario.json.gz",
+      "Bytes": 8541,
+      "SHA256": "62b0cde56ec1b4edd284f7327971ddd9a8e15684f04b0b0d3f06769fae270d6a",
+      "StoredSHA256": "dcbc1f73de344131db20a4a3dede41a7367c303c64d406996370f1ba8d21f64c"
+    },
+    {
+      "Source": "TestResults/production-main/11ac97427902408db5ac8e99387907bf/guardian.json",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/11ac97427902408db5ac8e99387907bf-guardian.json.gz",
+      "Bytes": 97,
+      "SHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "StoredSHA256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "Source": "TestResults/production-main/11ac97427902408db5ac8e99387907bf/fixture-preparation.json",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/11ac97427902408db5ac8e99387907bf-fixture-preparation.json.gz",
+      "Bytes": 1030,
+      "SHA256": "a6fcf992d5da3a8af41cec4d4b44ffb0f19f90ef74d67c69f1426146fa74d623",
+      "StoredSHA256": "130a6da7ecb7052a9543cb14fb5b2089eb897e43efdf22bc13f88cd76f1cff01"
+    },
+    {
+      "Source": "TestResults/production-main/11ac97427902408db5ac8e99387907bf/guardian.log",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/11ac97427902408db5ac8e99387907bf-guardian.log.gz",
+      "Bytes": 308,
+      "SHA256": "4a43fd3c69dea3d88d24d2fe319f793ddf276891b8e02fe223905b5ebf9842a5",
+      "StoredSHA256": "cd2affb9ab175d38e924de34419a989ea4a4b50eae13a51374de83d1c8ff2562"
+    },
+    {
+      "Source": "TestResults/production-main/11ac97427902408db5ac8e99387907bf/package/build-provenance.json",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/package-build-provenance.json.gz",
+      "Bytes": 1153,
+      "SHA256": "36593389c3aaaeb1e3094cf4405f6c988306c6b86f6821addd23855d4a4cd758",
+      "StoredSHA256": "966de0b1f1fd2a35c9dcd4454fc9affea37c17ef38cf33cb90a3d36adc82ed3e"
+    },
+    {
+      "Source": "TestResults/production-main/b4a4a992f18c43aeb242eb241acd81d5/scenario.json",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/b4a4a992f18c43aeb242eb241acd81d5-scenario.json.gz",
+      "Bytes": 11063,
+      "SHA256": "30d43af6a6c467645fda1478b85465d445c6bde4a7ea68cba223654f487f2a3d",
+      "StoredSHA256": "f84a2d1deccaf987abb2ffc94aa430af39cc00bc80f70bff6f4d05e208aa5551"
+    },
+    {
+      "Source": "TestResults/production-main/b4a4a992f18c43aeb242eb241acd81d5/guardian.json",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/b4a4a992f18c43aeb242eb241acd81d5-guardian.json.gz",
+      "Bytes": 97,
+      "SHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "StoredSHA256": "4a3b0059fa67390b10d972bcdc68fb8a39a3a11f5a922f20018e3c4660692a35"
+    },
+    {
+      "Source": "TestResults/production-main/b4a4a992f18c43aeb242eb241acd81d5/fixture-preparation.json",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/b4a4a992f18c43aeb242eb241acd81d5-fixture-preparation.json.gz",
+      "Bytes": 1030,
+      "SHA256": "bd65a4b1ed3c03080a9e027037bc1da7a136697e13e13aaddc7210232036f98a",
+      "StoredSHA256": "de2602e65a40f8069fe7b853b5a0403aed60cf5afbe58dae95a158f17b320d76"
+    },
+    {
+      "Source": "TestResults/production-main/b4a4a992f18c43aeb242eb241acd81d5/guardian.log",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/b4a4a992f18c43aeb242eb241acd81d5-guardian.log.gz",
+      "Bytes": 308,
+      "SHA256": "649c34eb00e8ef4cd0db50663777f223d8b96df06ef574b19312477a53ad2701",
+      "StoredSHA256": "29c5a10d7fa4bc745b47dfb93ebbcf0bf51ea5969c28cd97f28eb4867b16d467"
+    },
+    {
+      "Source": "TestResults/production-main/b4a4a992f18c43aeb242eb241acd81d5/package/build-provenance.json",
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/main-early-exit/native-fixed-status-red/package-build-provenance.json.gz",
+      "Bytes": 1153,
+      "SHA256": "36593389c3aaaeb1e3094cf4405f6c988306c6b86f6821addd23855d4a4cd758",
+      "StoredSHA256": "966de0b1f1fd2a35c9dcd4454fc9affea37c17ef38cf33cb90a3d36adc82ed3e"
+    }
+  ]
+}

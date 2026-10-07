@@ -70,7 +70,8 @@ internal sealed partial class BridgeHost
                     return true;
                 });
                 }
-                catch (Exception failure) when (GmSessionRunPersistence.IsAdmissionRefusal(failure) && publication.Owner.AdmissionClosed && !publication.Owner.IsUncertain)
+                catch (Exception failure) when (publication.Owner.IsOriginalRootExitRefusal(failure) ||
+                    (GmSessionRunPersistence.IsAdmissionRefusal(failure) && publication.Owner.AdmissionClosed && !publication.Owner.IsUncertain))
                 {
                     // Revoked before publication; all actual lease disposals completed.
                     // This snapshot grants no closing write or recovery.

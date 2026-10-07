@@ -77,9 +77,15 @@ internal sealed partial class GmSessionRunCoordinator
     private void ValidateOriginalLive()
     {
         if(_closed || _uncertain || !_released || _retired || _persistence.HasDebt || _record?.Disposition!=GmSessionRunDisposition.Running ||
-            _terminal==null || _terminal.AuthorityLost.IsCompleted || _terminal.RootExited.IsCompleted)throw GmSessionRunPersistence.Invalid();
+            _terminal==null || _terminal.AuthorityLost.IsCompleted)throw GmSessionRunPersistence.Invalid();
         _guard.Validate();
         _productionWorkers?.RequireMainQuiescence();
+        if(_terminal.RootExited.IsCompleted)
+        {
+            var actual=GmSessionRunPersistence.Read(_files.BasePath);
+            if(actual==null || _acknowledged==null || !actual.AsSpan().SequenceEqual(_acknowledged))throw GmSessionRunPersistence.Invalid();
+            RefuseOriginalRootExit();
+        }
     }
     private OperationPin CreateOperationPin()
     {
