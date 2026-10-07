@@ -1007,4 +1007,8 @@ Package provenance/pins archived og5-preparation; same independentlyqualified
 original --live-turn guardian source/budget, no recompile/cohort replay.
 Catalogdiscovery6ce820a9:415categories/11146methods-files,0tests,12.90s,valid,
 cleanupcomplete; NoBuild allinventorysourcefresh from current and unchanged
-priorintegration build. Exactfivecatalogartifacts archived separately.
+priorintegration build. Exactthreecatalogartifacts archived separately.
+
+Independent Sol SOURCE PASS live-driver ordering at6ce820a9; one fresh ordinary
+attempt authorized, pending evidence reviewer exact controlledstop/helperreceipts.
+No callback/Ready/auth/gate reconstruction; new210/270/300s limits unchanged.
