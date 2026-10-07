@@ -1,0 +1,44 @@
+{
+  "SourceCommit": "2bce5e0817e5fc9ba2d75bf642568ce235218947",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -NoBuild",
+  "FreshBuildPlan": "20261007-153247-642-835480-85f1e654e8d444e395854b392d3c4d7a-categories",
+  "Executed": 5,
+  "Failed": 3,
+  "Passed": 2,
+  "PreparationFailure": false,
+  "CleanupComplete": true,
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 1609082,
+      "SHA256": "b90bcb1ecfbb53a1be4e0ab19e0d059ff86055f8790bc300d6e47d3b4e642ed5",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 178666,
+      "StoredSHA256": "37a09368c1e18ee94d4ae37b7bd094d758b47d6d07be0fc88e4ccbdfce950652"
+    },
+    {
+      "Path": "gm-mini-default-foreground-unit-001.trx",
+      "Bytes": 14100,
+      "SHA256": "932c2cdcfdca7c45e83cf8e98651b09e63a999637f03486726345ff17349ef5c",
+      "StoredPath": "gm-mini-default-foreground-unit-001.trx.gz",
+      "StoredBytes": 2342,
+      "StoredSHA256": "1702d0b239ae7585bd8cc978495a1754bc2d1040a65c36a4ec359728ceaa26bb"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 2776,
+      "SHA256": "e812347bb39b0714181962e51af9790fe8476d84c220712dfad4e8e3f337c1c5",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 818,
+      "StoredSHA256": "dd660b5e335b71f989c333a4a0f7c95c669cf70b5b45f6b8ca278a83a0aa14b5"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1719,
+      "SHA256": "86fc8945eb6a107a5aa52857f72036a608872f89278d70b51cfb567987052b9f",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 770,
+      "StoredSHA256": "866a225be0ba8528b4729890223dd9921379f374a043c0e5d2d862237b0b42d3"
+    }
+  ]
+}

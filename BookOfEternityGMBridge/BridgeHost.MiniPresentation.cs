@@ -46,7 +46,9 @@ internal sealed partial class BridgeHost
         if(last-start is <0 or >5 || v.CursorRow>last || v.Cells[footer-1].Any(c=>c!=' ') ||
             v.Cells.Skip(footer+1).Any(r=>r.Any(c=>c!=' ')))return false;
         for(var r=start;r<=last;r++)for(var col=0;col<v.Columns;col++)
-            if(v.Cells[r][col]!=' ' && v.Foreground[r][col]!=0xe2e8f0)return false;
+            // SGR39 in the pinned completed paste uses the parser's default
+            // sentinel; this makes no promise about the terminal's actual RGB.
+            if(v.Cells[r][col]!=' ' && v.Foreground[r][col] is not (-1 or 0xe2e8f0))return false;
         return true;
     }
     private bool IsMiniEdge(PromptOperation op,bool home)
