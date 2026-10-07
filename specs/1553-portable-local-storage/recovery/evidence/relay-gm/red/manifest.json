@@ -1,0 +1,106 @@
+{
+  "Base": "013f2201c7c362b28ad5d799992e337f2854bc56",
+  "Transport": {
+    "Executed": 7,
+    "Passed": 0,
+    "Failed": 7,
+    "Complete": true
+  },
+  "View": {
+    "Executed": 14,
+    "Passed": 13,
+    "Failed": 1,
+    "Complete": true
+  },
+  "OwnedCleanup": true,
+  "ModelRequests": 0,
+  "Artifacts": [
+    {
+      "Path": "summary.json",
+      "Run": "transport",
+      "Bytes": 1440,
+      "SHA256": "255ace6c178a3f90eecf8352c5890ddb9d8588d37421d4df44592af6fa1e09e5",
+      "StoredPath": "transport-summary.json.gz",
+      "StoredSHA256": "fe96f003af1b9c4a4e6541691930eb4f40ee5d7d2cd2a4150e5760bdd66c57c8"
+    },
+    {
+      "Path": "gm-relay-transport-unit-001.trx",
+      "Run": "transport",
+      "Bytes": 24980,
+      "SHA256": "7a8313692f1dbdb1419a9fbd925ac987dc9cef63475490937ad35960fa475efd",
+      "StoredPath": "transport-gm-relay-transport-unit-001.trx.gz",
+      "StoredSHA256": "5a363f4ee81f72444da588812e1dd73f5cef6a33d1eaa7d3794bf05b72e470f2"
+    },
+    {
+      "Path": "plan.json",
+      "Run": "transport",
+      "Bytes": 1305,
+      "SHA256": "d2d27ac37d63a4bf6370afedfb4fe042176a07e0ff85ce89f59519fc5b5c69f4",
+      "StoredPath": "transport-plan.json.gz",
+      "StoredSHA256": "16167cafd56b66549a92171899571b41787fc921312848ff4fe3d2a1191ac7dd"
+    },
+    {
+      "Path": "summary.json",
+      "Run": "view",
+      "Bytes": 1354,
+      "SHA256": "1b05fd47df0df96466ea710bcbce429c457a9401c42b728e0b6b023716fe1266",
+      "StoredPath": "view-summary.json.gz",
+      "StoredSHA256": "17b041c423384680514a0ebb2f1ad3cbff0601bd6d760fa552945ff7d67ef4e1"
+    },
+    {
+      "Path": "gm-relay-view-driver-unit-001.trx",
+      "Run": "view",
+      "Bytes": 24431,
+      "SHA256": "2fd3b6a240b197b2dc17adb9d7520378c473e82883f8490ace6b04b5bc9efafa",
+      "StoredPath": "view-gm-relay-view-driver-unit-001.trx.gz",
+      "StoredSHA256": "91ce138fc39638e45dafa6c6195f22e64da427a1b2a9bcf4ba95dd1275935c85"
+    },
+    {
+      "Path": "plan.json",
+      "Run": "view",
+      "Bytes": 1891,
+      "SHA256": "989cd52ddc0a2ea454f2deccf7f322ebf4ca7498a78bb833616455ad24fd61e7",
+      "StoredPath": "view-plan.json.gz",
+      "StoredSHA256": "e70e6eb070a32b41efd5866c20ad1316fa70355a69702f60b41e7f21dc10ce81"
+    }
+  ],
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityClient.Tests/GmRelayTransportTests.cs",
+      "SHA256": "a719040d37d9589a786594cde5d60c25609edbf247fe1e10a9fc0854ebebf467"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs",
+      "SHA256": "11549ecd438539778616767e20cd3194c5d3fa230e7aa7a779003e98f20d62ce"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/relay-transport-checks.py",
+      "SHA256": "c2d01b54c222585573bb6a9b48b83f0b49eb4a9b0b078ec6108720c2762a7bc7"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/relay-driver-checks.py",
+      "SHA256": "1f67996bafc20909ee5fe2d8e980339abca48f140d9243cf0ca3f3988e12484b"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/live-game-one-turn.py",
+      "SHA256": "ec98b32c64ec57bcea57f19360f02ea5c63cd0144bc3a2817080573e727fac5b"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "SHA256": "937a3dd992ae6f96d19c3e7a37da6d3d620b4e8ca3b2774961c5c94a3f335a49"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "SHA256": "758aa4515184fd69b8469ed37e5d67c80519f41d7dac56e835beef157ef88796"
+    },
+    {
+      "Path": "tests/categories.json",
+      "SHA256": "781c78e75e6c035daab1b1a3b8783202d47ec0ed08d26136fe3e35d63f567ed9"
+    },
+    {
+      "Path": "tests/selection.json",
+      "SHA256": "a720a45a2b2e02582432c1e2a9bf7958e9ee79b374991ce3655b4d9ec76503c8"
+    }
+  ],
+  "Preparation": "First -File comma argument refused unknown category,0 workload; corrected. Initial test harness omitted guardian.driverExitCode assertion and falsely showed6 transport passes; corrected before causal RED. That incomplete run is not qualification."
+}

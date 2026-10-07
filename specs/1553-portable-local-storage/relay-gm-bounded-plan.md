@@ -31,3 +31,5 @@ No systemd setup, native Windows qualification, real user saves, live browser, n
 ## Progress
 
 Independent Sol6.1/xhigh amended design PASS (relay_gm_design_review): child/rollback ordering, relay-only budgets and original/repair receipt separation corrected. Implementation/live execution not started. OpenCode access review PASS0a142b13; provider/model calls and accepted turns in that access check0.
+
+Causal RED recorded: real transport7/7FAIL (feature/closure/budget absent), neutral/driver14executed13PASS/1FAIL (long draft refused). All selected descriptors complete, owned cleanup complete, model calls0. [Receipts/source pins](recovery/evidence/relay-gm/red/manifest.json). Initial unknown-category0-workload and missing driver-exit assertion are preparation/test-harness defects, not successes.

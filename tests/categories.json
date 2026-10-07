@@ -16623,6 +16623,59 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-relay-transport",
+      "responsibility": "T043 controlled real persistent relay PTY immutable paste/submit queue, stale/wrong reply, single execution and close child/I/O before rollback; guardian relay-only budget boundaries",
+      "excludes": "Inert helper payloads only; no live model/game acceptance, OpenCode/network/auth, production systemd/Windows",
+      "changeHints": [
+        "tests/fixtures/ProductionMain/codex-gm-relay.py",
+        "tests/fixtures/ProductionMain/relay-apply-response.ps1",
+        "tests/fixtures/LinuxHost/host-guardian.c"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayTransportTests.RealRelay_IsolatedTransportAndClosure",
+            "BookOfEternityClient.Tests.GmRelayTransportTests.ActualDriver_RetainsTurnReceiptAndRefusesUnclosedRollback"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-view-driver",
+      "responsibility": "Neutral transcript long exact draft bound and directly affected driver current failure/cleanup regressions; no native owner change",
+      "excludes": "No unchanged full terminal cohorts, provider calls, live GM/Windows/systemd",
+      "changeHints": [
+        "BookOfEternityGMBridge/TerminalScreen.cs",
+        "tests/fixtures/ProductionMain/live-game-one-turn.py"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualNeutralView_LongDaemonDraftIsExactAndBounded",
+            "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_PartialUtf8AndUnsupportedVtCannotBorrowIdle",
+            "BookOfEternityClient.Tests.GmLiveDriverFailureTests.ActualDriver_CurrentFailureAndCleanup",
+            "BookOfEternityClient.Tests.GmLiveDriverFailureTests.ActualDriver_ReviewPhaseBoundaries"
+          ]
+        }
+      ]
     }
   ]
 }

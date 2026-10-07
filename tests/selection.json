@@ -2,17 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-live-driver-failure",
-      "reason": "Changed actual provider wait/error-pause/one original stop; causal committed trace and controlled original lifecycle only",
+      "category": "gm-relay-transport",
+      "reason": "New real controlled relay transport and execution-close ordering; inert only",
       "contracts": [
-        "T043-DRIVER-PROVIDER-FAILURE"
+        "T043-RELAY-GM-BOUNDED"
       ]
     },
     {
-      "category": "gm-live-driver-phase-boundaries",
-      "reason": "Causal review findings in same cleanup gate: early startup offset, coalesced pause/current prompt and missing rollback evidence",
+      "category": "gm-relay-view-driver",
+      "reason": "Changed logical view capacity plus directly affected actual driver functions; narrow regression methods only",
       "contracts": [
-        "T043-DRIVER-PROVIDER-FAILURE"
+        "T043-RELAY-GM-BOUNDED"
       ]
     }
   ]

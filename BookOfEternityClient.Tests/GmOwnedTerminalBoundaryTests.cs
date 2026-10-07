@@ -80,6 +80,18 @@ public sealed class GmOwnedTerminalBoundaryTests
         await h.Feed("\u001b[2J\u001b[HNEUTRAL READY\r\n> \r\n"); Assert.True(h.Reliable);
     }
     [Fact]
+    public async Task ActualNeutralView_LongDaemonDraftIsExactAndBounded()
+    {
+        await using var h=new OwnedHost();
+        var draft=string.Concat(Enumerable.Repeat("Ж🙂 instruction update > ",450));
+        await h.Feed("\u001b[2J\u001b[HNEUTRAL READY\r\nRELAY> "+draft+"\r\n");
+        Assert.True(h.Reliable,"Real daemon instruction exceeds the old4096 logical-column bound.");
+        var view=h.Invoke("CaptureTerminalView")!;
+        Assert.Equal("NEUTRAL READY\nRELAY> "+draft,(string)view.GetType().GetProperty("Text")!.GetValue(view)!);
+        await h.Feed("\u001b[2J\u001b[H"+new string('x',65537));
+        Assert.False(h.Reliable,"Over-bound output cannot establish readiness.");
+    }
+    [Fact]
     public async Task ActualOwnedKeyboard_PairsUnicodeScalarsBeforeWriting()
     {
         await using var h=new OwnedHost();
