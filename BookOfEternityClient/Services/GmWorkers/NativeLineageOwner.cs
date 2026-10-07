@@ -119,6 +119,23 @@ internal class NativeLineageOwner : GmWorkerOwnedLaunch
 
     private int _terminalRelease;
     private long _heldDeadline;
+    internal TimeSpan HeldTerminalRemaining=>TimeSpan.FromSeconds(Math.Max(0,(_heldDeadline-Stopwatch.GetTimestamp())/(double)Stopwatch.Frequency));
+    internal void RequireOriginalHeldTerminal()
+    {
+        if(!_terminalMode || _terminalRelease!=0 || _bootstrap==null || !AuthorityValid() || HeldTerminalRemaining<=TimeSpan.Zero)
+            throw new IOException("Original held terminal authority unavailable.");
+        _identity!.EnsureLive();
+    }
+    internal SafeFileHandle DuplicateHeldTerminalPidfd()
+    {
+        RequireOriginalHeldTerminal();
+        var fd=DuplicatePidfd(_hostPidfd!,1030,3);
+        if(fd<0)throw new IOException("Original held pidfd duplicate failed.");
+        var copy=new SafeFileHandle((IntPtr)fd,true);
+        try { RequireOriginalHeldTerminal();return copy; } catch {copy.Dispose();throw;}
+    }
+    [System.Runtime.InteropServices.DllImport("libc",EntryPoint="fcntl",SetLastError=true)]
+    private static extern int DuplicatePidfd(SafeFileHandle descriptor,int command,int argument);
     internal static async Task<NativeLineageOwner> PrepareTerminalAsync(ProcessStartInfo fixture,string executable,string runId,int columns,int rows,CancellationToken token,Action<int>? held=null)
     {
         if(!Guid.TryParseExact(runId,"N",out var id) || id==Guid.Empty)throw new InvalidDataException("Terminal run identity is invalid.");

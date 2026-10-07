@@ -34,8 +34,9 @@ internal static class SystemdControlledScenarioDriver
     }
     internal sealed class ControlledBus : ISystemdBusTransport
     {
-        public SystemdManagerBinding Manager {get;}=new("controlled-bus",":1.42",0,Guid.NewGuid().ToString("D"));
+        public SystemdManagerBinding Manager {get;}=new(new string('b',32),":1.42",GmWorkerProcessHostPeerIdentity.CaptureEffectiveUserId(),File.ReadAllText("/proc/sys/kernel/random/boot_id").Trim());
         public Task<string> AuthorityLost {get;}=new TaskCompletionSource<string>().Task;
+        public bool SupportsPidfdScopes=>true;
         internal int StartCount;
         public Task SubscribeAsync(CancellationToken token)=>Task.CompletedTask;
         public Task StartScopeAsync(SystemdScopeRequest request,CancellationToken token){StartCount++;return Task.CompletedTask;}
@@ -45,9 +46,9 @@ internal static class SystemdControlledScenarioDriver
     }
     internal sealed class ControlledCgroup : ISystemdCgroupSource
     {
-        public void BindOriginal(SystemdUnitSnapshot unit,int pid) { }
-        public void ValidateOriginal() { }
-        public bool ReadFreshEmpty()=>true;
+        private SystemdCgroupIdentity? _id;
+        public SystemdCgroupIdentity BindOriginal(SystemdUnitSnapshot unit,int pid)=>_id=new(unit.ControlGroup,1,1,1);
+        public SystemdCgroupSample ReadOriginal(long sequence)=>new(_id!,sequence,SystemdCgroupState.Empty);
         public void Dispose() { }
     }
 }

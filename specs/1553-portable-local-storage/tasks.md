@@ -23,6 +23,8 @@ entries. No browser visual-QA/live-access gate or workaround is required. Live
 console/GM, full gameplay/restart and applicable native Windows gates remain open.
 See the verification-scope amendment in spec.md.
 
+- [ ] T043-RELAY-REUSABLE-DESIGN Owner2026-10-07: preserve the accepted CLI relay in the shared repository as a maintained testing mechanism and possible CLI substitution for authorized APIs. After bounded S1, independently design a minimal reusable interface/entrypoint/docs slice from current relay/test profile, preserving actual request/response bytes, identity, accepted consumer and original lifecycle/cleanup. Do not remove as a disposable fixture during cleanup/merge. No new provider integration, credentials/grants or forbidden-endpoint proxy/network bypass; ordinary authorized API access only. Current bounded relay proof does not promise universal API support. Source#1553.
+
 ## R0 — Reconstruct approved requirements
 
 - [x] T001 Verify published main-based `1553-cross-platform-runtime` and adopt reviewed remote-persistence instructions

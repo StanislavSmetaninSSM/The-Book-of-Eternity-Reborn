@@ -1,35 +1,43 @@
 using Microsoft.Win32.SafeHandles;
-
 namespace BookOfEternityClient.Services.GmRuntime;
 
-internal sealed record SystemdManagerBinding(string BusId, string UniqueOwner, uint UserId, string BootId);
-internal sealed record SystemdUnitSnapshot(string UnitPath, string InvocationId, string ControlGroup, string PidfdUnitPath);
-internal sealed record SystemdScopeRequest(string Name, SafeFileHandle Pidfd)
+internal sealed record SystemdManagerBinding(string BusId,string UniqueOwner,uint UserId,string BootId);
+internal sealed record SystemdUnitSnapshot(string UnitPath,string InvocationId,string ControlGroup,string PidfdUnitPath);
+internal sealed record SystemdScopeRequest(string Name,SafeFileHandle Pidfd)
 {
-    internal string Mode => "fail";
-    // RED baseline: the missing transient-scope contract is not availability.
-    internal IReadOnlyDictionary<string, object> Properties => new Dictionary<string, object>();
+    internal string Mode=>"fail";
+    internal IReadOnlyDictionary<string,object> Properties=>new Dictionary<string,object> {
+        ["PIDFDs"]=Pidfd,["AddRef"]=true,["KillMode"]="control-group",
+        ["SendSIGKILL"]=true,["TimeoutStopUSec"]=(ulong)2_000_000
+    };
 }
-
-// One independent connection. Subscribe must precede Start; completion includes
-// its matching JobRemoved even when it arrives before the method reply.
+// One independent connection; subscription precedes Start and matching JobRemoved
+// completion includes signals which arrive before the method reply.
 internal interface ISystemdBusTransport : IAsyncDisposable
 {
-    SystemdManagerBinding Manager { get; }
-    Task<string> AuthorityLost { get; }
+    SystemdManagerBinding Manager {get;}
+    Task<string> AuthorityLost {get;}
+    bool SupportsPidfdScopes {get;}
     Task SubscribeAsync(CancellationToken token);
-    Task StartScopeAsync(SystemdScopeRequest request, CancellationToken token);
-    Task<SystemdUnitSnapshot> ObserveAsync(string name, SafeFileHandle? originalPidfd, CancellationToken token);
-    Task StopScopeAsync(string name, CancellationToken token);
+    Task StartScopeAsync(SystemdScopeRequest request,CancellationToken token);
+    Task<SystemdUnitSnapshot> ObserveAsync(string name,SafeFileHandle? originalPidfd,CancellationToken token);
+    Task StopScopeAsync(string name,CancellationToken token);
 }
-
+internal sealed record SystemdCgroupIdentity(string ControlGroup,ulong MountId,ulong Device,ulong Inode);
+internal enum SystemdCgroupState { Populated,Empty,Pruned,Invalid }
+internal sealed record SystemdCgroupSample(SystemdCgroupIdentity Identity,long Sequence,SystemdCgroupState State);
+// S2 supplies the original read-only kernel descriptors; S1 controlled observations
+// never constitute positive manager/cgroup qualification.
 internal interface ISystemdCgroupSource : IDisposable
 {
-    void BindOriginal(SystemdUnitSnapshot unit, int originalHeldPid);
-    void ValidateOriginal();
-    bool ReadFreshEmpty();
+    SystemdCgroupIdentity BindOriginal(SystemdUnitSnapshot unit,int originalHeldPid);
+    SystemdCgroupSample ReadOriginal(long requestedSequence);
 }
-
-// No CLI argument/config/environment switch creates this capability. Only the
-// fixed neutral technical fixture can consume it; production stays closed.
-internal sealed record SystemdControlledFixture(ISystemdBusTransport Transport, ISystemdCgroupSource Cgroup);
+// No CLI/config/environment switch creates this capability.
+internal sealed record SystemdControlledFixture(ISystemdBusTransport Transport,ISystemdCgroupSource Cgroup)
+{
+    internal void RequireAvailable() {
+        if(!OperatingSystem.IsLinux() || !Transport.SupportsPidfdScopes || Transport.AuthorityLost.IsCompleted)
+            throw new PlatformNotSupportedException("Controlled original scope unavailable; no backend switch.");
+    }
+}

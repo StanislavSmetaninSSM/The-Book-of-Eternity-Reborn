@@ -109,6 +109,7 @@ internal sealed partial class BridgeHost : IDisposable
     private readonly SemaphoreSlim _ptyWriteLock = new(1, 1);
     private readonly SemaphoreSlim _shellLifecycleLock = new(1, 1);
     private NeutralTerminalLaunch? _neutralLaunch;
+    private SystemdControlledFixture? _systemdControlled;
     private GmSessionRunCoordinator? _mainRun;
     private GmSessionRunCoordinator? _lastMainRun;
     private GameSettings? _productionConfig;
@@ -121,6 +122,9 @@ internal sealed partial class BridgeHost : IDisposable
         if(_sessionPath!=launch.Scratch)throw new InvalidOperationException("Neutral host requires its fresh admitted scratch."); _neutralLaunch=launch;
         _neutralFiles=new(_clientRoot,Microsoft.Extensions.Logging.Abstractions.NullLogger<BookOfEternityClient.Core.FileSystemManager>.Instance);
         File.WriteAllText(_configPath, JsonSerializer.Serialize(new { GmCliInputProfile = new { IdleMarker="NEUTRAL READY", PromptPrefix="> ", WorkingMarker="NEUTRAL WORKING", ObservationTimeoutMilliseconds=1500 } }));
+    }
+    internal void ConfigureSystemdControlled(NeutralTerminalLaunch launch,SystemdControlledFixture fixture) {
+        fixture.RequireAvailable();ConfigureNeutral(launch);_systemdControlled=fixture;
     }
     private InputLifetime? _inputLifetime;
     private bool _inputClosed;
@@ -459,7 +463,9 @@ internal sealed partial class BridgeHost : IDisposable
                 IOwnedTerminalSession neutralSession;
                 try {
                     _mainRun=await GmSessionRunCoordinator.OpenNeutralAsync(_neutralFiles!,ObserveMainMetadata);
-                    neutralSession=await _mainRun.LaunchNeutralAsync(_neutralLaunch,_cts.Token,ObserveMainHeldRoot);
+                    neutralSession=_systemdControlled==null
+                        ? await _mainRun.LaunchNeutralAsync(_neutralLaunch,_cts.Token,ObserveMainHeldRoot)
+                        : await _mainRun.LaunchSystemdControlledAsync(_neutralLaunch,_systemdControlled,_cts.Token,ObserveMainHeldRoot);
                     _neutralLaunch=_neutralLaunch.NextEpoch();
                 }
                 catch(OwnedTerminalStartException ex) { AttachOwnedTerminalCore(ex.Owner,NeutralOutput??Console.OpenStandardOutput(),false); MarkTerminalUncertain(); throw; }

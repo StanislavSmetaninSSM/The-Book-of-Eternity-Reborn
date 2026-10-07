@@ -1,3 +1,13 @@
+# Owner follow-up: retained relay, future merge coordination
+
+Relay remains in the shared repository, including its supported test profile and
+request/response/identity/cleanup evidence. T043-RELAY-REUSABLE-DESIGN follows S1;
+small independent design before reusable entrypoint/runtime expansion, no provider
+integration/auth/network bypass or universal API guarantee. Current S1 unchanged.
+Owner conditionally permits future merge after overall completion/final review;
+parent coordinates readiness and actual default branch (previously main), no merge
+now, force-push, deletion or issue closure. S2/S3/other obligations remain open.
+
 # S1 causal baseline preserved
 
 At08827080: contract1/1 causalFAIL (missing PIDFDs); controlled1/1 causalFAIL

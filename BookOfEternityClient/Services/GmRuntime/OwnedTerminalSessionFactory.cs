@@ -13,10 +13,11 @@ internal static class OwnedTerminalSessionFactory
         try { await held.ReleaseAsync(token);return held.Session; }
         catch(Exception ex){throw new OwnedTerminalStartException(held.Session,ex);}
     }
-    internal sealed class PreparedTerminal(IOwnedTerminalSession session,NativeLineageOwner owner)
+    internal sealed class PreparedTerminal(IOwnedTerminalSession session,Func<CancellationToken,Task> release,NativeLineageOwner? originalNative=null)
     {
         internal IOwnedTerminalSession Session=>session;
-        internal Task ReleaseAsync(CancellationToken token)=>owner.ReleaseTerminalAsync(token);
+        internal NativeLineageOwner? OriginalNative=>originalNative;
+        internal Task ReleaseAsync(CancellationToken token)=>release(token);
     }
     internal static async Task<PreparedTerminal> PrepareProductionAsync(ProductionMainLaunch launch,string runId,CancellationToken token,Action<int>? observeHeldRoot=null)
     {
@@ -29,7 +30,7 @@ internal static class OwnedTerminalSessionFactory
             try { retained=new LinuxOwnedTerminalSession(owner); } catch { retained=new PartialNativeTerminalSession(owner); }
             throw new OwnedTerminalStartException(retained,ex);
         }
-        try { return new(new LinuxOwnedTerminalSession(owner),owner); }
+        try { return new(new LinuxOwnedTerminalSession(owner),owner.ReleaseTerminalAsync,owner); }
         catch(Exception ex) { throw new OwnedTerminalStartException(new PartialNativeTerminalSession(owner),ex); }
     }
     internal static async Task<PreparedTerminal> PrepareNeutralAsync(NeutralTerminalLaunch launch,string runId,CancellationToken token,Action<int>? observeHeldRoot=null)
@@ -57,16 +58,18 @@ internal static class OwnedTerminalSessionFactory
             catch { retained=new PartialNativeTerminalSession(owner); }
             throw new OwnedTerminalStartException(retained,ex);
         }
-        try { return new(new LinuxOwnedTerminalSession(owner),owner); }
+        try { return new(new LinuxOwnedTerminalSession(owner),owner.ReleaseTerminalAsync,owner); }
         catch (Exception ex) { throw new OwnedTerminalStartException(new PartialNativeTerminalSession(owner),ex); }
     }
     internal static async Task<PreparedTerminal> PrepareSystemdControlledAsync(NeutralTerminalLaunch launch, SystemdControlledFixture fixture, string runId, CancellationToken token, Action<int>? held=null)
     {
+        fixture.RequireAvailable();
         var prepared=await PrepareNeutralAsync(launch,runId,token,held);
+        var scope=new SystemdUserScopeOwner(prepared.OriginalNative!,prepared.Session,fixture);
+        var session=new SystemdOwnedTerminalSession(prepared.Session,scope);
         try {
-            // Baseline reaches an actual held child, not an unavailable selector.
-            await SystemdUserBus.AttachOriginalAsync(fixture,null!,token);
-            return prepared;
-        } catch(Exception ex) { throw new OwnedTerminalStartException(prepared.Session,ex); }
+            await scope.AttachAsync(token);
+            return new(session,scope.ReleaseAsync);
+        } catch(Exception ex) { scope.MarkUncertain("systemd-attachment-unconfirmed");throw new OwnedTerminalStartException(session,ex); }
     }
 }
