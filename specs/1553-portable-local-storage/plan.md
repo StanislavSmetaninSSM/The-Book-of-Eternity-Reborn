@@ -1,3 +1,15 @@
+# Fresh attempt recorded; client/request diagnosis in progress
+
+The single authorized fresh attempt at62141cef reused exact677 bt1 package files.
+Current original bootstrap and derived OpenCode Ready succeeded. One action entered;
+driver did not observe its request within8s, cancelled once, then client displayed
+rollback followed by generic safe-abort/pause. Daemon0turns and no original dispatch;
+provider/acceptedgame0. Original main scoped stop/Stopped/ACK and bridge/daemon I/O
+passed; client normal exit/I/O did not. Guardian ECHILD,0emergency, driverExit1.
+Historical Uncertain unchanged. No further unchanged live attempt or speculative
+lifecycle correction. Diagnose actual request visibility/client exception/driver
+before proposing a narrow correction. [Public own evidence](recovery/evidence/opencode-live/fresh-current-bootstrap/manifest.json).
+
 # Authorized one fresh live attempt after healthy diagnostics
 
 Owner clarifies that the two healthy standalone observations do not require an

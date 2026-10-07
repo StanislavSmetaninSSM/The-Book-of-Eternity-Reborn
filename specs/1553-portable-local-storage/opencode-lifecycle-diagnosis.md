@@ -1,3 +1,30 @@
+# Current fresh-attempt boundary (one attempt; not og5 reproduction)
+
+Source62141cef, same exact677 bt1 package files, post-failure bootstrap exception
+flag enabled. New root `/workspace/og6`, original run
+`fc64546bb39841a6b55cf2db8b58538d`, generation
+`b59635c76d064b2796f26a508ec66559`, epoch1, retained input binding
+`73840f8fbeac44a68bac78aa3cdbb66c`.
+
+- Ordinary NewGame and initial cancellation before CLI completed. Actual original
+  Running and derived Ready observed; no fabricated Ready or gate answers.
+- One genuine player action entered at28.968s. Driver waited8s for the request;
+  no file captured. Client rendered actual waiting UI. Daemon Turns0/Errors0 and
+  original lastPromptDispatchState None; no provider submission/accepted response.
+- Driver sent ESC once at36.977s. Client reported rollback, then generic safe-abort
+  and press-any-key pause. `error_log.txt` absent; original exception not yet known.
+  Do not infer staging time, production defect, successful foreground settlement
+  or initiating og5 failure from these facts.
+- One original main shutdown returned scoped stop and durable Stopped ACK, bridge
+  exit0/EOF/restored termios. Daemon CtrlC only after that ACK, exit0/EOF. Client
+  was still alive without EOF/restored termios at capture; guardian later achieved
+  ECHILD with0emergency/driverExit1. Physical cleanup does not qualify client exit.
+- Elapsed56.976s. AcceptedGameTurns0; no ActualRequest or T042 submission captured.
+  Public own receipts/state are [archived](recovery/evidence/opencode-live/fresh-current-bootstrap/manifest.json); private CLI state/auth excluded.
+
+Independent source diagnosis requested; no new runtime patch/test or second live
+attempt. Historical Uncertain records remain byte-identical.
+
 # Bounded lifecycle diagnosis — causal gate before another live attempt
 
 Source #1553. Owner requested whole-chain systematic diagnosis on 2026-10-07,
