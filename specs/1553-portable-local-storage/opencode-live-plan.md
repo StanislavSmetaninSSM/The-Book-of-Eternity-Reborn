@@ -105,8 +105,9 @@ CLI-created regular bounded temporary file, proves unchanged bytes and exits.
    manual takeover, paste one synthetic multiline/Unicode draft, then Ctrl+X/e;
    never send Enter, prompt a model, answer queries or gates. Observer reads only
    the argv file beneath the owned TMPDIR (regular/no-follow/max64KiB/strictUTF8),
-   records actual bytes/hash, leaves it unchanged and exits0. Bound startup/draft
-   observation to12seconds, driver25seconds, guardian30seconds, original cleanup
+   records actual bytes/hash, leaves it unchanged and exits0. Initial fixture
+   observation12seconds (changed wait continuation15/cleanup10 below), driver25seconds,
+   guardian30seconds, original cleanup
    attempted once with the latched Running identity. Capture actual suspend/resume
    VT and editor-file cleanup. This proves a witness mechanism, not Ready or Q2.
 2. **Causal narrow runtime qualification after that receipt.** Preserve legacy

@@ -236,6 +236,8 @@ try:
     result['StartupStatus'] = rpc({'command': 'status'}, 2)
     result['StartupDiagnostics'] = rpc({'command': 'diagnostics'}, 2)
     if draft_mode:
+        assert draft_pasted, 'Known completed startup frame absent throughout bounded wait; no paste'
+        assert editor_requested, 'Known complete synthetic draft frame absent; no editor gesture'
         receipt = json.loads((out / 'draft-observer.json').read_bytes())
         actual = base64.b64decode(receipt['ActualDraftBase64'], validate=True)
         assert actual == draft.encode(), 'Actual CLI-created draft differs; never submit'
