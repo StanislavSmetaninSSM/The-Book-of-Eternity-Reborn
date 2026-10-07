@@ -5,7 +5,7 @@ repo=Path(__file__).resolve().parents[3];mode=sys.argv[1];own=Path(sys.argv[2]);
 relay=repo/'tests/fixtures/ProductionMain/codex-gm-relay.py'
 if mode=='guardian-budgets':
     for prefix,limit,expected in [([],30000,0),([],30001,64),(['--live-turn'],300000,0),(['--live-turn'],300001,64),(['--relay-turn'],750000,0),(['--relay-turn'],750001,64)]:
-        p=subprocess.run([guardian,*prefix,str(own/('g-'+str(limit)+'.json')),str(limit),'/usr/bin/true'],capture_output=True,timeout=3)
+        p=subprocess.run([guardian,*prefix,str(own/('g-'+str(limit)+'.json')),str(limit),'/usr/bin/true','owned-budget-probe'],capture_output=True,timeout=3)
         assert p.returncode==expected,(prefix,limit,p.returncode,p.stderr)
     print('budget boundaries passed');sys.exit(0)
 assert relay.exists(),'Missing real persistent relay; immutable submit queue/closure not implemented'

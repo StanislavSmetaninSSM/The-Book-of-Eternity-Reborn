@@ -74,8 +74,9 @@ def main():
                     if reply.get('ResponseSHA256')!=sha(packet):raise ValueError('Response bytes mismatch')
                     for path,witness in req['Witnesses'].items():
                         if not (session/path).is_file() or sha(read_bounded(session/path))!=witness:raise ValueError('Original request/pending changed')
+                    write_once(active/'executing-response.json',packet)
                     consumer=Path(__file__).with_name('relay-apply-response.ps1')
-                    child=subprocess.Popen(['pwsh','-NoLogo','-NoProfile','-File',str(consumer),'-SessionPath',str(session),'-RequestPath',str(active/'request.json'),'-ResponsePath',str(active/'response.json')],
+                    child=subprocess.Popen(['pwsh','-NoLogo','-NoProfile','-File',str(consumer),'-SessionPath',str(session),'-RequestPath',str(active/'request.json'),'-ResponsePath',str(active/'executing-response.json')],
                         cwd=session,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
                     save(active/'started.json',dict(ChildPid=child.pid,ResponseSHA256=sha(packet),AgentTask=reply['AgentTask'],Model=reply['Model']))
                 except Exception as ex:
@@ -110,7 +111,8 @@ def main():
         # is minted on an unresolved child; its physical cleanup cannot prove stop.
         if child is not None:
             try:
-                child.terminate();child.communicate(timeout=2)
+                child.terminate();child.wait(timeout=2)
+                child.stdout.close()
             except subprocess.TimeoutExpired:pass
         termios.tcsetattr(fd,termios.TCSANOW,initial)
     return 0

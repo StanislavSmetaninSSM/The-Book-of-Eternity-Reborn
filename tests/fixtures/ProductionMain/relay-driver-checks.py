@@ -5,7 +5,7 @@ source=Path(__file__).with_name('live-game-one-turn.py');tree=ast.parse(source.r
 names={'retain_turn_delivery','close_relay_execution'}
 nodes=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name in names]
 assert {n.name for n in nodes}==names,'Original turn receipt and execution-close gate are not implemented'
-clock=[0.0];ns=dict(json=json,time=type('Clock',(),{'monotonic':lambda:clock[0]})(),elapsed=lambda:clock[0])
+clock=[0.0];ns=dict(json=json,time=type('Clock',(),{'monotonic':lambda self:clock[0]})(),elapsed=lambda:clock[0])
 exec(compile(ast.Module(body=copy.deepcopy(nodes),type_ignores=[]),str(source),'exec'),ns)
 result={};turn=dict(disposition='submission-observed',inputBindingId='original',operationKind='turn',operationRevision='live',operationId='turn-A')
 repair=dict(turn,operationKind='repair',operationRevision='repair-1',operationId='repair-B')

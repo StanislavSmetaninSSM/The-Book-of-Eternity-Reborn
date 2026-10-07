@@ -1,0 +1,32 @@
+{
+  "GuardianSource": "67a559b1 tests/fixtures/LinuxHost/host-guardian.c restored for causal baseline",
+  "Executed": 7,
+  "Passed": 6,
+  "Failed": 1,
+  "Complete": true,
+  "OwnedCleanup": true,
+  "Failure": "--relay-turn750000 refused64; unchanged old ordinary/live bounds now pass",
+  "Artifacts": [
+    {
+      "Path": "summary.json",
+      "Bytes": 1347,
+      "SHA256": "77d1bcb39d68c1076eb393c52cf7a03f1cd00391419853e9a522dcddb1ef1a04",
+      "StoredPath": "summary.json.gz",
+      "StoredSHA256": "717cfeac2e54bd094f2161a8470402dbe557773c8dab3e2fc4346d25411339b9"
+    },
+    {
+      "Path": "gm-relay-transport-unit-001.trx",
+      "Bytes": 13217,
+      "SHA256": "7a008a3b610afe63957889c0ef3c4982d759b70e3755ea68a5d4c2019790d5d7",
+      "StoredPath": "gm-relay-transport-unit-001.trx.gz",
+      "StoredSHA256": "ec4e83ad9ea6622f9aa16833543ee6dd621f948aceaf97c83e5117d590a4698d"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 1304,
+      "SHA256": "7fff829cb15d5db96c8e866c5a9cd84729877fcaf84760e6324e7d9e633f12c4",
+      "StoredPath": "plan.json.gz",
+      "StoredSHA256": "6432a02e69ceff4e75ddaa979842315d2ba8f9a0a328abb2249c57b8756766af"
+    }
+  ]
+}
