@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "daren-standalone-browser-dispatch"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "f2a7e0e1564a1d127f52166ddfdafa668e95be72",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.4631568,
+  "Descriptors": [
+    {
+      "Name": "daren-standalone-browser-dispatch-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "daren-standalone-browser-dispatch",
+      "Categories": [
+        "daren-standalone-browser-dispatch"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

@@ -48,16 +48,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualStoreUnsupportedOriginalAuthority_RefusesBeforePreparation",
-            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualOriginalMainFence_RefusesColdOrHeldLeaseBeforeProfilePreparation",
-            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualOriginalPreparedWorker_RefusesStandaloneCompletion",
-            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalTaskPurpose_CannotWriteStandaloneProfile",
-            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalBoundGenerationRevokedBeforeWrite_RefusesBeforeIntent",
-            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.HeldRealProfileWrite_SerializesActualSessionReplacement",
-            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualUndeclaredBrowserProfile_RefusesWithoutStandaloneEscape",
-            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.PublicConsoleTerminalWriteFailure_DoesNotReportCompletionOrAward",
-            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalCancellationAtProfileBoundary_DoesNotPublish",
-            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery"
+            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.*"
           ]
         }
       ]
