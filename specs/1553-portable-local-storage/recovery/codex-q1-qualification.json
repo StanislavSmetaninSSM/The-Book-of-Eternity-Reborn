@@ -404,5 +404,40 @@
     "No systemd-user/native Windows/production workers/live browser/game/saves/cold qualification",
     "Read-only PATH alias warning retained; no workaround"
   ],
-  "Status": "evidence and metadata reviews pending; exact final writer remote/restoration closure pending"
+  "Status": "Independent actual Sol6.1/xhigh design/source/evidence/metadata PASS for bounded actual startup/stop evidence and precise Q1 blocker; final carrier exact-tip writer publication/readback/fresh restoration closure required before delivery.",
+  "PreparationCommands": [
+    [
+      "dotnet",
+      "publish",
+      "BookOfEternityClient/BookOfEternityClient.csproj",
+      "--no-restore",
+      "-c",
+      "Debug",
+      "-o",
+      "/workspace/qualification-1553-codex-q1/ship/BookOfEternityClient",
+      "-p:BoeNativePackageDirectory=/workspace/qualification-1553-codex-q1/native-package",
+      "-p:BoeRequireNativePackage=true"
+    ],
+    [
+      "dotnet",
+      "publish",
+      "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+      "--no-restore",
+      "-c",
+      "Debug",
+      "-o",
+      "/workspace/qualification-1553-codex-q1/ship/BookOfEternityGMBridge",
+      "-p:BoeNativePackageDirectory=/workspace/qualification-1553-codex-q1/native-package",
+      "-p:BoeRequireNativePackage=true"
+    ]
+  ],
+  "SpecKitConsistency": {
+    "PrerequisiteCommand": "pwsh -NoLogo -NoProfile -File .specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks",
+    "ExitCode": 0,
+    "FeatureDirectory": "/workspace/native-1553/specs/1553-portable-local-storage",
+    "TaskRequirementMapping": "T043-Q1 \u2192 FR-009/012/013/014/015; FR-013/SC-004 completion remains open. Current headers supersede checkpoint-specific historical notes. No new gameplay/GM-authored contract.",
+    "DesignAndMetadataReview": "independent PASS",
+    "TestsExecuted": 0
+  },
+  "RestorationVerifier": "recovery/codex-q1-restore-verifier.py; source/evidence-only, no CLI/services/tests; final proof supplied externally to avoid self-referential commit"
 }
