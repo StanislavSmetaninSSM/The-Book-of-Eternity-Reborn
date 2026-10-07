@@ -1,4 +1,5 @@
 using BookOfEternityClient.Services.GmRuntime;
+using BookOfEternityClient.Configuration;
 using Microsoft.Win32.SafeHandles;
 using Xunit;
 
@@ -75,6 +76,43 @@ public sealed class GmMainSystemdContractTests
         SdBusScopeCodec.Write(new("boe-main-"+Guid.NewGuid().ToString("N")+".scope",fd),writer);
         Assert.Contains("open:v:ah",writer.Events);Assert.Contains("open:a:h",writer.Events);
         Assert.Same(fd,writer.Fd);Assert.Equal("open:a:(sa(sv))",writer.Events[^2]);Assert.Equal("close",writer.Events[^1]);
+    }
+    [Theory]
+    [InlineData("Auto")]
+    [InlineData("SystemdUser")]
+    public void PublicProductionSelection_RemainsClosedBeforePackageOrDirectory(string backend)
+    {
+        var settings=new GameSettings {GmBridgeEnabled=true,GmBridgeBackend="OwnedTerminal",GmMainOwnerBackend=backend,GmCliLaunchCommand="must-not-execute"};
+        Assert.Throws<PlatformNotSupportedException>(()=>ProductionMainConfiguration.Resolve(settings,"/nonexistent-own-s1",new(80,25),"/nonexistent-own-package"));
+    }
+    [Fact]
+    public async Task UnavailableFixture_RefusesBeforeAnyNativePackageOrChild()
+    {
+        var folder=Path.Combine(Path.GetTempPath(),"s1-capability-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(folder);
+        try {
+            var bus=new CapabilityBus(false);var fixture=new SystemdControlledFixture(bus,new Samples(SystemdCgroupState.Populated));
+            var created=false;var launch=NeutralTerminalLaunch.Create(Path.Combine(folder,"missing-package"),folder);
+            await Assert.ThrowsAsync<PlatformNotSupportedException>(()=>OwnedTerminalSessionFactory.PrepareSystemdControlledAsync(launch,fixture,Guid.NewGuid().ToString("N"),CancellationToken.None,_=>created=true));
+            Assert.False(created);Assert.Equal(0,bus.Calls);
+        }finally{Directory.Delete(folder,true);}
+    }
+    [Fact]
+    public void ControlledCapability_CannotBeConsumedTwice()
+    {
+        var fixture=new SystemdControlledFixture(new CapabilityBus(true),new Samples(SystemdCgroupState.Populated));
+        fixture.Consume();Assert.Throws<PlatformNotSupportedException>(()=>fixture.RequireAvailable());
+        Assert.Throws<PlatformNotSupportedException>(()=>fixture.Consume());
+    }
+    private sealed class CapabilityBus(bool available):ISystemdBusTransport
+    {
+        public SystemdManagerBinding Manager=>throw new InvalidOperationException();
+        public Task<string> AuthorityLost {get;}=new TaskCompletionSource<string>().Task;
+        public bool SupportsPidfdScopes=>available;internal int Calls;
+        public Task SubscribeAsync(CancellationToken t){Calls++;throw new InvalidOperationException();}
+        public Task StartScopeAsync(SystemdScopeRequest r,CancellationToken t){Calls++;throw new InvalidOperationException();}
+        public Task<SystemdUnitSnapshot> ObserveAsync(string n,SafeFileHandle? f,CancellationToken t){Calls++;throw new InvalidOperationException();}
+        public Task StopScopeAsync(string n,CancellationToken t){Calls++;throw new InvalidOperationException();}
+        public ValueTask DisposeAsync()=>ValueTask.CompletedTask;
     }
     private static readonly SystemdUnitSnapshot Unit=new("/org/freedesktop/systemd1/unit/own",new string('a',32),"/own.scope","/org/freedesktop/systemd1/unit/own");
     private sealed class Samples(SystemdCgroupState state):ISystemdCgroupSource

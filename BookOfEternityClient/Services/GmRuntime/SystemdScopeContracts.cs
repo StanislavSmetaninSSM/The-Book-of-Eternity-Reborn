@@ -34,10 +34,14 @@ internal interface ISystemdCgroupSource : IDisposable
     SystemdCgroupSample ReadOriginal(long requestedSequence);
 }
 // No CLI/config/environment switch creates this capability.
-internal sealed record SystemdControlledFixture(ISystemdBusTransport Transport,ISystemdCgroupSource Cgroup)
+internal sealed class SystemdControlledFixture(ISystemdBusTransport transport,ISystemdCgroupSource cgroup)
 {
+    internal ISystemdBusTransport Transport {get;}=transport;
+    internal ISystemdCgroupSource Cgroup {get;}=cgroup;
+    private int _consumed;
+    internal void Consume() { RequireAvailable();if(Interlocked.Exchange(ref _consumed,1)!=0)throw new InvalidOperationException("Original controlled scope capability consumed."); }
     internal void RequireAvailable() {
-        if(!OperatingSystem.IsLinux() || !Transport.SupportsPidfdScopes || Transport.AuthorityLost.IsCompleted)
+        if(Volatile.Read(ref _consumed)!=0 || !OperatingSystem.IsLinux() || !Transport.SupportsPidfdScopes || Transport.AuthorityLost.IsCompleted)
             throw new PlatformNotSupportedException("Controlled original scope unavailable; no backend switch.");
     }
 }

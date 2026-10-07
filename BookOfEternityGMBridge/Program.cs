@@ -459,6 +459,7 @@ internal sealed partial class BridgeHost : IDisposable
             await StopShellCoreAsync();
 
             if (_neutralLaunch != null) {
+                _systemdControlled?.RequireAvailable(); // before acquiring a new original guard/Prepared
                 _terminalLaunchSize=new(80,25); // Same fixed size consumed by the original neutral factory.
                 IOwnedTerminalSession neutralSession;
                 try {

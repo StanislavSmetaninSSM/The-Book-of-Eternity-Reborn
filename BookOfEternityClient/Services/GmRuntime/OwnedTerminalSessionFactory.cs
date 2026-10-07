@@ -63,7 +63,7 @@ internal static class OwnedTerminalSessionFactory
     }
     internal static async Task<PreparedTerminal> PrepareSystemdControlledAsync(NeutralTerminalLaunch launch, SystemdControlledFixture fixture, string runId, CancellationToken token, Action<int>? held=null)
     {
-        fixture.RequireAvailable();
+        fixture.Consume();
         var prepared=await PrepareNeutralAsync(launch,runId,token,held);
         var scope=new SystemdUserScopeOwner(prepared.OriginalNative!,prepared.Session,fixture);
         var session=new SystemdOwnedTerminalSession(prepared.Session,scope);

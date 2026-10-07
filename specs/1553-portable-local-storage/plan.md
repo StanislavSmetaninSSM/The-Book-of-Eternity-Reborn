@@ -1,3 +1,19 @@
+# S1 causal corrections — WIP
+
+Matrix sourcef4625b2b19cases17PASS/2causalFAIL: post-native manager loss
+not observed, and consumed fixture created another Prepared/owner.19guardian
+ECHILD/0emergency/0failures/0deadline (17driver0,2driver1); preparation passed.
+Held-bind expiry already safely refused by existing coordinator, not a new RED;
+review-requested immediate held/token revalidation now makes adapter boundary
+explicit. Fixed Empty-held evidence, fresh post-reap unit/cgroup evidence,
+synchronous original authority observation, one-use controlled scope capability
+and pre-guard Bridge availability. sd-bus source remains unqualified/Supports
+false; native wait avoids busy spinning, optional missing-library typed refusal.
+New wire/jobs/inert/public-refusal cases; GREEN and final reviews pending.
+Stop timeout equals observation2s remains documented S2 feasibility debt;
+not qualification or a reason to enlarge original held budget.
+[Exact progress artifacts](recovery/evidence/systemd-main-s1/progress/manifest.json).
+
 # S1 negative matrix WIP
 
 Source reviewer at8f60042e identified post-cgroup-bind held deadline check;

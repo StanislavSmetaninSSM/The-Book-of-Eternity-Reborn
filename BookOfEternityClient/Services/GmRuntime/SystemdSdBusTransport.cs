@@ -20,7 +20,7 @@ internal sealed class SystemdSdBusTransport : ISystemdBusTransport
     private string? _scope;
     private SystemdJobReceipts? _receipts;
     public SystemdManagerBinding Manager {get;private set;}=null!;
-    public bool SupportsPidfdScopes=>true; // API source only, never production admission.
+    public bool SupportsPidfdScopes=>false; // Actual adapter stays unqualified/closed until S2.
     public Task<string> AuthorityLost=>_lost.Task;
     private SystemdSdBusTransport(){_ownerCallback=OwnerChanged;_jobCallback=JobRemoved;}
     internal static SystemdSdBusTransport OpenUserUnqualified()
@@ -34,9 +34,11 @@ internal sealed class SystemdSdBusTransport : ISystemdBusTransport
             using var credentials=result.Call("org.freedesktop.DBus","/org/freedesktop/DBus","org.freedesktop.DBus","GetConnectionUnixUser",w=>w.String(owner));
             var uid=credentials.UInt32();
             if(uid!=GmWorkerProcessHostPeerIdentity.CaptureEffectiveUserId())throw new IOException("User manager UID differs from original caller.");
-            result.Manager=new(id.ToString("N"),owner,uid,File.ReadAllText("/proc/sys/kernel/random/boot_id").Trim());
+            result.Manager=new(Convert.ToHexString(id.ToByteArray()).ToLowerInvariant(),owner,uid,File.ReadAllText("/proc/sys/kernel/random/boot_id").Trim());
             if(result.GetOwner()!=owner || result.AuthorityLost.IsCompleted)throw new IOException("User manager changed during original capture.");
             return result;
+        } catch(Exception ex) when(ex is DllNotFoundException or EntryPointNotFoundException or BadImageFormatException) {
+            result.Close();throw new PlatformNotSupportedException("Optional user sd-bus library/API unavailable.",ex);
         } catch {result.Close();throw;}
     }
     private string GetOwner() {using var reply=Call("org.freedesktop.DBus","/org/freedesktop/DBus","org.freedesktop.DBus","GetNameOwner",w=>w.String("org.freedesktop.systemd1"));return reply.String('s');}
@@ -80,7 +82,8 @@ internal sealed class SystemdSdBusTransport : ISystemdBusTransport
         var deadline=Stopwatch.GetTimestamp()+2*Stopwatch.Frequency;
         while(!_receipts!.Complete(path)) {
             token.ThrowIfCancellationRequested();RequireOpen();if(Stopwatch.GetTimestamp()>=deadline)throw new TimeoutException("Original job receipt unavailable.");
-            Check(Process(_bus,out var message));if(message!=IntPtr.Zero)UnrefMessage(message);Thread.Yield();
+            var processed=Process(_bus,out var message);Check(processed);if(message!=IntPtr.Zero)UnrefMessage(message);
+            if(processed==0)Check(Wait(_bus,10_000));
         }
     }
     private async Task PumpAsync() {
@@ -150,6 +153,7 @@ internal sealed class SystemdSdBusTransport : ISystemdBusTransport
     [DllImport(Library,EntryPoint="sd_bus_message_set_auto_start")] private static extern int AutoStart(IntPtr message,int value);
     [DllImport(Library,EntryPoint="sd_bus_message_set_allow_interactive_authorization")] private static extern int Interactive(IntPtr message,int value);
     [DllImport(Library,EntryPoint="sd_bus_call")] private static extern int NativeCall(IntPtr bus,IntPtr message,ulong timeout,IntPtr error,out IntPtr reply);
+    [DllImport(Library,EntryPoint="sd_bus_wait")] private static extern int Wait(IntPtr bus,ulong timeout);
     [DllImport(Library,EntryPoint="sd_bus_process")] private static extern int Process(IntPtr bus,out IntPtr message);
     [DllImport(Library,EntryPoint="sd_bus_message_get_sender")] private static extern IntPtr Sender(IntPtr message);
     [DllImport(Library,EntryPoint="sd_bus_message_open_container")] private static extern int OpenContainer(IntPtr message,byte type,[MarshalAs(UnmanagedType.LPUTF8Str)]string signature);

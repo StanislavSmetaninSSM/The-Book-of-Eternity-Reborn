@@ -13,7 +13,7 @@ internal sealed class SystemdCgroupObservation(ISystemdCgroupSource source) : ID
         if(sample.Sequence!=sequence || sample.Identity!=_original || sample.State is SystemdCgroupState.Invalid or SystemdCgroupState.Pruned)throw Invalid();
         return sample;
     }
-    internal void Validate()=>Read();
+    internal void Validate() { if(Read().State!=SystemdCgroupState.Populated)throw Invalid(); }
     internal bool ReadFreshEmpty()=>Read().State==SystemdCgroupState.Empty;
     public void Dispose()=>source.Dispose();
     private static IOException Invalid()=>new("Original cgroup evidence unavailable/stale/changed; pinned removal branch unqualified.");
