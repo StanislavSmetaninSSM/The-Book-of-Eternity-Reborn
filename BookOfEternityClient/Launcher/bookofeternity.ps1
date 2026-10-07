@@ -880,28 +880,31 @@ function Invoke-PrepareTurn {
         [string[]]$PrepareArguments
     )
 
-    $repoRoot = Get-RepoRoot
+    if ($PSVersionTable.PSVersion.Major -lt 7) {
+        throw 'prepare-turn requires PowerShell 7; player startup does not install it.'
+    }
     $clientRoot = Get-ClientRoot
-    $clientProject = Join-Path $clientRoot "BookOfEternityClient.csproj"
-    if (!(Test-Path $clientProject)) {
-        throw "Client project not found: $clientProject"
-    }
-
-    $basePath = Split-Path $ResolvedSessionPath -Parent
-    $clientExe = Join-Path $clientRoot "bin\Debug\net8.0\BookOfEternityClient.exe"
-    $clientArguments = @($basePath, "--prepare-live-turn") + $PrepareArguments
-
-    if (Test-Path $clientExe) {
-        & $clientExe @clientArguments
-        if ($LASTEXITCODE -ne 0) {
-            throw "prepare-turn failed with exit code $LASTEXITCODE."
+    foreach ($name in @('BookOfEternityClient.dll', 'BookOfEternityClient.deps.json', 'BookOfEternityClient.runtimeconfig.json')) {
+        if (-not (Test-Path -LiteralPath (Join-Path $clientRoot $name) -PathType Leaf)) {
+            throw "prepare-turn package resource unavailable: $name. Player startup does not compile or download it."
         }
-        return
     }
-
-    dotnet run --project $clientProject -- @clientArguments
+    $dotnet = Get-Command dotnet -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+    if (-not $dotnet) { throw 'prepare-turn dotnet executable is unavailable; requires the .NET 8 runtime.' }
+    $runtimes = @(& $dotnet.Source --list-runtimes)
+    if ($LASTEXITCODE -ne 0) { throw "prepare-turn runtime discovery failed with exit code $LASTEXITCODE." }
+    foreach ($framework in @('Microsoft.NETCore.App', 'Microsoft.AspNetCore.App')) {
+        $pattern = '^' + [regex]::Escape($framework) + ' 8\.'
+        if (-not ($runtimes | Where-Object { $_ -match $pattern })) {
+            throw "prepare-turn requires $framework 8; the existing packaged client runtime is unavailable."
+        }
+    }
+    $basePath = Split-Path $ResolvedSessionPath -Parent
+    $assembly = Join-Path $clientRoot 'BookOfEternityClient.dll'
+    $clientArguments = @($assembly, $basePath, '--prepare-live-turn') + $PrepareArguments
+    & $dotnet.Source @clientArguments
     if ($LASTEXITCODE -ne 0) {
-        throw "prepare-turn failed with exit code $LASTEXITCODE."
+        throw "prepare-turn failed with exit code $LASTEXITCODE; no automatic retry."
     }
 }
 
