@@ -813,3 +813,14 @@ any lost pin/Uncertain, no eviction/reconnect/timeouts as completion. An idle
 positive without Active would not exclude og4 race. Whole phase bound includes
 actualEOF/termios and both finally stop/drain paths; guardian30s unchanged.
 Only new category, no current successful console cohorts repeated.
+
+Actual8fe993c3 idle-daemon1/1causalFAIL: observedActive originalpin c95896fa...
+operation40d4038c... becameUnresolved after sole originalPTYCtrlC. Three
+earlierpins ClosedObserved; actualdaemonexit0/EOF/termios7.103s does not close
+the activepin. Originalscope physicalstop followed durableUncertain; guardian
+ECHILD/emergency0/failures0/driver1. Newexactreceipt daemon-foreground-causal-red
+retains original identity/pin stages, not attributable only to exit/status.
+Proposed reviewed minimum Linux-only SIGINT shielding for the retained C#
+participating-control helper while parent daemon owns actualCtrlC/finally close;
+EOF/partialframe stillunresolved, no replay/reconnect or other signal changes.
+Source/design review requested before implementation.
