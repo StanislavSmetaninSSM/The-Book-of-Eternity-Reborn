@@ -4,6 +4,7 @@ using System.Text.Json;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmRuntime;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -18,7 +19,7 @@ public sealed class AuxiliaryLauncherPortableTests
         var config = File.ReadAllBytes(Path.Combine(f.Files.GameSessionPath, "config.json"));
         var generation = File.ReadAllBytes(f.Files.SessionGenerationPath);
         var result = await f.Run("valid");
-        Assert.True(result.Exit == 0, "Causal route failure after successful package preparation: " + result.Error);
+        Assert.True(result.Exit == 0, "Causal route failure after successful package preparation: " + result.Output + result.Error);
         var request = JsonDocument.Parse(File.ReadAllText(f.Files.ResolvePath(LiveTurnPreparationService.TurnRequestPath))).RootElement;
         Assert.Equal("action Ж😀 'quoted'\nsecond line", request.GetProperty("playerAction").GetString());
         Assert.Equal("fixture-session", request.GetProperty("sessionId").GetString());
@@ -37,6 +38,72 @@ public sealed class AuxiliaryLauncherPortableTests
         Assert.Equal(generation, File.ReadAllBytes(f.Files.SessionGenerationPath));
         Assert.Contains("fixture-request", result.Output);
     }
+    [Theory]
+    [InlineData("dll", "BookOfEternityClient.dll")]
+    [InlineData("deps", "BookOfEternityClient.deps.json")]
+    [InlineData("runtimeconfig", "BookOfEternityClient.runtimeconfig.json")]
+    [InlineData("helper", "gm_main_operation.ps1")]
+    [InlineData("dotnet", "dotnet executable is unavailable")]
+    [InlineData("netcore", "Microsoft.NETCore.App 8")]
+    [InlineData("aspnet", "Microsoft.AspNetCore.App 8")]
+    [InlineData("action", "--action is required")]
+    [InlineData("dice", "--dice must contain integers")]
+    [InlineData("main", "prepare-live-turn failed")]
+    [InlineData("worker", "prepare-live-turn failed")]
+    [InlineData("storage", "prepare-live-turn failed")]
+    public async Task MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges(string mode,string diagnostic)
+    {
+        await using var f=await AuxiliaryPackageFixture.Create();
+        var file=mode switch {"dll"=>"BookOfEternityClient.dll","deps"=>"BookOfEternityClient.deps.json","runtimeconfig"=>"BookOfEternityClient.runtimeconfig.json","helper"=>"Launcher/gm_main_operation.ps1",_=>null};
+        if(file!=null)File.Move(Path.Combine(f.Package,file),Path.Combine(f.Root,"removed-resource"));
+        if(mode=="dotnet")File.Move(Path.Combine(f.Runtime,"dotnet"),Path.Combine(f.Root,"removed-dotnet"));
+        if(mode is "netcore" or "aspnet")Directory.Move(Path.Combine(f.Runtime,"shared",mode=="netcore"?"Microsoft.NETCore.App":"Microsoft.AspNetCore.App"),Path.Combine(f.Root,"removed-framework"));
+        string? debt=null;
+        if(mode=="main")
+        {
+            var identity=new GmSessionRunIdentity(f.Files.BasePath,Guid.NewGuid().ToString("N"),Guid.Empty.ToString("N"),1,GmSessionRunBackend.LinuxSupervisor,Guid.NewGuid().ToString("N"),"fixture-boot");
+            debt=Path.Combine(f.Files.BasePath,".boe_runtime/gm-runs/main.json");Directory.CreateDirectory(Path.GetDirectoryName(debt)!);
+            File.WriteAllBytes(debt,GmSessionRunRecordCodec.Encode(new(1,identity,GmSessionRunDisposition.Running,null)));
+        }
+        if(mode is "worker" or "storage")
+        {
+            debt=Path.Combine(f.Files.BasePath,".boe_runtime",mode=="worker"?"worker-runs-v1/state.json":"trusted-local-publication-v1/active.json");
+            Directory.CreateDirectory(Path.GetDirectoryName(debt)!);File.WriteAllText(debt,"{");
+        }
+        var debtBytes=debt==null?null:File.ReadAllBytes(debt);
+        var before=AuxiliaryLauncherRootBindingTests.Snapshot(f.Files.GameSessionPath);
+        var args=mode switch {"action"=>new[]{"--dice","14,8,17"},"dice"=>new[]{"--action","test","--dice","21"},_=>null};
+        var result=await f.Run(mode,arguments:args);
+        Assert.NotEqual(0,result.Exit);Assert.Contains(diagnostic,result.Output+result.Error,StringComparison.Ordinal);
+        Assert.Equal(before,AuxiliaryLauncherRootBindingTests.Snapshot(f.Files.GameSessionPath));
+        if(debt!=null)Assert.Equal(debtBytes,File.ReadAllBytes(debt));
+        Assert.False(File.Exists(f.Files.ResolvePath(LiveTurnPreparationService.TurnRequestPath)));
+    }
+
+    [Fact]
+    public async Task ExplicitSecondPreparation_ReplacesPendingSnapshotWithinExistingContract()
+    {
+        await using var f=await AuxiliaryPackageFixture.Create();
+        Assert.Equal(0,(await f.Run("first")).Exit);
+        var result=await f.Run("second",arguments:["--action","second explicit action", "--session-id","fixture-session","--request-id","second-request","--turn-number","8","--dice","1,2,3"]);
+        Assert.Equal(0,result.Exit);
+        var manifest=JsonDocument.Parse(File.ReadAllText(f.Files.ResolvePath(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))).RootElement;
+        Assert.Equal("second-request",manifest.GetProperty("requestId").GetString());
+        var request=JsonDocument.Parse(File.ReadAllText(f.Files.ResolvePath(LiveTurnPreparationService.TurnRequestPath))).RootElement;
+        Assert.Equal("second-request",request.GetProperty("requestId").GetString());Assert.Equal(8,request.GetProperty("turnNumber").GetInt32());
+        Assert.True(File.Exists(f.Files.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)));
+    }
+
+    [Fact]
+    public async Task OrdinaryPositionalStatusSelector_PreservesExistingDispatcherBoundary()
+    {
+        await using var f=await AuxiliaryPackageFixture.Create();
+        var before=AuxiliaryLauncherRootBindingTests.Snapshot(f.Files.GameSessionPath);
+        var result=await f.Run("ordinary-status",arguments:[],command:"status");
+        Assert.NotEqual(0,result.Exit);Assert.Contains("GM bridge status file not found",result.Output+result.Error);
+        Assert.DoesNotContain("Usage:",result.Output);Assert.Equal(before,AuxiliaryLauncherRootBindingTests.Snapshot(f.Files.GameSessionPath));
+    }
+
 }
 
 internal sealed class AuxiliaryPackageFixture : IAsyncDisposable
@@ -93,9 +160,9 @@ internal sealed class AuxiliaryPackageFixture : IAsyncDisposable
         catch { await f.DisposeAsync(); throw; }
     }
 
-    internal async Task<(int Exit,string Output,string Error)> Run(string label,string? action=null,string[]? arguments=null)
+    internal async Task<(int Exit,string Output,string Error)> Run(string label,string? action=null,string[]? arguments=null,string command="prepare-turn")
     {
-        var args=new List<string>{"-NoLogo","-NoProfile","-File",Path.Combine(Package,"Launcher/bookofeternity.ps1"),"-SessionPath",Files.GameSessionPath,"prepare-turn"};
+        var args=new List<string>{"-NoLogo","-NoProfile","-File",Path.Combine(Package,"Launcher/bookofeternity.ps1"),"-SessionPath",Files.GameSessionPath,command};
         args.AddRange(arguments??["--action",action??"action Ж😀 'quoted'\nsecond line","--session-id","fixture-session","--request-id","fixture-request","--turn-number","7","--dice","14,8,17","--current-realm","Mortal World"]);
         return await Execute(Find("pwsh"),args.ToArray(),label);
     }

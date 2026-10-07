@@ -1,6 +1,6 @@
 param(
     [Parameter(Position = 0)]
-    [string]$Action = "",
+    [string]$Command = "",
     [Parameter(Position = 1, ValueFromRemainingArguments = $true)]
     [string[]]$Arguments = @(),
     [string]$SessionPath = ""
@@ -907,7 +907,7 @@ function Invoke-PrepareTurn {
 
 $resolvedSessionPath = Resolve-SessionPath $SessionPath
 
-switch ($Action.ToLowerInvariant()) {
+switch ($Command.ToLowerInvariant()) {
     "prepare-turn" {
         Invoke-PrepareTurn -ResolvedSessionPath $resolvedSessionPath -PrepareArguments $Arguments
         break

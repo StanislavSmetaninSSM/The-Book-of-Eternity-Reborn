@@ -15696,7 +15696,30 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.*"
+            "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "auxiliary-launcher-root-binding",
+      "responsibility": "Prepare-only explicit root cannot be reinterpreted from existing-directory action; real relocated dispatcher and external byte isolation",
+      "excludes": "No generic client parser/M1 main behavior changes or nativeWindows claim",
+      "changeHints": [
+        "BookOfEternityClient/Program.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.*"
           ]
         }
       ]

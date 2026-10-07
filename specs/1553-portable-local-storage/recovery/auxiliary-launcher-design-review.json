@@ -1,0 +1,19 @@
+{
+  "reviewer": "gpt-6.1-sol",
+  "reasoningEffort": "xhigh",
+  "agent": "/root/auxiliary_portable_design_review",
+  "verdict": "PASS",
+  "planCommit": "855cc828b4393acb0fe4d68e57d45bbcb209ef3c",
+  "findingsResolved": [
+    "Describe launcher root rather than generic parser strict enforcement",
+    "Exact old guard reads1285quickstart; new tests own operational quickstart",
+    "Separate missingframework cases and unresolved storagedebt refusal"
+  ],
+  "focusedSourceDelta": {
+    "verdict": "APPROVED",
+    "evidence": "First real route RED reaches usage; --action binds to Action selector",
+    "decision": "Rename Action selector to Command, no Action alias; positional main/daemon consumers unchanged; qualify real status refusal",
+    "nativeWindows": "unqualified"
+  },
+  "readOnly": true
+}
