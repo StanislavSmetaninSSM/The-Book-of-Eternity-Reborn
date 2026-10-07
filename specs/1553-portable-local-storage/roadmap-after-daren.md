@@ -28,7 +28,7 @@ provenance сохранены в [inventory](recovery/roadmap-after-daren-invent
 
 | Область / реальные потребители | Фактический статус | Следующее обязательство / зависимость |
 |---|---|---|
-| Console clipboard: [SystemClipboardService](../../BookOfEternityClient/Services/ClipboardService.cs), `GameEngine.TurnLifecycle.ResolveClipboardPlayerInput`, `TextComposer`/Explorer | Вне Windows явный отказ; Windows `Get-Clipboard` через `powershell.exe`/`pwsh.exe`. Turn handler показывает ошибку; composer превращает отказ в пустую вставку. Единственный существующий service test проверяет normalization, не Linux consumer. | T050: portable read adapter + видимый результат в обоих реальных потребителях, сохранение черновика. Headless Linux не имеет desktop clipboard по определению среды; положительная Wayland/X11 qualification требует соответствующей пользовательской сессии. |
+| Console clipboard: [SystemClipboardService](../../BookOfEternityClient/Services/ClipboardService.cs), `GameEngine.TurnLifecycle.GetPlayerInput` → `TextComposer.Read`, `SpectreExplorerConsole.Ask` → тот же composer | Вне Windows service возвращает явный отказ; Windows `Get-Clipboard` через `powershell.exe`/`pwsh.exe`. Composer:153–169 потребляет paste shortcut и превращает отказ в пустую строку, поэтому обычный turn:3974–3984 тоже не достигает error message в `ResolveClipboardPlayerInput`:4046–4052. Этот поздний fallback может повторно прочитать clipboard, если его успешное содержимое само равно shortcut. Единственный service test проверяет normalization, не Linux consumer. | T050: portable read adapter + видимый результат через настоящие turn/Explorer composer entrypoints, сохранение черновика, одно чтение на gesture. Headless Linux не имеет desktop clipboard по определению среды; положительная Wayland/X11 qualification требует соответствующей пользовательской сессии. |
 | Console sound/music: [AudioService](../../BookOfEternityClient/Services/AudioService.cs):107–137, 226–253 | `AudioFileReader` + `WaveOutEvent` без Linux backend. Cue исключения идут в debug log, music — в warning; это не пользовательский capability outcome. | Отдельный T050 audio block: совместимый playback/capability, volume/settings/cancel/dispose. Положительный звук требует audio device/session; никакой установки сервиса в текущей VM. |
 | Browser sound: [AudioPanel](../../BookOfEternityClient.WebFrontend/src/components/AudioPanel.tsx):103–152, [BrowserAudioService](../../BookOfEternityClient/WebUi/BrowserAudioService.cs):74–104 | Playback — HTML `Audio.play()` с пользовательским unlock/error, assets — backend. Это не Windows WaveOut. Backend settings settlement вызывает общий `AudioService.ApplySettingsAsync`; эту связь учитывать при audio change. | Автотесты затронутых settings/playback handlers; отдельные codec/assets/autoplay возможности браузера. Live browser не является требованием владельца. Browser не использует console clipboard service; переносить ему Windows clipboard API не требуется. |
 | Ordinary main launch: [bookofeternity](../../BookOfEternityClient/Launcher/bookofeternity.ps1):690–869, [ProductionMainLaunch](../../BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs):10–30 | M1 уже квалифицировал настоящий shipped route с configured persistent neutral CLI, prebuilt helper, explicit NativeLineage и отдельными caller-supplied terminal/stdin. Windows `Start-Process`/ConPTY/Job сохранены как отдельная ветвь. Это не произвольный TUI/live GM/Release gameplay qualification. | Не создавать второй launcher. Player needs .NET8 + PowerShell7 + admitted linux-x64/glibc package; SDK/compiler нужны publisher, не startup. ARM/musl и desktop/Windows qualification отдельно. |
@@ -46,7 +46,8 @@ provenance сохранены в [inventory](recovery/roadmap-after-daren-invent
 
 **T050-CLIPBOARD-LINUX**: сохранить `IClipboardService`/`ClipboardReadResult` и
 Windows adapter; реализовать ограниченное чтение через доступный пользовательский
-Wayland/X11 tool, без установки/настройки, и подключить реальный turn/composer/Explorer
+Wayland/X11 tool, без установки/настройки, и подключить реальный GetPlayerInput →
+TextComposer и SpectreExplorerConsole.Ask → TextComposer
 failure path. Конкретный tool selection и bounded process I/O — технические решения
 следующего плана, не новый clipboard UX или установка desktop в облаке.
 
@@ -55,7 +56,8 @@ clipboard в поддержанной Linux desktop сессии; отсутст
 ошибка или timeout дают понятное сообщение и сохраняют существующий ручной черновик.
 Обычная ручная terminal paste продолжает работать независимо от service.
 Критерии следующего causal RED→GREEN: настоящие service + оба consumer пути,
-Unicode/paragraph normalization, отсутствующий tool/session, child failure/timeout,
+Unicode/paragraph normalization, одно чтение на gesture (включая содержимое, равное shortcut),
+отсутствующий tool/session, child failure/timeout,
 ограничение stdout/cleanup, draft retention, отсутствие автоматического submit/replay;
 только узкие выбранные категории. Controlled adapter fixtures квалифицируют wiring,
 а реальный Wayland/X11 clipboard остаётся отдельной native environment проверкой.

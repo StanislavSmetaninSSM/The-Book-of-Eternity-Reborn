@@ -230,6 +230,11 @@
       "Path": "BookOfEternityClient/UI/LocalizationManager.cs",
       "Blob": "c6e7d0cf98ab0a96e580d7623149854e50ecd8fe",
       "Sha256": "4c12cc29075d4246baf9aab6c10504d0e0d624dd6de24cf7c97b9d1dbfae6659"
+    },
+    {
+      "Path": "BookOfEternityClient/UI/SpectreExplorerConsole.cs",
+      "Blob": "fc63372e4b3a28d27b7b7f22763c022972be0ab0",
+      "Sha256": "f849c271ccb6a95e1b8f5ace03b4489071801ed68a9892f56525b75eddac65e5"
     }
   ],
   "ProgressPercentage": "not calculated; task checkboxes and test counts are not a measured implementation denominator",
@@ -319,5 +324,10 @@
     "Reasoning": "xhigh",
     "Status": "pending"
   },
-  "FinalPublicationPolicy": "Normal non-force push; exact remote SHA, independent GitHub changed-file byte readback, clean state; final self-SHA proof in writer response/own host receipt."
+  "FinalPublicationPolicy": "Normal non-force push; exact remote SHA, independent GitHub changed-file byte readback, clean state; final self-SHA proof in writer response/own host receipt.",
+  "ResolvedReviewFinding": {
+    "Source": "GetPlayerInput3974–3984 calls TextComposer before late clipboard fallback",
+    "Correction": "Both actual turn and Explorer composer consume clipboard failure as empty; next slice must cover real entrypoints and one read per gesture",
+    "RuntimeAndTestsChanged": false
+  }
 }
