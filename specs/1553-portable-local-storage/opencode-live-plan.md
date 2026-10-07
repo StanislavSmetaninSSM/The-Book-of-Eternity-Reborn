@@ -759,3 +759,18 @@ source e825d3c3 and discovery receipt archived. Independent EVIDENCE PASS:73
 historical source pins/116 artifacts/all678 og4 package files verified,13
 unique original-identity ClosedObserved receipts in full-console GREEN.
 No test cohort repeated. Actual acceptance remains unexecuted before og4.
+
+Actual d8492fd1 fresh og4 ordinary NewGame/derivedReady/Continue reached real
+player prompt. One action entered the actual client; no turn_request was created,
+no provider request or accepted turn. Client shows contract-validation refusal
+before staging, not the prior Continue cause. Need exact validator/source proof: 
+approved driver cancels initial NewGame bootstrap before CLI; whether that leaves
+unmaterialized required Guardian state must be checked before runtime changes.
+Original shutdown attempted once, returned ok:false/terminalUncertain despite
+physical scoped stop. Durable original Uncertain/metadata retained; actual bridge
+EOF and termios unconfirmed. Guardian ultimately ECHILD/emergency0/failures0,
+reaped2/driver1, no deadline: physical cleanup cannot logical-success.
+Exact owned artifacts archived action-request-gap; no replay or original-root
+clear. Independent Sol source/driver cause review requested. Next requires
+causal controlled consumer diagnostics and source-backed bootstrap route,
+not an unchanged actual startup or admission weakening.
