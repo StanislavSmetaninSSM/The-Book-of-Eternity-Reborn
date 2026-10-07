@@ -1,5 +1,9 @@
 # Feature Specification: Trusted local storage and cross-platform runtime
 
+## Current bounded desktop helper slice
+
+T050-DESKTOP-HELPERS-PORTABLE is authorized from auxiliary `65674ee83ddeac9c63e368334ea170cf9b700c54`. [Plan](desktop-helpers-portable-plan.md) preserves existing managed desktop association and Windows route; explicit outcomes/manual paths through actual image/mods/main consumers. Controlled launch adapters only; no desktop positive qualification, font promise or other block. Source: #1553. Implementation/reviews/evidence pending.
+
 ## Current auxiliary package contract
 
 Owner-authorized T050-AUXILIARY-LAUNCHER-PORTABLE preserves the existing prepare-turn helper: installed/relocated prebuilt client DLL/resources on Linux/Windows, .NET8 shared frameworks and PowerShell7, no source/SDK/compiler at player startup. The ordinary positional launcher and profile CLI/model/options stay; prepare-only first-root identity cannot come from action text. Capability/debt failure is explicit, retains evidence and does not replay. This client-owned package change alters no GM-authored output/game rule and adds no journal. [Plan](auxiliary-launcher-portable-plan.md) / [handoff](auxiliary-launcher-portable-handoff.md); bounded Linux synthetic qualification, no native Windows/live acceptance. Full US5/T050 remains open.

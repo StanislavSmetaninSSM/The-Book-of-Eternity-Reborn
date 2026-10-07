@@ -1,5 +1,9 @@
 # Implementation Plan: Trusted local storage and cross-platform runtime
 
+## Current bounded desktop helper slice
+
+T050-DESKTOP-HELPERS-PORTABLE is authorized from auxiliary `65674ee83ddeac9c63e368334ea170cf9b700c54`. [Plan](desktop-helpers-portable-plan.md) preserves existing managed desktop association and Windows route; explicit outcomes/manual paths through actual image/mods/main consumers. Controlled launch adapters only; no desktop positive qualification, font promise or other block. Source: #1553. Implementation/reviews/evidence pending.
+
 ## Current bounded auxiliary packaged route
 
 T050-AUXILIARY-LAUNCHER-PORTABLE implements existing prepare-turn from relocated
