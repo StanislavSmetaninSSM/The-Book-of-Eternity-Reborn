@@ -1,0 +1,20 @@
+[
+  {
+    "URL": "https://raw.githubusercontent.com/dotnet/runtime/v8.0.31/src/libraries/System.Net.Sockets/src/System/Net/Sockets/Socket.cs",
+    "File": "Socket.cs",
+    "Bytes": 169730,
+    "SHA256": "6879915f5af210e93c5b87791d557eb994003cbfe54398263cd7efae055e3a67"
+  },
+  {
+    "URL": "https://raw.githubusercontent.com/dotnet/runtime/v8.0.31/src/libraries/System.Net.Sockets/src/System/Net/Sockets/SafeSocketHandle.Unix.cs",
+    "File": "SafeSocketHandle.Unix.cs",
+    "Bytes": 13642,
+    "SHA256": "7ebcef81fc2ee5d4f82c03e7a430bee7bf54d7d6e79a126ed52d9bb3d977a828"
+  },
+  {
+    "URL": "https://raw.githubusercontent.com/dotnet/runtime/v8.0.31/src/libraries/System.Net.Sockets/src/System/Net/Sockets/SafeSocketHandle.cs",
+    "File": "SafeSocketHandle.cs",
+    "Bytes": 7058,
+    "SHA256": "e7037e69e9eaba2c8b3470063115bf0597d86fdf18d0e4ccc6d40d0f23f38892"
+  }
+]

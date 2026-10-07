@@ -68,7 +68,9 @@ managed exception were captured. There is no fuller internal trace to supply.
 
 1. Original root `a4bce4411f7c4cf88f77c80f8f03856b`, generation
    `8d44d89c2d2b4039874f56e8f95424f1`, epoch1 has durable Running; original shell
-   PID794616 and helper794597. [Record](recovery/evidence/opencode-live/original-bootstrap-lost/play/.boe_runtime/gm-runs/main.json.gz).
+   PID794616 and helper794597. Running is the archived manifest Result.OriginalRunningRecord; the separately
+   [final record](recovery/evidence/opencode-live/original-bootstrap-lost/play/.boe_runtime/gm-runs/main.json.gz)
+   is Uncertain/nullStopEvidence, not a Running proof.
 2. Source publishes Running **before** `prepared.ReleaseAsync`
    ([coordinator](../../BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs)).
    Running alone is not release, readiness, or admission authority.
@@ -91,6 +93,12 @@ managed exception were captured. There is no fuller internal trace to supply.
 Og5 uses exact fresh-built DLLs from the successful `767ef6a7` production fixture:
 678 shipped files / 99,049,670 bytes; both DLLs and all package hashes checked.
 Package has no source/TestSupport/compiler, only player .NET8/PowerShell7 prerequisites.
+Successful control instantiates BridgeHost through reflection inside TestSupport,
+with TestSupport AppContext and redirected host I/O. Og5 uses the actual standalone
+ordinary launcher/Bridge AppContext and foreground controlling PTY. This is a
+material unqualified composition boundary despite equal DLL bytes. A blindly
+reflected mini-profile diagnostic would fail its packaged-editor apphost check
+before native launch; it must not be reported as this causal failure.
 [Deployment proof](recovery/evidence/opencode-live/og5-preparation/manifest.json).
 Native helper source/provenance are unchanged. Positive control uses configured
 neutral command, neutral profile and no external-editor configuration. Failed og5
@@ -115,6 +123,15 @@ of successful bounded launches is reused. No live attempt until causal conclusio
 If cause is established: one narrow actual-boundary RED, one minimal correction,
 independent review and GREEN, ordinary checkpoint/readback, then one fresh game
 attempt. If evidence is insufficient: reviewer must name one missing observation
-and one controlled inert experiment; no speculative patch or repeated CLI startup.
+and one controlled inert experiment preserving actual standalone Bridge AppContext;
+no speculative patch or repeated CLI startup.
+
+Read-only Astra interim: all20og5 artifact hashes and all678package bytes match;
+all61controlledartifacts checked. First-loss latching narrows the send/dispose/
+Started race hypothesis. Official .NET8.0.31 CloseAsIs invokes TryUnblockSocket
+only while the SafeHandle is unreleased; Shutdown(Both) is not an unconditional
+Seqpacket disposal behavior. No actual invocation in og5 is proved. Publicsource
+URLs/hashes retained in recovery/bootstrap-dotnet-source-pins.json, source bytes
+locally read-only under /workspace/qualification-1553-bootstrap-diagnosis/.
 Root og4/og5 and historical Codex Uncertain metadata remain intact. Systemd draft
 63e99009 stays deferred; primary systemd/nativeWindows/fullclientVT/cold are open.
