@@ -3742,7 +3742,7 @@ public partial class FileSystemManager
                     {
                         throw new CoordinatedStatePublicationUncertainException(failure);
                     }
-                    EnsureNoLegacyStorageEvidence();
+                    EnsureNoLegacyStorageEvidence(writeLease);
                 }
                 else
                 {

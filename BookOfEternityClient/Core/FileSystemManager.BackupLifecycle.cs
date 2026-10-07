@@ -37,7 +37,7 @@ public partial class FileSystemManager
             VerifyCurrentSessionOperation(lease);
             return;
         }
-        EnsureNoLegacyStorageEvidence();
+        EnsureNoLegacyStorageEvidence(lease);
         try { RecoverTrustedLocalStorage(lease); }
         catch (Exception failure) { throw new CoordinatedStatePublicationUncertainException(failure); }
         // Retained debt has its own generation authority. Classify its conflict
