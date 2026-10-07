@@ -1,3 +1,13 @@
+# S1 affected fixture preparation failure
+
+3ee96534 planned28, completed4affected:3PASS/1FAIL at own fixture cleanup
+Directory.Delete(missing scratch), after actual retained-owner/I-O assertions.
+Fail-fast skipped all24controlled; captureRED/disposalGREEN not executed.
+Fixed explicit own scratch creation in existing affected fixture; production
+Bridge constructor correctly has no admission side effects and is unchanged.
+Next controlled24alone reaches outstanding capture boundary, then finalGREEN
+and four affected rerun. Historicalresult retained, not systemdcausalRED.
+
 # S1 disposal correction and capture causal verification WIP
 
 OriginalnativeDispose now inside same stickyUncertain catch as manager/cgroup/

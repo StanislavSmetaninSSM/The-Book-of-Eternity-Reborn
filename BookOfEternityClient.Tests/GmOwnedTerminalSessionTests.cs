@@ -15,6 +15,7 @@ public sealed class GmOwnedTerminalSessionTests
         var bridge = Path.Combine(repo, "BookOfEternityGMBridge/bin", configuration, "net8.0/BookOfEternityGMBridge.dll");
         var type = Assembly.LoadFrom(bridge).GetType("BookOfEternityGMBridge.BridgeHost", true)!;
         var scratch = Path.Combine(Path.GetTempPath(), "boe-owned-terminal-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(scratch); // The fixture owns setup; Bridge construction has no launch side effects.
         var host = Activator.CreateInstance(type, [scratch, "unused-" + Guid.NewGuid().ToString("N")])!;
         using var inputCancellation = new CancellationTokenSource();
         var owner = new HeldTerminal();
