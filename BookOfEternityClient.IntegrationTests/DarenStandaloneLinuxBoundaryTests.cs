@@ -99,7 +99,10 @@ public sealed partial class DarenStandaloneLinuxBoundaryTests(ITestOutputHelper 
         var retained = Directory.GetFiles(fixture.JournalRoot, "*", SearchOption.AllDirectories)
             .Concat(new[] { fixture.ProfilePath, fixture.Files.SessionGenerationPath })
             .ToDictionary(path => path, File.ReadAllBytes);
-        Assert.NotNull(await Record.ExceptionAsync(() => fixture.Fresh().AcquireCanonicalWriteLeaseAsync()));
+        await Assert.ThrowsAsync<InvalidDataException>(async () =>
+        {
+            await using var unexpected = await fixture.Fresh().AcquireCanonicalWriteLeaseAsync();
+        });
         foreach (var evidence in retained) Assert.Equal(evidence.Value, File.ReadAllBytes(evidence.Key));
         output.WriteLine("Logical Uncertain retained before owned fixture cleanup; no completion/replay/recovery grant.");
     }

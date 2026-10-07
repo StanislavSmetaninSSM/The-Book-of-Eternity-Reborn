@@ -3,10 +3,18 @@
   "selections": [
     {
       "category": "daren-standalone-linux-boundaries",
-      "reason": "Only new16 publication-cut/debt/Uncertain cases. Prior successful7 consumers excluded while their runtime is unchanged.",
+      "reason": "New14 original admission/cancel/console failure cases plus2 changed recovery-class assertions; no repeat of unchanged successful consumer/cut/debt cases.",
       "contracts": [
         "T031-DAREN-STANDALONE-LINUX",
-        "original B1 decisions/recovery and fixed profile"
+        "original main/worker/generation/session and browser declaration"
+      ]
+    },
+    {
+      "category": "daren-standalone-browser-dispatch",
+      "reason": "Exactly4 affected original declared browser profile rows: FileStore Linux dispatch and shared profile hook changed. No old full browser or gameplay cohorts.",
+      "contracts": [
+        "T031-DAREN-STANDALONE-LINUX",
+        "original browser external Daren participant"
       ]
     }
   ]
