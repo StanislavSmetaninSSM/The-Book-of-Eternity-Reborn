@@ -377,7 +377,8 @@
     "Compiler": "cc (Debian 14.2.0-19) 14.2.0",
     "CompilerUse": "publisher guardian only; not on player PATH",
     "PlayerRuntime": "isolated copied dotnet host/host-fxr and shared8 links, sdk absent/list-sdks empty; PATH only dotnet/pwsh",
-    "OS": "Linux x86_64"
+    "OS": "Linux x86_64",
+    "VersionEvidence": "recovery/evidence/t050-auxiliary-portable/provenance/{sdk-version,dotnet-runtimes,powershell-version}.txt; harmless version reads, no tests/provider"
   },
   "Limits": [
     "native Windows execution unqualified",
@@ -1956,6 +1957,26 @@
       "Path": "recovery/evidence/t050-auxiliary-portable/zero-workload-native-comma-selection.log.gz",
       "SHA256": "7e3db1dfedd5d5e3261aaee66fd7febf3e1fba03ad9e627488f10259b289a66f",
       "Bytes": 224
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/provenance/sdk-version.txt",
+      "SHA256": "93c11b5221b72e0032ab2d9f93d28c2c9b7a0bb2557effffcdfef45ab739a0da",
+      "Bytes": 9
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/provenance/dotnet-runtimes.txt",
+      "SHA256": "cfef937639f31d2cd9c502712b96bfc164712f91cade4b7c7994cf1f74050569",
+      "Bytes": 398
+    },
+    {
+      "Path": "recovery/evidence/t050-auxiliary-portable/provenance/powershell-version.txt",
+      "SHA256": "4ebb249704f474d32801b522f624e7c84fdad45da6fbf69e0eec7c1b34c6916b",
+      "Bytes": 6
+    },
+    {
+      "Path": "recovery/auxiliary-launcher-candidate-restoration.json",
+      "SHA256": "3a49432365b751cc46598b89aebce14a584a92e01375fff037630767789941b7",
+      "Bytes": 1572
     }
   ],
   "FinalCarrierClosure": "Exact-tip remote/readback and fresh GitHub-only restore performed by writer after metadata reviews; not yet claimed here."
