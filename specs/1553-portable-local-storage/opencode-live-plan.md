@@ -1,4 +1,26 @@
-## T043-DRIVER-PROVIDER-FAILURE — bounded implementation plan (2026-10-07)
+## T043-DRIVER-PROVIDER-FAILURE — controlled qualification (2026-10-07)
+
+The reviewed plan below was executed. Final driver/test source is
+`0a3d963ff942244eaddd596d475025126697efc1`; production runtime is unchanged.
+Independent Sol6.1/xhigh SOURCE PASS covers this bounded correction.
+Fresh narrow GREEN:14/14, complete selection and owned cleanup. Catalog validation
+is discovery-only:419 categories,11156 methods/files,0 tests. These are controlled
+driver/consumer results, not provider or accepted-game-turn qualification.
+
+| Receipt | Executed / result | Classification |
+| --- | --- | --- |
+| initial RED | 5:1PASS/4FAIL | missed current provider/client/exit and error-pause cleanup |
+| first controlled attempt | 9:8PASS/1FAIL | positive fixture preparation failed: Unix socket path length, before CLI |
+| first review RED | 3:0PASS/3FAIL | early offset, coalesced pause, absent rollback evidence |
+| second controlled attempt | 9:8PASS/1FAIL | positive fixture preparation failed: controlled install path IndexError; phase category unrun |
+| intermediate GREEN | 12:12PASS | then-current source53cb; later phase findings still open |
+| second review RED | 5:3PASS/2FAIL | post-ESC false cancellation and stale screen before repeated pause |
+| final GREEN | 14:14PASS | fresh source0a3d,2 descriptors complete, cleanup complete |
+
+[Exact receipts and source pins](recovery/evidence/opencode-live/driver-failure/).
+No unrelated category, live CLI, provider request or historical root mutation.
+
+## Reviewed implementation plan
 
 Source #1553; accepted base174761a17, sole Sol6.1/xhigh writer. Provider retries,
 network/auth/settings changes and all historical game-root mutations are excluded.
@@ -27,7 +49,7 @@ This is client-owned diagnostic-driver behavior; no GM prompt/schema/rules chang
    ordinary checkpoints with remote SHA/byte readback and fresh GitHub-only restore.
    Live GM remains blocked pending the owner's separate opencode.ai access decision.
 
-## Final bounded review disposition
+## Historical og10 bounded review disposition (before this driver correction)
 
 Independent Sol source diagnosis confirms real original SubmissionObserved at42.983s, earliestproviderdenial44.895s, clienterror163.857s, misseddriverclassification and ESC acknowledgment of the olderrorpause at201.106s followedbyplayerprompt201.349s. This is notcancellation/rollbackproof. Exactfailedpin/clientexception/coordinatorstage remainsunproven. Failed-receipt EVIDENCE PASS at53cebb3d verifies54artifacts,678files/99,051,790bytes, originalcorrelation anduncertaintylimits. No providerretry/runtimepatch after thedenial. [Current qualification](recovery/opencode-current-live-qualification.json). Independent Sol metadata PASS at0b97b285: all54curatedartifacts/pins/links, endpoint attribution and uncertainty limits verified. Final exact-tip GitHub-only restore remains the writer closure check. No runtime/test/driver changes afterog10.
 

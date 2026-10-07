@@ -65,11 +65,11 @@
     "NoProviderRetry": true
   },
   "Remaining": [
-    "Provider endpoint access requires separate authorization if policy changes",
-    "Causal inert driver failure detection/phase correction before another attempt",
-    "Original client exception/coordinator stop stage not proven",
-    "Successful model response and actual game application remain open",
-    "Final exact-tip GitHub-only restoration/readback is the writer closure check; no additional live attempt"
+    "Parent opencode.ai access approval is pending; no provider retry",
+    "Exact historical client exception/coordinator pin stage remains unproven; controlled held-pin mechanism does not repair historical outcome",
+    "Graceful active-turn stop beyond controlled early cancellation remains unqualified; uncertainty is retained",
+    "Successful provider response and actual game application remain open",
+    "Final exact-tip remote/readback and fresh GitHub-only restoration are writer closure checks"
   ],
   "HistoricalUncertainUnchanged": {
     "og4": "3012a89b7ac3d1915919742d6b5c53485f18805dd5304cde554d71a8d220a5c6",
@@ -78,5 +78,52 @@
   },
   "NoNewRuntimeChangesAfterActualAttempt": true,
   "FreshRestoreScope": "Final exact source tree; no game-state salvage or old input replay",
-  "MetadataReview": "Independent Sol6.1/xhigh PASS at0b97b285c35a81cc77325fda16de531e951adfcb; exact final restore remains separate"
+  "MetadataReview": "Independent Sol6.1/xhigh PASS at0b97b285c35a81cc77325fda16de531e951adfcb; exact final restore remains separate",
+  "DriverQualification": {
+    "Scope": "Controlled diagnostic driver/consumer qualification only; no new provider or accepted GM turn",
+    "Source": "0a3d963ff942244eaddd596d475025126697efc1",
+    "PlanReview": "Independent Sol6.1/xhigh PLAN PASS e2535c872e978654dd9ed67cea1784ec535739c8",
+    "SourceReview": "Independent Sol6.1/xhigh SOURCE PASS0a3d963f",
+    "EvidenceReview": "Pending separate review of public curated receipts",
+    "MetadataReview": "Pending separate review of updated carrier",
+    "FinalExecuted": 14,
+    "FinalPassed": 14,
+    "SelectionComplete": true,
+    "CleanupComplete": true,
+    "CausalREDs": [
+      {
+        "Executed": 5,
+        "Failed": 4,
+        "Passed": 1
+      },
+      {
+        "Executed": 3,
+        "Failed": 3,
+        "Passed": 0
+      },
+      {
+        "Executed": 5,
+        "Failed": 2,
+        "Passed": 3
+      }
+    ],
+    "PositiveFixturePreparationFailures": 2,
+    "ProviderCalls": 0,
+    "AcceptedAppliedGameTurns": 0,
+    "ControlledOriginalStopConfirmed": true,
+    "ControlledAllPeerExit0EOFAndTermios": true,
+    "ControlledGuardianEmergencySignals": 0,
+    "HeldPinDrainSeconds": 5.2336888,
+    "HeldPinLogicalStopConfirmed": false,
+    "HeldPinLifecycleAcquired": false,
+    "HeldPinLateClosedObservedRemainsUncertain": true,
+    "RetainedFinallyDisposeCleanupCallsRemain": true,
+    "HistoricalCauseProven": false,
+    "ProductionRuntimeChanged": false,
+    "CatalogCategories": 419,
+    "CatalogMethodsFiles": 11156,
+    "CatalogTestsExecuted": 0,
+    "Receipts": "evidence/opencode-live/driver-failure/",
+    "SourcePins": "evidence/opencode-live/driver-failure/source-pins.json"
+  }
 }

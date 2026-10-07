@@ -1,4 +1,18 @@
-# Current production blocker: first original submit, provider domain denial
+# Current T043 boundary: controlled driver correction; provider access pending
+
+T043-DRIVER-PROVIDER-FAILURE has final source0a3d963f, causal REDs and fresh
+14/14 narrow GREEN through the real diagnostic driver and controlled production
+NewGame/client/daemon/Bridge route. Current denial detection and confirmed early
+rollback → original Stopped ACK → peer I/O cleanup are qualified. The separate
+held original pin reaches drain timeout/lifecycle absent and retains logical
+Uncertain despite native/managed cleanup; late ClosedObserved does not repair it.
+No production runtime/ownership change or historical Uncertain rewrite.
+Independent Sol SOURCE PASS; evidence/metadata and publication closure are separate.
+[Executed plan and receipts](opencode-live-plan.md) / [current handoff](opencode-current-live-handoff.md).
+No provider request or accepted GM turn this block. Parent's opencode.ai allowlist
+decision remains pending; do not retry or replay og10. Systemd stays deferred.
+
+# Historical production blocker: first original submit, provider domain denial
 
 Fresh og10 at21a2010e/runtime82a6ef70 qualifies original production startup/readiness/daemon/Continue and observes one full-draft original CLI SubmissionObserved. CLI then displays `Forbidden: Domain forbidden` at44.895s; provider successful response/model reception and accepted/applied game turn are not proven (accepted0). Driver misses this error and the163.857s client error; late shutdown230.069s returnsokfalse. Same original durable recordUncertain, request/pending retained; guardianECHILD4reaped0emergency is physical cleanup only. No new attempt, input replay, auth/grant/network change. [Current evidence and limits](opencode-lifecycle-diagnosis.md) / [handoff](opencode-current-live-handoff.md).
 

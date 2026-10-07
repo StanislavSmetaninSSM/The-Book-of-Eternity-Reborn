@@ -1,0 +1,24 @@
+{
+  "SourceDirectory": "/workspace/native-1553/TestResults/test-categories/20261007-165437-521-855669-3255aab622a641138a8f5b425862e019-categories",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 3163831,
+      "SHA256": "e6a4c4e71c16ad7d7bbeec85a9e0adf2eb3186db00a354b90ac726782f3f6c67",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 352379,
+      "StoredSHA256": "717607bc125275cbb1e9503d164fcff45298676e18ff9fbf5db50dca288ace11"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1600,
+      "SHA256": "b70ca15a433c663823d031ecd53f5f59af0e3d1328c784f2d08ea833a1bd0826",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 642,
+      "StoredSHA256": "916f0bb93b9a98e4d8a8776de58352eaf09b31792568bb39c6ac477adbe8b0d9"
+    }
+  ],
+  "PublicOnly": true,
+  "PrivateCliStateIncluded": false,
+  "Classification": "Discovery-only categories419/methods-files11156 valid; tests0"
+}

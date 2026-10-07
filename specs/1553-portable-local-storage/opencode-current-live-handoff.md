@@ -1,21 +1,68 @@
-# Current bounded live handoff — provider access blocker
+# T043 driver correction handoff — live provider access pending
 
-Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), T043. Sole writer and independent reviewers: Sol6.1/xhigh. No gameplay, prompt, schema, economy or primary GM-profile change. Deferred systemd design63e99009 remains preserved and unqualified.
+Sole writer and independent reviewers: Sol6.1/xhigh. Accepted base174761a17;
+final driver/test source `0a3d963ff942244eaddd596d475025126697efc1`.
+Production runtime, game rules/prompts, GM model and all historical roots unchanged.
+Deferred systemd design63e99009 remains preserved and unqualified.
 
-## Preserved correction
+## Result and evidence
 
-Existing-auth ordinary push restored exact5cea95ed after the four recorded GitHub500 refusals. Every subsequent source/evidence checkpoint published and matched remote SHA/byte readback. No credentials, network or force/history changes.
+Current action output now promptly classifies the exact retained provider denial,
+current client error and actual peer exit. Old output is excluded. One observed
+error-pause ACK differs from cancellation; fresh screen ordering, actual rollback
+caption and all pending artifacts absent are required to claim cancellation.
+Unknown original shutdown never becomes logical success or daemon pre-ACK interrupt.
 
-Exact og9 child VT proves the known SGR39/default sentinel was rejected by the RGB-only draft predicate. Causal RED at2bce5e08:5 executed,3 failed,2 passed. Minimal82a6ef70 permits only existing-1/default or pinnedRGB for nonblank draft cells. Fresh GREEN5/5 with original pipe/full file proof/one submit and style/unknown-sequence/cancel/no-replay negatives; cleanup complete. Independent Sol source/evidence PASS. Catalog417/11152 valid,0tests. [Component evidence](recovery/evidence/opencode-live/default-foreground-green/manifest.json).
+Three causal REDs: initial5=4FAIL/1PASS, first review3=3FAIL,
+second review5=2FAIL/3PASS. Two separate positive-fixture preparation failures
+(path length; controlled install IndexError) reached no CLI/provider and are not
+runtime causal RED. Final fresh GREEN14/14 through only two narrow categories;
+selection complete and owned cleanup complete. Catalog419/11156 valid,0 tests.
+[Executed plan](opencode-live-plan.md), [public receipts](recovery/evidence/opencode-live/driver-failure/),
+[source pins](recovery/evidence/opencode-live/driver-failure/source-pins.json).
+SDK10.0.401, .NET8 runtime8.0.31, PowerShell7.5.4; each fixture records actual
+compiler path/hash/version (Debian cc14.2.0-19), publisher-only compilation.
 
-## Actual fresh attempt
+The final fixed inert denial fixture used ordinary NewGame/client/daemon and the
+actual production Bridge/AppContext/M1/fence. Denial detected19.026s; settled25.169s.
+Actual console cancel/rollback preceded one original shutdown, same-identity native
+scope-empty, durable Stopped and ACK. Daemon CtrlC followed ACK. Client, Bridge and
+daemon all exited0 with EOF/restored termios; guardian ECHILD/0 emergency/0 failures.
+This proves controlled driver/consumer cleanup, with provider calls0/accepted GM
+turns0 and no accepted model response. It is not a live gameplay pass.
 
-Fresh og10 uses the actual production Bridge/AppContext,678 installed files/99,051,790bytes, OpenCode1.18.35 and a separate `opencode/ling-3.1-flash-free` test profile. Ordinary NewGame/initial cancellation, original Running bootstrap, derived readiness, daemon bootstrap and Continue succeed. One action asks the Guardian where the soul arrived. Request79d054ac correlates with original operationcf534683, full draft proof and `SubmissionObserved`. No old og9 replay.
+## Stop localization and limits
 
-Earliest CLI failure at44.895s: `Forbidden: Domain forbidden`; CLI displays1.9s. **No successful model response or accepted/applied game turn; model reception is not proven.** Official [OpenCode Zen](https://opencode.ai/docs/zen/) maps this model to `https://opencode.ai/zen/v1/chat/completions`. This is expected public endpoint metadata; wire URL/headers were not captured. No new access/auth/grant was attempted.
+A separate actual original typed-pin scenario held Active across the sole shutdown
+RPC. Drain5.2336888s expired before lifecycle acquisition. Native scoped-empty and
+managed I/O/disposal completed, but original RPCokfalse/owner Uncertain remained.
+Late same-connection ClosedObserved retained Uncertain; final durable record was
+Uncertain. Existing finally/Dispose cleanup calls remain, distinct from one RPC.
+This is a proved mechanism, not the historical og10 exception/pin-state diagnosis.
+Production lifecycle remains unchanged; graceful active-turn stop beyond the proven
+early cancellation route is still unqualified. See [localization](opencode-lifecycle-diagnosis.md).
 
-Independent Sol source diagnosis confirms the driver missed both this failure and the163.857s client error, waiting until201.106s. Its ESC then acknowledged the already-rendered error pause; the201.349s player prompt is not proof of cancellation/rollback. Original shutdown230.069s returnedokfalse. Same-run3e25952e77d2408ab2d673e08fd173a6 remains durableUncertain with request/pending retained. Native scoped-empty evidence does not establish coordinator retirement. GuardianECHILD/4reaped/0emergency/0failures/driver1 proves physical cleanup only; driver did not prove all peerexit/EOF/termios. Historical og4/og5 Uncertain and og9 DraftUncertain are unchanged. [54 curated public artifacts](recovery/evidence/opencode-live/provider-domain-refusal/manifest.json); private CLI auth/config/state excluded.
+Historical og10 still has one CLI SubmissionObserved followed by Domain forbidden,
+no proven model reception/response/application, same-run Uncertain and retained
+request/pending. Its exact client exception/failed coordinator stage is unknown.
+Og4/og5/og10 record hashes and pinned og10 pending metadata were checked unchanged;
+og9 DraftUncertain was not replayed. Guardian cleanup never repaints those outcomes.
+
+## Reviews and delivery
+
+Independent Sol SOURCE PASS0a3d963f. Evidence and metadata verdicts close on the
+published receipt/document carrier; final exact remote/readback and fresh direct
+GitHub-only restoration are writer closure checks. No behavior rerun after14/14.
+During receipt publication GitHub returned Internal Server Error at16:53:52Z,
+16:55:28Z and16:56:40Z. Published source0a3d remains exact; receipt WIPb703d04b
+has a verified922334-byte bundle, SHA256
+c95ae8ab820551c81c78d50935e57e5faef43451ad833dfdf46f87d91f96aa16.
+Ordinary retry uses the existing authorization; no new login or network changes.
 
 ## Next boundary
 
-No further provider attempt until the access blocker is resolved separately. Current client exception was not persisted; its runtime cause is unproven. Independent Sol source diagnosis confirms the provider/client failure-detection gap and mistaken cleanup phase. Failed-receipt EVIDENCE PASS verifies all54artifacts/package/prompt correlation/timeline and uncertainty limits. No specific failed pin/coordinator stage or client exception is proven; no speculative lifecycle patch or restored success. [Qualification ledger](recovery/opencode-current-live-qualification.json). Independent component source/evidence review and failed-receipt evidence review passed; current source diagnosis is preserved. Independent Sol metadata PASS at0b97b285 verifies all54 tracked artifacts, links, public-only pins and counts. The writer must still verify the exact final carrier by fresh GitHub-only clone/byte readback before reporting recoverability. No systemd/nativeWindows/livebrowser/real-save/cold guarantee or Q2 acceptance.
+Parent's separate opencode.ai allowlist request is unanswered. No provider retry
+or new CLI/model request in this block. After approval, use a new isolated ordinary
+NewGame/root and current original readiness/operation; never replay og10 input.
+Successful provider response and actual accepted/applied1–2 turns remain open.
+No systemd/native Windows/live browser/user saves/cold guarantees or other block.

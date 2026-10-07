@@ -1,4 +1,44 @@
-# Current actual provider failure — og10
+# Controlled driver correction and original stop localization
+
+The diagnostic driver now observes the current action's captured provider denial,
+current client failure and actual peer exit before another status RPC. Historical
+output outside the action cut cannot trigger that classification. Error-pause ACK
+and actual cancellation differ; one observed gesture, current screen ordering,
+rollback caption and absence of all pending artifacts are required for cancellation.
+There is no unknown-command replay or provider retry.
+
+At source0a3d963f the actual ordinary NewGame/client/daemon/production Bridge route
+with a fixed inert CLI detected its synthetic denial at19.026s and settled within
+25.169s. Actual console cancellation/rollback preceded the sole original shutdown;
+same-original scoped stop, durable Stopped and ACK preceded daemon CtrlC. All three
+foreground peers exited0 with EOF/restored termios; guardian ECHILD/0 emergency.
+Provider calls and accepted GM turns are0; no model response was supplied.
+
+The separate actual typed-pin scenario proves where confirmation is lost under a
+held pin: [BeginStopping](../../BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs#L227)
+waits5s for pins before acquiring `_stopLifecycle`. Its drain timeout marks Uncertain.
+Final controlled drain5.2336888s left the original pin Active and lifecycle absent;
+native scoped-empty and managed I/O/disposal completion did not satisfy
+[ConfirmSettledStop](../../BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs#L232).
+The one original shutdown RPC returnedokfalse. Later same-connection ClosedObserved
+retained logical Uncertain; final durable record stayed Uncertain, never Stopped.
+Existing retained finally/Dispose cleanup calls remain and are not a second RPC or
+logical-success claim.
+
+The actual daemon Process-Turn holds its original pin across its wait; the
+processing heartbeat interval can outlast that5s drain. This is a controlled
+reproduction of a possible mechanism, not proof of og10's absent exception/pin
+state. No production lifecycle defect requiring a source correction is established;
+production runtime/admission remain unchanged. Graceful active-turn stop beyond
+the proven early cancellation route remains unqualified and must preserve Uncertain.
+
+Three causal REDs and fresh final14/14 GREEN are linked in the
+[executed plan](opencode-live-plan.md). Independent Sol source PASS0a3d;
+evidence and metadata reviews close separately. All old og4/og5/og10 record hashes
+and pinned og10 pending metadata remain unchanged. Provider access approval is
+still pending; no additional live attempt occurred.
+
+# Historical actual provider failure — og10
 
 | Boundary | Captured result | Limit |
 |---|---|---|
