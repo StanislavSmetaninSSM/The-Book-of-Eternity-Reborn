@@ -37,7 +37,7 @@ internal sealed class BrowserDirectGachaLinuxFixture(ITestOutputHelper output, s
             {
                 BeforeCanonicalMutationBoundaryAsync = path => Mutation?.Invoke(path) ?? Task.CompletedTask,
                 LocalPublicationObserver = (phase, index) => Publication?.Invoke(phase, index),
-                CanonicalWriteLeaseClosingAsync = () => Closing?.Invoke() ?? Task.CompletedTask
+                SessionOperationClosingAsync = () => Closing?.Invoke() ?? Task.CompletedTask
             });
         State = new(Files, new GameSettings(), NullLogger<StateManager>.Instance);
         await State.BootstrapLocalStorageAsync();

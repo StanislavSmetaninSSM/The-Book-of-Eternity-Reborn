@@ -70,3 +70,7 @@ Sol6.1/xhigh review of13e6b8b returned BLOCKED for one concrete adoption gap: ex
 ## Plan accepted for execution; first real-consumer RED pending
 
 Independent actual Sol6.1/xhigh focused amendment review PASS atb51f4519: existing authority/current-request guard closes the stale adoption blocker. Added first isolated current-schema real BrowserAfterlifeWriteService success oracle and narrow category/selection; runtime unchanged. Fresh runner build/execution next. Tools/provenance and own root cleanup must be retained; preparation failures are not causal RED.
+
+### Initial preparation failure (not causal RED)
+
+Clean1ca1d83f runner build failed CS0117: fixture named nonexistent CanonicalWriteLeaseClosingAsync; existing accepted fixture uses SessionOperationClosingAsync.0tests executed, owned/runtime cleanup confirmed. [Evidence](recovery/evidence/direct-gacha-prep-build/manifest.json). Correct only fixture hook name, retain runtime base and rerun the same one-case selection with a fresh successful build. Existing compiler warnings remain in captured log; none are silently treated as new runtime defects.
