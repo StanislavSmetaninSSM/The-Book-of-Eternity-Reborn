@@ -1,0 +1,85 @@
+{
+  "Source": "6c7816a99d905a0512e518dcfeb86c0196bc7d96",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-synchronized-terminal-boundaries",
+  "Planned": 15,
+  "Executed": 15,
+  "Passed": 0,
+  "Failed": 15,
+  "CausalFailures": 15,
+  "OwnedCleanupComplete": true,
+  "ActualAttachColumns": {
+    "Expected": 100,
+    "Observed": 80
+  },
+  "ProviderRequests": 0,
+  "GameTurns": 0,
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 87086,
+      "SHA256": "bf2077aedd5db210a02a19319ab25fccfb7db882b239ae88b0ff30269baaf47b"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "Bytes": 4167,
+      "SHA256": "9381e92ab3342ef30bd2347c1d18a31a752971e6472c0db2da5d236ac14cfa24"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+      "Bytes": 8585,
+      "SHA256": "a34d412f9e1e5a2a847c2e3ffa83cb8ce179d96e7d16dd77497cdcf5df3e9f25"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmSynchronizedTerminalPresentationTests.cs",
+      "Bytes": 11267,
+      "SHA256": "ed4f9e5f1d46759518124750dfc038a65c105de061d4f088727e4d37f0bce278"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs",
+      "Bytes": 12449,
+      "SHA256": "a0719afb67d9eba1f5d39aa13ac171b873d4d491d1de7ff71675e8faebeb8df9"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1153206,
+      "SHA256": "fb2240c539054d3808db9af16e38d6c7a1c3df51b5f1a9d86ec4ebe6d6385996"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 366,
+      "SHA256": "53745a0cf0dc9dbf4c7fdb1fd419a6aca181d1923e0ab5b9a888d6ef3b436889"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/boundaries-complete-red/Build-unit.log.gz",
+      "Bytes": 24684,
+      "SHA256": "84169e0cb2f77a40b362862acaa7cf424201f4f62b384220cb818b23f8809502",
+      "StoredSHA256": "6efab39cf3efbf12463a103ab5e813e0b3e3015f91d04b99276f395080422486"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/boundaries-complete-red/dotnet-test.log.gz",
+      "Bytes": 1640171,
+      "SHA256": "cfbc9a3250eb44d48ca99582a1c882264c179c68fc6a1c557439e3891c488985",
+      "StoredSHA256": "939c232bc0fbff05986cded70204eabf4b0d076174a59a44f886b60f73c6b5c5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/boundaries-complete-red/gm-synchronized-terminal-boundaries-unit-001.trx.gz",
+      "Bytes": 52327,
+      "SHA256": "9d472fb0343c4688905fbf4cdd846d0b58ec8f34cd88aef4827fa9b5dd870d12",
+      "StoredSHA256": "8d06bec6026f63ed8db36bf8242d90b6b6d1870e48c07841c07c82d4f5e123b7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/boundaries-complete-red/plan.json.gz",
+      "Bytes": 2489,
+      "SHA256": "6dec1154509f7876988b54ab5b0054b73bd882e1ae6f44282b884bd4b2ef2486",
+      "StoredSHA256": "4e762c4babd5c53cc96c7157ded1f48247b0a233a77cf4f50f2706ffae6a7b6a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/boundaries-complete-red/summary.json.gz",
+      "Bytes": 1478,
+      "SHA256": "a8c240f7c75bf5897a377fba76225514d6767d408eb540e6d4d0f46287eda77b",
+      "StoredSHA256": "358b13c14026d17e395f0e2f3d75a7034de0a236a71b89ed0c7a81b0ff65b1d3"
+    }
+  ]
+}

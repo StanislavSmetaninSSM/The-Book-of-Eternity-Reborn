@@ -3,7 +3,7 @@ using System.Text;
 namespace BookOfEternityGMBridge;
 
 internal sealed record TerminalViewObservation(string BindingId, long Revision, string Text, bool Reliable,
-    string[]? Cells = null, int CursorRow = 0, int CursorColumn = 0, bool CursorVisible = false, int Columns = 0, int Rows = 0);
+    string[]? Cells = null, int CursorRow = 0, int CursorColumn = 0, bool CursorVisible = false, int Columns = 0, int Rows = 0, bool PendingWrap = false);
 
 // Controlled neutral-v1 view only. UTF8, CR/LF/BS, CSI 2J and cursor home.
 // Unknown VT/width/alternate-screen behavior cannot certify an idle composer.

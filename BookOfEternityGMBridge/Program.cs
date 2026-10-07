@@ -154,6 +154,7 @@ internal sealed partial class BridgeHost : IDisposable
     private Task? _terminalDisposeTask;
     private bool _terminalUncertain;
     private TerminalScreen? _terminalScreen;
+    private TerminalSize _terminalLaunchSize = new(80,25);
     private TerminalViewObservation CaptureTerminalView()
     {
         lock (_sync) { var view = _terminalScreen?.Capture() ?? new("", 0, "", false);
@@ -435,6 +436,7 @@ internal sealed partial class BridgeHost : IDisposable
             await StopShellCoreAsync();
 
             if (_neutralLaunch != null) {
+                _terminalLaunchSize=new(80,25); // Same fixed size consumed by the original neutral factory.
                 IOwnedTerminalSession neutralSession;
                 try {
                     _mainRun=await GmSessionRunCoordinator.OpenNeutralAsync(_neutralFiles!,ObserveMainMetadata);
@@ -452,6 +454,7 @@ internal sealed partial class BridgeHost : IDisposable
                 var settings=LoadBridgeConfig();
                 var (columns,rows)=GetConsoleSize();
                 var configuration=ProductionMainConfiguration.Resolve(settings,_sessionPath,new(columns,rows));
+                _terminalLaunchSize=configuration.Size;
                 _productionConfig=settings; _productionConfig.GmCliInputProfile=settings.GmCliInputProfile.Snapshot();
                 _neutralFiles=new BookOfEternityClient.Core.FileSystemManager(_clientRoot,Microsoft.Extensions.Logging.Abstractions.NullLogger<BookOfEternityClient.Core.FileSystemManager>.Instance);
                 IOwnedTerminalSession session;
@@ -472,6 +475,7 @@ internal sealed partial class BridgeHost : IDisposable
             var shellArgs = BuildShellArguments(shellExe);
             var workingDirectory = ResolveGmBridgeShellWorkingDirectory(config.GmBridgeShellWorkingDirectory);
             var (width, height) = GetConsoleSize();
+            _terminalLaunchSize=new(width,height);
             using var legacyAdmission=expectedGeneration==null?null:_neutralFiles!.BeginMainAdmission();
             if(legacyAdmission!=null) {
                 await legacyAdmission.AcquireAsync(quiescentOnly:true);
@@ -522,8 +526,7 @@ internal sealed partial class BridgeHost : IDisposable
         var shellLoopCts = new CancellationTokenSource();
         var input = BeginInputLifetime(session.InputWriter, shellLoopCts);
         if(!admitInput)MarkTerminalUncertain(); // revoke before any keyboard/resize task can run
-        var (columns,rows)=GetConsoleSize();
-        lock (_sync) { _terminalScreen = new(input.Id,LoadBridgeConfig().GmCliInputProfile.TerminalPresentation,columns,rows); _promptScreenReader = () => { var view=CaptureTerminalView(); return view.Reliable ? view.Text : ""; }; }
+        lock (_sync) { _terminalScreen = new(input.Id,LoadBridgeConfig().GmCliInputProfile.TerminalPresentation,_terminalLaunchSize.Columns,_terminalLaunchSize.Rows); _promptScreenReader = () => { var view=CaptureTerminalView(); return view.Reliable ? view.Text : ""; }; }
         // Output has its own lifetime: revoking input must not discard final terminal bytes.
         _outputPumpTask = Task.Run(async () => { try { await PumpOutputAsync(session.OutputReader, output, CancellationToken.None); } catch { MarkTerminalUncertain(); throw; } });
         _terminalAuthorityTask = ObserveTerminalAuthorityAsync(session,input);
@@ -1186,12 +1189,13 @@ internal sealed partial class BridgeHost : IDisposable
     private async Task PumpResizeAsync(CancellationToken cancellationToken)
     {
         try {
-        var last = GetConsoleSize();
+        var last = _terminalLaunchSize;
         while (!cancellationToken.IsCancellationRequested)
         {
             await Task.Delay(200, cancellationToken);
             var current = GetConsoleSize();
-            if (current == last)
+            var size=new TerminalSize(current.width,current.height);
+            if (size == last)
                 continue;
 
             IOwnedTerminalSession? session;
@@ -1202,7 +1206,7 @@ internal sealed partial class BridgeHost : IDisposable
                 await session.ResizeAsync(new(current.width, current.height), cancellationToken);
             }
 
-            last = current;
+            last = size;
         }
         } catch(OperationCanceledException) when(cancellationToken.IsCancellationRequested) { }
         catch { MarkTerminalUncertain();throw; }

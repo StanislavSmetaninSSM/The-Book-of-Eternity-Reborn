@@ -12,7 +12,8 @@ internal sealed class SynchronizedTerminalScreen
     private readonly int _columns, _rows;
     private readonly char[][] _cells;
     private int _row, _column, _savedRow, _savedColumn, _scalarBytes, _scalarValue, _scalarMinimum;
-    private bool _saved, _visible, _inFrame, _committed, _dirty = true, _unsupported, _ended;
+    private bool _saved, _visible, _inFrame, _committed, _dirty = true, _unsupported, _ended, _hasPainted;
+    private int _spaceProbePhase;
     private long _revision;
     private int _frameCharacters;
     private string? _escape;
@@ -30,7 +31,7 @@ internal sealed class SynchronizedTerminalScreen
         var cells = _cells.Select(row => new string(row)).ToArray();
         return new(_binding, _revision, string.Join("\n", cells.Select(row => row.TrimEnd(' '))).TrimEnd('\n'),
             _committed && !_unsupported && !_ended && !_dirty && !_inFrame && _escape == null && _scalarBytes == 0,
-            cells, _row, _column, _visible, _columns, _rows);
+            cells, _row, Math.Min(_column, _columns-1), _visible, _columns, _rows, _column == _columns);
     }
     internal void Fault() => _ended = true;
     internal void Resize(int columns, int rows) { if (columns != _columns || rows != _rows) Fault(); }
@@ -44,8 +45,8 @@ internal sealed class SynchronizedTerminalScreen
             if (_escape != null) { FeedEscape(c); continue; }
             if (c == '\u001b') { _escape = "\u001b"; continue; }
             if (c == '\r') { _column = 0; _dirty = true; continue; }
-            if (c == '\n') { Move(_row + 1, _column); continue; }
-            if (c == '\b') { Move(_row, Math.Max(0, _column - 1)); continue; }
+            if (c == '\n') { if (_column == _columns) _unsupported = true; else Move(_row + 1, _column); continue; }
+            if (c == '\b') { if (_column == _columns) _unsupported = true; else Move(_row, Math.Max(0, _column - 1)); continue; }
             if (!SupportedCell(c)) { _unsupported = true; continue; }
             Paint(c);
         }
@@ -98,6 +99,7 @@ internal sealed class SynchronizedTerminalScreen
         }
         else if (c == '\u0007' || _escape.EndsWith("\u001b\\", StringComparison.Ordinal))
         {
+            if (_escape[1] == 'P' && c == '\u0007') { _unsupported = true; _escape = null; return; }
             var payload = _escape[2..^(c == '\u0007' ? 1 : 2)];
             StringControl(_escape[1], payload); _escape = null;
         }
@@ -115,12 +117,12 @@ internal sealed class SynchronizedTerminalScreen
                 _inFrame = false; _dirty = false; _committed = true; _revision++; return;
             case "?25h": _visible = true; _dirty = true; return;
             case "?25l": _visible = false; _dirty = true; return;
-            case "s": _savedRow = _row; _savedColumn = _column; _saved = true; return;
+            case "s": if (_column == _columns) { _unsupported = true; return; } _savedRow = _row; _savedColumn = _column; _saved = true; return;
             case "u": if (!_saved) _unsupported = true; else Move(_savedRow, _savedColumn); return;
             case "H": Move(0, 0); return;
-            case "K": EraseRow(_row, _column); return;
+            case "K": if (_column == _columns) { _unsupported = true; return; } EraseRow(_row, _column); return;
             case "2K": EraseRow(_row, 0); return;
-            case "J": EraseRow(_row, _column); for (var row = _row + 1; row < _rows; row++) EraseRow(row, 0); return;
+            case "J": if (_column == _columns) { _unsupported = true; return; } EraseRow(_row, _column); for (var row = _row + 1; row < _rows; row++) EraseRow(row, 0); return;
             case "2J": for (var row = 0; row < _rows; row++) EraseRow(row, 0); return;
             // Exact observed cursor shape/input-only modes and unanswered queries.
             case "0 q": case "1 q": case "6n": case "14t": case ">0q": case "?u":
@@ -130,7 +132,7 @@ internal sealed class SynchronizedTerminalScreen
         if (code.EndsWith('H'))
         {
             var fields = code[..^1].Split(';');
-            if (fields.Length == 2 && int.TryParse(fields[0], out var row) && int.TryParse(fields[1], out var column) && row > 0 && column > 0)
+            if (fields.Length == 2 && fields.All(DecimalField) && int.TryParse(fields[0], out var row) && int.TryParse(fields[1], out var column) && row > 0 && row <= _rows && column > 0 && column <= _columns)
             { Move(row - 1, column - 1); return; }
         }
         if (code.EndsWith('m') && Sgr(code[..^1])) return;
@@ -141,8 +143,9 @@ internal sealed class SynchronizedTerminalScreen
     {
         if (code is "0" or "1" or "39" or "49") return true;
         var p = code.Split(';');
-        return p.Length == 5 && p[0] is "38" or "48" && p[1] == "2" && p.Skip(2).All(v => int.TryParse(v, out var n) && n is >= 0 and <= 255);
+        return p.Length == 5 && p[0] is "38" or "48" && p[1] == "2" && p.Skip(2).All(v => DecimalField(v) && int.TryParse(v, out var n) && n is >= 0 and <= 255);
     }
+    private static bool DecimalField(string value) => value.Length > 0 && value.All(char.IsAsciiDigit);
 
     private void StringControl(char kind, string payload)
     {
@@ -155,21 +158,23 @@ internal sealed class SynchronizedTerminalScreen
         // The observed initial space-size probes are not composer content and
         // cannot certify a frame. No response/capability is generated. They may
         // only precede the first real synchronized repaint and remain untrusted.
-        if (!_committed && payload is "66;w=1; " or "66;s=2; ") { _dirty = true; return; }
+        if (!_committed && !_inFrame && !_hasPainted && _row == 0 && _column == 0 && _saved && _savedRow == 0 && _savedColumn == 0 &&
+            payload == (_spaceProbePhase == 0 ? "66;w=1; " : _spaceProbePhase == 1 ? "66;s=2; " : ""))
+        { _spaceProbePhase++; _dirty = true; return; }
         _unsupported = true;
     }
 
     private void Move(int row, int column)
     {
         _dirty = true;
-        if (row < 0 || row >= _rows || column < 0 || column > _columns) { _unsupported = true; return; }
+        if (row < 0 || row >= _rows || column < 0 || column >= _columns) { _unsupported = true; return; }
         _row = row; _column = column;
     }
     private void Paint(char c)
     {
-        if (_column == _columns) Move(_row + 1, 0);
+        if (_column == _columns) { _unsupported = true; return; } // No implicit-wrap model in this pinned subset.
         if (_row >= _rows || _column >= _columns) { _unsupported = true; return; }
-        _cells[_row][_column++] = c; _dirty = true;
+        _cells[_row][_column++] = c; _dirty = true; _hasPainted = true;
     }
     private void EraseRow(int row, int start)
     {

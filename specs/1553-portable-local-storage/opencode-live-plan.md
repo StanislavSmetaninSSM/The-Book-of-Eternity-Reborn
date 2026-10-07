@@ -328,3 +328,11 @@ now cover these before fixes;9 successful transcript cases excluded from RED.
 Retain original launch size for Attach and resize baseline; default neutral
 factory size80x25, configured production size and Windows creation size. No
 general wrap emulator: unsupported pending-wrap LF/BS/save/erase/print refuses.
+
+Full boundary source6c7816a9 gives15/15 causal FAIL, complete owned cleanup:
+actual Attach columns100 expected/80 observed. [Receipt](recovery/evidence/opencode-connected/boundaries-complete-red/manifest.json).
+Minimal fixes now WIP: strict decimal CUP/SGR and DCS ST; two blank/home
+pre-frame probes only, physical pending-margin cursor with refusal of unmodelled
+transitions, retained original launch size/resize baseline. Three categories
+select9 transcript +15 boundary +4 exact independently selected affected methods;
+no automatic witness, provider or game acceptance follows. Checks pending.

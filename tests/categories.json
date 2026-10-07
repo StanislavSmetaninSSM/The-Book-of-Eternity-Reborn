@@ -69,6 +69,33 @@
       ]
     },
     {
+      "id": "gm-synchronized-terminal-affected",
+      "responsibility": "Four exact affected original default Attach/output/EOF, frozen profile, foreground and pipe resize consumers after shared geometry/presentation changes",
+      "excludes": "All other prior terminal/input/fence/worker cohorts, live provider/game and native Windows",
+      "changeHints": [
+        "BookOfEternityGMBridge/Program.cs",
+        "BookOfEternityClient/Configuration/GmCliInputProfile.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_PartialUtf8AndUnsupportedVtCannotBorrowIdle",
+            "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ProfileMutation_DoesNotChangeFrozenSubmitSequence",
+            "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.ActualProgram_ForegroundConsoleInputsResizeEofAndScopedStop",
+            "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.ActualBridge_PipeDispatchConsumesOriginalTerminalView"
+          ]
+        }
+      ]
+    },
+    {
       "id": "desktop-launch-contracts",
       "responsibility": "Typed managed association outcomes, no display claim/replay, original image suppression/force/path/kind and scope source guards",
       "excludes": "Real desktop/Linux or Windows native qualification, new shell/dependency/framework, gameplay and other adapters",
