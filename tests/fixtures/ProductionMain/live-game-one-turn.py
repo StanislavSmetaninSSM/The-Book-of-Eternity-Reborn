@@ -22,6 +22,29 @@ class PhaseWait:
         if now-self.last_progress>=self.idle_seconds:raise TimeoutError('No observable phase progress for45s')
         return changed
 
+def retain_turn_delivery(result,delivery,binding):
+    if not delivery or delivery.get('disposition')!='submission-observed' or delivery.get('inputBindingId')!=binding:return False
+    if delivery.get('operationKind')=='turn' and delivery.get('operationRevision')=='live':
+        if 'OriginalTurnDelivery' not in result:result['OriginalTurnDelivery']=dict(delivery)
+        return result['OriginalTurnDelivery']==delivery
+    if delivery.get('operationKind')=='repair':
+        repairs=result.setdefault('RepairDeliveries',[])
+        if not any(p['operationId']==delivery['operationId'] for p in repairs):repairs.append(dict(delivery))
+    return False
+
+def close_relay_execution(queue,seconds):
+    # Correlation/quiescence receipt only; original owner is still required for stop.
+    request=queue/'close-request.json'
+    if not request.exists():request.write_text(json.dumps({'RequestedMonotonic':time.monotonic()})+'\n')
+    deadline=time.monotonic()+seconds
+    while time.monotonic()<deadline:
+        closed=queue/'closed.json'
+        if closed.exists():
+            proof=json.loads(closed.read_text())
+            return all(proof.get(k) is True for k in ['ExecutionDisabled','ChildExited','IoDrained'])
+        pump(.02)
+    return False
+
 if len(sys.argv)==2 and sys.argv[1]=='--check-phase-wait':
     # Inert driver checks; no package, processes, clipboard, CLI or game data.
     w=PhaseWait(0,210);w.observe(0,'preparing');w.observe(44,'snapshot');w.observe(88,'request')
@@ -42,17 +65,23 @@ assert session.is_dir() and ship.is_dir() and not (session / 'config.json').exis
 assert not (session / 'game_state').exists()
 assert os.environ.get('TERM') == 'dumb'
 controlled_refusal = len(sys.argv)==3 and sys.argv[2]=='--controlled-provider-refusal'
-assert len(sys.argv)==2 or controlled_refusal, 'Only the fixed inert fixture mode is admitted'
+relay_mode = len(sys.argv)==3 and sys.argv[2]=='--codex-relay'
+total_seconds,work_seconds,client_cleanup_seconds,provider_seconds=(720,660,680,600) if relay_mode else (270,210,230,170)
+relay_queue=out/'queue'
+assert len(sys.argv)==2 or controlled_refusal or relay_mode, 'Only the fixed inert fixture mode is admitted'
 binary = (out/'configured-neutral-cli') if controlled_refusal else Path('/workspace/qualification-1553-opencode-install/package/node_modules/opencode-linux-x64-baseline/bin/opencode')
-if not controlled_refusal:assert hashlib.sha256(binary.read_bytes()).hexdigest() == '77b2cfe4b97df6f15c3673b22100b9f79c711f25ecb9bf513bb82526b15d24fa'
+if not controlled_refusal and not relay_mode:assert hashlib.sha256(binary.read_bytes()).hexdigest() == '77b2cfe4b97df6f15c3673b22100b9f79c711f25ecb9bf513bb82526b15d24fa'
 pipe = 'og-' + uuid.uuid4().hex[:12]
 quote = lambda v: "'" + str(v).replace("'", "''") + "'"
 command = '& ' + quote(binary) + (' --driver-refusal-fixture' if controlled_refusal else ' --mini --pure --no-replay -m opencode/ling-3.1-flash-free')
+if relay_mode:
+    relay_queue.mkdir()
+    command='& '+quote('/usr/bin/python3')+' '+quote(out/'relay/codex-gm-relay.py')+' --session '+quote(session)+' --queue '+quote(relay_queue)+' --model gpt-6.1-sol'
 env = {k:v for k,v in os.environ.items() if not k.upper().startswith('OPENCODE_')}
 for key, folder in [('XDG_CONFIG_HOME','config'),('XDG_DATA_HOME','data'),('XDG_STATE_HOME','state'),('XDG_CACHE_HOME','cache'),('TMPDIR','tmp')]:
     path=out/folder;path.mkdir();env[key]=str(path)
 for key in ['OPENCODE_DISABLE_PROJECT_CONFIG','OPENCODE_DISABLE_AUTOUPDATE','OPENCODE_DISABLE_EXTERNAL_SKILLS','OPENCODE_DISABLE_CLAUDE_CODE']:env[key]='1'
-install = out if controlled_refusal else binary.parents[4]
+install = out if controlled_refusal or relay_mode else binary.parents[4]
 env.update(NPM_CONFIG_USERCONFIG=str(install/'empty-user.npmrc'),NPM_CONFIG_GLOBALCONFIG=str(install/'empty-global.npmrc'),NPM_CONFIG_CACHE=str(out/'npm-cache'),NPM_CONFIG_IGNORE_SCRIPTS='true')
 (session/'config.json').write_text(json.dumps({
     'Language':'ru','MusicEnabled':False,'SoundEnabled':False,'GenerateSceneImages':False,'ShowImagesInConsole':False,
@@ -62,14 +91,16 @@ env.update(NPM_CONFIG_USERCONFIG=str(install/'empty-user.npmrc'),NPM_CONFIG_GLOB
         'StartupBannerLines':['','█▀▀█  OpenCode','█  █  '+str(session),'▀▀▀▀',''],'AutomaticSubmissionLimit':1,
         'IdleMarker':' BUILD','WorkingMarker':'interrupt','ObservationTimeoutMilliseconds':15000}
 },indent=2,ensure_ascii=False)+'\n')
-if controlled_refusal:
+if controlled_refusal or relay_mode:
     settings=json.loads((session/'config.json').read_text())
     settings['GmCliInputProfile']={'IdleMarker':'NEUTRAL READY','PromptPrefix':'> ','WorkingMarker':'NEUTRAL WORKING','ObservationTimeoutMilliseconds':1800}
+    if relay_mode:settings['GmCliInputProfile'].update(PromptPrefix='RELAY> ',BlockedMarkers=['RELAY ERROR'],ObservationTimeoutMilliseconds=15000)
     (session/'config.json').write_text(json.dumps(settings,indent=2,ensure_ascii=False)+'\n')
 start=time.monotonic(); peers=[]; journal=[]; original=None; original_record=None; shutdown_attempts=0;cleaning=False;client_exit_attempted=False;client_failure_offset=None;active_phase_deadline=None
 offset=0 # Defined even when the first client startup observation fails.
 result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswers':0,'ConfiguredModel':'opencode/ling-3.1-flash-free',
         'ConfiguredCommand':command,'ConfiguredCwd':str(session),'NoReadyOverride':True,'OrdinaryNewGame':False,'LogicalLifecycleVerified':False}
+if relay_mode:result.update(ConfiguredModel='codex-agent/gpt-6.1-sol-test-relay',TestRelay=True,OpenCodeProviderCalls=0,RelayQueue=str(relay_queue))
 if controlled_refusal:result.update(ConfiguredModel='fixed-inert-no-provider',ControlledRefusal=True,ProviderCalls=0)
 action='Я осторожно осматриваю берег Моря Хаоса и спрашиваю моего Хранителя, где я оказался.'
 class Terminal:
@@ -87,7 +118,7 @@ class Terminal:
         peers.append(self);journal.append({'At':elapsed(),'Entrypoint':name,'Argv':args,'OriginalPid':self.process.pid,
             'OutputMode':'captured-pipe' if captured_output else 'original-pty','StdinMode':'original-controlling-pty'})
     def send(self,data,phase):
-        assert elapsed()<(270 if cleaning else 210) and self.process.poll() is None
+        assert elapsed()<(total_seconds if cleaning else work_seconds) and self.process.poll() is None
         assert active_phase_deadline is None or time.monotonic()<active_phase_deadline
         journal.append({'At':elapsed(),'Terminal':self.name,'Phase':phase,'Input':data.decode('utf-8')})
         assert os.write(self.master,data)==len(data), 'Ambiguous partial foreground write; never replay'
@@ -110,9 +141,9 @@ def pump(delay=.02):
             target.extend(b)
             if len(target)>4194304:raise RuntimeError('Bounded foreground capture exceeded4MiB')
         p.eof=len(p.closed_streams)==len(p.streams)
-    if elapsed()>270:raise TimeoutError('Driver total bound')
+    if elapsed()>total_seconds:raise TimeoutError('Driver total bound')
 def until(test,seconds,label):
-    deadline=min(start+(270 if cleaning else 210),time.monotonic()+seconds)
+    deadline=min(start+(total_seconds if cleaning else work_seconds),time.monotonic()+seconds)
     if active_phase_deadline is not None:deadline=min(deadline,active_phase_deadline)
     while not test():
         if time.monotonic()>deadline:raise TimeoutError(label)
@@ -170,7 +201,7 @@ def bootstrap_signature():
     return tuple(sorted(rows))
 def preparation_phase(test,label,peer,bootstrap=False,offset=0):
     global client_failure_offset
-    phase=PhaseWait(time.monotonic(),start+210)
+    phase=PhaseWait(time.monotonic(),start+work_seconds)
     while True:
         if time.monotonic()>=phase.total_deadline:raise TimeoutError('Original overall work bound: '+label)
         if peer.process.poll() is not None:raise RuntimeError(peer.name+' exited during '+label)
@@ -191,7 +222,7 @@ def preparation_phase(test,label,peer,bootstrap=False,offset=0):
         pump(.1)
 def current_request(offset):
     global client_failure_offset
-    phase=PhaseWait(time.monotonic(),start+210)
+    phase=PhaseWait(time.monotonic(),start+work_seconds)
     waiting=False
     while True:
         text=client.text(offset)
@@ -260,7 +291,7 @@ try:
         return status['ready']
     until(ready,15,'original derived Ready; no gate/query answers')
     result['ReadinessQualified']=True
-    daemon=Terminal('daemon',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-daemon','visible','--timeout','180','--log',str(out/'daemon.log'),'-SessionPath',str(session)])
+    daemon=Terminal('daemon',['pwsh','-NoLogo','-NoProfile','-File',launcher,'start-daemon','visible','--timeout',str(600 if relay_mode else 180),'--log',str(out/'daemon.log'),'-SessionPath',str(session)])
     preparation_phase(lambda:'Waiting for turns...' in daemon.text(),'daemon bootstrap',daemon,bootstrap=True)
     offset=len(client.capture);client.send(b'\r','observed Continue selected')
     preparation_phase(lambda:'Ваш ход' in client.text(offset) and '🌊 > ' in client.text(offset),'ordinary Continue current player prompt',client,offset=offset);client_prompt=True
@@ -274,7 +305,7 @@ try:
     if controlled_refusal:
         # Own fixed fixture emits only a denial, never an accepted GM response.
         (session/'.inert-provider-denial-trigger').write_text('one controlled denial\n')
-    story=session/'stories/chaos_sea.jsonl';provider_deadline=min(start+210,time.monotonic()+170)
+    story=session/'stories/chaos_sea.jsonl';provider_deadline=min(start+work_seconds,time.monotonic()+provider_seconds)
     while time.monotonic()<provider_deadline:
         pump()
         # Observe current output before another status RPC can obscure the causal
@@ -293,6 +324,16 @@ try:
         current=rpc({'command':'status'})['status'];result['LastBridgeStatus']=current
         if current['terminalUncertain'] or not current['terminalOwnerRetained']:raise RuntimeError('Original owner uncertainty; acceptance remains blocked')
         refused=current.get('promptDelivery')
+        retain_turn_delivery(result,refused,result['OriginalRunningStatus']['status']['inputBindingId'])
+        if relay_mode:
+            for queued in relay_queue.glob('request-*'):
+                if not (queued/'request.json').exists() or not (queued/'prompt.txt').exists():continue
+                prompt=(queued/'prompt.txt').read_bytes()
+                expected=hashlib.sha256(b'1\n'+prompt).hexdigest().upper()
+                if refused and refused.get('disposition')=='submission-observed' and refused.get('contentHash')==expected and not (queued/'dispatch.json').exists():
+                    (queued/'dispatch.json').write_text(json.dumps(refused,indent=2)+'\n')
+            if (relay_queue/'failure.json').exists() or 'RELAY ERROR' in provider_text:
+                raise RuntimeError('Actual relay consumer/transport failure; no retry')
         if refused and (refused.get('disposition')=='draft-uncertain' or
             (refused.get('disposition')=='not-written' and refused.get('reason')=='unsupported-draft-shape')):
             result['OriginalPromptDelivery']=refused
@@ -307,7 +348,7 @@ try:
                 assert not (session/'game_state/control/pending_turn_snapshot.authority.json').exists()
                 assert not (session/'ready/turn_complete.json').exists() and not (session/'ready/turn_error.json').exists()
                 result['AcceptedGameTurns']=1;result['AcceptedStory']=accepted[0];client_wait=False;client_prompt=True
-                delivery=current.get('promptDelivery');result['OriginalPromptDelivery']=delivery
+                delivery=result.get('OriginalTurnDelivery');result['OriginalPromptDelivery']=delivery
                 result['InputQualified']=bool(delivery and delivery.get('disposition')=='submission-observed' and
                     delivery.get('inputBindingId')==result['OriginalRunningStatus']['status']['inputBindingId'] and
                     delivery.get('operationKind')=='turn' and delivery.get('operationRevision')=='live')
@@ -323,10 +364,16 @@ except Exception as ex:
 finally:
     cleaning=True
     # Settle participating client wait before original owner stop; never replay its action.
-    if client is not None and client.process.poll() is None:
-        # Reserve40s of the existing270s cap for the sole original shutdown12s,
+    relay_closed=True
+    if relay_mode:
+        try:relay_closed=close_relay_execution(relay_queue,6)
+        except Exception as ex:relay_closed=False;result['RelayCloseFailure']=type(ex).__name__+': '+str(ex)
+        result['RelayExecutionClosed']=relay_closed
+        if not relay_closed:result['RelayCloseFailure']='Execution/child/I-O closure unconfirmed; skip client cancellation/rollback'
+    if client is not None and client.process.poll() is None and relay_closed:
+        # Reserve40s of the existingnormal270s / relay720s cap for the sole original shutdown12s,
         # bridge exit8s, daemon exit8s, EOF5s and connection/disposal margin.
-        active_phase_deadline=start+230
+        active_phase_deadline=start+client_cleanup_seconds
         try:
             if client_wait or current_client_failure(client.text(offset)):
                 offset=client_failure_offset if client_failure_offset is not None else offset

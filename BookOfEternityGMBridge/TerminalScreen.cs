@@ -67,7 +67,9 @@ internal sealed class TerminalScreen(string bindingId)
             if (c == '\n') { if (++_row >= 128) { _invalid=true; _row=127; } while (_lines.Count<=_row) _lines.Add(new()); continue; }
             if (c == '\b') { _column=Math.Max(0,_column-1); continue; }
             if (c < ' ' || c is '\u007f' or '\ufffd') { _invalid=true; continue; }
-            if (_column >= 4096) { _invalid=true; continue; }
+            // Bounded logical neutral transcript, including the daemon's long
+            // single-line instructions. This does not model arbitrary VT wrapping.
+            if (_column >= 65536) { _invalid=true; continue; }
             var line=_lines[_row]; while(line.Length<_column)line.Append(' ');
             if (_column<line.Length)line[_column]=c;else line.Append(c); _column++;
         }

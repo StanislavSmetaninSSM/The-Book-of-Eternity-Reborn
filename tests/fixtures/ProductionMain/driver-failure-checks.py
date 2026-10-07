@@ -48,7 +48,7 @@ with tempfile.TemporaryDirectory(prefix='own-driver-inert-') as folder:
     client=Peer();bridge=Peer();daemon=Peer()
     def pump(*unused):clock[0]+=.1
     result={'AcceptedGameTurns':0,'LogicalLifecycleVerified':False}
-    ns=dict(time=SimpleNamespace(monotonic=lambda:clock[0]),Path=Path,re=re,json=json,hashlib=hashlib,
+    ns=dict(relay_mode=False,total_seconds=270,work_seconds=210,client_cleanup_seconds=230,provider_seconds=170,time=SimpleNamespace(monotonic=lambda:clock[0]),Path=Path,re=re,json=json,hashlib=hashlib,
         session=session,start=0,client=client,bridge=bridge,daemon=daemon,offset=0,result=result,journal=[],
         client_failure_offset=None,client_wait=True,client_prompt=False,client_exit_attempted=False,
         active_phase_deadline=None,provider_bridge_offset=0,original={'rootKey':str(session),'runId':'original'},original_record={},

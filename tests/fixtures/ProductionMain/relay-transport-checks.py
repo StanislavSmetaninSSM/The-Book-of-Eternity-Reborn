@@ -36,7 +36,7 @@ def until(test,label,seconds=5):
   assert p.poll() is None,(label,p.returncode,bytes(capture))
   assert time.monotonic()<stop,(label,bytes(capture));pump()
 try:
- p=subprocess.Popen(['/usr/bin/python3',str(relay),'--session',str(session),'--queue',str(queue)],stdin=slave,stdout=slave,stderr=slave,env=env)
+ p=subprocess.Popen(['/usr/bin/python3',str(relay),'--session',str(session),'--queue',str(queue),'--model','inert-transport-no-model'],stdin=slave,stdout=slave,stderr=slave,env=env)
  until(lambda:b'NEUTRAL READY' in capture,'real initial presentation')
  prompt=('real draft Ж🙂 update > \nsecond line '+('x'*9000)).encode()
  os.write(master,b'\x1b[200~'+prompt+b'\x1b[201~')
