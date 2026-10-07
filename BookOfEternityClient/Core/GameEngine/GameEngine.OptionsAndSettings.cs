@@ -389,7 +389,7 @@ public partial class GameEngine
             new("qte", $"🎬 QTE события: [{(qteStatus == _loc.T("enabled") ? "green" : "red")}]{qteStatus}[/]"),
             new("gm_cli_launch_command", $"🌉 {_loc.T("opt_gm_cli_launch_command")}: [yellow]{Markup.Escape(TruncateDiagnosticValue(settings.GmCliLaunchCommand, 56))}[/]"),
             new("gm_worker_profiles", $"🧵 GM worker bridges: [yellow]{Markup.Escape(workerProfilesStatus)}[/]"),
-            new("music", $"🎵 {_loc.T("opt_music")}: [{(musicStatus == _loc.T("enabled") ? "green" : "red")}]{musicStatus}[/]"),
+            new("music", $"🎵 {_loc.T("opt_music")}: [{(musicStatus == _loc.T("enabled") ? "green" : "red")}]{musicStatus}[/] {Markup.Escape(_audioService.Status.Message)}"),
             new("music_volume", $"🎚 {_loc.T("opt_music_volume")}: [yellow]{settings.MusicVolume}%[/]"),
             new("sound", $"🔊 {_loc.T("opt_sound")}: [{(soundStatus == _loc.T("enabled") ? "green" : "red")}]{soundStatus}[/]"),
             new("sound_volume", $"🎛 {_loc.T("opt_sound_volume")}: [yellow]{settings.SoundVolume}%[/]"),

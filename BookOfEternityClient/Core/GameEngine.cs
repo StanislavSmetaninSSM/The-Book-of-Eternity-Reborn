@@ -182,6 +182,8 @@ public partial class GameEngine
 
     public async Task RunAsync()
     {
+        try
+        {
         _isRunning = true;
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         if (OperatingSystem.IsWindows() && !Console.IsInputRedirected)
@@ -220,6 +222,10 @@ public partial class GameEngine
             }
         }
 
-        await _audioService.StopAllAsync();
+        }
+        finally
+        {
+            await _audioService.StopAllAsync();
+        }
     }
 }

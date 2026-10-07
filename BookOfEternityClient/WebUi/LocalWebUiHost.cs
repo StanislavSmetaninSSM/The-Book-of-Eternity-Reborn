@@ -64,7 +64,9 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<ImageService>();
         builder.Services.AddSingleton<BrowserMediaGenerationService>();
         builder.Services.AddSingleton<LocalMediaService>();
-        builder.Services.AddSingleton<AudioService>();
+        builder.Services.AddSingleton(sp => AudioService.CreateBrowserManaged(
+            sp.GetRequiredService<FileSystemManager>(), sp.GetRequiredService<GameSettings>(),
+            sp.GetRequiredService<ILogger<AudioService>>()));
         builder.Services.AddSingleton<BrowserAudioService>();
         builder.Services.AddSingleton<BrowserClientSettingsService>();
         builder.Services.AddSingleton<SaveLoadService>();

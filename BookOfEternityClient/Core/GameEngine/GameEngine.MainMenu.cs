@@ -313,6 +313,9 @@ public partial class GameEngine
             ? $"{_stateManager.Settings.SoundVolume}%"
             : _loc.T("disabled");
 
+        if (_audioService.Status.Message.Length > 0)
+            musicSummary += " · " + _audioService.Status.Message;
+
         if (layout == MainMenuLayoutMode.VeryCompact)
         {
             var compact = $"[grey]{Markup.Escape(_loc.T("opt_language"))}:[/] [yellow]{Markup.Escape(_stateManager.Settings.Language.ToUpperInvariant())}[/]  " +

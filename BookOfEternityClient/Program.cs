@@ -338,6 +338,7 @@ catch (ConsoleE2EScriptInputException ex)
 }
 finally
 {
+    await host.Services.GetRequiredService<AudioService>().DisposeAsync();
     if (agentConsoleApp is not null)
         await agentConsoleApp.DisposeAsync();
     agentConsoleLiveInputSource?.Dispose();
