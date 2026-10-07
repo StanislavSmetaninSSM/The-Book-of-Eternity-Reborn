@@ -842,3 +842,12 @@ actual close-path inspection. Selected causal categories plus five directly
 affected helper cases and four exact baseline/generation guards only. Runtime
 WIP unbuilt/unverified; no provider request or accepted game turn. og4 Uncertain
 remains untouched. Catalog edited structurally; validate after final selectors.
+
+0d1ed97a initial causal diagnostic now1/1GREEN: before/after validator errors0,
+real preflightaccepted, soleEscape/actual taskcompletion, request absent.
+Original execution source and six exact artifacts retained; no live attempt.
+Independent Sol SOURCE PASS runtime0d1ed97a. DESIGN PASS new three-case
+ordinary cancellation/initial+ordinary corruption matrix: actual staging before
+singleEscape callback, authenticated backup fault after capture, preserve exact
+manifest/authority/all remaining post-fault evidence on failed restore. Ordinary
+branch runtime stillunchanged for causalRED. Tests newly added/unrun.

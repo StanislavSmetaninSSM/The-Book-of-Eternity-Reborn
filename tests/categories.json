@@ -16440,6 +16440,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-console-player-cancel-authority",
+      "responsibility": "#1553 T043 actual ordinary ProcessPlayerTurn staged cancellation and initial/player corrupt-rollback evidence retention",
+      "excludes": "No CLI/provider, old initial positive rerun or generic lifecycle cohort",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OrdinaryPlayerCancel_RealStagingRetiresOnlyConsumedSnapshot",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualCancellation_RestoreFailurePreservesPendingAuthorityAndEvidence"
+          ]
+        }
+      ]
     }
   ]
 }

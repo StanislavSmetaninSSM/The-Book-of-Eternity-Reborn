@@ -32,6 +32,14 @@
         "T043-OPENCODE-LIVE-BOUNDED",
         "T041-RUN-FENCE-F2"
       ]
+    },
+    {
+      "category": "gm-console-player-cancel-authority",
+      "reason": "Independent reviewed actual ordinary cancellation causal positive and two actual initial/player corrupt-backup negatives; ordinary runtime branch remains unchanged until RED",
+      "contracts": [
+        "T043-OPENCODE-LIVE-BOUNDED",
+        "T041-RUN-FENCE-F2"
+      ]
     }
   ]
 }
