@@ -58,7 +58,9 @@ Primary [NLayer](https://github.com/naudio/NLayer), [package](https://www.nuget.
    decoder/output, dynamic volume, run completion, stop and disposal. Thin Windows
    WaveOut and Linux SDL adapters; instance-only internal test seam, no global config.
    Default Linux native library loads/exports are lazy; no device init in constructor.
-   Browser factory is explicitly suppressed in real LocalWebUiHost DI: every playback
+   Actual console Program finally awaits AudioService.DisposeAsync; GameEngine.RunAsync
+   finally stops original operations even on initialization/scripted-input errors, with
+   an inert real-engine exception-exit test. Browser factory is explicitly suppressed in real LocalWebUiHost DI: every playback
    request yields BrowserManaged, ApplySettings keeps existing committed settings
    settlement, zero backend/decoder/device calls. No frontend/schema changes needed.
 3. Serialize music transitions/settings/disposal. Publish an original operation before
@@ -89,7 +91,8 @@ Primary [NLayer](https://github.com/naudio/NLayer), [package](https://www.nuget.
 - [ ] New narrow categories `console-audio-linux` and `browser-audio-isolation`;
   initial child fixture reaches real AudioService.PlayCue on synthetic WAV and
   real browser registered service. Child-only guard prevents any native output
-  device call (legacy Windows binding is denied/recorded). RED must observe the
+  device call (legacy Windows and SDL bindings are denied/recorded before init by child-only
+  DllImport resolvers; the same public constructor/factory is exercised on both sides). RED must observe the
   wrong Windows backend attempt/unreported capability and browser server-output
   attempt, not a missing constructor/compilation failure. Keep preparation separate.
 - [ ] Implement minimal contracts/service/adapters/DI, fresh same cases GREEN,
@@ -100,7 +103,11 @@ Primary [NLayer](https://github.com/naudio/NLayer), [package](https://www.nuget.
   cancellation, StopAll/Dispose and retained timeout debt/eventual settlement.
   Real BrowserAudioService.UpdateSettings + original coordinator/config receipt
   proves accepted values and no server output; original guards/held leases unchanged.
-- [ ] Linux native SDL dummy-only child via explicit test API SDL_AudioInit("dummy"),
+- [ ] Linux native SDL dummy-only child replaces the initialization seam itself with
+  SDL_AudioInit("dummy"), asserts SDL_GetCurrentAudioDriver()=="dummy" before
+  every open, and never subsequently calls normal SDL_InitSubSystem. This avoids
+  SDL2 default reinitialization replacing the dummy driver. Native source: [SDL.c](https://github.com/libsdl-org/SDL/blob/SDL2/src/SDL.c),
+  [SDL_audio.c](https://github.com/libsdl-org/SDL/blob/SDL2/src/audio/SDL_audio.c).
   never production default driver/device, no env/system setting override. Production
   queued backend and real synthetic PCM WAV/zero MP3 frames exercise decoding,
   queue/drain/volume/scoped close; negative controlled open0/absent library exercises
