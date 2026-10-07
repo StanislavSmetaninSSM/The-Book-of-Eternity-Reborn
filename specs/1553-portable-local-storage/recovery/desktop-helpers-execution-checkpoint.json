@@ -1,0 +1,43 @@
+{
+  "Task": "T050-DESKTOP-HELPERS-PORTABLE",
+  "AcceptedBase": "65674ee83ddeac9c63e368334ea170cf9b700c54",
+  "RuntimeTests": "04c9717a5290d001816fb394c276c3a2754f3dad",
+  "REDCommit": "bd17aa1f5d3e6b55dca4a2abbc0f74552d400a49",
+  "CausalRED": {
+    "Image": {
+      "Executed": 2,
+      "PASS": 0,
+      "FAIL": 2
+    },
+    "Folder": {
+      "Executed": 4,
+      "PASS": 0,
+      "FAIL": 4
+    }
+  },
+  "GREEN": {
+    "Planned": 23,
+    "Executed": 23,
+    "PASS": 23,
+    "FAIL": 0,
+    "Complete": true,
+    "RunnerDirectory": "TestResults/test-categories/20261007-050501-470-672817-ab6ce34b22c64db081798b9eb05a566a-categories",
+    "Cleanup": "complete"
+  },
+  "PreparationFailure": {
+    "Commit": "1329827342276195252873d289895009ca520b61",
+    "TestsExecuted": 0,
+    "Cause": "CS0136 local result collision; desktopResult rename only"
+  },
+  "PlanOnly": {
+    "Commit": "04c9717a5290d001816fb394c276c3a2754f3dad",
+    "PlannedCases": 23,
+    "TestsExecuted": 0
+  },
+  "Pending": [
+    "Catalog validation",
+    "final independent source/evidence/metadata reviews",
+    "final restore"
+  ],
+  "Qualified": "Controlled launch adapter through actual Linux consumers only; no positive desktop/native Windows"
+}

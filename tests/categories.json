@@ -9,7 +9,16 @@
         "BookOfEternityClient/Services/DesktopPathOpener.cs",
         "BookOfEternityClient/Services/ImageService.cs"
       ],
-      "related": [],
+      "related": [
+        {
+          "id": "desktop-image-consumers",
+          "when": "The shared DesktopPathOpener/result or rendered association outcome changes; include the original image and folder consumers plus typed contract cases."
+        },
+        {
+          "id": "desktop-folder-consumers",
+          "when": "The shared DesktopPathOpener/result or rendered association outcome changes; include the original image and folder consumers plus typed contract cases."
+        }
+      ],
       "requirements": {
         "frontendBuild": false,
         "exclusive": true
@@ -35,7 +44,16 @@
         "BookOfEternityClient/Core/GameEngine",
         "BookOfEternityClient/UI/ExplorerMode"
       ],
-      "related": [],
+      "related": [
+        {
+          "id": "desktop-folder-consumers",
+          "when": "The shared DesktopPathOpener/result or rendered association outcome changes; include the original image and folder consumers plus typed contract cases."
+        },
+        {
+          "id": "desktop-launch-contracts",
+          "when": "The shared DesktopPathOpener/result or rendered association outcome changes; include the original image and folder consumers plus typed contract cases."
+        }
+      ],
       "requirements": {
         "frontendBuild": false,
         "exclusive": true
@@ -61,7 +79,16 @@
         "BookOfEternityClient/Core/GameEngine",
         "BookOfEternityClient/UI/ExplorerMode"
       ],
-      "related": [],
+      "related": [
+        {
+          "id": "desktop-image-consumers",
+          "when": "The shared DesktopPathOpener/result or rendered association outcome changes; include the original image and folder consumers plus typed contract cases."
+        },
+        {
+          "id": "desktop-launch-contracts",
+          "when": "The shared DesktopPathOpener/result or rendered association outcome changes; include the original image and folder consumers plus typed contract cases."
+        }
+      ],
       "requirements": {
         "frontendBuild": false,
         "exclusive": true
