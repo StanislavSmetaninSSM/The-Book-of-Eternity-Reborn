@@ -745,3 +745,17 @@ Accepted/Load callers already in SessionOperationContext borrow their existing
 pin; no extra launcher, journal, UI wait or admission weakening. Only new
 gm-console-continue-admission GREEN next; unchanged five-method/oldcohorts
 excluded. Source closure pending before new actual OpenCode launch.
+
+e825d3c3 SOURCE PASS; actual full-console newcategory1/1GREEN reaches player
+prompt, game-menu navigation and normal exit0. All original connection receipts
+ClosedObserved, same configured CLI retained until originalShutdownACK;
+ScopedRetired/guardianECHILDdriver0/emergency0/failures0/no deadline, runner
+cleanup complete/unique1. Actual controlled console sent no game/model request.
+Fresh own og4 package moved from this completed qualified publisher, no source/
+game/config/state copied. Next unchanged approved one-action live driver against
+this exact runtime; no Ready override, auth/access/gate answers or replay.
+CatalogVALID409/11141,0execution, runner cleanup complete/no timeout; exact
+source e825d3c3 and discovery receipt archived. Independent EVIDENCE PASS:73
+historical source pins/116 artifacts/all678 og4 package files verified,13
+unique original-identity ClosedObserved receipts in full-console GREEN.
+No test cohort repeated. Actual acceptance remains unexecuted before og4.
