@@ -2,24 +2,18 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "desktop-image-consumers",
-      "reason": "Original ImageService viewer/gallery manual outcomes and display/creation/error boundaries through controlled association adapter",
+      "category": "main-terminal-early-exit-linux",
+      "reason": "Two causal real production-route early-exit publication outcomes, original pipe/owner/guardian cleanup",
       "contracts": [
-        "T050-DESKTOP-HELPERS-PORTABLE"
+        "T043-EARLY-EXIT"
       ]
     },
     {
-      "category": "desktop-folder-consumers",
-      "reason": "Actual settings/Explorer mods-menu and main/related folder manual outcomes, acknowledgements and next-frame visibility",
+      "category": "gm-main-status-early-exit-affected-linux",
+      "reason": "Three precisely affected existing status fault/stall/admission cases; no unrelated repeats",
       "contracts": [
-        "T050-DESKTOP-HELPERS-PORTABLE"
-      ]
-    },
-    {
-      "category": "desktop-launch-contracts",
-      "reason": "Typed capability/request semantics and image suppression/force; same real consumer helper, no broad cohorts",
-      "contracts": [
-        "T050-DESKTOP-HELPERS-PORTABLE"
+        "T043-EARLY-EXIT",
+        "F2-original-status-retirement"
       ]
     }
   ]

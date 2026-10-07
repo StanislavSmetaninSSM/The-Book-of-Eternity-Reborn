@@ -44,9 +44,11 @@ cleanup, retained logical Uncertain. Do not repeat that Codex startup. Systemd W
    Independent guard, identity, metadata bytes/debt, worker/storage and authority
    checks precede it. Generic marked metadata faults remain Uncertain. Cover both
    pinned canonical access and post-exit pin acquisition; no new write right.
-4. Fix future live-driver cleanup to attempt same-original shutdown even when
-   observation failed/record ceased Running. Unknown replies remain unknown;
-   never replay or automatically restart. No new Codex startup for this fix.
+4. Retire the historical one-off live driver, keeping executed bytes immutable.
+   The new neutral causal driver attempts one same-original pipe shutdown even
+   when publication observation failed/record ceased Running, before assertions.
+   Future live diagnostics must use this cleanup rule. Unknown replies remain
+   unknown; never replay or automatically restart. No duplicate Codex probe.
 5. Run only new `main-terminal-early-exit-linux` and precisely affected status
    retirement regressions (fault/stall, and selected admission if membership
    permits exact selection), through `scripts/test-csharp.ps1`. Structural catalog

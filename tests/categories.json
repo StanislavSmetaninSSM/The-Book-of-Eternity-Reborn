@@ -15877,6 +15877,60 @@
           ]
         }
       ]
+    },
+    {
+      "id": "main-terminal-early-exit-linux",
+      "responsibility": "Original production status settlement before stop after actual inert CLI exit; metadata fault retains Uncertain and original cleanup",
+      "excludes": "Provider startup/game turns, Windows, previous terminal/pool cohorts",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator"
+      ],
+      "related": [
+        {
+          "id": "gm-main-status-early-exit-affected-linux",
+          "when": "Status withdrawal/operation admission changes"
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainEarlyExitLinuxTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-status-early-exit-affected-linux",
+      "responsibility": "Exactly existing status fault/stall retirement and original status admission consumers affected by early-exit classification",
+      "excludes": "Unchanged wire/main/pool/full cohorts",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary",
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusAdmission"
+          ]
+        }
+      ]
     }
   ]
 }

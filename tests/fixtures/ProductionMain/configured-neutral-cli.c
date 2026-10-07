@@ -62,6 +62,11 @@ int main(int argc, char **argv) {
             }
             if (!paste && (bytes[i] == '\r' || bytes[i] == '\n')) {
                 draft[used] = 0;
+                if (!strcmp(draft,"exit-error")) {
+                    dprintf(1,"CLI_EXIT_ERROR:17\r\n");
+                    if (tcsetattr(0,TCSANOW,&original)) return 95;
+                    return 17;
+                }
                 if (!strcmp(draft,"descendants") || !strcmp(draft,"root-exit")) {
                     pid_t child=fork(); if(child<0)return 91;
                     if(!child) { alarm(3); pid_t grandchild=fork(); if(grandchild<0)_exit(92); if(grandchild>0)_exit(0);

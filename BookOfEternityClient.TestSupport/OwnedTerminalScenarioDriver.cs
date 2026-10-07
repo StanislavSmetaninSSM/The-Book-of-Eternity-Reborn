@@ -153,6 +153,8 @@ internal static partial class OwnedTerminalScenarioDriver
             var ready = await Rpc(new { command="setReady", ready=true });
             result["Ready"] = ready;
             if (!ready.GetProperty("ok").GetBoolean()) throw new InvalidOperationException("Actual session output did not produce a reliable idle view.");
+            if(mode.StartsWith("production-main-early-exit",StringComparison.Ordinal))
+                return await RunEarlyExitAsync(mode,type,host!,folder,result,Rpc);
             var binding = ready.GetProperty("status").GetProperty("inputBindingId").GetString(); result["Binding"] = binding;
             object Prompt(string command, string id, string text) => new { command, operationId=id, operationKind="turn", operationRevision="neutral-1", inputBindingId=binding, text, appendEnter=true };
             string? Disposition(JsonElement r) => r.GetProperty("promptDelivery").GetProperty("disposition").GetString();
