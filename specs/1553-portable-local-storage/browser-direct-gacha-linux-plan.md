@@ -2,7 +2,7 @@
 
 Issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 Branch: `codex/1553-load-filesystem`; accepted base `23a5b6695a34752005ffaff6f5d5aedc2ccca797`.
-Status: design checkpoint; independent actual Sol6.1/xhigh review required before implementation.
+Status: amended design checkpoint after independent Sol6.1/xhigh identified an adoption gap; focused amendment review required before implementation.
 Date: 2026-10-07 UTC. Writer is the sole implementation writer.
 
 ## Intent and retained contract
@@ -27,7 +27,8 @@ This is a bounded port of an existing flow. User explicitly authorized implement
 2. In `UsesTrustedLocalWriter`, route the exact original direct-gacha directory/subtree through the existing publisher on Linux; Windows body remains unchanged. Writes/deletes still require original active canonical lease, existing generation, main/worker purpose admission, strict local scope and publisher receipt. No second journal, chmod/root/security/settings change.
 3. Original schema7 read-only preflight separates recognized long-lived direct-gacha files from transaction evidence. It never recovers or deletes the pending backup merely on acquiring a lease. Existing B1 journal scratch for this root is admitted only through the existing publisher scratch reader, so interrupted publication settles before transaction recovery. Malformed/unknown backup or transaction evidence still refuses before mutation.
 4. `EnsureNoLegacyStorageEvidence` permits only recognized direct-gacha backups plus artifacts of the actual current browser transaction, after supported preflight/recovery. Old/unknown evidence remains refused. Main and worker pre-recovery gates run first as before. The backup namespace cannot bypass generation/purpose checks.
-5. Keep actual Stage/queue/coordinator/GM text unchanged unless causal tests identify a narrowly related defect. Actual queue failure cleans its own pending state and the original transaction restores exact soul/profile/dice/absence; Committed schema7 cleanup never deletes the retained direct-gacha before-image. No pending-turn replay or automatic acceptance.
+5. Structural recognition is never turn adoption. Before the Linux original DiscoverBackups/overlay returns a direct-gacha candidate, reuse existing typed pending manifest/detached authority verification, exact mapped path/hash, and current request context (session/request/turn/action binding). Refuse and retain consumed/unmapped/mismatched residue; current schema7 staged evidence grants only its original rollback/cleanup, not adoption. This narrow guard preserves original APIs and formats and prevents cleanup debt from re-authorizing stale pre-spend soul for a new turn. Do not put full authority validation into every lease acquisition, because existing sequential cleanup may already delete one mapped file.
+6. Keep actual Stage/queue/coordinator/GM text unchanged unless causal tests identify a narrowly related defect. Actual queue failure cleans its own pending state and the original transaction restores exact soul/profile/dice/absence; Committed schema7 cleanup never deletes the retained direct-gacha before-image. No pending-turn replay or automatic acceptance.
 
 Rejected alternatives: moving backup into pending snapshot directory would let existing unconditional snapshot-directory cleanup destroy it; introducing another manifest/ledger would duplicate existing transaction + pending authority. Broadly enabling all rollback-root writes would lose unsupported-evidence refusal. The narrow original namespace is sufficient.
 
@@ -45,7 +46,8 @@ Positive/lifetime tests:
 
 Fault/admission tests:
 - Controlled nontransient Stage publication cut and actual queue publication cut: exact rollback and original runtime/profile/dice/absence, no false success or leftover admitted pending turn.
-- Publisher scratch/recovery at the real Stage path: interrupted decision remains bounded and resolves with existing B1 mechanism; unknown bytes remain uncertain/evidence retained.
+- Publisher scratch/recovery at the real Stage path explicitly covers MemberStaged with scratch present/destination absent, MemberPublished, and committed cleanup debt. Scratch is admitted only by the existing authenticated journal reader; an unauthenticated lookalike is refused and retained. Interrupted decisions resolve through existing B1 mechanism; unknown bytes remain uncertain/evidence retained.
+- Real consumed-backup deletion failure followed by original pending manifest/authority cleanup and fresh console capture must refuse, retain debt and never overlay stale soul. Also reject a second valid-shaped unmapped backup and mapped bytes whose authority hash differs. All start with actual browser-created evidence; no stub consumer or fabricated successful handoff.
 - Original generation revoked after publication, failed cleanup/closing, malformed/unknown retained evidence: no false rollback/commit, no automatic cleanup or replay.
 - Actual browser consumer refuses cold main Running/Stopping, real unresolved Prepared worker, stale/original UI guard and generation loss before side effects. Reuse original accepted pin/admission mechanisms; no invented owner.
 
@@ -60,3 +62,7 @@ Verified current tools: SDK10.0.401, runtimes8.0.31 and10.0.12, PowerShell7.5.4,
 Spec Kit consistency: accepted trusted-local player contract, client-owned storage port, original pending/accepted-turn/history ownership, no gameplay/GM-authored changes. Mortal World/afterlife prompts/examples/source guards require no new text because odds/rules/payload/authority format are unchanged; record this rationale in final qualification. User-approved Load UX is accepted and outside this slice. Standalone Daren/systemd/nativeWindows/Q1Q2/liveGM/saves/cold/full-game acceptance remain open.
 
 After bounded blocks: ordinary commit/push, remote SHA and independent byte readback. Separate actual Sol6.1/xhigh source/selection and final evidence review. Exact final fresh GitHub-only clone with all tracked bytes/tree/parent/ancestry/clean/noalternates/fullfsck; source restoration executes no extra tests. Handoff and stop before another slice.
+
+## Independent design finding and amendment
+
+Sol6.1/xhigh review of13e6b8b returned BLOCKED for one concrete adoption gap: existing CleanupBackup logs/swallow delete failures; following CleanupPendingTurnSnapshot preserves explorer backups while removing manifest/authority, and later DiscoverBackups selects/rehashes newest matching before-image. Shape-only storage admission would expose that stale adoption path on Linux. Amended step5 separates storage recognition from exact existing-authority/current-request adoption; adds consumed-cleanup/unmapped/hash-conflict negatives and explicit journal-authenticated scratch-only/unauthenticated-scratch tests. No implementation/tests performed yet; focused amendment review next. This is turn/receipt consistency, not protection from player-owned save editing.
