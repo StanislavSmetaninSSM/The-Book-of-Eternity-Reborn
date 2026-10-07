@@ -7,6 +7,7 @@ base=repo/'specs/1553-portable-local-storage/recovery/evidence/relay-gm/live-r2'
 def pinned(name):
  item=next(x for x in manifest['Artifacts'] if x['Path']==name);stored=(base/item['StoredPath']).read_bytes();raw=gzip.decompress(stored)
  assert len(raw)==item['Bytes'] and hashlib.sha256(raw).hexdigest()==item['SHA256'] and hashlib.sha256(stored).hexdigest()==item['StoredSHA256'];return raw
+journal=json.loads(pinned('rpc-journal.json'));action_event=next(e for e in journal if e.get('Phase')=='one genuine game action');current_cut=max(e['ByteEnd'] for e in journal if e.get('Terminal')=='client' and e.get('ObservedStream')=='output' and e['At']<=action_event['At'])
 actual_story=pinned('play/game_session/stories/chaos_sea.jsonl');actual_client=pinned('client.raw');actual_delivery=json.loads(pinned('queue/request-1-d80064ecbba34043b5dd3f08b47eb5ea/dispatch.json'))
 assert actual_story.startswith(b'\xef\xbb\xbf'), 'Source must preserve observed .NET BOM'
 entry=next(n for n in tree.body if isinstance(n,ast.Try) and any(isinstance(x,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='client' for t in x.targets) for x in n.body))
@@ -25,7 +26,7 @@ with tempfile.TemporaryDirectory(prefix='own-relay-acceptance-') as folder:
  data=json.loads(actual_story.decode('utf-8-sig'));action=data['player'];text=actual_client.decode('utf8')
  if mode=='wrong-action':action='A different request, never replayed'
  if mode=='missing-prompt':text=text[:text.rfind('Ваш ход')]
- client=SimpleNamespace(capture=bytearray(text.encode()),process=SimpleNamespace(poll=lambda:None),text=lambda offset=0:text,send=lambda *a:(_ for _ in ()).throw(AssertionError('Unexpected cancel/input')))
+ client=SimpleNamespace(capture=bytearray(text.encode()),process=SimpleNamespace(poll=lambda:None),text=lambda offset=0:text.encode()[offset:].decode('utf8',errors='replace'),send=lambda *a:(_ for _ in ()).throw(AssertionError('Unexpected cancel/input')))
  if mode=='pending':
   p=session/'input/turn_request.json';p.parent.mkdir();p.write_text('{}')
  original=actual_delivery['inputBindingId'];delivery=dict(actual_delivery)
@@ -33,7 +34,7 @@ with tempfile.TemporaryDirectory(prefix='own-relay-acceptance-') as folder:
  result=dict(AcceptedGameTurns=0,OriginalTurnDelivery=delivery,OriginalRunningStatus=dict(status=dict(inputBindingId=original)))
  def fresh_player(peer,offset,seconds):
   if 'Ваш ход' not in peer.text(offset) or '🌊 > ' not in peer.text(offset):raise TimeoutError('Actual fresh player prompt missing')
- exits=[];ns=dict(json=json,story=story,session=session,action=action,client=client,offset=0,result=result,client_wait=True,client_prompt=False,fresh_player=fresh_player)
+ exits=[];ns=dict(json=json,story=story,session=session,action=action,client=client,offset=current_cut,result=result,client_wait=True,client_prompt=False,fresh_player=fresh_player)
  try:compile_function([accept],'actual_acceptance',ns)()
  except (TimeoutError,AssertionError):
   if mode not in ['missing-prompt','pending']:raise

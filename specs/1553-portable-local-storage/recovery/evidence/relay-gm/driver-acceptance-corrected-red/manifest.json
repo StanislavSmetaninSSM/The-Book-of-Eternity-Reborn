@@ -1,0 +1,42 @@
+{
+  "Outcome": "Causal RED with corrected current cut",
+  "Executed": 6,
+  "Passed": 1,
+  "Failed": 5,
+  "Cleanup": "complete",
+  "ModelCalls": 0,
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 1617512,
+      "SHA256": "28ff1f207332cddfa0f2cf8dfece838d5a9bc86e2aca2d7e124e44bb3f807011",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 179410,
+      "StoredSHA256": "0e7ccd36574daa27f67bf754b6fa3ffa316ff76165ab092cc6af9d66e0c86ca0"
+    },
+    {
+      "Path": "gm-relay-driver-acceptance-unit-001.trx",
+      "Bytes": 25175,
+      "SHA256": "15ba073c6fe86ac096b52205fefebf59aa8028979c1f0bd644a822b1e07ff1e3",
+      "StoredPath": "gm-relay-driver-acceptance-unit-001.trx.gz",
+      "StoredBytes": 2932,
+      "StoredSHA256": "f202d62ad032275f68d13e443130d9032d295f00a4d555bd4cadf9833f539a64"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 1060,
+      "SHA256": "6fe8189bd3ab793ae8535da52aa514d9fabed36d0079626ed531ee6b2d988675",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 499,
+      "StoredSHA256": "ae8d8331b2408d6764628e0ff1f49d5bcf1d4078669144116da2dc41def4afa9"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1361,
+      "SHA256": "431b120180d3b567118bf88c2ee3720190390fc339036ae58fb27f12d856842c",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 589,
+      "StoredSHA256": "31ef3e164fee7ee99e97c4fc8cccf277da367b170d8e614d34a3bcd7ca55119e"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "Outcome": "Test fixture missing current output cut; not final GREEN",
+  "Executed": 6,
+  "Passed": 5,
+  "Failed": 1,
+  "Cleanup": "complete",
+  "ModelCalls": 0,
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 1611693,
+      "SHA256": "df4194bad487a5ae4cd2204616bc737c1a8333045eab191574165c91a935eecc",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 179076,
+      "StoredSHA256": "ead64d43542e882496b6d410ba25fb069852dea97dc913e36a5067e0bb0e01f9"
+    },
+    {
+      "Path": "gm-relay-driver-acceptance-unit-001.trx",
+      "Bytes": 12289,
+      "SHA256": "dbe71e68109f18ceab217a9650f96faec4e197a81cd83d4d0e23e7415ae40d00",
+      "StoredPath": "gm-relay-driver-acceptance-unit-001.trx.gz",
+      "StoredBytes": 2258,
+      "StoredSHA256": "e3f57abcab7d6543cc0d69b72cd3f4e19e54cb876e2907ed540f2b29f2b73e7a"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 1060,
+      "SHA256": "2bcf7cf7498c27d7176d76ce25d473425253cdefd4f74aa41e970d6f6a9605ed",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 497,
+      "StoredSHA256": "ec6928743865e1f1b7d70e0e432be70c9cdf46e98fe434241639787a0448cb51"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1360,
+      "SHA256": "fbfef55202fe8b063db2ee1e370f44f0907721be648e56f8ef3acfc7fc5de8f4",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 592,
+      "StoredSHA256": "eaef97bf234477c771525352cbfb5b156fe5124c6c4b87b87fdb1a6251ddfaa0"
+    }
+  ]
+}
