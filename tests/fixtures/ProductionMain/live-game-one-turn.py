@@ -338,6 +338,9 @@ finally:
                     fresh_screen='Продолжить' in text or ('Ваш ход' in text and '🌊 > ' in text)
                     pause_at=text.rfind('Нажмите любую клавишу для продолжения...')
                     screen_at=max(text.rfind('Продолжить'),text.rfind('🌊 > '))
+                    if pause_at>=screen_at and pause_at>=0:
+                        # A stale player prompt cannot settle a newer error pause.
+                        return False
                     if pause_at>=0 and screen_at>pause_at and fresh_screen:
                         # Coalesced output already advanced beyond the pause. An
                         # Enter now would target the new player prompt, not the pause.
@@ -347,7 +350,10 @@ finally:
                     pending_absent=not any((session/p).exists() for p in ['input/turn_request.json',
                         'game_state/control/pending_turn_snapshot.json','game_state/control/pending_turn_snapshot.authority.json',
                         'game_state/control/pending_turn_snapshot'])
-                    return fresh_screen and (pause_acknowledged or (cancel_sent and cancelled and pending_absent))
+                    if fresh_screen and cancel_sent and cancelled and pending_absent:
+                        result['ClientSettlement']='actual cancellation and fresh screen with request absent'
+                        return True
+                    return fresh_screen and pause_acknowledged
                 settlement=PhaseWait(time.monotonic(),active_phase_deadline)
                 while not settled():
                     text=client.text(offset)
@@ -364,7 +370,6 @@ finally:
                     if client.process.poll() is not None:raise RuntimeError('Client exited before fresh cleanup screen')
                     settlement.observe(time.monotonic(),len(client.capture));pump(.1)
                 client_wait=False
-                if cancel_sent and not pause_acknowledged:result['ClientSettlement']='actual cancellation and fresh screen with request absent'
                 client_prompt='Ваш ход' in client.text(offset) and '🌊 > ' in client.text(offset)
             if client_prompt and not client_exit_attempted:exit_client(client)
             elif client.process.poll() is None:
