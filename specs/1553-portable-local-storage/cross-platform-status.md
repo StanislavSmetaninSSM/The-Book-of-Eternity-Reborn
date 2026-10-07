@@ -7,7 +7,7 @@ qualification — доказательствами конкретного огр
 
 ## Current authorized slice: standalone Daren Linux
 
-Owner accepts bounded direct-gacha953c48f81f06ef78010bf668133e2b974934e142 and authorizes T031-DAREN-STANDALONE-LINUX. [Minimal source-backed plan](daren-standalone-linux-plan.md). Separate original console/profile store lifecycle remains Windows physical for writes outside declared browser scope; Linux reads already exist. Plan checkpoint only, no runtime/tests yet; independent actual Sol6.1/xhigh review next. Keep fixed client profile, original main/worker/generation/session leases and existing publisher/outcomes; no gameplay/economy/GM text/UX/journal/access expansion. Older next notes below are historical.
+Current bounded standalone Daren runtimeac01f773 and real sourcef2a7e0e1:41distinctscopedPASS (37new+4affected), actual public console QTE15actions, exact byte store/rollback, normalization/grant, no-op/pre-cancel, original admission and typed recovery/debt. Actual separate Sol design/source PASS; final evidence/restoration pending. [Handoff](daren-standalone-linux-handoff.md) · [Qualification](recovery/daren-standalone-linux-qualification.json). Fixed trusted-local profile route, existing B1 journal and worker/storage conditions retained. FullT031/T041/game/liveGM/saves/systemd/native Windows/Q1Q2/cold remain open; older pending standalone notes below are historical.
 
 ## Current direct browser gacha Linux — bounded independent PASS
 

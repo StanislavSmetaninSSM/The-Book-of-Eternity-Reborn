@@ -6,7 +6,7 @@
 
 ## T031-DAREN-STANDALONE-LINUX — authorized plan checkpoint
 
-Accepted base953c48f8, same verified clean remote branch/sole writer; [concrete minimal plan](daren-standalone-linux-plan.md). Existing fixed DarenRewardProfileFileStore lifecycle ports via existing trusted-local publisher, original lease/conjunction/outcomes; rules/text remain unchanged. Independent actual Sol6.1/xhigh design review is next before causal implementation. Existing project Spec Kit skills/prerequisites resolved; no reset/init/install. Runtime/tests unchanged. No live/provider/game saves/systemd/native Windows/Q1Q2/settings/auth/network/cold changes.
+Accepted953c48f8; bounded runtimeac01f773, testsourcef2a7e0e1 and finalcategoryinventoryb1dc3e46.41distinctscopedPASS=37new+4affected across narrow sequential runs, original console/profile/rollback/recovery and main+worker+generation/session/browser admission; no unchanged whole cohorts. Actual Sol6.1/xhigh design/source PASS; final evidence/restoration pending. [Concrete plan](daren-standalone-linux-plan.md) · [Handoff](daren-standalone-linux-handoff.md). No gameplay/model/text/UX/setup/service/auth/network/cold change; original spec/recovery contract reused. Older next/pending sections remain historical.
 
 ## T031-BROWSER-DIRECT-GACHA-LINUX — bounded independent PASS
 

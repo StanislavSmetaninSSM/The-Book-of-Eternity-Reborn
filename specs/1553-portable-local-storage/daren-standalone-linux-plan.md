@@ -74,3 +74,7 @@ Atdae98f3e3b8be34fbfa4620f46249c8db12524e6 all16publication/debt/Uncertain cases
 ## Completed bounded execution; final verification pending
 
 Atf2a7e0e1564a1d127f52166ddfdafa668e95be72 admission/changed checks16/16PASS, exact affected declared-browser4/4PASS(-NoBuild only after successful fresh same-source integration build). All runs clean/complete,0skip/duplicate,runnercleanupcomplete. Total44executions=43PASS+1historical causalRED;41distinctlatestPASS=37new+4affected, only2Uncertain rows rerun after assertion changes. Actual separate Sol source/selection PASSf2; designPASS6565. Root audit independently rechecked6manifests/283sourcepins/29artifacts/11gzip/44pathnamedrootsremoved+4legacygenericcleanup receipts. Final category ownership restored7+30+4; discovery-only exact inventory next (0tests), final separate Sol evidence review and freshGitHubrestore pending. No runtime change afterac01, no product/access choice or external setup. Only boundedtask completion may be marked after reviewed evidence/restoration; entire feature remains open.
+
+## Final exact inventory
+
+Atb1dc3e46cd618b90f2b496640aa753245bdfb0a7 official runner -PlanOnly -NoBuild discovers3descriptors/41cases (7+30+4),0tests. Completed0/CompleteFalse is intentional discovery-only, not an underfilled execution. Root audit now7manifests/337sourcepins/32artifacts/12gzip; execution/latest counts unchanged. Provisionalhandoff/currentfeatureartifacts aligned; final separate independent evidence and freshGitHub-onlyrestore next. No code/test delta.

@@ -2,7 +2,7 @@
 
 ## Current authorized standalone Daren Linux slice
 
-Owner accepts direct-gacha953c48f8 and authorizes only existing standalone client reward profile portability, under the unchanged trusted-local player contract, main/worker/generation/session leases and fixed registered path. Existing reward tiers/amounts/economy/text/formats and browser transaction/Windows route remain. [Plan](daren-standalone-linux-plan.md); independent actual Sol6.1/xhigh design review precedes implementation. No new GM-authored contract/API, journal, player-save protection or UX; no GM documentation/example update is needed for this storage-only client-owned port. Isolated actual consumer tests do not qualify live game/provider/saves/systemd/native Windows/cold/fullUS4.
+Bounded standalone Daren lifecycle uses the existing trusted-local player publisher and fixed registered client_profile/qte_showcase_rewards.json, retaining original main/worker/generation/session admission, declared browser/legacy precedence and Windows physical bodies. Runtimeac01f773;41distinctscopedPASS (37new+4affected), actual separate Sol design/source PASS; final evidence/restoration pending. No reward tiers/amounts/economy/text/formats/model/UX, second journal or anti-player contract change. [Plan](daren-standalone-linux-plan.md) · [Handoff](daren-standalone-linux-handoff.md) · [Qualification](recovery/daren-standalone-linux-qualification.json). No live game/provider/saves/systemd/native Windows/cold/fullUS4 qualification; earlier pending standalone notes below are historical.
 
 ## Current bounded browser direct-gacha Linux PASS
 

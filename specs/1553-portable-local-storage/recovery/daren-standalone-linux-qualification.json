@@ -53,11 +53,20 @@
   },
   "EvidenceAudit": {
     "Task": "T031-DAREN-STANDALONE-LINUX",
-    "ManifestSets": 6,
+    "ManifestSets": 7,
+    "DiscoveryOnlyInventories": [
+      {
+        "Source": "b1dc3e46cd618b90f2b496640aa753245bdfb0a7",
+        "PlannedCases": 41,
+        "PlannedDescriptors": 3,
+        "TestsExecuted": 0,
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-final-inventory/manifest.json"
+      }
+    ],
     "ZeroWorkloadPreparationRefusals": 0,
-    "SourcePinsVerified": 283,
-    "ArtifactsVerified": 29,
-    "GzipArtifactsVerified": 11,
+    "SourcePinsVerified": 337,
+    "ArtifactsVerified": 32,
+    "GzipArtifactsVerified": 12,
     "DistinctRemovedFixtureRoots": 44,
     "GenericRemovedFixtureReceiptsWithoutPath": 4,
     "ExecutionTotalsIncludingSupersededFailures": {
@@ -501,5 +510,13 @@
     "full T031/T041/full cross-platform game",
     "power loss/reboot salvage/cold exactly-once"
   ],
-  "NextSliceAuthorized": false
+  "NextSliceAuthorized": false,
+  "FinalInventory": {
+    "Source": "b1dc3e46cd618b90f2b496640aa753245bdfb0a7",
+    "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-final-inventory/manifest.json",
+    "Descriptors": 3,
+    "Cases": 41,
+    "TestsExecuted": 0,
+    "Mode": "PlanOnly/NoBuild, discovery only; completed0 is intentional"
+  }
 }
