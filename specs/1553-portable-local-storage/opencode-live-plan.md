@@ -43,7 +43,7 @@ PASS; independent evidence review pending separately.
    permission/share overrides without printing values. Actual independent Sol
    feasibility PASS: v1.18.35 official53d1eabb/OpenTUI0.4.5, startup-only conditional
    on these guards. Mini still queries capabilities/palette/Kitty; no compatibility
-   claim. Capture bounded12seconds, guardian40seconds, shutdown12seconds/max35total.
+   claim. Capture bounded12seconds, guardian30seconds, shutdown12seconds/max25total.
    Zero prompt/auto confirmation/query response; exact original shutdown attempted
    once even after CLI early exit/observation failure. Actual stop/I/O/disposal/
    ACK and guardian closure are separately recorded. Unexpected access/trust/login

@@ -1,4 +1,14 @@
-## Current authorized bounded real console Q1 → Q2
+# Current CLI fallback and causal early-exit closure
+
+Source #1553: [OpenCode live plan](opencode-live-plan.md) tracks owner-authorized
+official workspace installation and a separate free-model test profile. Current
+inventory/version are preparation, not provider/gameplay acceptance. The bounded
+[early-exit plan](main-terminal-early-exit-plan.md) is implemented at9340ff08 with
+independent source/evidence PASS and6/6 scoped Linux checks; no old cohorts repeated.
+Original terminal/pidfd/scoped stop/main+worker+generation fence remain required.
+Systemd WIP63e99009 is retained and deferred; actual Codex state-home blocker remains.
+
+## Historical authorized Codex continuation — failed checkpoint
 
 Owner permits one exact TERM=dumb confirmation and at most two real GM/model turns in an isolated ordinary new console game. [Executable plan](codex-live-q1-q2-plan.md) preserves honest presentation/readiness, configured command/model and original M1/fence/T042. After independent feasibility/source review, one y/Enter was sent; Codex failed SQLite14 on read-only local-state mount. Zero model/game turns; original lifecycle failed, guardianECHILD with1emergency, retained Uncertain and no original stopACK/termios claim. [Blocked handoff](codex-live-q1-q2-handoff.md). No runtime/tests or state/auth/config workaround; next gameplay data must use current NewGameFlow, not experimental saves. Earlier diagnostic prohibition is historical; systemd WIP below is deferred. Source #1553.
 
@@ -7127,12 +7137,3 @@ Final implementation `dc29b37d0c3e3067acf9943a048360fbba66d0e3` adds only a host
 [Qualification](recovery/gm-input-lifetime-qualification.json) retains10manifests/54artifact hashes,8source/catalog inputs,14unchanged boundary files,3unchanged integration/client/support trees and11parsed XML artifacts. Output pump/record, key conversion and paste/visibility methods are byte-identical to base.14build warnings:13existing plus one fixture CS4014 on Track(task), followed immediately by awaiting the same task; reviewer confirmed no detached operation or lost failure observation.0build errors. Build servers stopped;0own fixtures and0active build/test runtimes. PID1-owned terminated zombies are recorded without claiming they were reaped. No native probe/CLI/Release or prior cohort ran. Complete-packet review and GitHub-only restoration pending; T042 and its later slices remain open.
 
 Independent final actual **gpt-6.1-sol/xhigh PASS** at complete candidate `a5aefe8f8151c67a15fa107e78b487581bd43458`, tested source `dc29b37d0c3e3067acf9943a048360fbba66d0e3`; no remaining actionable findings. Reviewer independently verified37distinctGREEN,243/10741discovery0execution,10manifests54artifacts stored/decompressedhashes,8inputs/DLL/PDB/14unchangedfiles/3closuretrees/11XML and clean GitHub-only restore5497tracked/75changedbytes/8inputs/exacttree. P1 shell-cancellation server loss is causally reproduced and fixed. Benign fixture CS4014 is documented without an unnecessary passing-test repeat. [Review and restoration evidence](recovery/evidence/gm-input-review/manifest.json) brings the retained packet to11manifests/57artifacts. Only T042-INPUT-LIFETIME is complete; mainT042 and later transaction/readiness/daemon/native work remain open. Final verdict metadata is ordinarily published/read back and restored into another empty GitHub-only directory; exact final carrier and restore are in local handoff without a self-referential SHA. No next slice started.
-# Current CLI fallback and causal early-exit closure
-
-Source #1553: [OpenCode live plan](opencode-live-plan.md) tracks owner-authorized
-official workspace installation and a separate free-model test profile. Current
-inventory/version are preparation, not provider/gameplay acceptance. The bounded
-[early-exit plan](main-terminal-early-exit-plan.md) is implemented at9340ff08 with
-independent source/evidence PASS and6/6 scoped Linux checks; no old cohorts repeated.
-Original terminal/pidfd/scoped stop/main+worker+generation fence remain required.
-Systemd WIP63e99009 is retained and deferred; actual Codex state-home blocker remains.

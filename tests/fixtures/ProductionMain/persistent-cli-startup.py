@@ -82,7 +82,7 @@ def rpc(payload, seconds):
         peer.settimeout(.5); peer.connect(socket_path)
         # Mark the one attempt before send; ambiguous partial send is never retried.
         entry['SendAttempted'] = True; peer.sendall(json.dumps(payload).encode() + b'\n'); entry['Sent'] = True
-        peer.setblocking(False); reply = bytearray(); deadline = min(started + 35, time.monotonic() + seconds)
+        peer.setblocking(False); reply = bytearray(); deadline = min(started + 25, time.monotonic() + seconds)
         while time.monotonic() < deadline:
             readable, _, _ = select.select([peer] + ([] if eof else [master]), [], [], .02)
             if master in readable: receive(0)
@@ -138,10 +138,10 @@ finally:
         assert proof['identity']['runId'] == identity['runId'] and proof['state'] == 'stopped-within-scope'
         assert proof['cleanupComplete'] and not proof['authorityRetained']
         assert not stop['status']['terminalOwnerRetained'] and not stop['status']['terminalUncertain']
-        while process.poll() is None and elapsed() < 35: receive()
+        while process.poll() is None and elapsed() < 25: receive()
         assert process.poll() == 0, 'Original launcher did not exit successfully'
         os.close(slave); slave = -1
-        while not eof and elapsed() < 35: receive()
+        while not eof and elapsed() < 25: receive()
         record = json.loads(record_path.read_bytes()); result['StoppedRecord'] = record
         assert record['Disposition'] == 'Stopped' and record['Identity'] == running_identity
         assert eof, 'Foreground PTY not actually drained'
