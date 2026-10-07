@@ -1,3 +1,13 @@
+## Current scope: primary systemd-user main design only
+
+From accepted bounded relaydc1724af, resume deferred63e99009 under
+T041-SYSTEMD-MAIN. Reuse the ordinary original terminal/coordinator/schema1
+fence and independent main/worker/storage/generation admission. Systemd backend
+remains unimplemented/unqualified. Existing Auto preference/prelaunch declared
+fallback is already settled; explicit SystemdUser never downgrades. No runtime,
+tests, probes, setup or new model requests in this design block.
+[Minimal source-backed slices/environment](systemd-main-design-wip.md).
+
 ## Current bounded result: live GM through test CLI relay
 
 Owner-authorized T043 relay r3 collected after orchestration interruption: one real

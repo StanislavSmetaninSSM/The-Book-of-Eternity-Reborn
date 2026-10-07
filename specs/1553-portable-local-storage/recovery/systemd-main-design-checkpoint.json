@@ -1,0 +1,121 @@
+{
+  "Status": "Design WIP; independent review pending; backend unimplemented/unqualified",
+  "SourceIssue": "#1553",
+  "SourceBase": "dc1724afe66a9c0f07942e23e33c2af07aed8293",
+  "DeferredDraftCommit": "63e99009",
+  "DeferredDraftSHA256": "3656010bdd6bf46c4aca90295988afda2f7dd3b995c5c4754c10bff2ebb67308",
+  "RuntimeChanges": 0,
+  "TestsExecuted": 0,
+  "Builds": 0,
+  "SystemdBusCgroupDeviceCliProbes": 0,
+  "NewModelRequests": 0,
+  "EnvironmentChanges": 0,
+  "SpecKitPrerequisites": "check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks: existing feature/spec/plan/tasks confirmed; equivalent bounded planning/consistency pass, no template overwrite",
+  "ProductPolicy": "Auto already settled; explicit SystemdUser never downgraded; no new product decision",
+  "TechnicalGate": "Reliable original pinned cgroup deletion witness must be proved before acceptance of pruned-before-zero case; errors/name absence/status alone remain Uncertain",
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs",
+      "Bytes": 2990,
+      "SHA256": "fdc63764d17b50c37477c900b9a8fea0c97ec7eaaab84b1a25c0703dacd2a7a1"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
+      "Bytes": 3009,
+      "SHA256": "46b141084f32f109d9bf921a4f551c0ccd3bae4d557b4ec77d5f649bca07c34b"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+      "Bytes": 4086,
+      "SHA256": "746b8ad1878d6edff43b1ffc8d14da90835cfea89285ca7133521d5cb795b896"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "Bytes": 22709,
+      "SHA256": "718f1948f7a35630a8a8245862bf7179de67e37922c3a8171483fd6baa37ca57"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerHostIdentity.cs",
+      "Bytes": 5328,
+      "SHA256": "e8d62a1d41a2ebdb8c800e4b903b592353bfeadd5c6183b80875cb06f2ce7f01"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs",
+      "Bytes": 4102,
+      "SHA256": "69b9943d4e3ce1e6b271508019936c4849a7585cb03391c06116d8bc4c1f5d60"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/IOwnedTerminalSession.cs",
+      "Bytes": 901,
+      "SHA256": "d368c7be21cb2edb72935d8a86fb0f25da2f7f714792c66fab4d9b1ff389cbb7"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "Bytes": 17743,
+      "SHA256": "9c874894d4d5582cb50eef401ed3557d23aa84c6ba7259edf88d76d372d2ebbc"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "Bytes": 5169,
+      "SHA256": "68fa7b62e42003ebfe2a47931986c02860448e46adf8bbd597a959230601077a"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
+      "Bytes": 7342,
+      "SHA256": "d31a714f9485647ab68b6ee7b7d07da852cb1e88edb3f0df7a1e6bf5ff9ec8c8"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 89544,
+      "SHA256": "07e48f97ec9e0bed022857c8347f535e6af36d2c960f8f5d858316a68aaada5b"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+      "Bytes": 4582,
+      "SHA256": "4a685b8c461b7888e8597f3c31b7c921b05d318d7c3a2c9d321e883314791a42"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.DraftObservation.cs",
+      "Bytes": 8337,
+      "SHA256": "e0ac9791df84c6ad58cf9a18c1133ba421415b821a2f25f16733a6def4bf8bf1"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.LoadSession.cs",
+      "Bytes": 8201,
+      "SHA256": "61055512203b6c639f2737858eb3e84dfc51863e466949cde965c1524d82b0c5"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+      "Bytes": 10650,
+      "SHA256": "4129fffc3d2d5f28354ecfea2c2d544ac205480deb4a8ae2eea7833a24d7bd00"
+    },
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Bytes": 24566,
+      "SHA256": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GameSettings.cs",
+      "Bytes": 16393,
+      "SHA256": "0191f2f8bc0dead66da78c8e539d09366fc9e30774a7263b2623a94568f5a7c6"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "Bytes": 13311,
+      "SHA256": "b72c0c17ae10aa3cd9b1e837722fd8d2e0328df9f087fc8f8d16ae7babd921e1"
+    }
+  ],
+  "PrimaryReferences": [
+    "https://github.com/systemd/systemd/blob/v257/man/systemd.scope.xml",
+    "https://github.com/systemd/systemd/blob/v257/man/org.freedesktop.systemd1.xml",
+    "https://github.com/systemd/systemd/blob/v257/man/sd_bus_default.xml",
+    "https://github.com/systemd/systemd/blob/v257/src/core/dbus-scope.c",
+    "https://github.com/systemd/systemd/blob/v257/src/core/dbus-unit.c",
+    "https://github.com/systemd/systemd/blob/v257/src/core/scope.c",
+    "https://github.com/systemd/systemd/blob/v257/src/core/unit.c",
+    "https://github.com/torvalds/linux/blob/v6.12/Documentation/admin-guide/cgroup-v2.rst",
+    "https://github.com/torvalds/linux/blob/v6.12/kernel/cgroup/cgroup.c",
+    "https://github.com/torvalds/linux/blob/v6.12/fs/d_path.c",
+    "https://github.com/torvalds/linux/blob/v6.12/fs/kernfs/inode.c"
+  ]
+}

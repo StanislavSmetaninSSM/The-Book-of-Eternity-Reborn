@@ -1,3 +1,14 @@
+# Current primary systemd-user main design continuation
+
+Accepted bounded relaydc1724af is complete; no further model requests/replay.
+Resume63e99009 via existing held PTY child in a transient scope, optional
+sd-bus binding, original manager/unit/cgroup identity and authoritative kernel
+empty proof. S1 controlled original adapter, S2 positive neutral qualification
+on an already-running user manager, S3 ordinary main selection/consumers.
+No backend implementation or positive systemd claim in this step.
+[Source-backed design and acceptance gates](systemd-main-design-wip.md),
+[source pins](recovery/systemd-main-design-checkpoint.json).
+
 # Current bounded live relay result
 
 Collected existing r3 without restart/replay: actual model response applied and
