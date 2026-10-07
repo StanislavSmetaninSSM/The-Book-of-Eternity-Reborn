@@ -20,7 +20,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.*"
+            "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.*",
+            "BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed"
           ]
         }
       ]
@@ -44,7 +45,9 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.BrowserAudioIsolationTests.*"
+            "BookOfEternityClient.Tests.BrowserAudioIsolationTests.*",
+            "BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioUsesOneDeclaredConfigMemberAndKeepsProjectionUntouched",
+            "BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioSeparatesRollbackFromCommittedCleanupWarning"
           ]
         }
       ]

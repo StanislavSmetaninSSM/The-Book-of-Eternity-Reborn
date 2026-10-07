@@ -140,16 +140,21 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
     [Fact]
     public async Task AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed()
     {
-        var audio = new AudioService(_files, new GameSettings { MusicEnabled = true, MusicVolume = 50 }, NullLogger<AudioService>.Instance);
+        var music = Path.Combine(_files.BasePath, "Music"); Directory.CreateDirectory(music);
+        File.WriteAllText(Path.Combine(music, "Main Theme.mp3"), "synthetic controlled decoder-free asset");
+        var backend = new ControlledAudioBackend();
+        await using var audio = new AudioService(_files, new GameSettings { MusicEnabled = true, MusicVolume = 50 },
+            NullLogger<AudioService>.Instance, backend);
+        await audio.PlayMainMenuMusicAsync();
+        var original = backend.Sessions.First();
         var draft = new GameSettings { MusicEnabled = false, MusicVolume = 50 };
-        var field = typeof(AudioService).GetField("_musicCts", BindingFlags.NonPublic | BindingFlags.Instance)!;
-        using var previewCts = new CancellationTokenSource(); field.SetValue(audio, previewCts);
         var preview = audio.BeginSettingsPreview(draft);
-        await audio.ApplySettingsAsync(); Assert.True(previewCts.IsCancellationRequested);
+        await audio.ApplySettingsAsync(); Assert.True(original.Disposed);
         preview.Dispose(); preview.Dispose();
-        using var acceptedCts = new CancellationTokenSource(); field.SetValue(audio, acceptedCts);
-        await audio.ApplySettingsAsync(); Assert.False(acceptedCts.IsCancellationRequested);
-        await audio.StopAllAsync();
+        await audio.PlayMainMenuMusicAsync();
+        var accepted = backend.Sessions.Last();
+        await audio.ApplySettingsAsync(); Assert.False(accepted.Disposed);
+        await audio.StopAllAsync(); Assert.True(accepted.Disposed);
     }
 
     [Theory]

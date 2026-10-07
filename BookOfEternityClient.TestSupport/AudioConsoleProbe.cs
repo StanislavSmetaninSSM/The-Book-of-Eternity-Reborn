@@ -17,8 +17,9 @@ public static class AudioConsoleProbe
     /// <summary>Executes original public service and real browser registration on synthetic WAV only.</summary>
     public static async Task<int> RunAsync(string[] args)
     {
+        if (args[3] is not ("console" or "browser" or "browser-settings")) return await AudioLifecycleProbe.RunAsync(args);
         using var deadline = new Timer(_ => Environment.Exit(91), null, TimeSpan.FromSeconds(12), Timeout.InfiniteTimeSpan);
-        var root = args[0]; var browser = args[3] == "browser";
+        var root = args[0]; var browser = args[3].StartsWith("browser", StringComparison.Ordinal);
         var windows = 0; var sdl = 0;
         NativeLibrary.SetDllImportResolver(typeof(WaveOutEvent).Assembly, (name, _, _) =>
         {
@@ -46,6 +47,17 @@ public static class AudioConsoleProbe
         }
         else audio = new AudioService(fs, settings, NullLogger<AudioService>.Instance);
         await audio.ApplySettingsAsync();
+        bool committed = false;
+        if (args[3] == "browser-settings")
+        {
+            await host!.Services.GetRequiredService<StateManager>().BootstrapLocalStorageAsync();
+            var service = host.Services.GetRequiredService<BrowserAudioService>();
+            var response = await service.UpdateSettingsAsync(new(true, 77, true, 35));
+            var saved = JsonSerializer.Deserialize<GameSettings>(File.ReadAllText(Path.Combine(root, "config.json")),
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+            committed = response.MusicVolume == 77 && saved.MusicVolume == 77;
+            await audio.PlayMainMenuMusicAsync(); await audio.PlayInGameMusicAsync();
+        }
         audio.PlayCue(AudioCue.TurnReady);
         string? outcome = null;
         for (var i = 0; i < 200; i++)
@@ -59,7 +71,7 @@ public static class AudioConsoleProbe
         File.WriteAllText(Path.Combine(root, "probe.json"), JsonSerializer.Serialize(new
         {
             Mode = args[3], WindowsAttempts = windows, SdlAttempts = sdl, Outcome = outcome,
-            HostPid = Environment.ProcessId, DefaultDeviceCalls = 0, SyntheticOnly = true
+            HostPid = Environment.ProcessId, DefaultDeviceCalls = 0, SyntheticOnly = true, Committed = committed
         }));
         return 0;
     }
