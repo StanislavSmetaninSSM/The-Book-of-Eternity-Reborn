@@ -1,0 +1,51 @@
+{
+  "SourceDirectory": "/workspace/native-1553/TestResults/test-categories/20261007-164249-812-851461-bb7c515e11d645ca9f4916bc769277ed-categories",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 1636529,
+      "SHA256": "94b619d4324e6548c7cf85eea527f681a0bdd0f7f72e292d8a5a74f4e9439c8a",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 180476,
+      "StoredSHA256": "7fa6fef9ad3dc925828aee38061b3f964573d60273f1f6bbf797993bffd6eed6"
+    },
+    {
+      "Path": "gm-live-driver-failure-unit-001.trx",
+      "Bytes": 14210,
+      "SHA256": "c706cf53ecf18558839dc679620a00f6ba9d9f1b2f2c14056de22cb0f21d0fc5",
+      "StoredPath": "gm-live-driver-failure-unit-001.trx.gz",
+      "StoredBytes": 2250,
+      "StoredSHA256": "218aa22f517226e0027aa499e088f99e9c9e00911d680986a6324fe7770b0903"
+    },
+    {
+      "Path": "gm-live-driver-phase-boundaries-unit-002.trx",
+      "Bytes": 5791,
+      "SHA256": "068b5a02172db2a035478f014bd23d5d8e8434ed6cf51c9d6149edf3d25d5c87",
+      "StoredPath": "gm-live-driver-phase-boundaries-unit-002.trx.gz",
+      "StoredBytes": 1471,
+      "StoredSHA256": "d9afee0307e7cbf368ae59a90a5d0d535e1f8dd5dc140391799c0e209b7196ea"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 2913,
+      "SHA256": "90cbfe205895e4d3968e4f29e6a52afe8e768d82b3bd7ed1683ff5347a5e34c8",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 863,
+      "StoredSHA256": "9eec2cf4ed6dd4918e3bda339baf24f17e6bc322f75f55e976a553a44c8a4ab5"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 2281,
+      "SHA256": "96f0f876d5fe3d2c34f11343c605c9da5db35c33a2cd5fc91a7e60cf00ea7d57",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 867,
+      "StoredSHA256": "9b25efe3373813fe0e039c9fb2e6787b3cfcb0ab98076d189f3f7ce25a583ece"
+    }
+  ],
+  "PublicOnly": true,
+  "PrivateCliStateIncluded": false,
+  "ExecutionCommit": "c5966f2232d3d35a02ef3dc17d4ba27f73ad00f5",
+  "RuntimeTestSource": "53cb0e7f9eda7eb7b98c84d53394b6e232a87290",
+  "Executed": 12,
+  "Passed": 12
+}

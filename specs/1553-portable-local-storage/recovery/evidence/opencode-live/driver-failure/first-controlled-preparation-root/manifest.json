@@ -1,0 +1,160 @@
+{
+  "SourceDirectory": "/workspace/native-1553/TestResults/production-main/4c081c2282fe4f3f9adc47e34d4b4a07",
+  "Artifacts": [
+    {
+      "Path": "bridge.raw",
+      "Bytes": 646,
+      "SHA256": "d0268b711e4c9f3605f996991ab7b974f94da7d18f1e627ef4c0e8a60a31778e",
+      "StoredPath": "bridge.raw.gz",
+      "StoredBytes": 302,
+      "StoredSHA256": "be3f76de56bb0fb1040a7515beaad8c260b92bda8ef1ae499c8124681952a81e"
+    },
+    {
+      "Path": "client-echo.raw",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredPath": "client-echo.raw.gz",
+      "StoredBytes": 20,
+      "StoredSHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "client.raw",
+      "Bytes": 3934,
+      "SHA256": "a1afd142d33d05c2d8928fa7181651cde87cc05ea28955c2233a6adabc58d89e",
+      "StoredPath": "client.raw.gz",
+      "StoredBytes": 985,
+      "StoredSHA256": "355bcb942bb89aa7b7c7215310ce0d60746509061ce95adeb92004e243054e03"
+    },
+    {
+      "Path": "fixture-build.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredPath": "fixture-build.log.gz",
+      "StoredBytes": 20,
+      "StoredSHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "fixture-compiler-version.log",
+      "Bytes": 231,
+      "SHA256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc",
+      "StoredPath": "fixture-compiler-version.log.gz",
+      "StoredBytes": 203,
+      "StoredSHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62"
+    },
+    {
+      "Path": "fixture-preparation.json",
+      "Bytes": 522,
+      "SHA256": "191e2ede6e480f3d046e8719addca81ba45d5a1ad0fe98925dbfeeafa577970f",
+      "StoredPath": "fixture-preparation.json.gz",
+      "StoredBytes": 374,
+      "StoredSHA256": "55d194226b8a4292a5541799648e5ef4afe9b60e73e5d37a9069f79d47cf575f"
+    },
+    {
+      "Path": "guardian.json",
+      "Bytes": 97,
+      "SHA256": "7772f373dbe1af682939b4d98787768b3642b4c9ba62ace6dd9185ad464bd1ac",
+      "StoredPath": "guardian.json.gz",
+      "StoredBytes": 107,
+      "StoredSHA256": "80ec8c7b8e223ba46d5c792512617099742b7b67e8bdfd08cefcc9f7c9aac582"
+    },
+    {
+      "Path": "guardian.log",
+      "Bytes": 231,
+      "SHA256": "695ddcafe40c63286bdd6e43b6e902af0ebf4bcfad4253d0dc5eafa20abc8906",
+      "StoredPath": "guardian.log.gz",
+      "StoredBytes": 185,
+      "StoredSHA256": "3678232b407876eab0d27b0b5eb8a3721d7feebc9f770de6a7cba36c7d18c828"
+    },
+    {
+      "Path": "helper-build.log",
+      "Bytes": 114,
+      "SHA256": "429847c797067958bdd8bcf2a2bfb0f7cf8e53bbbb58075c238bb542d01f3371",
+      "StoredPath": "helper-build.log.gz",
+      "StoredBytes": 119,
+      "StoredSHA256": "93792c5d264d53504328de42a00b64783c73ca402febdb2938dc8b29711c74bd"
+    },
+    {
+      "Path": "package/build-provenance.json",
+      "Bytes": 1153,
+      "SHA256": "0cd3edfb340a19649c66149c3e408688076ee6f28997f9c1bf626d49899afb51",
+      "StoredPath": "package__build-provenance.json.gz",
+      "StoredBytes": 687,
+      "StoredSHA256": "443cee9fc1ef7c94b054970b9e6af20adae35eacdbe048c8d8473c412d39d4b7"
+    },
+    {
+      "Path": "package/package-manifest.json",
+      "Bytes": 968,
+      "SHA256": "7e7d022ef38318ea2e56d7da7c224474d8cd6f4fad0a78f7f382709dd6f2e28a",
+      "StoredPath": "package__package-manifest.json.gz",
+      "StoredBytes": 630,
+      "StoredSHA256": "54f3d4165c0b2a1cc5447f3cf34d27dd9ef709b4f7c604c60d60ab4ccb7d3051"
+    },
+    {
+      "Path": "play/.boe_runtime/gm-runs/main.json",
+      "Bytes": 409,
+      "SHA256": "be6e9c16df6881a51c170b635c818804db75a5056e08e5ec7eb63707f0affc3a",
+      "StoredPath": "play__.boe_runtime__gm-runs__main.json.gz",
+      "StoredBytes": 319,
+      "StoredSHA256": "d1912f334d1ac0777891da3843c25fb4a29162a2d351aeebe897e7ed6f63ee01"
+    },
+    {
+      "Path": "play/.boe_runtime/session-generation/current.json",
+      "Bytes": 69,
+      "SHA256": "e3f78c4376e45b656d99ae0640feab57b2f37e67bbdfc886f02a1d2971720abb",
+      "StoredPath": "play__.boe_runtime__session-generation__current.json.gz",
+      "StoredBytes": 87,
+      "StoredSHA256": "f2aba15db876b2459fe0f9135f3aef0b2803797f03408aad3d1bbce451eb0a5e"
+    },
+    {
+      "Path": "play/.boe_runtime/worker-runs-v1/mode.json",
+      "Bytes": 146,
+      "SHA256": "8d55d7849fc328f1dbf9c045e0fec89b9696171a36dfb0c33c367ac059b56662",
+      "StoredPath": "play__.boe_runtime__worker-runs-v1__mode.json.gz",
+      "StoredBytes": 150,
+      "StoredSHA256": "17b4ea3a4727952b63388414dbf8b0a4de4dfcf5ef9f9c6068970a650937efc1"
+    },
+    {
+      "Path": "play/.boe_runtime/worker-runs-v1/state.json",
+      "Bytes": 178,
+      "SHA256": "6e6454173b42ba735dd49df6905ed99e3e2669f7b626714c5529690dfd4aead2",
+      "StoredPath": "play__.boe_runtime__worker-runs-v1__state.json.gz",
+      "StoredBytes": 173,
+      "StoredSHA256": "6ce16c49a49385d93d38f77cd7e55122fbd97142bdf895873ab13b5c07b46087"
+    },
+    {
+      "Path": "probe-result.json",
+      "Bytes": 59711,
+      "SHA256": "bd0bd21fe1b88ddb2eec818891d7e6913a17483700a1c5c683709b0abc749482",
+      "StoredPath": "probe-result.json.gz",
+      "StoredBytes": 18493,
+      "StoredSHA256": "93febd1947dfd6712e4e8648ef82a2a6c79b147242739b6967c23f95860b46d9"
+    },
+    {
+      "Path": "publish-BookOfEternityClient.log",
+      "Bytes": 137,
+      "SHA256": "24c8147611208c57d0e47343e228e4b1c7ca6b8f8af0b54c1fd1718c578a3f32",
+      "StoredPath": "publish-BookOfEternityClient.log.gz",
+      "StoredBytes": 134,
+      "StoredSHA256": "23843bb3b714dba82f45365a9dd2508cd1b7ee53cc8b81bf341873d45a1278d8"
+    },
+    {
+      "Path": "publish-BookOfEternityGMBridge.log",
+      "Bytes": 141,
+      "SHA256": "63385ea0954f816481eee105ba00fc141f8a2722a43237066d380de2320748d5",
+      "StoredPath": "publish-BookOfEternityGMBridge.log.gz",
+      "StoredBytes": 137,
+      "StoredSHA256": "1019624f06c84508742dd96f434205372369c75cadc2bcb574bc19b16cce6263"
+    },
+    {
+      "Path": "rpc-journal.json",
+      "Bytes": 11786,
+      "SHA256": "a39029eee77bc9e5df87867b1d4f8381d8e514765d1cb257aaa82c2213a59a63",
+      "StoredPath": "rpc-journal.json.gz",
+      "StoredBytes": 1607,
+      "StoredSHA256": "db2826a83e660562af4186d16d800bc47bcf1e093d96a16efb2ffc6de264f18f"
+    }
+  ],
+  "PublicOnly": true,
+  "PrivateCliStateIncluded": false,
+  "Classification": "Preparation failure: own Unix socket path exceeds107UTF8 bytes; no CLI worker launch"
+}

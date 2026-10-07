@@ -1,0 +1,44 @@
+{
+  "SourceDirectory": "/workspace/native-1553/TestResults/test-categories/20261007-164946-148-853281-d0c7677bf0b342cbbf2db94a23f2e3ad-categories",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 1624662,
+      "SHA256": "43a6ef80e3bfd35954b5d9eb57c0ae407295e67f117b994cabb25cea9391dc2f",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 180095,
+      "StoredSHA256": "cd571abcf09acdde4c47f5599fbc56b0ac84d9dc7f9a16e103f79af74541da61"
+    },
+    {
+      "Path": "gm-live-driver-phase-boundaries-unit-001.trx",
+      "Bytes": 13067,
+      "SHA256": "110785de2e4b2fdc99047e66d5238c6927d889bcb9ab2f653a8c884b5357c341",
+      "StoredPath": "gm-live-driver-phase-boundaries-unit-001.trx.gz",
+      "StoredBytes": 2418,
+      "StoredSHA256": "d7ad6bf040761372525ced88bd23424c77bbb3c5a783ff37998ff9be7e7ba4fc"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 1060,
+      "SHA256": "3aa8b5f9913de4b3d6b1412e3c041314fd4f747ce83b98a4187ee6b66fbca707",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 495,
+      "StoredSHA256": "d7075aff8bf34ba55351e00928ddc9a21515a003f3f52b130bc0f270f3057909"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1465,
+      "SHA256": "be734f93f3b9fdcd05fd36fdda3403e581369f30db545372761b910f3b61648b",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 613,
+      "StoredSHA256": "53e08f7a1f6c715c1f79de776cabf69ea0e3f974a0fe1e88892541fc396e9262"
+    }
+  ],
+  "PublicOnly": true,
+  "PrivateCliStateIncluded": false,
+  "RuntimeDriverSource": "53cb0e7f9eda7eb7b98c84d53394b6e232a87290",
+  "TestSource": "1079f24b96692b12c49f4e4ddf09c94b01844985",
+  "Executed": 5,
+  "Passed": 3,
+  "Failed": 2
+}

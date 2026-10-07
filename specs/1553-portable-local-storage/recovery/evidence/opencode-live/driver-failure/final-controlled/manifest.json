@@ -1,0 +1,184 @@
+{
+  "SourceDirectory": "/tmp/ld-05a909aec1824952843ac5aad97186f6",
+  "Artifacts": [
+    {
+      "Path": "actual-turn-request.json",
+      "Bytes": 59171,
+      "SHA256": "c455eb5962afff8183ad31d230a3c571d0f768858d48136176783969baf72445",
+      "StoredPath": "actual-turn-request.json.gz",
+      "StoredBytes": 17933,
+      "StoredSHA256": "5a16ee0ba115f936bb062897acaf117c9d70eec42e39e4d0f8cc51caa4606ec7"
+    },
+    {
+      "Path": "bridge.raw",
+      "Bytes": 741,
+      "SHA256": "96859aad7e67fc7513d655ded2ef9dda857662c36306889dbbad61bb48833e5a",
+      "StoredPath": "bridge.raw.gz",
+      "StoredBytes": 386,
+      "StoredSHA256": "a97fd60a9a2fb52227ad97a889102d66bf82b2a162e6ad06dde2b2cf3469ce66"
+    },
+    {
+      "Path": "client-echo.raw",
+      "Bytes": 2,
+      "SHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "StoredPath": "client-echo.raw.gz",
+      "StoredBytes": 22,
+      "StoredSHA256": "3827170a82238309b60bbe54f61f44a944267563d05ea7b34f44afe350742c00"
+    },
+    {
+      "Path": "client.raw",
+      "Bytes": 13633,
+      "SHA256": "955f8ca922c3f4e4a69783ba7bb85ad4aac1066d21eb250caa94241d0812a470",
+      "StoredPath": "client.raw.gz",
+      "StoredBytes": 1863,
+      "StoredSHA256": "6b24a2bf28bb7c4138fdf59a3db3047a0b0ccb19319d4e3056cbdb4b1c467be7"
+    },
+    {
+      "Path": "daemon.log",
+      "Bytes": 836,
+      "SHA256": "f03a3f4367e5fde15c9d7d70549335946c00f260902c1429f493ea0a7d6a833e",
+      "StoredPath": "daemon.log.gz",
+      "StoredBytes": 483,
+      "StoredSHA256": "3dccfdfc8f18911d263706a6b844d263c455de070e85c7fa37b1f1087d317737"
+    },
+    {
+      "Path": "daemon.raw",
+      "Bytes": 1022,
+      "SHA256": "851fc29f6a1097d11625027debf6bb009b7fb8eab51b60566c94ccf628d9ba96",
+      "StoredPath": "daemon.raw.gz",
+      "StoredBytes": 535,
+      "StoredSHA256": "ef318173698c1f7e2a0b1a527b3e35de73442958ad1f4107c82c24646afdb098"
+    },
+    {
+      "Path": "fixture-build.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredPath": "fixture-build.log.gz",
+      "StoredBytes": 20,
+      "StoredSHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "fixture-compiler-version.log",
+      "Bytes": 231,
+      "SHA256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc",
+      "StoredPath": "fixture-compiler-version.log.gz",
+      "StoredBytes": 203,
+      "StoredSHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62"
+    },
+    {
+      "Path": "fixture-preparation.json",
+      "Bytes": 522,
+      "SHA256": "4c5c47d92468a6c6f29f8efbbfd46114a475b9e08b7dc9ebd85500406a7b5b11",
+      "StoredPath": "fixture-preparation.json.gz",
+      "StoredBytes": 375,
+      "StoredSHA256": "4e006604705365d0705a717f4beb5b23d34312e936fd841975c601cd1cd32a6e"
+    },
+    {
+      "Path": "guardian.json",
+      "Bytes": 97,
+      "SHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "StoredPath": "guardian.json.gz",
+      "StoredBytes": 105,
+      "StoredSHA256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "Path": "guardian.log",
+      "Bytes": 198,
+      "SHA256": "262691672b567b53de82a75a678f54668a15d0335f76ef30d7f0152ed891537f",
+      "StoredPath": "guardian.log.gz",
+      "StoredBytes": 170,
+      "StoredSHA256": "05710feae115e42d68d91c5d14e4c850bae8c05b944c3ad65187f218c6c34fa8"
+    },
+    {
+      "Path": "helper-build.log",
+      "Bytes": 71,
+      "SHA256": "76c08c8cc64a6b110a1387684579e8c3e14a07ae5e0803e7fd3f0ba9669c97a1",
+      "StoredPath": "helper-build.log.gz",
+      "StoredBytes": 88,
+      "StoredSHA256": "f202002879e549c4d1fca2f8bd0c4d1524373e66d9fca99fb42465b8a5672eb9"
+    },
+    {
+      "Path": "package/build-provenance.json",
+      "Bytes": 1153,
+      "SHA256": "0cd3edfb340a19649c66149c3e408688076ee6f28997f9c1bf626d49899afb51",
+      "StoredPath": "package__build-provenance.json.gz",
+      "StoredBytes": 687,
+      "StoredSHA256": "443cee9fc1ef7c94b054970b9e6af20adae35eacdbe048c8d8473c412d39d4b7"
+    },
+    {
+      "Path": "package/package-manifest.json",
+      "Bytes": 968,
+      "SHA256": "72c5137a8c62c926fca98b21c425a2d276369c39c72667d0d61697c182e3b137",
+      "StoredPath": "package__package-manifest.json.gz",
+      "StoredBytes": 630,
+      "StoredSHA256": "3ae5a27c850d1080369684d36affd3e86434c8f5e0ff675546cfd7ce62571866"
+    },
+    {
+      "Path": "play/.boe_runtime/gm-runs/main.json",
+      "Bytes": 745,
+      "SHA256": "cbd41daee83d458c7cfaedb759a900635bc56f6c7d8c56d072a5f5de66417bd0",
+      "StoredPath": "play__.boe_runtime__gm-runs__main.json.gz",
+      "StoredBytes": 317,
+      "StoredSHA256": "b3e135f90ba6e745177668f25d16187291fe38e3126d7724a144979fc1024aa8"
+    },
+    {
+      "Path": "play/.boe_runtime/session-generation/current.json",
+      "Bytes": 69,
+      "SHA256": "cb9fabd6b5d2fb91cdaf8203b4f64aa3d2160ad2ec5ec7042ebd7ca05892fdfe",
+      "StoredPath": "play__.boe_runtime__session-generation__current.json.gz",
+      "StoredBytes": 87,
+      "StoredSHA256": "6614d2917f2d2415c30b02ad5422caa0fc888d2b08ae77fcd68ac148b562c036"
+    },
+    {
+      "Path": "play/.boe_runtime/worker-runs-v1/mode.json",
+      "Bytes": 103,
+      "SHA256": "7942efc4ac3ad4ac00a90f6742060a9a7c3e15cb31dd1be9976dccf9dbfaf26c",
+      "StoredPath": "play__.boe_runtime__worker-runs-v1__mode.json.gz",
+      "StoredBytes": 117,
+      "StoredSHA256": "f76a238076f670ce490450ae03537667baa1f50730c1cce7ab6300de800defc1"
+    },
+    {
+      "Path": "play/.boe_runtime/worker-runs-v1/state.json",
+      "Bytes": 135,
+      "SHA256": "fd7500cabb3f77c83deaa88d5dad1299922f5712b59f1958e64eaa7ff08f0260",
+      "StoredPath": "play__.boe_runtime__worker-runs-v1__state.json.gz",
+      "StoredBytes": 144,
+      "StoredSHA256": "8bdb662e46a8a3f000c5a977a14be944b51772ab2637618612ed4d8663908fb2"
+    },
+    {
+      "Path": "probe-result.json",
+      "Bytes": 130768,
+      "SHA256": "c1d2bb57e8852922429868cf01564b597aa238d888892c0b2f306c162c45cf92",
+      "StoredPath": "probe-result.json.gz",
+      "StoredBytes": 37451,
+      "StoredSHA256": "260ce1ee68bf5b0e89665c96fc078ec06108573c6c0eac3dc98da1bd5d62bdab"
+    },
+    {
+      "Path": "publish-BookOfEternityClient.log",
+      "Bytes": 94,
+      "SHA256": "1df0858206235c4d82788ecf65c8ad6963cb89ab8bfdd87ce3620e68077de670",
+      "StoredPath": "publish-BookOfEternityClient.log.gz",
+      "StoredBytes": 96,
+      "StoredSHA256": "cd25ac72403dcf735e882db734c8123f4d75ef829a27b098d903b68a23f7d74c"
+    },
+    {
+      "Path": "publish-BookOfEternityGMBridge.log",
+      "Bytes": 98,
+      "SHA256": "fea04dd14d1a7ff787b8bb8494c14ab479f1e4219a8da6af76e7def221c1ce95",
+      "StoredPath": "publish-BookOfEternityGMBridge.log.gz",
+      "StoredBytes": 98,
+      "StoredSHA256": "b8f2cb8c3f0e01e03015877224796193ded6b1ca1d4fd7cf43573a34df189773"
+    },
+    {
+      "Path": "rpc-journal.json",
+      "Bytes": 42578,
+      "SHA256": "62afce7d44204cd4a2abe1d9f7dcfb5ad88fc502d1eb433a8741c5a2f4bf9b13",
+      "StoredPath": "rpc-journal.json.gz",
+      "StoredBytes": 4284,
+      "StoredSHA256": "0111baf5df7e1e462c87d5ac26ac8b1d24ed703681cc193c27a5212f519f9013"
+    }
+  ],
+  "PublicOnly": true,
+  "PrivateCliStateIncluded": false,
+  "Classification": "Controlled fixed inert denial, provider0/accepted0; original Stopped ACK/I-O/EOF/termios"
+}

@@ -1,0 +1,88 @@
+{
+  "SourceDirectory": "/tmp/ld-f1ca989b5a17473b997033c4086b1a56",
+  "Artifacts": [
+    {
+      "Path": "fixture-build.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredPath": "fixture-build.log.gz",
+      "StoredBytes": 20,
+      "StoredSHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "fixture-compiler-version.log",
+      "Bytes": 231,
+      "SHA256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc",
+      "StoredPath": "fixture-compiler-version.log.gz",
+      "StoredBytes": 203,
+      "StoredSHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62"
+    },
+    {
+      "Path": "fixture-preparation.json",
+      "Bytes": 522,
+      "SHA256": "24de105c9ef01f566fa53a453ce78b9c2e6cda25cd03f973fa6b1c905fc972aa",
+      "StoredPath": "fixture-preparation.json.gz",
+      "StoredBytes": 375,
+      "StoredSHA256": "6b09208bc95302e8f7cf34f17e100b552af7cea9317559b5e37abca0b11df87a"
+    },
+    {
+      "Path": "guardian.json",
+      "Bytes": 97,
+      "SHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "StoredPath": "guardian.json.gz",
+      "StoredBytes": 104,
+      "StoredSHA256": "4a3b0059fa67390b10d972bcdc68fb8a39a3a11f5a922f20018e3c4660692a35"
+    },
+    {
+      "Path": "guardian.log",
+      "Bytes": 317,
+      "SHA256": "09708b4a8d724fb056ef49db0650c1fcda81e4f736337cdf01644687b10091e0",
+      "StoredPath": "guardian.log.gz",
+      "StoredBytes": 241,
+      "StoredSHA256": "8b94d8320e895efdff4e3b167e9c65345cfbd565a955b6917e93b8ce2340ba33"
+    },
+    {
+      "Path": "helper-build.log",
+      "Bytes": 71,
+      "SHA256": "66eff82108891746420d7f2c1dca6ade03ea0527a508e8ed6f42e20aba13007f",
+      "StoredPath": "helper-build.log.gz",
+      "StoredBytes": 87,
+      "StoredSHA256": "0711150f00aa777a58b5e20f159c614d277fca14a1425511cb4d498af69e53f3"
+    },
+    {
+      "Path": "package/build-provenance.json",
+      "Bytes": 1153,
+      "SHA256": "0cd3edfb340a19649c66149c3e408688076ee6f28997f9c1bf626d49899afb51",
+      "StoredPath": "package__build-provenance.json.gz",
+      "StoredBytes": 687,
+      "StoredSHA256": "443cee9fc1ef7c94b054970b9e6af20adae35eacdbe048c8d8473c412d39d4b7"
+    },
+    {
+      "Path": "package/package-manifest.json",
+      "Bytes": 968,
+      "SHA256": "81bdd291fe60b323ed041b1b64b15af6878b3a41874f415c5037fc57ca88a338",
+      "StoredPath": "package__package-manifest.json.gz",
+      "StoredBytes": 630,
+      "StoredSHA256": "0d75b76e941d8e53b383dd709a833f3af64935eb7144af2758cbd7f64ab9738a"
+    },
+    {
+      "Path": "publish-BookOfEternityClient.log",
+      "Bytes": 94,
+      "SHA256": "a811330b43340a3620eade0d9894d30645241adbe773ab3ba013a4059f0415a6",
+      "StoredPath": "publish-BookOfEternityClient.log.gz",
+      "StoredBytes": 96,
+      "StoredSHA256": "b28e34415ac65932a82560171c37c94dfc8cf5496efe123b298c9a6e4dddba11"
+    },
+    {
+      "Path": "publish-BookOfEternityGMBridge.log",
+      "Bytes": 98,
+      "SHA256": "4674395482198c3e530df1325bd3bdf8ea8c54dc093b0b4ade6332e974e03957",
+      "StoredPath": "publish-BookOfEternityGMBridge.log.gz",
+      "StoredBytes": 98,
+      "StoredSHA256": "5e94307d9f1e81fe1eeff3350d6030d74789083e4247f823cde5ba8734dfa534"
+    }
+  ],
+  "PublicOnly": true,
+  "PrivateCliStateIncluded": false,
+  "Classification": "Preparation failure: controlled install layout IndexError before real entrypoints; no probe-result"
+}
