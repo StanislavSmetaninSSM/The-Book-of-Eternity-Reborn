@@ -1,0 +1,36 @@
+[
+  {
+    "id": "opencode-ai@1.18.35",
+    "name": "opencode-ai",
+    "version": "1.18.35",
+    "size": 3048,
+    "unpackedSize": 7865,
+    "shasum": "08cd9a77993031d2c66289d82a99f10227af7fac",
+    "integrity": "sha512-tDQKThIZ3amp8NSn3XDP2Dj5BlhRbZC0VkIxgYuf6gvRSXkseqD31j/U4KfpPwha593i8M59hdsDfz32yJx4Og==",
+    "filename": "opencode-ai-1.18.35.tgz",
+    "files": [
+      {
+        "path": "LICENSE",
+        "size": 1065,
+        "mode": 493
+      },
+      {
+        "path": "bin/opencode.exe",
+        "size": 479,
+        "mode": 493
+      },
+      {
+        "path": "package.json",
+        "size": 825,
+        "mode": 493
+      },
+      {
+        "path": "postinstall.mjs",
+        "size": 5496,
+        "mode": 493
+      }
+    ],
+    "entryCount": 4,
+    "bundled": []
+  }
+]

@@ -1,0 +1,33 @@
+[
+  {
+    "Argv": [
+      "/workspace/qualification-1553-opencode-install/package/node_modules/opencode-linux-x64-baseline/bin/opencode",
+      "--version"
+    ],
+    "ExitCode": 0,
+    "StdoutBytes": 8,
+    "StderrBytes": 0,
+    "ModelRequest": false
+  },
+  {
+    "Argv": [
+      "/workspace/qualification-1553-opencode-install/package/node_modules/opencode-linux-x64-baseline/bin/opencode",
+      "--help"
+    ],
+    "ExitCode": 0,
+    "StdoutBytes": 0,
+    "StderrBytes": 4285,
+    "ModelRequest": false
+  },
+  {
+    "Argv": [
+      "/workspace/qualification-1553-opencode-install/package/node_modules/opencode-linux-x64-baseline/bin/opencode",
+      "models",
+      "opencode"
+    ],
+    "ExitCode": 0,
+    "StdoutBytes": 308,
+    "StderrBytes": 0,
+    "ModelRequest": false
+  }
+]

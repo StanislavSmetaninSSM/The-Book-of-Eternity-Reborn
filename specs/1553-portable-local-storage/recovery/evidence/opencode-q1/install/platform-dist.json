@@ -1,0 +1,17 @@
+{
+  "shasum": "2494ca4bec544e7982fcbc208033095ab570a409",
+  "tarball": "https://registry.npmjs.org/opencode-linux-x64-baseline/-/opencode-linux-x64-baseline-1.18.35.tgz",
+  "fileCount": 2,
+  "integrity": "sha512-M4SO/A3i2pfOxwBl2C4w6ZgjUx1CH0Y1+yIrc2OdagH3ZOYuhCiFR2FVxhOwMxA/CxlMrS3Z6xxY8WSZCGfuYw==",
+  "signatures": [
+    {
+      "sig": "MEUCIQDol2+Yxl520Ue/WQcgIEhMnq8baF5r3rFfQXRQ7FlSiQIgT/tR/9CP23IUuAI+eXQSZ6Sm38pXChOfoSDdLFAe4J8=",
+      "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+    },
+    {
+      "sig": "MEUCIQDdoQmzqrI7KPnqSWGV9Yz1zF0L9623pM2dXh/rlQF6sAIgGCpVS1QDXJhWlN3z5e61JGP5t0HXhj9qQ0iD88qLyRg=",
+      "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+    }
+  ],
+  "unpackedSize": 185690387
+}
