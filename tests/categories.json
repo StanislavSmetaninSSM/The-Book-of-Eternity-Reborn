@@ -2,8 +2,33 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-mini-idle-authority",
+      "responsibility": "Original pipe Ready derives from reliable styled placeholder and refuses initial blank/manual multiline tail",
+      "excludes": "Full draft/witness transaction, provider/gameplay, unknown TUI and old cohorts",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmExternalDraftObservationTests.ActualPipe_MiniEmptyStartupNeedsConsumedProfileAndPlaceholderStyle",
+            "BookOfEternityClient.Tests.GmExternalDraftObservationTests.ActualPipe_FirstBlankFrameCannotBorrowStartupReadiness",
+            "BookOfEternityClient.Tests.GmExternalDraftObservationTests.ActualPipe_ManualMultilineBlankTailPreservesDraftAndTakeover"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-external-draft-observation",
-      "responsibility": "Actual existing bridge observer mode and original pipe, bounded actual-file bytes plus consumed mini profile/empty placeholder evidence",
+      "responsibility": "Existing bridge observer mode on original absolute pipe, actual bounded unchanged file bytes without expected prompt bytes",
       "excludes": "Provider/gameplay, arbitrary TUI, Windows, production workers and old cohorts",
       "changeHints": [
         "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
@@ -21,7 +46,7 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmExternalDraftObservationTests.*"
+            "BookOfEternityClient.Tests.GmExternalDraftObservationTests.ActualBridgeObserver_OriginalAbsolutePipe_ReadsActualUnicodeFileWithoutExpectedBytes"
           ]
         }
       ]

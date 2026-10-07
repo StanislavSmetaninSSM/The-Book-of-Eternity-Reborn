@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-external-draft-observation",
-      "reason": "First causal baseline actual original pipe/file and pinned mini empty-versus-draft observation; legacy successful cohorts excluded",
+      "category": "gm-mini-idle-authority",
+      "reason": "Two root-discovered blank-readiness holes with shared fixture installation; standalone observer success excluded from RED",
       "contracts": [
         "T043-OPENCODE-LIVE-BOUNDED",
-        "T042-input-transaction"
+        "T042-manual-takeover"
       ]
     }
   ]
