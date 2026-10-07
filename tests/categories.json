@@ -15676,6 +15676,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "auxiliary-launcher-portable",
+      "responsibility": "T050 actual prepare-turn through entire relocated prebuilt launcher with runtime-only dotnet; immutable options, manifest/authority, exact resource/runtime and authority refusals",
+      "excludes": "No M1 redesign/desktop/live provider/game saves/native Windows; publisher SDK is separate from player runtime-only proof",
+      "changeHints": [
+        "BookOfEternityClient/Launcher/bookofeternity.ps1",
+        "BookOfEternityClient/Program.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -2,17 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "console-audio-linux",
-      "reason": "T050 public console audio Linux backend choice and owned lifecycle; synthetic-only guarded/controlled/dummy output",
+      "category": "auxiliary-launcher-portable",
+      "reason": "Causal real entire auxiliary route from relocated SDK-free runtime package; no old cohort replay",
       "contracts": [
-        "T050-CONSOLE-AUDIO-LINUX"
-      ]
-    },
-    {
-      "category": "browser-audio-isolation",
-      "reason": "T050 real browser DI/settings settlement remains HTML Audio and never initializes server output",
-      "contracts": [
-        "T050-CONSOLE-AUDIO-LINUX"
+        "T050-AUXILIARY-LAUNCHER-PORTABLE"
       ]
     }
   ]
