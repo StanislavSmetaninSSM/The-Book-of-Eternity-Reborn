@@ -1,6 +1,7 @@
 # T043 driver correction handoff — live provider access pending
 
-Sole writer and independent reviewers: Sol6.1/xhigh. Accepted base174761a17;
+Authorized workflow: one writer, Sol6.1/xhigh implementer and read-only reviews.
+Accepted base174761a17;
 final driver/test source `0a3d963ff942244eaddd596d475025126697efc1`.
 Production runtime, game rules/prompts, GM model and all historical roots unchanged.
 Deferred systemd design63e99009 remains preserved and unqualified.
@@ -50,14 +51,24 @@ og9 DraftUncertain was not replayed. Guardian cleanup never repaints those outco
 
 ## Reviews and delivery
 
-Independent Sol SOURCE PASS0a3d963f. Evidence and metadata verdicts close on the
-published receipt/document carrier; final exact remote/readback and fresh direct
-GitHub-only restoration are writer closure checks. No behavior rerun after14/14.
-During receipt publication GitHub returned Internal Server Error at16:53:52Z,
-16:55:28Z and16:56:40Z. Published source0a3d remains exact; receipt WIPb703d04b
-has a verified922334-byte bundle, SHA256
-c95ae8ab820551c81c78d50935e57e5faef43451ad833dfdf46f87d91f96aa16.
-Ordinary retry uses the existing authorization; no new login or network changes.
+Independent Sol6.1/xhigh SOURCE PASS at0a3d963f; EVIDENCE PASS and METADATA PASS
+at765be16f, zero remaining bounded findings. Verified14 manifests/139 artifacts,
+both nine-file source pin sets and current document links. Final carrier changes
+only verdict/publication/provenance metadata; tested source remains0a3d963f.
+
+GitHub rejected receipt publication with Internal Server Error at16:53:52Z,
+16:55:28Z and16:56:40Z. Ordinary push with existing authorization then recovered
+exact765be16f. Remote SHA and10 metadata files plus all133 receipt files were read
+back byte-for-byte from fetched GitHub objects; checkout clean. No credentials,
+network settings, force or history rewrite. Verified checkpoint bundles remain local.
+Final exact carrier push/readback and a fresh direct GitHub-only depth-one clone,
+all tracked-byte/clean/tree/fsck verification, close delivery; no tests in that clone.
+
+Metadata checkpoint765be16f has parentb703d04b and exactly the10 prepared metadata
+files; source is unchanged and there is no conflict. Its creation tool receipt is
+unavailable in this writer's visible records, and its creator is unknown. All three
+read-only reviewers deny mutations; Git author/committer labels do not identify the
+actor. No private session storage was consulted. This provenance limitation remains.
 
 ## Next boundary
 

@@ -84,8 +84,8 @@
     "Source": "0a3d963ff942244eaddd596d475025126697efc1",
     "PlanReview": "Independent Sol6.1/xhigh PLAN PASS e2535c872e978654dd9ed67cea1784ec535739c8",
     "SourceReview": "Independent Sol6.1/xhigh SOURCE PASS0a3d963f",
-    "EvidenceReview": "Pending separate review of public curated receipts",
-    "MetadataReview": "Pending separate review of updated carrier",
+    "EvidenceReview": "Independent Sol6.1/xhigh EVIDENCE PASS765be16fe45b69bb5d25f4a2a08eda7c6294ee34",
+    "MetadataReview": "Independent Sol6.1/xhigh METADATA PASS765be16fe45b69bb5d25f4a2a08eda7c6294ee34",
     "FinalExecuted": 14,
     "FinalPassed": 14,
     "SelectionComplete": true,
@@ -124,6 +124,33 @@
     "CatalogMethodsFiles": 11156,
     "CatalogTestsExecuted": 0,
     "Receipts": "evidence/opencode-live/driver-failure/",
-    "SourcePins": "evidence/opencode-live/driver-failure/source-pins.json"
+    "SourcePins": "evidence/opencode-live/driver-failure/source-pins.json",
+    "Manifests": 14,
+    "CuratedLogicalArtifacts": 139,
+    "Publication": {
+      "VerifiedCheckpoint": "765be16fe45b69bb5d25f4a2a08eda7c6294ee34",
+      "OrdinaryPush": true,
+      "RemoteSHAMatched": true,
+      "MetadataFilesByteReadback": 10,
+      "ReceiptFilesByteReadback": 133,
+      "Clean": true,
+      "CapturedServerRejectionsUTC": [
+        "2026-10-07T16:53:52Z",
+        "2026-10-07T16:55:28Z",
+        "2026-10-07T16:56:40Z"
+      ],
+      "NoAuthNetworkSettingsChanged": true
+    },
+    "MetadataProvenance": {
+      "Commit": "765be16fe45b69bb5d25f4a2a08eda7c6294ee34",
+      "Parent": "b703d04b024a688884c0c267dff9cc45a629a057",
+      "Creator": "Unknown",
+      "VisibleCreationToolReceiptAvailable": false,
+      "PreparedMetadataFiles": 10,
+      "SourceUnchanged": true,
+      "ConflictObserved": false,
+      "ReadOnlyReviewersReportNoMutation": true,
+      "NoAttributionFromGitAuthor": true
+    }
   }
 }

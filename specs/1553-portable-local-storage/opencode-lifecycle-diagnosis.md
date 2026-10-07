@@ -34,7 +34,7 @@ the proven early cancellation route remains unqualified and must preserve Uncert
 
 Three causal REDs and fresh final14/14 GREEN are linked in the
 [executed plan](opencode-live-plan.md). Independent Sol source PASS0a3d;
-evidence and metadata reviews close separately. All old og4/og5/og10 record hashes
+EVIDENCE PASS and METADATA PASS at765be16f close the bounded packet. All old og4/og5/og10 record hashes
 and pinned og10 pending metadata remain unchanged. Provider access approval is
 still pending; no additional live attempt occurred.
 

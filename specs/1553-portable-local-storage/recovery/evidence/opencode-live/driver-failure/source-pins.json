@@ -111,5 +111,11 @@
   "ProviderCallsThisBlock": 0,
   "AcceptedAppliedTurnsThisBlock": 0,
   "ProductionRuntimeChanged": false,
-  "NoNewNetworkAuthSettings": true
+  "NoNewNetworkAuthSettings": true,
+  "HistoricalOg10RequestVerifiedUnchanged": {
+    "Path": "/workspace/og10/play/game_session/input/turn_request.json",
+    "Bytes": 59172,
+    "SHA256": "5bc0f6ed8a9cd58455f72617bc5b7a2df56acc1060208ef828f3ac20e8c3af3e",
+    "EqualAcceptedCapturedActualRequest": true
+  }
 }

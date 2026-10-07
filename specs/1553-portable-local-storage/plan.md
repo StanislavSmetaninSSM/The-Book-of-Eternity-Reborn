@@ -7,7 +7,8 @@ rollback → original Stopped ACK → peer I/O cleanup are qualified. The separa
 held original pin reaches drain timeout/lifecycle absent and retains logical
 Uncertain despite native/managed cleanup; late ClosedObserved does not repair it.
 No production runtime/ownership change or historical Uncertain rewrite.
-Independent Sol SOURCE PASS; evidence/metadata and publication closure are separate.
+Independent Sol SOURCE PASS0a3d, EVIDENCE PASS765be16f and METADATA PASS765be16f;
+ordinary publication/readback recovered765be16f, final carrier restore closes separately.
 [Executed plan and receipts](opencode-live-plan.md) / [current handoff](opencode-current-live-handoff.md).
 No provider request or accepted GM turn this block. Parent's opencode.ai allowlist
 decision remains pending; do not retry or replay og10. Systemd stays deferred.
