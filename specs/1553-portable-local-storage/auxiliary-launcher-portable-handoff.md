@@ -48,10 +48,14 @@ compiler cc(Debian14.2.0-19)14.2.0. Compiler/SDK are absent from player fixture 
 No frontend changes/tests or device access. Operational docs separate legacy
 Windows/source recipes, current packaged helper and accepted bounded Load/browser debt.
 
-Independent actual Sol6.1/xhigh design/source PASS. Evidence/metadata review and
-candidate/final GitHub-only clean/full-fsck/source+artifact restore closure are pending
-this candidate; final carrier receives ordinary push/exact remote/byte readback and
-fresh restore before delivery. No successful runtime execution is repeated for metadata.
+Independent actual Sol6.1/xhigh design/source/evidence/metadata PASS.
+[Evidence review](recovery/auxiliary-launcher-evidence-review.json) /
+[metadata review](recovery/auxiliary-launcher-metadata-review.json) verified final294artifacts,
+29sourcepins and all21passing bindings;
+[candidate GitHub restore](recovery/auxiliary-launcher-candidate-restoration.json)
+verified21216trackedbytes/clean/fullfsck/fullhistory/noalternates. The final metadata
+carrier receives ordinary push/exact remote/byte readback and a fresh GitHub-only
+restore before delivery; its exact SHA/proof is returned by the writer separately. No successful runtime execution is repeated for metadata.
 
 Native Windows execution remains unqualified; platform-neutral DLL/PowerShell route
 is implemented, legacy Windows main/ConPTY/Job behavior is preserved in source. No

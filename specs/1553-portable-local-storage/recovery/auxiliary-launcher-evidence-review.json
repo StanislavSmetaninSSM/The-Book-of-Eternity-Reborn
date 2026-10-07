@@ -1,0 +1,39 @@
+{
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "Verdict": "PASS",
+  "ReviewedCheckpoint": "574fd2d4dabe8dea73bdf9f37909920eeba1f089",
+  "ReadOnly": true,
+  "FinalExactTipClosure": "Writer performs final remote/readback/fresh GitHub-only restore after carrier; no further runtime tests.",
+  "Agent": "/root/auxiliary_portable_evidence_review",
+  "SourcePinsVerified": 29,
+  "ArtifactsVerified": 294,
+  "GzipParsed": 143,
+  "QualifiedDistinctPASS": 21,
+  "Historical": {
+    "Executed": 42,
+    "PASS": 37,
+    "FAIL": 5
+  },
+  "Cleanup": {
+    "ObservedRoots": 20,
+    "GuardianReports": 41,
+    "PassingRoots": 19,
+    "PassingReports": 39,
+    "ExclusiveEchild": true,
+    "ControlledPidfdSignals": 1,
+    "OrdinarySignals": 0
+  },
+  "CandidateRestore": {
+    "Commit": "f40772da0c7eeb2d929ab4922aa0cd7cb96477ce",
+    "TrackedFiles": 21216,
+    "Clean": true,
+    "FullFsck": true,
+    "IndependentBlobBytes": true
+  },
+  "Limits": [
+    "Native Windows unqualified",
+    "Live original owner behavior reused from accepted source; no fresh live qualification",
+    "No tests/device/product CLI/services during review"
+  ]
+}

@@ -1979,5 +1979,12 @@
       "Bytes": 1572
     }
   ],
-  "FinalCarrierClosure": "Exact-tip remote/readback and fresh GitHub-only restore performed by writer after metadata reviews; not yet claimed here."
+  "FinalCarrierClosure": "Exact-tip remote/readback and fresh GitHub-only restore performed by writer after metadata reviews; not yet claimed here.",
+  "IndependentReviews": {
+    "Design": "recovery/auxiliary-launcher-design-review.json",
+    "Source": "recovery/auxiliary-launcher-source-review.json",
+    "Evidence": "recovery/auxiliary-launcher-evidence-review.json",
+    "Metadata": "recovery/auxiliary-launcher-metadata-review.json",
+    "Models": "Actual independent gpt-6.1-sol/xhigh; all PASS"
+  }
 }

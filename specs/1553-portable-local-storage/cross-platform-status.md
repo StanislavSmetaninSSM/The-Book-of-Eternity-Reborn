@@ -5,7 +5,7 @@
 T050-AUXILIARY-LAUNCHER-PORTABLE implements existing prepare-turn from relocated
 prebuilt client resources through the same launcher, .NET8/PowerShell7 and original
 main/worker/storage/generation admission. Runtime/tests `39fb7534a8a492dbb22c9ee530d1b6a9397566e5`:21distinctPASS=20new+1exactaffected. No player checkout/compiler/dotnet run, second launcher, M1 redesign or CLI/model/gameplay change. Native Windows and live GM remain unqualified.
-[Plan](auxiliary-launcher-portable-plan.md) / [handoff](auxiliary-launcher-portable-handoff.md) / [qualification](recovery/auxiliary-launcher-qualification.json). Design/source Sol6.1/xhigh PASS; candidate evidence/metadata/fresh GitHub restore closure is tracked separately. Desktop helpers/systemd/Q1Q2/full T050 remain open. Older audits below retain their original source/checkpoint boundaries.
+[Plan](auxiliary-launcher-portable-plan.md) / [handoff](auxiliary-launcher-portable-handoff.md) / [qualification](recovery/auxiliary-launcher-qualification.json). Independent actual Sol6.1/xhigh design/source/evidence/metadata PASS; candidate GitHub-only21216file clean/fullfsck restore verified. Final carrier has a separate exact-tip writer remote/readback/fresh-restore guard before delivery. Desktop helpers/systemd/Q1Q2/full T050 remain open. Older audits below retain their original source/checkpoint boundaries.
 
 ## Current bounded T050 console audio checkpoint
 
