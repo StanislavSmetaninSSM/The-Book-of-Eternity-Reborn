@@ -64,7 +64,7 @@ public sealed class TextComposerTests
     {
         var console = new FakeComposerConsole
         {
-            ReadLines = new Queue<string?>(new[] { "\\p" })
+            ReadLines = new Queue<string?>(new[] { "\\p", string.Empty })
         };
         var clipboard = new TestClipboardService
         {

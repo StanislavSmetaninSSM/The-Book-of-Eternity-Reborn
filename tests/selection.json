@@ -3,14 +3,21 @@
   "selections": [
     {
       "category": "clipboard-linux-adapter",
-      "reason": "Initial causal RED for real adapter/consumer; synthetic owned process/inputs only. No unrelated completed checks.",
+      "reason": "T050 bounded synthetic clipboard adapter and real turn/Ask/multiline consumers; failures/limits/EOF/one gesture/manual acceptance; no real desktop clipboard.",
       "contracts": [
         "T050-CLIPBOARD-LINUX"
       ]
     },
     {
       "category": "clipboard-console-consumers",
-      "reason": "Initial causal RED for real adapter/consumer; synthetic owned process/inputs only. No unrelated completed checks.",
+      "reason": "T050 bounded synthetic clipboard adapter and real turn/Ask/multiline consumers; failures/limits/EOF/one gesture/manual acceptance; no real desktop clipboard.",
+      "contracts": [
+        "T050-CLIPBOARD-LINUX"
+      ]
+    },
+    {
+      "category": "clipboard-affected-managed",
+      "reason": "Only existing tests affected by bounded reader normalization, explicit clipboard acceptance, removed late reread and shared composer/direct terminal paste.",
       "contracts": [
         "T050-CLIPBOARD-LINUX"
       ]

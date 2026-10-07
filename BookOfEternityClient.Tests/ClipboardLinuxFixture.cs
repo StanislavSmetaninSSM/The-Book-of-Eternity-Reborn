@@ -22,7 +22,7 @@ internal sealed class ClipboardLinuxFixture : IDisposable
         foreach (var tool in tools ?? ["wl-paste"])
         {
             var path = Path.Combine(Root, "bin", tool);
-            File.WriteAllText(path, "#!/usr/bin/python3\n" + Reader);
+            File.WriteAllText(path, request.ReaderMode == "bad-start" ? "#!/nonexistent-boe-synthetic-reader\n" : "#!/usr/bin/python3\n" + Reader);
             File.SetUnixFileMode(path, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
         }
         var assembly = typeof(ClipboardLinuxFixture).Assembly.Location;
@@ -98,6 +98,7 @@ if mode=='error':sys.stderr.write('synthetic private data must not be displayed'
 if mode=='invalid':sys.stdout.buffer.write(b'\xff');sys.exit(0)
 if mode=='stdout-flood':sys.stdout.buffer.write(b'x'*(1024*1024+1));sys.stdout.flush();time.sleep(7)
 if mode=='stderr-flood':sys.stderr.buffer.write(b'x'*(64*1024+1));sys.stderr.flush();time.sleep(7)
+if mode=='stderr-limit':sys.stderr.buffer.write(b'x'*(64*1024));sys.stderr.flush()
 sys.stdout.buffer.write(request['Text'].encode('utf-8'))
 """;
 }
