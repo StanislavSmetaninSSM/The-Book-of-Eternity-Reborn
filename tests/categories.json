@@ -16700,6 +16700,36 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-daemon-artifact-stall",
+      "responsibility": "Actual inert daemon current-screen artifact intent vs historical echoed prompt; retain visible stall, progress and original scoped-stop publication",
+      "excludes": "Provider/live GM, other daemon cohorts, terminal ownership, gameplay mechanics",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient.Tests/GmDaemonArtifactStallTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDaemonArtifactStallTests.ActualDaemon_CurrentVisibleIntent"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_EmitsEarlyTerminalErrorWhenBridgeStallsWhilePreparingArtifacts"
+          ]
+        }
+      ]
     }
   ]
 }

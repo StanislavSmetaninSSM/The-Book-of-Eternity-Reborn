@@ -5382,7 +5382,7 @@ public sealed class GmTurnHelperContractTests
         var artifactBranch = daemon[artifactProbeIndex..timeoutIndex];
         Assert.Contains("Stop-GmBridgeAfterTurnTimeout -TurnRequest $turnRequest -ElapsedSeconds $elapsed -Reason \"gm_bridge_artifact_write_stall\"", artifactBranch, StringComparison.Ordinal);
         Assert.Contains("artifactWriteStall = $artifactStall", artifactBranch, StringComparison.Ordinal);
-        Assert.Contains("Set-Content -Path $errorPath", artifactBranch, StringComparison.Ordinal);
+        Assert.Contains("Write-GmCanonicalText -SessionPath $GameSessionPath -Path $errorPath", artifactBranch, StringComparison.Ordinal);
     }
 
     [Fact]

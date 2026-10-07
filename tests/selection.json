@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-relay-repair",
-      "reason": "Causal source-review repair prefix/control path/current helper interface; actual consumer and stale repair, no rerun of unchanged21 transport",
+      "category": "gm-daemon-artifact-stall",
+      "reason": "Fresh relay causal stale prompt tail triggered early daemon artifact stop; only actual affected intent/progress/stop source boundary",
       "contracts": [
         "T043-RELAY-GM-BOUNDED"
       ]

@@ -1,0 +1,75 @@
+{
+  "Outcome": "Causal RED",
+  "Executed": 7,
+  "Passed": 5,
+  "Failed": 2,
+  "Failures": [
+    "echo-only",
+    "intent-cleared"
+  ],
+  "Cleanup": "complete",
+  "ModelCalls": 0,
+  "SourcePins": {
+    "BookOfEternityClient/game_master_daemon.ps1": "8b6c57e4768ba8cdbee60dd2378b7d01f5c339bb43973c85dcaa60128c0c661a",
+    "tests/fixtures/ProductionMain/daemon-artifact-stall.ps1": "fa325d452c9f4684cdae78c42e74b787af3972b39eb97264583c550a02a30bd2",
+    "BookOfEternityClient.Tests/GmDaemonArtifactStallTests.cs": "0784eac13b77892c123362347d89a719bb5386b50bb44987a88eda429e0b4513"
+  },
+  "Artifacts": [
+    {
+      "Path": "Build-integration.log",
+      "Bytes": 16422,
+      "SHA256": "80d707a2d1b09d72ba85ebe63f85c2b7fc90fb33a0d7daec1ffa9962f8b34e82",
+      "StoredPath": "Build-integration.log.gz",
+      "StoredBytes": 1513,
+      "StoredSHA256": "9a5b071c2a99548fcd2f8e4dcd2b2ee7362b773a8af45668e06ef8ac7585d848"
+    },
+    {
+      "Path": "Build-unit.log",
+      "Bytes": 19988,
+      "SHA256": "70941d122a87aa5c6ba7d1acfde94c516a38379afc43277d9d36b4957d144b42",
+      "StoredPath": "Build-unit.log.gz",
+      "StoredBytes": 1471,
+      "StoredSHA256": "31b875451df378c74f56e2632fcc98d322d522ea525f23886a4e4764f7700e0d"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 3169731,
+      "SHA256": "0c48619a194dc93f072d886f6ec888749a8d1cdac1a552341e4557f7fd46d630",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 353484,
+      "StoredSHA256": "27fffe0cccc307511664d156d9d44f2ba63a2fd8f8c73b154ca041c2ee87c5a4"
+    },
+    {
+      "Path": "gm-daemon-artifact-stall-integration-001.trx",
+      "Bytes": 3121,
+      "SHA256": "547bd6ef0790ed178515e3f0deeba512c5e1205b4a926e1a35b6f0559bd736ed",
+      "StoredPath": "gm-daemon-artifact-stall-integration-001.trx.gz",
+      "StoredBytes": 1230,
+      "StoredSHA256": "ba32c1795d8067c860fb2de214319ed42814d14d101ad4debbc5145aeaed63e9"
+    },
+    {
+      "Path": "gm-daemon-artifact-stall-unit-002.trx",
+      "Bytes": 13901,
+      "SHA256": "19854700279eab5fda556f1e36d16a4c8f67ac06054dc6bda0a43061887dad88",
+      "StoredPath": "gm-daemon-artifact-stall-unit-002.trx.gz",
+      "StoredBytes": 2380,
+      "StoredSHA256": "d81b345679576eafa8f51f80c748e85cfdbd8c851e9684f321b691a390514a58"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 1866,
+      "SHA256": "4ce6ba67867ce348829ccb7c8fc2306a60800bd69d59ca27b0720849bf4851a4",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 610,
+      "StoredSHA256": "66f6a67045b30ca83e42b2b05b392cc5314f96bde804c6bcaf2c522ae96f0b4a"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1554,
+      "SHA256": "872e5a1057ce5f67cefb3af35b2bab2ead7c212f58d9c2e3fd8c165ae5b8be00",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 633,
+      "StoredSHA256": "b12bffa9e39730efce179c8b2765cc5897c272e801bb001b754c6565b2f3fea2"
+    }
+  ]
+}
