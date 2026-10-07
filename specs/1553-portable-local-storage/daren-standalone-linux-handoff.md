@@ -1,6 +1,6 @@
 # Standalone Daren Linux — bounded PASS
 
-Issue [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), task T031-DAREN-STANDALONE-LINUX, branch `codex/1553-load-filesystem`. Accepted base `953c48f81f06ef78010bf668133e2b974934e142`. User-facing date: 2026-10-06 America/Los_Angeles. Root is the sole writer. Independent reviews used actual Sol6.1/xhigh; no Astra.
+Issue [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), task T031-DAREN-STANDALONE-LINUX, branch `codex/1553-load-filesystem`. Accepted base `953c48f81f06ef78010bf668133e2b974934e142`. User-facing date: 2026-10-06 America/Los_Angeles. Current execution assigns root as the sole writer and keeps reviewers read-only. Independent reviews used actual Sol6.1/xhigh; no Astra.
 
 The existing standalone DarenRewardProfileFileStore now writes, checks support and restores exact profile bytes on Linux through the existing trusted-local B1 publisher. Runtime commit: `ac01f7733761e74daa258de3528f835963735016`. Its fixed adapter admits only `client_profile/qte_showcase_rewards.json` under the original active lease, main/worker/generation/session conditions. The private publisher option defaults false. Browser/legacy dispatch precedence and Windows physical bodies remain unchanged.
 
@@ -31,7 +31,7 @@ Independent Sol design PASS at `6565a441` resolved the absent-null restore no-op
 
 Candidate `b97157ef6154bb9b85d69176ab0674f63b9d10ba` was restored only from GitHub HTTPS. Writer and independent reviewer compared all **20,686 tracked files** to the clone's GitHub blobs, checked clean HEAD/tree/parent, accepted ancestry, no alternates and full `fsck`. [Candidate proof](recovery/evidence/daren-standalone-github-restore.json).
 
-The final carrier changes only verdict/task/status/handoff metadata. Its ordinary push must be followed by exact remote SHA, independent changed-file byte readback and fresh restoration of the exact tip before writer stop. The final response and owned host proof carry that exact-tip result; no recursive self-SHA commit is needed.
+The metadata-only ancestor `5be3aa31805537b88872b7b2a0a77f0162f8745e` was preserved; its actor is not established. Independent narrow Sol review confirmed zero production/test/catalog delta and corrected the reviewed-base label, candidate metric unit and pending-closure wording. The final carrier changes only verdict/task/status/handoff metadata. Its ordinary push must be followed by exact remote SHA, independent changed-file byte readback and fresh restoration of the exact tip before writer stop. The final response and owned host proof carry that exact-tip result; no recursive self-SHA commit is needed.
 
 [Execution plan](daren-standalone-linux-plan.md) · [Qualification, source hashes and artifact references](recovery/daren-standalone-linux-qualification.json).
 

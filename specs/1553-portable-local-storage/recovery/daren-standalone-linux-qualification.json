@@ -1,6 +1,6 @@
 {
   "Task": "T031-DAREN-STANDALONE-LINUX",
-  "Status": "PASS: bounded standalone Daren Linux; final carrier exact-tip remote/readback/restoration performed by writer after publication",
+  "Status": "PASS: bounded standalone Daren Linux; final-carrier exact-tip remote/readback/restoration remain pending writer closure",
   "AcceptedBase": "953c48f81f06ef78010bf668133e2b974934e142",
   "DesignReview": {
     "Model": "gpt-6.1-sol",
@@ -609,8 +609,25 @@
   },
   "ProductOrAccessBlockers": [],
   "FinalCarrier": {
-    "ReviewedParent": "399564194f11e2ad336023fedceb971c2f5fa699",
     "Changes": "Verdict/task/status/handoff metadata only; no production/test/catalog delta",
-    "ExactTipClosure": "After ordinary non-force push, require remote HEAD equality, independent changed-file byte readback, fresh GitHub-only clone and all tracked bytes/tree/parent/ancestry/clean/fsck. Exact self-referential tip proof belongs to writer final response/owned host proof, not a recursive commit."
+    "ExactTipClosure": "After ordinary non-force push, require remote HEAD equality, independent changed-file byte readback, fresh GitHub-only clone and all tracked bytes/tree/parent/ancestry/clean/fsck. Exact self-referential tip proof belongs to writer final response/owned host proof, not a recursive commit.",
+    "ReviewedBase": "399564194f11e2ad336023fedceb971c2f5fa699"
+  },
+  "FinalMetadataReview": {
+    "Agent": "/root/daren_standalone_metadata_review",
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "ReviewedCommit": "cc84b7e99956a66b390f30d279788a015bd6cd1b",
+    "CorrectionsApplied": [
+      "ReviewedParent renamed ReviewedBase, preserving actual reviewed ancestor39956419",
+      "Candidate metric is20686trackedfiles byte-compared, not20686bytes",
+      "Status explicitly leaves exact-tip writer closure pending"
+    ],
+    "PreservedAdditionalMetadataAncestor": {
+      "Commit": "5be3aa31805537b88872b7b2a0a77f0162f8745e",
+      "Actor": "undetermined",
+      "ProductionTestCatalogChanges": 0
+    },
+    "CodeEvidenceVerdictUnaffected": "PASS at399564194f11e2ad336023fedceb971c2f5fa699"
   }
 }
