@@ -2,6 +2,58 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "desktop-image-consumers",
+      "responsibility": "Original ImageService viewer/gallery manual outcomes and display/creation/error boundaries through controlled association adapter",
+      "excludes": "Real desktop launch, shell install, browser, GM/storage and unrelated platform adapters",
+      "changeHints": [
+        "BookOfEternityClient/Services/DesktopPathOpener.cs",
+        "BookOfEternityClient/Services/ImageService.cs",
+        "BookOfEternityClient/Core/GameEngine",
+        "BookOfEternityClient/UI/ExplorerMode"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.DesktopImageConsumerTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "desktop-folder-consumers",
+      "responsibility": "Actual settings/Explorer mods-menu and main/related folder manual outcomes, acknowledgements and next-frame visibility",
+      "excludes": "Real desktop launch, shell install, browser, GM/storage and unrelated platform adapters",
+      "changeHints": [
+        "BookOfEternityClient/Services/DesktopPathOpener.cs",
+        "BookOfEternityClient/Services/ImageService.cs",
+        "BookOfEternityClient/Core/GameEngine",
+        "BookOfEternityClient/UI/ExplorerMode"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.DesktopFolderConsumerTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "console-audio-linux",
       "responsibility": "T050 public console audio Linux backend choice and owned lifecycle; synthetic-only guarded/controlled/dummy output",
       "excludes": "No user devices/physical playback/native Windows/live browser/GM/provider/system packages or unrelated cohorts.",

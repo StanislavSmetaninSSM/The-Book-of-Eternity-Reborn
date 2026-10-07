@@ -84,11 +84,7 @@ public partial class ExplorerMode
             {
                 try
                 {
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = _systemModService.GetModsDirectoryPath(),
-                        UseShellExecute = true
-                    });
+                    _desktopPathOpener.Open(_systemModService.GetModsDirectoryPath());
                 }
                 catch
                 {

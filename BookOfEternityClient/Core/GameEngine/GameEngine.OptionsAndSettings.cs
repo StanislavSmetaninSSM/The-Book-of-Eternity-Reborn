@@ -805,11 +805,7 @@ public partial class GameEngine
             {
                 try
                 {
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = modsDir,
-                        UseShellExecute = true
-                    });
+                    _desktopPathOpener.Open(modsDir);
                 }
                 catch
                 {

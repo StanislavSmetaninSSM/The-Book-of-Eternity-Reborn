@@ -2,31 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "auxiliary-launcher-portable",
-      "reason": "Actual relocated runtime-only route, explicit pending replacement, bounded guardian/resource/runtime/main-worker-storage refusal and header status/doc consumers",
+      "category": "desktop-image-consumers",
+      "reason": "Original ImageService viewer/gallery manual outcomes and display/creation/error boundaries through controlled association adapter",
       "contracts": [
-        "T050-AUXILIARY-LAUNCHER-PORTABLE"
+        "T050-DESKTOP-HELPERS-PORTABLE"
       ]
     },
     {
-      "category": "auxiliary-launcher-root-binding",
-      "reason": "Demonstrated existing-directory payload redirection and exact prepare-only explicit-root delta",
+      "category": "desktop-folder-consumers",
+      "reason": "Actual settings/Explorer mods-menu and main/related folder manual outcomes, acknowledgements and next-frame visibility",
       "contracts": [
-        "T050-AUXILIARY-LAUNCHER-PORTABLE"
-      ]
-    },
-    {
-      "category": "auxiliary-launcher-contract-regressions",
-      "reason": "One exact affected preexisting launcher/options documentation guard; service/M1/fence source unchanged",
-      "contracts": [
-        "T050-AUXILIARY-LAUNCHER-PORTABLE"
-      ]
-    },
-    {
-      "category": "auxiliary-launcher-storage-refusal",
-      "reason": "New causal invalid-publication-journal exception envelope; exact record retention/no writes/no retry through actual route",
-      "contracts": [
-        "T050-AUXILIARY-LAUNCHER-PORTABLE"
+        "T050-DESKTOP-HELPERS-PORTABLE"
       ]
     }
   ]

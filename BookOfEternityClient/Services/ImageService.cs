@@ -63,6 +63,7 @@ public class ImageService
     private const string VersionSeparator = "__img_";
 
     private readonly ILogger<ImageService> _logger;
+    private readonly DesktopPathOpener _desktopPathOpener;
     private readonly Configuration.GameSettings _settings;
     private readonly LocalizationManager _loc;
     private static readonly HttpClient _httpClient = new() { Timeout = TimeSpan.FromSeconds(120) };
@@ -91,12 +92,13 @@ public class ImageService
 
     public bool GenerateWithoutDisplay => _settings.GenerateImagesWithoutDisplay;
 
-    public ImageService(Core.FileSystemManager fs, Configuration.GameSettings settings, LocalizationManager loc, ILogger<ImageService> logger)
+    public ImageService(Core.FileSystemManager fs, Configuration.GameSettings settings, LocalizationManager loc, ILogger<ImageService> logger, DesktopPathOpener? desktopPathOpener = null)
     {
         _fs = fs;
         _settings = settings;
         _loc = loc;
         _logger = logger;
+        _desktopPathOpener = desktopPathOpener ?? new();
         _imageBaseDir = _fs.ResolvePath("images");
         Directory.CreateDirectory(_imageBaseDir);
     }
@@ -648,12 +650,7 @@ public class ImageService
 
         try
         {
-            var psi = new ProcessStartInfo
-            {
-                FileName = imagePath,
-                UseShellExecute = true
-            };
-            Process.Start(psi);
+            _desktopPathOpener.Open(imagePath);
         }
         catch (Exception ex)
         {
@@ -673,7 +670,7 @@ public class ImageService
         Directory.CreateDirectory(dir);
         try
         {
-            Process.Start(new ProcessStartInfo { FileName = dir, UseShellExecute = true });
+            _desktopPathOpener.Open(dir);
         }
         catch (Exception ex)
         {

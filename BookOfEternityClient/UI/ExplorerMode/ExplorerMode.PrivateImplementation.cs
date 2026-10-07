@@ -664,11 +664,7 @@ public partial class ExplorerMode
 
         try
         {
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = directoryPath,
-                UseShellExecute = true
-            });
+            _desktopPathOpener.Open(directoryPath);
         }
         catch
         {

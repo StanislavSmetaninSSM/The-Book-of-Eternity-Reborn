@@ -2171,17 +2171,13 @@ public partial class GameEngine
         });
     }
 
-    private static void OpenFolderOrPrintPath(string directoryPath, IConsoleInputSource inputSource)
+    private void OpenFolderOrPrintPath(string directoryPath, IConsoleInputSource inputSource)
     {
         Directory.CreateDirectory(directoryPath);
 
         try
         {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = directoryPath,
-                UseShellExecute = true
-            });
+            _desktopPathOpener.Open(directoryPath);
         }
         catch
         {
