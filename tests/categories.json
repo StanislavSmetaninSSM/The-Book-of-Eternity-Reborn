@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "browser-direct-gacha-linux",
-      "responsibility": "#1553 T031 actual Linux BrowserAfterlifeWriteService direct Chaos Sea gacha, long-lived exact pre-spend backup, original queue/pending authority and turn lifetime",
+      "responsibility": "#1553 T031 actual Linux browser direct gacha + long-lived exact pre-spend backup, original queue/authority/turn lifetime and exact adoption refusal.",
       "excludes": "No stub browser/Stage, gameplay odds/rewards/currency/GM text changes, live browser/provider/real saves, standalone Daren, Windows or whole-game qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts",
@@ -22,7 +22,8 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.*",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_*"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_*",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_*"
           ]
         }
       ]
@@ -47,7 +48,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_*"
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.*"
           ]
         }
       ]
