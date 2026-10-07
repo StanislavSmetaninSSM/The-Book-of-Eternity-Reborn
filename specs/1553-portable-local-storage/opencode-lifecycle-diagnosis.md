@@ -144,3 +144,9 @@ The next experiment must preserve actual standalone application directory and
 original helper/PTY/guardian scopes; public syscall evidence can reduce invasive
 diagnostic changes, but complete exception capture remains a required boundary.
 Checkpoint is diagnostic-only; bounded live gameplay remains open, not accepted.
+
+Independent Sol metadata/current-tip restoration PASS at6bbb376e: all22355
+trackedfiles/363042586bytes, exacttree/remote/clean/fullfsck0, noalternates, explicit
+depth1currenttreeonly. [Archived candidate proof](recovery/bootstrap-diagnosis-restoration.json).
+Final metadata carrier gets separate exact remote/readback and fresh GitHub-only
+restoration before writer handoff; no runtime/fixtures/tests changed by this closure.
