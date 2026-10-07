@@ -623,3 +623,23 @@ redirectedstdout skips CPR. No terminal answers fabricated. Investigate an hones
 normalconsole client stdinPTY + capturedstdout route before changed freshprobe;
 keep actual originalbridge/CLI and daemonTTYs/terminalparser unchanged. No
 runtime fix without causal production defect; source/driver review pending.
+
+Independent Sol DESIGN PASS for honest client captured output: original
+controlling-PTY stdin remains; stdout/stderr use a pipe. .NET8.0.31 skips CPR
+when output is redirected; ReadKey still has terminal input. Existing
+StandardTextComposerConsole delegates ReadLine to SystemConsoleInputSource,
+without a CanRedraw property. Bridge/daemon remain original100x25 PTYs and
+strict parser/owner/fence unchanged. UI markers consume actual program output
+only, never PTY echo; evidence records both channels, drains both actual EOFs,
+closes their descriptors and checks original stdin termios. No runtime changes,
+DSR answers, TERM override or fabricated Ready. This route can qualify game
+processing/ordinary console input; full foreground-client VT stays unqualified.
+Use fresh /workspace/og2, move byte-verified own completed og1 package without
+copying game/config/state. Driver delta requires independent source closure
+before the next guardian-bounded ordinary NewGame attempt.
+Independent Sol driver SOURCE PASS against56824844 (diff blob8d6c44cd):
+both real channels/EOF/disposal/termios closed, no actionable defect. Syntax and
+diff validation only; no repeated runtime tests. Completed og1 guardian proves
+ECHILD/emergency0; all678 package file byte hashes verified before moving
+_runtime to fresh og2, no game/config/state copied. Next probe source is this
+checkpoint, runtime2e9f66e0 unchanged and actual initial CLI/provider/turns0.

@@ -35,13 +35,19 @@ result={'AcceptedGameTurns':0,'GenuineActionsSent':0,'GateAnswers':0,'QueryAnswe
         'ConfiguredCommand':command,'ConfiguredCwd':str(session),'NoReadyOverride':True,'OrdinaryNewGame':False,'LogicalLifecycleVerified':False}
 action='Я осторожно осматриваю берег Моря Хаоса и спрашиваю моего Хранителя, где я оказался.'
 class Terminal:
-    def __init__(self,name,args):
-        self.name=name;self.master,self.slave=pty.openpty();self.capture=bytearray();self.eof=False
+    def __init__(self,name,args,captured_output=False):
+        self.name=name;self.master,self.slave=pty.openpty();self.capture=bytearray();self.echo=bytearray();self.eof=False;self.captured_output=captured_output
         fcntl.ioctl(self.slave,termios.TIOCSWINSZ,struct.pack('HHHH',25,100,0,0));self.initial=termios.tcgetattr(self.slave)
         def own():
             os.setsid();fcntl.ioctl(self.slave,termios.TIOCSCTTY,0);os.tcsetpgrp(self.slave,os.getpid())
-        self.process=subprocess.Popen(args,cwd=ship,env=env,stdin=self.slave,stdout=self.slave,stderr=self.slave,preexec_fn=own)
-        peers.append(self);journal.append({'At':elapsed(),'Entrypoint':name,'Argv':args,'OriginalPid':self.process.pid})
+        self.process=subprocess.Popen(args,cwd=ship,env=env,stdin=self.slave,
+            stdout=subprocess.PIPE if captured_output else self.slave,
+            stderr=subprocess.STDOUT if captured_output else self.slave,preexec_fn=own)
+        self.streams={self.master:'echo' if captured_output else 'output'}
+        if captured_output:self.streams[self.process.stdout.fileno()]='output'
+        self.closed_streams=set()
+        peers.append(self);journal.append({'At':elapsed(),'Entrypoint':name,'Argv':args,'OriginalPid':self.process.pid,
+            'OutputMode':'captured-pipe' if captured_output else 'original-pty','StdinMode':'original-controlling-pty'})
     def send(self,data,phase):
         assert elapsed()<(270 if cleaning else 210) and self.process.poll() is None
         journal.append({'At':elapsed(),'Terminal':self.name,'Phase':phase,'Input':data.decode('utf-8')})
@@ -50,17 +56,20 @@ class Terminal:
         return re.sub(r'\x1b\[[0-9;? ]*[A-Za-z~]','',self.capture[offset:].decode('utf-8',errors='replace'))
 def elapsed():return round(time.monotonic()-start,3)
 def pump(delay=.02):
-    fds=[p.master for p in peers if not p.eof]
+    fds=[fd for p in peers for fd in p.streams if fd not in p.closed_streams]
     readable=select.select(fds,[],[],delay)[0] if fds else []
     for p in peers:
-        if p.master not in readable:continue
-        try:b=os.read(p.master,65536)
-        except OSError as ex:
-            if ex.errno!=errno.EIO:raise
-            b=b''
-        if not b:p.eof=True
-        p.capture.extend(b)
-        if len(p.capture)>4194304:raise RuntimeError('Bounded foreground capture exceeded4MiB')
+        for fd,kind in p.streams.items():
+            if fd not in readable:continue
+            try:b=os.read(fd,65536)
+            except OSError as ex:
+                if fd!=p.master or ex.errno!=errno.EIO:raise
+                b=b''
+            if not b:p.closed_streams.add(fd)
+            target=p.echo if kind=='echo' else p.capture
+            target.extend(b)
+            if len(target)>4194304:raise RuntimeError('Bounded foreground capture exceeded4MiB')
+        p.eof=len(p.closed_streams)==len(p.streams)
     if elapsed()>270:raise TimeoutError('Driver total bound')
 def until(test,seconds,label):
     deadline=min(start+(270 if cleaning else 210),time.monotonic()+seconds)
@@ -107,7 +116,7 @@ def exit_client(client):
     assert client.process.returncode==0
 client=bridge=daemon=None;client_wait=False;client_prompt=False
 try:
-    client=Terminal('client',['dotnet',str(ship/'BookOfEternityClient/BookOfEternityClient.dll'),str(base),'--plain-output'])
+    client=Terminal('client',['dotnet',str(ship/'BookOfEternityClient/BookOfEternityClient.dll'),str(base),'--plain-output'],captured_output=True)
     fresh(client,'Тренировка QTE',0);offset=len(client.capture);client.send(b'\r','observed NewGame selected')
     offset=answer(client,'Введите имя вашей души:','Пробная Душа',offset)
     offset=answer(client,'Опишите форму вашей души:','Человеческий силуэт мягкого синего света.',offset)
@@ -219,8 +228,13 @@ finally:
     for p in peers:
         try:restored=termios.tcgetattr(p.master)==p.initial
         except OSError:restored=False
-        result['Terminals'][p.name]={'ExitCode':p.process.poll(),'EOF':p.eof,'TermiosRestored':restored,'CapturedBytes':len(p.capture)}
+        result['Terminals'][p.name]={'ExitCode':p.process.poll(),'EOF':p.eof,'StreamEOF':{kind:fd in p.closed_streams for fd,kind in p.streams.items()},
+            'TermiosRestored':restored,'CapturedBytes':len(p.capture),'EchoBytes':len(p.echo),
+            'OutputMode':'captured-pipe' if p.captured_output else 'original-pty'}
         (out/(p.name+'.raw')).write_bytes(p.capture)
+        if p.captured_output:
+            (out/(p.name+'-echo.raw')).write_bytes(p.echo)
+            p.process.stdout.close()
         for fd in [p.master,p.slave]:
             if fd>=0:os.close(fd)
     result['ElapsedSeconds']=elapsed();result['Success']=result['AcceptedGameTurns']==1 and result.get('InputQualified',False) and result['LogicalLifecycleVerified'] and not any(k.endswith('Failure') for k in result) and all(v['EOF'] and v['TermiosRestored'] for v in result['Terminals'].values())
