@@ -16730,6 +16730,29 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-relay-driver-acceptance",
+      "responsibility": "Actual driver reading real UTF8 BOM/non-BOM story; fresh UI+pending+original delivery qualification and normal client exit",
+      "excludes": "Production game encoding, live generation, old transport and unrelated driver failures",
+      "changeHints": [
+        "tests/fixtures/ProductionMain/live-game-one-turn.py"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayAcceptanceTests.ActualDriver_RealStoryAcceptanceAndNormalExit"
+          ]
+        }
+      ]
     }
   ]
 }

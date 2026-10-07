@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-daemon-artifact-stall",
-      "reason": "Fresh relay causal stale prompt tail triggered early daemon artifact stop; only actual affected intent/progress/stop source boundary",
+      "category": "gm-relay-driver-acceptance",
+      "reason": "Actual live-r2 JSONL BOM caused driver false-negative and stale cleanup flag; exact driver AST+real trace prove corrected qualification, no oldcohorts",
       "contracts": [
         "T043-RELAY-GM-BOUNDED"
       ]

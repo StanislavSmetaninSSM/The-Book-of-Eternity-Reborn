@@ -1,0 +1,55 @@
+{
+  "Outcome": "Causal RED real BOM bytes",
+  "Executed": 6,
+  "Passed": 1,
+  "Failed": 5,
+  "Cleanup": "complete",
+  "ModelCalls": 0,
+  "SourcePins": {
+    "tests/fixtures/ProductionMain/live-game-one-turn.py": "667f4e737409de1e35ebf03c84368fbed3fb79f51d942dd5caf0e6e61b78d1fd",
+    "tests/fixtures/ProductionMain/relay-acceptance-checks.py": "1541d652c2a7f0284a9a2647e9870e8d4dcdaac6fa1808d736557960e7c575e6",
+    "BookOfEternityClient.Tests/GmRelayAcceptanceTests.cs": "15d1c2fd949bf0279fc746f224bd2c32b3fcfd448ce7fd76e149c01e5c512b41"
+  },
+  "Artifacts": [
+    {
+      "Path": "Build-unit.log",
+      "Bytes": 27708,
+      "SHA256": "7dbae649b3cafbfbeea37a115ee9a4dec8138f738eda48c7e2043ab3fbca42ef",
+      "StoredPath": "Build-unit.log.gz",
+      "StoredBytes": 2119,
+      "StoredSHA256": "c51bb92f0fde1bc01abcc9567e377d03095fc4171939980fd4e3574abc293302"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 1645639,
+      "SHA256": "e09340d8f1f70143d4434b3755f386a7724095ae4d02460fbce2b3e72a2c6663",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 181521,
+      "StoredSHA256": "be6c1bc3834ec59118b1b4097270c4f203d56d3f9487255d431406c36d6d174b"
+    },
+    {
+      "Path": "gm-relay-driver-acceptance-unit-001.trx",
+      "Bytes": 25175,
+      "SHA256": "af9224f97505c5a6a62babf5732ea333f2efa671adde75b4dd2098e43dfed131",
+      "StoredPath": "gm-relay-driver-acceptance-unit-001.trx.gz",
+      "StoredBytes": 2897,
+      "StoredSHA256": "fe9cae5510fd85328435dae8f61ffcd86765dde8f11fa3f13ffd8a43c05708e6"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 1062,
+      "SHA256": "a7b6e431a97e451149d4d4c2cb0b21a288666eb62896148f800fa753da736335",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 499,
+      "StoredSHA256": "1ce6bcc746a20ff54f46f48b45c8434747ab77f543d56da5af2e1142ff0eab64"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1455,
+      "SHA256": "59266194feada58908092c88773602ec59b422112832544101b3d70bf70fdcb5",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 612,
+      "StoredSHA256": "08650884ba096106f885369b333ee93ba76ff52f58a86ad54c20f1e6b94890fa"
+    }
+  ]
+}
