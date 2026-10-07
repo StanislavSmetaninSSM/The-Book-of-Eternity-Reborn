@@ -32,7 +32,7 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         {
             byte[]? Read(string path) => PendingTurnSnapshotAuthority.IsSafeRelativePath(path)
                 ? fs.ReadOriginalFileBytesAsync(lease, path).GetAwaiter().GetResult() : null;
-            var bytes = Read(PendingTurnSnapshotManifestPath)
+            var bytes = Read(LiveTurnPreparationService.PendingTurnSnapshotManifestPath)
                 ?? throw new InvalidDataException("Pending manifest is absent.");
             var manifest = ParseLocal<LiveTurnPendingSnapshotManifest>(bytes);
             var authority = Read(PendingTurnSnapshotAuthority.AuthorityPath);
