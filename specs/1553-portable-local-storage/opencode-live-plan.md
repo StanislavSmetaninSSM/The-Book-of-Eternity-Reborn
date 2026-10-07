@@ -688,3 +688,13 @@ new original-identity ClosedObserved receipt for each real consumer. Then same
 Stopping allfive exact no-effect refusals. No runtime change; rerun justified
 only by this new evidence boundary. Publish the ignored owned durable Stopped
 artifact (.boe_runtime) explicitly without changing original fc1 source/bytes.
+
+afd2f04f actual1FAIL is preparation-only, not causal runtime RED: ordinary
+InitializeChaosSea does create pending snapshot and initial input request,
+contradicting fixture absence assertion. No guardian/CLI/provider started.
+Replace only preparation with prior controlled current-schema soul/chat fields;
+keep required real HasCurrentSession=true and exact per-consumer original
+ClosedObserved replies. Those inputs qualify consumer admission, not complete
+live history. Actual ordinary NewGame evidence remains separately fc1. No
+speculative pending-authority deletion/cancel or runtime change. Recheck same
+strengthened narrow case after this fixture correction.
