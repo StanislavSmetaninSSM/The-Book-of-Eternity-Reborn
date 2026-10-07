@@ -1,3 +1,7 @@
+# Authorized standalone causal trace continuation
+
+Owner authorizes continuation from2d43e2f2: one inert actual standalone Bridge trace, then only established-cause RED/fix/review/GREEN before fresh ordinary NewGame/live OpenCode. Read-only Astra feasibility PASS: exception-only opt-in logging after failure; no NativeLineageOwner/helper behavior change. strace changes scheduling and its exit is not original Bridge stop evidence. Exact package/AppContext/mini/editor/current NewGame+cancel, original identity/guardian; neutral executable only for this pre-exec question, no Ready/daemon/provider/input. Historical Uncertain retained. Source#1553/T043.
+
 # Active live lifecycle diagnosis pause
 
 Owner2026-10-07 requests systematic whole-chain review after og5 bootstrap-lost.

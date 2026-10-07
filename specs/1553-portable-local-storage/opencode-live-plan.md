@@ -1044,3 +1044,8 @@ gaps recorded; no socket/deadline/ownership patch or live retry supported.
 afterownerpause. Strace availability inventoryonly, no traceexecuted. Nextone
 inert exactstandalone boundary experiment requires actualsend/recv/dispose/error
 evidence; successfulprobe alone nevercausalRED. Provider/game0, systemddeferred.
+
+
+## Authorized next causal trace from2d43e2f2
+
+Read-only Astra/xhigh feasibility PASS; one inert standalone ordinary route under timestamped sendmsg/recvmsg/shutdown/close trace. Exception-only BOE_BOOTSTRAP_DIAGNOSTIC=1 output after retained failure, bounded32768chars/truncation marker, sink failures cannot change outcome. Native/helper code unchanged; fixed neutral CLI replaces executable for pre-exec question. Real packaged Bridge/AppContext, mini external-editor/TMP/XDG and current ordinary NewGame/initialcancel retained. No Ready/daemon/paste/provider. Trace wrapper PID is strace, separate actual HelperPid/root/pidfd; guardian joins entire owned tree. Positive trace cannot exclude timing race; complete reproduced sequence is needed before RED/fix. SDK10.0.401/runtime8.0.31/PowerShell7.5.4/cc Debian14.2.0-19 verified. Independent source-delta review follows causal result; no game contract/prompt changes.

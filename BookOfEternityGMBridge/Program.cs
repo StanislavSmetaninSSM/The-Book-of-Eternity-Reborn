@@ -207,8 +207,8 @@ internal sealed partial class BridgeHost : IDisposable
         PrintBanner();
 
         try { await StartShellAsync(); }
-        catch(OwnedTerminalStartException) { /* Original owner retained; keep diagnostics/control alive. */ }
-        catch(Exception) when(_mainRun?.RetainsAuthority==true) { MarkTerminalUncertain(); /* Exact no-child debt also retains diagnostics, never release replay. */ }
+        catch(OwnedTerminalStartException ex) { ReportDiagnosticStartupException(ex); /* Original owner retained; keep diagnostics/control alive. */ }
+        catch(Exception ex) when(_mainRun?.RetainsAuthority==true) { ReportDiagnosticStartupException(ex); MarkTerminalUncertain(); /* Exact no-child debt also retains diagnostics, never release replay. */ }
         var serverTask = RunServerLoopAsync(_cts.Token);
         var controlKeys=!Console.IsInputRedirected;
         var previousControlKeys=controlKeys && Console.TreatControlCAsInput;
@@ -244,6 +244,19 @@ internal sealed partial class BridgeHost : IDisposable
         }
 
         return 0;
+    }
+
+    private static void ReportDiagnosticStartupException(Exception error)
+    {
+        // Opt-in isolated bootstrap diagnosis only. Emitted after failure, without
+        // inserting I/O between the original A1 send and socket disposal.
+        if (Environment.GetEnvironmentVariable("BOE_BOOTSTRAP_DIAGNOSTIC") != "1") return;
+        try
+        {
+            var text = error.ToString();
+            Console.Error.WriteLine("BOE_BOOTSTRAP_EXCEPTION " + DateTimeOffset.UtcNow.ToString("O") + " truncated=" + (text.Length > 32768) + "\n" + text[..Math.Min(text.Length, 32768)]);
+        }
+        catch { /* Diagnostic sink failure cannot replace the original retained outcome. */ }
     }
 
     private void PrintBanner()
