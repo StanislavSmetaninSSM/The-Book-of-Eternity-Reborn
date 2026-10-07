@@ -1,3 +1,16 @@
+## Current scope: maintained reusable CLI relay
+
+Owner-authorized T043-RELAY-REUSABLE-DESIGN from accepted S1 `41ecc2c5`:
+extract the accepted persistent transport/helper into shared developer code,
+preserve its qualified profile/evidence and expose one bounded local worker
+request/response/close contract. Implementation follows independent Sol design
+review; no provider/auth/network integration or universal API claim.
+[Minimal design/plan](relay-reusable-design.md). Original terminal/fence/T042 and
+ordinary packet consumer remain authoritative. No gameplay/GM-authored schema
+change; no GM prompt/example update needed. Native Windows verification is
+scheduled after overall completion/merge in «Лориан-Codex bridge», coordinated
+by parent; it is not a pre-merge gate. Systemd S2/S3 remain unavailable/off.
+
 ## Current scope: bounded primary systemd main S1
 
 T041-SYSTEMD-MAIN-S1 implements the original held PTY/pidfd transient-scope

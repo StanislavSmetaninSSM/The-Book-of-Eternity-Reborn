@@ -1,3 +1,17 @@
+# T043 reusable relay — source/design checkpoint
+
+Accepted S1 `41ecc2c54b538f400bdc180984c29416bec1508f`, remote verified clean.
+[Bounded design/implementation plan](relay-reusable-design.md) maps existing
+terminal/queue/helper and production Bridge. No runtime/tests changed yet;
+independent Sol6.1/xhigh design review precedes implementation. One shared
+transport +fixed consumer, tiny local worker contract; no provider framework.
+Spec Kit prerequisite script resolves current1553; source-backed consistency
+finds no new product choice or constitution conflict. Narrow two new categories
+plus directly changed transport/repair planned; live GM not repeated.
+Owner amendment: native Windows is post-merge desktop verification in existing
+«Лориан-Codex bridge», not a pre-merge condition; parent coordinates readiness,
+default branch and merge. Systemd S2/S3 unavailable/backendoff; no HOME-PC access.
+
 # S1 final bounded verdict carrier
 
 Independent actual gpt-6.1-sol/xhigh source/selection, evidence/discovery and
