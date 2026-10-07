@@ -950,3 +950,17 @@ startup and BEFORE nextheartbeatacquisition; add Open/Dispose observation points
 actualhelperPID/readTask numericstatus. Keep exactcaps/argv/helperfunctions. No
 runtimepatch basedon missingtrace or ConvertJSON hypothesis; originalUncertain
 retained. Nextdiagnostic differs onlyownedinstrumentation and targets exactgap.
+
+190baae0 acquisition diagnostic1FAIL: trace10412bytes (not exhausted), actual
+heartbeathelper787824 reaches Open/Readready with originalClose absent and no
+observed readresult/callerreceipt; laterfinallyhelper787844 separately acquires
+and closes pin4ad64... . Owner observedActive lostpinbb4a52... remainsUnresolved,
+durableUncertain and guardianECHILD/emergency0. No actualclose/ConvertJSON defect
+proved; do not infer closeError from missing phases. Exact23artifacts retained.
+ServerActive precedes callerreceipt; current forcedCtrlCbeforeoriginalshutdown
+is a driver safety gap, not permission to declare lostadmission complete.
+Independent source/feasibility review requested coordinated originalmain stop
+first (durableStopping/drain/ACK), then separatedaemon terminalEOF; controlled
+neutral proof before one freshgame attempt. No new deferredCtrlC productUX or
+unknownreceipt relaxation implemented. Invalid unconditional positive historical
+daemon test is unqualified; possible retirement must preserve exactID/evidence.
