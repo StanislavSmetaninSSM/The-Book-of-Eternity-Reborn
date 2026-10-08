@@ -2,6 +2,59 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "test-ci-platform-affected",
+      "responsibility": "Existing catalog validation, explicit selection and inventory contracts affected by optional CI runner metadata",
+      "excludes": "Native Linux/Windows runtime qualification, hosted Actions execution, process/gameplay and unrelated runner reports",
+      "changeHints": [
+        ".github/workflows/dotnet-ci.yml",
+        "scripts/testing/TestCategoryCatalog.psm1",
+        "scripts/plan-test-ci.ps1",
+        "tests/categories.json"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "powershell",
+          "tests": [
+            "scripts/tests/test-category-catalog.tests.ps1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "test-ci-platform-contracts",
+      "responsibility": "Exact platform-aware CI selection routing, conservation, negative metadata and stable workflow result contracts",
+      "excludes": "Native Linux/Windows runtime qualification, hosted Actions execution, process/gameplay and unrelated runner reports",
+      "changeHints": [
+        ".github/workflows/dotnet-ci.yml",
+        "scripts/testing/TestCategoryCatalog.psm1",
+        "scripts/plan-test-ci.ps1",
+        "tests/categories.json"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "powershell",
+          "tests": [
+            "scripts/tests/test-ci-platform.tests.ps1"
+          ]
+        }
+      ]
+    },
+    {
       "related": [],
       "requirements": {
         "frontendBuild": false,
@@ -664,7 +717,7 @@
     },
     {
       "id": "daren-standalone-browser-dispatch",
-      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent \u00d7 commit/rollback), no broader browser cohort.",
+      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
       "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",

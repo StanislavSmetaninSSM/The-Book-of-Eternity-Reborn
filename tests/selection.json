@@ -2,27 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-main-systemd-cgroup-source",
-      "reason": "Missing concrete original source and bounded readonly descriptor/parser failure semantics; controlled data only",
+      "category": "test-ci-platform-contracts",
+      "reason": "Causal source/metadata RED of fixed Windows workflow before implementing explicit platform routing",
       "contracts": [
-        "T041-SYSTEMD-S2A",
-        "#1553"
-      ]
-    },
-    {
-      "category": "gm-main-systemd-cgroup-connected",
-      "reason": "Concrete source connected with original neutral terminal success and post-reap faults; fake kernel never qualification",
-      "contracts": [
-        "T041-SYSTEMD-S2A",
-        "#1553"
-      ]
-    },
-    {
-      "category": "gm-main-systemd-cgroup-affected",
-      "reason": "Only existing source observation and closed public admission regression methods",
-      "contracts": [
-        "T041-SYSTEMD-S2A",
-        "#1553"
+        "#1553",
+        "T052-CI-PLATFORM-SELECTION"
       ]
     }
   ]
