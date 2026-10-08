@@ -1,6 +1,6 @@
 {
   "SourceCommit": "406423aea14dfa4231853913f9ab298756270432",
-  "RuntimeChangedFromMergedMain": false,
+  "HttpProductChangedFromMergedMain": false,
   "Files": [
     {
       "Path": "http-empty-first.json",
@@ -9,13 +9,23 @@
     },
     {
       "Path": "http-ordinary-bootstrap.json",
-      "Bytes": 690,
-      "SHA256": "88a708225751e8e546f44ecc0d3d5eea15ae76bd3005e15fb3536b1d3c42988a"
+      "Bytes": 707,
+      "SHA256": "0b1f53df2dd184acb5bc9671fa9ba94343d0d48d23b8f8c634ab5a422377371d"
+    },
+    {
+      "Path": "http-ordinary-first.json",
+      "Bytes": 16390,
+      "SHA256": "9468570a272e4be5f920be4c46ef39173176f4bd49a5de3e2cbfec320aa6d2b0"
     },
     {
       "Path": "http-synthetic-first.json",
       "Bytes": 13473,
       "SHA256": "d731583cdf0a14f3561685b519a5856a392998f9d1ca4a383be5bbf83d76ee95"
+    },
+    {
+      "Path": "selection-http.json",
+      "Bytes": 779,
+      "SHA256": "a3646ed9a671d8083ed6e31659f3e7839fc6e6020a979f6b798dd4f0f15b9aa9"
     }
   ]
 }

@@ -54,4 +54,24 @@ checks have been changed. Independent narrow design review is in progress.
 
 Ordinary actual console NewGame created another owned root, initial request observed,
 Escape cancelled before any CLI/model, pending request absent, ordinary menu exit0
-(UI/exit observed in tool transcript). Its HTTP comparison is running. No user data.
+(UI/exit observed in tool transcript). Its HTTP comparison also reproduces the
+same lock IOException: first batch game-screen500, second session/game-screen/
+settings500; all serial reads200. Both StopAsync/DisposeAsync confirmed. No user data.
+
+Independent actual Astra XHigh source/design recommendation: host-local async
+admission for state API handlers, with real matched endpoint boundaries rather
+than brittle path comparisons. All existing filesystem/main/worker/generation
+guards and finite retries remain unchanged. Queue waits use RequestAborted;
+acquisition releases in finally. Completion/cancel of Load must bypass: actual
+load retains original admission while awaiting client application ACK. Static
+root/files, media/audio file GET and pure command metadata bypass. Media generation
+stays gated because its existing bound operation spans its network stage; this
+does not optimize that latency. Explorer/QTE interactions return between answers.
+
+Nine new real-host tests are prepared before runtime edits: causal hold past the
+unchanged physical retry budget, cancellation, handler-error release, Load bypass
+including route casing/trailing slash, static/metadata/audio file bypass and
+independently held physical guard refusal. Narrow affected settings and Load
+refresh categories accompany GREEN. No true live-GM continuation claim on Windows.
+The measured10–14s is whole-request duration; validation's individual share was
+not separately profiled. Shared StateManager corruption was not demonstrated.

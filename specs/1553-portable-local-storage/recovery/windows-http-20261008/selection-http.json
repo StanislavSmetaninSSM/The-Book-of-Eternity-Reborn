@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "browser-http-admission",
+      "reason": "Causal real HTTP parallel admission, cancellation/failure release and Load/static bypass; physical owner refusal preserved",
+      "contracts": [
+        "#1553",
+        "T054-WINDOWS-HTTP"
+      ]
+    },
+    {
+      "category": "portable-settings-endpoints",
+      "reason": "Actual GET/POST settings and audio handlers now share host admission",
+      "contracts": [
+        "#1553",
+        "T054-WINDOWS-HTTP"
+      ]
+    },
+    {
+      "category": "portable-load-browser-refresh",
+      "reason": "Real Save/Load and exact generation bundle routes cross the new host boundary",
+      "contracts": [
+        "#1553",
+        "T054-WINDOWS-HTTP"
+      ]
+    }
+  ]
+}

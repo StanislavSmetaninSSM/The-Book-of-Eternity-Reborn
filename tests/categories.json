@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "browser-http-admission",
+      "responsibility": "Real HTTP state request admission outside the physical guard retry window, cancellation/failure release, out-of-band Load completion/cancel and static/media delivery; independent physical guard refusal remains authoritative",
+      "excludes": "No provider/GM launch, user saves, fresh-GM continuation or unrelated gameplay; does not shorten validation or change filesystem authority",
+      "changeHints": ["BookOfEternityClient/WebUi/LocalWebUiHost.cs", "BookOfEternityClient/WebUi/BrowserRequestAdmission.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "windows-latest" },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.*"] }]
+    },
+    {
       "id": "gm-main-linux-guide",
       "responsibility": "Installed Linux configuration example consumed by actual inert launcher reader, preserving configured command/model/cwd/input profile and disabled original worker inventory; default/malformed refusal setup",
       "excludes": "Process or provider launch, live readiness, services, game state and native Windows qualification",

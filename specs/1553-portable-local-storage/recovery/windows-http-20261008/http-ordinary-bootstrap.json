@@ -11,5 +11,6 @@
   "UiEvidence": "executor tool transcript only",
   "CapturedUtc": "2026-10-08T05:11:26.0245885Z",
   "PendingRequestAbsentAfterCancellation": true,
-  "CancellationUi": "Переходный ход отменён; ordinary eight-item main menu observed"
+  "CancellationUi": "Переходный ход отменён; ordinary eight-item main menu observed",
+  "NormalConsoleExitCode": 0
 }
