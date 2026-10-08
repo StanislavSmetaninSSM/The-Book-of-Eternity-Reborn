@@ -1,3 +1,21 @@
+## A04 bounded GREEN and unified audit backlog — 2026-10-08
+
+Frozenfbec8cfcdfd9acda56bf2dc3cf7d5fb82bf244a8: fresh PlanOnly/build15/3,
+then15/15 Linux PASS in17.009s, complete/no skips/duplicates/timeouts, cleanup
+complete. Discovery-only catalog valid,0executed,8.827s. [Raw source/artifact
+pins](recovery/storage-migration-directory-green-20261008/manifest.json).
+Independent Astra XHigh source gate PASS; evidence review pending. These are
+actual publisher/public Prepare/closing and cleanup-helper-to-notice checks,
+not native Windows/full command-loop or stronger atomicity qualification.
+
+[Current unified audit crosswalk](storage-migration-inventory.md#current-crosswalk-to-the-independent-changeset-audit)
+reconciles all R01–R28 and A01–A04 with existing F/T owners, accepted evidence and
+concrete remaining consumer checks. Final audit468 source maps are linked, not
+copied/merged; counts are not defect totals. Frozen baseline classifications stay
+labelled historical. Next: original Windows Bridge lifecycle/boot-reader ownership,
+then A03 control protocol, F06 and remaining families including two treatment
+storage contours and final QTE cleanup. #1536 B2–B5 stays paused.
+
 ## A04 reached consumer RED and common-carrier correction — 2026-10-08
 
 Sourcebfd neighbors12=11PASS/1FAIL; source97ace original consumer2=0PASS/2FAIL,

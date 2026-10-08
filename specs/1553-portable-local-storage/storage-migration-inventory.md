@@ -13,7 +13,7 @@ Current A02 accepted-turn delta at28eacf4f: direct publication, actual before-im
 compensation and original accepted-handler carrier gaps were reproduced and corrected.
 Seven Linux cases PASS, including two known-failure rollback controls; independent
 review pending. [Evidence](recovery/storage-migration-accepted-green-20261008/manifest.json).
-Directory-specific uncertainty and treatment-owned settlement remain separate tails.
+Directory-specific uncertainty is corrected atfbec with15/15 Linux GREEN and independent source PASS; evidence review pending. Treatment-owned settlement remains a separate tail.
 Windows Bridge ownerless status/participating route (A01/F15) remains source-confirmed,
 not native-executed: reviewed direction binds the original prepared ConPty/Job to the
 existing coordinator/status/stop/Load lifecycle. Conservative provider-labelled WMI
@@ -66,7 +66,36 @@ The rules index common leased file/byte/snapshot/existence/enumeration/generatio
 
 At this baseline inventory milestone no current tests or native probes had run; subsequent bounded execution is recorded above. No live GM, HOME-PC or desktop execution has run. Linux observations cannot qualify native Windows; old Linux test guards that return early are not PASS for the guarded capability.
 
-## Reviewed family map
+## Current crosswalk to the independent changeset audit
+
+The [final audit468e2436](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/468e2436760b6a3a90510353257b93cd59032f04/specs/1553-portable-local-storage/changeset-audit-20261008/README.md)
+and its [R01–R28 registry](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/468e2436760b6a3a90510353257b93cd59032f04/specs/1553-portable-local-storage/changeset-audit-20261008/boundary-registry.md)
+are read-only supporting evidence, not merged source or runtime acceptance. Audit
+cutoff186c predates accepted A02 correction28eacf; do not reopen that frozen finding.
+Its573 changed source/support rows and historical artifact totals are inventory
+counts, not defect counts. Existing F/T owners below are the single executable backlog.
+
+| Audit family/finding | Existing owner | Current decision and next concrete boundary |
+|---|---|---|
+| R01/R04, A02 | F01/F08/F09, T062 | Bounded ordinary/browser19-case outcome slice83f; QTE/pre-turn final10 at9e30 plus7 separately pinned neighbors accepted. A02 direct/compensation/original accepted-handler7 at28eacf independently accepted. Their source/evidence links above supersede the audit's older candidate state. |
+| R04/R10, A04 | F01/F08, T062 | Actual unknown tree carrier, public Prepare, cleanup-to-notice and generation-close cuts reproduced. Common-carrier correctionfbec has15/15 Linux GREEN; independent source PASS, evidence review pending; no full command-loop or whole-parent-operation atomicity claim. |
+| R14/R16/R21, A01 | F15/F07, T063 | Next: Windows original suspended ConPty/Job → same coordinator Prepared/Running/release/status/participating/Stop/Load. Retained bounded foreground WMI reader supplies a labelled startup observation before Prepared, never reboot/adoption authority. Original owner/close and native Windows body-required recipe; Linux shared/component evidence separately labelled. |
+| R15, A03 | F13/F08, T062/T063 | After Bridge: actual existing C# control → original PowerShell response loses outcome to bool. Reach known refusal, unknown publication and committed cleanup/close before minimal explicit disposition propagation. Preserve current control-only role allowlist and no replay. |
+| R05 | F03/F04, T061/T063 | Console lifecycle accepted bounded Linux; corrected platform spellingd8b remains separate fromebd30 proof. Fresh Windows browser schema7 cutover still open, preserving original schema6 handler/refusal and signed direct-gacha admission. |
+| R06 | F05, T063 | Fresh Windows registered Daren profile/declared browser participant follows F04 admission/order/path cutover; old external evidence remains original-owned. Select actual public QTE/profile callers and exact bytes/absence/recovery. |
+| R07 | F06, T063 | After higher-priority outcomes: original inactive-snapshot retirement24 rows, exact diagnostic archive and sequential payload/authority/manifest-last deletion; current CAS/guarded enumeration, unknown cut retains archive. No diagnostic archive adoption or new all-or-none promise. |
+| R03/R13 | F02/F09/F10, T062/T064 | Backup/distribution migrated individually; accepted restoration evidence above. Final QTE baseline cleanup remains: original ResolveActiveAction terminal result → actual backup deletion unknown/logger cut, sibling-directory/root pruning controls. Pre-turn cleanup similarly retains established outcome/evidence. |
+| R04/R12 | F08/F09/F12, T062 | Two treatment contours remain: helper/engine compensation actual publication uncertainty (preserve FailTaken restart blocker/HeldBlocked/Unsafe contracts), and successful treatment followed by actual runtime mirror uncertainty then truthful notice. Post-seal binding itself reads authority; not a third forward-write defect. Use direct original coordinator, avoid finally-reacquire fixture masking; no B2–B5 business resumption. |
+| R08/R09/R11 | F07/F08/F17, T063/T064 | Source-reviewed save/settings/load outcome contracts preserved. Autosave3 production callers propagate typed decisions; no additional bool defect found, so no speculative aggregate run. Remove only proven dead recursive helpers after reflection/script/name census and relevant guard. Native durability/close qualification remains scoped. |
+| R12/R26 | F11/F12/F19, T062/T065 | Actual failed browser rollback/runtime/notice accepted83f. HTTP/DTO/stale response ownership stays separate; retain current source-reviewed admission/Running ACK contracts. UI/cache/player notifications are not storage observers. No blanket callback-to-endpoint acceptance. |
+| R20 | F13/F14, T063 | Later helper-specific existing transport entry must bind captured generation, exact role, bytes/baseline/read witnesses under one lease. Daemon original admitted QTE handler held MemberPublished cut must establish raw snapshot timing before guarded read/hash validation. Preserve watcher eligibility/poll fallback, source identity and no replay; reply64KiB vs command4MiB bounds explicit. |
+| R25 | F16, T063 | Actual image cleanup consumer/counts and console image publication catch still open. Stop on storage uncertainty/replacement, preserve confirmed per-file counts. Canonical image/mod/world-profile directory recreation needs bounded generation/type guard. Explicit external export and BasePath guardian library initialization stay distinct technical roots. |
+| R02/R13/R28 | F18, T064 | Reach-test ordinary vs physical/read/load callbacks, five named old ordinary FSM physical-hook tests, staged/spiritual/wound batching cuts and positive controls for zero-event assertions. MemberPublished is precommit; no async-void observer or nested canonical lease. Keep legacy/primitive/current-state-machine cuts with their real contract. |
+| R17/R18/R19 | F15, T063/T065 | Worker frame/peer/ApplyGate/synthetic bundle are independently typed ownership protocols. Audit found no new concrete stale consumer; preserve explicit platform capability refusal and original recovery handlers. Constructed paths/JSON/delegate edges remain checked at affected consumer boundaries, not converted wholesale to game journal. |
+| R22/R23/R24 | F15/F16/F19, T065 | Relay Unicode, single clipboard read and audio lifecycle callers source-reconciled; no additional concrete disconnect found. Preserve owner/debt/result/preview contracts and historical evidence limits. Do not run native desktop/provider work or claim Linux fixtures qualify Windows services. |
+| R27 | All, T064/T065 | Each bounded slice uses exact category PlanOnly/build → actual reached tests → discovery-only catalog → independent review → remote hashes/restore. No aggregate/CI changes and no acceptance from source strings, skip/early-return or counts alone. |
+
+## Baseline reviewed family map (d024)
 
 Classes: **M** migrated to current intended contract; **R** remaining migration or causal assessment; **I** intentional native adapter or explicitly scoped old-evidence handler; **T** allowed technical write outside a game transaction. Conditional classes below deliberately distinguish a new operation from handling an existing journal.
 

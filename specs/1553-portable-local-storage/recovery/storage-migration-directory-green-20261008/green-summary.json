@@ -1,0 +1,82 @@
+{
+  "Categories": [
+    "portable-directory-uncertain-consumer",
+    "portable-directory-outcome-neighbors",
+    "portable-directory-outcome-notice"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "fbec8cfcdfd9acda56bf2dc3cf7d5fb82bf244a8",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-directory-outcome-neighbors",
+      "Seconds": 3.04366,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-directory-outcome-notice",
+      "Seconds": 3.2163162,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-directory-uncertain-consumer",
+      "Seconds": 2.8117337,
+      "BudgetMinutes": 5,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0627591,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0333648,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0859121,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0034436,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:00:17.0089362",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 15,
+    "CompletedCases": 15,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 15,
+    "Executed": 15,
+    "Passed": 15,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -1,0 +1,77 @@
+{
+  "Categories": [
+    "portable-directory-uncertain-consumer",
+    "portable-directory-outcome-neighbors",
+    "portable-directory-outcome-notice"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "fbec8cfcdfd9acda56bf2dc3cf7d5fb82bf244a8",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0577171,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0401151,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1125505,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 39.9162179,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 10.7439902,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.004379,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:00:57.8695866",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 15,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-directory-outcome-neighbors-unit-001",
+      "portable-directory-outcome-notice-integration-002",
+      "portable-directory-uncertain-consumer-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
