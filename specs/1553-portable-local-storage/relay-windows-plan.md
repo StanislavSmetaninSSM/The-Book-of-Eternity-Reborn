@@ -55,3 +55,11 @@ skill-relative resource forms. Behavioral assertions and causal RED still apply.
 Report predecessor separately reviewed at
 `686964164641b3eb3a5a13ff8854b74aa1490189`, all 20 files recovered from GitHub,
 19 payload hashes checked. Native relay implementation/tests/review pending.
+
+Native RED at 68144f912b825bfa2d19f62ff53c57047e5c4b84: fresh unit build
+0 errors/41 warnings; category gm-relay-native-windows completed 7/7 cases,
+0 PASS/7 FAIL, no timeout, runner owned cleanup complete; all four ConPTY
+original Jobs reported empty/cleanup true/authority false. Help fails on termios;
+four terminal cases exit before readiness; gate has no native fcntl backend;
+pipe adapter is absent. Original logs/TRX retained locally pending safe evidence
+extraction. Candidate platform/gate code now implemented; GREEN not yet run.

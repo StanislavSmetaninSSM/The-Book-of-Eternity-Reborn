@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 from contextlib import contextmanager
 import hashlib
+import errno
 import json
 import os
 from pathlib import Path
@@ -38,9 +39,12 @@ class RelayGateUnavailable(RelayMismatch):
 
 @contextmanager
 def execution_gate(queue):
-    """Stable queue-local POSIX lock, no journal or owner identity; bounded acquisition."""
+    """Stable native queue-local lock, no journal or owner identity; bounded acquisition."""
     try:
-        import fcntl
+        if os.name == 'nt':
+            import msvcrt
+        else:
+            import fcntl
         stream = (Path(queue) / '.execution.lock').open('ab')
     except (ImportError, OSError) as ex:
         raise RelayGateUnavailable('Queue serialization unavailable') from ex
@@ -49,19 +53,28 @@ def execution_gate(queue):
         deadline = time.monotonic() + 1
         while not acquired:
             try:
-                fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                if os.name == 'nt':
+                    stream.seek(0)
+                    msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
+                else:
+                    fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
                 acquired = True
-            except BlockingIOError as ex:
+            except OSError as ex:
+                contended = ex.errno in (errno.EACCES, errno.EAGAIN) if os.name == 'nt' else isinstance(ex, BlockingIOError)
+                if not contended:
+                    raise RelayGateUnavailable('Queue serialization unavailable') from ex
                 if time.monotonic() >= deadline:
                     raise RelayGateUnavailable('Queue serialization timeout') from ex
                 time.sleep(.01)
-            except OSError as ex:
-                raise RelayGateUnavailable('Queue serialization unavailable') from ex
         yield
     finally:
         try:
             if acquired:
-                fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
+                if os.name == 'nt':
+                    stream.seek(0)
+                    msvcrt.locking(stream.fileno(), msvcrt.LK_UNLCK, 1)
+                else:
+                    fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
         except OSError as ex:
             raise RelayGateUnavailable('Queue serialization release unconfirmed') from ex
         finally:
