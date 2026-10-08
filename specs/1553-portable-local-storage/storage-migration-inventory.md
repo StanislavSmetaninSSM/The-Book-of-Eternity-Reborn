@@ -37,7 +37,9 @@ A03 original control/PowerShell causal packet9a35:7complete1PASS6causalFAIL,
 independent gate7f904. Actual recoverable uncertainty admitted second recovery/write
 and Completed close; original close failure projection lost its true receipt. Minimal
 WIP correction preserves per-command result, absorbing unknown, truthful remote/local
-completion and outer follow-up. Finite10 source/evidence gates pending; F13 wider
+completion and outer follow-up. Source/selection PASSe33c, actual10/10 Linux GREEN;
+final evidence gate pending. Local Stopped-main completion remains distinct from
+remote ACK, and the pre-receipt loss neighbor retains logical Unresolved. F13 wider
 helper path/read-witness/API migration remains open.
 [Actual evidence](recovery/storage-migration-participating-outcomes-20261008/manifest.json).
 

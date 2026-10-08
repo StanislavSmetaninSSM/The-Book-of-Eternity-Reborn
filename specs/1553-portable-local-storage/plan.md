@@ -1,3 +1,28 @@
+## A03 actual original-consumer GREEN checkpoint — 2026-10-08
+
+Runtimee33c17b98484a5878460088fa58a2227c25084d6 independent SOURCE/SELECTION
+PASS, no findings. Fresh Plan162134 built10/3/0; actual162605 complete10/10PASS,
+3/3 descriptors,47.1709362s, clean exact source/no skips/duplicates and both runner
+cleanup flags true. All10 original scenario/guardian/package source pins inspected.
+[Full raw/source-pinned packet](recovery/storage-migration-participating-outcomes-20261008/manifest.json).
+
+New seven: exact original owners finally Stopped/no retained authority, healthy
+guardians. Recoverable unknown now has zero second lease/recovery/publication,
+exact pending bytes/journal retained, no ordinary return, established42/outcome5,
+original Uncertain close observed without lost transport. Closing-failure receipt
+has actual ClosingFailed=true/observed ACK and preserved42. Known rollback allows
+later commit; committed debt keeps its committed decision. Actual Stopped-root PS
+subcase returns42 with localScopeCompleted=true, no remote ACK/receipt or changed
+main identity. These latter regression refinements are distinct from initial RED.
+
+Three existing neighbors pass. Pre-receipt stdin-loss intentionally keeps logical
+Unresolved authority and refuses Stopped (raw CleanupFailure); its original physical
+guardian is clean. Do not claim all10 logical owners Stopped. Oversized-unsent and
+post-receipt loss preserve original no-replay behavior. Discovery162739 valid473/
+11262,0executed9.9621335s. Final independent EVIDENCE/carrier gate pending.
+Native Windows and wider F13 migration remain open. Next authorized block after
+bounded gate is F06 inactive-snapshot evidence portability, not1536 gameplay.
+
 ## A03 bounded original outcome/close correction WIP — 2026-10-08
 
 Independent causal/design/carrier gate PASS7f904 (75 artifacts/48 historical pins).

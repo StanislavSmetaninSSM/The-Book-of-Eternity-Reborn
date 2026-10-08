@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "gm-main-participating-outcomes-linux",
+    "gm-main-helper-outcome-loss-neighbors",
+    "gm-main-helper-bounds-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e33c17b98484a5878460088fa58a2227c25084d6",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 85.5844322,
+  "Descriptors": [
+    {
+      "Name": "gm-main-helper-bounds-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-helper-bounds-linux",
+      "Categories": [
+        "gm-main-helper-bounds-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-helper-outcome-loss-neighbors-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-helper-outcome-loss-neighbors",
+      "Categories": [
+        "gm-main-helper-outcome-loss-neighbors"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_OriginalConnectionLossBoundary",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_OriginalConnectionLossBoundary",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-participating-outcomes-linux-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-participating-outcomes-linux",
+      "Categories": [
+        "gm-main-participating-outcomes-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmParticipatingControlOutcomeTests.OriginalControlRetainsPublicationAndClosingDecision",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmParticipatingControlOutcomeTests.OriginalControlRetainsPublicationAndClosingDecision",
+          "Cases": 7
+        }
+      ]
+    }
+  ]
+}
