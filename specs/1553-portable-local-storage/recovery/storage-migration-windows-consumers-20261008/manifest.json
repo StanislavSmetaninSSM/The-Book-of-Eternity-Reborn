@@ -247,5 +247,223 @@
         "sha256": "18f749ee8f48ed416de59cbdbc3f7ede80dc1ef45561b16b5c77ed40e31fd030"
       }
     ]
+  },
+  "correctedGreen": {
+    "qualification": "Bounded Linux cwd/shell resolution and exact moved diagnostics only. Native Windows3 compiled/discovered0executed; Windows original ConPTY/fault/quarantine qualification open.",
+    "planned": 7,
+    "executed": 7,
+    "passed": 7,
+    "failed": 0,
+    "nativeExecuted": 0,
+    "wallSeconds": 10.1177408,
+    "source": "c45d2d7e3c49ecc8851f7334490ca9f2a1d256bd",
+    "artifacts": [
+      {
+        "path": "corrected-plan-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-145752-341-75091-1627c431ccfb45fcb9d0260756717b88-categories/Build-unit.log",
+        "sha256": "dcbedede7ccf3d11e0a3a22776cec8d405d3332ba0dae48a590c23e37c79cce9",
+        "originalSha256": "c8b6f493b6a5389ec38e1818ded7b21ab09e2f2649bba5e6fdbf66a37bea280e"
+      },
+      {
+        "path": "corrected-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-145752-341-75091-1627c431ccfb45fcb9d0260756717b88-categories/dotnet-test.log",
+        "sha256": "c48bb01bd9f2142f0debcddcf3bd409e04f074aca1eecdb3f642f185f1564eb3",
+        "originalSha256": "8eb4fc1fe7ed64862bb7eb9d4378be9d26029dc04c0479f9750db80aef135cff"
+      },
+      {
+        "path": "corrected-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-145752-341-75091-1627c431ccfb45fcb9d0260756717b88-categories/plan.json",
+        "sha256": "ac3a9d4d7c7d408c5bce508165ab2216df9734dc15a4aa3dc9d283d6bb2f6ff9",
+        "originalSha256": "ac3a9d4d7c7d408c5bce508165ab2216df9734dc15a4aa3dc9d283d6bb2f6ff9"
+      },
+      {
+        "path": "corrected-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-145752-341-75091-1627c431ccfb45fcb9d0260756717b88-categories/summary.json",
+        "sha256": "f32a088ff97db9052e0d86ea590094c7523bf13d50609d276ab1564f4b0cdbe2",
+        "originalSha256": "f32a088ff97db9052e0d86ea590094c7523bf13d50609d276ab1564f4b0cdbe2"
+      },
+      {
+        "path": "corrected-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-150043-246-75469-a4911ecf031c4bb5969c5c5a39179c86-categories/dotnet-test.log",
+        "sha256": "852e6706a0be7df1027f3a1c0e31c5d6fb62dbea5e4243d987af804c0c999245",
+        "originalSha256": "ab7456a584f535dd1a6298330f6f20a71b056ad9d2ac5eff9576b7a3f46e1d26"
+      },
+      {
+        "path": "corrected-actual-gm-main-windows-cwd-resolution-unit-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-150043-246-75469-a4911ecf031c4bb5969c5c5a39179c86-categories/gm-main-windows-cwd-resolution-unit-001.trx",
+        "sha256": "cf0f30c7f859308b262b40aa12bc888c4f36defecfba98d29832c59359d55796",
+        "originalSha256": "db6ffe8753a6ce93c093b9b34800db63a34fd384744174e1a6a2759b68ef7138"
+      },
+      {
+        "path": "corrected-actual-gm-main-windows-shell-resolution-unit-002.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-150043-246-75469-a4911ecf031c4bb5969c5c5a39179c86-categories/gm-main-windows-shell-resolution-unit-002.trx",
+        "sha256": "fe57c8c0908c77f5d0838d31212e28980542337e068e6145eb5177a4187a140e",
+        "originalSha256": "8851d1d12a527b1b7de8b57138d806e71c31a63f1e4e9d3a15f054984195a42c"
+      },
+      {
+        "path": "corrected-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-150043-246-75469-a4911ecf031c4bb5969c5c5a39179c86-categories/plan.json",
+        "sha256": "c100623a37d8f4fcae1a3e8de5cc634d9b600a7a28624b6c3ad5357ad5c20e47",
+        "originalSha256": "c100623a37d8f4fcae1a3e8de5cc634d9b600a7a28624b6c3ad5357ad5c20e47"
+      },
+      {
+        "path": "corrected-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-150043-246-75469-a4911ecf031c4bb5969c5c5a39179c86-categories/summary.json",
+        "sha256": "22e44cb1fd80da3cda23450f1108bf0535b5f3bc81abc0fbd66816d74ba84773",
+        "originalSha256": "22e44cb1fd80da3cda23450f1108bf0535b5f3bc81abc0fbd66816d74ba84773"
+      },
+      {
+        "path": "corrected-plan-runner-boe-1553-windows-corrected-plan.log.gz",
+        "source": "/tmp/boe-1553-windows-corrected-plan.log",
+        "sha256": "ac1652d77312318076d3c8d7cb9d62b761d95832b29005a659d0ac2523f8ac29",
+        "originalSha256": "c557bf04ad138c16347400d164e279f3348a3f863849399d0655caaadf1ef6e3"
+      },
+      {
+        "path": "corrected-actual-runner-boe-1553-windows-corrected-actual.log.gz",
+        "source": "/tmp/boe-1553-windows-corrected-actual.log",
+        "sha256": "1a9db88e74fd3703aeb64960a927ce56076c24522cd47ddecaee8ba068353497",
+        "originalSha256": "18d8afab70bc9cbcd3381a496207dfb950311e60c8cd3df0543d7128e64d4c51"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityGMBridge/Program.cs",
+        "sha256": "a75f333057ef2dc7ed00521dff2fe88ac5853dc485899f3ec1d5b19b54600fc6"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
+        "sha256": "f2826b4a8236a9f883ac1ca5628f61fd10d2d578e7cc4fb9f234daf6eb8e017a"
+      },
+      {
+        "path": "BookOfEternityGMBridge/ConPtySession.cs",
+        "sha256": "950937c493c51bbf09d514c22b6dc388ccd8960c2ef365871158ef7e77443b90"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.StartupObservation.cs",
+        "sha256": "e55f5c28bb76504950174e859033a7182472e6900adb4fc51e95495b148a93a5"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+        "sha256": "4a685b8c461b7888e8597f3c31b7c921b05d318d7c3a2c9d321e883314791a42"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.LoadSession.cs",
+        "sha256": "5aabda6fcb9b05f168a3bcbf34611fe13ed4c6d318b6841e036da4e60a2d6a43"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmWindowsShellResolutionTests.cs",
+        "sha256": "9465df35c9b8b85157f2b7d90deae2dc634b164aedc810888fdcdc49450c6320"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmBridgeWindowsOriginalHostTests.cs",
+        "sha256": "e02c85e0e13defbe19fa1f3a888cf2f374e67b12e12cf53524dec8543c96f0de"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmBridgeDiagnosticsContractTests.cs",
+        "sha256": "2453aa7670ee885052c318361ac7f794835bd4bed2c26c3082770d891381a980"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "sha256": "2fa9ddb2c4a9b974f379413c150e21a175b8867e7ed8e4568f0e967f4842d9b1"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservationProbe.cs",
+        "sha256": "1af28e67d431bf4e13673c44916cb4f8b543b787267ab5d4b8d4180f141f54b1"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "99ff6783223c22a16939de424eaa56ca719f45a155b5a22f02199ab409dc946c"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "18f749ee8f48ed416de59cbdbc3f7ede80dc1ef45561b16b5c77ed40e31fd030"
+      }
+    ]
+  },
+  "catalog": {
+    "qualification": "Discovery only; no native Windows execution.",
+    "executed": 0,
+    "valid": true,
+    "source": "c45d2d7e3c49ecc8851f7334490ca9f2a1d256bd",
+    "artifacts": [
+      {
+        "path": "catalog-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-150142-292-75708-646f97bc0cdd47208e9039a4305e8b63-categories/catalog-audit.json",
+        "sha256": "c9c01a1e6a2be7f1898720791acdec15b8a8184319324cec000352f2151dc241",
+        "originalSha256": "c9c01a1e6a2be7f1898720791acdec15b8a8184319324cec000352f2151dc241"
+      },
+      {
+        "path": "catalog-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-150142-292-75708-646f97bc0cdd47208e9039a4305e8b63-categories/dotnet-test.log",
+        "sha256": "4bb5288010c669ed429d614afb7509e2283e52dd44bc1d6b2edb182f7efc9471",
+        "originalSha256": "124f11d00e4e238c8d56b3c43f7f06ae4d127739eba03124cb347ee159668676"
+      },
+      {
+        "path": "catalog-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-150142-292-75708-646f97bc0cdd47208e9039a4305e8b63-categories/summary.json",
+        "sha256": "d0845ba0dbfe0c40329ea8cba436e73ce68194d274f103578ce3b7397c1abbdc",
+        "originalSha256": "d0845ba0dbfe0c40329ea8cba436e73ce68194d274f103578ce3b7397c1abbdc"
+      },
+      {
+        "path": "catalog-runner-boe-1553-windows-corrected-catalog.log.gz",
+        "source": "/tmp/boe-1553-windows-corrected-catalog.log",
+        "sha256": "177b0b33bb19cf435add3cd819526a566a04e58b0f85abd840ec59ec54ad982a",
+        "originalSha256": "651e06a3d2d4977ce78c24244ce6635508d03d62fa4729ab6befa4d0c082c063"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityGMBridge/Program.cs",
+        "sha256": "a75f333057ef2dc7ed00521dff2fe88ac5853dc485899f3ec1d5b19b54600fc6"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
+        "sha256": "f2826b4a8236a9f883ac1ca5628f61fd10d2d578e7cc4fb9f234daf6eb8e017a"
+      },
+      {
+        "path": "BookOfEternityGMBridge/ConPtySession.cs",
+        "sha256": "950937c493c51bbf09d514c22b6dc388ccd8960c2ef365871158ef7e77443b90"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.StartupObservation.cs",
+        "sha256": "e55f5c28bb76504950174e859033a7182472e6900adb4fc51e95495b148a93a5"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+        "sha256": "4a685b8c461b7888e8597f3c31b7c921b05d318d7c3a2c9d321e883314791a42"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.LoadSession.cs",
+        "sha256": "5aabda6fcb9b05f168a3bcbf34611fe13ed4c6d318b6841e036da4e60a2d6a43"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmWindowsShellResolutionTests.cs",
+        "sha256": "9465df35c9b8b85157f2b7d90deae2dc634b164aedc810888fdcdc49450c6320"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmBridgeWindowsOriginalHostTests.cs",
+        "sha256": "e02c85e0e13defbe19fa1f3a888cf2f374e67b12e12cf53524dec8543c96f0de"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmBridgeDiagnosticsContractTests.cs",
+        "sha256": "2453aa7670ee885052c318361ac7f794835bd4bed2c26c3082770d891381a980"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "sha256": "2fa9ddb2c4a9b974f379413c150e21a175b8867e7ed8e4568f0e967f4842d9b1"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservationProbe.cs",
+        "sha256": "1af28e67d431bf4e13673c44916cb4f8b543b787267ab5d4b8d4180f141f54b1"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "99ff6783223c22a16939de424eaa56ca719f45a155b5a22f02199ab409dc946c"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "18f749ee8f48ed416de59cbdbc3f7ede80dc1ef45561b16b5c77ed40e31fd030"
+      }
+    ]
   }
 }

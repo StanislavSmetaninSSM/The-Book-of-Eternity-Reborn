@@ -1,3 +1,29 @@
+## A01 bounded Windows source/component checkpoint — 2026-10-08
+
+Correctedc45 source/selection and bounded evidence review PASS, no new findings.
+Fresh Plan145752 compiled10/3 with0execution (Linux7 + native3). Actual150043
+complete7/7PASS,2/2 descriptors10.1177408s, clean source, no duplicates/skips,
+both cleanup flags true; actual missing cwd remains absent and refuses. Discovery
+150142 valid469/11259, no unmapped/stale selectors,0executed. Native3 executed0.
+[Exact raw evidence/source pins](recovery/storage-migration-windows-consumers-20261008/manifest.json).
+Windows original activation has source review only plus bounded Linux components;
+real WMI/ConPTY/Job fault, Load and quarantine qualification remains external/open.
+
+Next priority before A03: separate F11 config snapshot/recovery causal two-case
+fixture. Hold real config A→B publication at actual MemberPublished, start actual
+production Bridge with both commands inert; observe original startup/guard wait in
+both RED and GREEN (pre-recovery cachedB is diagnostic, never required after fix).
+Known rollback must restore exactA and actual child args/cwd/profile/cache must useA;
+unknown valid-inertC must retain evidence and admit no Prepared/child. Preserve
+invalid config/package preflight and original guard lifetime. No implementation of
+this separate source candidate before causal evidence and bounded design review.
+
+F16 directory queue also includes ImageService.OpenImagesFolder→DesktopPathOpener
+createIfMissing. Preserve gallery creation through owned bounded preparation then
+existing-only desktop open; existing injected-desktop3 exact cases are neighbors,
+not real desktop execution. No broad EnsureDirectoryStructure or technical external
+export/library-root redesign.
+
 ## A01 Windows cwd causal correction — 2026-10-08
 
 046d fresh Plan145416 built3/0. Actual145552 complete3:2PASS/1FAIL7.2128880s,

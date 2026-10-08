@@ -1,7 +1,7 @@
 > Current A01 checkpoint: shared probe-host71a561 independently accepted with3 actual
 > Linux cases, restored carrier5b6a6069. Shared original dispatch/Load5f1502b8 now has
 > fresh16/16 Linux GREEN and independent source/selection/evidence PASS.
-> Windows original activation is now a source-review candidate; native execution remains open.
+> Windows original activation c45 has bounded source/component review PASS (Linux7); native execution remains open.
 
 ## Current A01 adapter and owner gates
 
@@ -23,7 +23,10 @@ Shared original dispatch/Load now retains the same pin/captured cancellation and
 validates both started receipt states against the real new Running identity. Exact
 Linux16 passes (worker2/Load9/status3/consoleLoad2); no actual worker was launched.
 [Consumer evidence](recovery/storage-migration-bridge-consumers-20261008/manifest.json).
-Next separate block: Windows Bridge prepared ConPTY/Job/status/Load/worker activation.
+Windows Bridge prepared ConPTY/Job/status activation is source-reviewed atc45 with
+Linux7 pure/helper controls; native3 compile/discovery only. Separate pre-recovery
+raw config/cache candidate is next: actual publication rollback vs unknown before
+launch, admitted same-owner snapshot required; no observed failure claimed yet.
 Windows legacy quarantine retains its Job/workspace/per-profile slot; verified absent
 Linux inventory is not a universal Windows worker quiescence/restart-fence claim. All other
 F/R families below remain open; no full migration completion claim.
@@ -119,7 +122,7 @@ counts, not defect counts. Existing F/T owners below are the single executable b
 | R08/R09/R11 | F07/F08/F17, T063/T064 | Source-reviewed save/settings/load outcome contracts preserved. Autosave3 production callers propagate typed decisions; no additional bool defect found, so no speculative aggregate run. Remove only proven dead recursive helpers after reflection/script/name census and relevant guard. Native durability/close qualification remains scoped. |
 | R12/R26 | F11/F12/F19, T062/T065 | Actual failed browser rollback/runtime/notice accepted83f. HTTP/DTO/stale response ownership stays separate; retain current source-reviewed admission/Running ACK contracts. UI/cache/player notifications are not storage observers. No blanket callback-to-endpoint acceptance. |
 | R20 | F13/F14, T063 | Later helper-specific existing transport entry must bind captured generation, exact role, bytes/baseline/read witnesses under one lease. Daemon original admitted QTE handler held MemberPublished cut must establish raw snapshot timing before guarded read/hash validation. Preserve watcher eligibility/poll fallback, source identity and no replay; reply64KiB vs command4MiB bounds explicit. |
-| R25 | F16, T063 | Actual image cleanup consumer/counts and console image publication catch still open. Stop on storage uncertainty/replacement, preserve confirmed per-file counts. Canonical image/mod/world-profile directory recreation needs bounded generation/type guard. Explicit external export and BasePath guardian library initialization stay distinct technical roots. |
+| R25 | F16, T063 | Actual image cleanup consumer/counts and console image publication catch still open. Stop on storage uncertainty/replacement, preserve confirmed per-file counts. Canonical image/mod/world-profile directory recreation needs bounded generation/type guard, including gallery OpenImagesFolder→DesktopPathOpener default creation; preserve injected gallery creation/one-open/failure controls. Explicit external export and BasePath guardian library initialization stay distinct technical roots. |
 | R02/R13/R28 | F18, T064 | Reach-test ordinary vs physical/read/load callbacks, five named old ordinary FSM physical-hook tests, staged/spiritual/wound batching cuts and positive controls for zero-event assertions. MemberPublished is precommit; no async-void observer or nested canonical lease. Keep legacy/primitive/current-state-machine cuts with their real contract. |
 | R17/R18/R19 | F15, T063/T065 | Worker frame/peer/ApplyGate/synthetic bundle are independently typed ownership protocols. Audit found no new concrete stale consumer; preserve explicit platform capability refusal and original recovery handlers. Constructed paths/JSON/delegate edges remain checked at affected consumer boundaries, not converted wholesale to game journal. |
 | R22/R23/R24 | F15/F16/F19, T065 | Relay Unicode, single clipboard read and audio lifecycle callers source-reconciled; no additional concrete disconnect found. Preserve owner/debt/result/preview contracts and historical evidence limits. Do not run native desktop/provider work or claim Linux fixtures qualify Windows services. |

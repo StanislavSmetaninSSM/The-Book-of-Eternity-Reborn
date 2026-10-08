@@ -1,9 +1,10 @@
 # Windows original Bridge consumer qualification
 
-Current implementation is a migration candidate with source review pending; the
-89ed review identified cwd pre-admission creation and a stale moved-source contract. Native Windows
-execution is unavailable in this Linux cloud. Compilation/discovery of the native
-category is zero execution, never PASS or general Windows support qualification.
+The corrected c45 implementation has bounded source/selection and Linux component
+evidence review PASS. The two89ed findings (cwd pre-admission creation and stale
+moved-source contract) are closed with reached RED and seven Linux controls.
+Native Windows execution is unavailable in this Linux cloud. Compilation/discovery
+of native3 is zero execution, never PASS or general Windows support qualification.
 Shared Linux evidence is frozen separately at5f1502b8 (16 cases), accepted by the
 independent Astra XHigh reviewer and parent at carrier9228e96c.
 
