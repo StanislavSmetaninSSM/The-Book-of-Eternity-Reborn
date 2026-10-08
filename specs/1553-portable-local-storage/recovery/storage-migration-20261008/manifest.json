@@ -71,6 +71,8 @@
   "artifacts": {
     "callsites.jsonl.gz": "019c890b6bad5caaa85e29795ed6bfff773e29e35a589cce179830e9a9661e7f",
     "corpus.json": "727db168afd53128e86cd18d1159472382248c36a37f1a951d8f468fefcf7d51",
-    "scan.py": "49c693f47901e5fe108be71d0919d108f3d82a0d3406b7ec1b1e036ff2861763"
+    "routes.json": "bfd0d5b213908b0fb5442acf5a08a2834f3bcf30d701f9cdef7a32b230652ca6",
+    "route-symbols.json": "369004637f230e4f1b4bb06267917d5f7d729f5d7c56c9ea7fc89a4f8455dc86",
+    "scan.py": "bc78c20ccfcd6b7ed0ffbd0c48c0b435e35fd2107c8a1e8d59de5cd06b41c6cd"
   }
 }

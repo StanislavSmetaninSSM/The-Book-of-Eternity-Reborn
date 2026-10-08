@@ -1,0 +1,114 @@
+{
+  "F01": [
+    "WriteFileAtomicAsync",
+    "WriteFileAtomicBytesAsync",
+    "AppendFileAtomicAsync",
+    "AppendFileAtomicIfCurrentSessionAsync",
+    "CompareExchangeFileBytesAsync",
+    "DeleteFile",
+    "UsesTrustedLocalWriter"
+  ],
+  "F02": [
+    "CreateBackup",
+    "RestoreBackup",
+    "CleanupBackup",
+    "ResolveBackupPublicationRecovery"
+  ],
+  "F03": [
+    "EnsurePendingLocalTurnRollbackSnapshotAsync",
+    "StageLocalTurnRollbackSnapshotAsync",
+    "ConsumePendingLocalTurnRollbackSnapshot",
+    "RestorePendingLocalTurnRollbackSnapshotAsync",
+    "RestoreConsumedLocalTurnRollbackSnapshotAsync",
+    "CreateExplorerRollbackBackupPath"
+  ],
+  "F04": [
+    "StageBrowserWriteTransactionAsync",
+    "StageLocalBrowserTransactionAsync",
+    "RestoreBrowserWriteTransactionAsync",
+    "MarkBrowserWriteTransactionCommittedAsync",
+    "TryDeleteBrowserWriteTransaction",
+    "MutationIntentRecorder"
+  ],
+  "F05": [
+    "DarenRewardProfileFileStore",
+    "DarenRewardProfileRollbackTransaction",
+    "PublishLocalDarenProfileAsync",
+    "PublishStandaloneDarenProfileAsync"
+  ],
+  "F06": [
+    "WriteFileAtomicWithPublicationAsync",
+    "WriteFileAtomicWithPublicationIfCurrentAuthorityAsync",
+    "WriteFileAtomicBytesIfCurrentOwnedAsync",
+    "WriteFileAtomicBytesIfCurrentAuthorityAsync",
+    "DeleteFileIfCurrentOwnedAsync",
+    "DeleteFileIfCurrentAuthorityAsync",
+    "ApplyPlayerSoulProfileClientAuthorityAsync",
+    "ApplyPlayerSoulProfileClientAuthorityForRefreshAsync"
+  ],
+  "F07": [
+    "BeginLoadTransaction",
+    "RecoverLoadTransaction",
+    "RecoverWorkerApplyTransaction",
+    "ReplaceLocalSessionAsync",
+    "MoveRuntimeFileIntoCanonicalSessionAsync",
+    "MoveRuntimeDirectoryIntoCanonicalSessionAsync"
+  ],
+  "F08": [
+    "RequireCommittedLocalPublication",
+    "CoordinatedStatePublicationUncertainException"
+  ],
+  "F09": [
+    "TryCommitWithHookAsync",
+    "TryCommitAsync",
+    "InvalidateAcceptedMechanicsHandoffs"
+  ],
+  "F10": [
+    "DistributeAsync",
+    "ApplyTerminalOutcomeStateChangesCoreAsync",
+    "RestoreQteNormalizationBaselineAsync"
+  ],
+  "F11": [
+    "afterRollback",
+    "RefreshGameStateAfterExactRollbackAsync",
+    "RefreshGameStateAsync"
+  ],
+  "F12": [
+    "AcceptedMechanicsPlanCache",
+    "UiNotification",
+    "WoundPlayerNotification",
+    "AfterlifeNotificationState"
+  ],
+  "F13": [
+    "Write-BoeJson",
+    "Acquire-BoeCanonicalWriteLock",
+    "Assert-BoeGmWritableRuntimePath",
+    "Assert-BoeNoTerminalSignalBeforeRuntimeWrite"
+  ],
+  "F14": [
+    "FileSystemWatcher",
+    "Process-Turn",
+    "Process-RepairRequest",
+    "Process-TerminalProtocolFailureRequest",
+    "Process-QteEffectResolutionRequest"
+  ],
+  "F15": [
+    "GmSessionRunPersistence",
+    "WorkerRunLedgerPersistence",
+    "GmWorkerExecutionWorkspace",
+    "PublishOriginalStatusAsync"
+  ],
+  "F17": [
+    "CreateGameSessionSafetyBackup",
+    "RestoreGameSessionSafetyBackup",
+    "CleanupGameSessionSafetyBackup",
+    "CopyDirectoryRecursive"
+  ],
+  "F18": [
+    "AfterPhysicalFilePublishedAsync",
+    "BeforePhysicalSourcePublishedAsync",
+    "BeforeCanonicalMutationAsync",
+    "LocalPublicationObserver",
+    "LocalPublicationRecoveryObserver"
+  ]
+}

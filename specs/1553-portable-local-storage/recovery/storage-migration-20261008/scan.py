@@ -53,6 +53,9 @@ def classify(path,family,symbol):
     if family=='transaction_recovery':
         return 'remains-to-migrate','consumer/outcome routing review required; mapped family determines current versus retained recovery obligation'
     return 'allowed-technical-non-game-transaction-write','raw/stream occurrence: export, initialization, tooling or transport; semantic exemptions must be verified against family table'
+route_groups=json.loads((OUT/'route-symbols.json').read_text())
+route_patterns={k:re.compile(r'(?<![\w])(?:'+'|'.join(map(re.escape,v))+r')(?![\w])') for k,v in route_groups.items()}
+routes={k:{'symbols':v,'occurrences':[]} for k,v in route_groups.items()}
 rows=[]; corpus=[]; omissions=[]
 for entry in git('ls-tree','-r',BASE).splitlines():
     meta,path=entry.split('\t',1); blob=meta.split()[2]
@@ -64,6 +67,9 @@ for entry in git('ls-tree','-r',BASE).splitlines():
     except UnicodeError:
         omissions.append({'path':path,'reason':'non-UTF8 tracked source; manual review required','gitBlob':blob});continue
     sha=hashlib.sha256(raw).hexdigest(); count=0
+    for key,pattern in route_patterns.items():
+        for match in pattern.finditer(text):
+            routes[key]['occurrences'].append({'path':path,'line':text.count('\n',0,match.start())+1,'symbol':match.group()})
     for family,pattern in PATTERNS.items():
         for match in pattern.finditer(text):
             line=text.count('\n',0,match.start())+1
@@ -77,6 +83,7 @@ OUT.mkdir(exist_ok=True,parents=True)
 (OUT/'callsites.jsonl.gz').write_bytes(gzip.compress(''.join(json.dumps(r,ensure_ascii=False,separators=(',',':'))+'\n' for r in rows).encode(),mtime=0))
 (OUT/'callsites.jsonl').unlink(missing_ok=True)
 (OUT/'corpus.json').write_text(json.dumps(corpus,indent=2)+'\n')
-manifest={'schemaVersion':1,'sourceRevision':BASE,'oldComparisonRevision':git('rev-parse',OLD).strip(),'trackedSourceFiles':len(corpus),'occurrences':len(rows),'byFamily':dict(collections.Counter(r['family'] for r in rows)),'byCandidateClassification':dict(collections.Counter(r['candidateClassification'] for r in rows)),'rules':RULES,'extensions':sorted(EXTENSIONS),'exclusions':['non-source extensions including docs/examples/logs/binaries/assets; embedded source in scanned scripts is retained','untracked/generated build artifacts not in pinned Git tree'],'omissions':omissions,'limits':['Lexical occurrences include definitions, comments, strings and intentional test input; not a compiler call graph.','candidateClassification is lexical triage only; reviewStatus=lexical-only grants NO approved migration/exception decision. Human reviewed family decisions are separate, conditional on actual route. Unreviewed sites stay open.','No absence-of-IO or reachability guarantee from regex alone. Human family/caller review and independent completeness review are required.','No builds/tests/runtime probes executed for this inventory.'], 'artifacts':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in [OUT/'callsites.jsonl.gz',OUT/'corpus.json',Path(__file__)]}}
+(OUT/'routes.json').write_text(json.dumps({'sourceRevision':BASE,'limits':'All literal named occurrences over pinned corpus, including definitions and strings; not compiler overload resolution or dynamic call reachability. Consult human family decision and local body.','families':routes},indent=2)+'\n')
+manifest={'schemaVersion':1,'sourceRevision':BASE,'oldComparisonRevision':git('rev-parse',OLD).strip(),'trackedSourceFiles':len(corpus),'occurrences':len(rows),'byFamily':dict(collections.Counter(r['family'] for r in rows)),'byCandidateClassification':dict(collections.Counter(r['candidateClassification'] for r in rows)),'rules':RULES,'extensions':sorted(EXTENSIONS),'exclusions':['non-source extensions including docs/examples/logs/binaries/assets; embedded source in scanned scripts is retained','untracked/generated build artifacts not in pinned Git tree'],'omissions':omissions,'limits':['Lexical occurrences include definitions, comments, strings and intentional test input; not a compiler call graph.','candidateClassification is lexical triage only; reviewStatus=lexical-only grants NO approved migration/exception decision. Human reviewed family decisions are separate, conditional on actual route. Unreviewed sites stay open.','No absence-of-IO or reachability guarantee from regex alone. Human family/caller review and independent completeness review are required.','No builds/tests/runtime probes executed for this inventory.'], 'artifacts':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in [OUT/'callsites.jsonl.gz',OUT/'corpus.json',OUT/'routes.json',OUT/'route-symbols.json',Path(__file__)]}}
 (OUT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 print(json.dumps({k:manifest[k] for k in ['trackedSourceFiles','occurrences','byFamily','byCandidateClassification','omissions']},indent=2))
