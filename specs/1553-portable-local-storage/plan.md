@@ -1,3 +1,28 @@
+## F13 dedicated transport and PowerShell unit WIP — 2026-10-08
+
+The dedicated CLI role now has an initial bounded-frame/chunk interpreter, original
+expected-generation admission, one read/mutation lease per helper scope, exact
+publisher outcome capture and original close projection. Payloads (including paths,
+bytes and enumerations) travel through checked length/hash/offset transfers; reply
+headers do not echo arbitrary paths. A reply write attempt is never replayed as a
+second negative reply. Default A03 command permissions remain unchanged.
+
+PowerShell integration draft replaces the raw lock/temp/replace route and raw
+canonical reads/existence/enumeration. Thirty-one stateful function bodies now reuse
+one short original scope across outer policy/completion units. Paths normalize before
+policy; persistent destination baselines and explicit witness sentinels stay distinct
+from same-operation read witnesses. Storage-marked failures escape forgiving parse
+fallbacks (including trade-value fallback), while malformed JSON retains its policy.
+The dedicated process factory supports ArgumentList and Windows PS5.1 quoting.
+
+This is a **partial, unbuilt, unreviewed implementation checkpoint**, not runtime
+acceptance. Outstanding checks/implementation include cancellation during pending
+admission, transfer/projection edge checks, migrated fixture setup and original race
+cuts, exact current18/original22/conditional3 selection, prompts/worked example,
+fresh build, independent source/selection review and actual GREEN. No tests executed
+since the one corrected causal realm-link run. All accepted causal evidence remains
+unchanged. Native Windows/PowerShell5.1 remains unexecuted.
+
 ## F13 implementation WIP: generation and policy snapshot foundation — 2026-10-08
 
 Final causal/carrier676 independently accepted: ten reached semantic defects across

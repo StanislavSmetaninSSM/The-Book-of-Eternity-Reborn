@@ -1,7 +1,8 @@
 Set-StrictMode -Off
 
+. (Join-Path $PSScriptRoot 'gm_turn_helper_transport.ps1')
 $script:BoeGameSessionPath = $null
-$script:BoeReadBaselines = @{}
+$script:BoeReadBaselines = [Collections.Generic.Dictionary[string,string]]::new($script:BoePathComparer)
 
 function Initialize-BoeGmTurnHelper {
     param(
@@ -9,16 +10,17 @@ function Initialize-BoeGmTurnHelper {
         [string]$GameSessionPath
     )
 
-    if (!(Test-Path -LiteralPath $GameSessionPath)) {
-        throw "Game session path does not exist: $GameSessionPath"
-    }
-
-    $script:BoeGameSessionPath = (Resolve-Path -LiteralPath $GameSessionPath).Path
-    $script:BoeReadBaselines = @{}
+    if($script:BoeHelperFailure){throw $script:BoeHelperFailure}
+    $context=Open-BoeHelperScope 'initialize' $GameSessionPath $null
+    try {Close-GmParticipatingOperation $context 0}
+    finally {Dispose-GmOperationTransport $context}
+    $script:BoeGameSessionPath=$context.session
+    $script:BoeHelperGeneration=$context.generation
+    $script:BoeReadBaselines=[Collections.Generic.Dictionary[string,string]]::new($script:BoePathComparer)
 }
 
 function Assert-BoeGmTurnHelperInitialized {
-    if ([string]::IsNullOrWhiteSpace($script:BoeGameSessionPath)) {
+    if ([string]::IsNullOrWhiteSpace($script:BoeGameSessionPath) -or [string]::IsNullOrWhiteSpace($script:BoeHelperGeneration)) {
         throw "GM turn helper is not initialized. Run Initialize-BoeGmTurnHelper -GameSessionPath <path> first."
     }
 }
@@ -30,21 +32,9 @@ function Resolve-BoeSessionPath {
     )
 
     Assert-BoeGmTurnHelperInitialized
-
-    if ([System.IO.Path]::IsPathRooted($RelativePath)) {
-        $fullPath = [System.IO.Path]::GetFullPath($RelativePath)
-    }
-    else {
-        $normalized = $RelativePath.Replace('/', [System.IO.Path]::DirectorySeparatorChar)
-        $fullPath = [System.IO.Path]::GetFullPath((Join-Path $script:BoeGameSessionPath $normalized))
-    }
-
-    $sessionRoot = [System.IO.Path]::GetFullPath($script:BoeGameSessionPath)
-    if (!$fullPath.StartsWith($sessionRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
-        throw "Path is outside game_session: $RelativePath"
-    }
-
-    return $fullPath
+    if(-not $script:BoeHelperScope){return Invoke-BoeHelperScope -Body {Resolve-BoeSessionPath $RelativePath}}
+    $relative=Invoke-BoeHelperRequest @{action='normalize';path=$RelativePath}
+    return [IO.Path]::GetFullPath((Join-Path $script:BoeGameSessionPath ($relative.Replace('/',[IO.Path]::DirectorySeparatorChar))))
 }
 
 function Read-BoeJson {
@@ -52,13 +42,18 @@ function Read-BoeJson {
         [Parameter(Mandatory = $true)]
         [string]$RelativePath
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Read-BoeJson @boeCallArguments }
+    }
+
 
     $path = Resolve-BoeSessionPath -RelativePath $RelativePath
-    if (!(Test-Path -LiteralPath $path)) {
+    if (!(Test-BoePath -LiteralPath $path)) {
         throw "JSON file does not exist: $RelativePath"
     }
 
-    $bytes = [System.IO.File]::ReadAllBytes($path)
+    $bytes = (Read-BoeBytes $path)
     $script:BoeReadBaselines[$path] = Get-BoeSha256Hex -Bytes $bytes
     $json = [System.Text.Encoding]::UTF8.GetString($bytes)
     if ($json.Length -gt 0 -and $json[0] -eq [char]0xFEFF) {
@@ -80,31 +75,6 @@ function Get-BoeSha256Hex {
     finally {
         $sha.Dispose()
     }
-}
-
-function Acquire-BoeCanonicalWriteLock {
-    $lockDirectory = Join-Path $script:BoeGameSessionPath '.locks'
-    if (!(Test-Path -LiteralPath $lockDirectory)) {
-        New-Item -ItemType Directory -Path $lockDirectory -Force | Out-Null
-    }
-    $lockPath = Join-Path $lockDirectory 'canonical-write.lock'
-    for ($attempt = 0; $attempt -lt 200; $attempt++) {
-        try {
-            return [System.IO.FileStream]::new(
-                $lockPath,
-                [System.IO.FileMode]::OpenOrCreate,
-                [System.IO.FileAccess]::ReadWrite,
-                [System.IO.FileShare]::None,
-                1,
-                [System.IO.FileOptions]::None)
-        }
-        catch [System.IO.IOException] {
-            if ($attempt -ge 199) { throw }
-            Start-Sleep -Milliseconds 50
-        }
-    }
-
-    throw 'Timed out waiting for the canonical game-session write lock.'
 }
 
 function ConvertFrom-BoeJsonMutable {
@@ -131,6 +101,7 @@ function ConvertFrom-BoeJsonMutable {
         return ConvertTo-BoeMutableJsonValue -Value $serializer.DeserializeObject($Json)
     }
     catch {
+        Assert-BoeNotStorageFailure $_
         $parsed = $Json | ConvertFrom-Json
         return ConvertTo-BoeMutableJsonValue -Value $parsed
     }
@@ -269,6 +240,7 @@ function Set-BoeJsonProperty {
             return
         }
         catch {
+        Assert-BoeNotStorageFailure $_
             # Fall through and replace unusual member shapes with a JSON-like NoteProperty.
         }
     }
@@ -372,6 +344,7 @@ function Get-BoeJsonInt {
         return [int]$value
     }
     catch {
+        Assert-BoeNotStorageFailure $_
         $parsed = 0
         if ([int]::TryParse([string]$value, [ref]$parsed)) {
             return $parsed
@@ -409,10 +382,15 @@ function Get-BoeClampedDouble {
 }
 
 function Get-BoePlayerTradeValue {
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Get-BoePlayerTradeValue @boeCallArguments }
+    }
+
     foreach ($relativePath in @("game_state/misc/characteristics.json", "game_state/player/player_status.json", "game_state/core/player_status.json")) {
         try {
             $path = Resolve-BoeSessionPath -RelativePath $relativePath
-            if (!(Test-Path -LiteralPath $path)) {
+            if (!(Test-BoePath -LiteralPath $path)) {
                 continue
             }
 
@@ -428,6 +406,7 @@ function Get-BoePlayerTradeValue {
             }
         }
         catch {
+        Assert-BoeNotStorageFailure $_
             # Try the next canonical source.
         }
     }
@@ -554,6 +533,11 @@ function Normalize-BoeNpcTradeItem {
         [Parameter(Mandatory = $true)]
         [int]$Index
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Normalize-BoeNpcTradeItem @boeCallArguments }
+    }
+
 
     $requestProfile = Get-BoeFirstNonEmptyJsonString -Object $Request -Names @("merchantProfile")
     if ([string]::IsNullOrWhiteSpace($requestProfile)) {
@@ -657,6 +641,11 @@ function Complete-BoeNpcTradeInventoryRequest {
 
         [string]$PricingTradeTier = "Neutral"
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'write' -Body { Complete-BoeNpcTradeInventoryRequest @boeCallArguments }
+    }
+
 
     if ([string]::IsNullOrWhiteSpace($RequestId)) {
         throw "RequestId is required for Complete-BoeNpcTradeInventoryRequest."
@@ -988,6 +977,11 @@ function Complete-BoeGuardianTradeInventoryRequest {
         [Parameter(Mandatory = $true)]
         [object[]]$Items
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'write' -Body { Complete-BoeGuardianTradeInventoryRequest @boeCallArguments }
+    }
+
 
     if ([string]::IsNullOrWhiteSpace($RequestId)) {
         throw "RequestId is required for Complete-BoeGuardianTradeInventoryRequest."
@@ -1339,6 +1333,11 @@ function Complete-BoeTrainingShowcaseRequest {
 
         [string]$Summary = ""
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'write' -Body { Complete-BoeTrainingShowcaseRequest @boeCallArguments }
+    }
+
 
     if ([string]::IsNullOrWhiteSpace($RequestId)) {
         throw "RequestId is required for Complete-BoeTrainingShowcaseRequest."
@@ -1437,15 +1436,15 @@ function Convert-BoeFullPathToSessionRelativePath {
         [System.IO.Path]::AltDirectorySeparatorChar)
     $prefix = $sessionRoot + [System.IO.Path]::DirectorySeparatorChar
 
-    if ([string]::Equals($full, $sessionRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+    if ([string]::Equals($full, $sessionRoot, $script:BoePathComparison)) {
         return ""
     }
 
-    if (!$full.StartsWith($prefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+    if (!$full.StartsWith($prefix, $script:BoePathComparison)) {
         throw "Path is outside game_session: $FullPath"
     }
 
-    return Normalize-BoeRelativePath -RelativePath $full.Substring($prefix.Length)
+    return $full.Substring($prefix.Length).Replace([IO.Path]::DirectorySeparatorChar, '/')
 }
 
 function Get-BoePolicyRelativePath {
@@ -1453,17 +1452,18 @@ function Get-BoePolicyRelativePath {
         [AllowNull()]
         [string]$Path
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Get-BoePolicyRelativePath @boeCallArguments }
+    }
+
 
     if ([string]::IsNullOrWhiteSpace($Path)) {
         return ""
     }
 
-    if ([System.IO.Path]::IsPathRooted($Path)) {
-        $fullPath = Resolve-BoeSessionPath -RelativePath $Path
-        return Convert-BoeFullPathToSessionRelativePath -FullPath $fullPath
-    }
-
-    return Normalize-BoeRelativePath -RelativePath $Path
+    $fullPath=Resolve-BoeSessionPath -RelativePath $Path
+    return Convert-BoeFullPathToSessionRelativePath -FullPath $fullPath
 }
 
 function Test-BoeClientOwnedRuntimePath {
@@ -1535,15 +1535,21 @@ function Test-BoeClientOwnedRuntimePath {
 }
 
 function Get-BoeCurrentRealm {
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Get-BoeCurrentRealm @boeCallArguments }
+    }
+
     Assert-BoeGmTurnHelperInitialized
 
     $path = Resolve-BoeSessionPath -RelativePath "game_state/meta/soul_state.json"
-    if (!(Test-Path -LiteralPath $path)) {
+    if (!(Test-BoePath -LiteralPath $path)) {
         return ""
     }
 
+    $boeJsonText=Read-BoeText $path
     try {
-        $state = Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+        $state = $boeJsonText | ConvertFrom-Json
         $realm = Get-BoeJsonValue -Object $state -Names @("currentRealm")
         if ($null -eq $realm) {
             return ""
@@ -1552,11 +1558,17 @@ function Get-BoeCurrentRealm {
         return [string]$realm
     }
     catch {
+        Assert-BoeNotStorageFailure $_
         return ""
     }
 }
 
 function Test-BoeAfterlifeRealm {
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Test-BoeAfterlifeRealm @boeCallArguments }
+    }
+
     $realm = Get-BoeCurrentRealm
     return [string]::Equals($realm, "Chaos Sea", [System.StringComparison]::OrdinalIgnoreCase) -or
         [string]::Equals($realm, "Shining Abode", [System.StringComparison]::OrdinalIgnoreCase)
@@ -1609,6 +1621,11 @@ function Assert-BoeRealmWritableRuntimePath {
         [Parameter(Mandatory = $true)]
         [string]$RelativePath
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Assert-BoeRealmWritableRuntimePath @boeCallArguments }
+    }
+
 
     $policyPath = Get-BoePolicyRelativePath -Path $RelativePath
     if ((Test-BoeMortalWorldProfilePath -RelativePath $policyPath) -and (Test-BoeAfterlifeRealm)) {
@@ -1622,6 +1639,11 @@ function Assert-BoeGmWritableRuntimePath {
         [Parameter(Mandatory = $true)]
         [string]$RelativePath
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Assert-BoeGmWritableRuntimePath @boeCallArguments }
+    }
+
 
     $policyPath = Get-BoePolicyRelativePath -Path $RelativePath
     if (Test-BoeClientOwnedRuntimePath -RelativePath $policyPath) {
@@ -1636,6 +1658,11 @@ function Assert-BoeGmFilesModifiedEntries {
         [AllowNull()]
         [string[]]$FilesModified
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Assert-BoeGmFilesModifiedEntries @boeCallArguments }
+    }
+
 
     foreach ($entry in @($FilesModified)) {
         $policyPath = Get-BoePolicyRelativePath -Path $entry
@@ -1663,16 +1690,23 @@ function Read-BoeTerminalSignalOrNull {
         [Parameter(Mandatory = $true)]
         [string]$RelativePath
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Read-BoeTerminalSignalOrNull @boeCallArguments }
+    }
+
 
     $path = Resolve-BoeSessionPath -RelativePath $RelativePath
-    if (!(Test-Path -LiteralPath $path)) {
+    if (!(Test-BoePath -LiteralPath $path)) {
         return $null
     }
 
+    $boeJsonText=Read-BoeText $path
     try {
-        return Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+        return $boeJsonText | ConvertFrom-Json
     }
     catch {
+        Assert-BoeNotStorageFailure $_
         throw "Existing terminal signal is unreadable: $RelativePath. Let the client clean stale ready state before writing more runtime data."
     }
 }
@@ -1703,6 +1737,11 @@ function Assert-BoeNoExistingTerminalSignalForTurn {
         [Parameter(Mandatory = $true)]
         [string]$Operation
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Assert-BoeNoExistingTerminalSignalForTurn @boeCallArguments }
+    }
+
 
     foreach ($terminalPath in @("ready/turn_complete.json", "ready/turn_error.json")) {
         $signal = Read-BoeTerminalSignalOrNull -RelativePath $terminalPath
@@ -1719,15 +1758,22 @@ function Assert-BoeNoExistingTerminalSignalForTurn {
 }
 
 function Get-BoeCurrentTurnRequestOrNull {
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Get-BoeCurrentTurnRequestOrNull @boeCallArguments }
+    }
+
     $path = Resolve-BoeSessionPath -RelativePath "input/turn_request.json"
-    if (!(Test-Path -LiteralPath $path)) {
+    if (!(Test-BoePath -LiteralPath $path)) {
         return $null
     }
 
+    $boeJsonText=Read-BoeText $path
     try {
-        return Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+        return $boeJsonText | ConvertFrom-Json
     }
     catch {
+        Assert-BoeNotStorageFailure $_
         throw "Current input/turn_request.json is unreadable; do not write runtime state until the client repairs or clears the pending turn."
     }
 }
@@ -1737,14 +1783,20 @@ function Test-BoeActiveValidationRepairRequestForTurn {
         [Parameter(Mandatory = $true)]
         [object]$TurnRequest
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Test-BoeActiveValidationRepairRequestForTurn @boeCallArguments }
+    }
+
 
     $path = Resolve-BoeSessionPath -RelativePath "game_state/control/validation_repair_request.json"
-    if (!(Test-Path -LiteralPath $path)) {
+    if (!(Test-BoePath -LiteralPath $path)) {
         return $false
     }
 
+    $boeJsonText=Read-BoeText $path
     try {
-        $repair = Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+        $repair = $boeJsonText | ConvertFrom-Json
         if ($repair.metadataDiagnosticOnly) {
             return $false
         }
@@ -1754,6 +1806,7 @@ function Test-BoeActiveValidationRepairRequestForTurn {
             [int]$repair.turnNumber -eq [int]$TurnRequest.turnNumber
     }
     catch {
+        Assert-BoeNotStorageFailure $_
         return $false
     }
 }
@@ -1763,6 +1816,11 @@ function Assert-BoeNoTerminalSignalBeforeRuntimeWrite {
         [Parameter(Mandatory = $true)]
         [string]$RelativePath
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Assert-BoeNoTerminalSignalBeforeRuntimeWrite @boeCallArguments }
+    }
+
 
     if (Test-BoeTerminalSignalPath -RelativePath $RelativePath) {
         return
@@ -1785,25 +1843,17 @@ function Get-BoeFileSha256 {
         [Parameter(Mandatory = $true)]
         [string]$Path
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Get-BoeFileSha256 @boeCallArguments }
+    }
 
-    if (!(Test-Path -LiteralPath $Path)) {
+
+    if (!(Test-BoePath -LiteralPath $Path)) {
         return ""
     }
 
-    $stream = [System.IO.File]::OpenRead($Path)
-    try {
-        $sha = [System.Security.Cryptography.SHA256]::Create()
-        try {
-            $bytes = $sha.ComputeHash($stream)
-            return [System.BitConverter]::ToString($bytes).Replace("-", "")
-        }
-        finally {
-            $sha.Dispose()
-        }
-    }
-    finally {
-        $stream.Dispose()
-    }
+    return (Get-BoeSha256Hex -Bytes (Read-BoeBytes $Path)).ToUpperInvariant()
 }
 
 function ConvertTo-BoeCanonicalJsonString {
@@ -1855,18 +1905,24 @@ function Get-BoeComparableFileSignature {
         [Parameter(Mandatory = $true)]
         [string]$Path
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Get-BoeComparableFileSignature @boeCallArguments }
+    }
 
-    if (!(Test-Path -LiteralPath $Path)) {
+
+    if (!(Test-BoePath -LiteralPath $Path)) {
         return ""
     }
 
     if ([string]::Equals([System.IO.Path]::GetExtension($Path), ".json", [System.StringComparison]::OrdinalIgnoreCase)) {
+        $raw = Read-BoeText $Path
         try {
-            $raw = Get-Content -LiteralPath $Path -Raw -Encoding UTF8
             $parsed = ConvertFrom-Json -InputObject $raw
             return "json:" + (ConvertTo-BoeCanonicalJsonString -Value $parsed)
         }
         catch {
+        Assert-BoeNotStorageFailure $_
             # Invalid JSON still needs deterministic comparison; fall back to byte identity.
         }
     }
@@ -1875,17 +1931,22 @@ function Get-BoeComparableFileSignature {
 }
 
 function Get-BoeRawMortalWorldProfileMutations {
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Get-BoeRawMortalWorldProfileMutations @boeCallArguments }
+    }
+
     if (!(Test-BoeAfterlifeRealm)) {
         return @()
     }
 
     $snapshotRoot = Resolve-BoeSessionPath -RelativePath "game_state/control/pending_turn_snapshot"
-    if (!(Test-Path -LiteralPath $snapshotRoot)) {
+    if (!(Test-BoePath -LiteralPath $snapshotRoot)) {
         return @()
     }
 
     $violations = @()
-    $seenCurrentPaths = @{}
+    $seenCurrentPaths = [Collections.Generic.Dictionary[string,bool]]::new($script:BoePathComparer)
     foreach ($prefix in @(
         "game_state/world",
         "game_state/npcs",
@@ -1896,11 +1957,11 @@ function Get-BoeRawMortalWorldProfileMutations {
         "game_state/quests"
     )) {
         $root = Resolve-BoeSessionPath -RelativePath $prefix
-        if (!(Test-Path -LiteralPath $root)) {
+        if (!(Test-BoePath -LiteralPath $root)) {
             continue
         }
 
-        foreach ($file in Get-ChildItem -LiteralPath $root -File -Recurse -ErrorAction SilentlyContinue) {
+        foreach ($file in Get-BoeFiles -LiteralPath $root) {
             $relativePath = Convert-BoeFullPathToSessionRelativePath -FullPath $file.FullName
             if (!(Test-BoeMortalWorldProfilePath -RelativePath $relativePath)) {
                 continue
@@ -1910,9 +1971,9 @@ function Get-BoeRawMortalWorldProfileMutations {
                 continue
             }
 
-            $seenCurrentPaths[$relativePath.ToLowerInvariant()] = $true
+            $seenCurrentPaths[$relativePath] = $true
             $snapshotPath = Join-Path $snapshotRoot ($relativePath.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
-            if (!(Test-Path -LiteralPath $snapshotPath)) {
+            if (!(Test-BoePath -LiteralPath $snapshotPath)) {
                 $violations += [pscustomobject]@{
                     path = $relativePath
                     reason = "new forbidden Mortal World profile file"
@@ -1946,13 +2007,13 @@ function Get-BoeRawMortalWorldProfileMutations {
         "game_state/quests"
     )) {
         $snapshotPrefixRoot = Join-Path $snapshotRoot ($prefix.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
-        if (!(Test-Path -LiteralPath $snapshotPrefixRoot)) {
+        if (!(Test-BoePath -LiteralPath $snapshotPrefixRoot)) {
             continue
         }
 
-        foreach ($snapshotFile in Get-ChildItem -LiteralPath $snapshotPrefixRoot -File -Recurse -ErrorAction SilentlyContinue) {
+        foreach ($snapshotFile in Get-BoeFiles -LiteralPath $snapshotPrefixRoot) {
             $snapshotFull = [System.IO.Path]::GetFullPath($snapshotFile.FullName)
-            if (!$snapshotFull.StartsWith($snapshotPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+            if (!$snapshotFull.StartsWith($snapshotPrefix, $script:BoePathComparison)) {
                 continue
             }
 
@@ -1965,12 +2026,12 @@ function Get-BoeRawMortalWorldProfileMutations {
                 continue
             }
 
-            if ($seenCurrentPaths.ContainsKey($relativePath.ToLowerInvariant())) {
+            if ($seenCurrentPaths.ContainsKey($relativePath)) {
                 continue
             }
 
             $currentPath = Resolve-BoeSessionPath -RelativePath $relativePath
-            if (!(Test-Path -LiteralPath $currentPath)) {
+            if (!(Test-BoePath -LiteralPath $currentPath)) {
                 $violations += [pscustomobject]@{
                     path = $relativePath
                     reason = "deleted from pending-turn snapshot"
@@ -1986,6 +2047,11 @@ function Assert-BoeNoRawMortalWorldProfileMutations {
     param(
         [string]$Operation = "GM turn helper completion"
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Assert-BoeNoRawMortalWorldProfileMutations @boeCallArguments }
+    }
+
 
     $violations = @(Get-BoeRawMortalWorldProfileMutations)
     if ($violations.Count -eq 0) {
@@ -2011,6 +2077,11 @@ function Test-BoeFilesModifiedContainsPath {
         [Parameter(Mandatory = $true)]
         [string]$RelativePath
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Test-BoeFilesModifiedContainsPath @boeCallArguments }
+    }
+
 
     $target = Normalize-BoeRelativePath -RelativePath $RelativePath
     foreach ($entry in @($FilesModified)) {
@@ -2081,6 +2152,11 @@ function Test-BoeTurnHasAuthorizedGuardianMutation {
         [Parameter(Mandatory = $true)]
         [object]$TurnRequest
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Test-BoeTurnHasAuthorizedGuardianMutation @boeCallArguments }
+    }
+
 
     $playerAction = [string](Get-BoeJsonValue -Object $TurnRequest -Names @("playerAction") -Default "")
     foreach ($marker in @(
@@ -2108,7 +2184,7 @@ function Test-BoeTurnHasAuthorizedGuardianMutation {
         "game_state/control/pending_guardian_trade_request.json"
     )) {
         $fullPath = Resolve-BoeSessionPath -RelativePath $controlPath
-        if (Test-Path -LiteralPath $fullPath) {
+        if (Test-BoePath -LiteralPath $fullPath) {
             return $true
         }
     }
@@ -2124,6 +2200,11 @@ function Assert-BoeNoUnauthorizedSystemGuardianBootstrapMutation {
         [AllowNull()]
         [string[]]$FilesModified
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Assert-BoeNoUnauthorizedSystemGuardianBootstrapMutation @boeCallArguments }
+    }
+
 
     $turnNumber = [int](Get-BoeJsonValue -Object $TurnRequest -Names @("turnNumber") -Default 0)
     if ($turnNumber -ne 1 -or !(Test-BoeAfterlifeRealm)) {
@@ -2131,17 +2212,19 @@ function Assert-BoeNoUnauthorizedSystemGuardianBootstrapMutation {
     }
 
     $snapshotPath = Resolve-BoeSessionPath -RelativePath "game_state/control/pending_turn_snapshot/game_state/meta/guardians.json"
-    if (!(Test-Path -LiteralPath $snapshotPath)) {
+    if (!(Test-BoePath -LiteralPath $snapshotPath)) {
         return
     }
 
+    $boeJsonText=Read-BoeText $snapshotPath
     try {
-        $snapshotRoot = Get-Content -LiteralPath $snapshotPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $snapshotRoot = $boeJsonText | ConvertFrom-Json
         if (!(Test-BoeGuardianRootLooksLikeClientOwnedSystemSeed -Root $snapshotRoot)) {
             return
         }
     }
     catch {
+        Assert-BoeNotStorageFailure $_
         return
     }
 
@@ -2154,7 +2237,7 @@ function Assert-BoeNoUnauthorizedSystemGuardianBootstrapMutation {
     }
 
     $currentPath = Resolve-BoeSessionPath -RelativePath "game_state/meta/guardians.json"
-    if (!(Test-Path -LiteralPath $currentPath)) {
+    if (!(Test-BoePath -LiteralPath $currentPath)) {
         throw "Complete-BoeTurn blocked: first Chaos Sea system Guardian bootstrap deleted game_state/meta/guardians.json. Restore the client-owned system Guardian mirror from pending_turn_snapshot before completing the turn."
     }
 
@@ -2299,96 +2382,51 @@ function Write-BoeJson {
         # Optional exact read witnesses, rechecked under this writer's existing lock.
         [System.Collections.IDictionary]$ExpectedReadWitnesses
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'write' -Body { Write-BoeJson @boeCallArguments }
+    }
 
+
+    # Resolve first: all policy decisions and witnesses name the actual target.
+    $path=Resolve-BoeSessionPath -RelativePath $RelativePath
+    $RelativePath=Convert-BoeFullPathToSessionRelativePath $path
     if (!$AllowClientOwnedRuntimeWrite) {
         Assert-BoeGmWritableRuntimePath -RelativePath $RelativePath
     }
     Assert-BoeNoTerminalSignalBeforeRuntimeWrite -RelativePath $RelativePath
-
-    $path = Resolve-BoeSessionPath -RelativePath $RelativePath
-    $parent = Split-Path -Parent $path
-    if (!(Test-Path -LiteralPath $parent)) {
-        New-Item -ItemType Directory -Path $parent -Force | Out-Null
-    }
-
-    $effectiveDepth = [Math]::Max(1, [Math]::Min($Depth, 100))
-    $normalizedData = Normalize-BoePlayerFacingOutputPayload -RelativePath $RelativePath -Data $Data
-    $json = $normalizedData | ConvertTo-Json -Depth $effectiveDepth
-    $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
-    $desiredBytes = $utf8NoBom.GetBytes($json + [Environment]::NewLine)
-    $tempPath = $path + '.tmp.' + [Guid]::NewGuid().ToString('N').Substring(0, 8)
-    $replaceBackupPath = $path + '.replace-backup.' + [Guid]::NewGuid().ToString('N').Substring(0, 8)
-    $writeLock = Acquire-BoeCanonicalWriteLock
-    try {
-        if ($null -ne $ExpectedReadWitnesses) {
-            foreach ($witnessPath in $ExpectedReadWitnesses.Keys) {
-                $witnessFullPath = Resolve-BoeSessionPath -RelativePath $witnessPath
-                $actualWitness = if ([System.IO.File]::Exists($witnessFullPath)) {
-                    Get-BoeSha256Hex -Bytes ([System.IO.File]::ReadAllBytes($witnessFullPath))
-                }
-                else { 'missing' }
-                if ($actualWitness -cne $ExpectedReadWitnesses[$witnessPath]) {
-                    throw "Continuation input changed before Ready publication: $witnessPath"
-                }
-            }
-        }
-        if ($script:BoeReadBaselines.ContainsKey($path)) {
-            $expectedSha256 = [string]$script:BoeReadBaselines[$path]
-            $currentSha256 = if ([System.IO.File]::Exists($path)) {
-                Get-BoeSha256Hex -Bytes ([System.IO.File]::ReadAllBytes($path))
-            }
-            else {
-                'missing'
-            }
-            if ($currentSha256 -ne $expectedSha256) {
-                throw "Canonical file changed since Read-BoeJson; refusing stale write: $RelativePath"
-            }
-        }
-
-        $stream = [System.IO.FileStream]::new(
-            $tempPath,
-            [System.IO.FileMode]::CreateNew,
-            [System.IO.FileAccess]::Write,
-            [System.IO.FileShare]::None,
-            4096,
-            [System.IO.FileOptions]::WriteThrough)
-        try {
-            $stream.Write($desiredBytes, 0, $desiredBytes.Length)
-            $stream.Flush($true)
-        }
-        finally {
-            $stream.Dispose()
-        }
-
-        if ([System.IO.File]::Exists($path)) {
-            [System.IO.File]::Replace($tempPath, $path, $replaceBackupPath, $true)
-            [System.IO.File]::Delete($replaceBackupPath)
-        }
-        else {
-            [System.IO.File]::Move($tempPath, $path)
-        }
-        $script:BoeReadBaselines[$path] = Get-BoeSha256Hex -Bytes $desiredBytes
-    }
-    finally {
-        if ([System.IO.File]::Exists($tempPath)) {
-            [System.IO.File]::Delete($tempPath)
-        }
-        if ([System.IO.File]::Exists($replaceBackupPath)) {
-            [System.IO.File]::Delete($replaceBackupPath)
-        }
-        if ($null -ne $writeLock) {
-            $writeLock.Dispose()
+    $effectiveDepth=[Math]::Max(1,[Math]::Min($Depth,100))
+    $normalizedData=Normalize-BoePlayerFacingOutputPayload -RelativePath $RelativePath -Data $Data
+    $json=$normalizedData | ConvertTo-Json -Depth $effectiveDepth
+    $desiredBytes=[Text.UTF8Encoding]::new($false).GetBytes($json+[Environment]::NewLine)
+    $expected=[Collections.Generic.Dictionary[string,object]]::new($script:BoePathComparer)
+    if($script:BoeReadBaselines.ContainsKey($path)){$expected[$path]=$script:BoeReadBaselines[$path]}
+    if($null -ne $ExpectedReadWitnesses){
+        foreach($witness in $ExpectedReadWitnesses.Keys){
+            $name=Resolve-BoeSessionPath $witness
+            $hash=$ExpectedReadWitnesses[$witness]
+            if($hash -ceq 'missing'){$hash=$null}
+            if($expected.ContainsKey($name) -and $expected[$name] -cne $hash){throw 'Conflicting exact helper read witnesses.'}
+            $expected[$name]=$hash
         }
     }
+    [void](Invoke-BoeHelperRequest @{action='publish';path=$RelativePath;bytes=[Convert]::ToBase64String($desiredBytes);expected=$expected} -OnCommitted {
+        $script:BoeReadBaselines[$path]=Get-BoeSha256Hex -Bytes $desiredBytes
+    })
 }
 
 function Get-BoeCurrentTurnRequest {
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Get-BoeCurrentTurnRequest @boeCallArguments }
+    }
+
     $path = Resolve-BoeSessionPath -RelativePath "input/turn_request.json"
-    if (!(Test-Path -LiteralPath $path)) {
+    if (!(Test-BoePath -LiteralPath $path)) {
         throw "Current input/turn_request.json is missing. The daemon may have already closed this wait cycle; do not write a stale terminal signal."
     }
 
-    return Get-Content -LiteralPath $path -Raw -Encoding UTF8 | ConvertFrom-Json
+    return Read-BoeText $path | ConvertFrom-Json
 }
 
 function Get-BoeExactJsonPropertyNames {
@@ -2547,6 +2585,11 @@ function Complete-BoeQteEffectResolution {
         [AllowEmptyCollection()]
         [object[]]$Receipts
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'write' -Body { Complete-BoeQteEffectResolution @boeCallArguments }
+    }
+
 
     $requestPath = "input/qte_effect_resolution_request.json"
     $request = Read-BoeJson -RelativePath $requestPath
@@ -2727,6 +2770,7 @@ function Complete-BoeQteEffectResolution {
                 $amount = [decimal]$rawAmount
             }
             catch {
+        Assert-BoeNotStorageFailure $_
                 throw "Receipt '$receiptRequestId'.amount must be a finite decimal number."
             }
         }
@@ -2788,7 +2832,7 @@ function Complete-BoeQteEffectResolution {
         acceptedSourceTurn = $acceptedSourceTurn
         qteId = $correlation.qteId
         pendingStateFingerprint = $correlation.pendingStateFingerprint
-        receiptsFingerprint = "sha256:" + (Get-BoeSha256Hex -Bytes ([System.IO.File]::ReadAllBytes($responseFullPath)))
+        receiptsFingerprint = "sha256:" + (Get-BoeSha256Hex -Bytes ((Read-BoeBytes $responseFullPath)))
         timestamp = [DateTimeOffset]::UtcNow.ToString("O")
         status = "success"
     }
@@ -2804,18 +2848,23 @@ function Assert-BoeCurrentPendingSnapshotContext {
         [Parameter(Mandatory = $true)]
         [object]$TurnRequest
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'read' -Body { Assert-BoeCurrentPendingSnapshotContext @boeCallArguments }
+    }
+
 
     $manifestPath = Resolve-BoeSessionPath -RelativePath "game_state/control/pending_turn_snapshot.json"
-    if (!(Test-Path -LiteralPath $manifestPath)) {
+    if (!(Test-BoePath -LiteralPath $manifestPath)) {
         throw "Current game_state/control/pending_turn_snapshot.json is missing. The client no longer has active pending-turn authority; do not write a stale terminal signal."
     }
 
     $authorityPath = Resolve-BoeSessionPath -RelativePath "game_state/control/pending_turn_snapshot.authority.json"
-    if (!(Test-Path -LiteralPath $authorityPath)) {
+    if (!(Test-BoePath -LiteralPath $authorityPath)) {
         throw "Current game_state/control/pending_turn_snapshot.authority.json is missing. The client no longer has active pending-turn authority; do not write a stale terminal signal."
     }
 
-    $manifest = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    $manifest = Read-BoeText $manifestPath | ConvertFrom-Json
     $manifestSessionId = [string]$manifest.sessionId
     $manifestRequestId = [string]$manifest.requestId
     $manifestTurnNumber = [int]$manifest.turnNumber
@@ -2831,6 +2880,11 @@ function Complete-BoeTurn {
     param(
         [string[]]$FilesModified = @()
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'write' -Body { Complete-BoeTurn @boeCallArguments }
+    }
+
 
     Assert-BoeGmFilesModifiedEntries -FilesModified $FilesModified
     Assert-BoeNoRawMortalWorldProfileMutations -Operation "Complete-BoeTurn"
@@ -2855,6 +2909,11 @@ function Fail-BoeTurn {
         [Parameter(Mandatory = $true)]
         [string]$ErrorMessage
     )
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'write' -Body { Fail-BoeTurn @boeCallArguments }
+    }
+
 
     $turn = Get-BoeCurrentTurnRequest
     Assert-BoeCurrentPendingSnapshotContext -TurnRequest $turn
@@ -3164,16 +3223,21 @@ function Assert-BoeSpiritualContinuationResponse {
 
 function Complete-BoeValidationRepair {
     param([AllowNull()][string]$SpiritualWoundContinuationJson)
+    if(-not $script:BoeHelperScope){
+        $boeCallArguments=@{}+$PSBoundParameters
+        return Invoke-BoeHelperScope -Mode 'write' -Body { Complete-BoeValidationRepair @boeCallArguments }
+    }
+
 
     $requestPath = 'game_state/control/validation_repair_request.json'
     $readyPath = 'game_state/control/validation_repair_ready.json'
     $requestFullPath = Resolve-BoeSessionPath -RelativePath $requestPath
     $readyFullPath = Resolve-BoeSessionPath -RelativePath $readyPath
-    $requestBytes = [System.IO.File]::ReadAllBytes($requestFullPath)
+    $requestBytes = (Read-BoeBytes $requestFullPath)
     $witnesses = @{}
     $witnesses[$requestPath] = Get-BoeSha256Hex -Bytes $requestBytes
-    $witnesses[$readyPath] = if ([System.IO.File]::Exists($readyFullPath)) {
-        Get-BoeSha256Hex -Bytes ([System.IO.File]::ReadAllBytes($readyFullPath))
+    $witnesses[$readyPath] = if ((Test-BoePath -LiteralPath $readyFullPath)) {
+        Get-BoeSha256Hex -Bytes ((Read-BoeBytes $readyFullPath))
     } else { 'missing' }
     $requestJson = [System.Text.Encoding]::UTF8.GetString($requestBytes).TrimStart([char]0xFEFF)
     Assert-BoeSpiritualContinuationRawJson -Json $requestJson -RepairRequest
