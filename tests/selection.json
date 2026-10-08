@@ -82,6 +82,26 @@
         "T062-STORAGE-OUTCOMES",
         "A02-ACCEPTED-NORMALIZER"
       ]
+    },
+    {
+      "category": "portable-directory-uncertain-consumer",
+      "reason": "A04 original live preparation, snapshot cleanup notice and real bound closing preserve actual unknown tree decision; no synthetic typed exception.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES"
+      ]
+    },
+    {
+      "category": "portable-directory-outcome-neighbors",
+      "reason": "Directly affected facade expectation and existing reached rollback/committed-debt/logger/empty controls preserve tree-specific outcome semantics.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES"
+      ]
     }
   ]
 }

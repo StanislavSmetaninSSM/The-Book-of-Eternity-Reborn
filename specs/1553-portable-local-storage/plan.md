@@ -1,3 +1,21 @@
+## A04 directory carrier causal preparation — 2026-10-08
+
+A02 independent Astra XHigh source/evidence PASS at28eacf4f; no new delta findings.
+Exact7 GREEN and discovery artifacts published ina698338f, remote readback matched.
+Treatment-owned settlement/refresh/restore carriers remain explicitly queued (F08/F09).
+Expanded [independent changeset audit8bdc8026](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/8bdc8026c0b3db1f98bde43a2a058ffe2175355a/specs/1553-portable-local-storage/changeset-audit-20261008/README.md)
+reconciles A03 existing control bool projection and A04 tree carrier with existing families.
+
+A04 tests now assert reached unknown tree publication/partial bytes/retained journal
+before desired carrier, original public preparation/dice order, original GameEngine
+snapshot cleanup/AgentConsole notice, and real closing generation replacement retaining
+the same caught decision. Existing rollback/committed cleanup+logger/empty controls
+form a finite12-row neighbor selection; consumer selection3,15 total. Runtime unchanged;
+fresh PlanOnly then causal baseline, distinguish fixture failures from real target RED.
+The reviewed minimal direction reuses common RequireCommittedLocalPublication rather
+than inventing another uncertainty type. Preserve tree validation/partial effects/debt.
+After A04: Windows Bridge, existing control A03, F06, then remaining families.
+
 ## A02 bounded GREEN submitted for independent review — 2026-10-08
 
 Frozen28eacf4f5012cf597f473a28706e22a29f92ca8f: fresh seven-case PlanOnly/build,

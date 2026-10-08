@@ -867,7 +867,7 @@
     },
     {
       "id": "daren-standalone-browser-dispatch",
-      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent \u00d7 commit/rollback), no broader browser cohort.",
+      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
       "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
@@ -4610,8 +4610,38 @@
     },
     {
       "id": "portable-directory-uncertain-consumer",
-      "responsibility": "Exact actual LiveTurnPreparationService unresolved tree evidence and finalization recovery propagation; rerun only the reviewed assertion correction.",
+      "responsibility": "A04 actual public live preparation, original pending snapshot cleanup/console notice, and generation-replacement closing preserve the established storage decision with exact partial bytes and retained evidence.",
       "excludes": "Whole lifecycle, unrelated gameplay and full accepted-turn/backup migration.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionClosingTests.ActualTreeDecisionSurvivesClosingGenerationReplacement"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualSnapshotTreeUncertaintyStopsCleanupAndProjectsRecoveryNotice"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-directory-outcome-neighbors",
+      "responsibility": "Exact directly affected tree uncertainty facade plus existing known rollback, committed cleanup/logger and empty-tree controls. Each selected method validates actual member effects or no-op contract.",
+      "excludes": "No broad lifecycle, directory migration aggregate or native Windows qualification.",
       "changeHints": [
         "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
       ],
@@ -4626,7 +4656,10 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup"
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.UnknownLaterMemberPreservesPartialOutcomeAndRetainedEvidence",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PublicationCutsKeepExactWholeBeforeOrCommittedAbsence",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.CommittedCleanupAndDiagnosticFailureNeverUndoOrDeleteUnknownBytes",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration"
           ]
         }
       ]
