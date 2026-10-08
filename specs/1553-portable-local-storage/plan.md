@@ -1,3 +1,17 @@
+## A04 reached consumer RED and common-carrier correction — 2026-10-08
+
+Sourcebfd neighbors12=11PASS/1FAIL; source97ace original consumer2=0PASS/2FAIL,
+notice1=0PASS/1FAIL. Each failure follows reached actual deletion/unknown bytes/
+retained journal assertions. Closing replacement loses the same original decision;
+original cleanup helper followed by original AgentConsole projection falsely says
+not applied (not a full console-command/game-loop execution). All owned cleanup
+complete. [Exact split-source evidence](recovery/storage-migration-directory-red-20261008/manifest.json).
+Remove the unused directory-only exception and its sole branch; existing
+RequireCommittedLocalPublication now handles the same unknown outcome. No tree
+membership/order/generation/rollback/committed-debt behavior changes. Production,
+script and reflective-name search found no other live reference to the removed type.
+Fresh15-case GREEN plus independent review pending; no native Windows claim.
+
 ## A04 fail-fast baseline split — 2026-10-08
 
 Sourcebfd64967 freshPlanOnly15/3 succeeded. Actual first descriptor12 complete:

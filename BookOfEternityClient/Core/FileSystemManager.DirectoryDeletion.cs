@@ -2,10 +2,6 @@ using Microsoft.Extensions.Logging;
 
 namespace BookOfEternityClient.Core;
 
-internal sealed class CanonicalDirectoryDeletionUncertainException(Exception? failure)
-    : InvalidOperationException(
-        "Результат удаления временных данных пока не подтверждён. Требуется проверка и восстановление перед следующим действием.", failure);
-
 public partial class FileSystemManager
 {
     private async Task DeleteTrustedLocalDirectoryTreeAsync(CanonicalWriteLease lease, string relativePath)
@@ -57,8 +53,6 @@ public partial class FileSystemManager
             changes.Add(GenerationCreation(Guid.NewGuid().ToString("N")));
         var outcome = await PublishLocalCoreAsync(lease, generation.Binding, changes,
             CancellationToken.None, RevalidateTree);
-        if (outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain)
-            throw new CanonicalDirectoryDeletionUncertainException(outcome.Failure);
         if (outcome.Disposition != TrustedLocalPublicationDisposition.Committed)
         {
             RequireCommittedLocalPublication(outcome);
