@@ -4,65 +4,60 @@
   ],
   "Reasons": [],
   "DiscoveryOnly": false,
-  "PlanOnly": true,
+  "PlanOnly": false,
   "Revision": {
     "Head": "d72a5d393f237ee849d40561b30dd95293286e83",
     "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
     "ChangedFiles": 0
   },
   "CatalogAudit": null,
-  "CategoryResults": [],
+  "CategoryResults": [
+    {
+      "Category": "portable-treatment-mirror-causal-linux",
+      "Seconds": 11.0900659,
+      "BudgetMinutes": 4,
+      "Completed": false
+    }
+  ],
   "AdapterResults": [],
   "PhaseResults": [
     {
       "Name": "Revision",
-      "Seconds": 0.0421859,
+      "Seconds": 0.0414453,
       "Completed": true
     },
     {
       "Name": "Changed-paths",
-      "Seconds": 0.0344279,
+      "Seconds": 0.0353036,
       "Completed": true
     },
     {
       "Name": "New-paths",
-      "Seconds": 0.0951765,
-      "Completed": true
-    },
-    {
-      "Name": "Build-integration",
-      "Seconds": 81.3728365,
-      "Completed": true
-    },
-    {
-      "Name": "Runtime-cleanup",
-      "Seconds": 0.0055466,
+      "Seconds": 0.0801142,
       "Completed": true
     }
   ],
   "Strategy": "SelectedCategories",
   "TimeoutMinutes": 9,
-  "WallTime": "00:01:25.0896047",
-  "ExitCode": 0,
+  "WallTime": "00:00:14.9070091",
+  "ExitCode": 1,
   "TimedOut": false,
   "OwnedTreeCleanupSucceeded": true,
   "RuntimeCleanupSucceeded": true,
   "RuntimeCleanup": null,
   "Selection": {
     "PlannedDescriptors": 1,
-    "CompletedDescriptors": 0,
+    "CompletedDescriptors": 1,
     "PlannedCases": 1,
-    "CompletedCases": 0,
-    "UnderfilledDescriptors": [
-      "portable-treatment-mirror-causal-linux-integration-001"
-    ],
-    "Complete": false
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
   },
   "Tests": {
-    "Total": 0,
-    "Executed": 0,
+    "Total": 1,
+    "Executed": 1,
     "Passed": 0,
-    "Failed": 0
+    "Failed": 1
   },
   "DuplicateTests": []
 }

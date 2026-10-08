@@ -1,5 +1,5 @@
 {
-  "scope": "Treatment test-only preparation: initial incomplete fixture run, then two causal restoration/disposal boundaries plus an unreached mirror fixture. No production changes.",
+  "scope": "Treatment storage causal packet: accepted two actual ec30e boundary REDs plus isolated d72a mirror RED; earlier compile/timeout/setup failures retained separately. No production fix/GREEN/native claim.",
   "initialCompile": {
     "source": "b8c7dc35886f30b286f1caa99c9e3f04e906800a",
     "artifacts": [
@@ -533,6 +533,132 @@
       {
         "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
         "sha256": "3bacf2c2294c88b10acd0d137c153ba2e219acc93903e74cad155081474d4705"
+      }
+    ]
+  },
+  "mirrorCausal": {
+    "source": "d72a5d393f237ee849d40561b30dd95293286e83",
+    "qualification": "Mirror1 actual225134 completed causalRED14.9070091s after all bootstrap/17-to99-to17/originalreceipt/four-treatment-image predicates; exact CSP wrapped Unsafe and actual generic retry notice. Same assertion fails; later notice assertions not executed, raw notice independently retained. Owned root and runner cleanup true. Prior two accepted causal rows remain source ec30e.",
+    "artifacts": [
+      {
+        "path": "mirror-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-224959-349-173643-67b9b6669e6141dfa3732e836492be95-categories/Build-integration.log",
+        "sha256": "6e46b0fd1a33d627f4e26f905c06a76e5e9729a2e50a21bbadc89964dfa5f615",
+        "originalSha256": "4a01afacfef834ea048d753d479881078a37c811513382805146dd48e9ae5710"
+      },
+      {
+        "path": "mirror-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-224959-349-173643-67b9b6669e6141dfa3732e836492be95-categories/dotnet-test.log",
+        "sha256": "3901c3911987a19a1c6bac56764912ef8646c55afbd4f419d922714e38aa8fb0",
+        "originalSha256": "6cab3fde116a6d9d59d4d8e204a2f487c9a52bd69b83fc0b7f7eb3b848ff92ef"
+      },
+      {
+        "path": "mirror-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-224959-349-173643-67b9b6669e6141dfa3732e836492be95-categories/plan.json",
+        "sha256": "fcf0c8582adb19e8da80faf45b0fc85de802511a25a5be12d99ffd8c330a7600",
+        "originalSha256": "fcf0c8582adb19e8da80faf45b0fc85de802511a25a5be12d99ffd8c330a7600"
+      },
+      {
+        "path": "mirror-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-224959-349-173643-67b9b6669e6141dfa3732e836492be95-categories/summary.json",
+        "sha256": "a7301d65155255129ca06fac48ea40d73209c17a951b76d8181afa0eb6d88a54",
+        "originalSha256": "a7301d65155255129ca06fac48ea40d73209c17a951b76d8181afa0eb6d88a54"
+      },
+      {
+        "path": "mirror-causal-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-225134-841-174079-116114d159014255aab7cb8478deed52-categories/dotnet-test.log",
+        "sha256": "b3604ca36e134a11ab979b6a68125c625eb4b294de588af1377953fe6e72ede2",
+        "originalSha256": "1415b2a72064c468272efd0b89ac730e62dcb10efde820b0be5605fe29f698c2"
+      },
+      {
+        "path": "mirror-causal-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-225134-841-174079-116114d159014255aab7cb8478deed52-categories/plan.json",
+        "sha256": "4595e6d9c101fbd5bf229dbaba5f51df283124b28c512ab922d84454c4012833",
+        "originalSha256": "4595e6d9c101fbd5bf229dbaba5f51df283124b28c512ab922d84454c4012833"
+      },
+      {
+        "path": "mirror-causal-portable-treatment-mirror-causal-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-225134-841-174079-116114d159014255aab7cb8478deed52-categories/portable-treatment-mirror-causal-linux-integration-001.trx",
+        "sha256": "a085fa87f13adfd2d520a904b8f96ef881a97edaa58fb506773af565baea961e",
+        "originalSha256": "9ae319d41fb947a643a5c75e5ca18d0e1c51d285bf39c98114696ac4c61fc1f5"
+      },
+      {
+        "path": "mirror-causal-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-225134-841-174079-116114d159014255aab7cb8478deed52-categories/summary.json",
+        "sha256": "42d8e25ddbe726a2ddcb9e50c6e120db530548586130bf456671d65e4ddde136",
+        "originalSha256": "42d8e25ddbe726a2ddcb9e50c6e120db530548586130bf456671d65e4ddde136"
+      },
+      {
+        "path": "mirror-causal-original-stdout.json.gz",
+        "source": "/tmp/boe-treatment-d72a-mirror.json",
+        "sha256": "9b8ac2bd6efcebda447c3ae2e752c3da3ad0f6148e2ea8fe390d1317e411af52",
+        "originalSha256": "18d3e681b76dca9eecdd6768564baa088d57b4d57258e3cb7a3876f68e529df0"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.TreatmentStorageOutcome.cs",
+        "sha256": "89e1d16042972d5c9e91e488121f36a0a8ca90111c7fe62261bd78683b7ce208"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.cs",
+        "sha256": "e53a5aadf6b050870decfaba1f71d9ec6765aa70eb33975bd5a61422d0b7890b"
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+        "sha256": "07bed61b9604d200db23823bb28c81930d87b0ebea2ea5b760710be0d5fa0562"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+        "sha256": "d7bd84ca21435ed86ac279432722d08d1f466b142e288068b11df83082071b4e"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "dc9a7da0614e05ec48297293b7b03b52fa9a71e5d4ac3eb229b1cc181e898618"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "sha256": "86ba1ecf5b2ae813fb7d68b8a7eb05ad4da49cde93cc809ed7e95ea3098a4628"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "sha256": "176b0af190ab7c536f3af98303753e8bd9fba00ac0b81b44f879648789b8f013"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
+        "sha256": "4e248b04c73731e2cc0c5c4b35e69d1bdbd141a6bace970cabba7e64589b0f70"
+      },
+      {
+        "path": "BookOfEternityClient/Core/StateManager.cs",
+        "sha256": "fdf7fa9d071c750a18a27eab0d0ac25dd2d036a3eec06544fe639fd699c4d997"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "c0d39b8c2a75da9da309d051c26d643e3437a03982ce4bdde8dd84ecf967a1a2"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "dc52246b8be5fe43814e3c37146f0275046e793e33c0a1633b3375d517460e2c"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+        "sha256": "3bacf2c2294c88b10acd0d137c153ba2e219acc93903e74cad155081474d4705"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStatePlanner.cs",
+        "sha256": "b59594676efb70723398dad68418059d5f796bfff72d5ff4910a60219641654c"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeResourceOwnerComposer.cs",
+        "sha256": "c87f38ca05631b68f928b31111164326202a7e9dee38e80fdc54399cd81505cc"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalResourceQuartetTransaction.cs",
+        "sha256": "4d9460fefdd82276f37bb30b5c38416f67f6b3bb2ea12176a868380fb59d84db"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalResourceOwnerAuthorityComposer.cs",
+        "sha256": "0ebf495c393c9dc7108b0a1c03071336dafcf4f0c4d3cda5006184f84be38900"
       }
     ]
   }

@@ -1,3 +1,39 @@
+## Treatment causal packet complete; bounded runtime design — 2026-10-08
+
+At clean d72a, matching Plan224959 built exact1/0 in85.0896047s; actual225134
+completed1/1 causalFAIL14.9070091s. Full bootstrap and actual soul/profile17→late99→
+MemberPublished profile17/index0 predicates passed with the same original open receipt.
+Four published treatment images remain exact and resource change is positive. Actual
+publisher Uncertain retains one uncommitted journal (6030224437D0699840535EE26450B1F5D7E52A8BF6C19C4C772042AF82BA11B7)
+and31 foreign bytes. The original engine wraps that exact typed cause in Unsafe;
+actual AgentConsole projects generic retry. Assert.Same fails after physical predicates;
+later notice assertions were not executed, while raw notice independently records it.
+Zero later reached restoration reads/publications; owned root removed, runner cleanup
+true. This closes the third causal recipe alongside the two accepted ec30e rows; it is
+not a successful treatment turn or production fix. Full packet now52 artifacts/72 pins.
+
+Proposed minimal runtime change (review before GREEN):
+- Stop exact restoration immediately on actual CoordinatedStatePublicationUncertainException.
+  Under an already-held original lease, retain the existing FailTaken restart blocker
+  and consume the exact original receipt; preserve the typed exception and stop local
+  Dispose/explicit settlement from acquiring another lease or recovering the journal.
+- Propagate that same carrier through original normalizer Finish failure, attaching the
+  original known business exception as diagnostic. Known nonstorage aggregate behavior
+  stays intact; no global exception unwrapping or guessed storage outcome.
+- For original mirror Uncertain after its lease has ended, record only a local absorbing
+  failure on the original transaction, retain its existing open receipt/held claims,
+  and rethrow the same typed exception BEFORE compensation. No new lease to FailTaken,
+  no canonical terminal release or accepted outcome, no new main lifecycle state.
+- If a known original failure later encounters a genuine settlement Uncertain, preserve
+  the exact settlement carrier plus original cause. Known Rearmed/HeldBlocked/Unsafe/
+  ReleaseFailed behavior remains unchanged. Existing direct typed UI projection then
+  supplies recovery guidance without a new retry promise.
+
+Final bounded selection will combine the three causal rows with exact existing engine
+boundary/unsafe/restoration/safe-held/rearmed controls justified by the actual delta.
+Source/selection review and matching Plan precede GREEN; no accepted RED repetitions
+or whole lifecycle category are needed. No production changes in this carrier.
+
 ## Treatment mirror complete fixture bootstrap — 2026-10-08
 
 The isolated mirror fixture now supplements the real existing Mortal resource quartet
