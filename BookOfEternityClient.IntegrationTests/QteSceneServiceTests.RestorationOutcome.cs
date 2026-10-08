@@ -21,6 +21,7 @@ public sealed partial class QteSceneServiceTests
         var reached = 0;
         var forwardPublished = 0;
         var laterReads = 0;
+        var earlierReads = 0;
         byte[] unknown = [0xFF, 0x41];
         byte[]? journal = null;
         FileSystemManager? files = null;
@@ -30,6 +31,7 @@ public sealed partial class QteSceneServiceTests
                 BeforeCanonicalReadOpenAsync = _ =>
                 {
                     if (reached > 0) laterReads++;
+                    else earlierReads++;
                     return Task.CompletedTask;
                 },
                 LocalPublicationObserver = (phase, index) =>
@@ -47,7 +49,7 @@ public sealed partial class QteSceneServiceTests
                         forwardPublished++;
                         return;
                     }
-                    Assert.True(forwardPublished > 0);
+                    if (forwardPublished == 0) return;
                     reached++;
                     File.WriteAllBytes(files.ResolvePath(target), unknown);
                     journal = File.ReadAllBytes(journalPath);
@@ -66,7 +68,8 @@ public sealed partial class QteSceneServiceTests
             }
         };
         var failure = await Record.ExceptionAsync(() => service.ApplyTerminalOutcomeValidatedStateChangesAsync(outcome));
-        Assert.Equal(1, reached);
+        Assert.True(reached == 1, $"Restoration cut hits={reached}; forward publications={forwardPublished}; failure={failure}");
+        Assert.True(earlierReads > 0);
         Assert.True(forwardPublished > 0);
         Assert.Equal(unknown, File.ReadAllBytes(files.ResolvePath(target)));
         Assert.Equal(journal, File.ReadAllBytes(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));

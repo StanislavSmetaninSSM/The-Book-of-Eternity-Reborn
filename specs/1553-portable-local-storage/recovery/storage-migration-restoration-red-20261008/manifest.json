@@ -1,0 +1,63 @@
+{
+  "initialSource": "8d0624c99faefacd6c0ba611235a780d29f9c709",
+  "initialResult": {
+    "executed": 9,
+    "passed": 3,
+    "failed": 6,
+    "causalPreTurnFailures": 4,
+    "unreachedQteFixtureFailures": 2,
+    "wallSeconds": 9.1231661
+  },
+  "qualification": "Initial QTE rows have0cut hits, not causal RED. Pre-turn rows have actualwrite/delete reachedcut, unknownbytes/unchangedjournal/evidence before wrongcarrier and laterattempt counts1/3.",
+  "cleanupComplete": true,
+  "artifacts": [
+    {
+      "path": "initial-plan-Build-integration.log.gz",
+      "source": "TestResults/test-categories/20261008-104038-289-21149-47e1e2ab294b4100bd01880668d4794c-categories/Build-integration.log",
+      "sha256": "8dd0bccd7d96240e03487842a5ed470cdbac0a980a4b7798416b5e29eda26d5c",
+      "originalSha256": "e45ee1c41aa8beb4196c156867954692062b94b4e218191eb11dde60abcba832"
+    },
+    {
+      "path": "initial-plan-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-104038-289-21149-47e1e2ab294b4100bd01880668d4794c-categories/dotnet-test.log",
+      "sha256": "e029a8853137f5aa73a6452b62b839526a304d2b22ae4ca94c0a2ad70a7f41e7",
+      "originalSha256": "8f9ca005d2b2e0d72097a64786fc51ef76b791b1c2a5cc90437eafd01bb3568b"
+    },
+    {
+      "path": "initial-plan-plan.json",
+      "source": "TestResults/test-categories/20261008-104038-289-21149-47e1e2ab294b4100bd01880668d4794c-categories/plan.json",
+      "sha256": "c1918363da09d03ba39ffcf340ca11baaa3f9e568a7cc2bc86267b3fbdbc714e",
+      "originalSha256": "c1918363da09d03ba39ffcf340ca11baaa3f9e568a7cc2bc86267b3fbdbc714e"
+    },
+    {
+      "path": "initial-plan-summary.json",
+      "source": "TestResults/test-categories/20261008-104038-289-21149-47e1e2ab294b4100bd01880668d4794c-categories/summary.json",
+      "sha256": "f021840755638ca3e962379cf15cc8fc3b27bb4fe0d67d9d831b54b6fe87c33e",
+      "originalSha256": "f021840755638ca3e962379cf15cc8fc3b27bb4fe0d67d9d831b54b6fe87c33e"
+    },
+    {
+      "path": "initial-red-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-104143-918-21470-29f02b81810c41d0a69e2efac03de933-categories/dotnet-test.log",
+      "sha256": "527831c2bf6d940efc0666a5f0abda6783fc77db792745934e43d21a47c555df",
+      "originalSha256": "ae79ac5b5b4559b91f74245a6f8ea5fcbf1209e60ee082ca8bef1cc00acf6527"
+    },
+    {
+      "path": "initial-red-plan.json",
+      "source": "TestResults/test-categories/20261008-104143-918-21470-29f02b81810c41d0a69e2efac03de933-categories/plan.json",
+      "sha256": "ed242a5d3d6dbfc8ba0bcbae214c901ba6cf5b2fdeffcad036c1fec94451a87a",
+      "originalSha256": "ed242a5d3d6dbfc8ba0bcbae214c901ba6cf5b2fdeffcad036c1fec94451a87a"
+    },
+    {
+      "path": "initial-red-portable-restoration-publication-outcomes-integration-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-104143-918-21470-29f02b81810c41d0a69e2efac03de933-categories/portable-restoration-publication-outcomes-integration-001.trx",
+      "sha256": "ca7afc0af9e0723e6e71ddca8eb1c18bf7030b1d0f4400c76649695ced8b364b",
+      "originalSha256": "a6ac2a968b13bf402367ef599c631523ff1fef0fb8881741e0e7d972924e0f77"
+    },
+    {
+      "path": "initial-red-summary.json",
+      "source": "TestResults/test-categories/20261008-104143-918-21470-29f02b81810c41d0a69e2efac03de933-categories/summary.json",
+      "sha256": "c6767d3f4789bab12c59bb23a1663f60bdfed52257f1ce940e981d5258bd4093",
+      "originalSha256": "c6767d3f4789bab12c59bb23a1663f60bdfed52257f1ce940e981d5258bd4093"
+    }
+  ]
+}

@@ -29,9 +29,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         var target = operation == "write" ? present : absent;
         var reached = 0;
         var laterMutations = 0;
+        var earlierMutations = 0;
         byte[] unknown = [0xFF, 0x41];
         byte[]? journal = null;
-        _consoleMutationObserver = _ => { if (reached > 0) laterMutations++; };
+        _consoleMutationObserver = _ => { if (reached > 0) laterMutations++; else earlierMutations++; };
         _consolePublicationObserver = (phase, index) =>
         {
             if (phase != TrustedLocalPublicationPhase.MemberPublished || reached > 0) return;
@@ -51,6 +52,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         _consoleMutationObserver = null;
         _consolePublicationObserver = null;
         Assert.Equal(1, reached);
+        Assert.True(earlierMutations > 0);
         Assert.Equal(unknown, File.ReadAllBytes(_fs.ResolvePath(target)));
         Assert.Equal(journal, File.ReadAllBytes(Path.Combine(_fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
         foreach (var (path, bytes) in evidence) Assert.Equal(bytes, File.ReadAllBytes(_fs.ResolvePath(path)));

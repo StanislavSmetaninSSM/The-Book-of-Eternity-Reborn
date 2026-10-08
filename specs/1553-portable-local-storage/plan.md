@@ -1,3 +1,15 @@
+## T062 restoration baseline checkpoint — 2026-10-08
+
+Source8d0624c9 actual9 complete:3controls PASS,4 causal pre-turn FAIL,2 QTE
+fixture failures with zero reached cuts (not causal RED). Write/delete uncertainty
+retains unknown bytes and exact journal/backups, but returns InvalidDataException
+and attempts1/3 later mutations respectively. QTE phase selection is corrected
+to wait for observed forward15 before accepting restored10, with explicit failure
+diagnostic and positive reader-hook control. Both families now check positive
+observer reachability before zero-post-cut assertions. Runtime is unchanged.
+[Initial raw artifacts](recovery/storage-migration-restoration-red-20261008/manifest.json).
+Fresh PlanOnly and baseline must establish the QTE causal boundary before its fix.
+
 ## T062 restoration-time causal preparation — 2026-10-08
 
 Bounded F08/F11 source/evidence gate PASS at83f6e9a7; GREEN/catalog carrier9f07d385
