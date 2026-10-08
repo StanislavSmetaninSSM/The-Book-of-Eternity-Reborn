@@ -1,0 +1,8 @@
+{
+  "TimestampUTC": "2026-10-08T06:45:51.826308+00:00",
+  "DeletedOwnedImmutableRestore": "/tmp/http-linux-audit-github-final-20261008",
+  "Commit": "e83aed2f572d3109825c0dca01b84c24132016ec",
+  "NoUncommittedOrUniqueData": true,
+  "FullProofRetained": "/workspace/qualification-1553-http-live-20261008/final-delivery-proof.json",
+  "Reason": "Free disk for newly delegated exact original-owner causal RED build; no state/history/runtime evidence removed"
+}

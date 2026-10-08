@@ -1,0 +1,35 @@
+diff --git a/BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.HttpReads.cs b/BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.HttpReads.cs
+index 37497530..38844365 100644
+--- a/BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.HttpReads.cs
++++ b/BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.HttpReads.cs
+@@ -105,6 +105,11 @@ internal static partial class OwnedTerminalScenarioDriver
+                 evidence["WebStopped"] = true;
+             }
+         }
++        catch (Exception failure)
++        {
++            evidence["HttpReadFailure"] = failure.ToString();
++            throw;
++        }
+         finally
+         {
+             // Even causal RED must close the real idle consumer before retiring
+@@ -116,8 +121,16 @@ internal static partial class OwnedTerminalScenarioDriver
+                 using var worker = Process.Start(start)!;
+                 var output = worker.StandardOutput.ReadToEndAsync();
+                 var error = worker.StandardError.ReadToEndAsync();
+-                await worker.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(4));
+-                await File.WriteAllTextAsync(Path.Combine(folder, "http-relay-close.log"), (await output) + (await error));
++                try { await worker.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(4)); }
++                finally
++                {
++                    if (!worker.HasExited)
++                    {
++                        worker.Kill(entireProcessTree: true);
++                        await worker.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(2));
++                    }
++                    await File.WriteAllTextAsync(Path.Combine(folder, "http-relay-close.log"), (await output) + (await error));
++                }
+                 Require(worker.ExitCode == 0, "Idle relay queue close failed.");
+                 for (var i = 0; i < 200 && !File.Exists(Path.Combine(queue, "closed.json")); i++) await Task.Delay(10);
+                 using var closed = JsonDocument.Parse(await File.ReadAllBytesAsync(Path.Combine(queue, "closed.json")));

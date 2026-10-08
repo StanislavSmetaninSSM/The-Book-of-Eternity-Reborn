@@ -157,3 +157,41 @@ To free disk for fresh restoration, only two confirmed-closed duplicate installe
 packages and eight ignored local build-output directories were removed. All
 lengths/hashes were retained in closed-fixture-space-cleanup.json; isolated game
 state/history/main records/raw traces remain. No historical Uncertain was changed.
+
+
+## T055 original-owner tests-first follow-up — WIP 2026-10-08
+
+Exact0a2843af69c521d7507a9e036cb5494d8c9d73cb was fetched from GitHub into the
+independent product checkout. Only `browser-original-owner-linux` ran via
+`pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-original-owner-linux -Parallelism 1`.
+Fresh preparation succeeded;1/1 executed FAIL in126.6755992s, no timeout/skip/duplicate,
+complete selection and owned/runtime cleanup. See original-owner-red-manifest.json,
+original TRX/log/fixture archive and readable scenario/guardian receipts.
+
+This test uses real production Bridge/retained original owner and idle maintained
+relay, observed Ready (no override), original worker inventory, and actual Kestrel
+DI with no borrowed ambient operation. Ten real HTTP calls complete: session,
+game-screen and dashboard each500 in serial and parallel (six empty500 bodies);
+validation twice200 with browser_validation_exception and explicit original-owner
+admission unavailable message. Audio/client settings controls are meaningful200.
+Only2matchingCompletedclosedpins exist instead of10. This is causal body RED,
+not preparation failure or an unavailable backend expectation. The six empty
+responses contain no new exception stacks; prior live full stacks remain separate.
+
+WebStopped and queue ExecutionDisabled/ChildExited/IoDrained precede the exact
+original shutdown. ScopedStopped/cleanupComplete/noauthority, matching durable
+Stopped/OwnedScopeEmpty, physical original retirement and guardianECHILD/0emergency/
+0failure/no deadline are confirmed; driverExit1 is the expected causal failure.
+No prompt/model requests. The controlled current-schema fixture is not NewGame or
+gameplay acceptance. Native build/publish provenance and all package hashes are
+preserved; historical games/Uncertain remain untouched.
+
+New tests-only RED09f965d911d504454535fcd81d6c5cceade51f8e was compared without rerun:
+only the HttpReads harness records an exception and bounds/awaits its own close
+worker if that worker times out. The10request/DTO/pin assertions and product
+runtime are unchanged; the0a close worker exited0 and no timeout path was entered.
+These results are causally comparable; their full source pins are kept distinct.
+GREEN3d6cfd24898fa30b37764de688432455ac9a4660 is now supplied. Its exact Linux
+selection and a fresh ordinaryNewGame/133HTTP installed web-relay comparison are
+next; old contention33 and prior baselines will not be rerun. Independent Sol
+verification review is in progress. Product code remains read-only.
