@@ -6,6 +6,16 @@ Current access boundary after accepted5f663533: owner approval and parent config
 
 Current T043 state: bounded driver correction source0a3d963f has causal REDs and fresh14/14 controlled GREEN, independent Sol source/evidence/metadata PASS; catalog419/11156 valid0executed. Actual controlled ordinary NewGame/client/daemon/Bridge cancellation reaches original Stopped ACK/allpeer I/O. Separate held original pin proves drain timeout before lifecycle acquisition and retained logical Uncertain despite physical cleanup. Production runtime unchanged; historical og10 Uncertain/request/pending unchanged; exact og10 client cause unproven. No provider retry/network/auth change, new provider calls0/acceptedGMturns0. Owner approval/config publication reported; current CONNECT check blocked403. Accepted5f663533 has completed publication/restore; new access receipt closes separately. [Handoff](opencode-current-live-handoff.md).
 
+## Native Windows follow-up 2026-10-08
+
+Source #1553, owner-approved [plan](relay-windows-plan.md).
+- [ ] T053-WINDOWS-RELAY Shared protocol/POSIX preservation, native Unicode/input
+  restoration, child polling, gate; causal tests, real ConPTY/worker/helper/close/
+  original Job cleanup, Astra XHigh review and exact remote recovery.
+- [ ] T054-WINDOWS-HTTP Compare synthetic Save/Load/restart HTTP 500 with clean
+  valid root, collect real server exception/stack, then repair proven cause with
+  parallel/repeated reads, Save/Load and shutdown checks.
+
 # Tasks: Trusted local storage and cross-platform runtime
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)

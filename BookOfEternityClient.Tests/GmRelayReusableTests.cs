@@ -26,7 +26,7 @@ public sealed class GmRelayReusableTests
     public async Task WorkerContract_ExactBytesIdentityPublicationAndClose(string scenario)
     {
         var own=Path.Combine(TestRepoPaths.RepoRoot,"TestResults/relay-reusable",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(own);
-        var start=new ProcessStartInfo("python3"){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
+        var start=new ProcessStartInfo(OperatingSystem.IsWindows()?"python":"python3"){UseShellExecute=false,CreateNoWindow=true,RedirectStandardOutput=true,RedirectStandardError=true};
         foreach(var arg in new[]{Path.Combine(TestRepoPaths.RepoRoot,"tests/fixtures/ProductionMain/relay-reusable-checks.py"),scenario,own})start.ArgumentList.Add(arg);
         using var process=Process.Start(start)!;
         var output=process.StandardOutput.ReadToEndAsync();var error=process.StandardError.ReadToEndAsync();

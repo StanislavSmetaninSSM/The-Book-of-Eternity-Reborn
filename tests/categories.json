@@ -17057,6 +17057,37 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-relay-native-windows",
+      "responsibility": "Native Windows developer relay Unicode bracketed paste/submit, exact worker bytes, real helper success/error, close child/EOF and original ConPTY Job cleanup; independent-process gate and console restoration",
+      "excludes": "No Linux/systemd, model requests, gameplay or automatic profile readiness",
+      "changeHints": [
+        "tools/gm-relay",
+        "BookOfEternityClient.Tests/GmRelayWindowsTests.cs",
+        "tests/fixtures/ProductionMain/relay-windows-checks.py"
+      ],
+      "related": [
+        {
+          "id": "gm-relay-reusable-contract",
+          "when": "Shared worker contract or native gate changes"
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "windows-latest"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayWindowsTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

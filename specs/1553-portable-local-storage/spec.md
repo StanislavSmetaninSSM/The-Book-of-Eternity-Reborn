@@ -1,3 +1,12 @@
+## Native Windows relay follow-up — owner approved 2026-10-08
+
+Source #1553. Implement the bounded [Windows relay plan](relay-windows-plan.md):
+native Unicode/multiline terminal input with mode restoration, child output
+polling and interprocess gate, preserving shared protocol/POSIX behavior and
+original Job ownership. No provider requests, installs, WSL, security changes or
+game/GM-authored contract changes. Separately diagnose HTTP 500 after this block;
+the existing reproduction is limited to synthetic Save/Load and restart.
+
 ## Current final-readiness boundary — owner-approved deferral
 
 Owner accepts explicit OwnedTerminal/NativeLineage Linux use while mandatory actual systemd S2/S3 remain unavailable/deferred and backend OFF. Native Windows validation is scheduled AFTER completion/merge in parent-coordinated «Лориан-Codex bridge»; it is not a pre-merge PASS gate. [Current accepted/deferred map and bounded final plan](final-readiness.md) supersedes historical next-step labels below. Parent handles protection/reviews/merge; no merge here. Source #1553, 2026-10-08.
