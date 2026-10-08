@@ -10,7 +10,9 @@ from relay_contract import RelayError, publish_response, read_bounded, read_requ
 def output(value):
     # The worker is a JSON protocol even when stdout is a Windows pipe whose
     # default text encoding cannot represent the retained Unicode prompt.
-    sys.stdout.buffer.write((json.dumps(value, ensure_ascii=False) + '\n').encode('utf8'))
+    # JSON escapes keep Unicode exact for consumers using legacy pipe codepages;
+    # packet/prompt files retain their original bytes, with no escaping rewrite.
+    sys.stdout.buffer.write((json.dumps(value, ensure_ascii=True) + '\n').encode('utf8'))
     sys.stdout.buffer.flush()
 
 

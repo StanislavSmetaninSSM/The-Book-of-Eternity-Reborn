@@ -96,3 +96,8 @@ input case passes normal reader shutdown and exact mode restoration. Overall
 emoji under Windows redirected codepage. Fix worker JSON stdout as explicit UTF8
 bytes; shared packet/identity stays unchanged. Shared17 still not run because
 runner stops after native descriptor failure. Original Job cleanup complete.
+
+Worker stdout follow-up at b8f700b6: bytes are now UTF8, but the existing .NET
+Windows reader defaults to an OEM pipe encoding. JSON now uses standard ASCII
+Unicode escapes (still UTF8), so ordinary JSON parsers preserve exact Unicode
+without a global codepage change. Original prompt/packet file bytes untouched.
