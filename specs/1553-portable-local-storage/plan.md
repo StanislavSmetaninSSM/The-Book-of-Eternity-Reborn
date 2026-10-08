@@ -21,6 +21,18 @@ Current console namespace/admission and explicit snapshot adoption are being
 traced together before the minimal fix; unknown legacy evidence must still refuse. Selection reasons are
 recorded in tests/selection.json; no other family or aggregate is scheduled.
 
+Concrete admission proposal (not implemented/accepted yet): distinct current
+console before-image namespace, current-generation warm ownership of exact
+artifacts, signed current pending-request admission transferring a complete
+immutable cohort into warm ownership before cancellation deletes request/backups.
+Unknown legacy root handling remains unchanged. Independent narrow review found
+that absent-only staging also needs a durable refusal footprint; a namespace/hash
+map of existing backups alone is insufficient. Marker/adoption/cleanup ordering
+is under review; no resumable console transaction is authorized by a marker.
+Four additional tests are prepared but unbuilt/unrun (cold new-instance refusal,
+absence-only footprint, reached publication failure/retry, warm hash conflict).
+No runtime edits exist. No extra baseline or GREEN is claimed.
+
 Source [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 Latest owner instruction authorizes systematic inventory → independent completeness
 review → bounded migration of remaining write/recovery/notification consumers.

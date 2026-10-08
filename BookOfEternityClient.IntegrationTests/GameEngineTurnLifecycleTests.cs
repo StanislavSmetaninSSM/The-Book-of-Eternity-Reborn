@@ -60,6 +60,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
 
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
+    private Action<TrustedLocalPublicationPhase, int>? _consolePublicationObserver;
     private string? _armedCanonicalWriteFailurePath;
     private int _remainingCanonicalWriteFailureMatches;
     private readonly ITestOutputHelper? _directGachaOutput;
@@ -75,7 +76,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
-                BeforeCanonicalMutationAsync = BeforeCanonicalMutationAsync
+                BeforeCanonicalMutationAsync = BeforeCanonicalMutationAsync,
+                LocalPublicationObserver = (phase, index) => _consolePublicationObserver?.Invoke(phase, index)
             });
         _fs.EnsureDirectoryStructure();
         _fs.WriteFileAtomicAsync(

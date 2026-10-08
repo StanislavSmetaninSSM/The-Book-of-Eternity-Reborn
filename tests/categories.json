@@ -17220,7 +17220,7 @@
     },
     {
       "id": "portable-console-rollback-preparation",
-      "responsibility": "Original console/incarnation preparation stages exact rollback evidence, survives lore deletion, retains original absence through signed snapshot overlay and restores consumed preparation with cleanup.",
+      "responsibility": "Original console/incarnation preparation stages exact rollback evidence, survives lore deletion, retains original absence through signed snapshot overlay and restores consumed preparation with cleanup. Reached preparation faults, retry, exact warm evidence, cold unadopted refusal including absent-only staging.",
       "excludes": "Other afterlife transitions, browser rollback, binding gameplay and native Windows qualification.",
       "changeHints": [
         "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
@@ -17240,7 +17240,8 @@
           "tests": [
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_*"
           ]
         }
       ]
