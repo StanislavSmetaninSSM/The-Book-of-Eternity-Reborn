@@ -1,3 +1,25 @@
+## A01 cleanup causal RED and minimal correction — 2026-10-08
+
+Cleanfc0ba7 seven cases complete2PASS/5FAIL17.9156794s, cleanup both true, all original
+guardians echild/no emergency/failure/deadline. Expired/retired/receipt-retry reached
+required callback1 but local receipt0 and retained slot. Actual publication→expired/
+retired reached MemberPublished1/unknown+journal, then original uncertainty cause was
+replaced by generic admission failure; old runtime still retained slot/no receipt.
+This is cause loss, not an observed old-runtime false release. Live metadata and
+actual publication recovery/Appended controls PASS. [Raw evidence](recovery/storage-migration-main-cleanup-20261008/manifest.json).
+
+Minimal fix classifies only an actually exhausted matching original pin, before a
+retired guard obscures expiry. Wrong owner, metadata access, live closed/uncertain
+owner and metadata/publication failure retain ordinary refusal. Required pool audit
+alone maps that private type to unavailable. Existing retained cleanup phase stores
+actual typed canonical audit uncertainty; only real Appended clears debt. Unavailable
+or SessionReplaced cannot publish local receipt/release while debt remains. No new
+journal or cleanup authority, and a permanently expired pin may retain unresolved debt.
+
+Fresh selected GREEN9 = seven original-main/no-launch cases plus two exact existing
+receipt success/unconfirmed-authority controls. Runtime source/evidence review pending;
+Windows Bridge/ConPTY/status/Load/dispatch wiring remains the next separate block.
+
 ## A01 cleanup fixture compile correction — 2026-10-08
 
 Initial4ec10b93 PlanOnly131633 failed compilation: new TestSupport helper omitted

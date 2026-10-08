@@ -102,13 +102,25 @@ internal sealed partial class GmSessionRunCoordinator
         public void Dispose(){if(!_disposed){_disposed=true;Ambient.Value=_before;}}
     }
     private IDisposable Enter(bool metadata,OperationPin? pin=null){var s=new Scope(new(this,pin,metadata));s.Enter();return s;}
+    // Only an actually exhausted original pin grants cleanup's local-receipt
+    // fallback. Metadata/guard failures and closed-but-live pins are distinct.
+    private sealed class OriginalOperationPinExpiredException() : IOException("Original main operation pin has expired.");
+    internal static bool IsOriginalOperationPinExpired(Exception failure)=>failure is OriginalOperationPinExpiredException;
+    private void ValidateOriginalAccessPin(Access access)
+    {
+        if(!ReferenceEquals(access.Owner,this) || access.MetadataOnly && access.Pin!=null)throw GmSessionRunPersistence.Invalid();
+        access.Pin?.Validate(this);
+    }
     internal sealed class OperationPin : IDisposable
     {
         private readonly GmSessionRunCoordinator _owner;
         private int _references=1;
         internal OperationPin(GmSessionRunCoordinator owner){_owner=owner;}
-        internal void Retain(){lock(_owner._sync){if(_references==0)throw GmSessionRunPersistence.Invalid();_references++;}}
-        internal void Validate(GmSessionRunCoordinator owner){lock(_owner._sync){if(_references==0 || !ReferenceEquals(_owner,owner))throw GmSessionRunPersistence.Invalid();}}
+        internal void Retain(){lock(_owner._sync){if(_references==0)throw new OriginalOperationPinExpiredException();_references++;}}
+        internal void Validate(GmSessionRunCoordinator owner){lock(_owner._sync){
+            if(!ReferenceEquals(_owner,owner))throw GmSessionRunPersistence.Invalid();
+            if(_references==0)throw new OriginalOperationPinExpiredException();
+        }}
         public void Dispose(){lock(_owner._sync){if(_references==0)return;if(--_references==0 && --_owner._pins==0)_owner._drained.TrySetResult();}}
     }
     internal async Task<T> RunOperationAsync<T>(Func<Task<T>> operation)
@@ -118,14 +130,17 @@ internal sealed partial class GmSessionRunCoordinator
     }
     internal void ValidateAccessAcquisition(Access access,bool closing=false)
     {
-        _guard.Validate();if(!ReferenceEquals(access.Owner,this) || _retired)throw GmSessionRunPersistence.Invalid();
+        // Check this exact retained pin before a retired guard can obscure its
+        // exhaustion. A current pin still observes every guard/metadata failure.
+        ValidateOriginalAccessPin(access);
+        _guard.Validate();if(_retired)throw GmSessionRunPersistence.Invalid();
         if(access.Pin!=null && !access.MetadataOnly && AdmissionClosed && !closing)throw GmSessionRunPersistence.Invalid();
-        access.Pin?.Validate(this);
         if(!access.MetadataOnly && !(closing && (_backend==GmSessionRunBackend.WindowsJob || AdmissionClosed)))RequireProductionWorkerConjunction();
     }
     internal void ValidateAccess(Access access,bool finalization)
     {
-        _guard.Validate();if(!ReferenceEquals(access.Owner,this) || _retired)throw GmSessionRunPersistence.Invalid();
+        ValidateOriginalAccessPin(access);
+        _guard.Validate();if(_retired)throw GmSessionRunPersistence.Invalid();
         if(access.MetadataOnly)return; // actual internal scope; never ordinary mutation authority
         if(access.Pin==null)
         {
@@ -133,7 +148,6 @@ internal sealed partial class GmSessionRunCoordinator
             if(_record!=null && _record.Disposition!=GmSessionRunDisposition.Stopped || _persistence.HasDebt)throw GmSessionRunPersistence.Invalid();
             RequireProductionWorkerConjunction();return;
         }
-        access.Pin.Validate(this);
         var bytes=GmSessionRunPersistence.Read(_files.BasePath);
         if(bytes==null || _acknowledged==null || !bytes.AsSpan().SequenceEqual(_acknowledged))throw GmSessionRunPersistence.Invalid();
         if(finalization && _closed && _record?.Disposition is GmSessionRunDisposition.Stopping or GmSessionRunDisposition.Uncertain)return;

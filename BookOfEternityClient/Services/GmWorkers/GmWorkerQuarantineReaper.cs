@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Runtime.ExceptionServices;
+using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.Services.GmWorkers;
 
@@ -36,6 +37,7 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
     private Task<int>? _workerCompletionTask;
     private int _cleanupCompleted;
     private bool _workspaceHookCompleted, _terminalAuditRecorded, _quarantined;
+    private CoordinatedStatePublicationUncertainException? _requiredAuditUncertainty;
 
     internal GmWorkerQuarantinedExecution(
         string identity, GmWorkerExecutionAuthority authority, GmWorkerOwnedLaunch? owner,
@@ -133,12 +135,23 @@ internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
             _workspaceDeletionCompleted = true;
             if (_quarantined && !_terminalAuditRecorded)
             {
-                var disposition = await _recordCleanupConfirmedAsync();
+                GmWorkerAuditAppendDisposition disposition;
+                try { disposition = await _recordCleanupConfirmedAsync(); }
+                catch (CoordinatedStatePublicationUncertainException uncertainty)
+                {
+                    _requiredAuditUncertainty ??= uncertainty;
+                    throw;
+                }
                 if (disposition != GmWorkerAuditAppendDisposition.Appended)
                 {
+                    // Losing main admission or replacing the session cannot turn
+                    // an already unknown canonical audit into local success.
+                    if (_requiredAuditUncertainty != null)
+                        ExceptionDispatchInfo.Capture(_requiredAuditUncertainty).Throw();
                     if (_workspace == null) throw new InvalidOperationException("Quarantine terminal audit fallback requires retained workspace authority.");
                     await _workspace.PersistQuarantineAuditReceiptAsync(_sessionGeneration, _cleanupConfirmedAuditEvent);
                 }
+                else _requiredAuditUncertainty = null; // actual same-event canonical ACK
                 _terminalAuditRecorded = true;
             }
             if (_durable != null)

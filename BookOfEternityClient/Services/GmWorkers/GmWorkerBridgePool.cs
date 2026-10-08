@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services.GmRuntime;
 
 namespace BookOfEternityClient.Services.GmWorkers;
 
@@ -1510,10 +1511,20 @@ public sealed class GmWorkerBridgePool
                 .CanonicalAuditUnavailable;
         }
 
-        return await _auditLog
-            .AppendRequiredEventOnceIfCurrentSessionAsync(
-                sessionGeneration,
-                auditEvent, durableExecution: durableExecution);
+        try
+        {
+            return await _auditLog
+                .AppendRequiredEventOnceIfCurrentSessionAsync(
+                    sessionGeneration,
+                    auditEvent, durableExecution: durableExecution);
+        }
+        catch (Exception failure) when (GmSessionRunCoordinator.IsOriginalOperationPinExpired(failure))
+        {
+            // Original worker cleanup remains independent of its expired main
+            // operation. The retained owner still requires the exact local receipt
+            // and refuses this fallback if a prior canonical audit is uncertain.
+            return GmWorkerAuditAppendDisposition.CanonicalAuditUnavailable;
+        }
     }
 
     private static WorkerAuditEvent CreateTerminalEvent(

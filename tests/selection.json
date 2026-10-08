@@ -235,6 +235,15 @@
         "FR-010",
         "A01"
       ]
+    },
+    {
+      "category": "gm-main-worker-cleanup-neighbors",
+      "reason": "Exact existing success and positive cleanup-authority controls for changed quarantine audit phase state; independent reviewer requested, no broad cohort.",
+      "contracts": [
+        "#1553",
+        "FR-014",
+        "A01"
+      ]
     }
   ]
 }

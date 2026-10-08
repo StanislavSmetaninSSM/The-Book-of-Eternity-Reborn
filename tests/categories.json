@@ -17773,6 +17773,36 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-worker-cleanup-neighbors",
+      "responsibility": "Two exact existing no-launch cleanup controls for the retained required-audit phase: canonical success releases once without local fallback, unconfirmed owner cannot clean or release.",
+      "excludes": "Full worker receipt/workspace/process cohorts and native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs"
+      ],
+      "related": [
+        {
+          "id": "gm-main-worker-cleanup-admission-linux",
+          "when": "Required audit debt or original main pin fallback changes"
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce",
+            "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot"
+          ]
+        }
+      ]
     }
   ]
 }
