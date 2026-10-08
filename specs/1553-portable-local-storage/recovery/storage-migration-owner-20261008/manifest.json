@@ -1,0 +1,98 @@
+{
+  "baseline": {
+    "source": "a500126b6cbf55cf108e9c0235698b10e02865f2",
+    "executed": 7,
+    "passed": 7,
+    "wallSeconds": 16.2630927,
+    "cleanupComplete": true,
+    "qualification": "Existing actual Linux production/retained inventory/borrowed client/cold refusal baseline before owner changes. Not Windows RED or native qualification.",
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "sha256": "07eb2a514a792e831c23d23444aec40b3239eb53b752b6a52d44e92b26fa719b"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+        "sha256": "68fa7b62e42003ebfe2a47931986c02860448e46adf8bbd597a959230601077a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "sha256": "b72c0c17ae10aa3cd9b1e837722fd8d2e0328df9f087fc8f8d16ae7babd921e1"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmMainProductionAdmissionTests.cs",
+        "sha256": "69c8ed86d1d5dce13d5b45b8514a5ff22bd92a89a2426063ea93d2a20a6c5a01"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmMainRunFenceTests.cs",
+        "sha256": "76c71ca3ddd2cb694c66525cd9b0372296a02da4495c971582c822f560e3ab7c"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "12f736dcf5789b56dbbcce5cd80e445b215b56358bdd0c2d57ec15b37baf2718"
+      }
+    ],
+    "artifacts": [
+      {
+        "path": "baseline-plan-Build-unit.log.gz",
+        "source": "TestResults/test-categories/20261008-122626-435-45175-0aaeb638766e4714840ccfa1e8c911ff-categories/Build-unit.log",
+        "sha256": "3c1cc812e690d6a649cc2f08233a5c02bcb32fee10741c8434c9dca9c2d87849",
+        "originalSha256": "5d663e434e638336d6b19d24094b6699a1dfcbc8801c06b92ede3fd9e8876fcf"
+      },
+      {
+        "path": "baseline-plan-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-122626-435-45175-0aaeb638766e4714840ccfa1e8c911ff-categories/dotnet-test.log",
+        "sha256": "f15ebadf2b93d5a3ebb60894f0a26c2e1010c0818e4ae56405b9e98f13807e90",
+        "originalSha256": "2096871905d35abf16557acf7d2a0bf6fc1522e2cceac63958c513b37da24814"
+      },
+      {
+        "path": "baseline-plan-plan.json",
+        "source": "TestResults/test-categories/20261008-122626-435-45175-0aaeb638766e4714840ccfa1e8c911ff-categories/plan.json",
+        "sha256": "8036f9085f7b2b46e30794ac7b8e628808cf3eebf740280734db836884fa5be6",
+        "originalSha256": "8036f9085f7b2b46e30794ac7b8e628808cf3eebf740280734db836884fa5be6"
+      },
+      {
+        "path": "baseline-plan-summary.json",
+        "source": "TestResults/test-categories/20261008-122626-435-45175-0aaeb638766e4714840ccfa1e8c911ff-categories/summary.json",
+        "sha256": "2b0ca261e98f719cd6331d1b8199e77ad7e230f9e7247c59675bbb36b0669d8b",
+        "originalSha256": "2b0ca261e98f719cd6331d1b8199e77ad7e230f9e7247c59675bbb36b0669d8b"
+      },
+      {
+        "path": "baseline-green-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-122800-208-45482-f85835bcabc7486ea888cbf174b4122a-categories/dotnet-test.log",
+        "sha256": "90d7d08bb991d48cc02dcb3b1ee50cbf3cad4ffcf757861720733084ba3e7965",
+        "originalSha256": "b1ad30660866d451415c8f2e8b393b7a5c5affa0ddc6414a836568e550ccb588"
+      },
+      {
+        "path": "baseline-green-gm-main-owner-conjunction-linux-unit-001.trx.gz",
+        "source": "TestResults/test-categories/20261008-122800-208-45482-f85835bcabc7486ea888cbf174b4122a-categories/gm-main-owner-conjunction-linux-unit-001.trx",
+        "sha256": "62ccc292568bcd4023f37d8e8bd7964532fbdf3098a80bdcfb51876bd4fb61ba",
+        "originalSha256": "f64aaedcda6f15b83e399cbb26203b28b9e777601c95c77099ea848872082d59"
+      },
+      {
+        "path": "baseline-green-plan.json",
+        "source": "TestResults/test-categories/20261008-122800-208-45482-f85835bcabc7486ea888cbf174b4122a-categories/plan.json",
+        "sha256": "7271f0f3ee21a5cb97511428f338c67bd36459b2641ef095f4e67d31dfe55785",
+        "originalSha256": "7271f0f3ee21a5cb97511428f338c67bd36459b2641ef095f4e67d31dfe55785"
+      },
+      {
+        "path": "baseline-green-summary.json",
+        "source": "TestResults/test-categories/20261008-122800-208-45482-f85835bcabc7486ea888cbf174b4122a-categories/summary.json",
+        "sha256": "c0ece4ef340a1d6b6897172b9cfd82db9a43ab2ace10aa0093dc1795226c6af0",
+        "originalSha256": "c0ece4ef340a1d6b6897172b9cfd82db9a43ab2ace10aa0093dc1795226c6af0"
+      },
+      {
+        "path": "baseline-plan-runner.log.gz",
+        "source": "/tmp/boe-1553-owner-baseline-plan.log",
+        "sha256": "f2e193dec30ac1e1d161ba3faa8570c4deb546a86a580264e2d5b82290506359",
+        "originalSha256": "55506ed346e16b29f49c893f319ce1fa2d3f6ed4e2f66acf5d8c1d56a2e53014"
+      },
+      {
+        "path": "baseline-green-runner.log.gz",
+        "source": "/tmp/boe-1553-owner-baseline.log",
+        "sha256": "c9f1172296a51f02f48ded7991e95fe31973a243b8b700b1e793c8a11a716720",
+        "originalSha256": "74f610e70363c4dcbc6c567bf723144872ff0bce8a9a8c0640bbfb0defe55878"
+      }
+    ]
+  }
+}

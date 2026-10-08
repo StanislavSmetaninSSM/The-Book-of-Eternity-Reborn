@@ -11,6 +11,10 @@ internal sealed partial class GmSessionRunCoordinator
     private readonly GmMainOwnerGuard _guard;
     private readonly GmSessionRunPersistence _persistence;
     private GmWorkerRootContext? _productionWorkers;
+    private readonly bool _production;
+    private readonly WindowsStartupObservation? _windowsStartupObservation;
+    private readonly GmSessionRunBackend _backend = OperatingSystem.IsWindows()
+        ? GmSessionRunBackend.WindowsJob : GmSessionRunBackend.LinuxSupervisor;
     private readonly object _sync=new();
     private readonly SemaphoreSlim _transitions=new(1,1);
     private GmSessionRunRecord? _record, _planned;
@@ -40,28 +44,42 @@ internal sealed partial class GmSessionRunCoordinator
     internal bool RetainsAuthority=>!_retired;
     internal bool IsUncertain {get{lock(_sync)return _uncertain;}}
     internal GmSessionRunRecord? Record=>_record;
-    private GmSessionRunCoordinator(FileSystemManager files,GmMainOwnerGuard guard,Action<MainRunIoStage>? observe)
-    {_files=files;_guard=guard;_persistence=new(guard,observe);}
+    private GmSessionRunCoordinator(FileSystemManager files,GmMainOwnerGuard guard,bool production,
+        WindowsStartupObservation? windowsStartupObservation,Action<MainRunIoStage>? observe)
+    {_files=files;_guard=guard;_production=production;_windowsStartupObservation=windowsStartupObservation;_persistence=new(guard,observe);}
     internal static Task<GmSessionRunCoordinator> OpenNeutralAsync(FileSystemManager files,Action<MainRunIoStage>? observe=null)=>OpenAsync(files,false,observe);
     internal static Task<GmSessionRunCoordinator> OpenProductionAsync(FileSystemManager files,Action<MainRunIoStage>? observe=null)=>OpenAsync(files,true,observe);
-    private static async Task<GmSessionRunCoordinator> OpenAsync(FileSystemManager files,bool production,Action<MainRunIoStage>? observe)
+    internal static Task<GmSessionRunCoordinator> OpenWindowsProductionAsync(FileSystemManager files,
+        WindowsStartupObservation observation,Action<MainRunIoStage>? observe=null)
     {
+        if(!OperatingSystem.IsWindows())throw new PlatformNotSupportedException("Windows original main admission requires Windows.");
+        ArgumentNullException.ThrowIfNull(observation);
+        return OpenAsync(files,true,observe,observation);
+    }
+    private static async Task<GmSessionRunCoordinator> OpenAsync(FileSystemManager files,bool production,
+        Action<MainRunIoStage>? observe,WindowsStartupObservation? windowsStartupObservation=null)
+    {
+        if(OperatingSystem.IsWindows() && (!production || windowsStartupObservation==null))
+            throw new PlatformNotSupportedException("Windows main admission requires its captured startup observation.");
         var guard=await GmMainOwnerGuard.AcquireAsync(files.BasePath);
         GmSessionRunCoordinator? owner=null;
         try
         {
-            owner=new GmSessionRunCoordinator(files,guard,observe);
+            owner=new GmSessionRunCoordinator(files,guard,production,windowsStartupObservation,observe);
             lock(files.CanonicalRootAuthorityIdentity.WorkerContextGate)
             {
                 if(files.CanonicalRootAuthorityIdentity.MainCoordinator!=null)throw GmSessionRunPersistence.Invalid();
                 var bytes=GmSessionRunPersistence.Read(files.BasePath);
                 if(bytes!=null) {
                     var r=GmSessionRunRecordCodec.Decode(bytes);
-                    if(r.Disposition!=GmSessionRunDisposition.Stopped || r.Identity.Backend!=GmSessionRunBackend.LinuxSupervisor ||
-                        r.Identity.RootKey!=files.BasePath || r.Identity.Epoch==long.MaxValue)throw GmSessionRunPersistence.Invalid();
+                    if(r.Disposition!=GmSessionRunDisposition.Stopped || r.Identity.Backend!=owner._backend ||
+                        !GmSessionRunValidation.AdmissionRootMatches(r.Identity.RootKey,files.BasePath,owner._backend) || r.Identity.Epoch==long.MaxValue)throw GmSessionRunPersistence.Invalid();
                     owner._acknowledged=bytes;owner._record=r;
                 }
-                if(production) { owner._productionWorkers=GmWorkerRootContext.Attach(files,true,null); owner._productionWorkers.RequireMainQuiescence(); }
+                if(production) {
+                    if(owner._backend==GmSessionRunBackend.WindowsJob) files.RequireAbsentMainWorkerInventory();
+                    else { owner._productionWorkers=GmWorkerRootContext.Attach(files,true,null); owner._productionWorkers.RequireMainQuiescence(); }
+                }
                 files.CanonicalRootAuthorityIdentity.MainCoordinator=owner;
             }
             return owner;
@@ -103,6 +121,7 @@ internal sealed partial class GmSessionRunCoordinator
         _guard.Validate();if(!ReferenceEquals(access.Owner,this) || _retired)throw GmSessionRunPersistence.Invalid();
         if(access.Pin!=null && !access.MetadataOnly && AdmissionClosed && !closing)throw GmSessionRunPersistence.Invalid();
         access.Pin?.Validate(this);
+        if(!access.MetadataOnly && !(closing && (_backend==GmSessionRunBackend.WindowsJob || AdmissionClosed)))RequireProductionWorkerConjunction();
     }
     internal void ValidateAccess(Access access,bool finalization)
     {
@@ -111,13 +130,14 @@ internal sealed partial class GmSessionRunCoordinator
         if(access.Pin==null)
         {
             // Original start's recovery admission is quiescent only, before Prepared.
-            if(_record!=null && _record.Disposition!=GmSessionRunDisposition.Stopped || _persistence.HasDebt)throw GmSessionRunPersistence.Invalid();return;
+            if(_record!=null && _record.Disposition!=GmSessionRunDisposition.Stopped || _persistence.HasDebt)throw GmSessionRunPersistence.Invalid();
+            RequireProductionWorkerConjunction();return;
         }
         access.Pin.Validate(this);
         var bytes=GmSessionRunPersistence.Read(_files.BasePath);
         if(bytes==null || _acknowledged==null || !bytes.AsSpan().SequenceEqual(_acknowledged))throw GmSessionRunPersistence.Invalid();
         if(finalization && _closed && _record?.Disposition is GmSessionRunDisposition.Stopping or GmSessionRunDisposition.Uncertain)return;
-        _productionWorkers?.RequireMainQuiescence();
+        if(!finalization || _backend!=GmSessionRunBackend.WindowsJob)RequireProductionWorkerConjunction();
         if(!_released || _uncertain || _persistence.HasDebt || _record?.Disposition!=GmSessionRunDisposition.Running ||
             _terminal?.AuthorityLost.IsCompleted==true)throw GmSessionRunPersistence.Invalid();
         RefuseOriginalRootExit();
@@ -146,10 +166,26 @@ internal sealed partial class GmSessionRunCoordinator
         LaunchAsync(id=>OwnedTerminalSessionFactory.PrepareProductionAsync(new(this,configuration),id,token,held),token);
     internal Task<IOwnedTerminalSession> LaunchProductionBoundAsync(ProductionMainConfiguration configuration,string generation,CancellationToken token,Action<int>? held=null)=>
         LaunchAsync(id=>OwnedTerminalSessionFactory.PrepareProductionAsync(new(this,configuration),id,token,held),token,generation);
+    private void RequireProductionWorkerConjunction()
+    {
+        if(!_production)return;
+        if(_backend==GmSessionRunBackend.WindowsJob)_files.RequireAbsentMainWorkerInventory();
+        else (_productionWorkers??throw GmSessionRunPersistence.Invalid()).RequireMainQuiescence();
+    }
+    // Bridge supplies the same suspended ConPTY owner and one-use release in the
+    // following consumer slice. This seam cannot admit a caller-selected backend.
+    internal Task<IOwnedTerminalSession> LaunchWindowsPreparedAsync(
+        Func<string,Task<OwnedTerminalSessionFactory.PreparedTerminal>> prepare,
+        CancellationToken token,string? expectedGeneration=null)
+    {
+        if(!OperatingSystem.IsWindows() || _backend!=GmSessionRunBackend.WindowsJob || !_production || _windowsStartupObservation==null)
+            throw GmSessionRunPersistence.Invalid();
+        return LaunchAsync(id=>{ValidateProductionPrepared();return prepare(id);},token,expectedGeneration);
+    }
     internal void ValidateProductionPrepared()
     {
-        _guard.Validate(); _productionWorkers?.RequireMainQuiescence();
-        if(_productionWorkers==null || _retired || _closed || _uncertain || _released || _terminal!=null || _persistence.HasDebt || _record?.Disposition!=GmSessionRunDisposition.Prepared)throw GmSessionRunPersistence.Invalid();
+        _guard.Validate(); RequireProductionWorkerConjunction();
+        if(!_production || _retired || _closed || _uncertain || _released || _terminal!=null || _persistence.HasDebt || _record?.Disposition!=GmSessionRunDisposition.Prepared)throw GmSessionRunPersistence.Invalid();
     }
     private async Task<IOwnedTerminalSession> LaunchAsync(Func<string,Task<OwnedTerminalSessionFactory.PreparedTerminal>> prepare,CancellationToken token,string? expectedGeneration=null)
     {
@@ -161,22 +197,29 @@ internal sealed partial class GmSessionRunCoordinator
         {
             var generation=expectedGeneration==null ? _files.GetOrCreateSessionGeneration(lease) : _files.ReadExistingSessionGeneration(lease);
             if(generation==null || (expectedGeneration!=null && generation!=expectedGeneration))throw GmSessionRunPersistence.Invalid();
-            var boot=ReadBootIdentity();
+            var boot=_backend==GmSessionRunBackend.WindowsJob
+                ? (_windowsStartupObservation??throw GmSessionRunPersistence.Invalid()).Value : ReadBootIdentity();
             var identity=new GmSessionRunIdentity(_files.BasePath,Guid.NewGuid().ToString("N"),generation,
-                _record==null?1:checked(_record.Identity.Epoch+1),GmSessionRunBackend.LinuxSupervisor,Guid.NewGuid().ToString("N"),boot);
+                _record==null?1:checked(_record.Identity.Epoch+1),_backend,Guid.NewGuid().ToString("N"),boot);
             Publish(new(1,identity,GmSessionRunDisposition.Prepared,null));
         }
             var prepared=await prepare(Identity.RunId);
             _terminal=prepared.Session;
             using(Enter(true))await using(var lease=await _files.AcquireMainMetadataLeaseAsync())
             {
-                if(_terminal.Identity.RunId!=Identity.RunId || _terminal.AuthorityLost.IsCompleted || _terminal.RootExited.IsCompleted)throw GmSessionRunPersistence.Invalid();
+                if(_terminal.Identity.RunId!=Identity.RunId ||
+                    !(_backend==GmSessionRunBackend.WindowsJob ? _terminal.Identity.Backend=="windows-job"
+                        : _terminal.Identity.Backend is "native-lineage" or "systemd-user") ||
+                    _terminal.AuthorityLost.IsCompleted || _terminal.RootExited.IsCompleted)throw GmSessionRunPersistence.Invalid();
                 RequireOriginalLaunchGeneration(lease);
+                RequireProductionWorkerConjunction();
                 Publish(GmSessionRunTransitions.MarkRunning(_record!,Identity));
                 RequireOriginalLaunchGeneration(lease);
+                RequireProductionWorkerConjunction();
             }
             // No canonical/transition lock spans release. The original held adapter
             // checks pidfd/liveness and consumes its one release even if ACK is lost.
+            RequireProductionWorkerConjunction();
             await prepared.ReleaseAsync(token);lock(_sync)_released=true;return _terminal;
         }
         catch(OwnedTerminalStartException ex){_terminal=ex.Owner;NotifyUncertain();throw;}

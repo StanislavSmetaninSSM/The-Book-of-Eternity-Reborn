@@ -166,6 +166,36 @@
         "FR-010",
         "T063-REMAINING-CONSUMERS"
       ]
+    },
+    {
+      "category": "gm-main-worker-absence-component",
+      "reason": "Seven actual negative namespace/context component rows. No synthetic Windows main or worker ledger; verify no creation and retained bytes/context before wiring original Windows consumer.",
+      "contracts": [
+        "#1553",
+        "A01",
+        "FR-010",
+        "T063-REMAINING-CONSUMERS"
+      ]
+    },
+    {
+      "category": "gm-main-owner-native-windows",
+      "reason": "Native27 finite admission/cancelled-preparation/existing-inventory/cold-refusal bodies; compiled/planned only in Linux cloud. Labelled fixture observation is not a provider probe or terminal qualification.",
+      "contracts": [
+        "#1553",
+        "A01",
+        "FR-010",
+        "T063-REMAINING-CONSUMERS"
+      ]
+    },
+    {
+      "category": "gm-main-operation-native-linux",
+      "reason": "Six finite actual original pipe/client admission/close controls exercise changed BeginRemoteOperation, client root validation and ambient original frame linkage; not merely production startup. Existing native Linux bodies only.",
+      "contracts": [
+        "#1553",
+        "A01",
+        "FR-010",
+        "T063-REMAINING-CONSUMERS"
+      ]
     }
   ]
 }

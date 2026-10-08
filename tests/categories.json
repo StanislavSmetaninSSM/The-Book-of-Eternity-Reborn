@@ -1655,7 +1655,8 @@
       "related": [],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": false
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
@@ -17604,6 +17605,55 @@
             "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory",
             "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RejectedMainAttempt_ReleasesOnlyItsBorrowedOriginalInventoryClient",
             "BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-worker-absence-component",
+      "responsibility": "Real negative worker namespace/context admission component on Linux: no initialization, existing/blocked/reparse evidence retention, later appearance and retained original worker context despite controlled name loss. This is not Windows main admission.",
+      "excludes": "No Windows native main/ledger or ConPTY, production worker activation, unsupported evidence adoption.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-owner-native-windows",
+      "responsibility": "Body-required original Windows owner admission with labelled fixture startup observation: absent/Stopped plus cancelled preparation releases original guard without ledger creation; existing inventory and all cold nonterminal records refuse despite changed observation. Ordinary, extended and drive-case spelling.",
+      "excludes": "No WMI provider, live ConPTY/Job, status/participating/Load consumer or production worker qualification. Linux discovery is not native execution.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "windows-latest"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainOwnerWindowsAdmissionTests.*"
           ]
         }
       ]

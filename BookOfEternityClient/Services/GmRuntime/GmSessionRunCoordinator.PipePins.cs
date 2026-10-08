@@ -53,7 +53,7 @@ internal sealed partial class GmSessionRunCoordinator
     internal RemotePin BeginRemoteOperation(string? root,string? operation)
     {
         lock(_sync) {
-            if(root!=Identity.RootKey || !Guid.TryParseExact(operation,"N",out _) ||
+            if(root==null || !GmSessionRunValidation.AdmissionRootMatches(root,Identity.RootKey,_backend) || !Guid.TryParseExact(operation,"N",out _) ||
                 _remotePins.Values.Any(p=>p.OperationId==operation) || _remotePins.Values.Count(p=>p.State!=MainOperationState.ClosedObserved)>=32)
                 throw GmSessionRunPersistence.Invalid();
             var pin=CreateOperationPin();var remote=new RemotePin(this,pin,operation!);_remotePins.Add(remote.PinId,remote);return remote;
@@ -79,7 +79,7 @@ internal sealed partial class GmSessionRunCoordinator
         if(_closed || _uncertain || !_released || _retired || _persistence.HasDebt || _record?.Disposition!=GmSessionRunDisposition.Running ||
             _terminal==null || _terminal.AuthorityLost.IsCompleted)throw GmSessionRunPersistence.Invalid();
         _guard.Validate();
-        _productionWorkers?.RequireMainQuiescence();
+        RequireProductionWorkerConjunction();
         if(_terminal.RootExited.IsCompleted)
         {
             var actual=GmSessionRunPersistence.Read(_files.BasePath);

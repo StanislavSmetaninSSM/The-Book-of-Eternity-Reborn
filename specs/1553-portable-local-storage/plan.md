@@ -1,3 +1,33 @@
+## A01 owner/worker conjunction WIP — 2026-10-08
+
+Frozena500 Linux original baseline7/7PASS16.263s, clean/full/cleanup; [raw evidence](recovery/storage-migration-owner-20261008/manifest.json).
+Current owner patch selects backend only from host, accepts captured Windows
+observation through Windows-only opening, checks terminal backend plus original
+RunId before Running/release, and supplies an unwired prepared-Windows delegate
+seam for the next consumer slice. Cold nonterminal records still refuse regardless
+of observation. No production Bridge, ConPTY, status, Load or dispatch call changed.
+
+Windows absent-inventory conjunction now checks disk namespace AND retained context
+without Attach, before Open/start recovery, original/remote admission and actual
+held remote mutation; metadata stop/finalization remains exempt from ordinary writes.
+Linux original inventory route remains intact. In-process ambient linkage uses root
+identity; cross-process admission normalizes only fully qualified operands using
+host backend, leaving stored payloads and IdentityMatches/file grants unchanged.
+
+Add seven real Linux negative namespace/context component rows and27 native
+Windows admission/cancelled-preparation/existing-inventory/cold-refusal recipes.
+Native tests use a labelled fixture observation, not WMI or live terminal success;
+Windows actual execution remains unavailable/unclaimed. Recheck worker conjunction
+after asynchronous preparation before Running and again before release; metadata-only
+admission cannot bypass it. The native consumer recipe must reach a real suspended
+owner with inventory appearing during preparation, preserving Prepared and owner
+without release. Ordinary finalization remains distinct from mutation admission. Fresh20 Linux PlanOnly/build
+and actual (7 original owner +7 absence component +6 actual original pipe), native27 discovery and independent owner/selection review pending.
+
+Parent fresh recovery through63bb: new direct GitHub clone, clean25234 tracked files,
+connectivity fsck PASS,30 stored/expanded artifacts+10 historical source pins verified;
+no builds/tests in restore. Subsequent owner WIP has its separate publication gate.
+
 ## A01 owner/worker conjunction baseline checkpoint — 2026-10-08
 
 Independent Astra XHigh metadata source/bounded evidence PASS at76d8d83a, carrier

@@ -14,7 +14,7 @@ public partial class FileSystemManager
         if(HasAmbientCanonicalLease() || SessionOperationContext.TryGetExpectedGeneration(BasePath,out _))
             throw new InvalidOperationException("Load IPC requires the original filesystem operation to close first.");
         for(var p=MainAdmissions.Value;p!=null;p=p.Parent)
-            if(!p.Closed && p.Root==BasePath)throw new InvalidOperationException("Load IPC cannot borrow a filesystem admission.");
+            if(!p.Closed && p.RootIdentity==CanonicalRootAuthorityIdentity)throw new InvalidOperationException("Load IPC cannot borrow a filesystem admission.");
     }
     internal MainAdmission BeginMainAdmission()=>BeginMainAdmission(false);
     internal MainAdmission BeginParticipatingMainAdmission()=>BeginMainAdmission(true);
@@ -22,7 +22,7 @@ public partial class FileSystemManager
     {
         var parent=MainAdmissions.Value;
         for(var ancestor=parent;ancestor!=null;ancestor=ancestor.Parent)
-            if(ancestor.Closed && ancestor.OwnsRemote && ancestor.Root==BasePath)throw GmSessionRunPersistence.Invalid();
+            if(ancestor.Closed && ancestor.OwnsRemote && ancestor.RootIdentity==CanonicalRootAuthorityIdentity)throw GmSessionRunPersistence.Invalid();
         while(parent is { Closed:true })parent=parent.Parent;
         var frame=new MainAdmission(this,parent,GmSessionRunCoordinator.Current,participating);
         MainAdmissions.Value=frame;return frame;
@@ -41,6 +41,7 @@ public partial class FileSystemManager
         internal bool OwnsRemote=>_ownsRemote;
         internal MainOperationClose? DescribeClose(MainOperationOutcome outcome,bool closingFailed)=>_retainedRemote?.DescribeClose(outcome,closingFailed);
         internal string Root=>_files.BasePath;
+        internal CanonicalRootIdentity RootIdentity=>_files.CanonicalRootAuthorityIdentity;
         internal bool Closed=>_closed;
         internal MainAdmission? Parent=>_parent;
         internal MainAdmission(FileSystemManager files,MainAdmission? parent,GmSessionRunCoordinator.Access? requested,bool participating)
@@ -63,7 +64,8 @@ public partial class FileSystemManager
             var observed=GmSessionRunPersistence.Read(_files.BasePath);
             if(observed!=null && GmSessionRunRecordCodec.Decode(observed).Disposition!=GmSessionRunDisposition.Stopped) {
                 if(!_participating || closing)throw GmSessionRunPersistence.Invalid();
-                var knownWorkers=_files.HasKnownMainWorkerInventory();
+                if(OperatingSystem.IsWindows())_files.RequireAbsentMainWorkerInventory();
+                var knownWorkers=!OperatingSystem.IsWindows() && _files.HasKnownMainWorkerInventory();
                 var remote=await GmMainOperationClient.OpenAsync(_files,token);
                 _access=new(null,null,remote,workerObservationRequired:knownWorkers);_retainedRemote=remote;_ownsRemote=true;WasRemote=true;return;
             }
@@ -72,7 +74,8 @@ public partial class FileSystemManager
             try{
                 // A known inventory requires its original durable coordinator,
                 // even with disabled helpers, before canonical recovery/leases.
-                if(_files.HasKnownMainWorkerInventory()) {
+                if(OperatingSystem.IsWindows())_files.RequireAbsentMainWorkerInventory();
+                else if(_files.HasKnownMainWorkerInventory()) {
                     var workers=GmWorkerRootContext.Attach(_files,true,null);
                     _access.Workers=workers;workers.RequireOpen();
                 }
@@ -86,7 +89,7 @@ public partial class FileSystemManager
         internal void MarkUnresolved(){_retainedRemote?.Abort();_retainedOriginal?.Owner.NotifyUncertain();}
         private bool _boundClosing;
         internal bool BoundClosing => _boundClosing ||
-            _parent is { Closed: false } && _parent.Root == Root && _parent.BoundClosing;
+            _parent is { Closed: false } && _parent.RootIdentity == RootIdentity && _parent.BoundClosing;
         internal void BeginClosing(){_boundClosing=true;_access?.Remote?.BeginClosing();}
         internal async Task CompleteAsync(MainOperationOutcome outcome,bool closingFailed)
         {
@@ -101,6 +104,8 @@ public partial class FileSystemManager
             if(_access.Remote is { } remote) {
                 if(lease?.Purpose==CanonicalWritePurpose.SessionReplacement)throw GmSessionRunPersistence.Invalid();
                 remote.Validate(_files.BasePath,lease?.Purpose==CanonicalWritePurpose.SessionFinalization);
+                if(OperatingSystem.IsWindows() && !(Closing && lease?.Purpose==CanonicalWritePurpose.SessionFinalization))
+                    _files.RequireAbsentMainWorkerInventory();
                 if(_access.WorkerObservationRequired && !(Closing && lease?.Purpose==CanonicalWritePurpose.SessionFinalization)) {
                     // This observation can only withdraw an already granted
                     // original connection. It cannot grant/replace inventory authority.
@@ -120,13 +125,14 @@ public partial class FileSystemManager
                 return;
             }
             _access.Guard!.Validate();
+            if(OperatingSystem.IsWindows())_files.RequireAbsentMainWorkerInventory();
             _access.Workers?.RequireOpen();
             var bytes=GmSessionRunPersistence.Read(_files.BasePath);
             if(bytes==null)return;
             var r=GmSessionRunRecordCodec.Decode(bytes);
             var backend=OperatingSystem.IsWindows()?GmSessionRunBackend.WindowsJob:GmSessionRunBackend.LinuxSupervisor;
             if(r.Disposition!=GmSessionRunDisposition.Stopped || r.Identity.Backend!=backend ||
-                !GmSessionRunValidation.RootMatches(r.Identity.RootKey,_files.BasePath,backend))throw GmSessionRunPersistence.Invalid();
+                !GmSessionRunValidation.AdmissionRootMatches(r.Identity.RootKey,_files.BasePath,backend))throw GmSessionRunPersistence.Invalid();
         }
         public async ValueTask DisposeAsync()
         {
@@ -172,6 +178,18 @@ public partial class FileSystemManager
             if(release){Workers?.ReleaseClient();guard?.Dispose();original?.Pin?.Dispose();}
         }
     }
+    // Negative admission is observed without creating or adopting a worker
+    // ledger. The Windows main route cannot reinterpret a Linux-only inventory.
+    internal void RequireAbsentMainWorkerInventory()
+    {
+        var root=CanonicalRootAuthorityIdentity;
+        lock(root.WorkerContextGate) {
+            if(root.WorkerContext!=null)throw GmSessionRunPersistence.Invalid();
+            var observed=new TrustedLocalFileScope([BasePath]).ObserveNamespace(new WorkerLedgerTarget(BasePath).DirectoryPath);
+            if(observed.BlockingFileAncestor!=null || observed.Kind!=TrustedLocalNamespaceKind.Missing)
+                throw GmSessionRunPersistence.Invalid();
+        }
+    }
     private bool HasKnownMainWorkerInventory()
     {
         var observed=new TrustedLocalFileScope([BasePath]).ObserveNamespace(new WorkerLedgerTarget(BasePath).DirectoryPath);
@@ -188,16 +206,16 @@ public partial class FileSystemManager
     }
     internal MainOperationClose? DescribeMainOperationClose(MainOperationOutcome outcome,bool closingFailed)
     {
-        for(var p=MainAdmissions.Value;p!=null;p=p.Parent)if(p.Root==BasePath && p.DescribeClose(outcome,closingFailed) is { } close)return close;
+        for(var p=MainAdmissions.Value;p!=null;p=p.Parent)if(p.RootIdentity==CanonicalRootAuthorityIdentity && p.DescribeClose(outcome,closingFailed) is { } close)return close;
         return null;
     }
     internal void MarkMainOperationUnresolved()
     {
-        for(var p=MainAdmissions.Value;p!=null;p=p.Parent)if(p.Root==BasePath){p.MarkUnresolved();return;}
+        for(var p=MainAdmissions.Value;p!=null;p=p.Parent)if(p.RootIdentity==CanonicalRootAuthorityIdentity){p.MarkUnresolved();return;}
     }
     internal void BeginMainOperationClosing()
     {
-        for(var p=MainAdmissions.Value;p!=null;p=p.Parent)if(!p.Closed && p.Root==BasePath){p.BeginClosing();return;}
+        for(var p=MainAdmissions.Value;p!=null;p=p.Parent)if(!p.Closed && p.RootIdentity==CanonicalRootAuthorityIdentity){p.BeginClosing();return;}
     }
     internal Task<CanonicalWriteLease> AcquireMainMetadataLeaseAsync()=>
         AcquireCanonicalWriteLeaseWithAmbientAsync(CanonicalWritePurpose.MainMetadata,CancellationToken.None);

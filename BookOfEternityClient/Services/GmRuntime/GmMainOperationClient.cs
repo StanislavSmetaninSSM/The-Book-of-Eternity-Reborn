@@ -60,7 +60,9 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
     internal void BeginClosing(){Interlocked.Exchange(ref _closing,1);}
     internal void Validate(string root,bool finalization)
     {
-        if(Volatile.Read(ref _lost)!=0 || Volatile.Read(ref _locallyClosed)!=0 || root!=Identity.RootKey || (Closing && !finalization))throw GmSessionRunPersistence.Invalid();
+        var backend=OperatingSystem.IsWindows()?GmSessionRunBackend.WindowsJob:GmSessionRunBackend.LinuxSupervisor;
+        if(Volatile.Read(ref _lost)!=0 || Volatile.Read(ref _locallyClosed)!=0 || Identity.Backend!=backend ||
+            !GmSessionRunValidation.AdmissionRootMatches(root,Identity.RootKey,backend) || (Closing && !finalization))throw GmSessionRunPersistence.Invalid();
         var r=GmSessionRunRecordCodec.Decode(GmSessionRunPersistence.Read(root)??throw GmSessionRunPersistence.Invalid());
         if(!GmSessionRunValidation.IdentityMatches(r.Identity,Identity) ||
             !(finalization && Closing ? r.Disposition is GmSessionRunDisposition.Running or GmSessionRunDisposition.Stopping or GmSessionRunDisposition.Uncertain : r.Disposition==GmSessionRunDisposition.Running))

@@ -71,6 +71,20 @@ internal static class GmSessionRunValidation
         string.Equals(left, right, trustedBackend == GmSessionRunBackend.WindowsJob
             ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
 
+    // Admission compares validated absolute operands using the locally chosen
+    // host backend. Stored identity payloads and exact file grants stay unchanged.
+    internal static bool AdmissionRootMatches(string left,string right,GmSessionRunBackend trustedBackend)
+    {
+        try {
+            if(!Path.IsPathFullyQualified(left) || !Path.IsPathFullyQualified(right))return false;
+            var windows=trustedBackend==GmSessionRunBackend.WindowsJob;
+            return RootMatches(Core.CanonicalRootIdentityInterner.NormalizeRootKey(Path.GetFullPath(left),windows),
+                Core.CanonicalRootIdentityInterner.NormalizeRootKey(Path.GetFullPath(right),windows),trustedBackend);
+        }
+        catch(Exception failure) when(failure is ArgumentException or NotSupportedException or PathTooLongException or InvalidDataException)
+        { return false; }
+    }
+
     // Both identities are validated first. Never use a stored backend to compare against an unchecked target.
     internal static bool IdentityMatches(GmSessionRunIdentity left, GmSessionRunIdentity right) =>
         left.Backend == right.Backend && RootMatches(left.RootKey, right.RootKey, left.Backend) &&
