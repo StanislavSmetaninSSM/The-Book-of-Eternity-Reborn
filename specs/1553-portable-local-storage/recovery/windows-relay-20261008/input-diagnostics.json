@@ -1,0 +1,21 @@
+{
+  "Scope": "Diagnostic probes on an actual outer Windows PTY, not product success. Production getwch candidate at 98945e6e; alternate native APIs only in own probe script.",
+  "Cases": {
+    "crt": {
+      "Hex": "1b5b3230307e636f6e74726f6c6c656420d0960d7365636f6e64206c696e65202065786163741b5b3230317e",
+      "Text": "\u001b[200~controlled Ж\rsecond line  exact\u001b[201~"
+    },
+    "native": {
+      "Hex": "1b5b3230307e636f6e74726f6c6c656420d096f09f99820d7365636f6e64206c696e65203e2065786163741b5b3230317e",
+      "Text": "\u001b[200~controlled Ж🙂\rsecond line > exact\u001b[201~"
+    },
+    "native-raw": {
+      "Hex": "1b5b3230307e636f6e74726f6c6c656420d096f09f99820d7365636f6e64206c696e65203e2065786163741b5b3230317e",
+      "Text": "\u001b[200~controlled Ж🙂\rsecond line > exact\u001b[201~"
+    },
+    "events": {
+      "Hex": "1b5b3230307e636f6e74726f6c6c656420d0960d7365636f6e64206c696e65202065786163741b5b3230317e",
+      "Text": "\u001b[200~controlled Ж\rsecond line  exact\u001b[201~"
+    }
+  }
+}

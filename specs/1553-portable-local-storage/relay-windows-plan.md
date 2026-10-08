@@ -1,5 +1,57 @@
 # Native Windows relay implementation plan
 
+## Current checkpoint: native Windows GREEN, review and Linux pending
+
+Frozen runtime/tests: `0067874e15f479327dc37268fc891f51e3a2713d`.
+Native Windows selected run: **24/24 PASS**, 7 native cases plus 17 shared worker
+cases, complete selection, no timeout, original owned cleanup confirmed. The
+four component ConPTY cases preserve exact Unicode/LF bytes and mode restoration,
+real helper success/error, held-child close ordering and original Job retirement.
+Component streams are explicitly prepared; the separate ordinary Bridge run
+below has no such rebinding. [Safe evidence](recovery/windows-relay-20261008/manifest.json).
+
+Actual ordinary Windows Bridge in a real outer PTY: native Python relay startup,
+manual bracketed paste without submission, actual CR with exact Russian/emoji/LF
+prompt, credential-free worker inspect/answer, unchanged real PowerShell helper
+completion, queue closure, then original Bridge shutdown. Same retained run
+`8a4743388aae441286cdb788f5fd4ec0`, original Job empty, cleanup true, authority
+false, host exit0. Host/shell/relay PIDs 31908/34624/3412 are gone. No NeutralPackage,
+console rebinding, model request or user save. State stays OperatorNotReady:
+automatic T042 dispatch/readiness and accepted gameplay remain unqualified.
+
+Independent implementation/evidence review is pending. Linux regression is
+**not run** on HOME-PC. Existing source paths are retained but that is not a Linux
+PASS. HTTP diagnosis has not started. The original report reproduction remains
+limited to synthetic Save/Load and restart; compare clean valid data first.
+
+Reproduce from a prepared native Windows checkout (Python3.14.7 on PATH,
+PowerShell7.6.6, .NET SDK10.0.401/runtime8.0.31, Windows11Pro10.0.26200 x64):
+
+```powershell
+pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile specs/1553-portable-local-storage/recovery/windows-relay-20261008/selection-windows.json -Parallelism 1
+```
+
+The observed final run used `-NoBuild` after a fresh successful build of the
+selected unit project and references (0 errors,41 warnings). Prior failed runs
+remain documented below, including the invalid pre-product fixture REDs. Run
+without `-NoBuild` after restoration. In a separately available native Linux
+environment the requested regression command is:
+
+```powershell
+pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile specs/1553-portable-local-storage/recovery/windows-relay-20261008/selection-linux.json -Parallelism 1
+```
+
+`tests/selection.json` covers both platforms; category CI routing is metadata,
+not permission to enable CI or evidence that either hosted platform executed.
+Local final summary pins clean source0067874e, 24 cases, 46.04s wall time. Source
+and original TRX hashes are retained in the evidence provenance. The report branch
+is separately reviewed at68696416; this relay branch does not rewrite that report.
+
+Primary API references: [ReadConsole](https://learn.microsoft.com/en-us/windows/console/readconsole),
+[CancelSynchronousIo](https://learn.microsoft.com/en-us/windows/win32/fileio/cancelsynchronousio-func),
+[PeekNamedPipe](https://learn.microsoft.com/en-us/windows/win32/api/namedpipeapi/nf-namedpipeapi-peeknamedpipe),
+[Windows locking](https://docs.python.org/3/library/msvcrt.html#msvcrt.locking).
+
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 Owner approved the bounded design and separate later HTTP diagnosis on 2026-10-08.
 Branch: `codex/1553-windows-relay-20261008`; base `6381a9507baae6bb2531e22e9a0ace839f03985f`.
@@ -16,13 +68,13 @@ child EOF from temporary lack of bytes or process exit alone.
 
 ## One bounded implementation block
 
-- [ ] Add native tests before implementation: help starts; independent processes
+- [x] Add native tests before implementation: help starts; independent processes
   contend on the gate and close refuses correctly; actual owned ConPTY preserves
   Unicode/astral/multiline bracketed paste without submitting; actual CR publishes
   exact bytes; real fixed helper success/error; close waits for child/output;
   original Job cleanup and console mode restoration.
-- [ ] Run against the base and retain causal RED evidence.
-- [ ] Implement `Terminal.read(timeout)` (`None` means no data),
+- [x] Run against the base and retain causal RED evidence (fixture-only failures corrected separately below).
+- [x] Implement `Terminal.read(timeout)` (`None` means no data),
   `Terminal.write(bytes)`, `Terminal.close()` with failure restoration, and
   `poll_child_output(stream)` distinguishing `None`, bytes and actual `b''` EOF.
   Integrate without packet/profile/authority changes. Add native execution_gate

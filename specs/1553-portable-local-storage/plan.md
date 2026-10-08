@@ -4,8 +4,10 @@ Source #1553; [approved bounded plan and execution ledger](relay-windows-plan.md
 Branch `codex/1553-windows-relay-20261008`, base
 `6381a9507baae6bb2531e22e9a0ace839f03985f`, published and verified before edits.
 Windows report separately preserved/reviewed at
-`686964164641b3eb3a5a13ff8854b74aa1490189`. Next: causal native relay RED, bounded
-implementation/verification/review/recovery, then separate HTTP diagnosis.
+`686964164641b3eb3a5a13ff8854b74aa1490189`. Relay runtime/tests0067874e now have
+24/24 native Windows PASS and separate actual ordinary Bridge/worker/helper/
+original Job cleanup. Next: independent source/evidence review and exact remote
+recovery. Linux regression unrun; HTTP diagnosis remains a separate next block.
 No main/merge/CI/security/auth changes are authorized here.
 
 ## Current final-readiness boundary — owner-approved deferral

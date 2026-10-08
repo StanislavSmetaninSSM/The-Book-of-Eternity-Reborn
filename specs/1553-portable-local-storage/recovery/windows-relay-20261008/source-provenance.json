@@ -1,0 +1,68 @@
+{
+  "SourceCommit": "0067874e15f479327dc37268fc891f51e3a2713d",
+  "OriginalEvidence": [
+    {
+      "Path": "TestResults/test-categories/20261008-144338-865-33096-faede31576304bbf82f8c15d000a25de-categories/gm-relay-native-windows-unit-001.trx",
+      "SHA256": "9f02c19013a60ba9fb241f98ad5994f870819b7daae8ee12b1b6e26b49a2fe2c",
+      "Bytes": 12040
+    },
+    {
+      "Path": "TestResults/test-categories/20261008-144338-865-33096-faede31576304bbf82f8c15d000a25de-categories/gm-relay-reusable-contract-unit-002.trx",
+      "SHA256": "b2bf01a2640fc115231c9e25b034bf05d3924a1496ba30d9a54032e1577f1baf",
+      "Bytes": 27616
+    },
+    {
+      "Path": "evidence/relay-ordinary-startup.json",
+      "SHA256": "9a8203910b1c7b4e4d6967cdc21f332723a6a0075f04775bb2347e90c8219711",
+      "Bytes": 335
+    },
+    {
+      "Path": "evidence/relay-ordinary-transaction.json",
+      "SHA256": "1a933db98c8dada73e44b39c884a3a44c6bc648d3a31f7ddf1c8457514fa878d",
+      "Bytes": 652
+    },
+    {
+      "Path": "evidence/relay-ordinary-shutdown.json",
+      "SHA256": "75b3b963120362d12f55460bb4f945e137b7775e78e6012ada39a7ca93e124b4",
+      "Bytes": 639
+    }
+  ],
+  "SourceFiles": [
+    {
+      "Path": "tools/gm-relay/relay_cli.py",
+      "SHA256": "0c8c0992db3e863d36914045cdaddd10d9a9b8a327bf70b4e7c26822acff5606"
+    },
+    {
+      "Path": "tools/gm-relay/relay_contract.py",
+      "SHA256": "9d233029aba0777b279b32e2fc0ca531f6b0f11f360090a1b8a9ed8deb9913ba"
+    },
+    {
+      "Path": "tools/gm-relay/relay_platform.py",
+      "SHA256": "3090305caa50c9458d1dedc4831f073f367883913336be614f2e1aaae50eb124"
+    },
+    {
+      "Path": "tools/gm-relay/relay_worker.py",
+      "SHA256": "0b3d570d228281060c2586bf4a258ffea74f4f2e25a5a0547d25566f95ed4870"
+    },
+    {
+      "Path": "tools/gm-relay/relay-apply-response.ps1",
+      "SHA256": "a478ca9b5ff24613ec4f2c2792f35674fa086708c0fb5053281648eba65d2ca6"
+    },
+    {
+      "Path": "tools/gm-relay/input-profile.json",
+      "SHA256": "b639df2a9bf75f786fedf8978a0098d6079492a1a8233ddc14e18d613c12afb7"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmRelayWindowsTests.cs",
+      "SHA256": "22d02b8073d286f85d708cab737d71a0e301369853b4f8c008f39d6248cc573f"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmRelayReusableTests.cs",
+      "SHA256": "3d81e6c272e3ed215f18038b7511a3505f66cee9e8c7f80f6f8b3e9407432eab"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/relay-windows-checks.py",
+      "SHA256": "42a98c598e6bb867049aa8a0061bf6957a784f0fe42546eed50afe498ae5c4ac"
+    }
+  ]
+}

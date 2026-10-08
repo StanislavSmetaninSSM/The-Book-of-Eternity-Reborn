@@ -1,0 +1,25 @@
+{
+  "command": "shutdown",
+  "ok": true,
+  "error": null,
+  "state": "ShuttingDown",
+  "helperPid": 31908,
+  "shellPid": null,
+  "terminalRunId": "8a4743388aae441286cdb788f5fd4ec0",
+  "terminalOwnerRetained": false,
+  "terminalUncertain": false,
+  "terminalStop": {
+    "identity": {
+      "runId": "8a4743388aae441286cdb788f5fd4ec0",
+      "backend": "windows-job",
+      "guarantee": "windows-job",
+      "rootPid": 34624
+    },
+    "state": "stopped-within-scope",
+    "reason": "original-job-empty",
+    "cleanupComplete": true,
+    "authorityRetained": false
+  },
+  "relayReady": false,
+  "relayError": false
+}

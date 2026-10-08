@@ -16881,7 +16881,8 @@
       "related": [],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": true
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
@@ -16934,7 +16935,8 @@
       "related": [],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": true
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
@@ -17003,7 +17005,7 @@
     {
       "id": "gm-relay-reusable-contract",
       "responsibility": "T043 shared relay worker exact bytes/request identity, bounded atomic once-only response publication and queue-close/refusal under isolated synthetic data",
-      "excludes": "No model calls, game acceptance, terminal/manager/device/native Windows execution",
+      "excludes": "No model calls, game acceptance, terminal/manager/device integration; local worker/gate is cross-platform",
       "changeHints": [
         "tools/gm-relay",
         "BookOfEternityClient.Tests/GmRelayReusableTests.cs"
@@ -17011,7 +17013,8 @@
       "related": [],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": false
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
@@ -17045,7 +17048,8 @@
       ],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": true
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
@@ -17060,7 +17064,7 @@
     },
     {
       "id": "gm-relay-native-windows",
-      "responsibility": "Native Windows developer relay Unicode bracketed paste/submit, exact worker bytes, real helper success/error, close child/EOF and original ConPTY Job cleanup; independent-process gate and console restoration",
+      "responsibility": "Native Windows developer relay Unicode bracketed paste/submit, exact worker bytes, real helper success/error, close child/EOF and original ConPTY Job cleanup; independent-process gate and console restoration; component console streams explicitly prepared, ordinary untouched Bridge separately verified",
       "excludes": "No Linux/systemd, model requests, gameplay or automatic profile readiness",
       "changeHints": [
         "tools/gm-relay",

@@ -1,0 +1,92 @@
+{
+  "Categories": [
+    "gm-relay-native-windows",
+    "gm-relay-reusable-contract"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-relay-native-windows",
+      "reason": "Actual native console/pipes/gate repair and original Job cleanup",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    },
+    {
+      "category": "gm-relay-reusable-contract",
+      "reason": "Shared exact bytes/identity/publication/close negative cases affected by gate backend",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "0067874e15f479327dc37268fc891f51e3a2713d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-relay-native-windows",
+      "Seconds": 23.0159616,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-relay-reusable-contract",
+      "Seconds": 10.1005359,
+      "BudgetMinutes": 2,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.5156472,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.3826164,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.8313659,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0053596,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:00:46.0397996",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 24,
+    "CompletedCases": 24,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 24,
+    "Executed": 24,
+    "Passed": 24,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

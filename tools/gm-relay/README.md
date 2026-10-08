@@ -11,11 +11,14 @@ It cannot proxy a forbidden endpoint or qualify arbitrary APIs.
 
 Copy the **whole folder** to an absolute path, including the fixed PowerShell
 consumer and input profile. No source checkout, SDK or compiler is needed at relay
-startup. Dependencies: Python3 (qualified here with3.12.14, POSIX `termios`/PTY),
+startup. Dependencies: Python3 (Linux3.12.14 or native Windows3.14.7 qualification),
 PowerShell7, and the game's normal .NET8/runtime package and generated session
 `game_state/control/gm_turn_helper.bootstrap.ps1`. These are developer relay
 dependencies; Python is not a prerequisite for players selecting another CLI.
-Native Windows execution is unqualified and scheduled separately after merge.
+Native Windows uses an attached console/ConPTY, Windows console APIs and a native
+file-lock gate; WSL is not required. Redirected stdin/stdout are not a terminal.
+The controlled Windows qualification and remaining boundaries are recorded in
+[the Windows plan](../../specs/1553-portable-local-storage/relay-windows-plan.md).
 
 Use a disposable **new game/session**, a new empty queue directory, and the
 existing ordinary owned-terminal launcher/settings. Do not create a second
@@ -39,6 +42,10 @@ plain `RELAY ERROR` blocks readiness. Supported input is bounded UTF8 bracketed
 paste followed by actual CR. Paste alone never submits. LF is displayed as CRLF
 so the Bridge observes the exact multiline composer; stored bytes remain LF.
 Unknown sequences/control characters are refused; this is not an arbitrary TUI.
+Windows ConPTY maps incoming LF to console CR. Inside bracketed paste only, the
+relay maps that CR back to LF; CR outside paste retains its submit meaning.
+The console reader uses Unicode APIs, a bounded queue and its original retained
+thread handle for cancellation/join before restoring both console modes.
 Bounds:65000characters,120lines,262144pastebytes,3actual submissions per relay,
 1MiB per request/packet/consumer output,32writes per packet. Start with a fresh
 queue; existing content refuses startup and is never replayed.
@@ -69,6 +76,24 @@ is frozen; it carries bytes/correlation, never a main pin or ownership. Typed
 `RelayPending`, `RelayMismatch`, `RelayClosed`, `RelayAnswered` refuse incomplete,
 stale/wrong, closed or already answered work. OS/filesystem publication errors
 remain errors; do not regenerate an unknown response.
+Worker stdout is newline-delimited UTF8 JSON with standard Unicode escapes, so
+Windows pipe readers using legacy codepages still recover the exact prompt.
+Prompt, game-request and response files retain their original bytes.
+
+Native Windows developer example (existing installed Python and PowerShell7):
+
+```powershell
+& 'C:\Python314\python.exe' -B 'C:\relay\relay_cli.py' --session 'C:\test game\game_session' --queue 'C:\test queue' --model 'inert-test-model'
+```
+
+Qualification is bounded to synthetic transport. It includes the actual Windows
+Bridge in a real outer PTY, manual paste/CR, worker/fixed helper, queue close and
+original Job stop. The automated component fixture explicitly opens its already
+attached console devices because the redirected test host supplies invalid
+standard handles; that setup is not used by the separate ordinary Bridge run.
+No model request, accepted gameplay turn or automatic T042 readiness is implied.
+The current Windows repair still requires the separately selected Linux
+regression run; retained POSIX source behavior alone does not qualify that run.
 
 Example **synthetic transport-only** packet, no credentials:
 

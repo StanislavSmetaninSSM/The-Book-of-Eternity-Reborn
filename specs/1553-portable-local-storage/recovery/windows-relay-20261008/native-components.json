@@ -1,0 +1,172 @@
+[
+  {
+    "OwnDirectory": "68f6393f8376435d9f27a64720739fb0",
+    "ConsoleModes": {
+      "Setup": "ExplicitAttachedConsoleStreams",
+      "Before": [
+        503,
+        7,
+        503,
+        7
+      ],
+      "After": [
+        503,
+        7,
+        503,
+        7
+      ]
+    },
+    "OriginalJob": {
+      "Identity": {
+        "RunId": "05a8324420cd41228325806555fe92ec",
+        "Backend": "windows-job",
+        "Guarantee": "windows-job",
+        "RootPid": 34912
+      },
+      "State": 0,
+      "Reason": "original-job-empty",
+      "CleanupComplete": true,
+      "AuthorityRetained": false
+    },
+    "Executions": [],
+    "QueueClosed": null,
+    "Refusal": {
+      "Failure": "ValueError: Only neutral bracketed-paste/submit gestures admitted"
+    }
+  },
+  {
+    "OwnDirectory": "8ccf26817b01447b8860c6a5b9adfd20",
+    "ConsoleModes": {
+      "Setup": "ExplicitAttachedConsoleStreams",
+      "Before": [
+        503,
+        7,
+        503,
+        7
+      ],
+      "After": [
+        503,
+        7,
+        503,
+        7
+      ]
+    },
+    "OriginalJob": {
+      "Identity": {
+        "RunId": "dc28d94547204998ba923ca270af81de",
+        "Backend": "windows-job",
+        "Guarantee": "windows-job",
+        "RootPid": 6428
+      },
+      "State": 0,
+      "Reason": "original-job-empty",
+      "CleanupComplete": true,
+      "AuthorityRetained": false
+    },
+    "Executions": [
+      {
+        "Executed": true,
+        "ExitCode": 0,
+        "ChildExited": true,
+        "IoDrained": true
+      }
+    ],
+    "QueueClosed": {
+      "ExecutionDisabled": true,
+      "ChildExited": true,
+      "IoDrained": true,
+      "RelayPid": 30916
+    },
+    "Refusal": null
+  },
+  {
+    "OwnDirectory": "c342e4a3612b4004876e5301ce012f1e",
+    "ConsoleModes": {
+      "Setup": "ExplicitAttachedConsoleStreams",
+      "Before": [
+        503,
+        7,
+        503,
+        7
+      ],
+      "After": [
+        503,
+        7,
+        503,
+        7
+      ]
+    },
+    "OriginalJob": {
+      "Identity": {
+        "RunId": "ded36c8f21cc4309b6940de88c14f012",
+        "Backend": "windows-job",
+        "Guarantee": "windows-job",
+        "RootPid": 30620
+      },
+      "State": 0,
+      "Reason": "original-job-empty",
+      "CleanupComplete": true,
+      "AuthorityRetained": false
+    },
+    "Executions": [
+      {
+        "Executed": true,
+        "ExitCode": 1,
+        "ChildExited": true,
+        "IoDrained": true
+      }
+    ],
+    "QueueClosed": {
+      "ExecutionDisabled": true,
+      "ChildExited": true,
+      "IoDrained": true,
+      "RelayPid": 30136
+    },
+    "Refusal": null
+  },
+  {
+    "OwnDirectory": "f35495e2d8bd4797bc39bcdc5d4fed2c",
+    "ConsoleModes": {
+      "Setup": "ExplicitAttachedConsoleStreams",
+      "Before": [
+        503,
+        7,
+        503,
+        7
+      ],
+      "After": [
+        503,
+        7,
+        503,
+        7
+      ]
+    },
+    "OriginalJob": {
+      "Identity": {
+        "RunId": "de660ff3fc244db9b905894c383a67ee",
+        "Backend": "windows-job",
+        "Guarantee": "windows-job",
+        "RootPid": 2248
+      },
+      "State": 0,
+      "Reason": "original-job-empty",
+      "CleanupComplete": true,
+      "AuthorityRetained": false
+    },
+    "Executions": [
+      {
+        "Executed": true,
+        "ExitCode": 0,
+        "ChildExited": true,
+        "IoDrained": true
+      }
+    ],
+    "QueueClosed": {
+      "ExecutionDisabled": true,
+      "ChildExited": true,
+      "IoDrained": true,
+      "RelayPid": 35580
+    },
+    "Refusal": null
+  }
+]

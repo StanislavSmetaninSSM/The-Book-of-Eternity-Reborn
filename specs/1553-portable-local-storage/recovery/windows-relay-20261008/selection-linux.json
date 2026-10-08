@@ -2,14 +2,6 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-relay-native-windows",
-      "reason": "Actual native console/pipes/gate repair and original Job cleanup",
-      "contracts": [
-        "#1553",
-        "T053-WINDOWS-RELAY"
-      ]
-    },
-    {
       "category": "gm-relay-reusable-contract",
       "reason": "Shared exact bytes/identity/publication/close negative cases affected by gate backend",
       "contracts": [
