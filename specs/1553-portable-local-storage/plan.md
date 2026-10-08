@@ -1,3 +1,49 @@
+## F10 cleanup and connected outcome-tail design checkpoint — 2026-10-08
+
+Treatment final independent carrier gate PASScf58:100 artifacts/164 historical pins;
+parent fresh GitHub-only restore at /workspace/boe-1553-treatment-final-restore is clean,
+no alternates,27925 tracked/tree79df68f25c36b95e1373667c767e606cad5a0cf1,full fsck0,
+all100 expanded/stored artifacts and164 Git pins independently verified. No builds/tests
+ran in the restore. Bounded treatment is accepted; full migration remains open.
+
+Next authorized outcome unit is existing cleanup/caller behavior, with no new transaction
+architecture or gameplay policy. Source consultation establishes that same actual CSP
+must stop subsequent canonical work even after some QTE/result bytes are committed.
+Known prepublication IOException cleanup refusal retains the existing best-effort policy.
+Secondary diagnostic/logger/owning-close failure must not replace the real decision.
+
+| Original boundary | Required behavior and proposed causal evidence |
+|---|---|
+| Engine CleanupBackup → RestorePreTurnBackupForSession | Actual backup-delete MemberPublished Unknown after exact restoration: same CSP, retained journal/evidence, no subsequent runtime refresh/read or next cleanup. Throwing diagnostic logger must not replace it. |
+| CleanupUndispatchedTransitionPrep → CleanupBackup → CleanupPendingTurnSnapshot | Actual backup cleanup Unknown must retain signed pending snapshot/authority and stop the next helper; known prepublication debt behavior remains distinct. |
+| QTE ApplyTerminalOutcomeValidatedStateChanges → outer CompleteTerminalScene | Actual nested normalization-backup delete Unknown must stop later history/runtime publications. Already committed response/member bytes remain exact; no all-or-none claim. |
+| QTE final CompleteTerminalScene → public ResolveActiveAction | Actual final normalization-backup delete Unknown must escape with established terminal/history/runtime facts as diagnostic. A normal Completed return would permit console progression/browser commits. Preserve existing known prepublication cleanup refusal→Completed control. |
+| Browser original write-operation Unknown | Preserve Uncertain result/actual original decision and evidence; do not enter generic rollback, runtime-baseline reset, canonical UI-lock release or another recovery. |
+| Browser actual rollback Unknown | Preserve first actual CSP and original business cause; stop remaining restoration/cleanup and the finally UI-lock release. |
+| Browser cleanup Unknown after durable browser commit | Retain established Committed+follow-up and stop later cleanup/release, using actual TryDelete failure carrier; do not relabel rollback/Uncertain merely because cleanup is unresolved. |
+
+These are seven proposed initial causal rows using genuine original owners, current
+MemberPublished/index0 with exact member/journal/bytes, first typed exception identity,
+and counters for attempts/reads/recovery as well as publications. No async-ancestor-only
+fault selector; original fixture cleanup follows evidence capture. Actual logger failure
+may share an existing row. Exact methods/categories/source must freeze for independent
+fixture/selection gate before any execution. Known controls include the existing QTE
+BackupCleanupFailureDoesNotMaskCommittedResult and direct-gacha consumed-deletion-debt
+refusal (only its relevant row; isolate if needed). No aggregate lifecycle suite.
+
+Connected staging and progression remain explicit obligations, not covered by those7:
+TurnLifecycle staging catch1349 currently compensates after an original typed unknown,
+and inner rollbackcatch1376 can continue CleanupPending. The original inert staging
+entry/fixture is being traced before its finite recipe is frozen. Separate progression
+source trace shows ProcessStatsIncreased, CheckLevelUp and Characteristics.ComputeAndWrite
+swallow actual publication CSP then continue. Proposed four direct controls cover stats
+base, status_clear after prior commit, Mark-only without UI, and AddStatPoints→computed;
+retain existing already-processed-level restart neighbor. No XP/stat math or atomic-turn
+upgrade, no broad changes to parse-only catches. Exact execution counts remain proposed.
+
+Runtime implementation waits for reached causal evidence and connected source/selection
+gate. F16 listings/media and F18 hooks follow; all existing native/platform limits remain.
+
 ## Treatment bounded final source and raw evidence — 2026-10-08
 
 Independent SOURCE/EXACT-SELECTION gate passed522293. Matching Plan235142 fresh
