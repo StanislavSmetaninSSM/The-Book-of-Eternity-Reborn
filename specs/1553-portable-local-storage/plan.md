@@ -1,3 +1,21 @@
+## Treatment actual15 mixed result — 2026-10-08
+
+At clean e311, matching Plan23034615/3/0 passed41.0207836s and final independent
+SOURCE/FIXTURE/SELECTION gate passed. Actual230555 completed all15/3 in84.9091366s:
+9 PASS /6 FAIL, exit1, no timeout/duplicates, both runner cleanup flags true.
+Causal3 all PASS: exact typed original decision, zero later restoration reads/publications/
+recovery/settlement leases; first business cause retained; exact consumed-receipt blockers
+for first2, mirror retains original open receipt with one legitimate readonly finalization.
+All3 owned fixture roots removed, actual notices show storage follow-up without retry.
+
+Known neighbors:6 PASS /6 FAIL. Three boundary rows report missing selected hooks
+(full_state_validation/cleanup/transaction_commit_conflict); terminal cleanup/restoration
+and post-publication Unsafe byte/outcome oracles also fail. These are preserved mixed
+results awaiting source/raw classification, not six asserted production regressions and
+not overall GREEN. No runtime change or repeat of passed causal3 is justified yet.
+All raw Plan/summary/TRXs/logs are saved under unique runtimeMixed names; full packet
+70 artifacts/100 pins. No native or broader migration acceptance.
+
 ## Treatment finalization-counter refinement — 2026-10-08
 
 Corrected runtimefd690 Plan230138 succeeds15/3/0 in39.9370971s; no actual.
