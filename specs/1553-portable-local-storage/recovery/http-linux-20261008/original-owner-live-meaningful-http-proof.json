@@ -1,0 +1,60 @@
+{
+  "Source": "3d6cfd24898fa30b37764de688432455ac9a4660",
+  "Root": "/tmp/hl-55f91823",
+  "Verdict": "PASS bounded installed HTTP/original lifecycle",
+  "Requests": 133,
+  "Meaningful200": 133,
+  "ObjectDTOs": 132,
+  "HTML": 1,
+  "Routes": {
+    "/": 1,
+    "/api/session": 44,
+    "/api/game-screen": 44,
+    "/api/audio/settings": 44
+  },
+  "PreRelay200": 94,
+  "ActiveOriginalOwner200": 39,
+  "ModelRequests": 0,
+  "UiBrowserQualified": false,
+  "OriginalIdentity": {
+    "RootKey": "/tmp/hl-55f91823/play",
+    "RunId": "ff58bc8934e64d5dbc32faf57ab8c745",
+    "GenerationId": "c364292a81c74e2f884e0b025bb0e099",
+    "Epoch": 1,
+    "Backend": "LinuxSupervisor",
+    "HostInstanceId": "ca85786f92b34b42b12ac30db2cc8e6c",
+    "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+  },
+  "ShutdownAttempts": 1,
+  "StoppedEvidence": "OwnedScopeEmpty",
+  "Terminals": {
+    "client": {
+      "ExitCode": 0,
+      "EOF": true,
+      "TermiosRestored": true,
+      "CapturedBytes": 4431
+    },
+    "web": {
+      "ExitCode": 0,
+      "EOF": true,
+      "TermiosRestored": true,
+      "CapturedBytes": 0
+    },
+    "bridge": {
+      "ExitCode": 0,
+      "EOF": true,
+      "TermiosRestored": true,
+      "CapturedBytes": 510
+    }
+  },
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 1,
+    "failures": 0,
+    "deadline": false
+  },
+  "AudioCriterion": "schema1 typed flags/ranges, two missing playlists and five unavailable cues, stable44 replies; no audio persistence/device claim",
+  "DiagnosticCorrection": "Initial posthoc assumption flags=false rejected. Synthetic driver config uses PascalCase while actual StateManager uses case-sensitive camelCase SharedJsonOptions; DTO uses GameSettings defaults true/65/true/75. Runtime and existing response bytes unchanged. No audio settings mutation/device/browser execution."
+}

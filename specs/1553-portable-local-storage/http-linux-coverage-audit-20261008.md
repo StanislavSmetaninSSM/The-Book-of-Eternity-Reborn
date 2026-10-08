@@ -2,7 +2,15 @@
 
 Source: #1553 / T054-WINDOWS-HTTP. Verification/report-only branch
 `codex/1553-http-linux-audit-20261008`; product source, tests and catalog are
-unchanged. HOME-PC remains the product implementation writer. No CI/merge change.
+unchanged. HOME-PC remains the product implementation writer. The latest owner
+instruction authorizes integration into main with GitHub CI disabled; the two
+workflows are already disabled_manually. No runtime/test change is made here.
+
+Current T055 result: exact3d6cfd24898fa30b37764de688432455ac9a4660 passes the
+three selected Linux cases and the genuine installed NewGame/web/idle-relay
+comparison:133/133 meaningful HTTP200, confirmed original stop and actual I/O.
+The earlier26HTTP500 observations below remain historical evidence, not the
+current verdict. Browser UI remains NOT RUN; no new model/gameplay claim.
 
 The authoritative reproduction instructions were read at
 `c5e3680e13122ddc88e76af7db075ceccf6f1680` in
@@ -84,7 +92,7 @@ An earlier driver preparation failure expected the wrong Russian NewGame marker;
 it reached no HTTP/CLI/model stage and is separate from product failure. Its
 original abort/EOF/guardian evidence is already inside live-baseline-evidence.zip.
 
-## Fixed live comparison and environment boundaries
+## Historical T054 fixed live comparison and environment boundaries
 
 The comparable exact3d205 package ran on fresh root `/tmp/hg-699f95a8`.
 Client and Bridge were freshly built/published from that source; both core DLL
@@ -159,7 +167,7 @@ lengths/hashes were retained in closed-fixture-space-cleanup.json; isolated game
 state/history/main records/raw traces remain. No historical Uncertain was changed.
 
 
-## T055 original-owner tests-first follow-up — WIP 2026-10-08
+## T055 original-owner tests-first follow-up — 2026-10-08
 
 Exact0a2843af69c521d7507a9e036cb5494d8c9d73cb was fetched from GitHub into the
 independent product checkout. Only `browser-original-owner-linux` ran via
@@ -214,3 +222,40 @@ that observed original status is authoritative. Original artifacts are unchanged
 Only closed immutable test ships were removed after all hashes and logical stop
 proofs were saved, to free disk for the requested next live package. Root state,
 history, main metadata, native packages and raw evidence remain.
+
+## T055 final installed comparison
+
+Fresh isolated root `/tmp/hl-55f91823` used ordinary console NewGame, cancelled
+initial GM preparation before CLI/model submission, then the actual installed
+`--web` entrypoint and ordinary M1 original-owned persistent relay launcher.
+Observed Ready had no override. Same driver request schedule as the historical
+comparison:94pre-relay200 and39active-original-owner200,133/133 total in45.164s.
+All44session DTOs report ok/existing game; all44schema2game-screen DTOs contain
+the initialized synthetic soul;44schema1audio DTOs have typed flags/bounded
+volumes and honest unavailable assets. Root HTML references the installed bundle.
+Exact response bytes and inert posthoc checks are preserved in
+original-owner-live-{http-responses,meaningful-http-proof,manifest}.json.
+
+One posthoc assumption expected disabled audio flags from the driver's PascalCase
+synthetic config. It was rejected: StateManager uses case-sensitive camelCase
+SharedJsonOptions, so the DTO has GameSettings defaults true/65/true/75. Existing
+response bytes/runtime were not changed. Audio persistence, devices and browser
+JavaScript are outside this check; all44audio replies are identical valid DTOs.
+
+Web stop and queue execution-close preceded the single exact original shutdown.
+Running/Stopped/OwnedScopeEmpty identities match, retained authority is released
+after confirmed scoped stop, and client/web/bridge each exit0 with EOF and termios
+restored. Guardian reaches ECHILD with0emergency/0failure/no deadline. Model
+requests0, no relay submit. Historical Uncertain and failed roots are unchanged.
+
+Package source is3d6:574files/93,019,796bytes, core DLL SHA256
+ddc62f39f8d8029486680e5b8016c15a34575f1bdde7e71db330dc38fed5a61d,
+identical Client/Bridge copies, all113frontend artifacts equal accepted baseline.
+Unchanged native binaries retain their original0a build provenance; they were
+not relabelled as rebuilt at3d6. Installed player startup has no source/compiler.
+The archive preserves62raw/state/driver/build records with lengths/hashes.
+
+Independent final review and integration receipts follow this saved checkpoint.
+Source headf22809819ebf6a4f6c78c77064d898df927676d1 adds only two metadata commits
+after reviewed/tested3d6; source/test bytes remain the qualified ones. No full
+suite, previous successful cohort, CLI model turn or live browser was repeated.

@@ -1,0 +1,23 @@
+{
+  "Commit": "7afb19349519bacb959b5ccad3069226c669efa1",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-green-manifest.json",
+      "Bytes": 1569158,
+      "SHA256": "cac217a327ce03ba6f81401977fd853a67c4634e3af0e3b64f659fa1f96605d7",
+      "GitBlob": "fa5dc7152f433a4926cde1a11b1321cd915b3d91"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-green-evidence.zip",
+      "Bytes": 521653,
+      "SHA256": "fe3b9862cf6505f9a92fa7816618e7ba6b3cf2b1a95afdb51d5b2b981d7caa64",
+      "GitBlob": "09448da0c95afd7c53a0b53afd1469d1c02e0ee5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-green-scenario.json",
+      "Bytes": 577498,
+      "SHA256": "586dfcec6169bc9310422971b5eb9c633422c16bb17894547252a40d1047b085",
+      "GitBlob": "edbf4adb8cdeb652e625c288dbbc580903660863"
+    }
+  ]
+}

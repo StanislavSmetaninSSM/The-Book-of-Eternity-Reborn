@@ -1,0 +1,381 @@
+{
+  "TimestampUTC": "2026-10-08T07:09:06.283506+00:00",
+  "Source": "3d6cfd24898fa30b37764de688432455ac9a4660",
+  "Archive": "original-owner-live-evidence.zip",
+  "Bytes": 717509,
+  "SHA256": "06881a7f55462e5c640f076c79cf105a3ad89c2554e780cafa868946801a2a1a",
+  "Artifacts": [
+    {
+      "Path": "root/bridge.raw",
+      "Bytes": 510,
+      "SHA256": "18f529b4514d6175bff5a7fae7426a224b8eaeb9bb689ed830c9b48bbbdedf02"
+    },
+    {
+      "Path": "root/client-echo.raw",
+      "Bytes": 2,
+      "SHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "Path": "root/client.raw",
+      "Bytes": 4431,
+      "SHA256": "92b2bea0bc9299ffe091f42a29314d3c5d2cf11d9e5f82f29ee458894320ba38"
+    },
+    {
+      "Path": "root/diagnostic-source.json",
+      "Bytes": 120929,
+      "SHA256": "5560cfca603cb23b73a48087d4f076db2dec619dfd448c908539b96f632e9d49"
+    },
+    {
+      "Path": "root/guardian.json",
+      "Bytes": 97,
+      "SHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "root/http-responses.json",
+      "Bytes": 12051385,
+      "SHA256": "1db8892fcaafc8e230472e620845877fdffe258f1ee41188c73acd22b3720078"
+    },
+    {
+      "Path": "root/meaningful-http-proof.json",
+      "Bytes": 1872,
+      "SHA256": "4aa1afce4f8d1f5ee8b08c86f6bfdd11006be030d6b416dbbe56c90564a4acd3"
+    },
+    {
+      "Path": "root/play/.boe_runtime/gm-runs/main.json",
+      "Bytes": 697,
+      "SHA256": "ade5b95c575c546836da9c226ded1e644a3c6ab13bf8f083f8e3e0a5ef5a7dd6"
+    },
+    {
+      "Path": "root/play/.boe_runtime/locks/canonical-write.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "root/play/.boe_runtime/locks/gm-main-owner.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "root/play/.boe_runtime/locks/session-lifecycle.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "root/play/.boe_runtime/session-generation/current.json",
+      "Bytes": 69,
+      "SHA256": "90b8cd9f2cd4cc812dd0e95583ea8bc29c16f7b3280c7ae7da18380caea1fd60"
+    },
+    {
+      "Path": "root/play/.boe_runtime/worker-runs-v1/journal.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "root/play/.boe_runtime/worker-runs-v1/mode.json",
+      "Bytes": 79,
+      "SHA256": "f705f622d80fb682022f01305d70ca7c481f6549c924cc9dd157952284ce9112"
+    },
+    {
+      "Path": "root/play/.boe_runtime/worker-runs-v1/owner.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "root/play/.boe_runtime/worker-runs-v1/state.json",
+      "Bytes": 111,
+      "SHA256": "49e794cc27b8dc9b460ab1b1e886c5985a4e6a6d3550d33c980e97291ed0201e"
+    },
+    {
+      "Path": "root/play/game_session/config.json",
+      "Bytes": 849,
+      "SHA256": "c28a23a0ea0d065296ef96c1450ea2d6a6eee8f6a28f8bb0d0693688f96553b8"
+    },
+    {
+      "Path": "root/play/game_session/game_state/control/gm_bridge_status.json",
+      "Bytes": 2761,
+      "SHA256": "e0006b0c73de5da9218b69c98c10d4cf77c0b310745060a1546b63a025190296"
+    },
+    {
+      "Path": "root/play/game_session/game_state/control/progression_schedule.json",
+      "Bytes": 1022,
+      "SHA256": "7dc24f5482161f64be8486c3d4884cb02809a8c83a8ea0887df4125abc2e742d"
+    },
+    {
+      "Path": "root/play/game_session/game_state/core/game_settings.json",
+      "Bytes": 184,
+      "SHA256": "a25a55a5d5d2f8f1d5acc23120c3577287042e401612d1f9daeec1cebb039776"
+    },
+    {
+      "Path": "root/play/game_session/game_state/core/system_mods.json",
+      "Bytes": 191,
+      "SHA256": "bd1cd37e93536494614faa2059310d2c040d6978d9831400c778243c03f2378d"
+    },
+    {
+      "Path": "root/play/game_session/game_state/history/chat_log.json",
+      "Bytes": 100,
+      "SHA256": "c2b0f0e1eaf98c5457487872b7f20f201e4f16252a14260e0119b456f552f0d9"
+    },
+    {
+      "Path": "root/play/game_session/game_state/inventory/item_identity_index.json",
+      "Bytes": 44,
+      "SHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385"
+    },
+    {
+      "Path": "root/play/game_session/game_state/meta/achievements.json",
+      "Bytes": 402,
+      "SHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f"
+    },
+    {
+      "Path": "root/play/game_session/game_state/meta/afterlife_chronicles.json",
+      "Bytes": 47,
+      "SHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791"
+    },
+    {
+      "Path": "root/play/game_session/game_state/meta/afterlife_entity_profiles.json",
+      "Bytes": 6669,
+      "SHA256": "0209e0ea932e1ad6a3ecb3da591c3f2906448f2ce16d6db67e78fa853222f9e5"
+    },
+    {
+      "Path": "root/play/game_session/game_state/meta/afterlife_global_flags.json",
+      "Bytes": 42,
+      "SHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e"
+    },
+    {
+      "Path": "root/play/game_session/game_state/meta/afterlife_spiritual_conflict_state.json",
+      "Bytes": 78,
+      "SHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9"
+    },
+    {
+      "Path": "root/play/game_session/game_state/meta/character_chronicle.json",
+      "Bytes": 1097,
+      "SHA256": "827eefa812dcd3e5290063f081752e6e7d8263917c113268ba1d000ba8e3f8d4"
+    },
+    {
+      "Path": "root/play/game_session/game_state/meta/guardian_projects.json",
+      "Bytes": 91,
+      "SHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb"
+    },
+    {
+      "Path": "root/play/game_session/game_state/meta/guardians.json",
+      "Bytes": 19610,
+      "SHA256": "89b3cc65e111966f42b8f641ddd82b7c42424f4dd9d18de8d1a69af861b3e03a"
+    },
+    {
+      "Path": "root/play/game_session/game_state/meta/soul_state.json",
+      "Bytes": 868,
+      "SHA256": "cede338a1e4841a84f112b5ddf32e24f68d4baf74279624a668b18f6e655152b"
+    },
+    {
+      "Path": "root/play/game_session/game_state/resources/resource_definitions.json",
+      "Bytes": 6885,
+      "SHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603"
+    },
+    {
+      "Path": "root/play/game_session/game_state/resources/resource_history.json",
+      "Bytes": 35,
+      "SHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e"
+    },
+    {
+      "Path": "root/play/game_session/game_state/resources/resource_owner_authority.json",
+      "Bytes": 64,
+      "SHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803"
+    },
+    {
+      "Path": "root/play/game_session/game_state/resources/resource_state.json",
+      "Bytes": 35,
+      "SHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e"
+    },
+    {
+      "Path": "root/play/game_session/game_state/wounds/wound_history.json",
+      "Bytes": 55,
+      "SHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af"
+    },
+    {
+      "Path": "root/play/game_session/game_state/wounds/wound_identity_index.json",
+      "Bytes": 35,
+      "SHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e"
+    },
+    {
+      "Path": "root/play/game_session/lore/chaos_sea/cosmology.json",
+      "Bytes": 1114,
+      "SHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5"
+    },
+    {
+      "Path": "root/play/game_session/lore/chaos_sea/guardians_lore.json",
+      "Bytes": 1063,
+      "SHA256": "de2648f01a5475b20d15dced5334054d0393d809203b0df427ed0adac553e3ff"
+    },
+    {
+      "Path": "root/play/game_session/lore/chaos_sea/player_chronicle.json",
+      "Bytes": 22,
+      "SHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132"
+    },
+    {
+      "Path": "root/play/game_session/lore/chaos_sea/soul_system_lore.json",
+      "Bytes": 890,
+      "SHA256": "22c966e966e03339e1e57d11babb4acfb7ddda05ca542adf7e53afce0cd5aa1d"
+    },
+    {
+      "Path": "root/play/game_session/lore/codex_entries.json",
+      "Bytes": 3034,
+      "SHA256": "8294944cab985414e93a04d840119c92dcec8b369e2da17877606bb6d3049fd0"
+    },
+    {
+      "Path": "root/queue/close-request.json",
+      "Bytes": 41,
+      "SHA256": "dbfa1b2fe40586b4dbee6de7375567c51308139e1b68388e3a54d224aa56d82c"
+    },
+    {
+      "Path": "root/queue/closed.json",
+      "Bytes": 98,
+      "SHA256": "39617e641661b3ed631b0fb26930b20e95dd6eff6f1675d028f522a1de946e1c"
+    },
+    {
+      "Path": "root/relay/.gitignore",
+      "Bytes": 13,
+      "SHA256": "32dae3052f331ee34d628ef535709b301259a45df7c7522c4d35dcf49873f00b"
+    },
+    {
+      "Path": "root/relay/README.md",
+      "Bytes": 10365,
+      "SHA256": "f4077bf12f87090d6f4a3e0d8cc45cd02b95ebc33fafe9310db16fe57fd1f82d"
+    },
+    {
+      "Path": "root/relay/codex-gm-relay.py",
+      "Bytes": 374,
+      "SHA256": "4e976ec833ea94e1d31c92b1b24b7a972fa399561ddf7e1f9e4063cb0ee8ca9a"
+    },
+    {
+      "Path": "root/relay/input-profile.json",
+      "Bytes": 183,
+      "SHA256": "b639df2a9bf75f786fedf8978a0098d6079492a1a8233ddc14e18d613c12afb7"
+    },
+    {
+      "Path": "root/relay/relay-apply-response.ps1",
+      "Bytes": 2045,
+      "SHA256": "a478ca9b5ff24613ec4f2c2792f35674fa086708c0fb5053281648eba65d2ca6"
+    },
+    {
+      "Path": "root/relay/relay_cli.py",
+      "Bytes": 9599,
+      "SHA256": "0c8c0992db3e863d36914045cdaddd10d9a9b8a327bf70b4e7c26822acff5606"
+    },
+    {
+      "Path": "root/relay/relay_contract.py",
+      "Bytes": 9311,
+      "SHA256": "9d233029aba0777b279b32e2fc0ca531f6b0f11f360090a1b8a9ed8deb9913ba"
+    },
+    {
+      "Path": "root/relay/relay_platform.py",
+      "Bytes": 8320,
+      "SHA256": "3090305caa50c9458d1dedc4831f073f367883913336be614f2e1aaae50eb124"
+    },
+    {
+      "Path": "root/relay/relay_worker.py",
+      "Bytes": 2133,
+      "SHA256": "0b3d570d228281060c2586bf4a258ffea74f4f2e25a5a0547d25566f95ed4870"
+    },
+    {
+      "Path": "root/result.json",
+      "Bytes": 71386,
+      "SHA256": "01d8fb9a72c65b09e1c89a5585c5c09a545e623137976c20901be99a0fc3c8dd"
+    },
+    {
+      "Path": "root/rpc-journal.json",
+      "Bytes": 40709,
+      "SHA256": "12df5ddf6c2b7d8ce36d361d1af9f654bbbb1d033842b8305650f4715911163a"
+    },
+    {
+      "Path": "root/web-echo.raw",
+      "Bytes": 2,
+      "SHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17"
+    },
+    {
+      "Path": "root/web.raw",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "executor/http-live-green-driver.py",
+      "Bytes": 27797,
+      "SHA256": "b0be71a780a3aa7224ab9fe54f107a0a1e68318754bbfdb3279ec2efe493e800"
+    },
+    {
+      "Path": "executor/original-owner-live.log",
+      "Bytes": 275,
+      "SHA256": "4dca0d1fdf5deb21ea4eb4ad4aae516888c0a6b45e81aca3f1f4c3212c1afe3d"
+    },
+    {
+      "Path": "executor/owner-live-publish-BookOfEternityClient.log",
+      "Bytes": 92,
+      "SHA256": "7fc487932ec5f4a776dbda7fa196163e79870c29991adf146fffa77e17e1eaea"
+    },
+    {
+      "Path": "executor/owner-live-publish-BookOfEternityGMBridge.log",
+      "Bytes": 96,
+      "SHA256": "224bc4cf7b4a5fde027bb4e4e4cd123f0b6c88a75729a5597e63bfc80792cf41"
+    }
+  ],
+  "Proof": {
+    "Source": "3d6cfd24898fa30b37764de688432455ac9a4660",
+    "Root": "/tmp/hl-55f91823",
+    "Verdict": "PASS bounded installed HTTP/original lifecycle",
+    "Requests": 133,
+    "Meaningful200": 133,
+    "ObjectDTOs": 132,
+    "HTML": 1,
+    "Routes": {
+      "/": 1,
+      "/api/session": 44,
+      "/api/game-screen": 44,
+      "/api/audio/settings": 44
+    },
+    "PreRelay200": 94,
+    "ActiveOriginalOwner200": 39,
+    "ModelRequests": 0,
+    "UiBrowserQualified": false,
+    "OriginalIdentity": {
+      "RootKey": "/tmp/hl-55f91823/play",
+      "RunId": "ff58bc8934e64d5dbc32faf57ab8c745",
+      "GenerationId": "c364292a81c74e2f884e0b025bb0e099",
+      "Epoch": 1,
+      "Backend": "LinuxSupervisor",
+      "HostInstanceId": "ca85786f92b34b42b12ac30db2cc8e6c",
+      "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+    },
+    "ShutdownAttempts": 1,
+    "StoppedEvidence": "OwnedScopeEmpty",
+    "Terminals": {
+      "client": {
+        "ExitCode": 0,
+        "EOF": true,
+        "TermiosRestored": true,
+        "CapturedBytes": 4431
+      },
+      "web": {
+        "ExitCode": 0,
+        "EOF": true,
+        "TermiosRestored": true,
+        "CapturedBytes": 0
+      },
+      "bridge": {
+        "ExitCode": 0,
+        "EOF": true,
+        "TermiosRestored": true,
+        "CapturedBytes": 510
+      }
+    },
+    "Guardian": {
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    "AudioCriterion": "schema1 typed flags/ranges, two missing playlists and five unavailable cues, stable44 replies; no audio persistence/device claim",
+    "DiagnosticCorrection": "Initial posthoc assumption flags=false rejected. Synthetic driver config uses PascalCase while actual StateManager uses case-sensitive camelCase SharedJsonOptions; DTO uses GameSettings defaults true/65/true/75. Runtime and existing response bytes unchanged. No audio settings mutation/device/browser execution."
+  },
+  "PackageProvenance": "original-owner-live-diagnostic-source.json",
+  "Command": "TERM=dumb /tmp/reusable-relay-83f885854c80413ab144e655748d6444/package/host-guardian --live-turn /tmp/hl-55f91823/guardian.json 300000 /usr/bin/python3 /workspace/qualification-1553-http-live-20261008/http-live-green-driver.py /tmp/hl-55f91823 --codex-relay"
+}
