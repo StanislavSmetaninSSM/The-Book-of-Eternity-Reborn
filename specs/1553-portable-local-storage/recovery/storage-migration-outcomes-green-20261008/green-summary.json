@@ -1,0 +1,82 @@
+{
+  "Categories": [
+    "portable-ordinary-publication-outcomes",
+    "portable-ordinary-outcome-notice",
+    "portable-browser-rollback-outcomes"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "83f6e9a726a208573095711f4e9f4f34c1b7b993",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-browser-rollback-outcomes",
+      "Seconds": 7.4747572,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-ordinary-outcome-notice",
+      "Seconds": 3.0169946,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-ordinary-publication-outcomes",
+      "Seconds": 2.8195641,
+      "BudgetMinutes": 5,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0427089,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0319205,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0788555,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0041821,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:00:20.9959429",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 19,
+    "CompletedCases": 19,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 19,
+    "Executed": 19,
+    "Passed": 19,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

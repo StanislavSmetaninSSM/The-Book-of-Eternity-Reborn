@@ -2,6 +2,13 @@
 
 ## Current migration delta (baseline index below remains pinned to d024)
 
+F08/F11 bounded delta at83f6e9a7: reached facade uncertainty and warning-logger
+REDs corrected; actual failed browser rollback no longer replaces runtime with a
+false baseline or emits a restored/retry promise.19/19 Linux PASS; independent
+review PASS reported by parent. [Exact evidence](recovery/storage-migration-outcomes-green-20261008/manifest.json).
+QTE/pre-turn compensation-time typed propagation and ordinary close remain open.
+No new continuation barrier or native Windows qualification is inferred.
+
 F03 common console stage/admission/restore/cleanup has bounded Linux acceptance at
 runtime `ebd645ccd671f086dc5eded9f5b7f4a96a71432d`: 16 meaningful original console
 and controlled lifecycle/save-load cases plus14 existing signed-before-image
@@ -26,9 +33,7 @@ empty-directory helper/generation boundary. F14 watchers enter participating
 operations and startup/poll fallback; they remain eligibility hints, not an
 established lost-publication defect. F13 raw GM helper writes need witness and
 read-baseline checks under the same owned C# operation; existing control-only
-entrypoint cannot simply be broadened to all GM paths. F08/F11 is next: actual
-ordinary uncertain/committed-debt outcome and original browser rollback/cache/
-notice behavior. These are source traces, not fabricated executed failures.
+entrypoint cannot simply be broadened to all GM paths. These remaining F10/F13/F14/F16 items are source traces, not fabricated executed failures.
 
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), approved spec FR-001–011/015 and the owner's explicit request to find and migrate all remaining old write, recovery and notification mechanisms. Branch `1553-storage-migration-cloud-20261008`; source `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`; comparison `1fc5e59` (full resolved SHA in manifest). #1536 B2–B5 stays paused on its separate branch. This is an inventory/design milestone, not runtime acceptance.
@@ -41,7 +46,7 @@ The rules index common leased file/byte/snapshot/existence/enumeration/generatio
 
 **Each generated occurrence is `reviewStatus: lexical-only`.** Its `candidateClassification` is a search aid, not an approved exception or evidence of migration. Duplicated references, definitions, strings and read-only APIs are included. Match counts are not defect counts. The human table below records source-reviewed conditional family decisions; it does not certify every dynamic caller. All unresolved consumer/outcome cuts remain open until traced and verified. Exact named callers (including definitions, distinguished by local source inspection) are in routes.json; facade/indirect dispatch occurrences remain in the complete index. Independent review must challenge missing aliases, overloads, routing conditions and script protocols before implementation.
 
-No current tests, native probes, live GM, HOME-PC or desktop execution have run. Linux observations cannot qualify native Windows; old Linux test guards that return early are not PASS for the guarded capability.
+At this baseline inventory milestone no current tests or native probes had run; subsequent bounded execution is recorded above. No live GM, HOME-PC or desktop execution has run. Linux observations cannot qualify native Windows; old Linux test guards that return early are not PASS for the guarded capability.
 
 ## Reviewed family map
 

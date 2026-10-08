@@ -1,3 +1,24 @@
+## T062 bounded F08/F11 verification — 2026-10-08
+
+Frozen runtime83f6e9a726a208573095711f4e9f4f34c1b7b993 has19/19 Linux PASS:
+ordinary facade9, actual AgentConsole notice1, original browser outcome9. Three
+complete descriptors, no skips/duplicates/timeouts, owned cleanup complete,
+20.996s. Fresh PlanOnly19/3 succeeded before execution. Discovery-only catalog
+446categories/11224methods-files valid, zero executed,11.567s. [Raw evidence and
+exact source pins](recovery/storage-migration-outcomes-green-20261008/manifest.json).
+Independent Astra XHigh source/evidence gate PASS reported by parent; this is not acceptance of every F08
+consumer. Native Windows remains unexecuted. Original runtime callback failure
+control retains RolledBack/follow-up without claiming a new admission barrier.
+
+Next causal slice: original QTE and pre-turn restoration can catch a typed ordinary
+uncertainty raised DURING compensation and replace it with a generic failure.
+Establish actual MemberPublished unknown-byte cut in restoration, assert original
+journal/evidence and reached phase, inspect post-cut mutation/refresh attempts;
+then preserve typed uncertainty without strengthening permitted partial restore.
+Original lease-close classification and all remaining inventory families stay open.
+
+### Earlier bounded verification checkpoints (source-specific history)
+
 ## T062 browser causal checkpoint — 2026-10-08
 
 At source22b465e, fresh PlanOnly19/3 succeeded; ordinary facade and actual
