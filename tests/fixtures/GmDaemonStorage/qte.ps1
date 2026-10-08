@@ -57,6 +57,7 @@ $script:StartTime=Get-Date;$script:DaemonCommandLine='inert daemon storage fixtu
 $script:TurnCount=0;$script:ErrorCount=0;$script:IsProcessing=$false;$script:BridgeDispatchMaxWaitSeconds=1
 $script:BridgeAutoStartAttempted=$false;$script:GmPromptInputPaused=$false;$LogFile=''
 $script:Dispatches=[Collections.Generic.List[object]]::new()
+$script:OriginalPromptControl=${function:Invoke-GmPromptControl}
 # The sole inert delivery collaborator: real allocation/correlation/message and
 # retry policy run above it; no launcher/provider/desktop input is invoked.
 function Invoke-GmPromptControl {

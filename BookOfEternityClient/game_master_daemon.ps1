@@ -3641,7 +3641,7 @@ function Test-GmPromptSourceCurrent {
     if (-not $Path) { return $true }
     try { return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData((Get-GmDaemonFileBytes $Path))) -ceq $Hash }
     catch {
-        Assert-GmNotDaemonReadFailure $_ return $false }
+        Assert-GmNotDaemonReadFailure $_; return $false }
 }
 
 function Get-GmPromptContentHash {
@@ -3705,7 +3705,7 @@ function Invoke-GmPromptControl {
         return $response.promptDelivery
     }
     catch {
-        Assert-GmNotDaemonReadFailure $_ return (New-GmPromptDelivery $Operation 'unknown-outcome' 'launcher-or-transport-ambiguous') }
+        Assert-GmNotDaemonReadFailure $_; return (New-GmPromptDelivery $Operation 'unknown-outcome' 'launcher-or-transport-ambiguous') }
 }
 
 function Send-ToGmBridge {

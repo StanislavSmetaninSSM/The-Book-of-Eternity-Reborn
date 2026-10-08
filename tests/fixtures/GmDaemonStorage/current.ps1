@@ -47,6 +47,11 @@ try {
   $rejected=$false;try{[void](Send-GmOperationCommand $ctx @{action='daemon-request-chunk';transfer=$id;offset=1;bytes=[Convert]::ToBase64String($bytes)})}catch{$rejected=$true}
   Assert-Current ($rejected -and -not $ctx.lost) 'Malformed chunk was not a live protocol refusal.'
   Assert-Current ((Get-GmDaemonText 'output/daemon-A.json') -ceq 'A') 'Aborted partial request published or poisoned subsequent read.'
+  $operation=New-GmPromptOperation -Message 'inert fallback' -PendingPath $TurnRequestFile
+  Assert-Current ($null -ne $operation) 'Fallback control lacks actual original prompt identity.'
+  $BridgeControlScript=[IO.Path]::Combine($Folder,'deliberately-absent-launcher.ps1')
+  $fallback=& $script:OriginalPromptControl $operation
+  Assert-Current ($fallback.disposition -ceq 'unknown-outcome' -and $fallback.reason -ceq 'launcher-or-transport-ambiguous') 'Nonstorage launcher failure lost original fallback.'
  }
  'config-refusal' {Get-GameConfig|Out-Null;throw 'Config refusal became defaults.'}
  'cache-refusal' {
