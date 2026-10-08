@@ -138,6 +138,15 @@
         "A01",
         "T063-REMAINING-CONSUMERS"
       ]
+    },
+    {
+      "category": "gm-main-metadata-ordering-linux",
+      "reason": "Isolated A01 platform metadata adapter: seven existing actual exact-CAS/debt/guard and Linux parent barrier controls, before and after adapter change. Native Windows requires separate body execution.",
+      "contracts": [
+        "#1553",
+        "A01",
+        "T063-REMAINING-CONSUMERS"
+      ]
     }
   ]
 }

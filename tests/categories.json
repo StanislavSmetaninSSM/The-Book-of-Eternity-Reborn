@@ -1689,8 +1689,6 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.*",
-            "BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard",
-            "BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck",
             "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup"
           ]
         }
@@ -17529,6 +17527,31 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.WindowsStartupObservationTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-metadata-ordering-linux",
+      "responsibility": "A01 exact original metadata CAS/retained guard/frozen retry and Linux initialization parent barrier controls before and after native adapter addition.",
+      "excludes": "Windows native durability, process launch, full main or worker lifecycle.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GmSessionRunPersistence.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard",
+            "BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck"
           ]
         }
       ]

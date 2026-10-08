@@ -1,3 +1,16 @@
+## A01 isolated metadata ordering adapter baseline — 2026-10-08
+
+Split only seven existing metadata CAS/guard/retry/parent barrier cases into
+`gm-main-metadata-ordering-linux`; no body or runtime changes yet. Establish actual
+Linux baseline before the independently reviewed Windows mapping. Preserve exact
+same pending bytes/creator/guard, native create-only namespace and flushed same-dir
+write-through move + actual final file flush/readback. Windows emits a truthful
+backend acknowledgement, never a fake Linux directory or parent-flush event.
+Application-process ordering only; no power-loss/directory-fsync equivalence.
+Native create/replace/debt/share/namespace/guard drive and extended-path body cases
+will be separately catalogued, unexecuted here. Owner/worker and ConPTY consumer
+activation wait for their separate gates.
+
 ## A01 observation component fresh evidence — 2026-10-08
 
 Frozen fed43297: fresh PlanOnly/build16/1, then16/16 Linux PASS in9.286s,
