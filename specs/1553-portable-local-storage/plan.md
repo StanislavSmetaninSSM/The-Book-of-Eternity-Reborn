@@ -1,3 +1,24 @@
+## F14 frozen runtime/source-selection candidate — 2026-10-08
+
+Exact proposed Linux27 in six categories: `portable-gm-daemon-qte-storage-causal-linux`5,
+`portable-gm-daemon-storage-delivery-neighbors`4,
+`portable-gm-daemon-storage-current-linux`14,
+`gm-main-helper-outcome-loss-neighbors`2, `gm-main-helper-bounds-linux`1,
+`portable-gm-daemon-helper-close-neighbor`1. The F13 nested-default body is unchanged,
+uniquely split from its former theory. All six use the unit build; no broader cohort.
+
+Current cache refusal first positively loads the real current generation, proving
+old volatile keys are cleared and durable current keys retained, then arms refusal.
+Repair/terminal cuts target the second actual content read, after initial existence
+observation and before the bytes/timestamp watermark is accepted. Request-end loss
+and successful-but-invalid response remain separate local guarded transport controls.
+The two local rows prove actual original owner retirement before admission and no
+invented remote ACK. Running read refusals must close the same original operation
+Failed with an observed ACK; post-send refusal preserves the already returned delivery.
+
+This is a source/fixture candidate awaiting a matching successful PlanOnly and
+independent full-delta source/selection review. No runtime GREEN or native claim.
+
 ## F14 connected runtime/current-fixture WIP — 2026-10-08
 
 The accepted causal packet remains `383268f9`: five QTE rows (two positive PASS,

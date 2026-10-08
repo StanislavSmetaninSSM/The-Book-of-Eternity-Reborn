@@ -49,7 +49,14 @@ try {
   Assert-Current ((Get-GmDaemonText 'output/daemon-A.json') -ceq 'A') 'Aborted partial request published or poisoned subsequent read.'
  }
  'config-refusal' {Get-GameConfig|Out-Null;throw 'Config refusal became defaults.'}
- 'cache-refusal' {Load-ObservedTerminalRequestKeys;throw 'Cache refusal became an empty cache.'}
+ 'cache-refusal' {
+  $script:ObservedTerminalGeneration='old-generation';[void]$script:ObservedTerminalRequestKeys.Add('old-key')
+  Load-ObservedTerminalRequestKeys
+  Assert-Current (-not $script:ObservedTerminalRequestKeys.Contains('old-key') -and $script:ObservedTerminalRequestKeys.Contains('saved-key')) 'Actual current-generation load inherited old cache or lost durable keys.'
+  $script:CurrentEvidence.cacheGeneration=$script:ObservedTerminalGeneration
+  [IO.File]::WriteAllText((Join-Path $Folder 'cache-armed'),'armed')
+  Load-ObservedTerminalRequestKeys;throw 'Cache refusal became an empty cache.'
+ }
  'repair-refusal' {Process-RepairRequest -RepairPath ([IO.Path]::Combine($ControlDir,'validation_repair_request.json'));throw 'Repair refusal was swallowed.'}
  'terminal-refusal' {Process-TerminalProtocolFailureRequest -FailurePath ([IO.Path]::Combine($ControlDir,'terminal_protocol_failure_request.json'));throw 'Terminal refusal was swallowed.'}
  'ready-race' {$signal=Get-CorrelatedTerminalSignal $request ([IO.Path]::Combine($SessionPath,'ready/turn_complete.json')) ([IO.Path]::Combine($SessionPath,'ready/absent-error.json'));Assert-Current ($null -eq $signal) 'Changed Ready acquired old correlation.'}

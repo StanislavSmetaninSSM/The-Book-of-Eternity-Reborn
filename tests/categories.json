@@ -18538,6 +18538,36 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-gm-daemon-helper-close-neighbor",
+      "responsibility": "One exact existing F13 nested-default original close/dispose and role-separation neighbor, split unchanged from the current helper theory.",
+      "excludes": "Other F13 rows, provider/native/desktop execution.",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+        "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+        "BookOfEternityClient.TestSupport/GmDaemonStorageScenario.cs",
+        "tests/fixtures/GmDaemonStorage/qte.ps1",
+        "BookOfEternityClient.TestSupport/GmDaemonCurrentScenario.cs",
+        "tests/fixtures/GmDaemonStorage/current.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperNestedDefaultRoleRemainsSeparate"
+          ]
+        }
+      ]
     }
   ]
 }

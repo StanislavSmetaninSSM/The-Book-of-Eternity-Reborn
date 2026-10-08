@@ -56,7 +56,7 @@ internal static class GmDaemonCurrentScenario
     {
         var modeFile=Path.Combine(folder,"current-mode.json");
         var mode=File.Exists(modeFile)?JsonSerializer.Deserialize<string>(File.ReadAllText(modeFile)):null;
-        var count=0;var manifestReads=0;
+        var count=0;var manifestReads=0;var targetReads=0;
         return (phase,path)=>{
             if(mode==null)return;
             string? target=mode switch {
@@ -64,6 +64,8 @@ internal static class GmDaemonCurrentScenario
                 "post-send-refusal"=>"input/turn_request.json","cohort-read-refusal"=>Snapshot,"notes-race"=>Notes,"ready-race"=>Ready,"cohort-change"=>Manifest,_=>null};
             if(target!=path)return;
             if(mode=="post-send-refusal"&&!File.Exists(Path.Combine(folder,"post-send-armed")))return;
+            if(mode=="cache-refusal"&&!File.Exists(Path.Combine(folder,"cache-armed")))return;
+            if(mode is "repair-refusal" or "terminal-refusal"){if(phase!="read"||++targetReads!=2)return;}
             if(mode=="cohort-change"){
                 if(phase!="read"||++manifestReads!=2)return;
             }else if(phase!=(mode is "notes-race" or "ready-race"?"publish":"read"))return;

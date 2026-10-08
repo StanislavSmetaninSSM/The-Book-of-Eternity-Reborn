@@ -5,6 +5,9 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class GmTurnHelperCurrentTests
 {
+    [Fact]
+    public Task DedicatedHelperNestedDefaultRoleRemainsSeparate() => DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes("nested-default");
+
     [Theory]
     [InlineData("large-read")]
     [InlineData("large-write")]
@@ -19,7 +22,6 @@ public sealed class GmTurnHelperCurrentTests
     [InlineData("publication-unknown")]
     [InlineData("committed-debt")]
     [InlineData("case-baselines")]
-    [InlineData("nested-default")]
     [InlineData("running-owner")]
     [InlineData("ancestor-file")]
     [InlineData("directory-leaf")]
