@@ -1,4 +1,7 @@
 using System.Text;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 using BookOfEternityClient.Services.GmRuntime;
 using Xunit;
 namespace BookOfEternityClient.Tests;
@@ -84,6 +87,36 @@ public sealed class GmMainSystemdCgroupSourceTests {
     [Fact] public void NativeWrapper_RejectsOrdinaryDirectoryAsCgroup() {
         WithFolder(root=>{using var files=new LinuxSystemdCgroupFiles();Assert.Throws<IOException>(()=>files.Pin(new(9,42,root),"/Δ folder"));});
     }
+    [Fact] public void NativeSelfNamespace_PinIdentityAndOwnedFdClosure() {
+        Assert.True(OperatingSystem.IsLinux());using var files=new LinuxSystemdCgroupFiles();files.PinNamespace();
+        var handle=OwnedHandle(files,"_namespaceFd");var raw=handle.DangerousGetHandle().ToInt32();
+        var original=files.NamespaceOf(null);Assert.StartsWith("cgroup:[",original);Assert.Equal(original,files.NamespaceOf(null));
+        Assert.Throws<IOException>(()=>files.PinNamespace());Assert.False(handle.IsClosed);
+        files.Dispose();AssertClosed(handle,raw);Assert.Throws<IOException>(()=>files.NamespaceOf(null));
+    }
+    [Fact] public void ActualReadonlyPin_DisposalClosesAllOwnedDescriptors() {
+        WithFolder(root=>{using var pin=LinuxCgroupDirectory.Open(root,"/Δ folder");
+            var handles=new[]{"_mount","_directory","_events"}.Select(n=>OwnedHandle(pin,n)).ToArray();
+            var numbers=handles.Select(h=>h.DangerousGetHandle().ToInt32()).ToArray();pin.ReadEventsChecked();pin.Dispose();
+            for(var i=0;i<handles.Length;i++)AssertClosed(handles[i],numbers[i]);});
+    }
+    [Theory][InlineData("directory")][InlineData("events")]
+    public void InitialLinkedBoundary_RefusesAndClosesPartialDescriptors(string kind) {
+        WithFolder(root=>{using(var warm=LinuxCgroupDirectory.Open(root,"/Δ folder"))warm.ReadEventsChecked();
+            var group=Path.Combine(root,"Δ folder");var events=Path.Combine(group,"cgroup.events");
+            if(kind=="directory") {Directory.Move(group,Path.Combine(root,"target"));Directory.CreateSymbolicLink(group,Path.Combine(root,"target"));}
+            else {File.Delete(events);File.CreateSymbolicLink(events,Path.Combine(root,"other"));}
+            // Own process descriptor count only; never read foreign FD targets.
+            var before=Directory.GetFiles("/proc/self/fd").Length;
+            Assert.Throws<IOException>(()=>LinuxCgroupDirectory.Open(root,"/Δ folder"));
+            Assert.Equal(before,Directory.GetFiles("/proc/self/fd").Length);
+        });
+    }
+    private static SafeFileHandle OwnedHandle(object owner,string name)=>(SafeFileHandle)owner.GetType().GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(owner)!;
+    private static void AssertClosed(SafeFileHandle handle,int fd) {
+        Assert.True(handle.IsClosed);Assert.Equal(-1,fcntl(fd,1));Assert.Equal(9,Marshal.GetLastPInvokeError());
+    }
+    [DllImport("libc",SetLastError=true)]private static extern int fcntl(int fd,int command);
     private static void WithFolder(Action<string> run) {
         Assert.True(OperatingSystem.IsLinux());var root=Path.Combine(Path.GetTempPath(),"cgroup-pin-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(Path.Combine(root,"Δ folder"));
         File.WriteAllText(Path.Combine(root,"Δ folder/cgroup.events"),"populated 1\n");File.WriteAllText(Path.Combine(root,"other"),"populated 0\n");
