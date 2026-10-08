@@ -136,6 +136,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 cut.OriginalCohortRestoredBeforeCut, cut.BusinessReadPath,
                 MemberAfterDispose = memberAfterDispose is null ? null : Convert.ToBase64String(memberAfterDispose),
                 OriginalReceiptCaptured = cut.OriginalReceipt is not null,
+                TerminalReleaseOnly = cut.OriginalReceipt?.IsTerminalReleaseOnly,
                 cut.RestoreReadAttemptsAfterCut, cut.PublicationsAfterCut,
                 TypedCarrier = cut.OriginalUncertainty?.GetType().FullName,
                 Failure = failure?.ToString(), DisposalFailure = disposalFailure?.ToString(),
@@ -162,6 +163,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 Assert.True(cut.TerminalRollbackValidated);
                 Assert.NotNull(cut.OriginalReceipt);
+                Assert.True(cut.OriginalReceipt.IsTerminalReleaseOnly);
                 Assert.Equal("original-terminal-quarantine", cut.CutPhase);
                 Assert.Null(engineDisposition);
             }
@@ -218,6 +220,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.True(removed, "The original treatment fixture directory was not removed.");
         }
     }
+
+    private static JsonDocument ReadJournalMetadata(byte[] bytes) =>
+        bytes.AsSpan().StartsWith("BOELP2\r\n"u8)
+            ? JsonDocument.Parse(bytes.AsMemory(16, checked((int)BinaryPrimitives.ReadInt64LittleEndian(bytes.AsSpan(8, 8)))))
+            : JsonDocument.Parse(bytes);
 
     private static byte[]? ReadOptionalTreatmentMember(string? path) =>
         path is not null && File.Exists(path) ? File.ReadAllBytes(path) : null;
@@ -582,10 +589,6 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         private static bool BytesEqual(byte[]? left, byte[]? right) =>
             left is null ? right is null : right is not null && left.AsSpan().SequenceEqual(right);
-        private static JsonDocument ReadJournalMetadata(byte[] bytes) =>
-            bytes.AsSpan().StartsWith("BOELP2\r\n"u8)
-                ? JsonDocument.Parse(bytes.AsMemory(16, checked((int)BinaryPrimitives.ReadInt64LittleEndian(bytes.AsSpan(8, 8)))))
-                : JsonDocument.Parse(bytes);
         internal bool HasBusinessCause(Exception? failure) => failure is not null && Contains(failure, BusinessFailure);
         private static bool Contains(Exception failure, Exception original)
         {

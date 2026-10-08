@@ -5817,7 +5817,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                            StringComparison.Ordinal) &&
                        _observedPhases.Contains("critical_validation") && PublishedTreatmentMembers > 0 &&
                        ObserveOriginalReceipt() &&
-                       JsonNode.Parse(File.ReadAllBytes(_context!.FileSystem.ResolvePath(path))) is JsonObject guardian &&
+                       ParseJsonObjectBytes(File.ReadAllBytes(_context!.FileSystem.ResolvePath(path))) is { } guardian &&
                        guardian.ContainsKey(GuardianProjectState.QuestProgressUpdatesProperty)
                     ? "cleanup"
                     : null;

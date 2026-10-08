@@ -1,3 +1,12 @@
+## Treatment fixture review correction — 2026-10-08
+
+Independent41fbe source review identified decoder scope and BOM parsing before build.
+The unchanged journal decoder is now shared at the outer partial fixture class; Guardian
+bytes use the existing BOM-safe parser. The new terminal cut also explicitly asserts the
+actual receipt is TerminalReleaseOnly. Remaining fixture/oracle review found no additional
+blocking finding. No build or actual execution occurred at41fbe; corrected frozen source
+must receive focused gate and matching Plan before exact5+1 actual.
+
 ## Treatment current-boundary fixture correction — 2026-10-08
 
 Diagnostic233306 is accepted as1P5F with the source causes below. Remaining selection
