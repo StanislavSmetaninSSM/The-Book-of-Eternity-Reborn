@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "gm-main-startup-observation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "bea07265d5ceb731c800a2f75ff1bfa8a518087e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 35.2888126,
+  "Descriptors": [
+    {
+      "Name": "gm-main-startup-observation-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-startup-observation",
+      "Categories": [
+        "gm-main-startup-observation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.WindowsStartupObservationTests.ControlledForegroundOwnerRequiresExitPipesAndBoundedObservation|FullyQualifiedName=BookOfEternityClient.Tests.WindowsStartupObservationTests.ExactProviderObservationFitsIdentityWithoutChangingItsValue|FullyQualifiedName=BookOfEternityClient.Tests.WindowsStartupObservationTests.MissingAmbiguousOrNoncanonicalObservationRefuses|FullyQualifiedName=BookOfEternityClient.Tests.WindowsStartupObservationTests.UnsettledOriginalOwnerBlocksAnotherProbeUntilActualExitAndPipes",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 14,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.WindowsStartupObservationTests.ControlledForegroundOwnerRequiresExitPipesAndBoundedObservation",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WindowsStartupObservationTests.ExactProviderObservationFitsIdentityWithoutChangingItsValue",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WindowsStartupObservationTests.MissingAmbiguousOrNoncanonicalObservationRefuses",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WindowsStartupObservationTests.UnsettledOriginalOwnerBlocksAnotherProbeUntilActualExitAndPipes",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

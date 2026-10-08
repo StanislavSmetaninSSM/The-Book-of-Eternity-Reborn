@@ -1,3 +1,22 @@
+## A01 observation review corrections before adapter gate — 2026-10-08
+
+Isolatedbea component14/14 Linux PASS8.070s, fresh build and complete owned
+cleanup preserved as [intermediate evidence](recovery/storage-migration-boot-component-20261008/manifest.json).
+Independent review found category platform metadata defaulted Windows despite
+Linux/Python bodies. Set only the three touched catalog descriptors to ubuntu-24.04;
+no workflow/CI settings changes. Extend to16 cases: valid output with both pipe
+EOF but live original must time out; original exit with pipe descriptors held by
+an independently test-owned peer must not accept; retained debt settles then an
+actual second probe succeeds with restored original identity capture. Peer uses
+SCM_RIGHTS and its own retained Process/pidfd, no PID reopening/guessed tree cleanup.
+Fresh verification and independent gate pending; production probe remains unwired.
+
+Windows metadata native mapping separately reviewed: same-directory write-through
+rename+actual final file flush/readback, truthful Windows acknowledgement, exact
+pending/CAS/creator and retained guard. No Linux directory-fsync/power-loss claim.
+Draft is held separately until this component checkpoint; owner/worker/consumer
+wiring remains untouched. Native Windows bodies remain unexecuted.
+
 ## A01 shared baseline and isolated observation component — 2026-10-08
 
 Frozen22cbf7e0 existing actual Linux owner/status5/5PASS,18.818s,2complete,

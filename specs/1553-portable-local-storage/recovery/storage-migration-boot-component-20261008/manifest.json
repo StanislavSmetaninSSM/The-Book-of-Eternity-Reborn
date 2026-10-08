@@ -1,0 +1,91 @@
+{
+  "initial": {
+    "source": "bea07265d5ceb731c800a2f75ff1bfa8a518087e",
+    "executed": 14,
+    "passed": 14,
+    "failed": 0,
+    "wallSeconds": 8.0700659,
+    "cleanupComplete": true,
+    "qualification": "Intermediate Linux parser/controlled-process component evidence. Independent review requests explicit platform metadata and exit-versus-pipe/re-probe controls. Not connected/native WMI/ConPTY evidence.",
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservation.cs",
+        "sha256": "f06d6f533b1e237f905e76ac21e3dec01803ff154e669f7250a7b24b5a5cff6a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservationProbe.cs",
+        "sha256": "1af28e67d431bf4e13673c44916cb4f8b543b787267ab5d4b8d4180f141f54b1"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/WindowsStartupObservationTests.cs",
+        "sha256": "52db9a53b230d703d9a6f6cbd58b04e567a205abf5fce18b8711d45c76753d7f"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "a12a06ddc1408d98551b1c9e5099cc767341da41d908ed9f9f487679df8032d5"
+      }
+    ],
+    "artifacts": [
+      {
+        "path": "initial-plan-plan.json",
+        "source": "TestResults/test-categories/20261008-115123-797-39620-0d47dcfbb5544c06bfa41c1c08995d17-categories/plan.json",
+        "sha256": "924205293a6f266edd8a8d5ccac2749c87cb400cf110370988dd0250f2b0f65a",
+        "originalSha256": "924205293a6f266edd8a8d5ccac2749c87cb400cf110370988dd0250f2b0f65a"
+      },
+      {
+        "path": "initial-plan-summary.json",
+        "source": "TestResults/test-categories/20261008-115123-797-39620-0d47dcfbb5544c06bfa41c1c08995d17-categories/summary.json",
+        "sha256": "8a23380544efb2c97e6a2200304c81caccf4180f1aafa183250d94bc5236894f",
+        "originalSha256": "8a23380544efb2c97e6a2200304c81caccf4180f1aafa183250d94bc5236894f"
+      },
+      {
+        "path": "initial-plan-Build-unit.log.gz",
+        "source": "TestResults/test-categories/20261008-115123-797-39620-0d47dcfbb5544c06bfa41c1c08995d17-categories/Build-unit.log",
+        "sha256": "405d04025577aafec12c2666eff252371b724602d53808225f0ddfa39faff2d3",
+        "originalSha256": "8cadb687c1ac7fd5034c75086c0e417bbd26616f1d24f4cbdcb8aff46fc36ea8"
+      },
+      {
+        "path": "initial-plan-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-115123-797-39620-0d47dcfbb5544c06bfa41c1c08995d17-categories/dotnet-test.log",
+        "sha256": "5af573b5a2d432dc6d7d47fe0f40d7dbfa53cfceca35486b9a7757b7a7a0d2f3",
+        "originalSha256": "8f1142920deb6ede0df4dbb3067f6cb36cccbd420d4b5f6939077d34506e27df"
+      },
+      {
+        "path": "initial-green-plan.json",
+        "source": "TestResults/test-categories/20261008-115222-042-39907-25b740029522440bbc95a81e20b3d90a-categories/plan.json",
+        "sha256": "0d25b2c6062d1f4abfd7eb5bfcd8429646445bc45347a517d404c2b9a1f3e1b6",
+        "originalSha256": "0d25b2c6062d1f4abfd7eb5bfcd8429646445bc45347a517d404c2b9a1f3e1b6"
+      },
+      {
+        "path": "initial-green-gm-main-startup-observation-unit-001.trx.gz",
+        "source": "TestResults/test-categories/20261008-115222-042-39907-25b740029522440bbc95a81e20b3d90a-categories/gm-main-startup-observation-unit-001.trx",
+        "sha256": "ec0b95837c751ffaa97b4069c64fea8adddcfc78537b59debf3e5b8ab6a398ea",
+        "originalSha256": "0cb73ce854aa3563e0d6c5286bf1ecb0aede317bdbf2df0f5c5f05eebf7470f0"
+      },
+      {
+        "path": "initial-green-summary.json",
+        "source": "TestResults/test-categories/20261008-115222-042-39907-25b740029522440bbc95a81e20b3d90a-categories/summary.json",
+        "sha256": "f69fb9482e750c892727488bab9557406dcf574c98282436270019a804066089",
+        "originalSha256": "f69fb9482e750c892727488bab9557406dcf574c98282436270019a804066089"
+      },
+      {
+        "path": "initial-green-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-115222-042-39907-25b740029522440bbc95a81e20b3d90a-categories/dotnet-test.log",
+        "sha256": "b9e51055d4d550f83c96d2f34f4a1fe6794564ca700a94680cdae77510e38926",
+        "originalSha256": "a3483d2470265ba5bb9bd0edb8ec2cf133ab8faf609573e69acf9d2cee55916a"
+      },
+      {
+        "path": "initial-plan-runner.log.gz",
+        "source": "/tmp/boe-1553-boot-component-plan.log",
+        "sha256": "8b8e935d15774918a1bd847165539f7e0479ea4793f7d620e856449df7c1f1ce",
+        "originalSha256": "eaf4711601a44aca312758500e682740c11868bd1668808c652829e5ad6c858f"
+      },
+      {
+        "path": "initial-green-runner.log.gz",
+        "source": "/tmp/boe-1553-boot-component.log",
+        "sha256": "5076905af861502dc9dfb4ea404072170cc00866358aa1508f4cc6b3a1421b38",
+        "originalSha256": "c0dc1b1d62f3c1c9d8fc3d913628f411869f3e667b6d1f660494ed349658cfe9"
+      }
+    ]
+  }
+}
