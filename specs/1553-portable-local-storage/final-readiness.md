@@ -22,7 +22,7 @@ No completion percentage: at accepted20bdeb6c vs mainf6dc2a1 the branch contains
 
 ## Minimal reviewed change and final selection
 
-Independent actual Sol6.1/xhigh design PASS at20bdeb6c establishes a documentation gap, no blocking runtime defect. Add exact game_session/config.json setup, partial consumed fields preserving arbitrary command/model/args/cwd and disabled inventory. Explain empty input profile refusal and --no-autopaste scope. No runtime/defaults, gameplay, GM-authored schema/prompt/example change is needed.
+Independent actual Sol6.1/xhigh design PASS at20bdeb6c establishes a documentation gap, no blocking runtime defect. Add exact game_session/config.json setup, partial consumed fields preserving arbitrary command/model/args/cwd and disabled inventory. Explain empty input profile refusal and --no-autopaste scope. No runtime/defaults, gameplay, GM-authored schema/prompt/example change is needed. Final execution additionally localized a test preparation defect: seven integration cases fail to resolve source fixtures until the existing BOE_REPO_ROOT is explicit. Independent Sol minimal correction design PASS: pin only owned test child source root in the existing runner, caller environment unchanged; SDK/AppContext specifics are not inferred. Post-edit causal GREEN is required.
 
 | Selected category | Reason | Budget |
 |---|---|---:|

@@ -527,6 +527,9 @@ function Start-OwnedProcess {
     # Keep child workspaces outside virtualized AppData and canonical fixtures.
     # Only owned children inherit this setting; the caller's environment is unchanged.
     $startInfo.Environment["BOE_WORKER_RUNTIME_BASE_PATH"] = $testWorkerRuntimeBase
+    # VSTest host base directories need not be inside this checkout. Fixture
+    # consumers validate this exact source root; do not inherit a foreign root.
+    $startInfo.Environment["BOE_REPO_ROOT"] = $repoRoot
     $process = [System.Diagnostics.Process]::new()
     $started = $false
     try {
