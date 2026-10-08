@@ -1,3 +1,26 @@
+## A01 shared original consumers correction — 2026-10-08
+
+Corrected739c actual142549 is complete2/2FAIL12.4622173s with clean source and
+cleanup. Both original profiles are valid/enabled/routed Analysis, actual requests
+are valid, factory observes no original Access/Pin, and real dispatch returns
+InvalidRequest: original main admission unavailable. This proves the missing scope;
+slot/lease cancellation remain GREEN extensions, not previously reached RED.
+[Original corrected packet](recovery/storage-migration-bridge-consumers-20261008/manifest.json).
+
+Minimal shared correction captures same owner/input/terminal under the Bridge lock,
+runs the complete dispatch under that original pin, passes captured cancellation
+through context-lease acquisition and finite snapshot checks, and preserves actual
+cancellation before best-effort audit could reacquire the same lock. Load validates
+both started states against schema, local root/backend, the current Running record,
+installed generation, new run and terminal. Server uses the original live pin for
+its fresh receipt; console accepts manual-not-ready without claiming readiness.
+Metadata is only consistency/refusal evidence on the original retained connection.
+
+Fresh bounded selection16: worker2, Load9, status3, consoleLoadpositive1 and
+cleanupDebt1. Independent source/selection/evidence gate follows. Windows original
+ConPTY activation remains the NEXT separate source/native-recipe block; shared
+Linux GREEN cannot qualify native WMI/Job/Windows worker lifecycle.
+
 ## A01 consumer causal results and fixture diagnostics — 2026-10-08
 
 Frozen6f9 fresh PlanOnly141049 selected10/2, built successfully and executed0.

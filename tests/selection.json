@@ -283,7 +283,7 @@
     },
     {
       "category": "gm-load-started-not-ready-receipts-linux",
-      "reason": "Eight exact original Load receipt cases bind manual readiness to real new owner/generation and validated metadata while preserving original connection/no replay.",
+      "reason": "Nine exact original Load receipt cases (including well-formed foreign host) bind manual readiness to real new owner/generation and validated metadata while preserving original connection/no replay.",
       "contracts": [
         "#1553",
         "FR-010",

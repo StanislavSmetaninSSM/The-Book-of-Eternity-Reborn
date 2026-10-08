@@ -17837,7 +17837,7 @@
       "excludes": "Native Windows/WMI/ConPTY/Job, live provider, public Linux worker capability and broad main lifecycle.",
       "changeHints": [
         "BookOfEternityGMBridge/Program.cs",
-        "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs"
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalOnlyDispatchService.cs"
       ],
       "related": [],
       "requirements": {
@@ -17862,7 +17862,10 @@
       "excludes": "Native Windows/WMI/ConPTY/Job, live provider, public Linux worker capability and broad main lifecycle.",
       "changeHints": [
         "BookOfEternityGMBridge/Program.cs",
-        "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs"
+        "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.LoadLifecycle.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+        "BookOfEternityGMBridge/BridgeHost.LoadSession.cs"
       ],
       "related": [],
       "requirements": {

@@ -38,7 +38,8 @@ internal sealed partial class BridgeHost
         try {
             await _shellLifecycleLock.WaitAsync(token);
             try {
-                if(request.RootKey!=_clientRoot || !Guid.TryParseExact(request.OperationId,"N",out _) ||
+                if(!GmSessionRunValidation.AdmissionRootMatches(request.RootKey??"",_clientRoot,
+                        OperatingSystem.IsWindows()?GmSessionRunBackend.WindowsJob:GmSessionRunBackend.LinuxSupervisor) || !Guid.TryParseExact(request.OperationId,"N",out _) ||
                     string.IsNullOrWhiteSpace(request.LoadSourceKey) || string.IsNullOrWhiteSpace(request.ExpectedGeneration))
                     throw new InvalidDataException("Incomplete immutable Load identity.");
                 var terminal=_pty;var owner=_mainRun;
@@ -53,7 +54,8 @@ internal sealed partial class BridgeHost
                     throw new InvalidDataException("Original main is no longer active.");
                 if(terminal!=null && request.ExpectedTerminalRunId!=terminal.Identity.RunId)
                     throw new InvalidDataException("Original terminal mismatch.");
-                // Windows has an actual original ConPTY/Job even without schema1.
+                if(terminal!=null && owner==null)
+                    throw new InvalidOperationException("Original terminal has no admitted main owner.");
                 _neutralFiles??=new FileSystemManager(_clientRoot,NullLogger<FileSystemManager>.Instance);
                 if(owner==null) {
                     using var admission=_neutralFiles.BeginMainAdmission();await admission.AcquireAsync(quiescentOnly:true);
@@ -96,8 +98,17 @@ internal sealed partial class BridgeHost
                 }
                 if(operation.Restarting) {
                     await StartShellCoreAsync(finish.EstablishedGeneration);
-                    result=_mainRun?.Record?.Disposition==GmSessionRunDisposition.Running?GmLoadMainState.Running:
-                        OperatingSystem.IsWindows() && _pty!=null?GmLoadMainState.StartedNotReady:throw new InvalidOperationException("Fresh original launch is unconfirmed.");
+                    var freshOwner=_mainRun??throw new InvalidOperationException("Fresh original main is absent.");
+                    result=await freshOwner.RunOperationAsync(()=> {
+                        lock(_sync) {
+                            if(!ReferenceEquals(_mainRun,freshOwner) || _pty==null ||
+                                _pty.Identity.RunId!=freshOwner.Identity.RunId || _pty.RootExited.IsCompleted || _pty.AuthorityLost.IsCompleted ||
+                                freshOwner.Identity.GenerationId!=finish.EstablishedGeneration || freshOwner.Identity.RunId==operation.Owner?.Identity.RunId)
+                                throw new InvalidOperationException("Fresh original launch is unconfirmed.");
+                            return Task.FromResult(OperatingSystem.IsWindows() && !_status.Ready
+                                ?GmLoadMainState.StartedNotReady:GmLoadMainState.Running);
+                        }
+                    });
                     lock(_sync)operation.Closed=true; // original decision survives a lost reply; never replay
                 }
             } finally {_shellLifecycleLock.Release();}

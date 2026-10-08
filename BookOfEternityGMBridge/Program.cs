@@ -607,7 +607,8 @@ internal sealed partial class BridgeHost : IDisposable
             // expectation; this exact live original coordinator owns the stop.
             var original=_mainRun??_lastMainRun;
             if(original!=null || request.ExpectedMainIdentity!=null) {
-                if(original==null || request.ExpectedMainIdentity==null || request.RootKey!=original.Identity.RootKey ||
+                if(original==null || request.ExpectedMainIdentity==null || !GmSessionRunValidation.AdmissionRootMatches(request.RootKey??"",original.Identity.RootKey,
+                        OperatingSystem.IsWindows()?GmSessionRunBackend.WindowsJob:GmSessionRunBackend.LinuxSupervisor) ||
                     !GmSessionRunValidation.IdentityMatches(original.Identity,request.ExpectedMainIdentity))
                     throw new InvalidDataException("Original main stop identity does not match this terminal owner.");
                 if(_mainRun!=null)original.ValidateStopExpectation(request.ExpectedMainIdentity);
@@ -1622,18 +1623,30 @@ internal sealed partial class BridgeHost : IDisposable
 
     private async Task<BridgeResponse> DispatchWorkerTaskAsync(BridgeRequest request)
     {
-        var settings = LoadBridgeConfig();
-        var fs = new FileSystemManager(_clientRoot, NullLogger<FileSystemManager>.Instance,
-            PhysicalLoadTransactionOperations.Instance, WorkerDispatchFileHooks);
-        var audit = new GmWorkerAuditLog(fs);
-        var service = new GmWorkerProposalOnlyDispatchService(
-            fs,
-            WorkerDispatchPoolFactory?.Invoke(fs,audit) ?? new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit),
-            audit);
-        var dispatchRequest = BuildWorkerDispatchRequest(request);
-        var result = await service.DispatchAsync(settings.GmWorkerBridgeProfiles, dispatchRequest);
-
-        return BridgeResponse.Success(SnapshotStatus(), SnapshotDiagnostics(), result);
+        GmSessionRunCoordinator owner;
+        InputLifetime input;
+        lock(_sync) {
+            owner=_mainRun??throw new InvalidOperationException("Original main dispatch owner is absent.");
+            input=_inputLifetime??throw new InputLifetimeUnavailableException();
+            if(_inputClosed || input.Revoked || input.Token.IsCancellationRequested || _pty==null ||
+                _pty.Identity.RunId!=owner.Identity.RunId)
+                throw new InputLifetimeUnavailableException();
+        }
+        using var cancellation=CancellationTokenSource.CreateLinkedTokenSource(input.Token,_cts.Token);
+        return await owner.RunOperationAsync(async()=> {
+            cancellation.Token.ThrowIfCancellationRequested();
+            var settings = LoadBridgeConfig();
+            var fs = new FileSystemManager(_clientRoot, NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance, WorkerDispatchFileHooks);
+            var audit = new GmWorkerAuditLog(fs);
+            var service = new GmWorkerProposalOnlyDispatchService(
+                fs,
+                WorkerDispatchPoolFactory?.Invoke(fs,audit) ?? new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit),
+                audit);
+            var dispatchRequest = BuildWorkerDispatchRequest(request);
+            var result = await service.DispatchAsync(settings.GmWorkerBridgeProfiles, dispatchRequest,cancellation.Token);
+            return BridgeResponse.Success(SnapshotStatus(), SnapshotDiagnostics(), result);
+        });
     }
 
     private static GmWorkerProposalOnlyDispatchRequest BuildWorkerDispatchRequest(BridgeRequest request)

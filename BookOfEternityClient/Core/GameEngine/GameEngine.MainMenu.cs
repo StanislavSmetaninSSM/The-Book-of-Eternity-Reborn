@@ -3437,8 +3437,10 @@ public partial class GameEngine
             result.Disposition == LoadReplacementDisposition.Committed ? "green" : "red";
         AnsiConsole.MarkupLine($"[{color}]{Markup.Escape(DescribeConsoleLoadOutcome(result))}[/]");
         if(_consoleLoadMainState is BookOfEternityClient.Services.GmRuntime.GmLoadMainState.Stopped or
-            BookOfEternityClient.Services.GmRuntime.GmLoadMainState.Uncertain or BookOfEternityClient.Services.GmRuntime.GmLoadMainState.StartedNotReady)
+            BookOfEternityClient.Services.GmRuntime.GmLoadMainState.Uncertain)
             AnsiConsole.MarkupLine("[yellow]Запуск новой сессии ГМа не подтверждён. Продолжение остановлено.[/]");
+        if(_consoleLoadMainState==BookOfEternityClient.Services.GmRuntime.GmLoadMainState.StartedNotReady)
+            AnsiConsole.MarkupLine("[yellow]Новая сессия ГМа запущена; ожидается подтверждение готовности оператора.[/]");
         if (result.Disposition == LoadReplacementDisposition.Committed && !result.ContinuationBlocked)
         {
             await Task.Delay(1000);
