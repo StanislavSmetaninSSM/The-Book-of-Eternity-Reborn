@@ -62,6 +62,10 @@ Fresh command: `pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1
 -Category spiritual-binding-result-dependency,spiritual-binding-control-boundaries
 -PlanOnly'` with the supplied cloud .NET/PowerShell environment. Artifact directory:
 `TestResults/test-categories/20261008-090318-653-3555-2b78896d87914918bbbcdc48cec641d3-categories`.
+Original summary, exact selection plan, both build logs and the complete compressed
+runner log are preserved in [the recovery evidence manifest](./recovery/cloud-20261008-plan-only/manifest.json).
+The manifest records source revision, original/saved SHA-256 and zero executed
+tests. This preservation adds no runtime change or new verification run.
 At revision `95e4c90464aff4162a7f68f6359991b518ae724d` and a clean fingerprint,
 PlanOnly exited 0 in 1m58.858s; fresh integration and unit builds completed.
 It planned 2 descriptors / 12 cases (8 binding dependencies, 4 raw boundaries),

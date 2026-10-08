@@ -1,0 +1,59 @@
+{
+  "Categories": [
+    "spiritual-binding-result-dependency",
+    "spiritual-binding-control-boundaries"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "95e4c90464aff4162a7f68f6359991b518ae724d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 118.5609444,
+  "Descriptors": [
+    {
+      "Name": "spiritual-binding-control-boundaries-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "spiritual-binding-control-boundaries",
+      "Categories": [
+        "spiritual-binding-control-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.FailedResultAndFinalEcho_PreserveExactControlPresence|FullyQualifiedName=BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.FinalEchoCarrier_RespectsReplacementPrecedenceAndExplicitPresence",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.FailedResultAndFinalEcho_PreserveExactControlPresence",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.FinalEchoCarrier_RespectsReplacementPrecedenceAndExplicitPresence",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "spiritual-binding-result-dependency-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "spiritual-binding-result-dependency",
+      "Categories": [
+        "spiritual-binding-result-dependency"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult",
+          "Cases": 8
+        }
+      ]
+    }
+  ]
+}

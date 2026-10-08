@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "sourceRevision": "95e4c90464aff4162a7f68f6359991b518ae724d",
+  "sourceWorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+  "sourceArtifactDirectory": "TestResults/test-categories/20261008-090318-653-3555-2b78896d87914918bbbcdc48cec641d3-categories",
+  "command": "source /workspace/.boe-1536-session/env.sh; pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -Category spiritual-binding-result-dependency,spiritual-binding-control-boundaries -PlanOnly'",
+  "purpose": "Preserve original cloud PlanOnly evidence. No tests were executed; this is not gameplay acceptance. RESULT-CLOSURE-BINDING B2–B5 remains paused.",
+  "outcome": {
+    "exitCode": 0,
+    "planOnly": true,
+    "plannedDescriptors": 2,
+    "plannedCases": 12,
+    "executedTests": 0,
+    "wallTime": "00:01:58.8581148",
+    "ownedTreeCleanupSucceeded": true,
+    "runtimeCleanupSucceeded": true,
+    "integrationBuild": {
+      "errors": 0,
+      "warnings": 22
+    },
+    "unitBuild": {
+      "errors": 0,
+      "warnings": 29
+    }
+  },
+  "files": [
+    {
+      "source": "summary.json",
+      "saved": "summary.json",
+      "sourceBytes": 1688,
+      "sourceSha256": "cb14167ba1d9f25dabbdaa4fab434484d995da742db9b9249230aefc25e78780",
+      "savedBytes": 1688,
+      "savedSha256": "cb14167ba1d9f25dabbdaa4fab434484d995da742db9b9249230aefc25e78780"
+    },
+    {
+      "source": "plan.json",
+      "saved": "plan.json",
+      "sourceBytes": 2396,
+      "sourceSha256": "a61c33754b604e487493f1308ab56ab87174332eaa256d3d319800853553f831",
+      "savedBytes": 2396,
+      "savedSha256": "a61c33754b604e487493f1308ab56ab87174332eaa256d3d319800853553f831"
+    },
+    {
+      "source": "Build-integration.log",
+      "saved": "Build-integration.log",
+      "sourceBytes": 18435,
+      "sourceSha256": "e41f8716cf992246c10b14026159ced626036e1ca5fad4c1eb736a807c77f53d",
+      "savedBytes": 18435,
+      "savedSha256": "e41f8716cf992246c10b14026159ced626036e1ca5fad4c1eb736a807c77f53d"
+    },
+    {
+      "source": "Build-unit.log",
+      "saved": "Build-unit.log",
+      "sourceBytes": 21682,
+      "sourceSha256": "976a76374eee513017e0b9952e245c74d4d4a834b042804254579e4346f918c2",
+      "savedBytes": 21682,
+      "savedSha256": "976a76374eee513017e0b9952e245c74d4d4a834b042804254579e4346f918c2"
+    },
+    {
+      "source": "dotnet-test.log",
+      "saved": "dotnet-test.log.gz",
+      "sourceBytes": 3186707,
+      "sourceSha256": "08bfe1e1175e2aa29ee3f227dbf174af2ffc819ba0c6db533f6c8d6856650516",
+      "savedBytes": 355012,
+      "savedSha256": "5e01ca26b57a279c3452e91e1aa0b1e2e3c186c44a12a210ae3705acab14569e"
+    }
+  ]
+}
