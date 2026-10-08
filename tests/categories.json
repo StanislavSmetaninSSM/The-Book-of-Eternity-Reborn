@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "portable-treatment-terminal-causal-linux",
-      "responsibility": "Actual original pre-canonical terminal consumer: typed publication Uncertain at command MemberPublished must remain the exact outward carrier, preserve journal/blocker and avoid generic retry.",
+      "responsibility": "Original pre-canonical terminal consumer typed publication Uncertain plus known safe HeldBlocked and failed restoration Aggregate. Actual command member/receipt and known failure distinctions; exact affected method neighbors.",
       "excludes": "No broad treatment/gameplay category or native Windows qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
@@ -31,14 +31,16 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TreatmentStorage_OriginalPreCanonicalTerminalUncertaintyRetainsDecision"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TreatmentStorage_OriginalPreCanonicalTerminalUncertaintyRetainsDecision",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalRestorationFailureSurfacesAggregateInsteadOfHeldBlockedDisposition",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalCleanupFailureMapsHeldBlockedOnlyAfterExactSafetyProof"
           ]
         }
       ]
     },
     {
       "id": "portable-treatment-storage-neighbors-remaining-linux",
-      "responsibility": "Five corrected known neighboring obligations: health, cleanup, Unsafe partial restoration and two terminal failure stages. Exact path/receipt/bytes and positive current phases replace unreached deep-ancestor selectors.",
+      "responsibility": "Three established corrected known neighbors: current full-health boundary, Guardian cleanup and Unsafe partial restoration. Terminal two moved with their changed owning consumer.",
       "excludes": "No broad treatment/gameplay category or native Windows qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
@@ -67,9 +69,7 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_RemainingEngineBoundaryFailureRetainsOriginalContract",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PostPublicationCompensationFailureSurfacesUnsafeSettlementWithoutTerminalDisposition",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalRestorationFailureSurfacesAggregateInsteadOfHeldBlockedDisposition",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalCleanupFailureMapsHeldBlockedOnlyAfterExactSafetyProof"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PostPublicationCompensationFailureSurfacesUnsafeSettlementWithoutTerminalDisposition"
           ]
         }
       ]

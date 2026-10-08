@@ -1,3 +1,20 @@
+## Treatment original terminal propagation candidate — 2026-10-08
+
+The actual8fcbb terminal fault now has parent raw causal acceptance. The original
+ReleaseValidatedTreatmentPublicationBeforeCanonicalRefreshAsync directly lets CSP
+escape its generic settlement catch; if a known first failure is followed by actual CSP,
+that same typed carrier retains the first failure as diagnostic. Its original acquired
+lease is explicitly disposed with actual CSP captured beforehand, so secondary close
+failure is attached without replacing the original decision. All existing nonstorage
+catch/settlement, control-flow exceptions and receipt bookkeeping remain unchanged.
+No replay/new lease/canonical fence is introduced. Runtime candidate is not yet accepted.
+
+The exact affected final selection is terminal3: actual typed cut plus existing known
+safe HeldBlocked and known failed-restoration Aggregate. The other thirteen successful
+obligations are retained across their relevant unchanged source:9@e311, foreign1@ef0e,
+three nonterminal corrected neighbors@8fcbb. Frozen source/selection gate must precede
+matching fresh Plan3/build and actual3. Full inventory discovery is execution-free.
+
 ## Treatment current neighbors PASS and terminal causal proof — 2026-10-08
 
 Independent SOURCE/FIXTURE/SELECTION gate passed8fcbb after pre-build corrections.
