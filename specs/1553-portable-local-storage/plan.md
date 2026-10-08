@@ -16,8 +16,11 @@ journal rewrite, synthetic disposition or production recovery hook. A scoped,
 nonthrowing FirstChance observer captures only the actual typed uncertainty whose
 inner chain contains the exact injected forward exception. All failure paths join
 owned cleanup. Main retirement and guardian cleanup are distinct required proofs.
-Runtime is unchanged. Fresh PlanOnly/build and independent fixture/selection gate
-must precede causal execution. Final GREEN will add only the exact existing
+Runtime is unchanged. Initial c6eda Plan160249 built7/1/0 successfully (84.0658837s).
+Parent fixture correction: retain/check the exact original owner in finally even
+when an expected causal assertion fails; record Stopped and no retained authority,
+not only attempted cleanup. Corrected fresh PlanOnly and independent fixture/
+selection gate must precede causal execution. Final GREEN will add only the exact existing
 oversized-unsent, post-receipt reply-loss and pre-receipt stdin-loss neighbors.
 
 F11 final independent SOURCE/SELECTION/EVIDENCE PASS at runtime43e/carriercc178,

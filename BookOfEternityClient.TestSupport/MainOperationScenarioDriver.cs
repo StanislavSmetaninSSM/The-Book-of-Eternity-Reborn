@@ -19,6 +19,7 @@ internal static class MainOperationScenarioDriver
             catch(Exception e){await File.WriteAllTextAsync(Path.Combine(folder,"client-failure.json"),JsonSerializer.Serialize(new{Failure=e.ToString()}));return 1;}
         }
         var result=new Dictionary<string,object?> { ["Mode"]=mode }; object? host=null; Type? type=null; Task? server=null; Task<int>? running=null;
+        GmSessionRunCoordinator? outcomeOwner=null;
         using var control=new CancellationTokenSource();
         async Task Call(string name){try{await (Task)type!.GetMethod(name,BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,null)!;}catch(TargetInvocationException e){throw e.InnerException!;}}
         try {
@@ -90,6 +91,7 @@ internal static class MainOperationScenarioDriver
             var grant=reply.RootElement;
             object Frame(string command)=>new{command,pinId=grant.GetProperty("pinId").GetString(),closeId=grant.GetProperty("closeId").GetString(),operationId=operation,identity=grant.GetProperty("identity")};
             var owner=(GmSessionRunCoordinator)type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
+            if(mode.StartsWith("terminal-main-operation-outcome-",StringComparison.Ordinal))outcomeOwner=owner;
             if(mode=="terminal-main-operation-activation-exit") {
                 var terminal=(IOwnedTerminalSession)type.GetField("_pty",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host)!;
                 await terminal.StopAndObserveAsync(CancellationToken.None);
@@ -270,6 +272,12 @@ internal static class MainOperationScenarioDriver
         finally {
             if(running!=null)try{await running.WaitAsync(TimeSpan.FromSeconds(8));}catch(Exception e){result["ShutdownFailure"]=e.ToString();}
             if(host!=null && running==null){try{await Call("StopShellAsync");result["CleanupAttempted"]=true;}catch(Exception e){result["CleanupFailure"]=e.ToString();}}
+            if(outcomeOwner!=null) {
+                result["FinalOriginalOutcomeOwnerStopped"]=outcomeOwner.Record?.Disposition==GmSessionRunDisposition.Stopped;
+                result["FinalOriginalOutcomeOwnerRetainsAuthority"]=outcomeOwner.RetainsAuthority;
+                if(outcomeOwner.Record?.Disposition!=GmSessionRunDisposition.Stopped || outcomeOwner.RetainsAuthority)
+                    result["CleanupFailure"]="Original outcome owner was not stopped/retired after actual final cleanup.";
+            }
             await control.CancelAsync();if(server!=null)try{await server;}catch{}
             if(host is IDisposable disposable)try{disposable.Dispose();}catch(Exception e){result["DisposeFailure"]=e.ToString();}
             await File.WriteAllTextAsync(Path.Combine(folder,"scenario.json"),JsonSerializer.Serialize(result));
