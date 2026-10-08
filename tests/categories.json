@@ -18298,6 +18298,34 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-gm-helper-admission-causal-linux",
+      "responsibility": "F13 actual original PowerShell helper: held real publication versus Init/read/realm/outer terminal completion, public Load generation replacement before a recoverable journal, normalized scope/type and missing/malformed existing generation. Exact ten causal rows under the original process guardian.",
+      "excludes": "No new helper transport/runtime yet, no fake publication outcome, broad GM/daemon/contract suites, native Windows/PowerShell5.1, provider or gameplay execution.",
+      "changeHints": [
+        "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient.TestSupport/GmTurnHelperStorageScenario.cs",
+        "tests/fixtures/GmTurnHelper/storage.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperStorageTests.OriginalHelperAdmitsCurrentGenerationAndCommittedPolicySnapshot"
+          ]
+        }
+      ]
     }
   ]
 }

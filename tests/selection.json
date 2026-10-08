@@ -462,6 +462,18 @@
         "F05",
         "T063-REMAINING-CONSUMERS"
       ]
+    },
+    {
+      "category": "portable-gm-helper-admission-causal-linux",
+      "reason": "T063 F13 frozen test-only causal10. Real original helper functions and held current publication/public Load/path predicates before dedicated admission implementation; positive actual cuts and exact evidence precede desired behavior assertions. Source/fixture gate and fresh matching PlanOnly required before actual execution.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS"
+      ]
     }
   ]
 }

@@ -1,3 +1,42 @@
+## F13 causal10 fixture WIP — 2026-10-08
+
+Independent Astra XHigh and parent design/proposed-selection PASS94f912, no blocking
+findings. Test-only packet now defines exact10 rows in
+`portable-gm-helper-admission-causal-linux`; no production behavior changed.
+Fresh PlanOnly/build and independent frozen fixture/source/selection gate are
+required before actual10. No F13 actual evidence or runtime acceptance yet.
+
+The original native guardian owns an isolated managed driver, actual pwsh and any
+original helper children, without launching a terminal or provider. Roots use actual
+BootstrapLocalStorage configuration/generation. Held writer reaches MemberPublished
+index0/exact after bytes/journal, then waits for old helper completion OR a new actual
+owner-guard contention event; label this owner contention, not canonical-lock
+contention. It throws a nontransient original failure and proves exact known rollback.
+The stale row runs public SaveGame/Load with current resources, then reaches actual
+new-generation publication uncertainty and explicitly repairs the exact recorded
+after-image, retaining a recoverable journal before old initialized helper access.
+After observations, a fresh current admission must actually recover it; this is a
+fixture positive, not stale-helper recovery authority. Path rows prove protected
+alias writes, sibling-prefix reads and realm symlink behavior through actual helpers.
+
+The test-only child bootstrap resolves the future dedicated GmTurnHelperControl
+RunAsync seam reflectively, with original FileSystemManager hooks. The unchanged
+helper never calls this bootstrap on RED; no result/interpreter is fabricated.
+Production CLI/environment gets no fault selector. PS only substitutes the process
+factory and observes original Dispose; child completion records must match joined
+transports. Forced timeout is a fixture failure. Every row finally releases/joins
+the held writer and original pwsh/IO, then proves canonical ownership is available;
+the guardian independently requires ECHILD/no emergency/failure/deadline. Expected
+RED does not bypass those checks. Missing/malformed authority fixture repairs occur
+only after the captured no-side-effect observations to permit original cleanup.
+
+Implementation refinements retained for the subsequent runtime gate: standalone
+read/Init must preserve publication-read-quiescence versus mutation recovery purpose;
+helper read mode explicitly refuses mutation RPCs even with a canonical lease.
+Known own committed file creations/deletions advance enumeration-set witnesses too.
+Nested PS wrappers preserve return values/objects/arrays and output streams. No
+GetOrCreate/current-session fallback and no default-A03 role expansion.
+
 ## F13 helper admission/read/publication design WIP — 2026-10-08
 
 Tracked by #1553 T063/T062/T064, FR-002/004/005/006/012/014. This checkpoint

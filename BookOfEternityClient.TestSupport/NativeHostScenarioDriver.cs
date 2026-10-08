@@ -13,6 +13,8 @@ internal static class NativeHostScenarioDriver
 {
     internal static async Task<int> Main(string[] args)
     {
+        if(args.Length==4 && args[0]=="helper-storage-bootstrap")return await GmTurnHelperStorageScenario.RunHelperChildAsync(args[1],args[2],args[3]);
+        if(args.Length==3 && args[0].StartsWith("terminal-main-helper-storage-",StringComparison.Ordinal))return await GmTurnHelperStorageScenario.RunAsync(args[0],args[2]);
         if(args.Length==3 && args[0].StartsWith("control-outcome-bootstrap-",StringComparison.Ordinal))return await ParticipatingControlOutcomeScenario.RunChildAsync(args[0]["control-outcome-bootstrap-".Length..],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-systemd-",StringComparison.Ordinal))return await SystemdControlledScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("production-main-",StringComparison.Ordinal))return await OwnedTerminalScenarioDriver.RunAsync(args[0],args[1],args[2]);
