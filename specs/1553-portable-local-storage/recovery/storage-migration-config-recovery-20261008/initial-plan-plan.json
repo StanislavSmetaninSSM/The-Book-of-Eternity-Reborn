@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-config-recovery-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "77cc9eab71f56065faec29682e879112a2b8009f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 87.7069611,
+  "Descriptors": [
+    {
+      "Name": "gm-main-config-recovery-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-config-recovery-linux",
+      "Categories": [
+        "gm-main-config-recovery-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOriginalConsumerTests.ProductionStartupConfigurationUsesSettledCanonicalSnapshot",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOriginalConsumerTests.ProductionStartupConfigurationUsesSettledCanonicalSnapshot",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

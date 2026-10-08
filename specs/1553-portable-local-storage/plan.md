@@ -1,3 +1,26 @@
+## F11 causal RED preserved — 2026-10-08
+
+Frozenb169 actual151909 complete2=1PASS/1FAIL15.3588079s, clean/both cleanup.
+Known rollback reaches MemberPublished1/actual original guard contention1, restores
+exactA/removes journal, then real original Running inert CLI reports B model/cwd;
+cache/input profile/worker status also B. Same original coordinator subsequently
+Stopped/no retained authority and guardian echild/no emergency/failure/deadline.
+Unknown control reaches identical positive cuts, preserves validC/typed original
+uncertainty/journal, refuses startup before any Prepared/child and fresh admission;
+healthy original cleanup. [Raw source-pinned packet](recovery/storage-migration-config-recovery-20261008/manifest.json).
+Initial77cc PlanOnly and correctedb169 fresh Plan2/0 are preserved separately;
+independent fixture/selection review PASS after cleanup-oracle correction.
+
+Proposed minimal correction (design review pending): keep current tentative
+config/package preflight, then reread/revalidate/freeze config under the SAME
+original owner's first post-recovery canonical lease after generation validation
+and before Prepared. Optional internal beforePrepared callback, no guard reopening
+or new authority. Apply to both current platform launch paths; clear tentative
+cache on no-owner failure, retain admitted cache for an actual retained partial
+owner. Final proposed finite10 = causal2 + exact existing preflight-refusal7 +
+installed-archive-profile Load1. Native Windows remains unexecuted. No runtime
+correction applied at this checkpoint.
+
 ## F11 original startup config causal checkpoint — 2026-10-08
 
 Test-only two-case selection `gm-main-config-recovery-linux` holds real config
