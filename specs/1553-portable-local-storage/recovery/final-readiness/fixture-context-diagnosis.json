@@ -1,0 +1,14 @@
+{
+  "source": "07d7a4e1536493d7a74c4ff7e9b84ea8550bdf20",
+  "failureCases": 7,
+  "failureBeforeConsumer": true,
+  "failure": "TestSupport.TestRepoPaths.ResolveRepoRoot cannot establish fixture checkout from test host AppContext",
+  "physicalSourceDirectoriesPresent": true,
+  "singleChangedVariable": "Existing supported BOE_REPO_ROOT=/workspace/native-1553, command-local only",
+  "diagnosticPassed": 7,
+  "diagnosticFailed": 0,
+  "binariesUnchanged": true,
+  "appContextExactCause": "Not observed; SDK attribution is not claimed",
+  "proposedMinimalFix": "Set owned runner child BOE_REPO_ROOT to authoritative repoRoot; preserve caller environment and actual fixtures. No runtime change.",
+  "independentPlanReview": "pending"
+}
