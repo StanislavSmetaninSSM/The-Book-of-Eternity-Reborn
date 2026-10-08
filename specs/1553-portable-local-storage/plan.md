@@ -1,3 +1,14 @@
+## Treatment finalization-counter refinement — 2026-10-08
+
+Corrected runtimefd690 Plan230138 succeeds15/3/0 in39.9370971s; no actual.
+Source review identified an overbroad new GREEN mirror assertion: the original session
+scope must still acquire its read-only SessionFinalization lease after its closing hook.
+The fixture now pairs that actual hook with exactly the next lock-open event, records
+it separately and requires positive settled finalization. All other post-cut acquisitions,
+recovery events and publications remain zero; no blanket permission for later leases.
+This changes only the GREEN fixture oracle, not original runtime closing behavior or
+historical causal evidence. Exact15 unchanged; focused source gate/fresh Plan pending.
+
 ## Treatment source-ordering correction — 2026-10-08
 
 Initial runtime3feb Plan225953 built15/3/0 successfully45.3001839s; no actual.

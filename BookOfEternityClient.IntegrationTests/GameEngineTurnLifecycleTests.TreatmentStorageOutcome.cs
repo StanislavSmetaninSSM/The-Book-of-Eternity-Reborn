@@ -124,7 +124,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 TypedCarrier = cut.OriginalUncertainty?.GetType().FullName,
                 Failure = failure?.ToString(), DisposalFailure = disposalFailure?.ToString(),
                 RepeatedSettlementSameUncertainty = ReferenceEquals(repeatedSettlementFailure, cut.OriginalUncertainty),
-                cut.LeaseAttemptsAfterCut, cut.OriginalReceiptStillOpen,
+                cut.LeaseAttemptsAfterCut, cut.FinalizationLeasesAfterCut, cut.PendingFinalizationLease, cut.RecoveryEventsAfterCut, cut.OriginalReceiptStillOpen,
                 journalBeforeDispose, journalAfterDisposeExact, disposalLeases, disposalRecovery, disposalAttempts,
                 cut.MirrorBootstrapValidated, cut.InitialMirrorConsistent, cut.MirrorPublishedAuthority17, cut.MirrorDriftPrepared, cut.MirrorLeaseStack, cut.MirrorLeaseAttempt, cut.MirrorBeforeValue, cut.MirrorForeignValue, cut.TreatmentResourceChanged, publishedTreatmentRetained,
                 BusinessCausePreserved = cut.HasBusinessCause(failure),
@@ -152,6 +152,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 Assert.True(cut.OriginalReceiptStillOpen);
                 Assert.Equal(0, cut.LeaseAttemptsAfterCut);
+                Assert.True(cut.FinalizationLeasesAfterCut > 0);
+                Assert.False(cut.PendingFinalizationLease);
+                Assert.Equal(0, cut.RecoveryEventsAfterCut);
                 Assert.True(cut.MirrorBootstrapValidated);
                 Assert.True(cut.InitialMirrorConsistent);
                 Assert.True(cut.MirrorPublishedAuthority17);
@@ -225,7 +228,21 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 BeforeCanonicalWriteLockOpenAsync = BeforeLease,
                 BeforeCanonicalMutationAsync = BeforeMutation,
-                LocalPublicationRecoveryObserver = (_, _) => { if (Armed) RecoveryEvents++; },
+                LocalPublicationRecoveryObserver = (_, _) =>
+                {
+                    if (!Armed) return;
+                    RecoveryEvents++;
+                    if (Cuts != 0) RecoveryEventsAfterCut++;
+                },
+                SessionOperationClosingAsync = () =>
+                {
+                    if (Armed && Cuts != 0)
+                    {
+                        Assert.False(PendingFinalizationLease);
+                        PendingFinalizationLease = true;
+                    }
+                    return Task.CompletedTask;
+                },
                 AfterCanonicalReadInitialValidationAsync = Read,
                 LocalPublicationObserver = Published
             };
@@ -257,6 +274,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal string? MirrorLeaseStack { get; private set; }
         internal int MirrorLeaseAttempt { get; private set; }
         internal int LeaseAttemptsAfterCut { get; private set; }
+        internal int FinalizationLeasesAfterCut { get; private set; }
+        internal bool PendingFinalizationLease { get; private set; }
+        internal int RecoveryEventsAfterCut { get; private set; }
         internal bool OriginalReceiptStillOpen => OriginalReceipt is not null && ReferenceEquals(OriginalReceipt,
             _originalRegistryState!.GetType().GetField("_openTreatmentPublicationReceipt", BindingFlags.Instance | BindingFlags.NonPublic)!
                 .GetValue(_originalRegistryState));
@@ -413,7 +433,15 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             if (!Armed) return Task.CompletedTask;
             LeaseAttempts++;
-            if (Cuts != 0) LeaseAttemptsAfterCut++;
+            if (Cuts != 0)
+            {
+                if (PendingFinalizationLease)
+                {
+                    PendingFinalizationLease = false;
+                    FinalizationLeasesAfterCut++;
+                }
+                else LeaseAttemptsAfterCut++;
+            }
             if (_mode == "engine_mirror" && !MirrorDriftPrepared && PublishedTreatmentMembers > 0 &&
                 !File.Exists(JournalPath) && _originalRegistryState!.GetType()
                     .GetField("_openTreatmentPublicationReceipt", BindingFlags.Instance | BindingFlags.NonPublic)!
