@@ -44,7 +44,7 @@ public partial class FileSystemManager
         foreach (var root in LegacyStorageRoots)
         {
             if (!HasStorageEvidence(root)) continue;
-            if (OperatingSystem.IsLinux() && root == ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root))
+            if (root == ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root))
             {
                 if (allowPortableBrowser) continue; // The original handler preflights schema7 before any recovery.
                 if (ownedBrowser != null)
@@ -67,12 +67,12 @@ public partial class FileSystemManager
         if (lease.BrowserLocalAccess is { } access)
         {
             access.Validate();
-            var relative = GetLocalRelativePath(GameSessionPath, ResolvePath(relativePath), false);
+            var relative = GetLocalRelativePath(GameSessionPath, ResolvePath(relativePath), OperatingSystem.IsWindows());
             if (access.OwnsArtifact(relative)) return true;
         }
         var path = ResolvePath(relativePath);
-        if (OperatingSystem.IsLinux() && ExplorerLocalTurnRollbackArtifacts.IsLocalDirectGachaPath(
-                GetLocalRelativePath(GameSessionPath, path, false))) return true;
+        if (ExplorerLocalTurnRollbackArtifacts.IsLocalDirectGachaPath(
+                GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows()))) return true;
         var root = ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root);
         var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         return !path.Equals(root, comparison) && !path.StartsWith(root + Path.DirectorySeparatorChar, comparison);

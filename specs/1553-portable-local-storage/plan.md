@@ -1,3 +1,36 @@
+## F04/F05 coherent runtime cutover WIP — 2026-10-08
+
+Protocol control carrier6e623754 independently accepted: actual4 shared Linux
+PASS before cutover;25 combined artifacts/44 historical source pins verified.
+Fresh production browser Stage now chooses schema7 on both platforms. A read-only
+whole-namespace classifier runs before any recovery effects, recognizes manifests
+and cleanup-only intent formats, rejects mixed/unknown ownership, and treats exact
+structural direct-gacha backups as neutral. Original schema<=6 keeps the unchanged
+handler on Windows (or retained Linux refusal); active common journal plus original
+browser evidence refuses. Current preflight→common settlement→browser recovery
+ordering runs under unchanged original admission/generation/purpose fences.
+
+Current profile path and browser scratch/member/cleanup operands are normalized.
+Scratch filters to browser root before GameSession-relative conversion. Ordinary
+browser destination comparison matches publisher Windows case behavior/Linux exact
+behavior; exact grants, registered external grant, JSON tuples/hash/generation and
+original physical identity payloads are unchanged. Daren reads prioritize original
+external context; fresh declared/standalone writes use the common registered member.
+The obsolete ordinary physical write branch and its private parent-creation helper
+are removed; original physical external restoration remains. Direct-gacha discovery
+still requires exact signed mapping/current request on both platforms. Current
+browser dynamic-directory rollback uses the validated common deletion facade.
+No global journal/schema bump or operation-wide atomic rollback promise.
+
+Runtime/source review and all fresh verification pending. Exact Linux56 selection:
+`portable-browser-protocol-consumers-linux`23, `portable-daren-protocol-consumers-linux`23,
+`portable-browser-protocol-admission-linux`4, `portable-browser-direct-gacha-adoption-linux`6.
+Fresh PlanOnly also includes `portable-browser-protocol-native-windows`28:84 planned,
+zero executed; actual run selects ONLY Linux56 after source/selection gate. Native28
+remains body-required/unexecuted, including authentic original6 and extended/profile
+scratch/case aliases. No Windows qualification from Linux results. Client storage
+implementation only; no GM-authored schema, prompt, example or gameplay change.
+
 ## F04/F05 shared protocol controls preserved — 2026-10-08
 
 Corrected fixture7ab3dc97 independently SOURCE/SELECTION PASS. Fresh Plan172505

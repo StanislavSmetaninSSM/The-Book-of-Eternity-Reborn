@@ -450,6 +450,18 @@
         "F05",
         "T063-REMAINING-CONSUMERS"
       ]
+    },
+    {
+      "category": "portable-browser-direct-gacha-adoption-linux",
+      "reason": "F04 changed both-platform direct-gacha discovery gate retains exact signed mapping and current-request checks after neutral namespace admission. Six existing cases only; unchanged raw parser8 excluded.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "F04",
+        "F05",
+        "T063-REMAINING-CONSUMERS"
+      ]
     }
   ]
 }

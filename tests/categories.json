@@ -18269,6 +18269,33 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-browser-direct-gacha-adoption-linux",
+      "responsibility": "F04 exact6 existing original signed direct-gacha adoption controls: complete original capture/validated rollback/cleanup and five mapping/hash/current-request/action/consumed-evidence refusals after neutral browser evidence admission.",
+      "excludes": "Unchanged raw-request field parser8; broader browser/pending/turn suites; native Windows execution or recognition as adoption authority.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.BrowserProtocol.cs",
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalDirectGacha.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_OriginalCaptureValidatedRollbackAndCleanup",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence"
+          ]
+        }
+      ]
     }
   ]
 }

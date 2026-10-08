@@ -14,7 +14,7 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         LocalBrowserCleanupIntent? Cleanup, bool CommittedMarker);
 
     // Read-only admission: no old/unknown browser evidence may be mutated by the
-    // common publisher before the original Linux handler has recognized its schema.
+    // common publisher before the original current handler has recognized its schema.
     internal static void PreflightLocalBrowserEvidence(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease) =>
         _ = ReadLocalBrowserEvidence(fs, lease);
 
@@ -50,7 +50,7 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
     {
         var files = fs.ListBrowserStorageEvidence(lease);
         IReadOnlyList<string> pendingScratch = files.Count == 0 ? [] : fs.ReadPendingBrowserPublicationScratch(lease);
-        var roots = files.Select(path => path[..path.LastIndexOf('/')]).Distinct(StringComparer.Ordinal).OrderBy(path => path, StringComparer.Ordinal).ToArray();
+        var roots = files.Select(path => path[..path.LastIndexOf('/')]).Distinct(BrowserDestinationComparer).OrderBy(path => path, StringComparer.Ordinal).ToArray();
         var result = new List<LocalBrowserEvidence>();
         foreach (var root in roots)
         {
@@ -59,17 +59,17 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             // scratch here; acquiring a lease never retires this before-image.
             if (root.StartsWith(DirectGachaRoot + "/", StringComparison.Ordinal))
             {
-                if (!IsLocalDirectGachaPath(root) || files.Where(path => path.StartsWith(root + "/", StringComparison.Ordinal))
-                    .Any(path => !IsLocalDirectGachaBackup(path) && !pendingScratch.Contains(path, StringComparer.Ordinal)))
+                if (!IsLocalDirectGachaPath(root) || files.Where(path => path.StartsWith(root + "/", BrowserDestinationComparison))
+                    .Any(path => !IsLocalDirectGachaBackup(path) && !pendingScratch.Contains(path, BrowserDestinationComparer)))
                     throw new InvalidDataException("Unrecognized direct-gacha evidence; original bytes retained.");
                 continue;
             }
             var parts = root.Split('/');
             var rootParts = Root.Split('/');
-            if (parts.Length != rootParts.Length + 2 || !root.StartsWith(Root + "/", StringComparison.Ordinal) ||
+            if (parts.Length != rootParts.Length + 2 || !root.StartsWith(Root + "/", BrowserDestinationComparison) ||
                 !IsValidTransactionDirectoryName(parts[^1]) || parts[^2] != SafeSegment(parts[^2]))
                 throw new InvalidDataException("Unrecognized browser evidence namespace; original evidence retained.");
-            var own = files.Where(path => path.StartsWith(root + "/", StringComparison.Ordinal)).ToHashSet(StringComparer.Ordinal);
+            var own = files.Where(path => path.StartsWith(root + "/", BrowserDestinationComparison)).ToHashSet(BrowserDestinationComparer);
             var manifestPath = root + "/" + BrowserWriteManifestFileName;
             var markerPath = root + "/" + BrowserWriteCommittedMarkerFileName;
             var committedPath = CleanupPath(root, BrowserWriteCleanupOutcome.Committed);
@@ -100,7 +100,7 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
                 throw new InvalidDataException("Malformed browser committed marker; evidence retained.");
             if (own.Contains(markerPath) && cleanup?.Outcome == BrowserWriteCleanupOutcome.Restored)
                 throw new InvalidDataException("Browser committed marker conflicts with rollback cleanup.");
-            var allowed = new HashSet<string>(StringComparer.Ordinal) { manifestPath, markerPath };
+            var allowed = new HashSet<string>(BrowserDestinationComparer) { manifestPath, markerPath };
             if (intentPath != null) allowed.Add(intentPath);
             foreach (var entry in manifest?.Entries ?? []) if (entry.BackupPath != null) allowed.Add(entry.BackupPath);
             foreach (var entry in manifest?.ExternalEntries ?? []) if (entry.BackupPath != null) allowed.Add(entry.BackupPath);
@@ -116,7 +116,7 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
     {
         try
         {
-            return StrictJsonAuthority.Deserialize<T>(DecodeUtf8(bytes), LocalBrowserJson, "Linux browser evidence")
+            return StrictJsonAuthority.Deserialize<T>(DecodeUtf8(bytes), LocalBrowserJson, "Current browser evidence")
                 ?? throw new InvalidDataException("Empty browser evidence.");
         }
         catch (JsonException failure) { throw new InvalidDataException("Unsupported/malformed browser evidence; original bytes retained.", failure); }
@@ -137,13 +137,13 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             manifest.Entries == null || manifest.CleanupDirectories == null)
             throw new InvalidDataException("Original unsupported browser manifest retained.");
         ValidateLocalBinding(fs, lease, manifest.Generation, manifest.CreatedAtUtc);
-        var members = new HashSet<string>(StringComparer.Ordinal);
-        var backups = new HashSet<string>(StringComparer.Ordinal);
+        var members = new HashSet<string>(BrowserDestinationComparer);
+        var backups = new HashSet<string>(BrowserDestinationComparer);
         foreach (var entry in manifest.Entries)
         {
             if (entry == null || NormalizeRelativePath(fs, entry.TrackedFile) != entry.TrackedFile ||
-                entry.TrackedFile == Root || entry.TrackedFile.StartsWith(Root + "/", StringComparison.Ordinal) ||
-                !members.Add(entry.TrackedFile) || entry.MutationIntent != null || entry.PublicationReceipt != null ||
+                BrowserDestinationComparer.Equals(entry.TrackedFile, Root) || entry.TrackedFile.StartsWith(Root + "/", BrowserDestinationComparison) ||
+                !members.Add(BrowserDestination(fs, entry.TrackedFile)) || entry.MutationIntent != null || entry.PublicationReceipt != null ||
                 (entry.PublishedSha256s ?? []).Any(hash => !IsSha256(hash) || hash != hash.ToLowerInvariant()) ||
                 (entry.PublishedSha256s ?? []).Distinct(StringComparer.Ordinal).Count() != (entry.PublishedSha256s ?? []).Count)
                 throw new InvalidDataException("Invalid browser member or byte intent.");
@@ -151,7 +151,7 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             {
                 if (!IsSha256(entry.Sha256) || entry.BackupPath == null ||
                     NormalizeRelativePath(fs, entry.BackupPath) != entry.BackupPath ||
-                    Path.GetDirectoryName(entry.BackupPath)?.Replace('\\', '/') != root || !backups.Add(entry.BackupPath))
+                    Path.GetDirectoryName(entry.BackupPath)?.Replace('\\', '/') != root || !backups.Add(BrowserDestination(fs, entry.BackupPath)))
                     throw new InvalidDataException("Invalid browser before-image membership.");
             }
             else if (entry.BackupPath != null || entry.Sha256 != null)
@@ -167,13 +167,13 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             if (entry.Existed)
             {
                 if (!IsSha256(entry.Sha256) || entry.BackupPath == null || NormalizeRelativePath(fs, entry.BackupPath) != entry.BackupPath ||
-                    Path.GetDirectoryName(entry.BackupPath)?.Replace('\\', '/') != root || !backups.Add(entry.BackupPath))
+                    Path.GetDirectoryName(entry.BackupPath)?.Replace('\\', '/') != root || !backups.Add(BrowserDestination(fs, entry.BackupPath)))
                     throw new InvalidDataException("Invalid external browser baseline membership.");
             }
             else if (entry.BackupPath != null || entry.Sha256 != null)
                 throw new InvalidDataException("Absent external baseline has unexpected evidence.");
         }
-        if (manifest.CleanupDirectories.Distinct(StringComparer.Ordinal).Count() != manifest.CleanupDirectories.Count ||
+        if (manifest.CleanupDirectories.DistinctBy(path => BrowserDestination(fs, path), BrowserDestinationComparer).Count() != manifest.CleanupDirectories.Count ||
             manifest.CleanupDirectories.Any(path => NormalizeRelativePath(fs, path) != path || !IsAllowedRollbackCleanupDirectory(path)))
             throw new InvalidDataException("Browser cleanup exceeds the original directory allowlist.");
     }

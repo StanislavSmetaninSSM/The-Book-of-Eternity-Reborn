@@ -6,6 +6,12 @@ namespace BookOfEternityClient.Services;
 public static partial class ExplorerLocalTurnRollbackArtifacts
 {
     private const int LocalBrowserSchema = 7;
+    // Destination identity follows the ordinary publisher. Exact grants and
+    // serialized authority bindings remain Ordinal and are not widened here.
+    private static StringComparer BrowserDestinationComparer => OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+    private static StringComparison BrowserDestinationComparison => OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+    private static string BrowserDestination(FileSystemManager fs, string relative) =>
+        TrustedLocalFilePublication.NormalizeAuthorityPath(fs.ResolvePath(relative), OperatingSystem.IsWindows());
     internal sealed record LocalBrowserManifest(int SchemaVersion, string TransactionKind, string Status,
         string Scope, string CreatedAtUtc, string Generation,
         IReadOnlyList<BrowserWriteRollbackEntry> Entries, IReadOnlyList<string> CleanupDirectories,
@@ -27,10 +33,10 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         var external = (externalIds ?? []).Distinct(StringComparer.Ordinal).ToArray();
         if (external.Any(id => id != DarenRewardProfileExternalFileId))
             throw new InvalidDataException("Unsupported external browser participant.");
-        var paths = trackedFiles.Select(path => NormalizeRelativePath(fs, path)).Distinct(StringComparer.Ordinal).ToArray();
-        if (paths.Any(path => path == Root || path.StartsWith(Root + "/", StringComparison.Ordinal)))
+        var paths = trackedFiles.Select(path => NormalizeRelativePath(fs, path)).DistinctBy(path => BrowserDestination(fs, path), BrowserDestinationComparer).ToArray();
+        if (paths.Any(path => BrowserDestinationComparer.Equals(path, Root) || path.StartsWith(Root + "/", BrowserDestinationComparison)))
             throw new InvalidDataException("Browser members cannot own transaction evidence.");
-        var clean = (cleanupDirectories ?? []).Select(path => NormalizeRelativePath(fs, path)).Distinct(StringComparer.Ordinal).ToArray();
+        var clean = (cleanupDirectories ?? []).Select(path => NormalizeRelativePath(fs, path)).DistinctBy(path => BrowserDestination(fs, path), BrowserDestinationComparer).ToArray();
         if (clean.Any(path => !IsAllowedRollbackCleanupDirectory(path)))
             throw new InvalidDataException("Browser cleanup directory is outside the original allowlist.");
         var safeScope = SafeSegment(scope);
@@ -76,10 +82,11 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             created.Add(transaction.ManifestPath);
             access.RecordIntent = async (absolutePath, desired) =>
             {
-                var index = entries.FindIndex(entry => string.Equals(fs.ResolvePath(entry.TrackedFile), absolutePath, StringComparison.Ordinal));
+                var memberPath = TrustedLocalFilePublication.NormalizeAuthorityPath(absolutePath, OperatingSystem.IsWindows());
+                var index = entries.FindIndex(entry => BrowserDestinationComparer.Equals(BrowserDestination(fs, entry.TrackedFile), memberPath));
                 if (index < 0)
                 {
-                    if (access.ProfilePath != absolutePath) return; // Artifacts/UI are not rollback members.
+                    if (access.ProfilePath != memberPath) return; // Artifacts/UI are not rollback members.
                     var externalEntry = externalEntries.Single();
                     var externalHashes = (externalEntry.PublishedSha256s ?? []).ToList();
                     if (desired != null && !externalHashes.Contains(ComputeSha256(desired), StringComparer.Ordinal)) externalHashes.Add(ComputeSha256(desired));
@@ -171,8 +178,8 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             fs.DeleteFile(lease, GetBrowserWriteCommittedMarkerPath(transaction));
             var scope = new TrustedLocalFileScope([fs.GameSessionPath]);
             var root = scope.ValidateDirectory(fs.ResolvePath(transaction.TransactionRoot), allowMissing: false);
-            var allowed = new[] { fs.ResolvePath(transaction.ManifestPath), fs.ResolvePath(intent) };
-            if (Directory.EnumerateFileSystemEntries(root).Any(path => !allowed.Contains(path, StringComparer.Ordinal)))
+            var allowed = new[] { scope.ValidateFile(fs.ResolvePath(transaction.ManifestPath)), scope.ValidateFile(fs.ResolvePath(intent)) };
+            if (Directory.EnumerateFileSystemEntries(root).Any(path => !allowed.Contains(path, BrowserDestinationComparer)))
                 throw new InvalidDataException("Browser cleanup retained unknown evidence.");
             fs.DeleteFile(lease, transaction.ManifestPath);
             fs.DeleteFile(lease, intent);
@@ -186,7 +193,10 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
     {
         fs.VerifyCurrentSessionOperation(lease);
         var scope = new TrustedLocalFileScope([fs.GameSessionPath]);
-        for (var path = fs.ResolvePath(root); path.StartsWith(fs.ResolvePath(Root), StringComparison.Ordinal); path = Path.GetDirectoryName(path)!)
+        var boundary = scope.ValidateDirectory(fs.ResolvePath(Root));
+        for (var path = scope.ValidateDirectory(fs.ResolvePath(root));
+             BrowserDestinationComparer.Equals(path, boundary) || path.StartsWith(boundary + Path.DirectorySeparatorChar, BrowserDestinationComparison);
+             path = Path.GetDirectoryName(path)!)
         {
             scope.ValidateDirectory(path);
             if (Directory.Exists(path) && !Directory.EnumerateFileSystemEntries(path).Any()) Directory.Delete(path);

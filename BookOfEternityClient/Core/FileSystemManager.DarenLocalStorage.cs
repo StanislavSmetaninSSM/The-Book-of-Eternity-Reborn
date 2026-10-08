@@ -10,10 +10,10 @@ public partial class FileSystemManager
         VerifyCurrentSessionOperation(lease);
         EnsureWorkerGeneralMutationAllowed(lease);
         lease.EnsureNoPendingLocalDecision();
-        if (!OperatingSystem.IsLinux() || lease.BrowserLocalAccess != null ||
+        if (lease.BrowserLocalAccess != null ||
             lease.ExternalPublicationContext != null || lease.MutationIntentRecorder != null ||
             lease.IsLegacyStorageRecovery)
-            throw new InvalidOperationException("Standalone Daren profile requires its original ordinary Linux lease.");
+            throw new InvalidOperationException("Standalone Daren profile requires its original ordinary lease.");
         new TrustedLocalFileScope([BasePath]).ValidateFile(RegisteredDarenProfilePath);
     }
 

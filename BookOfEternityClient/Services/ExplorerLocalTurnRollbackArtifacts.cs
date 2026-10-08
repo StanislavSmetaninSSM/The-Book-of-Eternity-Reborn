@@ -363,15 +363,12 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         IEnumerable<string>? rollbackCleanupDirectories = null,
         IEnumerable<string>? rollbackExternalFileIds = null)
     {
-        if (OperatingSystem.IsLinux())
-            return await StageLocalBrowserTransactionAsync(fs, writeLease, trackedFiles, scope,
-                rollbackCleanupDirectories, rollbackExternalFileIds);
-        return await StageOriginalBrowserWriteTransactionAsync(fs, writeLease, trackedFiles, scope,
+        return await StageLocalBrowserTransactionAsync(fs, writeLease, trackedFiles, scope,
             rollbackCleanupDirectories, rollbackExternalFileIds);
     }
 
     // Exact original schema6 generator retained for native original-evidence fixtures.
-    // Fresh dispatch above is unchanged in this structural extraction checkpoint.
+    // Fresh production dispatch always uses the current local protocol.
     internal static async Task<BrowserWriteRollbackTransaction> StageOriginalBrowserWriteTransactionAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -2031,9 +2028,8 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
             var candidates = fs.EnumerateFiles(writeLease, $"{safeName}.rollback.*")
                 .Where(path => path.StartsWith($"{Root}/", StringComparison.OrdinalIgnoreCase))
                 .ToArray();
-            if (OperatingSystem.IsLinux())
-                foreach (var candidate in candidates.Where(IsLocalDirectGachaBackup))
-                    RequireCurrentDirectGachaAdoption(fs, writeLease, trackedFile, candidate);
+            foreach (var candidate in candidates.Where(IsLocalDirectGachaBackup))
+                RequireCurrentDirectGachaAdoption(fs, writeLease, trackedFile, candidate);
             var match = candidates
                 .OrderByDescending(GetTransactionTicks)
                 .ThenByDescending(static path => path, StringComparer.OrdinalIgnoreCase)

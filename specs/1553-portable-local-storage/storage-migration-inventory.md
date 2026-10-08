@@ -1,3 +1,13 @@
+## Current F04/F05 checkpoint — 2026-10-08
+
+Unchanged baseline46 and new shared protocol4 independently accepted (carriers4f12/6e623).
+Both-platform fresh schema7/Daren cutover is now implemented WIP with read-only whole
+protocol admission before effects, exact old handler/refusal, normalized operands,
+context-first external dispatch and unchanged signed adoption. Source/evidence gate
+pending; finite Linux56 plus native28 compile/discovery0 selected. Native execution
+remains open. Historical frozen census rows below describe the prior source, not a
+claim that the current WIP still routes fresh Windows writes through the recorder.
+
 > Current A01 checkpoint: shared probe-host71a561 independently accepted with3 actual
 > Linux cases, restored carrier5b6a6069. Shared original dispatch/Load5f1502b8 now has
 > fresh16/16 Linux GREEN and independent source/selection/evidence PASS.

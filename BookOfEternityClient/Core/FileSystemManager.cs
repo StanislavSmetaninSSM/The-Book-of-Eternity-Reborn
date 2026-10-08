@@ -1681,7 +1681,7 @@ public partial class FileSystemManager
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         EnsureSafeCanonicalRelativePath(relativePath);
-        if (OperatingSystem.IsLinux() && writeLease.BrowserLocalAccess != null)
+        if (writeLease.BrowserLocalAccess != null)
         {
             DeleteTrustedLocalDirectoryTreeAsync(writeLease, relativePath).GetAwaiter().GetResult();
             return;
@@ -3730,7 +3730,13 @@ public partial class FileSystemManager
                     writeLease.MainAdmission!.Validate(writeLease);return writeLease;
                 }
                 EnsureMainBeforeRecovery(writeLease);
-                if (OperatingSystem.IsLinux())
+                // Classify the entire browser namespace before either recovery owner
+                // can mutate anything. Structural direct-gacha backups are neutral.
+                var browserProtocol = ExplorerLocalTurnRollbackArtifacts.ClassifyBrowserStorageEvidence(this, writeLease);
+                if (browserProtocol == ExplorerLocalTurnRollbackArtifacts.BrowserStorageProtocol.Original &&
+                    HasStorageEvidence(LocalPublicationRoot))
+                    throw new InvalidDataException("Mixed original browser and current publication evidence; bytes retained.");
+                if (OperatingSystem.IsLinux() || browserProtocol == ExplorerLocalTurnRollbackArtifacts.BrowserStorageProtocol.Current)
                 {
                     EnsureNoLegacyStorageEvidence(allowPortableBrowser: true);
                     ExplorerLocalTurnRollbackArtifacts.PreflightLocalBrowserEvidence(this, writeLease);
@@ -3761,7 +3767,7 @@ public partial class FileSystemManager
                             await ExplorerLocalTurnRollbackArtifacts.RecoverInterruptedBrowserWriteTransactionsAsync(this, writeLease);
                     }
                 });
-                EnsureNoLegacyStorageEvidence();
+                EnsureNoLegacyStorageEvidence(writeLease);
                 try
                 {
                     RecoverTrustedLocalStorage(writeLease);

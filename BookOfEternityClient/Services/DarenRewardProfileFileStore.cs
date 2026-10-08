@@ -29,38 +29,13 @@ internal sealed class DarenRewardProfileFileStore
         CancellationToken cancellationToken = default)
     {
         EnsureLease(writeLease);
-        if (OperatingSystem.IsLinux()) return await _fs.ReadLocalDarenProfileAsync(writeLease, cancellationToken);
         if (writeLease.ExternalPublicationContext is
             DarenRewardProfileRollbackTransaction transaction)
         {
             return transaction.ReadCurrentBytes();
         }
 
-        var profileEntry = ProbeProfileEntry();
-        if (profileEntry ==
-            PhysicalFileAuthority.NamespaceEntryKind.Missing)
-        {
-            return null;
-        }
-        EnsureRegularProfileEntry(profileEntry);
-
-        using var parentAuthority = OpenExistingParentAuthority();
-        await using var stream = PhysicalFileAuthority.OpenReadFile(
-            parentAuthority,
-            _profilePath,
-            AuthorityName,
-            asynchronous: true) ??
-            throw new InvalidDataException(
-                "Daren reward profile changed after exact classification.");
-
-        using var output = new MemoryStream();
-        await stream.CopyToAsync(output, cancellationToken);
-        PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(
-            stream.SafeFileHandle,
-            _profilePath,
-            AuthorityName);
-        _fs.VerifyCurrentSessionOperation(writeLease);
-        return output.ToArray();
+        return await _fs.ReadLocalDarenProfileAsync(writeLease, cancellationToken);
     }
 
     internal async Task<string?> ReadTextAsync(
@@ -109,78 +84,7 @@ internal sealed class DarenRewardProfileFileStore
             return;
         }
 
-        if (OperatingSystem.IsLinux())
-        {
-            await _fs.PublishStandaloneDarenProfileAsync(writeLease, content, cancellationToken);
-            return;
-        }
-
-        var destinationEntry = ProbeProfileEntry();
-        _fs.EnsureAuthorityFilePublicationSupported(
-            destinationEntry,
-            AuthorityName);
-
-        using var parentAuthority = OpenParentAuthority();
-        var tempPath = Path.Combine(
-            _profileDirectory,
-            $".qte_showcase_rewards.{Guid.NewGuid():N}.tmp");
-        FileStream? stream = null;
-        try
-        {
-            stream = PhysicalFileAuthority.CreateNewWritableFile(
-                parentAuthority,
-                tempPath,
-                AuthorityName + " temporary",
-                asynchronous: true);
-            await stream.WriteAsync(content, cancellationToken);
-            await stream.FlushAsync(cancellationToken);
-            stream.Flush(flushToDisk: true);
-            _fs.VerifyCurrentSessionOperation(writeLease);
-
-            if (_fs.SupportsReversibleOpenedHandlePublication)
-            {
-                await ReversibleFilePublication.PublishAsync(
-                    _fs.BasePath,
-                    _fs.PhysicalPublicationTransactionsRootPath,
-                    parentAuthority,
-                    tempPath,
-                    stream,
-                    parentAuthority,
-                    _profilePath,
-                    AuthorityName,
-                    afterAuthorityValidated: null,
-                    beforeSourcePublished: null,
-                    afterPublished: null,
-                    cancellationToken);
-            }
-            else
-            {
-                PhysicalFileAuthority.RenameOpenedObjectRelative(
-                    stream.SafeFileHandle,
-                    parentAuthority,
-                    _profilePath,
-                    replaceExisting: false,
-                    AuthorityName + " create-only publication");
-            }
-
-            _fs.VerifyCurrentSessionOperation(writeLease);
-        }
-        finally
-        {
-            if (stream != null)
-                await stream.DisposeAsync();
-            try
-            {
-                PhysicalFileAuthority.TryDeleteFile(
-                    parentAuthority,
-                    tempPath,
-                    AuthorityName + " temporary cleanup");
-            }
-            catch
-            {
-                // A rejected path replacement must not redirect cleanup.
-            }
-        }
+        await _fs.PublishStandaloneDarenProfileAsync(writeLease, content, cancellationToken);
     }
 
     internal void EnsureWriteSupported(
@@ -199,15 +103,7 @@ internal sealed class DarenRewardProfileFileStore
             return;
         }
 
-        if (OperatingSystem.IsLinux())
-        {
-            _fs.RequireStandaloneDarenProfile(writeLease);
-            return;
-        }
-
-        _fs.EnsureAuthorityFilePublicationSupported(
-            ProbeProfileEntry(),
-            AuthorityName);
+        _fs.RequireStandaloneDarenProfile(writeLease);
     }
 
     internal async Task RestoreExactBytesAsync(
@@ -220,7 +116,7 @@ internal sealed class DarenRewardProfileFileStore
             await _fs.PublishLocalDarenProfileAsync(writeLease, content);
             return;
         }
-        if (OperatingSystem.IsLinux() && writeLease.ExternalPublicationContext == null)
+        if (writeLease.ExternalPublicationContext is not DarenRewardProfileRollbackTransaction)
         {
             await _fs.PublishStandaloneDarenProfileAsync(writeLease, content);
             return;
@@ -246,12 +142,6 @@ internal sealed class DarenRewardProfileFileStore
             AuthorityName + " rollback deletion");
         _fs.VerifyCurrentSessionOperation(writeLease);
     }
-
-    private PhysicalFileAuthority.StableDirectory OpenParentAuthority() =>
-        PhysicalFileAuthority.EnsureStableDirectory(
-            _fs.BasePath,
-            _profileDirectory,
-            AuthorityName);
 
     private PhysicalFileAuthority.StableDirectory OpenExistingParentAuthority() =>
         PhysicalFileAuthority.OpenStableDirectory(
