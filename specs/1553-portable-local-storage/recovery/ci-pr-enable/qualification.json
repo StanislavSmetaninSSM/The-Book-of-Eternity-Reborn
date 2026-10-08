@@ -30,7 +30,22 @@
     "estimatedCases": 1,
     "executed": 0
   },
-  "hostedResult": "Pending at this source checkpoint",
+  "hostedResult": {
+    "run": 37719162311,
+    "url": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/runs/37719162311",
+    "head": "c7afc4eaad9399f3dcfa26c8efb43576c1f9303d",
+    "event": "pull_request",
+    "conclusion": "failure",
+    "plan": "success",
+    "linux": "failure",
+    "gate": "failure",
+    "failingStep": "Verify explicitly selected contracts",
+    "causalRuntimeFailure": "Unknown; available annotation only exit code1",
+    "testCounts": "Unknown",
+    "cleanup": "Unknown",
+    "logsHostDenied": "results-receiver.actions.githubusercontent.com",
+    "artifactHostDenied": "productionresultssa9.blob.core.windows.net"
+  },
   "originalFiveSelectionsPreserved": true,
   "addedAffectedSelection": "test-ci-platform-contracts",
   "nodeImageSources": [
@@ -69,5 +84,32 @@
     "exit": 0,
     "cleanup": "complete",
     "NoBuildRationale": "SelectedCSharpProjectsFreshBuiltBeforeFinal30NoCSharpSourceChangesSince"
+  },
+  "sourceFixReview": {
+    "model": "gpt-6.1-sol",
+    "effort": "xhigh",
+    "verdict": "PASS",
+    "source": "c7afc4eaad9399f3dcfa26c8efb43576c1f9303d"
+  },
+  "ownerIntegrationDecision": {
+    "recordedUtc": "2026-10-08T02:52:53.337638+00:00",
+    "instruction": "Отключай эти Github CI и мерджи в мастер",
+    "acceptedBasis": "Accepted bounded local final30 plus causalCI21 and independent reviews; hostedgreen no longer required by owner",
+    "workflowsDisabled": [
+      280957256,
+      374267479
+    ],
+    "defaultBranchVerified": "main",
+    "existingAdminMergeCapability": true,
+    "noFictitiousApproval": true,
+    "noProtectionPermissionsNetworkChange": true,
+    "mergeAuthorized": true,
+    "mergePerformedAtThisSourceCheckpoint": false,
+    "mergeDelivery": "Exact merged main SHA and GitHub-only recovery to be verified separately",
+    "mergeMethod": "GitHub ordinary supported squash, original branch/history retained; explicit Refs-only message to avoid issue-closing keywords in3historicalcommits",
+    "issue1553BeforeMerge": "open",
+    "automaticBranchDeletion": false,
+    "closingIssuesReferencesBeforeMerge": [],
+    "issueLifecycleCheck": "Verify1553stillopenaftermerge; noissuewrite"
   }
 }
