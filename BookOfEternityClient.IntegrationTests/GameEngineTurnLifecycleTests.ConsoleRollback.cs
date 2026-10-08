@@ -1,4 +1,5 @@
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.UI;
 using BookOfEternityClient.IO;
 using BookOfEternityClient.Models;
