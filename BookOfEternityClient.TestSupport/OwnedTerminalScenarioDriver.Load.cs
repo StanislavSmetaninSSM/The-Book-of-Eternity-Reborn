@@ -61,6 +61,7 @@ internal static partial class OwnedTerminalScenarioDriver
                             case "root": supplied=supplied with {RootKey=Path.Combine(folder,"foreign-root")};break;
                             case "backend": supplied=supplied with {Backend=GmSessionRunBackend.WindowsJob};break;
                             case "invalid": supplied=supplied with {HostInstanceId="invalid-host"};break;
+                            case "foreign-host": supplied=supplied with {HostInstanceId=Guid.NewGuid().ToString("N")};break;
                             default: throw new InvalidOperationException("Unknown finite receipt fixture.");
                         }
                         receiptCuts++;

@@ -17,6 +17,7 @@ public sealed class GmBridgeOriginalConsumerTests
     [InlineData("root")]
     [InlineData("backend")]
     [InlineData("invalid")]
+    [InlineData("foreign-host")]
     public Task ConsoleLoad_StartedNotReadyReceiptRequiresActualFreshOriginalIdentity(string boundary) =>
         ProductionMainLinuxFixture.RunAsync("production-main-load-console-receipt-"+boundary);
 }

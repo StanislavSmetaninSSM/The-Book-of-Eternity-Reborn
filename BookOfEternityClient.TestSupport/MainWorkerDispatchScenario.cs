@@ -28,6 +28,14 @@ internal static class MainWorkerDispatchScenario
             return 0;
         });
         evidence["PositiveOriginalMutation"]=true;
+        var loaded=(GameSettings)hostType.GetMethod("LoadBridgeConfig",flags)!.Invoke(host,null)!;
+        Require(loaded.GmWorkerBridgeProfiles.Count==1,"Actual Bridge config did not load the sole fixture profile.");
+        var loadedProfile=loaded.GmWorkerBridgeProfiles[0];
+        var validProfile=GmWorkerContractValidator.ValidateProfile(loadedProfile);
+        var routing=GmWorkerBridgePool.SelectWorkerForTask(loaded.GmWorkerBridgeProfiles,WorkerTaskType.Analysis);
+        evidence["LoadedProfile"]=loadedProfile;evidence["ProfileValidation"]=validProfile;evidence["Routing"]=routing;
+        Require(loadedProfile.Enabled && loadedProfile.LaunchCommand=="exit 74" && validProfile.IsValid && routing.Found,
+            "Actual loaded inert profile failed validation or analysis routing.");
         using var admission=new GmWorkerNativePoolAdmission(package,root);
         var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -42,6 +50,9 @@ internal static class MainWorkerDispatchScenario
         };
         var factory=(Func<FileSystemManager,GmWorkerAuditLog,GmWorkerBridgePool>)((fs,audit)=>{
             factories++;
+            var ambient=GmSessionRunCoordinator.Current;
+            evidence["FactoryHasOriginalAccess"]=ambient!=null && ReferenceEquals(ambient.Owner,owner);
+            evidence["FactoryHasOriginalPin"]=ambient?.Pin!=null;
             var pool=new GmWorkerBridgePool(fs,null,audit,hooks,GmWorkerProcessTreeFactory.Instance,GmWorkerQuarantineReaper.Shared,admission);
             if(boundary=="slot") {
                 var acquisition=(Task)typeof(GmWorkerBridgePool).GetMethod("AcquireWorkerSlotAsync",flags)!.Invoke(pool,[profile,CancellationToken.None])!;
@@ -63,10 +74,17 @@ internal static class MainWorkerDispatchScenario
             var requestType=hostType.Assembly.GetType("BookOfEternityGMBridge.BridgeRequest",true)!;
             var request=JsonSerializer.Deserialize(JsonSerializer.Serialize(new {WorkerTaskType="analysis",AnalysisGoal="Bounded cancellation fixture",
                 Questions=new[]{"Inspect fixture context"},ContextPaths=new[]{"game_state/world/weather.json"}}),requestType)!;
+            var built=(GmWorkerProposalOnlyDispatchRequest)hostType.GetMethod("BuildWorkerDispatchRequest",BindingFlags.Static|BindingFlags.NonPublic)!.Invoke(null,[request])!;
+            evidence["BuiltRequest"]=built;
+            Require(built.TaskType==WorkerTaskType.Analysis && !string.IsNullOrWhiteSpace(built.AnalysisGoal),"Original request builder did not preserve analysis routing.");
             dispatch=(Task)hostType.GetMethod("DispatchWorkerTaskAsync",flags)!.Invoke(host,[request])!;
             await Task.WhenAny(dispatch,entered.Task).WaitAsync(TimeSpan.FromSeconds(3));
             Exception? failure=null;
             if(dispatch.IsCompleted)try{await dispatch;}catch(Exception error){failure=error;}
+            if(dispatch.IsCompletedSuccessfully) {
+                var response=dispatch.GetType().GetProperty("Result")!.GetValue(dispatch)!;
+                evidence["DispatchResultBeforeWait"]=response.GetType().GetProperty("WorkerDispatch")!.GetValue(response);
+            }
             evidence["Factories"]=factories;evidence["SlotWaitsBeforeStop"]=waits;evidence["ContextLeaseContentions"]=contentions;
             evidence["DispatchFailureBeforeWait"]=failure?.ToString();evidence["BeforeReservation"]=reservations;
             Require(entered.Task.IsCompleted && (boundary=="slot" ? waits==2 : contentions>0) && failure==null,"Original private dispatch failed before its actual occupied "+boundary+" wait.");

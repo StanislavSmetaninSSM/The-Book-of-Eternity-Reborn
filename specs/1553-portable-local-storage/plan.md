@@ -1,3 +1,35 @@
+## A01 consumer causal results and fixture diagnostics — 2026-10-08
+
+Frozen6f9 fresh PlanOnly141049 selected10/2, built successfully and executed0.
+Actual Load141349 completed8/8FAIL127.6951682s, clean source/both cleanup flags.
+All8 original retained reply cuts followed actual stop/replacement/new Running
+owner, terminal and generation. Exact StartedNotReady receives a false console
+follow-up; seven malformed/foreign identities are accepted as StartedNotReady
+rather than protocol Uncertain. Existing console blanket blocking means this is
+NOT observed continuation escape. Raw scenario/guardian/TRX and hashes are in
+[consumer manifest](recovery/storage-migration-bridge-consumers-20261008/manifest.json).
+
+Initial worker141300 completed2/2FAIL10.6539430s but neither target wait was
+reached. The initial fixture recorded only thrown exceptions, omitting a returned
+service rejection. Preserve these as unreached diagnostic/precondition failures,
+not causal missing-pin RED. Test-only correction records actual loaded profile,
+validation/routing, built request, original ambient access and returned dispatch
+result before demanding the occupied wait. Re-run only corrected worker2 after
+fresh PlanOnly. No runtime fix yet; prior Load8 need not repeat for RED.
+
+Add one well-formed foreign HostInstanceId receipt with all other actual new owner
+fields unchanged, isolating current decoded Running identity comparison. Final
+shared selection16 = worker2 + Load9 + established status3/consoleLoad2. This extra
+identity row is a GREEN extension unless separately executed before the fix.
+
+Windows ordinary quarantine retains its original Job/workspace/per-profile slot;
+absent Linux ledger is not proof that no Windows worker exists or a universal
+root-wide restart fence. Preserve the declared legacy cleanup behavior (spec421–424),
+detached workspace/generation publication checks and exact cleanup receipts. Native
+recipe must include retained Job quarantine across main stop/Load, no stale result
+publication/adoption, original slot/workspace retention and exact cleanup. Native
+Windows remains unexecuted; no synthetic durable inventory or capability removal.
+
 ## A01 original consumer fixtures — 2026-10-08
 
 Probe-host runtime71a561/carrier5b6a6069 independent Astra XHigh source/selection/
