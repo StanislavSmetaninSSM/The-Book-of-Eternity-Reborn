@@ -43,6 +43,7 @@ public partial class GameEngine
 
     private sealed class RollbackSnapshot
     {
+        public HashSet<string> TechnicalArtifacts { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> BackupFiles { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> BackupHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public bool BackupHashesAreExactBytes { get; set; } = true;

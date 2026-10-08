@@ -35,10 +35,27 @@ resumable console transaction is authorized by a marker. Exclude this root from
 ordinary rollback inventory, generic cleanup and save archives. Cold reconstruction
 uses only the validated payload. Pre-handoff or incomplete-cleanup cold refusal
 is safe refusal, not complete FR-010 qualification.
-Six additional tests are prepared but unbuilt/unrun (cold new-instance refusal,
-absence-only footprint, reached publication failure/retry, warm hash conflict,
-generation replacement, actual cold signed cancellation after request deletion).
-No runtime edits exist. No extra baseline or GREEN is claimed.
+Expanded causal source70103eea completed 9/9: one PASS/eight FAIL, no timeout,
+complete cleanup. Seven failures stop at the legacy physical backend; absence-only
+preparation reaches cold admission and is incorrectly admitted without any durable
+footprint. First expanded PlanOnly d98f8 failed only on a missing test import
+(0 executed); corrected70103 PlanOnly succeeded. All raw evidence is preserved in
+the linked RED packet. No GREEN yet.
+
+Current WIP implements the accepted separate marker/cohort design. Root layout is
+`console_local_turn_before_images_v1/<snapshot-guid>/`; generation is stored in
+and checked against exact marker bytes plus the immutable in-memory registration,
+so it is not inferred from a directory name. Original snapshot or validated signed
+turn remains restore authority. Marker is technical validation evidence only,
+excluded from ordinary baseline and save/load. Initial capture uses one existing
+publication decision; restore remains the original per-file operation. Cleanup
+keeps marker last and retains snapshot after failure; a completed restore retry
+only finishes cleanup. Cold signed admission transfers the complete cohort before
+request removal. Unknown old root handling remains unchanged.
+Selection now has 12 cases including reached partial cleanup and exact live marker
+hash, plus actual save/load exclusion. These runtime changes/new cases are unbuilt
+and unrun. Independent source/evidence review and all other migration families
+remain open.
 
 Source [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 Latest owner instruction authorizes systematic inventory → independent completeness

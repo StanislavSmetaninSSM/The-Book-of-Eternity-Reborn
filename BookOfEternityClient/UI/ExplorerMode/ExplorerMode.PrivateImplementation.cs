@@ -19,7 +19,6 @@ namespace BookOfEternityClient.UI;
 /// </summary>
 public partial class ExplorerMode
 {
-    private const string ExplorerLocalTurnRollbackRoot = "game_state/control/explorer_local_turn_rollback";
 
     private readonly IExplorerConsole _console;
     private readonly AgentConsoleLiveInputSource? _agentConsoleInputSource;
@@ -80,6 +79,9 @@ public partial class ExplorerMode
 
     internal sealed class PendingLocalTurnRollbackSnapshot
     {
+        public string? EvidenceRoot { get; set; }
+        public HashSet<string> TechnicalArtifacts { get; } = new(StringComparer.OrdinalIgnoreCase);
+        public bool RestoreCompleted { get; set; }
         public Dictionary<string, string> BackupFiles { get; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> BackupHashes { get; } = new(StringComparer.OrdinalIgnoreCase);
         public HashSet<string> TrackedFiles { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -679,6 +681,7 @@ public partial class ExplorerMode
         _currentCommandInput = string.Empty;
         _currentCommandRemainder = string.Empty;
         _pendingLocalTurnRollbackSnapshot = null;
+        _fs.ForgetConsoleRollbackEvidenceOwnership();
         _agentConsoleWaitKeyScreenIndex = 0;
         _diceRevealed = false;
         _agentConsoleCapture?.ClearCapture();
@@ -726,28 +729,46 @@ public partial class ExplorerMode
             return;
 
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        _pendingLocalTurnRollbackSnapshot ??= new PendingLocalTurnRollbackSnapshot();
-        foreach (var trackedFile in normalizedTrackedFiles)
+        var snapshot = _pendingLocalTurnRollbackSnapshot ?? new PendingLocalTurnRollbackSnapshot();
+        var added = normalizedTrackedFiles.Where(path => !snapshot.TrackedFiles.Contains(path)).ToArray();
+        if (added.Length == 0) return;
+        var root = snapshot.EvidenceRoot ?? ConsoleLocalTurnRollbackArtifacts.CreateRoot();
+        var evidence = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+        var backups = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var marker = root + "/" + ConsoleLocalTurnRollbackArtifacts.MarkerName;
+        if (snapshot.EvidenceRoot == null)
+            evidence.Add(marker, ConsoleLocalTurnRollbackArtifacts.CreateMarker(root,
+                _fs.ReadExistingSessionGeneration(writeLease) ?? throw new InvalidDataException("Console generation is missing.")));
+        foreach (var trackedFile in added)
         {
-            if (!_pendingLocalTurnRollbackSnapshot.TrackedFiles.Add(trackedFile))
-                continue;
-
-            if (!_fs.FileExists(writeLease, trackedFile))
-                continue;
-
-            var backupContent = await _fs.ReadFileBytesAsync(writeLease, trackedFile);
-            if (backupContent == null)
-                continue;
-
-            var backupPath = CreateExplorerRollbackBackupPath(trackedFile);
-            await _fs.WriteFileAtomicBytesAsync(writeLease, backupPath, backupContent);
-            _pendingLocalTurnRollbackSnapshot.BaselineFiles.Add(trackedFile);
-            _pendingLocalTurnRollbackSnapshot.BackupFiles[trackedFile] = backupPath;
-            _pendingLocalTurnRollbackSnapshot.BackupHashes[trackedFile] = ComputeExplorerRollbackHash(backupContent);
+            var content = await _fs.ReadFileBytesAsync(writeLease, trackedFile);
+            if (content == null) continue;
+            var backup = CreateExplorerRollbackBackupPath(root, trackedFile);
+            evidence.Add(backup, content);
+            backups.Add(trackedFile, backup);
         }
+        if (evidence.Count > 0)
+        {
+            _fs.RequireCommittedLocalPublication(await _fs.PublishLocalFilesAsync(writeLease,
+                evidence.Select(pair => new CanonicalLocalFileChange(pair.Key, null, pair.Value)).ToArray()));
+            _fs.RegisterConsoleRollbackEvidence(writeLease, evidence);
+        }
+        // Publish first. A failed capture must never turn an existing file into
+        // an apparently captured absence on retry.
+        snapshot.EvidenceRoot = root;
+        snapshot.TechnicalArtifacts.Add(marker);
+        snapshot.ValidationSnapshotFiles.Add(marker);
+        snapshot.TrackedFiles.UnionWith(added);
+        foreach (var (trackedFile, backup) in backups)
+        {
+            snapshot.BaselineFiles.Add(trackedFile);
+            snapshot.BackupFiles.Add(trackedFile, backup);
+            snapshot.BackupHashes.Add(trackedFile, ComputeExplorerRollbackHash(evidence[backup]));
+        }
+        _pendingLocalTurnRollbackSnapshot = snapshot;
     }
 
-    private static string CreateExplorerRollbackBackupPath(string trackedFile)
+    private static string CreateExplorerRollbackBackupPath(string root, string trackedFile)
     {
         var normalizedPath = trackedFile.Replace('\\', '/').Trim('/');
         var safePath = new string(normalizedPath
@@ -756,7 +777,7 @@ public partial class ExplorerMode
         if (string.IsNullOrWhiteSpace(safePath))
             safePath = "tracked_file";
 
-        return $"{ExplorerLocalTurnRollbackRoot}/{DateTime.UtcNow.Ticks}_{Guid.NewGuid():N}/{safePath}.rollback.{Guid.NewGuid():N}";
+        return $"{root}/{safePath}.rollback.{Guid.NewGuid():N}";
     }
 
     private async Task RestorePendingLocalTurnRollbackSnapshotAsync()
@@ -767,36 +788,41 @@ public partial class ExplorerMode
 
         await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
-            var validatedBackups = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
-            foreach (var (originalPath, backupPath) in snapshot.BackupFiles)
+            if (!snapshot.RestoreCompleted)
             {
-                var backupContent = await _fs.ReadFileBytesAsync(writeLease, backupPath)
-                    ?? throw new FileNotFoundException("Explorer rollback evidence is missing.", backupPath);
-                if (!snapshot.BackupHashes.TryGetValue(originalPath, out var expectedHash) ||
-                    !string.Equals(
-                        ComputeExplorerRollbackHash(backupContent),
-                        expectedHash,
-                        StringComparison.OrdinalIgnoreCase))
+                var validatedBackups = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+                foreach (var (originalPath, backupPath) in snapshot.BackupFiles)
                 {
-                    throw new InvalidDataException(
-                        $"Explorer rollback evidence hash mismatch for '{originalPath}'.");
+                    var backupContent = await _fs.ReadFileBytesAsync(writeLease, backupPath)
+                        ?? throw new FileNotFoundException("Explorer rollback evidence is missing.", backupPath);
+                    if (!snapshot.BackupHashes.TryGetValue(originalPath, out var expectedHash) ||
+                        !string.Equals(
+                            ComputeExplorerRollbackHash(backupContent),
+                            expectedHash,
+                            StringComparison.OrdinalIgnoreCase))
+                    {
+                        throw new InvalidDataException(
+                            $"Explorer rollback evidence hash mismatch for '{originalPath}'.");
+                    }
+
+                    validatedBackups[originalPath] = backupContent;
                 }
 
-                validatedBackups[originalPath] = backupContent;
-            }
+                foreach (var trackedFile in snapshot.TrackedFiles)
+                {
+                    if (snapshot.BaselineFiles.Contains(trackedFile))
+                        continue;
 
-            foreach (var trackedFile in snapshot.TrackedFiles)
-            {
-                if (snapshot.BaselineFiles.Contains(trackedFile))
-                    continue;
+                    if (_fs.FileExists(writeLease, trackedFile))
+                        _fs.DeleteFile(writeLease, trackedFile);
+                }
 
-                if (_fs.FileExists(writeLease, trackedFile))
-                    _fs.DeleteFile(writeLease, trackedFile);
-            }
+                foreach (var (originalPath, backupContent) in validatedBackups)
+                {
+                    await _fs.WriteFileAtomicBytesAsync(writeLease, originalPath, backupContent);
+                }
 
-            foreach (var (originalPath, backupContent) in validatedBackups)
-            {
-                await _fs.WriteFileAtomicBytesAsync(writeLease, originalPath, backupContent);
+                snapshot.RestoreCompleted = true;
             }
 
             DiscardPendingLocalTurnRollbackSnapshot(writeLease, snapshot);
@@ -823,12 +849,13 @@ public partial class ExplorerMode
         FileSystemManager.CanonicalWriteLease writeLease,
         PendingLocalTurnRollbackSnapshot snapshot)
     {
-        _pendingLocalTurnRollbackSnapshot = null;
-        foreach (var backupPath in snapshot.BackupFiles.Values.Distinct(StringComparer.OrdinalIgnoreCase))
+        foreach (var backupPath in snapshot.BackupFiles.Values.Concat(snapshot.TechnicalArtifacts)
+                     .Distinct(StringComparer.OrdinalIgnoreCase))
         {
             if (_fs.FileExists(writeLease, backupPath))
                 _fs.DeleteFile(writeLease, backupPath);
         }
+        _pendingLocalTurnRollbackSnapshot = null;
     }
 
     private static string ComputeExplorerRollbackHash(byte[] content) =>

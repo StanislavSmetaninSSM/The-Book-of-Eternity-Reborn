@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-console-rollback-preparation",
-      "reason": "T061 first causal baseline on real console/incarnation preparation, exact original bytes/absence and consumed cleanup; split3existing methods out of broad60methodafterlife category, no case removed.",
+      "reason": "T061 original console/incarnation preparation and owned exact-byte evidence lifecycle: reached failure/retry, absence-only footprint, cold signed cancellation, generation/tamper refusal, marker-last cleanup and save/load ephemeral interaction. No browser/gameplay aggregate.",
       "contracts": [
         "#1553",
         "FR-003",

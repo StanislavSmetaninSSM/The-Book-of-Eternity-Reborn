@@ -2102,8 +2102,11 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
 
     internal static void DeleteEmptyDirectories(
         FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease writeLease) =>
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
         fs.DeleteEmptyDirectories(writeLease, Root);
+        fs.DeleteEmptyDirectories(writeLease, ConsoleLocalTurnRollbackArtifacts.Root);
+    }
 
     private static string CreateSafeBackupFileName(string trackedFile)
     {

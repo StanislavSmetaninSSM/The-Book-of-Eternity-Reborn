@@ -1112,6 +1112,8 @@ public partial class GameEngine
         var payload = snapshotContext.Payload;
         var snapshot = new RollbackSnapshot
         {
+            TechnicalArtifacts = payload.Files.Keys.Where(path => ConsoleLocalTurnRollbackArtifacts.IsMarker(path) &&
+                    payload.SnapshotFileHashes.ContainsKey(path)).ToHashSet(StringComparer.OrdinalIgnoreCase),
             BackupFiles = payload.RollbackBackups
                 .Where(kv => !string.IsNullOrWhiteSpace(kv.Key) &&
                              !string.IsNullOrWhiteSpace(kv.Value) &&
@@ -1189,7 +1191,7 @@ public partial class GameEngine
     private static bool IsExplorerLocalTurnRollbackArtifactPath(string relativePath)
     {
         var normalized = NormalizeArtifactRelativePath(relativePath);
-        return normalized.StartsWith(
+        return ConsoleLocalTurnRollbackArtifacts.IsArtifact(normalized) || normalized.StartsWith(
             "game_state/control/explorer_local_turn_rollback/",
             StringComparison.OrdinalIgnoreCase);
     }
@@ -1798,6 +1800,7 @@ public partial class GameEngine
 
         foreach (var relative in _fs.EnumerateFiles(writeLease, "*"))
         {
+            if (ConsoleLocalTurnRollbackArtifacts.IsArtifact(relative)) continue;
             if (relative.StartsWith("game_state/", StringComparison.OrdinalIgnoreCase))
             {
                 if (string.Equals(relative, ValidationRepairReadyPath, StringComparison.OrdinalIgnoreCase) ||
@@ -2265,37 +2268,29 @@ public partial class GameEngine
     /// </summary>
     private void CleanupBackup(RollbackSnapshot snapshot)
     {
-        foreach (var backup in snapshot.BackupFiles.Values)
-        {
-            try
-            {
-                _fs.DeleteFile(backup);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogDebug(ex, "Не удалось удалить rollback backup {BackupPath}.", backup);
-            }
-        }
-
-        ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs);
+        var writeLease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        try { CleanupBackup(writeLease, snapshot); }
+        finally { writeLease.DisposeAsync().AsTask().GetAwaiter().GetResult(); }
     }
 
     private void CleanupBackup(
         FileSystemManager.CanonicalWriteLease writeLease,
         RollbackSnapshot snapshot)
     {
+        var cleanupFailed = false;
         foreach (var backup in snapshot.BackupFiles.Values)
         {
-            try
-            {
-                _fs.DeleteFile(writeLease, backup);
-            }
+            try { _fs.DeleteFile(writeLease, backup); }
             catch (Exception ex)
             {
+                cleanupFailed = true;
                 _logger.LogDebug(ex, "Не удалось удалить rollback backup {BackupPath}.", backup);
             }
         }
-
+        if (!cleanupFailed)
+            foreach (var artifact in snapshot.TechnicalArtifacts)
+                _fs.DeleteFile(writeLease, artifact);
         ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
     }
+
 }

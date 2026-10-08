@@ -73,6 +73,29 @@ public sealed class SaveLoadServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral()
+    {
+        var state = new StateManager(_fs, new GameSettings(), NullLogger<StateManager>.Instance);
+        var explorer = new BookOfEternityClient.UI.ExplorerMode(state, _fs, new LocalizationManager());
+        await explorer.StagePendingLocalTurnRollbackSnapshotAsync("game_state/world/test_fixture_state.json");
+        Assert.True(Directory.Exists(_fs.ResolvePath(ConsoleLocalTurnRollbackArtifacts.Root)));
+        Assert.True(await _service.SaveGameAsync("console_preparation", "console preparation exclusion"));
+        var savePath = Directory.GetFiles(_fs.ResolvePath("saves/manual_saves"), "*.zip").Single();
+        using (var archive = ZipFile.OpenRead(savePath))
+            Assert.DoesNotContain(archive.Entries, entry =>
+                entry.FullName.StartsWith(ConsoleLocalTurnRollbackArtifacts.Root, StringComparison.Ordinal));
+        await explorer.RestoreStagedLocalTurnRollbackSnapshotAsync();
+        using (var archive = ZipFile.Open(savePath, ZipArchiveMode.Update))
+        {
+            var entry = archive.CreateEntry(ConsoleLocalTurnRollbackArtifacts.Root + "/unowned/marker");
+            await using var stream = entry.Open();
+            await stream.WriteAsync(new byte[] { 0x41 });
+        }
+        Assert.True(await _service.LoadGameAsync(savePath));
+        Assert.False(Directory.Exists(_fs.ResolvePath(ConsoleLocalTurnRollbackArtifacts.Root)));
+    }
+
+    [Fact]
     public async Task SaveGameAsync_FailureBeforeCommitLeavesNoPartialSaveOrTemporaryFile()
     {
         var settings = new GameSettings();

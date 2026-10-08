@@ -51,5 +51,70 @@
       "originalSha256": "f7a5ae25a99cd21990155f802f3876f09dc5b4900c01519d52e64ca9516cf1a9",
       "source": "TestResults/test-categories/20261008-093722-681-8025-a164926f1dcc490180da847cc462bdf1-categories/summary.json"
     }
-  ]
+  ],
+  "expanded": {
+    "source": "70103eea99c288a113fbe91aa6548f5a1c5307e1",
+    "executed": 9,
+    "passed": 1,
+    "failed": 8,
+    "complete": true,
+    "cleanupComplete": true,
+    "limits": "Seven failures behind legacy create-only route; absent-only case reaches cold admission and unexpectedly succeeds. Initial expanded PlanOnly d98f8 failed compilation, 0 executed; import-only correction70103 then fresh PlanOnly succeeds.",
+    "artifacts": [
+      {
+        "path": "expanded-plan-build-failure-dotnet-test.log.gz",
+        "sha256": "269b58ef6db6faa630aec35e8fd4ac9c9cd7574195cb2c8c5f2523a5df008994",
+        "originalSha256": "e0fb0021fe780f95145d14e2fee2322df438ac0d4d27134e50b8fe39c6066148",
+        "source": "TestResults/test-categories/20261008-094814-096-9146-470ea57cd3fc4d8b947298ae3e3377af-categories/dotnet-test.log"
+      },
+      {
+        "path": "expanded-plan-build-failure-summary.json",
+        "sha256": "34722fc31abf1ed0ca0437d4ac8894d01cd3e4582cdf343df987fa8bfa9ed9ac",
+        "originalSha256": "34722fc31abf1ed0ca0437d4ac8894d01cd3e4582cdf343df987fa8bfa9ed9ac",
+        "source": "TestResults/test-categories/20261008-094814-096-9146-470ea57cd3fc4d8b947298ae3e3377af-categories/summary.json"
+      },
+      {
+        "path": "expanded-plan-dotnet-test.log.gz",
+        "sha256": "a0c61ddb5d21ce2a9ab2ed31e2e4bf48b27d1f769c9a0808a535e21bcfa322e9",
+        "originalSha256": "dc8bcc1f0f3a953f05df1999d7d5a5aa1bf97da05cf8a857c945b07912b3a38a",
+        "source": "TestResults/test-categories/20261008-095044-111-9460-830937526ad84e119455153de824167a-categories/dotnet-test.log"
+      },
+      {
+        "path": "expanded-plan-plan.json",
+        "sha256": "f3313cd104260ae67c2efa2d9d391048496c11671df2107eccb07e4cfd34ebb6",
+        "originalSha256": "f3313cd104260ae67c2efa2d9d391048496c11671df2107eccb07e4cfd34ebb6",
+        "source": "TestResults/test-categories/20261008-095044-111-9460-830937526ad84e119455153de824167a-categories/plan.json"
+      },
+      {
+        "path": "expanded-plan-summary.json",
+        "sha256": "1872039fd14397f88331dc7e64c89a20b10ddca625dea2044677c09f475f7bf7",
+        "originalSha256": "1872039fd14397f88331dc7e64c89a20b10ddca625dea2044677c09f475f7bf7",
+        "source": "TestResults/test-categories/20261008-095044-111-9460-830937526ad84e119455153de824167a-categories/summary.json"
+      },
+      {
+        "path": "expanded-red-dotnet-test.log.gz",
+        "sha256": "9658a24b0bb87c1f0c2c7b1aaa8442c771390ff857753c57164aea9a07f38daf",
+        "originalSha256": "b8b03e55a2df4140e78d39534f6f90484b208bb930e70c986644847b17d0ee04",
+        "source": "TestResults/test-categories/20261008-095202-531-9760-e944d93077ce492aa872c80bc4cc1e44-categories/dotnet-test.log"
+      },
+      {
+        "path": "expanded-red-plan.json",
+        "sha256": "452af972393049a4de40c2483add4668dca5f8e5740bdb3c2eec5fe87fb0bc1f",
+        "originalSha256": "452af972393049a4de40c2483add4668dca5f8e5740bdb3c2eec5fe87fb0bc1f",
+        "source": "TestResults/test-categories/20261008-095202-531-9760-e944d93077ce492aa872c80bc4cc1e44-categories/plan.json"
+      },
+      {
+        "path": "expanded-red-portable-console-rollback-preparation-integration-001.trx",
+        "sha256": "ae5d6c699d060fe2fbe5a1992bea72885b104e864fe50a46252c098347b72268",
+        "originalSha256": "ae5d6c699d060fe2fbe5a1992bea72885b104e864fe50a46252c098347b72268",
+        "source": "TestResults/test-categories/20261008-095202-531-9760-e944d93077ce492aa872c80bc4cc1e44-categories/portable-console-rollback-preparation-integration-001.trx"
+      },
+      {
+        "path": "expanded-red-summary.json",
+        "sha256": "907d45a74c5b013cd80d3dce22b36a50d1c182d92263e74949c7d4f6e88918c9",
+        "originalSha256": "907d45a74c5b013cd80d3dce22b36a50d1c182d92263e74949c7d4f6e88918c9",
+        "source": "TestResults/test-categories/20261008-095202-531-9760-e944d93077ce492aa872c80bc4cc1e44-categories/summary.json"
+      }
+    ]
+  }
 }

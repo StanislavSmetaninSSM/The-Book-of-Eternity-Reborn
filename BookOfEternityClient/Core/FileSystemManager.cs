@@ -3769,6 +3769,7 @@ public partial class FileSystemManager
                     throw new CoordinatedStatePublicationUncertainException(failure);
                 }
                 }
+                AdmitConsoleRollbackEvidence(writeLease);
                 if (purpose == CanonicalWritePurpose.SessionMutation)
                     EnsureBoundSessionOperationCanWrite(writeLease);
                 return writeLease;

@@ -83,7 +83,8 @@ public partial class SaveLoadService
         LocalUiSessionLockService.LockPath,
         ResourceMaterializationContract.CommandPath,
         "output/ink_feather_action_result.json",
-        ExplorerLocalTurnRollbackArtifacts.Root
+        ExplorerLocalTurnRollbackArtifacts.Root,
+        ConsoleLocalTurnRollbackArtifacts.Root
     };
 
     private static readonly string[] EphemeralPathPrefixes =
@@ -91,6 +92,7 @@ public partial class SaveLoadService
         "game_state/control/pending_turn_snapshot/",
         LocalUiSessionLockService.LockPath + "/",
         ExplorerLocalTurnRollbackArtifacts.Root + "/",
+        ConsoleLocalTurnRollbackArtifacts.Root + "/",
         QteSceneService.QteNormalizerBackupDirectory + "/",
         "worker_tasks/",
         "worker_proposals/"

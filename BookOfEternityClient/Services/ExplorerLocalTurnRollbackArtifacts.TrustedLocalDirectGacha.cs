@@ -28,6 +28,14 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
     private static void RequireCurrentDirectGachaAdoption(FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease lease, string trackedFile, string backup)
     {
+        var payload = RequireCurrentPendingRollbackAuthority(fs, lease);
+        if (!payload.RollbackBackups.TryGetValue(trackedFile, out var mapped) || mapped != backup)
+            throw new InvalidDataException("Exact existing pending authority does not map this before-image.");
+    }
+
+    internal static PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload RequireCurrentPendingRollbackAuthority(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease)
+    {
         try
         {
             byte[]? Read(string path) => PendingTurnSnapshotAuthority.IsSafeRelativePath(path)
@@ -43,8 +51,7 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
                     static value => value.Files, static value => value.SnapshotFileHashes,
                     static value => value.ClientOwnedValidationHashes, static value => value.RollbackBaselineFiles,
                     static value => value.SourceLabel, static value => value.RollbackBackups, Read, out var payload, out _) ||
-                payload!.RollbackHashMode != PendingTurnSnapshotAuthority.ExactRollbackHashMode ||
-                !payload.RollbackBackups.TryGetValue(trackedFile, out var mapped) || mapped != backup)
+                payload!.RollbackHashMode != PendingTurnSnapshotAuthority.ExactRollbackHashMode)
                 throw new InvalidDataException("Exact existing pending authority does not map this before-image.");
 
             // Read the actual persisted request fields without TurnRequest's
@@ -60,10 +67,11 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
                 !request.TryGetProperty("turnNumber", out var turn) || !turn.TryGetInt32(out var number) || number != manifest.TurnNumber ||
                 Text("playerAction") != manifest.PlayerAction || Text("timestamp") != manifest.RequestTimestamp)
                 throw new InvalidDataException("Current request does not bind the pending before-image.");
+            return payload;
         }
         catch (Exception failure) when (failure is InvalidDataException or JsonException or InvalidOperationException)
         {
-            throw new InvalidDataException("Pending direct-gacha before-image is not eligible for this turn; evidence retained.", failure);
+            throw new InvalidDataException("Pending before-image is not eligible for this turn; evidence retained.", failure);
         }
     }
 }

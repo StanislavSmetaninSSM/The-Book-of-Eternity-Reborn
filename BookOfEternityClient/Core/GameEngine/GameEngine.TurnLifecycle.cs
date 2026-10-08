@@ -1585,6 +1585,7 @@ public partial class GameEngine
         if (stagedSnapshot == null)
             return;
 
+        targetSnapshot.TechnicalArtifacts.UnionWith(stagedSnapshot.TechnicalArtifacts);
         foreach (var validationFile in stagedSnapshot.ValidationSnapshotFiles)
             targetSnapshot.ValidationSnapshotFiles.Add(validationFile);
 

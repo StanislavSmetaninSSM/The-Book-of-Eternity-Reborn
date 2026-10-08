@@ -3,6 +3,7 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.UI;
 using BookOfEternityClient.IO;
 using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
 using System.Text.Json;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -11,6 +12,61 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class GameEngineTurnLifecycleTests
 {
+    [Fact]
+    public async Task ConsoleRollback_PartialCleanupRetainsMarkerAndRetryDoesNotRestoreTwice()
+    {
+        const string first = "lore/current_world/console_cleanup_first.json";
+        const string second = "lore/current_world/console_cleanup_second.json";
+        await _fs.WriteFileAtomicBytesAsync(first, [0x41]);
+        await _fs.WriteFileAtomicBytesAsync(second, [0x42]);
+        var explorer = GetPrivateField<ExplorerMode>(CreateGameEngine(), "_explorer");
+        await explorer.StagePendingLocalTurnRollbackSnapshotAsync(first, second);
+        var staged = explorer.ConsumePendingLocalTurnRollbackSnapshot()!;
+        await _fs.WriteFileAtomicBytesAsync(first, [0x51]);
+        await _fs.WriteFileAtomicBytesAsync(second, [0x52]);
+        ArmCanonicalWriteFailure(staged.BackupFiles[second]);
+
+        await Assert.ThrowsAsync<IOException>(() => explorer.RestoreConsumedLocalTurnRollbackSnapshotAsync(staged));
+
+        Assert.Null(_armedCanonicalWriteFailurePath); // Actual pre-delete boundary reached.
+        Assert.False(File.Exists(_fs.ResolvePath(staged.BackupFiles[first])));
+        Assert.True(File.Exists(_fs.ResolvePath(staged.BackupFiles[second])));
+        Assert.True(File.Exists(_fs.ResolvePath(Assert.Single(staged.TechnicalArtifacts))));
+        Assert.Equal(new byte[] { 0x41 }, File.ReadAllBytes(_fs.ResolvePath(first)));
+        Assert.Equal(new byte[] { 0x42 }, File.ReadAllBytes(_fs.ResolvePath(second)));
+        await _fs.WriteFileAtomicBytesAsync(first, [0x61]);
+        await explorer.RestoreStagedLocalTurnRollbackSnapshotAsync();
+        Assert.Equal(new byte[] { 0x61 }, File.ReadAllBytes(_fs.ResolvePath(first)));
+        Assert.False(Directory.Exists(_fs.ResolvePath(ConsoleLocalTurnRollbackArtifacts.Root)));
+    }
+
+    [Fact]
+    public async Task ConsoleRollback_ColdSignedMarkerMustMatchLiveBytes()
+    {
+        const string original = "lore/current_world/console_marker.json";
+        await _fs.WriteFileAtomicBytesAsync(original, [0x7B, 0x7D]);
+        var engine = CreateGameEngine();
+        var explorer = GetPrivateField<ExplorerMode>(engine, "_explorer");
+        await explorer.StagePendingLocalTurnRollbackSnapshotAsync(original);
+        var staged = explorer.ConsumePendingLocalTurnRollbackSnapshot()!;
+        var rollback = await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "console_marker");
+        InvokePrivate(engine, "OverlayExplorerLocalRollbackSnapshot", rollback, staged);
+        var request = CreateSnapshotByteContractRequest("console_marker");
+        await InvokePrivateTaskResultAsync(engine, "CreateCanonicalBaselineSnapshotAsync", request, rollback, "test");
+        await _fs.WriteFileAtomicAsync("input/turn_request.json", JsonSerializer.Serialize(request, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var marker = _fs.ResolvePath(Assert.Single(staged.TechnicalArtifacts));
+        var changed = File.ReadAllBytes(marker).Concat(new byte[] { 0x0A }).ToArray();
+        File.WriteAllBytes(marker, changed); // Same JSON identity; different exact live bytes.
+
+        var cold = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+        await Assert.ThrowsAsync<InvalidDataException>(async () =>
+        {
+            await using var refused = await cold.AcquireCanonicalWriteLeaseAsync();
+        });
+        Assert.Equal(changed, File.ReadAllBytes(marker));
+        Assert.True(File.Exists(_fs.ResolvePath("input/turn_request.json")));
+    }
+
     [Fact]
     public async Task ConsoleRollback_ColdSignedCancellationTransfersOwnershipBeforeDeletingRequest()
     {
