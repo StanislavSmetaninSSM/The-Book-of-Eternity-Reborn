@@ -1,0 +1,82 @@
+{
+  "Categories": [
+    "portable-console-rollback-preparation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "acd33e7b1743e5be9c46b71c324e35c513fd639e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 42.7089017,
+  "Descriptors": [
+    {
+      "Name": "portable-console-rollback-preparation-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-console-rollback-preparation",
+      "Categories": [
+        "portable-console-rollback-preparation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_AbsentOnlyPreparationRemainsVisibleToColdAdmission|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ChangedBeforeImageRefusesWarmAdmissionWithoutMutation|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ColdSignedCancellationTransfersOwnershipBeforeDeletingRequest|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ColdSignedMarkerMustMatchLiveBytes|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_GenerationReplacementCannotReuseWarmOwnership|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_PartialCleanupRetainsMarkerAndRetryDoesNotRestoreTwice|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ReachedPreparationFailureCanRetryExactBeforeImage|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_UnadoptedColdInstanceRefusesAndRetainsExactEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 14,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_AbsentOnlyPreparationRemainsVisibleToColdAdmission",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ChangedBeforeImageRefusesWarmAdmissionWithoutMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ColdSignedCancellationTransfersOwnershipBeforeDeletingRequest",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ColdSignedMarkerMustMatchLiveBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_GenerationReplacementCannotReuseWarmOwnership",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_PartialCleanupRetainsMarkerAndRetryDoesNotRestoreTwice",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ReachedPreparationFailureCanRetryExactBeforeImage",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_UnadoptedColdInstanceRefusesAndRetainsExactEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

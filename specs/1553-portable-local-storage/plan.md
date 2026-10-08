@@ -65,6 +65,17 @@ skipping future rollback. Add two reached partial-cleanup → new preparation ca
 (same/new tracked file), obtain RED, then require completed cleanup and a fresh
 snapshot before staging. Never reset the old completion flag. These tests and
 fixture correction are unbuilt/unrun. No GREEN or acceptance is claimed.
+Restage causal RED at acd33e7b completed14/14:12PASS/twoFAIL, complete cleanup,
+no timeout. Both same/new tracked rows reach the partial cleanup cut and retain
+0x71 instead of fresh baseline0x61. Minimal fix completes the old cleanup before
+starting a new snapshot; no old flag reset or backup reuse. Added committed
+capture-debt control and unknown-artifact row; partial cleanup explicitly checks
+fresh-instance refusal before warm cleanup retry. Planned next selection is
+16 console +14 unchanged neighbor =30 cases, unbuilt/unrun after this correction.
+Explorer retains its snapshot for warm cleanup retry. Generic engine CleanupBackup
+still logs retained cleanup debt and may release its local snapshot; cold refusal
+then remains the explicitly accepted limit, not resumable cleanup.
+
 Root SaveLoad compile correction in083ae3bc and the initial47330 failed PlanOnly
 are build-only evidence (zero executed). All other migration families remain open.
 

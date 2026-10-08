@@ -729,6 +729,13 @@ public partial class ExplorerMode
             return;
 
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        if (_pendingLocalTurnRollbackSnapshot is { RestoreCompleted: true } completed)
+        {
+            // This owner can only finish cleanup. A new command must capture a
+            // fresh baseline, including when it tracks exactly the same paths.
+            DiscardPendingLocalTurnRollbackSnapshot(writeLease, completed);
+            ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
+        }
         var snapshot = _pendingLocalTurnRollbackSnapshot ?? new PendingLocalTurnRollbackSnapshot();
         var added = normalizedTrackedFiles.Where(path => !snapshot.TrackedFiles.Contains(path)).ToArray();
         if (added.Length == 0) return;

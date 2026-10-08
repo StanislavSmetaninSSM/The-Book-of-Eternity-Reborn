@@ -116,5 +116,117 @@
         "source": "TestResults/test-categories/20261008-095202-531-9760-e944d93077ce492aa872c80bc4cc1e44-categories/summary.json"
       }
     ]
+  },
+  "restage": {
+    "source": "acd33e7b1743e5be9c46b71c324e35c513fd639e",
+    "executed": 14,
+    "passed": 12,
+    "failed": 2,
+    "complete": true,
+    "cleanupComplete": true,
+    "failure": "Both reached partial-cleanup rows fail exact new baseline after new preparation reuses RestoreCompleted snapshot.",
+    "priorAttemptSource": "083ae3bc42001aaa19275e660a07aff9c14043d7",
+    "priorAttemptExecuted": 12,
+    "priorAttemptPassed": 11,
+    "priorAttemptFixtureFailed": 1,
+    "priorAttemptUnexecutedNeighborCases": 14,
+    "artifacts": [
+      {
+        "path": "first-runtime-plan-build-failure-dotnet-test.log.gz",
+        "sha256": "153632143ff380a5c63cf8a7985c7efdacf44b3c4c583bc93f025d979eba4802",
+        "originalSha256": "8f268bfc42fc2a754446b1a931bad23bbf2cdc21cb5a2e16141b78bcc0500336",
+        "source": "TestResults/test-categories/20261008-095809-043-11092-d25559e42e6a4900822bd9cb82d3e2f1-categories/dotnet-test.log"
+      },
+      {
+        "path": "first-runtime-plan-build-failure-summary.json",
+        "sha256": "bc5dfe9f9573ccffb7b610f7268da829de2b03d70128af86ecc4cb296f459037",
+        "originalSha256": "bc5dfe9f9573ccffb7b610f7268da829de2b03d70128af86ecc4cb296f459037",
+        "source": "TestResults/test-categories/20261008-095809-043-11092-d25559e42e6a4900822bd9cb82d3e2f1-categories/summary.json"
+      },
+      {
+        "path": "first-runtime-plan-dotnet-test.log.gz",
+        "sha256": "327cd133e076df573917b6434e1705837ab48562cb5539098116281d1fb80540",
+        "originalSha256": "04c6ebb87fa91fba8e84257cc312600b335c0b59496cf28dcfe6d60b2ed3fdaf",
+        "source": "TestResults/test-categories/20261008-100008-777-11575-1fd51a1381754ef486820c3819da2160-categories/dotnet-test.log"
+      },
+      {
+        "path": "first-runtime-plan-plan.json",
+        "sha256": "9fd2d0ee24eb2e63c6dddbb469b1468f68b7f6919624914e8293a59e87c03771",
+        "originalSha256": "9fd2d0ee24eb2e63c6dddbb469b1468f68b7f6919624914e8293a59e87c03771",
+        "source": "TestResults/test-categories/20261008-100008-777-11575-1fd51a1381754ef486820c3819da2160-categories/plan.json"
+      },
+      {
+        "path": "first-runtime-plan-summary.json",
+        "sha256": "717160f4321d514e7b4b49fcbe31e2a4d8001a03058bdc91fd1f30598a5129b9",
+        "originalSha256": "717160f4321d514e7b4b49fcbe31e2a4d8001a03058bdc91fd1f30598a5129b9",
+        "source": "TestResults/test-categories/20261008-100008-777-11575-1fd51a1381754ef486820c3819da2160-categories/summary.json"
+      },
+      {
+        "path": "first-runtime-fixture-failure-dotnet-test.log.gz",
+        "sha256": "a958658f54d7dc058d116bc35e7f25fff4fe3195a02d5b79de986a92694f9dca",
+        "originalSha256": "bddbbc16bbfd1c2af5da44967c79a845349583af1c268f0068ba0a1b9ae34fe3",
+        "source": "TestResults/test-categories/20261008-100154-249-11908-2c2439d1988d4b089b1e08f041505658-categories/dotnet-test.log"
+      },
+      {
+        "path": "first-runtime-fixture-failure-plan.json",
+        "sha256": "b10c1d772c48d3bebab9882d1b44db4d7c8d6ae36195a88c4bb0137f8dce6ab5",
+        "originalSha256": "b10c1d772c48d3bebab9882d1b44db4d7c8d6ae36195a88c4bb0137f8dce6ab5",
+        "source": "TestResults/test-categories/20261008-100154-249-11908-2c2439d1988d4b089b1e08f041505658-categories/plan.json"
+      },
+      {
+        "path": "first-runtime-fixture-failure-portable-console-rollback-preparation-integration-001.trx",
+        "sha256": "a52fb75b323e3b5cb031c0f648249bd40f170723d843b83f86e17bf8eb0db1ee",
+        "originalSha256": "a52fb75b323e3b5cb031c0f648249bd40f170723d843b83f86e17bf8eb0db1ee",
+        "source": "TestResults/test-categories/20261008-100154-249-11908-2c2439d1988d4b089b1e08f041505658-categories/portable-console-rollback-preparation-integration-001.trx"
+      },
+      {
+        "path": "first-runtime-fixture-failure-summary.json",
+        "sha256": "13b2fadf2c050a63fa903412f9b96ac327249eb9b03aa85d75521ce62c051713",
+        "originalSha256": "13b2fadf2c050a63fa903412f9b96ac327249eb9b03aa85d75521ce62c051713",
+        "source": "TestResults/test-categories/20261008-100154-249-11908-2c2439d1988d4b089b1e08f041505658-categories/summary.json"
+      },
+      {
+        "path": "restage-plan-dotnet-test.log.gz",
+        "sha256": "5be9839f752bed4be524f1dacf2be83f99925d909930a403ad2d4e50c73cb129",
+        "originalSha256": "8baaaab36cc6c084af7634fc93d46a281775e0c171f2b62ae805a9ff27a2647c",
+        "source": "TestResults/test-categories/20261008-100355-501-12359-37917c50ea9e4cbfbae1547b30260b6f-categories/dotnet-test.log"
+      },
+      {
+        "path": "restage-plan-plan.json",
+        "sha256": "e45ed1d0293fcb87a9263ac6b0c33fb275b95945f886f25bc2fd66ea6fa446ca",
+        "originalSha256": "e45ed1d0293fcb87a9263ac6b0c33fb275b95945f886f25bc2fd66ea6fa446ca",
+        "source": "TestResults/test-categories/20261008-100355-501-12359-37917c50ea9e4cbfbae1547b30260b6f-categories/plan.json"
+      },
+      {
+        "path": "restage-plan-summary.json",
+        "sha256": "8b2ca5c7d9ef04cbccc0fd0750b0ce94255b7856898959178aecab7a52e185db",
+        "originalSha256": "8b2ca5c7d9ef04cbccc0fd0750b0ce94255b7856898959178aecab7a52e185db",
+        "source": "TestResults/test-categories/20261008-100355-501-12359-37917c50ea9e4cbfbae1547b30260b6f-categories/summary.json"
+      },
+      {
+        "path": "restage-red-dotnet-test.log.gz",
+        "sha256": "398ccd27aec6cc143cabd1e8dc63e29a6085ee5c116fd74334b9db2a48f872a9",
+        "originalSha256": "d246143832985c0bcbac2c925b96c33f036d087abc4c6be5b853f12b393ce830",
+        "source": "TestResults/test-categories/20261008-100454-917-12611-24eeeeb881cd443c9bbc818eba041465-categories/dotnet-test.log"
+      },
+      {
+        "path": "restage-red-plan.json",
+        "sha256": "87864a2f1d9bbc4c6952dc95a4b1b8f04cdf3ec020372f2091228fbf5804a441",
+        "originalSha256": "87864a2f1d9bbc4c6952dc95a4b1b8f04cdf3ec020372f2091228fbf5804a441",
+        "source": "TestResults/test-categories/20261008-100454-917-12611-24eeeeb881cd443c9bbc818eba041465-categories/plan.json"
+      },
+      {
+        "path": "restage-red-portable-console-rollback-preparation-integration-001.trx",
+        "sha256": "97add54fa6ce1a33f3f992f898f4a93430b7d9708c013b035a2042711fe8aea8",
+        "originalSha256": "97add54fa6ce1a33f3f992f898f4a93430b7d9708c013b035a2042711fe8aea8",
+        "source": "TestResults/test-categories/20261008-100454-917-12611-24eeeeb881cd443c9bbc818eba041465-categories/portable-console-rollback-preparation-integration-001.trx"
+      },
+      {
+        "path": "restage-red-summary.json",
+        "sha256": "c0d39dce7acba00b6200649954357ba75590fd047c95a8a76e4e4c97e25559de",
+        "originalSha256": "c0d39dce7acba00b6200649954357ba75590fd047c95a8a76e4e4c97e25559de",
+        "source": "TestResults/test-categories/20261008-100454-917-12611-24eeeeb881cd443c9bbc818eba041465-categories/summary.json"
+      }
+    ]
   }
 }

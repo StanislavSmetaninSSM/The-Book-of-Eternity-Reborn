@@ -1,0 +1,164 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="bf48f311-7f5b-4ae9-ba68-af363c55d42e" name="@c61a5018b3fb 2026-10-08 10:05:03" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-08T10:05:03.2250018+00:00" queuing="2026-10-08T10:05:03.2250019+00:00" start="2026-10-08T10:04:59.6008212+00:00" finish="2026-10-08T10:05:05.1839639+00:00" />
+  <TestSettings name="default" id="44a32d21-e4ca-49b5-875e-9ff99ff1276e">
+    <Deployment runDeploymentRoot="_c61a5018b3fb_2026-10-08_10_05_03" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="6a61b044-6775-4f8e-9984-4fb9e9629f9b" testId="b4148fd9-8b03-9491-f4c7-ed6bf5a8033d" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ChangedBeforeImageRefusesWarmAdmissionWithoutMutation" computerName="c61a5018b3fb" duration="00:00:00.0500728" startTime="2026-10-08T10:05:04.2684289+00:00" endTime="2026-10-08T10:05:04.2684294+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6a61b044-6775-4f8e-9984-4fb9e9629f9b" />
+    <UnitTestResult executionId="e76c7b31-e9bb-41c6-9c36-01b33dab33a7" testId="d70ccbe5-2f51-7712-56eb-3b63962c78e7" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_AbsentOnlyPreparationRemainsVisibleToColdAdmission" computerName="c61a5018b3fb" duration="00:00:00.0567211" startTime="2026-10-08T10:05:04.4849221+00:00" endTime="2026-10-08T10:05:04.4849225+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e76c7b31-e9bb-41c6-9c36-01b33dab33a7" />
+    <UnitTestResult executionId="a6b16fe2-b77c-46ba-bb11-48eec31f28fb" testId="322fd63e-c92e-dd05-c837-8274fb569364" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ColdSignedCancellationTransfersOwnershipBeforeDeletingRequest" computerName="c61a5018b3fb" duration="00:00:01.3518030" startTime="2026-10-08T10:05:04.2135526+00:00" endTime="2026-10-08T10:05:04.2135528+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a6b16fe2-b77c-46ba-bb11-48eec31f28fb" />
+    <UnitTestResult executionId="2a9745ca-1600-4968-8624-830ecd616a13" testId="8a6cd008-1b58-a4ed-8bc5-cbc6596675fd" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ColdSignedMarkerMustMatchLiveBytes" computerName="c61a5018b3fb" duration="00:00:00.1738088" startTime="2026-10-08T10:05:02.8610472+00:00" endTime="2026-10-08T10:05:02.8610476+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2a9745ca-1600-4968-8624-830ecd616a13" />
+    <UnitTestResult executionId="e462fe13-e916-44a7-84e3-d1893d4ffb1d" testId="8ce30006-63a8-e49a-a092-19261581befe" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear" computerName="c61a5018b3fb" duration="00:00:00.1022732" startTime="2026-10-08T10:05:02.4093177+00:00" endTime="2026-10-08T10:05:02.4093180+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e462fe13-e916-44a7-84e3-d1893d4ffb1d" />
+    <UnitTestResult executionId="7f848726-dd65-4310-acdb-0e98bbd2a1f2" testId="8ee63fad-4504-2aca-eca7-e48837600d80" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_UnadoptedColdInstanceRefusesAndRetainsExactEvidence" computerName="c61a5018b3fb" duration="00:00:00.1278419" startTime="2026-10-08T10:05:05.0755752+00:00" endTime="2026-10-08T10:05:05.0755753+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7f848726-dd65-4310-acdb-0e98bbd2a1f2" />
+    <UnitTestResult executionId="dc0ead3b-6eac-4d74-853b-ea97c1bf5146" testId="3b3c59da-9865-fcf4-41ce-b49ff57851ac" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_PartialCleanupRetainsMarkerAndRetryDoesNotRestoreTwice" computerName="c61a5018b3fb" duration="00:00:00.1206990" startTime="2026-10-08T10:05:04.4272247+00:00" endTime="2026-10-08T10:05:04.4272251+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dc0ead3b-6eac-4d74-853b-ea97c1bf5146" />
+    <UnitTestResult executionId="9547d09a-ff4f-4b97-9938-f260a55e484f" testId="397fb703-8de1-24d4-9191-fb60f9257937" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_GenerationReplacementCannotReuseWarmOwnership" computerName="c61a5018b3fb" duration="00:00:00.0406142" startTime="2026-10-08T10:05:04.3055893+00:00" endTime="2026-10-08T10:05:04.3055896+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9547d09a-ff4f-4b97-9938-f260a55e484f" />
+    <UnitTestResult executionId="64b30bfd-1dc7-40f8-ad4b-71b7463d0603" testId="b533c537-da8a-0775-ef63-3c151e8420ed" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline(newTrackedFile: False)" computerName="c61a5018b3fb" duration="00:00:00.1160808" startTime="2026-10-08T10:05:04.7470681+00:00" endTime="2026-10-08T10:05:04.7470685+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="64b30bfd-1dc7-40f8-ad4b-71b7463d0603">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: [97]
+Actual:   [113]
+           ↑ (pos 0)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline(Boolean newTrackedFile) in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ConsoleRollback.cs:line 40
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e788929f-01ab-4801-8bc1-ace3c5613ec8" testId="c67b3969-0b0c-ccf7-7fbd-21502c71e28a" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ReachedPreparationFailureCanRetryExactBeforeImage" computerName="c61a5018b3fb" duration="00:00:00.0749176" startTime="2026-10-08T10:05:02.6865897+00:00" endTime="2026-10-08T10:05:02.6865901+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e788929f-01ab-4801-8bc1-ace3c5613ec8" />
+    <UnitTestResult executionId="0b8f2f46-afa0-4a23-8002-c2938c1c04ff" testId="50377be8-3f3a-4608-7aa5-ccbc13f342f5" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral" computerName="c61a5018b3fb" duration="00:00:00.6114851" startTime="2026-10-08T10:05:02.3002416+00:00" endTime="2026-10-08T10:05:02.3002546+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0b8f2f46-afa0-4a23-8002-c2938c1c04ff" />
+    <UnitTestResult executionId="e2e50d2f-8766-4244-8937-dabec25afcd8" testId="d9fa4081-ad75-4c4b-3412-70b595149932" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted" computerName="c61a5018b3fb" duration="00:00:00.1999875" startTime="2026-10-08T10:05:04.9471104+00:00" endTime="2026-10-08T10:05:04.9471107+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e2e50d2f-8766-4244-8937-dabec25afcd8" />
+    <UnitTestResult executionId="662638f1-9005-44eb-b17d-260eea037763" testId="b16bbc75-e803-6984-4319-16c3dbba3a6d" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline(newTrackedFile: True)" computerName="c61a5018b3fb" duration="00:00:00.1324695" startTime="2026-10-08T10:05:04.6331282+00:00" endTime="2026-10-08T10:05:04.6331292+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="662638f1-9005-44eb-b17d-260eea037763">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: [97]
+Actual:   [113]
+           ↑ (pos 0)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline(Boolean newTrackedFile) in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ConsoleRollback.cs:line 40
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="dc6ebc92-429d-4ba0-ac11-bba3f417b12e" testId="f2a19502-92af-6b48-96ca-eae9c7e0666e" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles" computerName="c61a5018b3fb" duration="00:00:00.2011820" startTime="2026-10-08T10:05:02.6110070+00:00" endTime="2026-10-08T10:05:02.6110073+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dc6ebc92-429d-4ba0-ac11-bba3f417b12e" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ColdSignedCancellationTransfersOwnershipBeforeDeletingRequest" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="322fd63e-c92e-dd05-c837-8274fb569364">
+      <Execution id="a6b16fe2-b77c-46ba-bb11-48eec31f28fb" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ConsoleRollback_ColdSignedCancellationTransfersOwnershipBeforeDeletingRequest" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ColdSignedMarkerMustMatchLiveBytes" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="8a6cd008-1b58-a4ed-8bc5-cbc6596675fd">
+      <Execution id="2a9745ca-1600-4968-8624-830ecd616a13" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ConsoleRollback_ColdSignedMarkerMustMatchLiveBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_UnadoptedColdInstanceRefusesAndRetainsExactEvidence" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="8ee63fad-4504-2aca-eca7-e48837600d80">
+      <Execution id="7f848726-dd65-4310-acdb-0e98bbd2a1f2" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ConsoleRollback_UnadoptedColdInstanceRefusesAndRetainsExactEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ChangedBeforeImageRefusesWarmAdmissionWithoutMutation" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b4148fd9-8b03-9491-f4c7-ed6bf5a8033d">
+      <Execution id="6a61b044-6775-4f8e-9984-4fb9e9629f9b" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ConsoleRollback_ChangedBeforeImageRefusesWarmAdmissionWithoutMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_GenerationReplacementCannotReuseWarmOwnership" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="397fb703-8de1-24d4-9191-fb60f9257937">
+      <Execution id="9547d09a-ff4f-4b97-9938-f260a55e484f" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ConsoleRollback_GenerationReplacementCannotReuseWarmOwnership" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="8ce30006-63a8-e49a-a092-19261581befe">
+      <Execution id="e462fe13-e916-44a7-84e3-d1893d4ffb1d" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ReachedPreparationFailureCanRetryExactBeforeImage" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c67b3969-0b0c-ccf7-7fbd-21502c71e28a">
+      <Execution id="e788929f-01ab-4801-8bc1-ace3c5613ec8" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ConsoleRollback_ReachedPreparationFailureCanRetryExactBeforeImage" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="50377be8-3f3a-4608-7aa5-ccbc13f342f5">
+      <Execution id="0b8f2f46-afa0-4a23-8002-c2938c1c04ff" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d9fa4081-ad75-4c4b-3412-70b595149932">
+      <Execution id="e2e50d2f-8766-4244-8937-dabec25afcd8" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_PartialCleanupRetainsMarkerAndRetryDoesNotRestoreTwice" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3b3c59da-9865-fcf4-41ce-b49ff57851ac">
+      <Execution id="dc0ead3b-6eac-4d74-853b-ea97c1bf5146" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ConsoleRollback_PartialCleanupRetainsMarkerAndRetryDoesNotRestoreTwice" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_AbsentOnlyPreparationRemainsVisibleToColdAdmission" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d70ccbe5-2f51-7712-56eb-3b63962c78e7">
+      <Execution id="e76c7b31-e9bb-41c6-9c36-01b33dab33a7" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ConsoleRollback_AbsentOnlyPreparationRemainsVisibleToColdAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline(newTrackedFile: True)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b16bbc75-e803-6984-4319-16c3dbba3a6d">
+      <Execution id="662638f1-9005-44eb-b17d-260eea037763" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline(newTrackedFile: False)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b533c537-da8a-0775-ef63-3c151e8420ed">
+      <Execution id="64b30bfd-1dc7-40f8-ad4b-71b7463d0603" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f2a19502-92af-6b48-96ca-eae9c7e0666e">
+      <Execution id="dc6ebc92-429d-4ba0-ac11-bba3f417b12e" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="b4148fd9-8b03-9491-f4c7-ed6bf5a8033d" executionId="6a61b044-6775-4f8e-9984-4fb9e9629f9b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d70ccbe5-2f51-7712-56eb-3b63962c78e7" executionId="e76c7b31-e9bb-41c6-9c36-01b33dab33a7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="322fd63e-c92e-dd05-c837-8274fb569364" executionId="a6b16fe2-b77c-46ba-bb11-48eec31f28fb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8a6cd008-1b58-a4ed-8bc5-cbc6596675fd" executionId="2a9745ca-1600-4968-8624-830ecd616a13" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8ce30006-63a8-e49a-a092-19261581befe" executionId="e462fe13-e916-44a7-84e3-d1893d4ffb1d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8ee63fad-4504-2aca-eca7-e48837600d80" executionId="7f848726-dd65-4310-acdb-0e98bbd2a1f2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b3c59da-9865-fcf4-41ce-b49ff57851ac" executionId="dc0ead3b-6eac-4d74-853b-ea97c1bf5146" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="397fb703-8de1-24d4-9191-fb60f9257937" executionId="9547d09a-ff4f-4b97-9938-f260a55e484f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b533c537-da8a-0775-ef63-3c151e8420ed" executionId="64b30bfd-1dc7-40f8-ad4b-71b7463d0603" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c67b3969-0b0c-ccf7-7fbd-21502c71e28a" executionId="e788929f-01ab-4801-8bc1-ace3c5613ec8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="50377be8-3f3a-4608-7aa5-ccbc13f342f5" executionId="0b8f2f46-afa0-4a23-8002-c2938c1c04ff" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d9fa4081-ad75-4c4b-3412-70b595149932" executionId="e2e50d2f-8766-4244-8937-dabec25afcd8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b16bbc75-e803-6984-4319-16c3dbba3a6d" executionId="662638f1-9005-44eb-b17d-260eea037763" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f2a19502-92af-6b48-96ca-eae9c7e0666e" executionId="dc6ebc92-429d-4ba0-ac11-bba3f417b12e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="14" executed="14" passed="12" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.39]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.62]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.65]   Starting:    BookOfEternityClient.IntegrationTests
+\ud83e\udde0 Мастер игры размышляет...
+↩️ Ход отменён
+Переходный ход отменён. Мир вернулся к состоянию до этого действия; позднее 
+завершение событий останется отложенным.
+[xUnit.net 00:00:04.64]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:04.64]                  ↓ (pos 0)
+[xUnit.net 00:00:04.64]       Expected: [97]
+[xUnit.net 00:00:04.64]       Actual:   [113]
+[xUnit.net 00:00:04.64]                  ↑ (pos 0)
+[xUnit.net 00:00:04.64]       Stack Trace:
+[xUnit.net 00:00:04.65]         /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ConsoleRollback.cs(40,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline(Boolean newTrackedFile)
+[xUnit.net 00:00:04.65]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.76]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:04.76]                  ↓ (pos 0)
+[xUnit.net 00:00:04.76]       Expected: [97]
+[xUnit.net 00:00:04.76]       Actual:   [113]
+[xUnit.net 00:00:04.76]                  ↑ (pos 0)
+[xUnit.net 00:00:04.76]       Stack Trace:
+[xUnit.net 00:00:04.76]         /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ConsoleRollback.cs(40,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline(Boolean newTrackedFile)
+[xUnit.net 00:00:04.76]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.09]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c61a5018b3fb" outcome="Error" timestamp="2026-10-08T10:05:04.6316862+00:00">
+        <Text>[xUnit.net 00:00:04.64]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline(newTrackedFile: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c61a5018b3fb" outcome="Error" timestamp="2026-10-08T10:05:04.7472629+00:00">
+        <Text>[xUnit.net 00:00:04.76]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline(newTrackedFile: False) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

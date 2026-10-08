@@ -12,6 +12,35 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class GameEngineTurnLifecycleTests
 {
+    [Fact]
+    public async Task ConsoleRollback_CommittedCaptureDebtRetainsOwnedBeforeImages()
+    {
+        const string original = "lore/current_world/console_committed_debt.json";
+        byte[] before = [0x41];
+        await _fs.WriteFileAtomicBytesAsync(original, before);
+        var explorer = GetPrivateField<ExplorerMode>(CreateGameEngine(), "_explorer");
+        var cutHits = 0;
+        _consolePublicationObserver = (phase, _) =>
+        {
+            if (phase != TrustedLocalPublicationPhase.Committed) return;
+            cutHits++;
+            throw new InvalidOperationException("Reached committed capture cleanup debt.");
+        };
+        await explorer.StagePendingLocalTurnRollbackSnapshotAsync(original);
+        _consolePublicationObserver = null;
+        Assert.Equal(1, cutHits);
+        var staged = explorer.ConsumePendingLocalTurnRollbackSnapshot()!;
+        Assert.Equal(before, File.ReadAllBytes(_fs.ResolvePath(staged.BackupFiles[original])));
+        var journal = Path.Combine(_fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+        using (var active = JsonDocument.Parse(File.ReadAllBytes(journal)))
+            Assert.True(active.RootElement.GetProperty("Committed").GetBoolean());
+        await _fs.WriteFileAtomicBytesAsync(original, [0x42]); // Actual admission recovers committed debt.
+        await explorer.RestoreConsumedLocalTurnRollbackSnapshotAsync(staged);
+        Assert.Equal(before, File.ReadAllBytes(_fs.ResolvePath(original)));
+        Assert.False(File.Exists(journal));
+        Assert.False(Directory.Exists(_fs.ResolvePath(ConsoleLocalTurnRollbackArtifacts.Root)));
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -61,6 +90,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(File.Exists(_fs.ResolvePath(staged.BackupFiles[first])));
         Assert.True(File.Exists(_fs.ResolvePath(staged.BackupFiles[second])));
         Assert.True(File.Exists(_fs.ResolvePath(Assert.Single(staged.TechnicalArtifacts))));
+        var cold = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+        await Assert.ThrowsAsync<InvalidDataException>(async () =>
+        {
+            await using var refused = await cold.AcquireCanonicalWriteLeaseAsync();
+        });
         Assert.Equal(new byte[] { 0x41 }, File.ReadAllBytes(_fs.ResolvePath(first)));
         Assert.Equal(new byte[] { 0x42 }, File.ReadAllBytes(_fs.ResolvePath(second)));
         await _fs.WriteFileAtomicBytesAsync(first, [0x61]);
@@ -221,8 +255,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(File.Exists(_fs.ResolvePath(snapshot.BackupFiles[original])));
     }
 
-    [Fact]
-    public async Task ConsoleRollback_ChangedBeforeImageRefusesWarmAdmissionWithoutMutation()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ConsoleRollback_ChangedBeforeImageRefusesWarmAdmissionWithoutMutation(bool unknownArtifact)
     {
         const string original = "lore/current_world/console_changed.json";
         byte[] before = [0x41];
@@ -232,13 +268,16 @@ public sealed partial class GameEngineTurnLifecycleTests
         await explorer.StagePendingLocalTurnRollbackSnapshotAsync(original);
         var snapshot = explorer.ConsumePendingLocalTurnRollbackSnapshot()!;
         var backup = Assert.Single(snapshot.BackupFiles).Value;
-        File.WriteAllBytes(_fs.ResolvePath(backup), unknown); // Explicit external conflict fixture.
+        var conflict = unknownArtifact
+            ? Path.Combine(Path.GetDirectoryName(_fs.ResolvePath(backup))!, "unknown.rollback.residue")
+            : _fs.ResolvePath(backup);
+        File.WriteAllBytes(conflict, unknown); // Explicit external conflict fixture.
 
         await Assert.ThrowsAsync<InvalidDataException>(async () =>
         {
             await using var refused = await _fs.AcquireCanonicalWriteLeaseAsync();
         });
         Assert.Equal(before, File.ReadAllBytes(_fs.ResolvePath(original)));
-        Assert.Equal(unknown, File.ReadAllBytes(_fs.ResolvePath(backup)));
+        Assert.Equal(unknown, File.ReadAllBytes(conflict));
     }
 }
