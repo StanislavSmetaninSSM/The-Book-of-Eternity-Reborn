@@ -76,7 +76,7 @@ public sealed class SaveLoadServiceTests : IDisposable
     public async Task SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral()
     {
         var state = new StateManager(_fs, new GameSettings(), NullLogger<StateManager>.Instance);
-        var explorer = new BookOfEternityClient.UI.ExplorerMode(state, _fs, new LocalizationManager());
+        var explorer = new BookOfEternityClient.UI.ExplorerMode(state, _fs, new BookOfEternityClient.UI.LocalizationManager());
         await explorer.StagePendingLocalTurnRollbackSnapshotAsync("game_state/world/test_fixture_state.json");
         Assert.True(Directory.Exists(_fs.ResolvePath(ConsoleLocalTurnRollbackArtifacts.Root)));
         Assert.True(await _service.SaveGameAsync("console_preparation", "console preparation exclusion"));

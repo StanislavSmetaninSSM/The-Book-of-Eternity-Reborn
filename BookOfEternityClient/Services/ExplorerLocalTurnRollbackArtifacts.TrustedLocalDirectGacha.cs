@@ -28,9 +28,16 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
     private static void RequireCurrentDirectGachaAdoption(FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease lease, string trackedFile, string backup)
     {
-        var payload = RequireCurrentPendingRollbackAuthority(fs, lease);
-        if (!payload.RollbackBackups.TryGetValue(trackedFile, out var mapped) || mapped != backup)
-            throw new InvalidDataException("Exact existing pending authority does not map this before-image.");
+        try
+        {
+            var payload = RequireCurrentPendingRollbackAuthority(fs, lease);
+            if (!payload.RollbackBackups.TryGetValue(trackedFile, out var mapped) || mapped != backup)
+                throw new InvalidDataException("Exact existing pending authority does not map this before-image.");
+        }
+        catch (InvalidDataException failure)
+        {
+            throw new InvalidDataException("Pending direct-gacha before-image is not eligible for this turn; evidence retained.", failure);
+        }
     }
 
     internal static PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload RequireCurrentPendingRollbackAuthority(

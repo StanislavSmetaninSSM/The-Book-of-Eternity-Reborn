@@ -898,7 +898,12 @@
         "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
         "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs"
       ],
-      "related": [],
+      "related": [
+        {
+          "id": "portable-pending-beforeimage-admission",
+          "when": "Shared exact signed pending-before-image adoption or request identity validation changes."
+        }
+      ],
       "requirements": {
         "frontendBuild": false,
         "exclusive": false
@@ -910,14 +915,11 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.*",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_*",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_*",
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence",
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry",
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage",
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes",
-            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.Actual*",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_*"
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.Actual*"
           ]
         }
       ]
@@ -17243,6 +17245,31 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_*",
             "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-pending-beforeimage-admission",
+      "responsibility": "Existing direct-gacha success, exact pending snapshot adoption and raw current request identity refusals around the shared pending-before-image authority validator.",
+      "excludes": "Other gacha purchase/gameplay, browser coordinator faults and native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalDirectGacha.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_*",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_*",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_*"
           ]
         }
       ]

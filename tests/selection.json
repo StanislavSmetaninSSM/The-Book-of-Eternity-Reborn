@@ -11,6 +11,16 @@
         "FR-006",
         "T061-CONSOLE-ROLLBACK"
       ]
+    },
+    {
+      "category": "portable-pending-beforeimage-admission",
+      "reason": "Shared current pending authority extraction preserves existing direct-gacha exactmapping and requestidentity rejection; move existing14 bounded cases from widerbrowsercategory unchanged.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "T061-CONSOLE-ROLLBACK"
+      ]
     }
   ]
 }
