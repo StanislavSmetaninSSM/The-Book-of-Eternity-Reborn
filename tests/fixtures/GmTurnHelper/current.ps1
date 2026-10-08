@@ -150,6 +150,13 @@ try {
    Require ((Get-BoePlayerTradeValue) -eq 27) 'Existing malformed-JSON trade fallback changed.'
    [IO.File]::Delete($first);[IO.File]::CreateSymbolicLink($first,(Join-Path $SessionPath 'game_state/player/player_status.json'))|Out-Null
    Expect-Refusal {Get-BoePlayerTradeValue}
+   [IO.File]::WriteAllText((Join-Path $Folder 'corrupt-response'),'invalid-json')
+   $ErrorActionPreference='Continue'
+   try {Expect-Refusal {Read-BoeJson $target}}finally{$ErrorActionPreference='Stop'}
+   Require ($script:BoeHelperFailure -and $script:Joined[$script:Joined.Count-1].Lost) 'Malformed successful wire JSON under Continue escaped the transport latch.'
+   $count=$script:Joined.Count;Expect-Refusal {Initialize-BoeGmTurnHelper $SessionPath};Expect-Refusal {Read-BoeJson $target}
+   Require ($script:Joined.Count -eq $count) 'Malformed wire JSON allowed a new helper after lost transport.'
+   Require ((Get-BoeSha256Hex ([IO.File]::ReadAllBytes((Join-Path $SessionPath $target)))) -ceq (Get-BoeSha256Hex $before)) 'Malformed JSON response changed canonical bytes.'
   }
   default {throw 'Unknown current helper scenario.'}
  }

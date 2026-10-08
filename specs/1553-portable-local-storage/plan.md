@@ -1,3 +1,16 @@
+## F13 terminating transport JSON correction — 2026-10-08
+
+Clean f453 Plan200510 built53/6/0 (56.8006029s, exit0, both cleanup flags true).
+Independent review found that malformed successful wire JSON could otherwise emit a
+nonterminating error under caller ErrorActionPreference=Continue. The transport-only
+decoder now sets a local Stop preference and rejects empty payloads; ordinary canonical
+JSON conversion/fallback remains unchanged. The existing parse-fallback row first
+checks genuine malformed-file fallback and trusted-path refusal, then consumes an
+actual corrupted response with matching length/hash for the invalid JSON `{` while
+its caller preference is Continue. It must latch lost transport and refuse subsequent
+Init/read without a new helper. No reset, new scenario, production selector or historical
+RED claim. Exact53 and native exclusions unchanged; final matching build/review pending.
+
 ## F13 observed-disposal ordering correction — 2026-10-08
 
 Clean f63 Plan200257 compiled exact53/6 with zero execution (60.4605113s, both cleanup

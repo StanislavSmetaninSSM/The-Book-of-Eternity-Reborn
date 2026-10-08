@@ -146,6 +146,14 @@ function Invoke-BoeHelperScope {
     }
     return $value
 }
+function ConvertFrom-BoeHelperPayload {
+    param([string]$Json)
+    # Scope this preference to transport decoding. Canonical malformed-file
+    # fallback and the caller's output/error stream preference remain unchanged.
+    $ErrorActionPreference='Stop'
+    if([string]::IsNullOrWhiteSpace($Json)){throw 'Original helper response JSON is empty.'}
+    return ConvertFrom-BoeJsonMutable -Json $Json
+}
 function Invoke-BoeHelperRequest {
     param([hashtable]$Request,[scriptblock]$OnCommitted)
     $context=$script:BoeHelperScope
@@ -184,7 +192,7 @@ function Invoke-BoeHelperRequest {
         try {
             $bytes=$buffer.ToArray()
             if($bytes.LongLength -ne $reply.length -or (Get-BoeSha256Hex $bytes) -cne $reply.hash){throw 'Original helper response length/hash changed.'}
-            return ConvertFrom-BoeJsonMutable -Json ($utf8.GetString($bytes))
+            return ConvertFrom-BoeHelperPayload -Json ($utf8.GetString($bytes))
         } catch {$context.lost=$true;throw (New-BoeStorageFailure 'Original helper response payload is invalid; no replay.' $_.Exception)}
     } finally {$buffer.Dispose()}
 }

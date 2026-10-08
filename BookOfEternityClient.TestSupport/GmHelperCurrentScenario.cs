@@ -146,15 +146,30 @@ internal static class GmHelperCurrentScenario
     }
     private sealed class ResponseObserver(Stream output,string folder,Dictionary<string,object?> report):Stream
     {
+        private bool _invalidJsonHeader;
         public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer,CancellationToken cancellationToken=default)
         {
             if(buffer.Length>1&&File.Exists(Path.Combine(folder,"corrupt-response"))&&!report.ContainsKey("ResponseDecodeCut"))
             {
+                var mode=File.ReadAllText(Path.Combine(folder,"corrupt-response"));
                 var value=System.Text.Json.Nodes.JsonNode.Parse(buffer.Span)!.AsObject();
-                if(value.ContainsKey("complete")&&value.ContainsKey("bytes"))
+                if(mode=="invalid-json"&&value.ContainsKey("length")&&value.ContainsKey("hash")&&value.ContainsKey("transfer"))
+                {
+                    report["OriginalResponseHeader"]=Encoding.UTF8.GetString(buffer.Span);
+                    value["length"]=1;value["hash"]=GmHelperCanonicalScope.Hash([123]);
+                    buffer=JsonSerializer.SerializeToUtf8Bytes(value);_invalidJsonHeader=true;
+                }
+                else if(value.ContainsKey("complete")&&value.ContainsKey("bytes"))
                 {
                     report["OriginalResponseFrame"]=Encoding.UTF8.GetString(buffer.Span);
-                    value["bytes"]="%%%";buffer=JsonSerializer.SerializeToUtf8Bytes(value);report["ResponseDecodeCut"]=1;
+                    if(mode=="invalid-json")
+                    {
+                        Require(_invalidJsonHeader,"Malformed JSON response lacked matching length/hash header.");
+                        value["bytes"]=Convert.ToBase64String([123]);value["complete"]=true;
+                        report["InvalidJsonPayloadHash"]=GmHelperCanonicalScope.Hash([123]);
+                    }
+                    else value["bytes"]="%%%";
+                    buffer=JsonSerializer.SerializeToUtf8Bytes(value);report["ResponseDecodeCut"]=1;
                 }
             }
             await output.WriteAsync(buffer,cancellationToken);
@@ -209,7 +224,7 @@ internal static class GmHelperCurrentScenario
             Require(item.GetProperty("Completed").GetBoolean()&&original.GetProperty("ExitedBeforeDispose").GetBoolean()&&original.GetProperty("ExitCode").GetInt32()==item.GetProperty("ExitCode").GetInt32(),"Original helper was not joined at its real exit.");
         }
         evidence["ActualHelperChildren"]=reports;
-        if(mode=="chunk-hash")Require(reports.Sum(x=>x.TryGetProperty("ResponseDecodeCut",out var cut)?cut.GetInt32():0)==1,"Actual response decode cut was not reached exactly once.");
+        if(mode is "chunk-hash" or "parse-fallback")Require(reports.Sum(x=>x.TryGetProperty("ResponseDecodeCut",out var cut)?cut.GetInt32():0)==1,"Actual response decode cut was not reached exactly once.");
         if(mode is "known-rollback" or "publication-unknown" or "committed-debt")Require(reports.Sum(x=>x.GetProperty("PublicationCuts").GetInt32())==1,"Selected actual publication cut did not occur exactly once.");
         if(mode=="known-rollback")Require(File.ReadAllBytes(files.ResolvePath(Target)).SequenceEqual(Before)&&!File.Exists(Journal(files)),"Known rollback did not preserve exact before bytes.");
         if(mode=="publication-unknown")Require(File.ReadAllBytes(files.ResolvePath(Target)).SequenceEqual(new byte[]{41,43,47})&&File.Exists(Journal(files)),"Actual unknown evidence was lost.");
