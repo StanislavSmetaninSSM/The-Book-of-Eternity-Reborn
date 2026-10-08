@@ -1,3 +1,18 @@
+## Browser HTTP admission — owner-approved T054, 2026-10-08
+
+The separately approved [HTTP plan](windows-http-plan.md) addresses proven
+parallel request contention on empty, ordinary NewGame and synthetic SaveLoad
+roots. Queue this web host's state API handlers before their existing bounded
+physical guard acquisition. Preserve every storage, generation and main-owner
+check, typed response and full validation. Cancelled queued requests must not
+enter handlers or release someone else's permit; failures must release admission
+and retain their actual error response. Matched Load completion/cancel endpoints
+must bypass the queue to release the original pending Load; static/media files
+and pure command metadata also bypass. No global lock timeout increase, validation
+cache, synthetic successful response, model call or game/GM schema/prompt change.
+Long state operations still delay queued state requests; this is correctness,
+not a validation/image-generation latency improvement.
+
 ## Native Windows relay follow-up — owner approved 2026-10-08
 
 Source #1553. Implement the bounded [Windows relay plan](relay-windows-plan.md):

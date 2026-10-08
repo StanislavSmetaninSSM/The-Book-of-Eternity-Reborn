@@ -1,6 +1,7 @@
 {
-  "SourceCommit": "406423aea14dfa4231853913f9ab298756270432",
-  "HttpProductChangedFromMergedMain": false,
+  "ProbeSourceCommit": "406423aea14dfa4231853913f9ab298756270432",
+  "TestRedSourceCommit": "9dfa154d90f3da003d186fc1e3781d2cbd405b91",
+  "HttpProductChangedForTheseRedRuns": false,
   "Files": [
     {
       "Path": "http-empty-first.json",
@@ -21,6 +22,11 @@
       "Path": "http-synthetic-first.json",
       "Bytes": 13473,
       "SHA256": "d731583cdf0a14f3561685b519a5856a392998f9d1ca4a383be5bbf83d76ee95"
+    },
+    {
+      "Path": "red-original-results.zip",
+      "Bytes": 4149,
+      "SHA256": "7e8fe24b3e3962ecd5e82fed17636bdce65c347b6fe5040958a8966ed5d6d72f"
     },
     {
       "Path": "selection-http.json",

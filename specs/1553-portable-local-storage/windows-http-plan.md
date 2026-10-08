@@ -75,3 +75,16 @@ independently held physical guard refusal. Narrow affected settings and Load
 refresh categories accompany GREEN. No true live-GM continuation claim on Windows.
 The measured10–14s is whole-request duration; validation's individual share was
 not separately profiled. Shared StateManager corruption was not demonstrated.
+
+RED at9dfa154d: fresh integration build0errors;9/9 completed,8PASS/1FAIL, no skips,
+timeout or duplicates, owned cleanup complete. The causal test fails on198
+physical guard contentions (expected0); its held request released before the
+last retry actually failed, so that particular test returned200. The actual500
+RED evidence is the three native probes above. Preserve this distinction rather
+than recasting the unit/integration assertion as a500 observation.
+
+Candidate implementation adds one host-owned IEndpointFilter/SemaphoreSlim for32
+state endpoints; original five bypass API routes remain outside the route group.
+No endpoint payload, filesystem guard, retry or relay source changed. Queue wait
+uses request cancellation, and only an acquired permit is released in finally.
+GREEN and independent implementation/evidence review remain pending.
