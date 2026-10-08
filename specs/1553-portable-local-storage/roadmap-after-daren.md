@@ -1,3 +1,5 @@
+Current closed continuation: [S2A handoff](systemd-main-s2a-handoff.md) supplies the concrete original readonly cgroup source and controlled proof. Full actual-manager S2 and ordinary selector S3 remain mandatory/open, public backend off; no usable manager exists here. T043 shared relay is accepted atdb847f6 and preserved. Native Windows is planned after merge in parent-coordinated HOME-PC «Лориан-Codex bridge», not a pre-merge PASS gate. No merge readiness claimed from this bounded slice.
+
 # Остаток переноса после принятого Daren
 
 ## Current systemd S1 boundary
@@ -5,8 +7,7 @@
 [S1 handoff](systemd-main-s1-handoff.md) implements only the original scope adapter
 and coordinator/Bridge seams under controlled observations, runtimeb764117f.
 42distinctPASS and independent Sol source/selection/evidence PASS do not qualify
-a real manager. Public SystemdUser/Auto remain closed; S2 concrete cgroup/native
-API plus already-running-manager qualification and S3 ordinary selection remain
+a real manager. Public SystemdUser/Auto remain closed; S2 native API plus already-running-manager qualification and S3 ordinary selection remain
 required. NativeLineage remains the accepted declared fallback.
 The owner also requires preserving the accepted relay in shared code:
 T043-RELAY-REUSABLE-DESIGN follows S1 as a separate bounded design, with no new

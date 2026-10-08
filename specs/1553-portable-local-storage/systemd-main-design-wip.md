@@ -1,3 +1,12 @@
+# Current closed S2A source continuation
+
+Concrete pinned read-only cgroup source now implemented at runtimeb97b50a9,
+with native self-namespace/regular-file FD and controlled original Bridge coverage.
+[Handoff](systemd-main-s2a-handoff.md) records42unique cases; source reviewPASS2ad77e29.
+This closes only the independent source sub-slice. Native manager/FD delivery,
+real scope mapping/pruning/stop-margin S2 and ordinary selection S3 remain open;
+SupportsPidfdScopes=false, Pruned refusal and public activation remain closed.
+
 # Current S1 implementation checkpoint
 
 The accepted design below is historical; its "stop before S1" language describes
