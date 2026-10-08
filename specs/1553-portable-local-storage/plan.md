@@ -21,16 +21,23 @@ Current console namespace/admission and explicit snapshot adoption are being
 traced together before the minimal fix; unknown legacy evidence must still refuse. Selection reasons are
 recorded in tests/selection.json; no other family or aggregate is scheduled.
 
-Concrete admission proposal (not implemented/accepted yet): distinct current
+Independent Astra XHigh narrow design review accepted the revised direction
+with the constraints below; source/evidence review remains required. Concrete
+admission design (not implemented yet): distinct current
 console before-image namespace, current-generation warm ownership of exact
 artifacts, signed current pending-request admission transferring a complete
 immutable cohort into warm ownership before cancellation deletes request/backups.
 Unknown legacy root handling remains unchanged. Independent narrow review found
 that absent-only staging also needs a durable refusal footprint; a namespace/hash
 map of existing backups alone is insufficient. Marker/adoption/cleanup ordering
-is under review; no resumable console transaction is authorized by a marker.
-Four additional tests are prepared but unbuilt/unrun (cold new-instance refusal,
-absence-only footprint, reached publication failure/retry, warm hash conflict).
+is constrained to signed validation membership and marker-last cleanup; no
+resumable console transaction is authorized by a marker. Exclude this root from
+ordinary rollback inventory, generic cleanup and save archives. Cold reconstruction
+uses only the validated payload. Pre-handoff or incomplete-cleanup cold refusal
+is safe refusal, not complete FR-010 qualification.
+Six additional tests are prepared but unbuilt/unrun (cold new-instance refusal,
+absence-only footprint, reached publication failure/retry, warm hash conflict,
+generation replacement, actual cold signed cancellation after request deletion).
 No runtime edits exist. No extra baseline or GREEN is claimed.
 
 Source [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
