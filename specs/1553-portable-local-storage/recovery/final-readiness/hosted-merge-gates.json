@@ -1,0 +1,49 @@
+[
+  {
+    "utc": "2026-10-08T02:16:59.275390+00:00",
+    "operation": "GET",
+    "endpoint": "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/workflows",
+    "exitCode": 0,
+    "response": [
+      {
+        "id": 280957256,
+        "name": ".NET CI",
+        "path": ".github/workflows/dotnet-ci.yml",
+        "state": "disabled_manually"
+      },
+      {
+        "id": 374267479,
+        "name": "Portable load selected Linux qualification",
+        "path": ".github/workflows/portable-load-linux.yml",
+        "state": "active"
+      }
+    ],
+    "safeStderr": ""
+  },
+  {
+    "utc": "2026-10-08T02:16:59.608988+00:00",
+    "operation": "GET",
+    "endpoint": "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/permissions",
+    "exitCode": 1,
+    "response": {
+      "message": "Resource not accessible by integration",
+      "documentation_url": "https://docs.github.com/rest/actions/permissions#get-github-actions-permissions-for-a-repository",
+      "status": "403"
+    },
+    "safeStderr": "gh: Resource not accessible by integration (HTTP 403)"
+  },
+  {
+    "utc": "2026-10-08T02:17:00.623087+00:00",
+    "operation": "PR read-only view",
+    "response": {
+      "baseRefName": "main",
+      "headRefOid": "72ffde8cab4d3272630a114a4456084f657207e8",
+      "isDraft": true,
+      "mergeStateStatus": "BLOCKED",
+      "mergeable": "MERGEABLE",
+      "reviewDecision": "REVIEW_REQUIRED",
+      "statusCheckRollup": [],
+      "url": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1555"
+    }
+  }
+]

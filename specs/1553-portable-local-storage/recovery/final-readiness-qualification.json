@@ -73,7 +73,8 @@
     "Groups": 1,
     "Runner": "ubuntu-24.04",
     "WindowsJobs": 0,
-    "Hosted": "Exact final-tip result is observed separately after final carrier/draft PR; no hosted PASS claimed at carrier"
+    "Hosted": "BLOCKED: .NET CI workflow280957256 disabled_manually; no current hosted run/checks",
+    "ObservedHead": "72ffde8cab4d3272630a114a4456084f657207e8"
   },
   "Reviews": {
     "Design": "PASS20bdeb6c",
@@ -98,7 +99,13 @@
     "Performed": false,
     "DefaultBranch": "main",
     "DetailedProtection": "403 inaccessible by integration",
-    "ParentConfirmRequirements": true
+    "ParentConfirmRequirements": true,
+    "DraftPR": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1555",
+    "ObservedReviewDecision": "REVIEW_REQUIRED",
+    "ObservedMergeState": "BLOCKED",
+    "ObservedMergeability": "MERGEABLE",
+    "ActionsPermissions": "403 inaccessible by integration",
+    "EnablementPerformed": false
   },
   "Deferred": {
     "ActualSystemdS2S3": "owner approved defer/current backend off",
@@ -126,5 +133,6 @@
     "ReviewedRelayListedTestRunnerDelta": 1,
     "ReusedUnchangedS2APins": 16
   },
-  "BoundedVerdict": "Source/evidence/metadata ready for parent integration gates; only T052-FINAL-READINESS closes. Not full #1553 or platform qualification."
+  "BoundedVerdict": "Source/evidence/metadata ready for parent integration gates; only T052-FINAL-READINESS closes. Not full #1553 or platform qualification.",
+  "IntegrationGateEvidence": "final-readiness/hosted-merge-gates.json"
 }
