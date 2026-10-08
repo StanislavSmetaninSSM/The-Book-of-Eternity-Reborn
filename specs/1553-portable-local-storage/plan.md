@@ -1,3 +1,32 @@
+## A03 actual original-control causal RED — 2026-10-08
+
+Independent fixture/source/selection PASS at9a35. Final fresh Plan160657 built
+7/1/0 (40.8425016s). Actual160755 complete7/7:1PASS6FAIL,22.5181201s,
+clean9a35, both cleanup flags true, no skips/duplicates. All seven raw original
+owners finally Stopped/RetainsAuthority=false and guardians echild/no emergency/
+failure/deadline. [Source-pinned raw packet](recovery/storage-migration-participating-outcomes-20261008/manifest.json).
+
+The six failures are reached causal failures: actual rollback/commit results lose
+command disposition; actual committed-phase fault retains committed bytes/journal
+but loses debt diagnostic; foreign-byte uncertainty permits another lease attempt
+(existing recovery barrier prevents publication) and closes Completed. The sharing
+case holds exact publishedB through first reply, positively reaches real sharing
+refusal/typed Uncertain, then releases the same descriptor: old second command
+actually recovers one member and publishes another, returns42 and closes Completed.
+Actual closing failure freezes original Completed+ClosingFailed receipt, while PS
+reports predicted no-failure close/lost transport. Encoding/non-publication control
+passes. These observations precede new-field assertions; timeout/fixture failure
+is not used as causal evidence.
+
+Next minimal runtime block: factor existing ordinary publisher result before its
+facade throw and command lease disposal, retaining append bytes/BOM and path scope;
+make Uncertain absorbing before any later mutation admission while preserving the
+same explicit original close. Project actual immutable TerminalClose/ACK from the
+existing original closing boundary on both success/failure; keep per-command
+rollback distinct from whole-body outcome and preserve originalClose active grant.
+Final finite10 is these7 plus exact oversized-unsent, post-receipt reply loss and
+pre-receipt stdin loss controls. No runtime fix or acceptance yet; native unexecuted.
+
 ## A03 finite original-control causal fixture checkpoint — 2026-10-08
 
 Test-only WIP: `gm-main-participating-outcomes-linux`, exactly seven rows.
