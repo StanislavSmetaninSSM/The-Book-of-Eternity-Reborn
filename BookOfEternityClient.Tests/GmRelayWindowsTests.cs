@@ -83,6 +83,8 @@ public sealed class GmRelayWindowsTests
         // barrier delays bootstrap and leaves all consumer semantics unchanged.
         Put("game_state/control/gm_turn_helper.bootstrap.ps1", barrier + $". '{helper.Replace("'", "''")}'\nInitialize-BoeGmTurnHelper -GameSessionPath '{session.Replace("'", "''")}'\n");
         var python = (await Python(own, "-c", "import sys; print(sys.executable)")).Trim();
+        var launch = Path.Combine(own, "launch.ps1");
+        await File.WriteAllTextAsync(launch, $"& '{python.Replace("'", "''")}' -B '{Fixture.Replace("'", "''")}' console '{own.Replace("'", "''")}'\nexit $LASTEXITCODE\n");
         var configuration = new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name;
         var assembly = Assembly.LoadFrom(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityGMBridge/bin", configuration, "net8.0/BookOfEternityGMBridge.dll"));
         var type = assembly.GetType("BookOfEternityGMBridge.ConPtySession", true)!;
@@ -92,7 +94,7 @@ public sealed class GmRelayWindowsTests
         try
         {
             terminal = (IOwnedTerminalSession)type.GetMethod("Start", BindingFlags.Public | BindingFlags.Static)!.Invoke(null,
-                [python, $"-B \"{Fixture}\" console \"{own}\"", own, (short)120, (short)40])!;
+                ["pwsh.exe", $"-NoLogo -NoProfile -File \"{launch}\"", own, (short)120, (short)40])!;
             var retained = terminal;
             pump = Task.Run(async () =>
             {

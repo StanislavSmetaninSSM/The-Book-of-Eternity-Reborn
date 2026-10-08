@@ -63,3 +63,13 @@ original Jobs reported empty/cleanup true/authority false. Help fails on termios
 four terminal cases exit before readiness; gate has no native fcntl backend;
 pipe adapter is absent. Original logs/TRX retained locally pending safe evidence
 extraction. Candidate platform/gate code now implemented; GREEN not yet run.
+
+Candidate 1ce0cea7414ae27eed549e62e5e3a4d9d1462b98: help, independent gate
+and pipe tests PASS; four ConPTY cases still fail before relay startup. Diagnostic
+wrapper proves GetConsoleMode on a standard handle fails before product import:
+these four original RED cases were fixture startup failures, not causal relay
+RED. Adjust fixture to the existing PowerShell shell route; do not weaken byte,
+consumer, EOF or original Job assertions. The shared17 cases were not executed
+because the native descriptor failed. All observed original Jobs cleaned up.
+Canonical tools/relay_platform.py required per-command core.ignorecase=false
+staging because repository also has Tools/. Both paths remain unchanged.

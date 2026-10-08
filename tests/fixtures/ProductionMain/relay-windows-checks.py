@@ -12,6 +12,13 @@ import time
 
 assert os.name == 'nt', 'This fixture requires native Windows, not a no-op'
 mode, own = sys.argv[1], Path(sys.argv[2])
+if mode == 'console':
+    import traceback
+    (own / 'console-started').write_text('started')
+    def report_exception(kind, value, trace):
+        (own / 'console-failure.txt').write_text(''.join(traceback.format_exception(kind, value, trace)), encoding='utf8')
+        sys.__excepthook__(kind, value, trace)
+    sys.excepthook = report_exception
 tools = Path(__file__).resolve().parents[3] / 'tools/gm-relay'
 sys.path.insert(0, str(tools))
 
