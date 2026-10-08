@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="ac98b8cb-af41-4499-aeee-475cfc587b26" name="@c61a5018b3fb 2026-10-08 10:22:56" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-08T10:22:56.1972812+00:00" queuing="2026-10-08T10:22:56.1972812+00:00" start="2026-10-08T10:22:54.2763604+00:00" finish="2026-10-08T10:22:56.3067557+00:00" />
+  <TestSettings name="default" id="18c6a68d-c794-4e1a-8dff-6a2da5ba7420">
+    <Deployment runDeploymentRoot="_c61a5018b3fb_2026-10-08_10_22_56" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="a0eb8ba4-5371-468c-b360-cd197b9dde7d" testId="adba938c-429f-58ac-336e-285f93a8a174" testName="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry(operation: &quot;append&quot;)" computerName="c61a5018b3fb" duration="00:00:00.1300717" startTime="2026-10-08T10:22:56.0796741+00:00" endTime="2026-10-08T10:22:56.0796891+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a0eb8ba4-5371-468c-b360-cd197b9dde7d" />
+    <UnitTestResult executionId="b6fd7471-2bba-4a8d-847b-24fdf3ed739e" testId="e082bcb9-aa87-27af-a2f7-632f26acdf4f" testName="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(operation: &quot;compare-exchange&quot;)" computerName="c61a5018b3fb" duration="00:00:00.0095746" startTime="2026-10-08T10:22:56.2364788+00:00" endTime="2026-10-08T10:22:56.2364788+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b6fd7471-2bba-4a8d-847b-24fdf3ed739e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type
+Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)
+Actual:   typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(String operation) in /workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs:line 59
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="63609224-43d6-4856-b711-a45979895105" testId="fafeb4df-f524-27d3-3742-ee09fc58f389" testName="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry(operation: &quot;delete&quot;)" computerName="c61a5018b3fb" duration="00:00:00.0145036" startTime="2026-10-08T10:22:56.1122090+00:00" endTime="2026-10-08T10:22:56.1122093+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="63609224-43d6-4856-b711-a45979895105" />
+    <UnitTestResult executionId="0028f355-4ac1-4106-b45a-38333bb89bb5" testId="40a5fbb5-a6a5-128f-f645-8b6584f2d556" testName="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(operation: &quot;append&quot;)" computerName="c61a5018b3fb" duration="00:00:00.0137573" startTime="2026-10-08T10:22:56.2264383+00:00" endTime="2026-10-08T10:22:56.2264385+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0028f355-4ac1-4106-b45a-38333bb89bb5">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type
+Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)
+Actual:   typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(String operation) in /workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs:line 59
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f9331c9a-bd5c-4b1b-9596-4fb0df52f80a" testId="b6715bbc-50f2-16fe-1c7b-3c46aefca315" testName="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry(operation: &quot;write&quot;)" computerName="c61a5018b3fb" duration="00:00:00.0170640" startTime="2026-10-08T10:22:56.0971186+00:00" endTime="2026-10-08T10:22:56.0971188+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f9331c9a-bd5c-4b1b-9596-4fb0df52f80a" />
+    <UnitTestResult executionId="07c6a62a-ce4a-4a84-a018-ff251c626102" testId="b95b539e-6cac-b2b7-61a2-70b9f7d998de" testName="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualCommittedDebtSurvivesWarningLoggerFailureWithoutFalseWriteFailure" computerName="c61a5018b3fb" duration="00:00:00.0258031" startTime="2026-10-08T10:22:56.1676540+00:00" endTime="2026-10-08T10:22:56.1676542+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="07c6a62a-ce4a-4a84-a018-ff251c626102">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   System.IO.IOException: Controlled warning logger failure after committed publication.
+   at BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.WarningLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter) in /workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs:line 142
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogWarning(ILogger logger, Exception exception, String message, Object[] args)
+   at BookOfEternityClient.Core.FileSystemManager.RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 224
+   at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 282
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 840
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 828
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 828
+   at BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.Mutate(String operation) in /workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs:line 117
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualCommittedDebtSurvivesWarningLoggerFailureWithoutFalseWriteFailure() in /workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs:line 110
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="34aa6edc-0298-41f7-a463-1f024ce3d2a0" testId="92ec5b15-32ee-bd46-ea8e-7a0f4b48a9e0" testName="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry(operation: &quot;compare-exchange&quot;)" computerName="c61a5018b3fb" duration="00:00:00.0202394" startTime="2026-10-08T10:22:56.1332414+00:00" endTime="2026-10-08T10:22:56.1332418+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="34aa6edc-0298-41f7-a463-1f024ce3d2a0" />
+    <UnitTestResult executionId="790e23bc-a958-4d6d-9127-1633f91ee0bd" testId="30d9959d-c6fc-ab75-4b4d-d193bf1df04b" testName="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(operation: &quot;write&quot;)" computerName="c61a5018b3fb" duration="00:00:00.0477344" startTime="2026-10-08T10:22:56.2127310+00:00" endTime="2026-10-08T10:22:56.2127312+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="790e23bc-a958-4d6d-9127-1633f91ee0bd">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type
+Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)
+Actual:   typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(String operation) in /workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs:line 59
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="294fe6b8-5ffa-437b-86f3-073424df6292" testId="97dd6a18-994d-ab62-df35-3b3470d6429b" testName="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(operation: &quot;delete&quot;)" computerName="c61a5018b3fb" duration="00:00:00.0079434" startTime="2026-10-08T10:22:56.2446874+00:00" endTime="2026-10-08T10:22:56.2446874+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="294fe6b8-5ffa-437b-86f3-073424df6292">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type
+Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)
+Actual:   typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(String operation) in /workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs:line 59
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry(operation: &quot;write&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b6715bbc-50f2-16fe-1c7b-3c46aefca315">
+      <Execution id="f9331c9a-bd5c-4b1b-9596-4fb0df52f80a" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests" name="ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualCommittedDebtSurvivesWarningLoggerFailureWithoutFalseWriteFailure" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b95b539e-6cac-b2b7-61a2-70b9f7d998de">
+      <Execution id="07c6a62a-ce4a-4a84-a018-ff251c626102" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests" name="ActualCommittedDebtSurvivesWarningLoggerFailureWithoutFalseWriteFailure" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(operation: &quot;append&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="40a5fbb5-a6a5-128f-f645-8b6584f2d556">
+      <Execution id="0028f355-4ac1-4106-b45a-38333bb89bb5" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests" name="ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(operation: &quot;compare-exchange&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e082bcb9-aa87-27af-a2f7-632f26acdf4f">
+      <Execution id="b6fd7471-2bba-4a8d-847b-24fdf3ed739e" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests" name="ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(operation: &quot;write&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="30d9959d-c6fc-ab75-4b4d-d193bf1df04b">
+      <Execution id="790e23bc-a958-4d6d-9127-1633f91ee0bd" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests" name="ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(operation: &quot;delete&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="97dd6a18-994d-ab62-df35-3b3470d6429b">
+      <Execution id="294fe6b8-5ffa-437b-86f3-073424df6292" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests" name="ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry(operation: &quot;compare-exchange&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="92ec5b15-32ee-bd46-ea8e-7a0f4b48a9e0">
+      <Execution id="34aa6edc-0298-41f7-a463-1f024ce3d2a0" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests" name="ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry(operation: &quot;append&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="adba938c-429f-58ac-336e-285f93a8a174">
+      <Execution id="a0eb8ba4-5371-468c-b360-cd197b9dde7d" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests" name="ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry(operation: &quot;delete&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fafeb4df-f524-27d3-3742-ee09fc58f389">
+      <Execution id="63609224-43d6-4856-b711-a45979895105" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests" name="ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="adba938c-429f-58ac-336e-285f93a8a174" executionId="a0eb8ba4-5371-468c-b360-cd197b9dde7d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e082bcb9-aa87-27af-a2f7-632f26acdf4f" executionId="b6fd7471-2bba-4a8d-847b-24fdf3ed739e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fafeb4df-f524-27d3-3742-ee09fc58f389" executionId="63609224-43d6-4856-b711-a45979895105" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="40a5fbb5-a6a5-128f-f645-8b6584f2d556" executionId="0028f355-4ac1-4106-b45a-38333bb89bb5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b6715bbc-50f2-16fe-1c7b-3c46aefca315" executionId="f9331c9a-bd5c-4b1b-9596-4fb0df52f80a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b95b539e-6cac-b2b7-61a2-70b9f7d998de" executionId="07c6a62a-ce4a-4a84-a018-ff251c626102" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="92ec5b15-32ee-bd46-ea8e-7a0f4b48a9e0" executionId="34aa6edc-0298-41f7-a463-1f024ce3d2a0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="30d9959d-c6fc-ab75-4b4d-d193bf1df04b" executionId="790e23bc-a958-4d6d-9127-1633f91ee0bd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="97dd6a18-994d-ab62-df35-3b3470d6429b" executionId="294fe6b8-5ffa-437b-86f3-073424df6292" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="9" executed="9" passed="4" failed="5" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.19]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.20]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.22]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.47]       Assert.Null() Failure: Value is not null
+[xUnit.net 00:00:01.47]       Expected: null
+[xUnit.net 00:00:01.47]       Actual:   System.IO.IOException: Controlled warning logger failure after committed publication.
+[xUnit.net 00:00:01.47]          at BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.WarningLogger.Log[TState](LogLevel logLevel, EventId eventId, TState state, Exception exception, Func`3 formatter) in /workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs:line 142
+[xUnit.net 00:00:01.47]          at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+[xUnit.net 00:00:01.47]          at Microsoft.Extensions.Logging.LoggerExtensions.LogWarning(ILogger logger, Exception exception, String message, Object[] args)
+[xUnit.net 00:00:01.47]          at BookOfEternityClient.Core.FileSystemManager.RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 224
+[xUnit.net 00:00:01.47]          at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 282
+[xUnit.net 00:00:01.47]          at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 840
+[xUnit.net 00:00:01.47]          at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 828
+[xUnit.net 00:00:01.47]          at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 828
+[xUnit.net 00:00:01.47]          at BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.Mutate(String operation) in /workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs:line 117
+[xUnit.net 00:00:01.47]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76
+[xUnit.net 00:00:01.47]       Stack Trace:
+[xUnit.net 00:00:01.47]         /workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs(110,0): at BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualCommittedDebtSurvivesWarningLoggerFailureWithoutFalseWriteFailure()
+[xUnit.net 00:00:01.47]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.51]       Assert.IsType() Failure: Value is not the exact type
+[xUnit.net 00:00:01.51]       Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)
+[xUnit.net 00:00:01.51]       Actual:   typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.51]       Stack Trace:
+[xUnit.net 00:00:01.51]         /workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs(59,0): at BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(String operation)
+[xUnit.net 00:00:01.51]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.53]       Assert.IsType() Failure: Value is not the exact type
+[xUnit.net 00:00:01.53]       Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)
+[xUnit.net 00:00:01.53]       Actual:   typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.53]       Stack Trace:
+[xUnit.net 00:00:01.53]         /workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs(59,0): at BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(String operation)
+[xUnit.net 00:00:01.53]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.54]       Assert.IsType() Failure: Value is not the exact type
+[xUnit.net 00:00:01.54]       Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)
+[xUnit.net 00:00:01.54]       Actual:   typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.54]       Stack Trace:
+[xUnit.net 00:00:01.54]         /workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs(59,0): at BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(String operation)
+[xUnit.net 00:00:01.54]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.55]       Assert.IsType() Failure: Value is not the exact type
+[xUnit.net 00:00:01.55]       Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)
+[xUnit.net 00:00:01.55]       Actual:   typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.55]       Stack Trace:
+[xUnit.net 00:00:01.55]         /workspace/boe-1553-storage-migration/BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs(59,0): at BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(String operation)
+[xUnit.net 00:00:01.55]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.55]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c61a5018b3fb" outcome="Error" timestamp="2026-10-08T10:22:56.2025831+00:00">
+        <Text>[xUnit.net 00:00:01.47]     BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualCommittedDebtSurvivesWarningLoggerFailureWithoutFalseWriteFailure [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c61a5018b3fb" outcome="Error" timestamp="2026-10-08T10:22:56.2123897+00:00">
+        <Text>[xUnit.net 00:00:01.51]     BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(operation: "write") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c61a5018b3fb" outcome="Error" timestamp="2026-10-08T10:22:56.2266823+00:00">
+        <Text>[xUnit.net 00:00:01.53]     BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(operation: "append") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c61a5018b3fb" outcome="Error" timestamp="2026-10-08T10:22:56.2365674+00:00">
+        <Text>[xUnit.net 00:00:01.54]     BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(operation: "compare-exchange") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c61a5018b3fb" outcome="Error" timestamp="2026-10-08T10:22:56.2447340+00:00">
+        <Text>[xUnit.net 00:00:01.55]     BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision(operation: "delete") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

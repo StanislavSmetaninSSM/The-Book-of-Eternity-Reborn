@@ -40,6 +40,16 @@
         "FR-004",
         "T062-STORAGE-OUTCOMES"
       ]
+    },
+    {
+      "category": "portable-browser-rollback-outcomes",
+      "reason": "T062 F11 actual original Linux gacha spend+refresh followed by failed rollback, current runtime/notice and original operation close; preserve six existing success/failure controls and add three focused cases.",
+      "contracts": [
+        "#1553",
+        "FR-004",
+        "FR-006",
+        "T062-STORAGE-OUTCOMES"
+      ]
     }
   ]
 }

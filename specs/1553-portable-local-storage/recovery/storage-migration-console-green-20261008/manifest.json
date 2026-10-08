@@ -209,7 +209,7 @@
   },
   "evidenceReview": "Independent Astra XHigh PASS; exact ebd645cc original summary/plan/two TRXs independently verified 30/30, no findings. Catalog supplement is discovery only.",
   "windowsOwnerRecipe": {
-    "source": "ebd645ccd671f086dc5eded9f5b7f4a96a71432d",
+    "source": "d8b3f7741e977dbde8b732d38ed08051341e2952",
     "status": "Not executed; no native Windows PASS claim.",
     "commands": [
       {
@@ -232,6 +232,6 @@
       }
     ],
     "expectedCases": 16,
-    "note": "Use NoBuild only after successful fresh PlanOnly build. The neighbor category asserts Linux and is not the Windows recipe. No HOME-PC/desktop task is requested here."
+    "note": "Use NoBuild only after successful fresh PlanOnly build. The neighbor category asserts Linux and is not the Windows recipe. No HOME-PC/desktop task is requested here. This supersedes the ebd recipe source after correcting the new console caller to actual Windows path policy; corrected-source Linux16 regression is in ../storage-migration-outcomes-red-20261008/manifest.json."
   }
 }

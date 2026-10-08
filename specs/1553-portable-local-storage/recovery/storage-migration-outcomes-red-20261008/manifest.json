@@ -1,0 +1,165 @@
+{
+  "source": "d8b3f7741e977dbde8b732d38ed08051341e2952",
+  "platform": "Linux",
+  "planOnly": {
+    "planned": 26,
+    "descriptors": 3,
+    "executed": 0,
+    "exitCode": 0
+  },
+  "consolePlatformCorrection": {
+    "executed": 16,
+    "passed": 16,
+    "failed": 0,
+    "wallSeconds": 11.2370874,
+    "qualification": "Linux regression plus independently reviewed Windows path-policy callsite correction; native Windows not executed."
+  },
+  "ordinaryRed": {
+    "executed": 9,
+    "passed": 4,
+    "failed": 5,
+    "wallSeconds": 6.9828362,
+    "cause": "Four reached public facade unknown-byte results retain/refuse their journal but lose typed Uncertain carrier; committed result falsely throws warning logger failure."
+  },
+  "noticeRed": {
+    "executed": 1,
+    "passed": 0,
+    "failed": 1,
+    "wallSeconds": 6.9355474,
+    "cause": "Actual uncertain public write is projected as action not applied instead of recovery-required."
+  },
+  "allSelectionsComplete": true,
+  "cleanupComplete": true,
+  "timeouts": 0,
+  "duplicates": 0,
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs",
+      "sha256": "4898ea156f373ee1952a865a5f6fb34636fa739252311e575789944fe19a6aad"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "sha256": "b93ba7fb3c4349ef73eda1136738ef9c67effffcd174d9d9988d3b05b996b325"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs",
+      "sha256": "e53690c64ba7eeb266384915f446d51031c089b7dd5d19a4841644a48cd3abd5"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.OrdinaryOutcome.cs",
+      "sha256": "e04fdc45b473298d292f696fe3317af4747f5ff7945c86fd1333687bd07ed771"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "c7c08bbfd2e0473fe59f76686486c5ace83ff77d218be4a691b890da45ce110f"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "8b956bc380bb1a9e3882119471c335148a8e208d237aa8005bbfc6fc128b5ba2"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "plan-Build-integration.log.gz",
+      "sha256": "22f0da3959c76643c7868bfd2886614344c2133581928e2876fdd3f87c681432",
+      "originalSha256": "d064fa33949c3cf12970d78255143e8f2690f0d89208bb0b4b446b08add4a705",
+      "source": "TestResults/test-categories/20261008-102007-144-16075-845f41d9d22b4d81a0867a1c84027e23-categories/Build-integration.log"
+    },
+    {
+      "path": "plan-Build-unit.log.gz",
+      "sha256": "0738240ec2372fbe3f986e45ef8d36786a6b5e412cae77563b7afd91eaf8aaaa",
+      "originalSha256": "ce8e2976c85da481ec7662623e65a6de58e63d69422b0b028f3fa52e5d3c02ad",
+      "source": "TestResults/test-categories/20261008-102007-144-16075-845f41d9d22b4d81a0867a1c84027e23-categories/Build-unit.log"
+    },
+    {
+      "path": "plan-dotnet-test.log.gz",
+      "sha256": "f45dd497c8eefde83c3b96aff10bd9cc7a15a5090c2b90ca4c00c84572618efd",
+      "originalSha256": "a22af54837e5729e20e4e336f050cefef346dc6fafc4c049b1e6d4dcc5f058fd",
+      "source": "TestResults/test-categories/20261008-102007-144-16075-845f41d9d22b4d81a0867a1c84027e23-categories/dotnet-test.log"
+    },
+    {
+      "path": "plan-plan.json",
+      "sha256": "ad24a25cfc613e3b8568ce54b2f3958f5d6f1846e37ec04d936df60ab9fbfc60",
+      "originalSha256": "ad24a25cfc613e3b8568ce54b2f3958f5d6f1846e37ec04d936df60ab9fbfc60",
+      "source": "TestResults/test-categories/20261008-102007-144-16075-845f41d9d22b4d81a0867a1c84027e23-categories/plan.json"
+    },
+    {
+      "path": "plan-summary.json",
+      "sha256": "f944bad2f9db8dcb1fc023fa73bc5e5d8dcb4476e46d9ba429812feb0589977c",
+      "originalSha256": "f944bad2f9db8dcb1fc023fa73bc5e5d8dcb4476e46d9ba429812feb0589977c",
+      "source": "TestResults/test-categories/20261008-102007-144-16075-845f41d9d22b4d81a0867a1c84027e23-categories/summary.json"
+    },
+    {
+      "path": "console-platform-green-dotnet-test.log.gz",
+      "sha256": "e3af96cac3366446d80510d322fccdbc5f8308f760beb7c30ffc0469bb174732",
+      "originalSha256": "180657d1ac7b3842e85124fa6d3b09f7de392ba98b566b35c3a80e5a5278d036",
+      "source": "TestResults/test-categories/20261008-102159-299-16432-38ced412cfd344deb0aa97005176c5c9-categories/dotnet-test.log"
+    },
+    {
+      "path": "console-platform-green-plan.json",
+      "sha256": "abe6f89dcfff0ff2967c321906e97f845dc8a9cd40215f8d2f53bd6baed35f5f",
+      "originalSha256": "abe6f89dcfff0ff2967c321906e97f845dc8a9cd40215f8d2f53bd6baed35f5f",
+      "source": "TestResults/test-categories/20261008-102159-299-16432-38ced412cfd344deb0aa97005176c5c9-categories/plan.json"
+    },
+    {
+      "path": "console-platform-green-portable-console-rollback-preparation-integration-001.trx",
+      "sha256": "d110e73d85606c1af2443ef2d817a334308241c67a8384d07bf9a508c539524d",
+      "originalSha256": "d110e73d85606c1af2443ef2d817a334308241c67a8384d07bf9a508c539524d",
+      "source": "TestResults/test-categories/20261008-102159-299-16432-38ced412cfd344deb0aa97005176c5c9-categories/portable-console-rollback-preparation-integration-001.trx"
+    },
+    {
+      "path": "console-platform-green-summary.json",
+      "sha256": "9dea5e01076a2f10334abb89cea0897f04074e5f4289fed711585057a414520e",
+      "originalSha256": "9dea5e01076a2f10334abb89cea0897f04074e5f4289fed711585057a414520e",
+      "source": "TestResults/test-categories/20261008-102159-299-16432-38ced412cfd344deb0aa97005176c5c9-categories/summary.json"
+    },
+    {
+      "path": "ordinary-red-dotnet-test.log.gz",
+      "sha256": "f51fe8c3c707b7b4273fbd7b3430f2148723982407b9ca9458f7e2e95dd77ece",
+      "originalSha256": "e6a41bf6132174327244a098dffa1805da4c74d90af2618a6fe90aa756f7c096",
+      "source": "TestResults/test-categories/20261008-102249-501-16783-624f3bd2cb0542c79c6be1dcbf433e94-categories/dotnet-test.log"
+    },
+    {
+      "path": "ordinary-red-plan.json",
+      "sha256": "073523edd1ff41676ba1de9ba8f82276fd0f212d6949fea02591d3f182f8a044",
+      "originalSha256": "073523edd1ff41676ba1de9ba8f82276fd0f212d6949fea02591d3f182f8a044",
+      "source": "TestResults/test-categories/20261008-102249-501-16783-624f3bd2cb0542c79c6be1dcbf433e94-categories/plan.json"
+    },
+    {
+      "path": "ordinary-red-portable-ordinary-publication-outcomes-unit-001.trx",
+      "sha256": "e7cc0ee128182d997a7f8e83c3775f51431bf17ee76f67765613c47f0d0d5e65",
+      "originalSha256": "e7cc0ee128182d997a7f8e83c3775f51431bf17ee76f67765613c47f0d0d5e65",
+      "source": "TestResults/test-categories/20261008-102249-501-16783-624f3bd2cb0542c79c6be1dcbf433e94-categories/portable-ordinary-publication-outcomes-unit-001.trx"
+    },
+    {
+      "path": "ordinary-red-summary.json",
+      "sha256": "2bece82a65977df7ce5a6744ce5aa29c5edf42295edf4a77b1f3ba7413fdabfd",
+      "originalSha256": "2bece82a65977df7ce5a6744ce5aa29c5edf42295edf4a77b1f3ba7413fdabfd",
+      "source": "TestResults/test-categories/20261008-102249-501-16783-624f3bd2cb0542c79c6be1dcbf433e94-categories/summary.json"
+    },
+    {
+      "path": "notice-red-dotnet-test.log.gz",
+      "sha256": "556d9a32534d0496631586d0baa70534de42203d3ea5388da0dd7c648bb529f7",
+      "originalSha256": "af9203b4b46783f6c88062ca88a3a41272ea15a6ff93950084a59be8dfd2f5b4",
+      "source": "TestResults/test-categories/20261008-102355-873-17076-10da3fb7cd6d48eca892a5a7e0c2a34a-categories/dotnet-test.log"
+    },
+    {
+      "path": "notice-red-plan.json",
+      "sha256": "c62449f9013537c091c496c21e37eb8ed434ad44d135adadf562d21996ed6737",
+      "originalSha256": "c62449f9013537c091c496c21e37eb8ed434ad44d135adadf562d21996ed6737",
+      "source": "TestResults/test-categories/20261008-102355-873-17076-10da3fb7cd6d48eca892a5a7e0c2a34a-categories/plan.json"
+    },
+    {
+      "path": "notice-red-portable-ordinary-outcome-notice-integration-001.trx",
+      "sha256": "621ea9e13c9a551c212df4a1c9f94aa8dfdba42231176b766489f5d151f6b463",
+      "originalSha256": "621ea9e13c9a551c212df4a1c9f94aa8dfdba42231176b766489f5d151f6b463",
+      "source": "TestResults/test-categories/20261008-102355-873-17076-10da3fb7cd6d48eca892a5a7e0c2a34a-categories/portable-ordinary-outcome-notice-integration-001.trx"
+    },
+    {
+      "path": "notice-red-summary.json",
+      "sha256": "8026167c147cd31d628beaeec10ad12ee5fe9b28ca6b6be584428ea024117b86",
+      "originalSha256": "8026167c147cd31d628beaeec10ad12ee5fe9b28ca6b6be584428ea024117b86",
+      "source": "TestResults/test-categories/20261008-102355-873-17076-10da3fb7cd6d48eca892a5a7e0c2a34a-categories/summary.json"
+    }
+  ]
+}

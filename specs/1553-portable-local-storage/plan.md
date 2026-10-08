@@ -1,3 +1,23 @@
+## T062 current causal checkpoint — 2026-10-08
+
+Source d8b3f774: corrected F03 platform caller has16/16 Linux PASS (11.237s),
+Windows still unexecuted and its recipe now pins corrected source. F08 unit9
+completed4PASS/5FAIL (four wrong uncertainty carriers plus post-commit warning
+failure); original notice1 completed0PASS/1FAIL, displaying “Действие не было
+применено” after actual uncertain bytes. All selections complete, no timeout or
+duplicates, owned cleanup complete. [Pinned raw evidence](recovery/storage-migration-outcomes-red-20261008/manifest.json).
+
+Minimal F08 correction now uses existing CoordinatedStatePublicationUncertainException
+and prevents diagnostic warning failure from reversing an established committed
+outcome. RolledBack still rethrows its original cause. No consumer compensation
+atomicity or close guarantee is inferred. These two changes are unverified yet.
+F11 three new actual browser cases are prepared (last confirmed runtime versus
+failed rollback; disposition-aware notice; runtime-callback follow-up control),
+with six existing original publication/typed-close controls split into a coherent
+nine-case category. F11 runtime remains unchanged until its own reached RED.
+Next fresh PlanOnly for F08/F11, then actual separate selections; original QTE/
+pre-turn compensation carrier loss remains a distinct open causal follow-up.
+
 ## Current continuation — F03 platform correction and T062 causal tests
 
 Parent completed fresh GitHub-only restore of bounded F03 carrier

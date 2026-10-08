@@ -902,6 +902,10 @@
         {
           "id": "portable-pending-beforeimage-admission",
           "when": "Shared exact signed pending-before-image adoption or request identity validation changes."
+        },
+        {
+          "id": "portable-browser-rollback-outcomes",
+          "when": "Original browser disk rollback, cache restoration or disposition-aware notice changes."
         }
       ],
       "requirements": {
@@ -915,8 +919,6 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.*",
-            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence",
-            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry",
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.CommittedSchemaCleanupDebt_OriginalRecoveryRetainsPendingBeforeImage",
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserCreatedEvidence_UnknownResidueRefusesAndRetainsBytes",
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.Actual*"
@@ -17318,6 +17320,33 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OrdinaryPublication_ActualUncertainWriteProjectsRecoveryWithoutRetryPromise"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-browser-rollback-outcomes",
+      "responsibility": "Actual Linux direct-gacha consumer disk/runtime/notice outcomes and original typed close: reached publication/queue cuts, confirmed rollback, unknown-byte refusal and callback follow-up.",
+      "excludes": "Other browser commands, gacha rules and native Windows qualification; original fixtures assert Linux execution.",
+      "changeHints": [
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+        "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence",
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry",
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealUncertainRollbackPreservesLastConfirmedRuntimeAndRecoveryNotice",
+            "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ConfirmedDiskRollbackWithRuntimeCallbackFailureRequiresFollowUp"
           ]
         }
       ]

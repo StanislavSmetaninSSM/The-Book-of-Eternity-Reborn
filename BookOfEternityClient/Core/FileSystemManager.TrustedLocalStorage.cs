@@ -221,12 +221,15 @@ public partial class FileSystemManager
         if (outcome.Disposition == TrustedLocalPublicationDisposition.Committed)
         {
             if (outcome.Failure != null)
-                _logger.LogWarning(outcome.Failure, "Local publication committed; journal cleanup remains pending.");
+            {
+                try { _logger.LogWarning(outcome.Failure, "Local publication committed; journal cleanup remains pending."); }
+                catch { /* Diagnostic transport cannot reverse an established committed result. */ }
+            }
             return;
         }
         if (outcome.Disposition == TrustedLocalPublicationDisposition.RolledBack && outcome.Failure != null)
             ExceptionDispatchInfo.Capture(outcome.Failure).Throw();
-        throw new InvalidDataException("Local publication outcome is uncertain; retained evidence must be resolved before continuing.", outcome.Failure);
+        throw new CoordinatedStatePublicationUncertainException(outcome.Failure);
     }
 
     internal void LogCompletedCoordinatedWriteReleaseFailure(Exception failure) =>
