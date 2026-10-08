@@ -457,12 +457,18 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("wound_post_seal", 1)]
     [InlineData("wound_output", 1)]
     [InlineData("critical_validation", 1)]
+    [InlineData("runtime_refresh", 2)]
+    public Task GuaranteedResourceQuantity_RealGameEngineBoundaryFailureCompensatesExactHeldPlan(
+        string boundary, int occurrence) => RunKnownTreatmentBoundaryAsync(boundary, occurrence);
+
+    [Theory]
     [InlineData("full_state_validation", 1)]
     [InlineData("cleanup", 1)]
-    [InlineData("runtime_refresh", 2)]
-    public async Task GuaranteedMixedItemAndResourceConsumption_EveryPipelineFailureRestoresExpandedRootsAndExactRetryCommitsOnce(
-        string boundary,
-        int occurrence)
+    [InlineData("transaction_commit_conflict", 1)]
+    public Task GuaranteedResourceQuantity_RemainingEngineBoundaryFailureRetainsOriginalContract(
+        string boundary, int occurrence) => RunKnownTreatmentBoundaryAsync(boundary, occurrence);
+
+    private async Task RunKnownTreatmentBoundaryAsync(string boundary, int occurrence)
     {
         var fault = new AcceptedTreatmentPipelineFault(boundary, occurrence);
         await using var context = await CreateHeldTreatmentPipelineContextAsync(
@@ -496,6 +502,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 null);
         });
 
+        WriteTreatmentNeighborDiagnostic(context, fault, boundary, exception, accepted, commandBefore);
         Assert.True(
             fault.Fired,
             $"Observed={string.Join(", ", fault.ObservedPhases)}; " +
@@ -1570,6 +1577,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 null);
         });
 
+        WriteTreatmentNeighborDiagnostic(context, fault, "unsafe", exception, disposition, commandBefore);
         Assert.True(
             fault.Fired,
             "The post-publication failure and its compensation-restoration failure must both fire.");
@@ -1634,6 +1642,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             await context.FileSystem.ReadFileBytesAsync(
                 AcceptedMechanicsPlan.WoundCommandPath));
 
+        WriteTreatmentNeighborDiagnostic(context, fault, "terminal_restore_precondition", null, null, commandBefore, rollbackSnapshot);
+        Assert.NotNull(rollbackSnapshot);
+        Assert.True(ReadTreatmentRollbackCount(rollbackSnapshot, "BackupFiles") > 0 ||
+                    ReadTreatmentRollbackCount(rollbackSnapshot, "BaselineFiles") > 0);
         fault.Arm(context);
         AcceptedTurnValidationDisposition? disposition = null;
         var exception = await Record.ExceptionAsync(async () =>
@@ -1645,6 +1657,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 "validation_failed");
         });
 
+        WriteTreatmentNeighborDiagnostic(context, fault, "terminal_restore", exception, disposition, commandBefore);
         Assert.True(
             fault.Fired,
             "The command quarantine, pending quarantine failure, and command restoration failure must all be observed. " +
@@ -1685,6 +1698,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             "GetValidatedRollbackSnapshotAsync",
             manifest);
 
+        WriteTreatmentNeighborDiagnostic(context, fault, "terminal_safe_precondition", null, null, commandBefore, rollbackSnapshot);
+        Assert.NotNull(rollbackSnapshot);
+        Assert.True(ReadTreatmentRollbackCount(rollbackSnapshot, "BackupFiles") > 0 ||
+                    ReadTreatmentRollbackCount(rollbackSnapshot, "BaselineFiles") > 0);
         fault.Arm(context);
         var disposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
             engine,
@@ -1692,6 +1709,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             rollbackSnapshot,
             "validation_failed");
 
+        WriteTreatmentNeighborDiagnostic(context, fault, "terminal_safe", null, disposition, commandBefore);
         Assert.True(fault.Fired);
         Assert.Equal(
             AcceptedTurnValidationDisposition.RetryablePublicationHeldBlocked,
@@ -5314,6 +5332,29 @@ public sealed partial class GameEngineTurnLifecycleTests
             });
     }
 
+    private static int ReadTreatmentRollbackCount(object? snapshot, string property) =>
+        snapshot?.GetType().GetProperty(property)?.GetValue(snapshot) is System.Collections.ICollection collection
+            ? collection.Count : (snapshot?.GetType().GetProperty(property)?.GetValue(snapshot) is IEnumerable<string> items ? items.Count() : 0);
+
+    private void WriteTreatmentNeighborDiagnostic(HeldTreatmentPipelineContext context,
+        AcceptedTreatmentPipelineFault fault, string stage, Exception? exception, object? disposition,
+        byte[] commandBefore, object? rollbackSnapshot = null)
+    {
+        var commandPath = context.FileSystem.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath);
+        _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new
+        {
+            TreatmentNeighbor = stage, fault.Fired, fault.ObservedPhases, fault.MatchedHealthRefreshes,
+            fault.MutationPaths, fault.LeaseStacks, fault.FaultMutationImages,
+            Failure = exception?.ToString(), Disposition = disposition?.ToString(),
+            CommandBefore = Convert.ToBase64String(commandBefore),
+            CommandAfter = File.Exists(commandPath) ? Convert.ToBase64String(File.ReadAllBytes(commandPath)) : null,
+            RollbackPresent = rollbackSnapshot is not null,
+            RollbackBackups = ReadTreatmentRollbackCount(rollbackSnapshot, "BackupFiles"),
+            RollbackBaseline = ReadTreatmentRollbackCount(rollbackSnapshot, "BaselineFiles"),
+            ForeignPlanCaptured = fault.ForeignPlan is not null, fault.ForeignBindingFingerprint
+        }));
+    }
+
     private sealed class AcceptedTreatmentPipelineFault
     {
         private readonly string _boundary;
@@ -5345,6 +5386,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal AcceptedMechanicsPlan? ForeignPlan { get; private set; }
         internal string? ForeignBindingFingerprint { get; private set; }
         internal IReadOnlyCollection<string> ObservedPhases => _observedPhases;
+        internal List<string> MutationPaths { get; } = new();
+        internal List<string> LeaseStacks { get; } = new();
+        internal List<object> FaultMutationImages { get; } = new();
+        internal int MatchedHealthRefreshes => _acceptedPipelineHealthRefreshes;
 
         internal void Arm(HeldTreatmentPipelineContext? context = null)
         {
@@ -5401,6 +5446,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             if (!_armed || Fired)
                 return Task.CompletedTask;
+            if (LeaseStacks.Count < 8) LeaseStacks.Add(new StackTrace().ToString());
 
             if (string.Equals(
                     _boundary,
@@ -5458,6 +5504,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             if (!_armed)
                 return Task.CompletedTask;
+            MutationPaths.Add(path);
+            if (_context is not null && path is AcceptedMechanicsPlan.WoundCommandPath or
+                WoundAcceptedTurnSnapshotContract.PendingResolutionPath or ResourceMaterializationContract.StatePath)
+            {
+                var absolute = _context!.FileSystem.ResolvePath(path);
+                FaultMutationImages.Add(new { path, stage = _compoundFailureStage,
+                    Before = File.Exists(absolute) ? Convert.ToBase64String(File.ReadAllBytes(absolute)) : null });
+            }
             if (string.Equals(
                     _boundary,
                     "wound_output_compensation_restore_failure",

@@ -2,8 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-treatment-storage-neighbors-remaining-linux",
+      "reason": "Isolate six unresolved actual230555 neighbors with original body and diagnostic preconditions; no repeat of passed9, no production edits or inferred new causal defect.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "FR-006",
+        "T062-STORAGE-OUTCOMES"
+      ]
+    },
+    {
       "category": "portable-treatment-storage-neighbors-linux",
-      "reason": "T062 exact twelve existing known settlement/held/rearmed neighbors for actual typed uncertainty and disposal delta; moved uniquely from wider owners.",
+      "reason": "Six established passing known boundary/rearmed neighbors; remaining six split for bounded diagnosis, not repeated for test-only correction.",
       "contracts": [
         "#1553",
         "FR-003",

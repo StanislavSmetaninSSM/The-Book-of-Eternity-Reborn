@@ -2,8 +2,46 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-treatment-storage-neighbors-remaining-linux",
+      "responsibility": "Six unresolved neighboring obligations isolated after actual15 mixed result: three remaining engine boundary rows, Unsafe, terminal restore and terminal safe cleanup. Positive diagnostics precede unchanged assertions; exact foreign plan replaces an overbroad global-cache absence oracle.",
+      "excludes": "No broad treatment/gameplay category or native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-treatment-storage-causal-linux",
+          "when": "Typed uncertainty propagation or retained original transaction lifetime changes."
+        },
+        {
+          "id": "portable-treatment-mirror-causal-linux",
+          "when": "Original engine mirror uncertainty compensation or player projection changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 6,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_RemainingEngineBoundaryFailureRetainsOriginalContract",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PostPublicationCompensationFailureSurfacesUnsafeSettlementWithoutTerminalDisposition",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalRestorationFailureSurfacesAggregateInsteadOfHeldBlockedDisposition",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalCleanupFailureMapsHeldBlockedOnlyAfterExactSafetyProof"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-treatment-storage-neighbors-linux",
-      "responsibility": "Twelve unchanged known treatment settlement cases: eight original engine boundaries plus Unsafe, restoration Aggregate, proven HeldBlocked and rearmed retry.",
+      "responsibility": "Six already passing known treatment neighbors: five original engine boundary rows and rearmed retry. Excludes separately isolated unresolved six.",
       "excludes": "No broad treatment/gameplay category or native Windows qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
@@ -32,9 +70,6 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_RealGameEngineBoundaryFailureCompensatesExactHeldPlan",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PostPublicationCompensationFailureSurfacesUnsafeSettlementWithoutTerminalDisposition",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalRestorationFailureSurfacesAggregateInsteadOfHeldBlockedDisposition",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalCleanupFailureMapsHeldBlockedOnlyAfterExactSafetyProof",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_WaitLifecyclePreservesRearmedPublicationForSameTurnRetry"
           ]
         }

@@ -1,3 +1,26 @@
+## Treatment isolated remaining-six diagnostic source — 2026-10-08
+
+Actual230555 classification is four unreached-cut assertions and two reached later-oracle
+failures, not six fixture failures or six product regressions. The original boundary8
+body is factored unchanged into private execution with five established passing rows and
+three remaining rows under separate public theories. Unsafe and terminal2 move uniquely
+with those remaining3 into one exact-six diagnostic category; passed9 are not repeated.
+Raw diagnostic output captures actual disposition/exception, mutation paths/images,
+matched health count/first lease stacks, original command bytes and rollback capability
+before existing business assertions. Terminal2 now require genuine nonnull/nonempty
+validated rollback authority before Arm, so missing setup cannot masquerade as a cut.
+
+The commit-conflict oracle is corrected by independent source/history proof: an actual
+competing common plan is retained by the unchanged registry while the original treatment
+receipt is restart-blocked. Require its exact ForeignPlan and fingerprint plus original
+ConfirmedHeld/blocker, not global HasValidated(false). No runtime change in this packet.
+
+A separate connected source issue is queued: original pre-canonical terminal consumer
+still generically wraps a direct publication Uncertain. It needs same-carrier propagation
+and own-lease-close preservation, qualified by a reached actual terminal publication cut;
+current zero-cut terminal rows do not supply that proof. This diagnostic freeze does not
+claim that fix or GREEN. Focused source/selection and fresh Plan6 precede actual6.
+
 ## Treatment actual15 mixed result — 2026-10-08
 
 At clean e311, matching Plan23034615/3/0 passed41.0207836s and final independent
@@ -8,9 +31,10 @@ recovery/settlement leases; first business cause retained; exact consumed-receip
 for first2, mirror retains original open receipt with one legitimate readonly finalization.
 All3 owned fixture roots removed, actual notices show storage follow-up without retry.
 
-Known neighbors:6 PASS /6 FAIL. Three boundary rows report missing selected hooks
-(full_state_validation/cleanup/transaction_commit_conflict); terminal cleanup/restoration
-and post-publication Unsafe byte/outcome oracles also fail. These are preserved mixed
+Known neighbors:6 PASS /6 FAIL. Four positive-cut failures are full_state_validation, cleanup and the two terminal rows.
+Transaction_commit_conflict DID reach HeldBlocked/exact bytes and failed only global
+HasValidated(false); Unsafe DID reach its cut and actual Unsafe/null disposition, then
+failed expected command bytes versus absence. These are preserved mixed
 results awaiting source/raw classification, not six asserted production regressions and
 not overall GREEN. No runtime change or repeat of passed causal3 is justified yet.
 All raw Plan/summary/TRXs/logs are saved under unique runtimeMixed names; full packet
