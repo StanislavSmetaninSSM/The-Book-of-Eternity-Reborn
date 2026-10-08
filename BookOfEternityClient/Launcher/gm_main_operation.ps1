@@ -25,7 +25,7 @@ function Open-GmParticipatingOperation {
     $start.RedirectStandardInput = $true; $start.RedirectStandardOutput = $true; $start.RedirectStandardError = $true
     foreach ($arg in @($assembly,'--gm-main-operation','--root',$root)) { [void]$start.ArgumentList.Add($arg) }
     $process = [Diagnostics.Process]::Start($start)
-    $context = [pscustomobject]@{ process=$process; errorRead=$process.StandardError.ReadToEndAsync(); session=$session; sequence=0L; closed=$false; lost=$false; disposed=$false; pendingRead=$null; originalClose=$null; closeObserved=$false; closeOutcome=0; terminalClose=$null }
+    $context = [pscustomobject]@{ process=$process; errorRead=$process.StandardError.ReadToEndAsync(); session=$session; sequence=0L; closed=$false; lost=$false; disposed=$false; pendingRead=$null; originalClose=$null; closeObserved=$false; closeOutcome=0; terminalClose=$null; lastCommandReply=$null; publicationUncertain=$false; uncertainCommandReply=$null; localScopeCompleted=$false }
     try {
         $ready = Read-GmOperationReply $context
         if (-not $ready.ok -or $ready.state -cne 'active' -or $ready.sequence -ne 0) { throw 'Participating admission refused.' }
@@ -44,6 +44,7 @@ function Open-GmParticipatingOperation {
 function Send-GmOperationCommand {
     param($Context,[hashtable]$Command)
     if ($Context.closed -or $Context.lost) { throw 'Original operation is closed or lost; no reconnect.' }
+    if ($Context.publicationUncertain -and $Command.action -cne 'close') { throw 'Original command publication is uncertain; later mutation refused before admission.' }
     $nextSequence = $Context.sequence + 1
     $Command.sequence = $nextSequence
     $frame = $Command | ConvertTo-Json -Depth 8 -Compress
@@ -54,19 +55,52 @@ function Send-GmOperationCommand {
         $reply = Read-GmOperationReply $Context
         if ($reply.sequence -ne $Context.sequence) { throw 'Original operation response identity mismatch.' }
     } catch { $Context.lost=$true; throw }
-    if (-not $reply.ok) { throw 'Participating canonical mutation refused.' }
+    # A valid negative reply is a command result, not transport loss. Preserve
+    # its first actual unknown decision even if a surrounding body catches it.
+    $Context.lastCommandReply=$reply
+    if($reply.publicationDisposition -ceq 'Uncertain') {
+        $Context.publicationUncertain=$true
+        if(-not $Context.uncertainCommandReply){$Context.uncertainCommandReply=$reply}
+    }
+    if($Command.action -ceq 'close') {
+        # Only the original C# closing boundary supplies this attempted close.
+        # The active originalClose remains the retained grant used by Stop.
+        if($reply.completionKind -ceq 'local') {
+            if($Context.originalClose -or $reply.terminalClose -or $reply.closeObserved -ne $false -or
+                $reply.localScopeCompleted -ne $true -or $reply.localScopeCompleted -isnot [bool] -or
+                $null -eq $reply.PSObject.Properties['effectiveOutcome'] -or [int]$reply.effectiveOutcome -notin 0,1,2,3,4,5,6) {
+                throw 'Local participating scope completion is invalid.'
+            }
+            $Context.localScopeCompleted=$true
+            $Context.closeOutcome=[int]$reply.effectiveOutcome
+        } elseif($reply.completionKind -ceq 'original-main' -and $reply.terminalClose) {
+            $close=$reply.terminalClose
+            if($close.pinId -cne $Context.originalClose.pinId -or $close.closeId -cne $Context.originalClose.closeId -or
+                $close.operationId -cne $Context.originalClose.operationId -or
+                $null -eq $close.PSObject.Properties['closingFailed'] -or $close.closingFailed -isnot [bool] -or
+                $null -eq $close.PSObject.Properties['outcome'] -or [int]$close.outcome -notin 0,1,2,3,4,5,6 -or
+                $reply.closeObserved -isnot [bool]) { throw 'Original terminal close projection is invalid.' }
+            foreach($name in @('rootKey','runId','epoch','hostInstanceId','backend','bootId','generationId')) {
+                if($close.identity.$name -cne $Context.originalClose.identity.$name){throw 'Original terminal close identity changed.'}
+            }
+            $Context.terminalClose=$close
+            $Context.closeOutcome=[int]$close.outcome
+            $Context.closeObserved=$reply.closeObserved
+        }
+    }
+    if (-not $reply.ok) { throw 'Participating canonical mutation or original close refused.' }
     return $reply
 }
 
 function Close-GmParticipatingOperation {
     param($Context,[int]$Outcome=0)
     if ($Context.closed -or $Context.lost) { throw 'Original operation cannot be closed with confirmed receipt.' }
+    if($Context.publicationUncertain){$Outcome=5}
     $Context.closeOutcome=$Outcome
-    if($Context.originalClose){$Context.terminalClose=$Context.originalClose.PSObject.Copy();$Context.terminalClose.outcome=$Outcome}
     try {
         $reply = Send-GmOperationCommand $Context @{action='close';outcome=$Outcome}
-        if ($reply.state -cne 'closed-observed') { throw 'Original terminal close is unconfirmed.' }
-        $Context.closeObserved=$true
+        if ($reply.state -cne 'closed-observed' -or -not ($Context.localScopeCompleted -or ($Context.closeObserved -and $Context.terminalClose))) { throw 'Original terminal close or local completion is unconfirmed.' }
+        if ($reply.continuationFailed) { throw 'Original operation finalization failed after its established result.' }
     } finally { $Context.closed=$true; $Context.process.StandardInput.Dispose() }
 }
 
@@ -100,10 +134,12 @@ function Invoke-GmParticipatingConsumer {
             if (-not $context.closed -and -not $context.lost) { Close-GmParticipatingOperation $context $(if($failure){1}else{0}) }
         } catch {
             if (-not $failure) {
-                $continuation=[IO.IOException]::new('Original operation established a result but continuation is unconfirmed; no replay.',$_.Exception)
+                $message=if($context.closeObserved){'Original operation established a result, but finalization requires follow-up; no replay.'}else{'Original operation established a result but continuation is unconfirmed; no replay.'}
+                $continuation=[IO.IOException]::new($message,$_.Exception)
                 $continuation.Data['EstablishedOperationResult']=$result
                 $continuation.Data['EstablishedOperationOutcome']=$context.closeOutcome
-                $continuation.Data['OriginalOperationClose']=$(if($context.terminalClose){$context.terminalClose}else{$context.originalClose})
+                $continuation.Data['OriginalOperationClose']=$context.terminalClose
+                $continuation.Data['OriginalOperationCloseObserved']=$context.closeObserved
                 $failure=[Management.Automation.ErrorRecord]::new($continuation,'OriginalOperationContinuationUnconfirmed',[Management.Automation.ErrorCategory]::OperationStopped,$null)
             } else {$failure.Exception.Data['MainOperationCloseFailure']=$_.Exception}
         }
@@ -112,11 +148,25 @@ function Invoke-GmParticipatingConsumer {
             $global:BoeMainOperationContext = $null
         }
     }
-    if(-not $failure -and -not $context.closeObserved) {
+    if($context.publicationUncertain) {
+        if(-not $failure) {
+            $unknown=[IO.IOException]::new('Original command publication is uncertain; operation requires follow-up and must not be replayed.')
+            $unknown.Data['EstablishedOperationResult']=$result
+            $failure=[Management.Automation.ErrorRecord]::new($unknown,'OriginalPublicationUncertain',[Management.Automation.ErrorCategory]::OperationStopped,$null)
+        }
+        # Preserve an existing body cause rather than replacing it; uncertainty is
+        # absorbing but neither a rollback claim nor lost-close transport state.
+        $failure.Exception.Data['EstablishedOperationOutcome']=5
+        $failure.Exception.Data['OriginalPublicationDecision']=$context.uncertainCommandReply
+        $failure.Exception.Data['OriginalOperationClose']=$context.terminalClose
+        $failure.Exception.Data['OriginalOperationCloseObserved']=$context.closeObserved
+    }
+    if(-not $failure -and -not $context.closeObserved -and -not $context.localScopeCompleted) {
         $continuation=[IO.IOException]::new('Original operation established a result but continuation is unconfirmed; no replay.')
         $continuation.Data['EstablishedOperationResult']=$result
         $continuation.Data['EstablishedOperationOutcome']=$context.closeOutcome
-        $continuation.Data['OriginalOperationClose']=$(if($context.terminalClose){$context.terminalClose}else{$context.originalClose})
+        $continuation.Data['OriginalOperationClose']=$context.terminalClose
+        $continuation.Data['OriginalOperationCloseObserved']=$context.closeObserved
         $failure=[Management.Automation.ErrorRecord]::new($continuation,'OriginalOperationContinuationUnconfirmed',[Management.Automation.ErrorCategory]::OperationStopped,$null)
     }
     if ($failure) { throw $failure }
@@ -133,7 +183,7 @@ function Close-GmParticipatingBeforeStop {
         } catch {$script:GmMainClosingDiagnostic=$_.Exception.GetType().Name}
         finally {
             $context.closed=$true
-            if(-not $context.closeObserved){$context.lost=$true}
+            if(-not $context.closeObserved -and -not $context.localScopeCompleted){$context.lost=$true}
             Dispose-GmOperationTransport $context
         }
     }

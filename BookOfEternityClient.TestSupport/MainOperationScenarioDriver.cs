@@ -267,6 +267,8 @@ internal static class MainOperationScenarioDriver
                 if(!(bool)result["OriginalOutcomeOwnerRetired"]!)throw new InvalidOperationException("Original control owner was not actually retired.");
             }
             result["ClosedObserved"]=true;result["DurableStopped"]=true;
+            if(mode=="terminal-main-operation-outcome-control")
+                await ParticipatingControlOutcomeScenario.RunStoppedLocalAsync(root,folder,result);
             result["Success"]=true;return 0;
         } catch(Exception e){result["Failure"]=e.ToString();return 1;}
         finally {

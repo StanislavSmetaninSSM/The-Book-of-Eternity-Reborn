@@ -347,7 +347,7 @@
     },
     {
       "category": "gm-main-participating-outcomes-linux",
-      "reason": "A03 finite seven original consumer causal cases, actual publication/rollback and original receipt before new reply assertions; sharing holder demonstrates recoverable uncertainty without fabricated outcomes. Test-only baseline before runtime fix.",
+      "reason": "A03 seven actual original command/PowerShell outcomes after six causal failures: preserve exact publisher result, refuse any later mutation after Uncertain, and project immutable original close/ACK including finalization failure. Same-case outer uncertainty refinement preserves established42 without false success.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -355,6 +355,24 @@
         "FR-010",
         "A03",
         "F13"
+      ]
+    },
+    {
+      "category": "gm-main-helper-outcome-loss-neighbors",
+      "reason": "Two exact existing actual original helper pre-receipt stdin loss and post-receipt reply loss controls for changed close projection; split finite theory, no broad live-helper cohort.",
+      "contracts": [
+        "#1553",
+        "FR-010",
+        "A03"
+      ]
+    },
+    {
+      "category": "gm-main-helper-bounds-linux",
+      "reason": "Existing oversized-unsent command must still leave original connection available for exact close; no response-limit change.",
+      "contracts": [
+        "#1553",
+        "FR-010",
+        "A03"
       ]
     }
   ]

@@ -886,10 +886,13 @@ public partial class FileSystemManager
         writeLease.EnsureNoPendingLocalDecision();
         EnsureWorkerAuditAppend(writeLease, relativePath, Encoding.UTF8.GetBytes(content));
         cancellationToken.ThrowIfCancellationRequested();
-        var useLocalWriter = UsesTrustedLocalWriter(writeLease, relativePath);
-        var beforeContent = useLocalWriter
-            ? await ReadLocalFileBytesAsync(writeLease, relativePath, cancellationToken)
-            : await ReadFileBytesCoreAsync(relativePath, cancellationToken);
+        if (UsesTrustedLocalWriter(writeLease, relativePath))
+        {
+            RequireCommittedLocalPublication(await AppendOrdinaryFileWithOutcomeAsync(
+                writeLease, relativePath, content, cancellationToken));
+            return;
+        }
+        var beforeContent = await ReadFileBytesCoreAsync(relativePath, cancellationToken);
         var currentContent = beforeContent ?? Encoding.UTF8.GetPreamble();
 
         var appendedContent = Encoding.UTF8.GetBytes(content);
@@ -897,12 +900,6 @@ public partial class FileSystemManager
         Buffer.BlockCopy(currentContent, 0, nextContent, 0, currentContent.Length);
         Buffer.BlockCopy(appendedContent, 0, nextContent, currentContent.Length, appendedContent.Length);
         EnsureWorkerAuditAppend(writeLease, relativePath, appendedContent);
-        if (useLocalWriter)
-        {
-            RequireCommittedLocalPublication(await PublishLocalFilesAsync(writeLease,
-                [new(relativePath, beforeContent, nextContent)], cancellationToken));
-            return;
-        }
         await RecordCanonicalMutationIntentAsync(
             writeLease,
             relativePath,

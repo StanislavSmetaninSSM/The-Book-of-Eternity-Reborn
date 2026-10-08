@@ -39,6 +39,8 @@ public partial class FileSystemManager
         private readonly bool _participating;
         internal bool WasRemote {get;private set;}
         internal bool OwnsRemote=>_ownsRemote;
+        internal MainOperationClose? TerminalClose=>_retainedRemote?.TerminalClose;
+        internal bool CloseObserved=>_retainedRemote?.CloseObserved==true;
         internal MainOperationClose? DescribeClose(MainOperationOutcome outcome,bool closingFailed)=>_retainedRemote?.DescribeClose(outcome,closingFailed);
         internal string Root=>_files.BasePath;
         internal CanonicalRootIdentity RootIdentity=>_files.CanonicalRootAuthorityIdentity;

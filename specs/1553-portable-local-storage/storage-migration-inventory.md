@@ -27,11 +27,19 @@ Windows Bridge prepared ConPTY/Job/status activation is source-reviewed atc45 wi
 Linux7 pure/helper controls; native3 compile/discovery only. Separate pre-recovery
 raw config/cache defect is causally confirmed atb169: exact disk rollbackA still
 launched/cachedB, while unknown refused before Prepared. Same-owner post-recovery
-snapshot correction43e has source/selection PASS and actual10/10 Linux GREEN; final evidence review pending. No native
+snapshot correction43e has source/selection PASS and actual10/10 Linux GREEN; final independent source/evidence PASS atcc178. No native
 execution or full F11 closure claimed. [Evidence](recovery/storage-migration-config-recovery-20261008/manifest.json).
 Windows legacy quarantine retains its Job/workspace/per-profile slot; verified absent
 Linux inventory is not a universal Windows worker quiescence/restart-fence claim. All other
 F/R families below remain open; no full migration completion claim.
+
+A03 original control/PowerShell causal packet9a35:7complete1PASS6causalFAIL,
+independent gate7f904. Actual recoverable uncertainty admitted second recovery/write
+and Completed close; original close failure projection lost its true receipt. Minimal
+WIP correction preserves per-command result, absorbing unknown, truthful remote/local
+completion and outer follow-up. Finite10 source/evidence gates pending; F13 wider
+helper path/read-witness/API migration remains open.
+[Actual evidence](recovery/storage-migration-participating-outcomes-20261008/manifest.json).
 
 # Storage migration inventory — 2026-10-08, review candidate
 

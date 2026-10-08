@@ -12,7 +12,7 @@ function Open-GmParticipatingOperation {
  $start.RedirectStandardInput=$true; $start.RedirectStandardOutput=$true; $start.RedirectStandardError=$true
  foreach($arg in @($TestSupport,('control-outcome-bootstrap-'+$Scenario),$root,$Folder)){[void]$start.ArgumentList.Add($arg)}
  $process=[Diagnostics.Process]::Start($start)
- $context=[pscustomobject]@{process=$process;errorRead=$process.StandardError.ReadToEndAsync();session=$session;sequence=0L;closed=$false;lost=$false;disposed=$false;pendingRead=$null;originalClose=$null;closeObserved=$false;closeOutcome=0;terminalClose=$null}
+ $context=[pscustomobject]@{process=$process;errorRead=$process.StandardError.ReadToEndAsync();session=$session;sequence=0L;closed=$false;lost=$false;disposed=$false;pendingRead=$null;originalClose=$null;closeObserved=$false;closeOutcome=0;terminalClose=$null;lastCommandReply=$null;publicationUncertain=$false;uncertainCommandReply=$null;localScopeCompleted=$false}
  $script:ObservedContext=$context
  try {
   $ready=Read-GmOperationReply $context
@@ -41,9 +41,11 @@ $ctx=$script:ObservedContext
 $report=[ordered]@{
  value=$value;firstReply=$script:firstReply;failedReply=$script:failedReply;firstCaught=$script:firstCaught;secondRefused=$script:secondRefused
  transportDisposed=$ctx.disposed;helperExitCode=$ctx.exitCode
+ localScopeCompleted=$ctx.localScopeCompleted
  lost=$ctx.lost;closeOutcome=$ctx.closeOutcome;terminalClose=$ctx.terminalClose;originalClose=$ctx.originalClose;closeObserved=$ctx.closeObserved
  establishedResult=$(if($failure){$failure.Data['EstablishedOperationResult']}else{$null})
  establishedOutcome=$(if($failure){$failure.Data['EstablishedOperationOutcome']}else{$null})
+ originalPublicationDecision=$(if($failure){$failure.Data['OriginalPublicationDecision']}else{$null})
  failure=$(if($failure){$failure.ToString()}else{$null})
 }
 [IO.File]::WriteAllText((Join-Path $Folder 'control-powershell.json'),($report|ConvertTo-Json -Depth 20 -Compress))

@@ -1,3 +1,34 @@
+## A03 bounded original outcome/close correction WIP — 2026-10-08
+
+Independent causal/design/carrier gate PASS7f904 (75 artifacts/48 historical pins).
+The ordinary facade and control now share return-valued current file/append
+publication helpers. The command captures the actual outcome before RequireCommitted
+and lease disposal; original bytes/BOM, worker/generation checks and path allowlist
+remain. Nullable disposition identifies only real publication. Committed follow-up
+is conservative (cleanupPending does not assert a journal necessarily still exists).
+Uncertain is absorbing in C# before later lease/recovery and in PS before sending;
+the same retained connection remains available for explicit original Uncertain close.
+
+The original completion boundary projects actual TerminalClose, observed ACK and
+admission provenance, including finalization failure. No active-grant reconstruction,
+close replay or global OutcomeFor changes. PS preserves originalClose as active grant,
+retains the first unknown command and exposes semantic uncertainty after a caught
+body failure/success with established result/cause and truthful observed-close state.
+Per-command rollback still does not relabel the entire body. Reply-loss never retries
+an attempted terminal reply. Guarded absent/Stopped-main local completion remains
+explicitly distinct: successful actual scope finalization/disposal, no remote receipt
+or ACK invented. Control row adds a real PS/C# subcase after the exact owner Stopped;
+this and outer-visible unknown assertions are GREEN regression refinements, not
+separately executed pre-fix REDs.
+
+Final finite10: `gm-main-participating-outcomes-linux`7,
+`gm-main-helper-outcome-loss-neighbors`2 (existing stdin/post-receipt loss split
+unchanged from broader theory), `gm-main-helper-bounds-linux`1 (existing unsent bound).
+Touched Linux descriptor routing is explicit ubuntu-24.04; no CI/workflow changes.
+PowerShell parser and diff--check pass; fresh PlanOnly/build, independent source/
+selection review and actual10 are pending. Native Windows and wider F13 helper
+read-witness migration remain open. No full-game/whole-operation atomicity claim.
+
 ## A03 actual original-control causal RED — 2026-10-08
 
 Independent fixture/source/selection PASS at9a35. Final fresh Plan160657 built

@@ -15845,7 +15845,8 @@
       "related": [],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": false
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
@@ -16046,7 +16047,8 @@
       "related": [],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": false
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
@@ -18038,6 +18040,37 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmParticipatingControlOutcomeTests.OriginalControlRetainsPublicationAndClosingDecision"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-helper-outcome-loss-neighbors",
+      "responsibility": "Two exact existing original helper connection-loss controls, split unchanged from the broader live helper theory: caught pre-receipt stdin loss and post-receipt reply loss preserve original ownership/no replay.",
+      "excludes": "Other timeout/stall/stop consumers, native Windows and actual provider execution.",
+      "changeHints": [
+        "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+        "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+        "BookOfEternityClient/Core/SessionOperationContext.cs"
+      ],
+      "related": [
+        {
+          "id": "gm-main-participating-outcomes-linux",
+          "when": "Participating publication and effective original close projection change."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_OriginalConnectionLossBoundary"
           ]
         }
       ]

@@ -1,5 +1,6 @@
 using System.Runtime.ExceptionServices;
 using System.Text.Json;
+using System.Text;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging;
 
@@ -280,8 +281,35 @@ public partial class FileSystemManager
 
     private async Task WriteTrustedLocalFileAsync(CanonicalWriteLease lease, string relativePath, byte[]? desired)
     {
+        RequireCommittedLocalPublication(await PublishOrdinaryFileWithOutcomeAsync(lease, relativePath, desired));
+    }
+
+    // The ordinary facade and retained script command use the same publication.
+    // Returning its original outcome permits capture before facade throw/lease close.
+    internal async Task<TrustedLocalPublicationOutcome> PublishOrdinaryFileWithOutcomeAsync(
+        CanonicalWriteLease lease, string relativePath, byte[]? desired)
+    {
+        EnsureWorkerGeneralMutationAllowed(lease);
         lease.EnsureNoPendingLocalDecision();
+        if (!UsesTrustedLocalWriter(lease, relativePath))
+            throw new InvalidOperationException("An ordinary outcome requires the current local writer.");
         var before = await ReadLocalFileBytesAsync(lease, relativePath);
-        RequireCommittedLocalPublication(await PublishLocalFilesAsync(lease, [new(relativePath, before, desired)]));
+        return await PublishLocalFilesAsync(lease, [new(relativePath, before, desired)]);
+    }
+
+    internal async Task<TrustedLocalPublicationOutcome> AppendOrdinaryFileWithOutcomeAsync(
+        CanonicalWriteLease lease, string relativePath, string content, CancellationToken token = default)
+    {
+        EnsureValidCanonicalWriteLease(lease);
+        lease.EnsureNoPendingLocalDecision();
+        var appended = Encoding.UTF8.GetBytes(content);
+        EnsureWorkerAuditAppend(lease, relativePath, appended);
+        token.ThrowIfCancellationRequested();
+        if (!UsesTrustedLocalWriter(lease, relativePath))
+            throw new InvalidOperationException("An ordinary outcome requires the current local writer.");
+        var before = await ReadLocalFileBytesAsync(lease, relativePath, token);
+        var next = (before ?? Encoding.UTF8.GetPreamble()).Concat(appended).ToArray();
+        EnsureWorkerAuditAppend(lease, relativePath, appended);
+        return await PublishLocalFilesAsync(lease, [new(relativePath, before, next)], token);
     }
 }

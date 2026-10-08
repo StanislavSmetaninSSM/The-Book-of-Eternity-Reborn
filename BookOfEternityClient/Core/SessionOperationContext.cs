@@ -107,7 +107,7 @@ internal static class SessionOperationContext
         return result!;
     }
 
-    internal static async Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null)
+    internal static async Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null)
     {
         ArgumentNullException.ThrowIfNull(files);ArgumentNullException.ThrowIfNull(operation);
         await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync();
@@ -130,6 +130,7 @@ internal static class SessionOperationContext
             try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}
             catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
             catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}
+            finally { observeOriginalClose?.Invoke(main.TerminalClose,main.CloseObserved,main.WasRemote); }
         }
         return result!;
     }

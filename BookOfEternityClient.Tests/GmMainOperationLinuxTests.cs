@@ -22,12 +22,14 @@ public sealed class GmMainOperationLinuxTests
     [InlineData("terminal-main-operation-shutdown-identity")]
     public async Task OriginalClient_ReviewClosingBoundary(string mode)=>await GmOwnedTerminalLinuxTests.RunAsync(mode);
     [Theory]
-    [InlineData("terminal-main-operation-helper-caught-loss")]
     [InlineData("terminal-main-operation-helper-timeout")]
-    [InlineData("terminal-main-operation-helper-timeout-reply-loss")]
     [InlineData("terminal-main-operation-helper-stall")]
     [InlineData("terminal-main-operation-helper-stopping")]
     public async Task ActualHelper_ControlledLiveBoundary(string mode)=>await GmOwnedTerminalLinuxTests.RunAsync(mode);
+    [Theory]
+    [InlineData("terminal-main-operation-helper-caught-loss")]
+    [InlineData("terminal-main-operation-helper-timeout-reply-loss")]
+    public Task ActualHelper_OriginalConnectionLossBoundary(string mode)=>GmOwnedTerminalLinuxTests.RunAsync(mode);
     [Fact]
     public async Task OriginalHelper_UnsentOversizedCommandCanClose()=>await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-operation-helper-oversized");
     [Theory]

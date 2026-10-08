@@ -75,7 +75,7 @@ internal static class ParticipatingControlOutcomeScenario
                 Cuts++;FirstJournal=File.ReadAllBytes(_journal);
                 throw new InvalidOperationException("actual committed control cleanup cut");
             }
-            if(phase!=TrustedLocalPublicationPhase.MemberPublished || _mode is "control" or "ps-closing")return;
+            if(phase!=TrustedLocalPublicationPhase.MemberPublished || _mode is "control" or "ps-closing" or "ps-local")return;
             var desired=_mode=="ps-rollback"?Next:After;
             Require(File.ReadAllBytes(path!).SequenceEqual(desired),"Control cut did not reach distinct desired bytes.");
             Cuts++;FirstJournal=File.ReadAllBytes(_journal);
@@ -119,7 +119,7 @@ internal static class ParticipatingControlOutcomeScenario
             _evidence["OriginalUncertainFailure"]=_uncertain?.ToString();
             _evidence["PrimaryBytes"]=File.ReadAllBytes(Files.ResolvePath(Primary));
             _evidence["SecondaryBytes"]=File.ReadAllBytes(Files.ResolvePath(Secondary));
-            _evidence["JournalRetained"]=File.Exists(_journal);
+            _evidence["JournalRetained"]=File.Exists(_journal);_evidence["FirstJournalBytes"]=FirstJournal;
             if(File.Exists(_journal))_evidence["JournalBytes"]=File.ReadAllBytes(_journal);
         }
         public void Dispose(){AppDomain.CurrentDomain.FirstChanceException-=FirstChance;ReleaseHolder();}
@@ -159,6 +159,16 @@ internal static class ParticipatingControlOutcomeScenario
             else await RunDirectAsync(mode,root,receipts,evidence);
         }
         finally {evidence["ActualOriginalReceipts"]=receipts;hostType.GetField("BeforeMainCloseReply",BindingFlags.Instance|BindingFlags.NonPublic)!.SetValue(host,null);}
+    }
+
+    internal static async Task RunStoppedLocalAsync(string root,string folder,Dictionary<string,object?> evidence)
+    {
+        var before=File.ReadAllBytes(Path.Combine(root,".boe_runtime/gm-runs/main.json"));
+        Require(GmSessionRunRecordCodec.Decode(before).Disposition==GmSessionRunDisposition.Stopped,"Local control fixture did not use an actually retired main.");
+        var seed=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);
+        await seed.WriteFileAtomicBytesAsync(Primary,Before);await seed.WriteFileAtomicBytesAsync(Secondary,Before);
+        await RunPowerShellAsync("ps-local",root,folder,[],evidence);
+        Require(File.ReadAllBytes(Path.Combine(root,".boe_runtime/gm-runs/main.json")).SequenceEqual(before),"Local control minted or changed a main identity.");
     }
 
     private static object Command(long sequence,string action,string path,byte[]? bytes=null)=>new {sequence,action,path,bytes=bytes==null?null:Convert.ToBase64String(bytes)};
@@ -224,15 +234,34 @@ internal static class ParticipatingControlOutcomeScenario
         using var report=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"control-powershell.json")));
         evidence["ActualHelper"]=helper.RootElement.Clone();evidence["ActualPowerShell"]=report.RootElement.Clone();
         var actual=helper.RootElement;var ps=report.RootElement;
-        Require(child.ExitCode==0 && receipts.Count==1,"Original PowerShell transport/close fixture failed: "+await errors);
+        Require(child.ExitCode==0 && receipts.Count==(mode=="ps-local"?0:1),"Original PowerShell transport/close fixture failed: "+await errors);
         Require(ps.GetProperty("transportDisposed").GetBoolean(),"Original PowerShell did not dispose/join its helper transport.");
         var helperExit=ps.GetProperty("helperExitCode").GetInt32();
         Require(actual.TryGetProperty("HelperExit",out var ended) ? helperExit==ended.GetInt32() :
             helperExit==2 && actual.TryGetProperty("HelperFailure",out _),"Original nested helper did not record completion matching its joined process exit.");
+        if(mode=="ps-local") {
+            Require(ps.GetProperty("value").GetInt32()==42 && ps.GetProperty("failure").ValueKind==JsonValueKind.Null &&
+                ps.GetProperty("localScopeCompleted").GetBoolean() && !ps.GetProperty("closeObserved").GetBoolean() &&
+                ps.GetProperty("terminalClose").ValueKind==JsonValueKind.Null && ps.GetProperty("originalClose").ValueKind==JsonValueKind.Null &&
+                !ps.GetProperty("lost").GetBoolean() && actual.GetProperty("Publications").GetInt32()==2 &&
+                File.ReadAllBytes(Path.Combine(root,"game_session",Primary)).SequenceEqual(After) &&
+                File.ReadAllBytes(Path.Combine(root,"game_session",Secondary)).SequenceEqual(Next),
+                "Actually Stopped-main local control scope lost completion or invented a remote receipt.");
+            evidence["StoppedLocalControlCompletedWithoutRemoteReceipt"]=true;
+            return;
+        }
         if(mode=="ps-uncertain") {
             Require(actual.GetProperty("PublicationCuts").GetInt32()==1 && actual.GetProperty("KnownBAndJournalAtReply1").GetBoolean() && actual.GetProperty("OriginalSharingHolderReleased").GetBoolean() && actual.GetProperty("OriginalUncertainFailure").ValueKind==JsonValueKind.String,"Actual recoverable uncertainty sharing cut not reached.");
+            Require(actual.GetProperty("JournalRetained").GetBoolean() &&
+                actual.GetProperty("PrimaryBytes").GetBytesFromBase64().SequenceEqual(After) &&
+                actual.GetProperty("JournalBytes").GetBytesFromBase64().SequenceEqual(actual.GetProperty("FirstJournalBytes").GetBytesFromBase64()),
+                "Caught uncertainty changed pending exact bytes/journal before original close.");
             Require(actual.GetProperty("SecondCommandLeases").GetInt32()==0 && actual.GetProperty("ActualRecoveryMembers").GetInt32()==0 && actual.GetProperty("SecondMemberPublications").GetInt32()==0 && ps.GetProperty("secondRefused").GetBoolean(),"Causal RED: caught actual recoverable uncertainty admitted a second command/recovery.");
             Require(receipts[0].Outcome==MainOperationOutcome.Uncertain && ps.GetProperty("closeOutcome").GetInt32()==(int)MainOperationOutcome.Uncertain && !ps.GetProperty("lost").GetBoolean(),"Caught command uncertainty disappeared from original close or became transport loss.");
+            Require(ps.GetProperty("failure").ValueKind==JsonValueKind.String && ps.GetProperty("value").ValueKind==JsonValueKind.Null &&
+                ps.GetProperty("establishedResult").GetInt32()==42 && ps.GetProperty("establishedOutcome").GetInt32()==5 &&
+                Disposition(ps.GetProperty("originalPublicationDecision"))=="Uncertain",
+                "Caught command uncertainty was hidden from the outer consumer or lost its established body value/first decision.");
         } else if(mode=="ps-rollback") {
             Require(File.ReadAllBytes(Path.Combine(root,"game_session",Primary)).SequenceEqual(After) && File.ReadAllBytes(Path.Combine(root,"game_session",Secondary)).SequenceEqual(Before) && actual.GetProperty("PublicationCuts").GetInt32()==1,"Prior committed command or selected exact rollback lost its bytes.");
             Require(receipts[0].Outcome==MainOperationOutcome.Completed && ps.GetProperty("closeOutcome").GetInt32()==0 && ps.GetProperty("value").GetInt32()==42,"Per-command rollback incorrectly became whole-body rollback/failure.");

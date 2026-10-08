@@ -18,6 +18,7 @@ internal sealed class GmMainOperationClient : IAsyncDisposable
     internal bool Closing=>Volatile.Read(ref _closing)!=0;
     internal GmSessionRunIdentity Identity=>_grant.Identity!;
     internal MainOperationClose? TerminalClose {get;private set;}
+    internal bool CloseObserved=>_closedReply.Task.IsCompletedSuccessfully;
     private GmMainOperationClient(NamedPipeClientStream pipe,MainOperationReader reader,MainOperationReply grant){_pipe=pipe;_reader=reader;_grant=grant;}
     internal static async Task<GmMainOperationClient> OpenAsync(FileSystemManager files,CancellationToken token)
     {
