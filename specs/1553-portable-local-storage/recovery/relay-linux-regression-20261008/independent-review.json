@@ -1,0 +1,37 @@
+{
+  "timestampUTC": "2026-10-08T05:09:44.612381+00:00",
+  "agent": "/root/relay_linux_regression_review",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "xhigh",
+  "mode": "Read-only independent result/coverage/metadata review; no edits or test reruns",
+  "reviewedReport": "699d9700a021163c2e47e7baa8c6ce10d9d6fb07",
+  "verdict": "PASS",
+  "mustFix": [],
+  "verified": {
+    "artifacts": 452,
+    "sourcePins": 33,
+    "runtimeSourcePins": 29,
+    "checkpointMetadataPins": 4,
+    "uniquePassed": 32,
+    "skips": 0,
+    "failures": 0,
+    "duplicates": 0,
+    "completeDescriptors": 4,
+    "buildErrors": 0,
+    "buildWarnings": 41,
+    "planOnlySeconds": 108.248,
+    "executionSeconds": 67.879,
+    "guardiansECHILD": 14,
+    "emergencySignals": 0,
+    "guardianFailures": 0,
+    "deadlines": 0,
+    "originalBridgeStopIoAck": 3,
+    "consumerExitCodes": [
+      0,
+      0,
+      1
+    ]
+  },
+  "sourceDelta": "Tested4070ad6c differs from checkpoint3ce1 only by the new report; metadata-only implementation tip5ff403ed does not change runtime/tests/catalog/selection.",
+  "scope": "Synthetic Linux shared protocol/POSIX/gate/output/helper/repair/original retirement regression. No Windows/gameplay/provider/systemd/HTTP500 qualification."
+}

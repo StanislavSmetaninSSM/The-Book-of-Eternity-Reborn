@@ -39,18 +39,19 @@ fixture space; their top-level proofs and inventories remain locally preserved.
 
 ## Executed Linux result
 
-Fresh selected unit build and PlanOnly succeeded in108.248s, discovering four
-descriptors/32cases and executing zero. The same freshly built unit binaries then
+Fresh selected unit build and PlanOnly succeeded in 108.248s, discovering four
+descriptors/32 cases and executing zero. The same freshly built unit binaries then
 executed the exact selection with NoBuild: **32/32 PASS**, zero skips/failures/
 duplicate IDs, four completed descriptors, complete selection, no timeout,
-67.879s total wall time. Runner owned-tree and runtime cleanup both succeeded.
+67.879s total wall time. Build had zero errors and 41 warnings. Runner owned-tree
+and runtime cleanup both succeeded.
 
 | Category | Passed cases |
 | --- | ---: |
-| gm-relay-reusable-contract |17|
-| gm-relay-reusable-main |3|
-| gm-relay-transport |9|
-| gm-relay-repair |3|
+| gm-relay-reusable-contract | 17 |
+| gm-relay-reusable-main | 3 |
+| gm-relay-transport | 9 |
+| gm-relay-repair | 3 |
 
 Commands, run from the isolated checkout after existing activation:
 
@@ -65,7 +66,7 @@ Actual tested checkout/build revision is report-only WIP
 [Exact source pins](recovery/relay-linux-regression-20261008/source-pins.json)
 distinguish these references. No runtime or test fix was made.
 
-All14independent scenario guardians observed ECHILD, driverexit0, zero emergency
+All 14 independent scenario guardians observed ECHILD, driver exit0, zero emergency
 signals/failures/deadlines. Three production Bridge cases preserve original
 identity/inventory, actual T042 submit and shared worker/helper consumption,
 queue-close before stop, child exit and drained I/O, original scoped Stopped/ACK
@@ -75,15 +76,34 @@ Their original helper/shell PIDs are absent after retirement. Guardian cleanup
 is separately recorded and does not substitute for these logical stop assertions.
 
 [Evidence manifest](recovery/relay-linux-regression-20261008/manifest.json)
-retains452exact artifacts in a572,087-byte ZIP: runner plans/logs/TRX,17contract
-fixtures,14owned scenario roots, synthetic queue packets and native build provenance.
+retains 452 exact artifacts in a 572,087-byte ZIP: runner plans/logs/TRX, 17 contract
+fixtures, 14 owned scenario roots, synthetic queue packets and native build provenance.
 [Cleanup](recovery/relay-linux-regression-20261008/cleanup.json),
-[32unique case identities](recovery/relay-linux-regression-20261008/test-cases.json)
+[32 unique case identities](recovery/relay-linux-regression-20261008/test-cases.json)
 and [environment](recovery/relay-linux-regression-20261008/environment.json)
 are separately readable. Packaged binaries are hash-recorded, not embedded.
 
-WIP: independent Sol6.1/xhigh result/coverage review is next. The separate reported
-Windows24/24 and ordinary Bridge transport evidence remain external evidence;
+## Independent verdict and delivery
+
+Actual independent Sol6.1/xhigh result/coverage/metadata review of report
+`699d9700a021163c2e47e7baa8c6ce10d9d6fb07`: **PASS**, no must-fix findings.
+[Review receipt](recovery/relay-linux-regression-20261008/independent-review.json)
+records all 452 expanded artifact hashes, 33 declared source pins (29 runtime,
+four checkpoint metadata), exact TRX/discovery completeness, fresh build before
+NoBuild, sufficient affected Linux coverage, and separate original stop/guardian
+evidence. No reviewer edits or test reruns occurred.
+
+The implementation branch advanced independently to
+`5ff403ed998f7e04dadf6179fba614252bcfd2cf`; read-only comparison against3ce1
+confirmed only evidence/docs/tasks/README changes, with unchanged runtime/tests/
+catalog/selection. This executor does not modify or merge that branch. Report
+699d has exact GitHub SHA and nine-file byte readback, including the ZIP through
+the official Contents JSON/base64 route after raw binary transport returned
+`transform: short source buffer`. Final report carrier publication/readback and
+fresh direct GitHub-only clean/file-byte/fsck restoration are delivery gates;
+their exact SHA/proof will accompany the executor's final handoff.
+
+The separate reported Windows24/24 and ordinary Bridge transport evidence remain external evidence;
 this Linux verification makes no Windows, provider, gameplay, full systemd,
 HTTP500 diagnosis, cold recovery or whole-game acceptance claim. Catalog and
 implementation branch remain unchanged; no new catalog audit or full suite was run.
