@@ -1,0 +1,248 @@
+{
+  "Source": "3d205d317244b977460fc5537f66fa35e8bc567b",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile specs/1553-portable-local-storage/recovery/windows-http-20261008/selection-http.json -Parallelism 1",
+  "Summary": {
+    "Categories": [
+      "portable-load-browser-required-generation",
+      "browser-http-admission-lifetime",
+      "browser-http-admission",
+      "portable-settings-endpoints",
+      "portable-load-browser-refresh"
+    ],
+    "Reasons": [
+      {
+        "category": "portable-load-browser-required-generation",
+        "reason": "Preserve all four exact-generation Save/Load/refresh controls after splitting the slow native category; no cases dropped",
+        "contracts": [
+          "#1553",
+          "T054-WINDOWS-HTTP"
+        ]
+      },
+      {
+        "category": "browser-http-admission-lifetime",
+        "reason": "Review regression for host disposal versus surviving handler and exact cancelled queue permit ownership",
+        "contracts": [
+          "#1553",
+          "T054-WINDOWS-HTTP"
+        ]
+      },
+      {
+        "category": "browser-http-admission",
+        "reason": "Causal real HTTP parallel admission, cancellation/failure release and Load/static bypass; physical owner refusal preserved",
+        "contracts": [
+          "#1553",
+          "T054-WINDOWS-HTTP"
+        ]
+      },
+      {
+        "category": "portable-settings-endpoints",
+        "reason": "Actual GET/POST settings and audio handlers now share host admission",
+        "contracts": [
+          "#1553",
+          "T054-WINDOWS-HTTP"
+        ]
+      },
+      {
+        "category": "portable-load-browser-refresh",
+        "reason": "Real Save/Load and exact generation bundle routes cross the new host boundary",
+        "contracts": [
+          "#1553",
+          "T054-WINDOWS-HTTP"
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "3d205d317244b977460fc5537f66fa35e8bc567b",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "browser-http-admission",
+        "Seconds": 28.1438743,
+        "BudgetMinutes": 3,
+        "Completed": true
+      },
+      {
+        "Category": "browser-http-admission-lifetime",
+        "Seconds": 5.2441941,
+        "BudgetMinutes": 2,
+        "Completed": true
+      },
+      {
+        "Category": "portable-load-browser-refresh",
+        "Seconds": 17.9704481,
+        "BudgetMinutes": 5,
+        "Completed": true
+      },
+      {
+        "Category": "portable-load-browser-required-generation",
+        "Seconds": 15.1597161,
+        "BudgetMinutes": 5,
+        "Completed": true
+      },
+      {
+        "Category": "portable-settings-endpoints",
+        "Seconds": 6.5364153,
+        "BudgetMinutes": 4,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0690066,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0452162,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0815001,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 2.634959,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0060585,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 24,
+    "WallTime": "00:01:21.5954422",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 5,
+      "CompletedDescriptors": 5,
+      "PlannedCases": 33,
+      "CompletedCases": 33,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 33,
+      "Executed": 33,
+      "Passed": 33,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "Files": [
+    {
+      "Path": "summary.json",
+      "Bytes": 3586,
+      "SHA256": "6a792321924300c0784637b8c54f7f6436121cb574015e04f0f0af6b1508caca"
+    },
+    {
+      "Path": "portable-settings-endpoints-integration-005.trx",
+      "Bytes": 13725,
+      "SHA256": "f4584ec521d0ee5f627e5dc7f1de13eee4fcdf2a97261288f433431c6786c51d"
+    },
+    {
+      "Path": "portable-load-browser-required-generation-integration-004.trx",
+      "Bytes": 7814,
+      "SHA256": "70a8fc1fcfb99fb26e8379d910120c227a386d4169fefe63273f3ded4fb42d56"
+    },
+    {
+      "Path": "portable-load-browser-refresh-integration-003.trx",
+      "Bytes": 17152,
+      "SHA256": "6a5cdcb03c1f7c55bc0e484345b063ffac53474fec8b0226d20284795e7f1ef7"
+    },
+    {
+      "Path": "browser-http-admission-lifetime-integration-002.trx",
+      "Bytes": 4725,
+      "SHA256": "0566ac99d46b0c1bf1f721e0273dbf827df214af6dff6294a180dea7478f7e52"
+    },
+    {
+      "Path": "browser-http-admission-integration-001.trx",
+      "Bytes": 15677,
+      "SHA256": "d253d28a59fd7b57b003e28c6f7464422633c69aee40aa6ac58796d91246ed34"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 10711,
+      "SHA256": "9339c444514cfa2684f7fc006c3005d3c9917cec6fcbf7ac5c314e4b62c16003"
+    },
+    {
+      "Path": "Build-integration.log",
+      "Bytes": 661,
+      "SHA256": "be4ec48130a144addbc0f9c37ec911914e025dbdb6d39cfbc73bd0af5751979d"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 1529166,
+      "SHA256": "ba6c1db1f6797d001792a6094908a06747eb61aaed50ae2d5bdc15dad13bb8ca"
+    }
+  ],
+  "Pins": [
+    {
+      "Path": "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+      "Bytes": 17677,
+      "SHA256": "71c8972b07408d312e2a478447dd03defca4d617633245e02502b13c79da5df6",
+      "GitBlob": "d53830e80bd6352ec43c06e23c06d8509cc5f560"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/BrowserRequestAdmission.cs",
+      "Bytes": 941,
+      "SHA256": "55c639dc2977647cdb54b922fb1081d9931c33a117fba4a0deab2d674bf76ff7",
+      "GitBlob": "e877134aabf7ad99e25ef079e121f4d82316e0ca"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "Bytes": 13311,
+      "SHA256": "b72c0c17ae10aa3cd9b1e837722fd8d2e0328df9f087fc8f8d16ae7babd921e1",
+      "GitBlob": "35a207806b33149a18936f3e49499478ebf70899"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/LocalWebUiRequestAdmissionTests.cs",
+      "Bytes": 8020,
+      "SHA256": "099afccf257e64d7925ad034026392b59411654ee78149e97adb79017c0bf4e1",
+      "GitBlob": "9a0986562701852e23a640f33bccc505c2ca2ce5"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/LocalWebUiRequestAdmissionLifetimeTests.cs",
+      "Bytes": 4668,
+      "SHA256": "4dca6e799a13c45451fe8d0b1f9d41dc3d8ac526a5fd69801aa669f605a98cd7",
+      "GitBlob": "0559e13b016d1f4b07d968d5e2be0e401f10e68c"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "Bytes": 81688,
+      "SHA256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "GitBlob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1198516,
+      "SHA256": "595542c807334c4b07a885ce77b50d48881f4ae4e4900e58db48148f79e7fbd7",
+      "GitBlob": "2d58a8ef1d2504426b5097dbc4a9c9dca7a34b3e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/windows-http-20261008/selection-http.json",
+      "Bytes": 1332,
+      "SHA256": "1bf7fadf6b9ad1f98718367f71faf04075b12a28103b19d700143ce33ad041f9",
+      "GitBlob": "3d23be7a1eaa919b441af4c4201bd8f5599ca922"
+    }
+  ],
+  "Archive": {
+    "Name": "green-selection-evidence.zip",
+    "Bytes": 189734,
+    "SHA256": "1884014cc2e39a4f0e057bcd59314fb8743e5faffc0c8eea93242032b848ea41"
+  }
+}

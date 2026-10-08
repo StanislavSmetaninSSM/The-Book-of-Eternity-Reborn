@@ -1,0 +1,40 @@
+PLAN {"Name":"browser-http-admission-integration-001","Project":"BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj","Category":"browser-http-admission","Categories":["browser-http-admission"],"Filter":"FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.CancelledQueuedRequestLeavesNextRequestUsable|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.HandlerFailureRemainsFailureAndReleasesAdmission|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.IndependentlyHeldPhysicalGuardStillRefusesHttpRequest|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.LoadCompletionAndCancellationBypassWaitingStateRequests|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.ParallelStateRequestsWaitOutsidePhysicalGuardBudget|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.StaticAndMetadataDeliveryBypassStateRequests","Adapter":"integration","Exclusive":true,"FrontendBuild":false,"BudgetMinutes":3,"EstimatedCases":9,"ExpectedMethodCounts":[{"Name":"BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.CancelledQueuedRequestLeavesNextRequestUsable","Cases":1},{"Name":"BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.HandlerFailureRemainsFailureAndReleasesAdmission","Cases":1},{"Name":"BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.IndependentlyHeldPhysicalGuardStillRefusesHttpRequest","Cases":1},{"Name":"BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.LoadCompletionAndCancellationBypassWaitingStateRequests","Cases":2},{"Name":"BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.ParallelStateRequestsWaitOutsidePhysicalGuardBudget","Cases":1},{"Name":"BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.StaticAndMetadataDeliveryBypassStateRequests","Cases":3}]}
+Test run for /workspace/final-ci-restore/checkout/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+  Failed BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.ParallelStateRequestsWaitOutsidePhysicalGuardBudget [11 s]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: OK
+Actual:   InternalServerError
+  Stack Trace:
+     at BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.<>c.<<ParallelStateRequestsWaitOutsidePhysicalGuardBudget>b__1_0>d.MoveNext() in /workspace/final-ci-restore/checkout/BookOfEternityClient.IntegrationTests/LocalWebUiRequestAdmissionTests.cs:line 30
+--- End of stack trace from previous location ---
+   at BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.<>c__DisplayClass7_0.<<WithHeldSessionAsync>b__0>d.MoveNext() in /workspace/final-ci-restore/checkout/BookOfEternityClient.IntegrationTests/LocalWebUiRequestAdmissionTests.cs:line 149
+--- End of stack trace from previous location ---
+   at BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.<>c__DisplayClass7_0.<<WithHeldSessionAsync>b__0>d.MoveNext() in /workspace/final-ci-restore/checkout/BookOfEternityClient.IntegrationTests/LocalWebUiRequestAdmissionTests.cs:line 156
+--- End of stack trace from previous location ---
+   at BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.WithHostAsync(FileSystemManagerHooks hooks, Func`2 action) in /workspace/final-ci-restore/checkout/BookOfEternityClient.IntegrationTests/LocalWebUiRequestAdmissionTests.cs:line 173
+   at BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.WithHostAsync(FileSystemManagerHooks hooks, Func`2 action) in /workspace/final-ci-restore/checkout/BookOfEternityClient.IntegrationTests/LocalWebUiRequestAdmissionTests.cs:line 179
+   at BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.WithHostAsync(FileSystemManagerHooks hooks, Func`2 action) in /workspace/final-ci-restore/checkout/BookOfEternityClient.IntegrationTests/LocalWebUiRequestAdmissionTests.cs:line 179
+   at BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.WithHeldSessionAsync(Func`4 action) in /workspace/final-ci-restore/checkout/BookOfEternityClient.IntegrationTests/LocalWebUiRequestAdmissionTests.cs:line 142
+   at BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.ParallelStateRequestsWaitOutsidePhysicalGuardBudget() in /workspace/final-ci-restore/checkout/BookOfEternityClient.IntegrationTests/LocalWebUiRequestAdmissionTests.cs:line 19
+--- End of stack trace from previous location ---
+Results File: /workspace/final-ci-restore/checkout/TestResults/test-categories/20261008-060812-072-956350-3c2f85c23a7b43ebb7d31b5d7c51cdbf-categories/browser-http-admission-integration-001.trx
+
+Failed!  - Failed:     1, Passed:     8, Skipped:     0, Total:     9, Duration: 24 s - BookOfEternityClient.IntegrationTests.dll (net8.0)
+[xUnit.net 00:00:15.71]     BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.ParallelStateRequestsWaitOutsidePhysicalGuardBudget [FAIL]
+
+Category result
+  Categories: browser-http-admission
+  Filter: <none>
+  Timeout: 8 minute(s)
+  Wall time: 00:02:31.6935958
+  Exit code: 1
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=1, cases=9; completed descriptors=1, cases=9, complete=True
+  Tests: total=9, executed=9, passed=8, failed=1
+  Duplicate test IDs: 0
+  Results: /workspace/final-ci-restore/checkout/TestResults/test-categories/20261008-060812-072-956350-3c2f85c23a7b43ebb7d31b5d7c51cdbf-categories
+  Log: /workspace/final-ci-restore/checkout/TestResults/test-categories/20261008-060812-072-956350-3c2f85c23a7b43ebb7d31b5d7c51cdbf-categories/dotnet-test.log
+  Failure: Test run 'browser-http-admission-integration-001' failed with exit code 1.

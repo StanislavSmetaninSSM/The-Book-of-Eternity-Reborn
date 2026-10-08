@@ -1,0 +1,20 @@
+PLAN {"Name":"browser-http-admission-integration-001","Project":"BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj","Category":"browser-http-admission","Categories":["browser-http-admission"],"Filter":"FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.CancelledQueuedRequestLeavesNextRequestUsable|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.HandlerFailureRemainsFailureAndReleasesAdmission|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.IndependentlyHeldPhysicalGuardStillRefusesHttpRequest|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.LoadCompletionAndCancellationBypassWaitingStateRequests|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.ParallelStateRequestsWaitOutsidePhysicalGuardBudget|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.StaticAndMetadataDeliveryBypassStateRequests","Adapter":"integration","Exclusive":true,"FrontendBuild":false,"BudgetMinutes":3,"EstimatedCases":9,"ExpectedMethodCounts":[{"Name":"BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.CancelledQueuedRequestLeavesNextRequestUsable","Cases":1},{"Name":"BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.HandlerFailureRemainsFailureAndReleasesAdmission","Cases":1},{"Name":"BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.IndependentlyHeldPhysicalGuardStillRefusesHttpRequest","Cases":1},{"Name":"BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.LoadCompletionAndCancellationBypassWaitingStateRequests","Cases":2},{"Name":"BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.ParallelStateRequestsWaitOutsidePhysicalGuardBudget","Cases":1},{"Name":"BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.StaticAndMetadataDeliveryBypassStateRequests","Cases":3}]}
+Test run for /tmp/relay-linux-regression-github-final/checkout/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+Results File: /tmp/relay-linux-regression-github-final/checkout/TestResults/test-categories/20261008-061212-342-956917-a98dcfe3cde24f039fe2f072b9710311-categories/browser-http-admission-integration-001.trx
+
+Passed!  - Failed:     0, Passed:     9, Skipped:     0, Total:     9, Duration: 24 s - BookOfEternityClient.IntegrationTests.dll (net8.0)
+
+Category result
+  Categories: browser-http-admission
+  Filter: <none>
+  Timeout: 8 minute(s)
+  Wall time: 00:01:34.1461506
+  Exit code: 0
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=1, cases=9; completed descriptors=1, cases=9, complete=True
+  Tests: total=9, executed=9, passed=9, failed=0
+  Duplicate test IDs: 0
+  Results: /tmp/relay-linux-regression-github-final/checkout/TestResults/test-categories/20261008-061212-342-956917-a98dcfe3cde24f039fe2f072b9710311-categories
+  Log: /tmp/relay-linux-regression-github-final/checkout/TestResults/test-categories/20261008-061212-342-956917-a98dcfe3cde24f039fe2f072b9710311-categories/dotnet-test.log

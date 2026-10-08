@@ -1,0 +1,140 @@
+{
+  "sha": "9dfa154d90f3da003d186fc1e3781d2cbd405b91",
+  "tree": "d54977583018c91cb4cba3bc41cbe6399cd96802",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+      "bytes": 17056,
+      "sha256": "9465af8840824cd3c0b0e662252be52f8f06d30f272085bf05e53bdfa11ad634"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/LocalWebUiRequestAdmissionTests.cs",
+      "bytes": 7936,
+      "sha256": "b6c7b49e12c4c890049bf7b6c5c9a404e3748d5d895e32d625a1bf730579e68f"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "bytes": 236035,
+      "sha256": "5226c6c86ae76b70d7cbd8eed8cdd5cb734986808afdff7e46108271d8643d3f"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "bytes": 13311,
+      "sha256": "b72c0c17ae10aa3cd9b1e837722fd8d2e0328df9f087fc8f8d16ae7babd921e1"
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1196834,
+      "sha256": "863dfaa2d765486baaceffab5fcae2be8523cf399314010e15b1f69f916dd653"
+    }
+  ],
+  "archive": {
+    "bytes": 182351,
+    "sha256": "d2afbf69d306ccaac18a576167ecafec20020d705872e370b3e904d81b24a88c"
+  },
+  "artifacts": [
+    {
+      "path": "Build-integration.log",
+      "bytes": 17843,
+      "sha256": "c79ef6de8ef7a8cf92f97e369946824fbc91ad37453eaed905d4e8640d520dbf"
+    },
+    {
+      "path": "browser-http-admission-integration-001.trx",
+      "bytes": 20974,
+      "sha256": "46055b1529e6a958b4676b77e985668347d818820c2c2ccab55e1f2b0a93a10f"
+    },
+    {
+      "path": "dotnet-test.log",
+      "bytes": 1544455,
+      "sha256": "26c905f5c3760b06fffd3b11cf8913c790ea04d5d033ee6db8423b675b6491ee"
+    },
+    {
+      "path": "executor.log",
+      "bytes": 5777,
+      "sha256": "c4f8b80acac680e8715cf38bae7f9b0188554872ac5dda52c5dcde5f3680fc07"
+    },
+    {
+      "path": "plan.json",
+      "bytes": 2610,
+      "sha256": "4040803c2cd478cbfc4997048d729d667ab4f2adf03de861d03cb1195c254bac"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 1456,
+      "sha256": "1529446abefb7d88686fd652cef4a2477fed745453b7dccbfccad144df623b14"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "browser-http-admission"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "9dfa154d90f3da003d186fc1e3781d2cbd405b91",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "browser-http-admission",
+        "Seconds": 28.7417326,
+        "BudgetMinutes": 3,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.072896,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0702103,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1283609,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 116.9283686,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 8,
+    "WallTime": "00:02:31.6935958",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 9,
+      "CompletedCases": 9,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 9,
+      "Executed": 9,
+      "Passed": 8,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  }
+}

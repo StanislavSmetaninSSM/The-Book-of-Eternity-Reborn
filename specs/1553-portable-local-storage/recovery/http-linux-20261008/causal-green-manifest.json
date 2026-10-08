@@ -1,0 +1,159 @@
+{
+  "Source": "3d205d317244b977460fc5537f66fa35e8bc567b",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-http-admission -Parallelism 1",
+  "Summary": {
+    "Categories": [
+      "browser-http-admission"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "3d205d317244b977460fc5537f66fa35e8bc567b",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "browser-http-admission",
+        "Seconds": 28.352198,
+        "BudgetMinutes": 3,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0778856,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0677021,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0931245,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 60.4615431,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0050748,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 8,
+    "WallTime": "00:01:34.1461506",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 9,
+      "CompletedCases": 9,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 9,
+      "Executed": 9,
+      "Passed": 9,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "Files": [
+    {
+      "Path": "summary.json",
+      "Bytes": 1552,
+      "SHA256": "de8c34aa3937326f47760606e3049c467d40cbb997c7e24247c408d2fac9f0ce"
+    },
+    {
+      "Path": "browser-http-admission-integration-001.trx",
+      "Bytes": 15677,
+      "SHA256": "6bd570afad6277d7aac4a16357400e7206fd711520120ae7baf15f0c1e1a5002"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 2610,
+      "SHA256": "785cfb1f198bf6b7a6e97ed6bcf09d61c663230e9029879f0f3fac219479c50a"
+    },
+    {
+      "Path": "Build-integration.log",
+      "Bytes": 19263,
+      "SHA256": "27434f87fd447f8cc70de8e301e937791c0b6131cd2ba2937cddb1912a9fc84c"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 1543563,
+      "SHA256": "24155b1e19aa501d131c960b3d9ff97f420eaef8d85e8b9384f2f05672abccb1"
+    }
+  ],
+  "Archive": {
+    "Name": "causal-green-evidence.zip",
+    "Bytes": 182145,
+    "SHA256": "2baecf45b37597f137e590ac0aecf010a340ef9f20fd74e9f1d7f661bb617120"
+  },
+  "Pins": [
+    {
+      "Path": "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+      "Bytes": 17677,
+      "SHA256": "71c8972b07408d312e2a478447dd03defca4d617633245e02502b13c79da5df6",
+      "GitBlob": "d53830e80bd6352ec43c06e23c06d8509cc5f560"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/BrowserRequestAdmission.cs",
+      "Bytes": 941,
+      "SHA256": "55c639dc2977647cdb54b922fb1081d9931c33a117fba4a0deab2d674bf76ff7",
+      "GitBlob": "e877134aabf7ad99e25ef079e121f4d82316e0ca"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "Bytes": 13311,
+      "SHA256": "b72c0c17ae10aa3cd9b1e837722fd8d2e0328df9f087fc8f8d16ae7babd921e1",
+      "GitBlob": "35a207806b33149a18936f3e49499478ebf70899"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/LocalWebUiRequestAdmissionTests.cs",
+      "Bytes": 8020,
+      "SHA256": "099afccf257e64d7925ad034026392b59411654ee78149e97adb79017c0bf4e1",
+      "GitBlob": "9a0986562701852e23a640f33bccc505c2ca2ce5"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/LocalWebUiRequestAdmissionLifetimeTests.cs",
+      "Bytes": 4668,
+      "SHA256": "4dca6e799a13c45451fe8d0b1f9d41dc3d8ac526a5fd69801aa669f605a98cd7",
+      "GitBlob": "0559e13b016d1f4b07d968d5e2be0e401f10e68c"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "Bytes": 81688,
+      "SHA256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "GitBlob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1198516,
+      "SHA256": "595542c807334c4b07a885ce77b50d48881f4ae4e4900e58db48148f79e7fbd7",
+      "GitBlob": "2d58a8ef1d2504426b5097dbc4a9c9dca7a34b3e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/windows-http-20261008/selection-http.json",
+      "Bytes": 1332,
+      "SHA256": "1bf7fadf6b9ad1f98718367f71faf04075b12a28103b19d700143ce33ad041f9",
+      "GitBlob": "3d23be7a1eaa919b441af4c4201bd8f5599ca922"
+    }
+  ]
+}
