@@ -908,7 +908,8 @@
       "related": [],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": true
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 5,
       "expectedSeconds": null,
@@ -15894,7 +15895,8 @@
       "related": [],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": false
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 3,
       "expectedSeconds": null,

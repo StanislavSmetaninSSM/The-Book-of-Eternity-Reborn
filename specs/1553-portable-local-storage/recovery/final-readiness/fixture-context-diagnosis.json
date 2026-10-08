@@ -16,5 +16,13 @@
     "reasoningEffort": "xhigh",
     "verdict": "PASS",
     "needAdditionalMirroredTest": false
+  },
+  "ordinaryRunnerAfterFix": {
+    "source": "3f9c388e4fca9192e8246afbfed9461c972049b7",
+    "passedIntegration": 7,
+    "passedManaged": 11,
+    "callerOverrideRequired": false,
+    "runtimeChanges": false,
+    "cleanup": "complete"
   }
 }
