@@ -1,3 +1,186 @@
+## F13 helper admission/read/publication design WIP — 2026-10-08
+
+Tracked by #1553 T063/T062/T064, FR-002/004/005/006/012/014. This checkpoint
+contains design and a finite proposed selection only: no F13 runtime/test changes,
+builds or executions. Independent design/selection review precedes fixture work;
+frozen fixture review and fresh PlanOnly precede causal execution. Wider migration,
+native Windows and #1536 gameplay remain outside this bounded acceptance.
+
+Previous F04/F05 is now independently accepted at runtimec8d/carrier
+`be3d82030b1859be4eb515bc9e42c2dc27a220e2`: corrected Linux57 PASS, all59 saved
+artifacts/96 historical Git pins verified. Parent independently restored that exact
+SHA directly from GitHub into `/workspace/boe-1553-migration-browser-daren-restore`:
+clean detached checkout, no alternates,26232 tracked files, full fsck exit0,
+tree `2196274e0daade1684927b269ff6387b4c01a3e2`, all59/96 hashes verified, no tests
+or builds in the restore. Native30 remains unexecuted. Main remainsd0241e71.
+
+### Existing route and concrete gap
+
+`GM_Turn_Helper.ps1` Init stores only a resolved directory. Read-BoeJson and policy
+helpers read raw files; Write-BoeJson checks path/realm/terminal before taking
+`game_session/.locks/canonical-write.lock`. The actual FileSystemManager lease uses
+`BasePath/.boe_runtime/locks/canonical-write.lock`, so the old helper lock does not
+serialize with an actual common publication. Relative policy strings are checked
+before dot segments are resolved; the absolute containment check lacks a separator
+boundary and uses Windows case behavior on Linux. These are source findings, not
+yet executed F13 failures.
+
+The read unit includes realm, terminal/request/repair, raw hashes/comparable JSON,
+both current/snapshot tree walks, Guardian controls/snapshot, pending authority,
+QTE receipt fingerprints and validation-repair witnesses. Complete/Fail/repair/QTE
+read before their final Write; NPC/Guardian trade and training helpers also read
+multiple inputs before publication. Moving only Write or Read-BoeJson is insufficient.
+Existing malformed-JSON fallbacks are parse policy, not permission to swallow a
+generation, path/type, transport or storage admission failure.
+
+### Dedicated role and exact generation lifetime
+
+Use a dedicated internal helper mode in the existing owned C# executable/stdio
+transport. Reuse framing, original participating admission, immutable close/ACK
+projection and owned process/IO disposal; do not widen the default A03 command
+allowlist or let matching generation enable helper commands there. The public
+PowerShell helper names and GM-authored JSON/schema remain unchanged.
+
+Init observes only the existing bounded generation record through the existing
+trusted scope and strict schema interpretation, without creation or recovery. This
+observation is not authority by itself. Establish its expected-generation binding
+before acquiring the first ordinary canonical lease; then perform original recovery
+and validate existing configuration before returning the initialized generation.
+Missing, malformed or replaced authority refuses; never GetOrCreate or silently
+rebind. The generation reader may factor its current strict byte/schema reader,
+but the non-lease observation is used only to seed this subsequent checked binding.
+
+Later helper openings supply that exact Init generation. Add an explicit existing
+bound-generation check in ordinary lease acquisition before any recovery/protocol
+classification, preserving main/worker checks and the readonly no-recovery closing
+purpose. Do not rely on today's incidental browser-classifier verification. A stale
+Init must refuse even when a new-generation journal could otherwise recover.
+
+Each public stateful operation owns a short helper process/pin/lease, with nested
+helper functions reusing only that helper scope. Release the lease before the
+bound scope's finalization can acquire its own readonly lease. No pin/lease spans
+interactive thinking between separate Read and Write calls; persistent read hashes
+provide the existing optimistic baseline across those calls. An already-active
+default A03 PowerShell context causes explicit pre-launch refusal, preserving its
+own usability/close. Production Init was found only in daemon-generated GM bootstrap
+instructions, not a nested default-A03 body; no guard transfer, workspace-local mode
+or authority inferred from a directory named game_session is introduced.
+
+The helper instance retains its first actual Uncertain or transport-loss latch
+across short operations and Initialize calls; another helper opening cannot erase
+it or replay. Explicit original close remains possible. Committed commands update
+their exact baseline even if follow-up fails; known rollback keeps the prior baseline.
+Body result, individual publication result and original close/ACK remain distinct,
+including sequential QTE receipts then Ready. No whole-helper-operation rollback is
+promised. A new client/process may exercise existing recovery; the latch is not a
+new durable journal or cross-process authority.
+
+### One leased policy snapshot and exact targets
+
+Normalize each relative/absolute target against the explicit session root first,
+then validate through TrustedLocalFileScope regular-file/directory/ancestor rules
+and derive the policy-relative spelling from that same target. Preserve safe
+absolute-inside-root use, reject sibling-prefix and link/type aliases. Exact grants
+are unchanged; use host destination comparison for baseline/path-set keys (Linux
+Ordinal), without changing JSON property or gameplay-policy case semantics.
+
+All admission-sensitive reads, existence checks and recursive enumerations use
+the original held lease and existing validated byte/tree facades. C# supplies exact
+bytes/absence and validated relative entries; PS performs the existing JSON parsing
+and business checks. Move storage calls outside forgiving parse catches. Preserve
+BOM decoding and baseline capture before Read-BoeJson parse, missing versus empty,
+existing PS serialization/depth clamping/line-break normalization, UTF8 without BOM
+plus host newline. Eliminate the raw lock/temp/replace-backup publication route.
+
+Wrap the entire stateful public completion unit, including Complete/Fail-BoeTurn,
+Complete-BoeValidationRepair, Complete-BoeQteEffectResolution, NPC/Guardian trade and
+training. Standalone reads/writes open the same short scope. Record exact read
+hashes/absence and enumerated sets inside it; revalidate required witnesses,
+destination baseline and generation at the existing publisher guard after mutation
+hooks and on each retry. Earlier own committed publications advance only their
+known witnesses. Do not adopt a competing Ready as a new overwrite baseline.
+Read-only helpers called directly also use admitted access; pure JSON/math helpers
+remain pure. Protected-path exceptions already implemented by completion helpers
+remain explicit existing policy; no general client-owned write grant is added.
+
+### Byte transport and process ownership
+
+Use sequenced byte transfers within the dedicated helper role, not a larger A03
+frame or arbitrary new JSON document ceiling. One outstanding transfer per scope,
+original operation/transfer identity, declared total length/hash, exact offsets,
+checked arithmetic and exact final length/hash are required. Writes assemble only
+in the original helper process memory and publish once after completion. Reads and
+enumeration payloads use the same bounded chunks, avoiding the existing64KiB reply
+ceiling. A 32KiB raw chunk fits beneath that envelope after base64/metadata; measure
+UTF8 frame bytes, including multibyte paths. Reject duplicate/out-of-order/trailing
+chunks; incomplete transfer/abort/EOF/close cannot publish. Dispose buffers with the
+original scope; no canonical spool, second journal or background child is added.
+An allocation failure is an ordinary prepublication failure, not a truncated write.
+
+Preserve Windows PowerShell5.1 compatibility of the existing helper and accepted
+Bridge fallback. Dedicated helper launch uses exact PS5.1-compatible Windows
+argument quoting where ArgumentList is unavailable; do not assume $IsWindows,
+Path.GetRelativePath, Convert.ToHexString, WaitForExitAsync or ProcessStartInfo.Environment
+in Desktop PowerShell. Linux pwsh quoting checks are not native .NET Framework
+launch qualification. Default A03 host compatibility is not expanded incidentally.
+
+### Finite proposed causal and final selection
+
+First freeze **10 new original-PowerShell causal rows**, using the existing owned
+TestSupport/guardian pattern, an actual initialized current root, actual helper
+functions and actual publication/lease events. No live GM/provider. Held publication
+rows synchronize on old read completion or the new actual lock contention event,
+never require a pre-fix cache/read after the correction. Record bytes/journal and
+effects before result assertions; release/join original actors in finally.
+
+| Rows | Causal obligation |
+| --- | --- |
+| 2 | Init then read, and already-initialized Read, during real MemberPublished B; release with known rollback to A. New route waits and returns A. |
+| 2 | Realm policy during a held transient permitted realm; outer Complete-BoeTurn during a held transient terminal. Require actual selected after-image, settled original rollback and correct final policy/publication. |
+| 1 | Initialize, perform real current SaveLoad replacement, retain a valid recoverable new-generation journal, then old helper access. Require refusal before recovery events and exact retained evidence. |
+| 3 | Dot-segment protected target, absolute sibling-prefix target, and symlinked realm/read ancestor. Prove old actual target/read effect, new no-effect refusal; storage errors cannot become empty realm. |
+| 2 | Missing and malformed generation under an otherwise real fixture root refuse initialization without generation/config creation. |
+
+After causal interpretation, proposed **18 additional current-route controls**:
+large read >64KiB and write whose base64 exceeds4MiB (2); malformed transfer
+duplicate/offset/trailing/hash/incomplete finalization (5); explicit close during a
+partial transfer and caller cancellation while waiting (2); actual ordinary helper
+RolledBack/Uncertain/Committed-with-debt cuts (3); Linux case-distinct baselines (1);
+default-A03 nested refusal/continued original usability (1); actual Running original
+owner/helper close (1); file-as-ancestor and directory-as-file refusal (2); unchanged
+malformed-JSON parse fallback (1). Unknown includes caught failure, no later lease,
+no re-Initialize reset, truthful outward failure and exact original close.
+
+Proposed **22 exact original helper rows**, migrating fixture bootstrap/owned pwsh
+execution rather than running the broad historical helper/daemon owner:
+QTE closed receipts/Ready and string-amount refusal (2), correlated ordinary Complete,
+missing pending context, Fail (3), serialization depth/line breaks (2), mutable Read
+and stale read-modify-write (2), NPC/Guardian trade and Mortal/afterlife training (4),
+repair-after-accepted-terminal (1), Guardian first-turn mirror, deleted Mortal file,
+semantically equal snapshot JSON (3), spiritual continuation valid responses (1),
+its actual publication-witness race theory (3), competing-Ready refusal (1).
+The last two owners currently replace Acquire-BoeCanonicalWriteLock; migrate their
+faults to the real current guard/cut before retiring that raw function. Preserve all
+original semantic assertions; this is storage integration, not B2–B5 gameplay work.
+Other initialized historical fixtures also need legitimate generation bootstrap
+when their setup changes; unselected bodies are not reported executed.
+
+Reuse only **3 exact A03 neighbors**: `gm-main-helper-outcome-loss-neighbors`2 and
+`gm-main-helper-bounds-linux`1 if the shared transport/close code changes. Proposed
+final maximum **53 Linux rows =10+18+22+3**, divided by responsibility; not an aggregate
+helper/daemon suite. Exact methods/rows/categories and justified any adjustment must
+be frozen and independently reviewed before execution. Runtime-only new controls
+are GREEN extensions unless an actual historical cut is demonstrated. Native
+Windows5.1/pwsh, ordinary/space/Unicode/extended paths, original Running/quiescent
+admission and interruption/close remain explicit body-required, unexecuted recipes.
+
+Synchronize daemon bootstrap instructions and `Examples/E_CLI_NPC_Trade.txt` with
+the existing Initialize→Read→Write workflow, same-session generation lifetime and
+no-replay follow-up. No new GM-authored fields, response API or game rule. Select
+only affected operational source/example guards after the actual documentation delta
+is known. Next step: independent design/finite-selection review, then test-only
+causal10 fixture checkpoint; no production implementation before causal evidence.
+
 ## F04/F05 corrected GREEN checkpoint — 2026-10-08
 
 Runtimec8d882cd57a9780c66f505b951f70968a660ac98 independent corrected SOURCE,

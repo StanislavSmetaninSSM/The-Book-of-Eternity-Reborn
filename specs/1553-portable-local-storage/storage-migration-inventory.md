@@ -1,3 +1,13 @@
+## Current F13 design checkpoint — 2026-10-08
+
+Read-only source assessment is preserved in the [current plan](plan.md): dedicated
+helper role, Init-bound existing generation before recovery, one short original
+lease across full policy/read/publication units, trusted paths and sequenced exact
+byte transfers. Default A03 permissions/close remain separate. Proposed causal10,
+current controls18, original helper22 and conditional shared-transport neighbors3
+await independent design/selection and frozen fixture gates. No F13 code or tests
+changed/executed; native Windows/PowerShell5.1 and full migration remain open.
+
 ## Current F04/F05 checkpoint — 2026-10-08
 
 Corrected runtimec8d independently source/fixture/selection and raw evidence PASS;
@@ -5,7 +15,9 @@ actual57 Linux PASS (browser23, Daren23, whole-protocol5, signed direct-gacha6),
 complete/clean with both cleanup flags true. Parent-found neutral-only pending
 scratch ordering P2 is closed by fresh post-legacy classification, original common
 recovery, then strict admission. Initial242d56 remains historical scoped evidence.
-Final carrier integrity/remote restore pending. Native30 compiled/discovered,
+Independent final carrier be3d integrity PASS (59 artifacts/96 historical pins);
+parent fresh GitHub-only exact-be3d restore is clean,26232 tracked files/full fsck0,
+all59/96 reverified without builds/tests. Native30 compiled/discovered,
 zero executed. Fresh schema7 and registered profile use the current publisher on
 both platforms; original physical schema<=6 evidence keeps its handler/refusal.
 Exact grants and signed adoption remain unchanged, sequential restoration remains
@@ -80,7 +92,7 @@ ConPty/Job lifecycle execution remains unqualified. Conservative provider-labell
 restart observation never authorizes cold adoption or reboot recovery. Native Windows
 qualification remains external and unexecuted. Bounded Bridge/shared consumers and A03 gates above are accepted within their
 stated platforms. F06 has34-case Linux GREEN; F04/F05 has corrected57-case shared Linux GREEN with independent raw review PASS,
-final carrier integrity/restore pending. Remaining F13/F14/F16/F18, dead code, cleanup and treatment-storage tails stay open.
+final be3d carrier and parent fresh remote restore accepted. Remaining F13/F14/F16/F18, dead code, cleanup and treatment-storage tails stay open.
 
 T062 restoration delta:9e30 source has10/10 Linux PASS including actual second
 mirror publication after baseline restoration; earlier7 affected recovery neighbors
@@ -142,14 +154,14 @@ counts, not defect counts. Existing F/T owners below are the single executable b
 | R04/R10, A04 | F01/F08, T062 | Actual unknown tree carrier, public Prepare, cleanup-to-notice and generation-close cuts reproduced. Common-carrier correctionfbec has15/15 Linux GREEN; independent source/evidence PASS; no full command-loop or whole-parent-operation atomicity claim. |
 | R14/R16/R21, A01 | F15/F07, T063 | Bounded adapter/owner/cleanup/probe/shared-consumer gates accepted as linked above; shared dispatch/Load5f150 has16 Linux PASS. Windows original prepared ConPty/Job activation c45 is source-reviewed with Linux7 component controls, native recipes unexecuted. Startup43e now freezes the same original post-recovery configuration (10 Linux PASS, independent cc178). WMI observation is never reboot authority; native Job faults/quarantine/Load and no universal Windows worker fence remain explicit limits. |
 | R15, A03 | F13/F08, T062/T063 | Actual six causal failures corrected at e33c: per-command publisher decisions, sticky uncertainty before another lease, outward semantic follow-up and exact original close/ACK with guarded local completion. Independent final d366 accepted10 Linux PASS; pre-receipt loss intentionally retains Unresolved. Broader GM helper generation/path/role/read-witness migration and native execution remain open; current control allowlist and no replay are preserved. |
-| R05 | F03/F04, T061/T063 | Console lifecycle accepted bounded Linux; corrected platform spellingd8b remains separate fromebd30 proof. Fresh both-platform browser schema7 cutoverc8d has independent corrected source/selection/raw evidence PASS and shared Linux57 GREEN; final carrier/restore pending, native30 unexecuted. Original schema6 handler/refusal and signed direct-gacha adoption remain preserved. |
+| R05 | F03/F04, T061/T063 | Console lifecycle accepted bounded Linux; corrected platform spellingd8b remains separate fromebd30 proof. Fresh both-platform browser schema7 cutoverc8d has independent corrected source/selection/raw evidence PASS and shared Linux57 GREEN; final be3d carrier and parent fresh remote restore accepted, native30 unexecuted. Original schema6 handler/refusal and signed direct-gacha adoption remain preserved. |
 | R06 | F05, T063 | Registered Daren fresh standalone/declared routes now use the current publisher on both platforms atc8d. Context-first original external evidence stays original-owned. Shared Linux public QTE/profile/exact bytes/absence/recovery included in57 GREEN; native existing/absent/extended recipes remain unexecuted. |
 | R07 | F06, T063 | Original Linux24 baseline21PASS/3 physical-deletion failures preserved. Runtime47ce exact-byte CAS/fixed-tree/full-archive-and-remaining-cohort guards has independent source/selection PASS and actual34/34 Linux GREEN (24 original +10 current cuts/caller). Independent final evidence/carrier PASS2f373. Partial removals remain committed, authority-missing retry refuses, unknown retains journal/archive; no diagnostic adoption or whole-cohort atomicity. Native Windows unexecuted. |
 | R03/R13 | F02/F09/F10, T062/T064 | Backup/distribution migrated individually; accepted restoration evidence above. Final QTE baseline cleanup remains: original ResolveActiveAction terminal result → actual backup deletion unknown/logger cut, sibling-directory/root pruning controls. Pre-turn cleanup similarly retains established outcome/evidence. |
 | R04/R12 | F08/F09/F12, T062 | Two treatment contours remain: helper/engine compensation actual publication uncertainty (preserve FailTaken restart blocker/HeldBlocked/Unsafe contracts), and successful treatment followed by actual runtime mirror uncertainty then truthful notice. Post-seal binding itself reads authority; not a third forward-write defect. Use direct original coordinator, avoid finally-reacquire fixture masking; no B2–B5 business resumption. |
 | R08/R09/R11 | F07/F08/F17, T063/T064 | Source-reviewed save/settings/load outcome contracts preserved. Autosave3 production callers propagate typed decisions; no additional bool defect found, so no speculative aggregate run. Remove only proven dead recursive helpers after reflection/script/name census and relevant guard. Native durability/close qualification remains scoped. |
 | R12/R26 | F11/F12/F19, T062/T065 | Actual failed browser rollback/runtime/notice accepted83f. HTTP/DTO/stale response ownership stays separate; retain current source-reviewed admission/Running ACK contracts. UI/cache/player notifications are not storage observers. No blanket callback-to-endpoint acceptance. |
-| R20 | F13/F14, T063 | Later helper-specific existing transport entry must bind captured generation, exact role, bytes/baseline/read witnesses under one lease. Daemon original admitted QTE handler held MemberPublished cut must establish raw snapshot timing before guarded read/hash validation. Preserve watcher eligibility/poll fallback, source identity and no replay; reply64KiB vs command4MiB bounds explicit. |
+| R20 | F13/F14, T063 | F13 concrete design is current: dedicated helper role, generation before recovery, full policy/read/witness unit under one short lease, bounded chunk transport without a new document ceiling; proposed finite53 awaits design/fixture gates. Old helper lock is distinct from the facade lock. F14 remains later: daemon original admitted QTE handler held MemberPublished cut must establish raw snapshot timing before guarded read/hash validation. Preserve watcher eligibility/poll fallback, source identity and no replay. |
 | R25 | F16, T063 | Actual image cleanup consumer/counts and console image publication catch still open. Stop on storage uncertainty/replacement, preserve confirmed per-file counts. Canonical image/mod/world-profile directory recreation needs bounded generation/type guard, including gallery OpenImagesFolder→DesktopPathOpener default creation; preserve injected gallery creation/one-open/failure controls. Explicit external export and BasePath guardian library initialization stay distinct technical roots. |
 | R02/R13/R28 | F18, T064 | Reach-test ordinary vs physical/read/load callbacks, five named old ordinary FSM physical-hook tests, staged/spiritual/wound batching cuts and positive controls for zero-event assertions. MemberPublished is precommit; no async-void observer or nested canonical lease. Keep legacy/primitive/current-state-machine cuts with their real contract. |
 | R17/R18/R19 | F15, T063/T065 | Worker frame/peer/ApplyGate/synthetic bundle are independently typed ownership protocols. Audit found no new concrete stale consumer; preserve explicit platform capability refusal and original recovery handlers. Constructed paths/JSON/delegate edges remain checked at affected consumer boundaries, not converted wholesale to game journal. |
