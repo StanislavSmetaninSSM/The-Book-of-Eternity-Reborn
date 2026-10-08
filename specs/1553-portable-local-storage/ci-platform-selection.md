@@ -50,6 +50,16 @@ exit0/cleanup complete. Existing9 unchanged PASS reused; 27 distinct assertions
 accepted in total, not43 distinct. No S2A/runtime cohorts or native Windows run.
 Actual PowerShell7.5.4, SDK10.0.401, .NET8runtime8.0.31 were read locally.
 
-Source/evidence review and discovery/restoration gates pending. Hosted Actions
+Review found one P2: coercing schemaVersion comparison admitted text/boolean schema1.
+New schema RED executes18PASS/1FAIL (zero accepted adapter results), cleanup complete;
+integer-only correction then gives final28/28 (19routing +9catalog), no skips or
+cleanup failures. [Schema RED](recovery/ci-platform-selection/schema-red/manifest.json),
+[final GREEN](recovery/ci-platform-selection/final-green/manifest.json).
+First catalog434/11193 and PlanOnly2files/2descriptors both exit0/executed0.
+One metadata preparation invocation incorrectly combined ValidateCatalog with
+Parallelism; rejected at parameter binding before any workload, corrected without
+source changes. It is not a causal RED. Preinstalled PyYAML6.0.3 parsed workflow
+and checked preserved triggers/permissions, matrix and stable final name.
+Final source followup, discovery and restoration gates pending. Hosted Actions
 matrix and native Windows remain unexecuted; branch protection requirements
 remain unknown after the read-only403. No workflow_dispatch/PR/merge here.

@@ -86,7 +86,9 @@ function Get-TestCategoryCiMatrix {
     [CmdletBinding()]
     param([Parameter(Mandatory)]$Catalog, [Parameter(Mandatory)]$Selection)
     if ($Selection -isnot [Collections.IDictionary] -or
-        -not $Selection.Contains('schemaVersion') -or $Selection.schemaVersion -ne 1 -or
+        -not $Selection.Contains('schemaVersion') -or
+        ($Selection.schemaVersion -isnot [int] -and $Selection.schemaVersion -isnot [long]) -or
+        $Selection.schemaVersion -ne 1 -or
         -not $Selection.Contains('selections') -or $Selection.selections -isnot [array] -or
         $Selection.selections.Count -eq 0) {
         throw 'CI requires schemaVersion 1 and explicit nonempty selections; there is no default suite.'
