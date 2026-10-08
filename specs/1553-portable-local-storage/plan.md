@@ -1,3 +1,12 @@
+## F14 fixture status-publication ordering — 2026-10-08
+
+Intermediate0b8 Plan210208 succeeded9/2/0 in38.5047138s; no tests executed.
+Review found the legitimate daemon status writer could have a journal between
+producer release and child settlement. Known-decision journal absence is now
+asserted after that original child/helper joins; exact producer decision/cut and
+unknown retained evidence remain captured at their original boundaries. No
+assertion weakened, case added, or runtime changed. Corrected gate/build pending.
+
 ## F14 fixture closing-oracle correction — 2026-10-08
 
 Initial5e3 fresh Plan205957 built unit successfully,9/2 planned,0 executed,

@@ -109,7 +109,7 @@ internal static class GmDaemonStorageScenario
             if(mode=="request-unknown") {
                 Require(decision.Disposition==TrustedLocalPublicationDisposition.Uncertain&&File.ReadAllBytes(journal).SequenceEqual(retainedJournal!),"Unknown decision/evidence missing.");
                 evidence["UnknownJournalBeforeCleanup"]=Convert.ToBase64String(retainedJournal!);
-            } else Require(!File.Exists(journal)&&decision.Disposition==(mode.EndsWith("commit",StringComparison.Ordinal)?TrustedLocalPublicationDisposition.Committed:TrustedLocalPublicationDisposition.RolledBack),"Known decision not settled.");
+            } else Require(decision.Disposition==(mode.EndsWith("commit",StringComparison.Ordinal)?TrustedLocalPublicationDisposition.Committed:TrustedLocalPublicationDisposition.RolledBack),"Known decision not settled.");
             await child.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));await Task.WhenAll(stdout,stderr).WaitAsync(TimeSpan.FromSeconds(2));
             evidence["PowerShellExitCode"]=child.ExitCode;evidence["PowerShellStdOut"]=await stdout;evidence["PowerShellStdErr"]=await stderr;
             Require(child.ExitCode==0,"Fixture PowerShell failed before its result projection.");
@@ -119,6 +119,9 @@ internal static class GmDaemonStorageScenario
                 helper.RootElement.GetProperty("ProcessId").GetInt32()==ps.GetProperty("helperPid").GetInt32()&&helper.RootElement.GetProperty("Completed").GetBoolean()&&
                 helper.RootElement.GetProperty("ExitCode").GetInt32()==ps.GetProperty("helperExitCode").GetInt32(),"Original helper join/completion missing.");
             Require(ps.GetProperty("closeObserved").GetBoolean()&&!ps.GetProperty("lost").GetBoolean(),"Original operation did not explicitly close.");
+            // The daemon may publish its own status after producer release. Check
+            // global known-decision cleanup only after that original helper joined.
+            if(mode!="request-unknown")Require(!File.Exists(journal),"Known decision/status journal did not settle.");
         }
         finally
         {
