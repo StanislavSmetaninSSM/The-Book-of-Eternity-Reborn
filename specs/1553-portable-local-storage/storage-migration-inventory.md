@@ -9,6 +9,14 @@ review PASS reported by parent. [Exact evidence](recovery/storage-migration-outc
 QTE/pre-turn compensation-time typed propagation and ordinary close remain open.
 No new continuation barrier or native Windows qualification is inferred.
 
+Expanded independent changeset audit candidates (parent reports source trace at852953b;
+not yet causal execution): accepted-turn normalizer typed uncertainty may be wrapped
+as CanonicalStateWriteException and enter before-image compensation (F08/F09).
+Prioritize after current QTE refresh correction, before F06. Windows Bridge status
+queue may have no initialized main-run/publisher in ConPtySession while consumers
+still read gm_bridge_status.json (F15 lifecycle/notification ownership). Verify exact
+old/new call chains and native boundary; Linux status tests cannot qualify Windows.
+
 F03 common console stage/admission/restore/cleanup has bounded Linux acceptance at
 runtime `ebd645ccd671f086dc5eded9f5b7f4a96a71432d`: 16 meaningful original console
 and controlled lifecycle/save-load cases plus14 existing signed-before-image

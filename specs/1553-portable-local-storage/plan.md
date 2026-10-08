@@ -1,3 +1,31 @@
+## Expanded changeset audit priorities — parent steering 2026-10-08
+
+After the current connected QTE refresh P2, examine accepted-turn normalizer
+uncertainty before lower-priority F06: parent source audit reports
+WriteCanonicalFileAtomicAsync wraps typed uncertainty in CanonicalStateWriteException,
+then accepted-turn refresh compensates before-images. This is a static candidate
+until an original accepted-turn actual publication cut proves disposition loss.
+Also inventory Windows Bridge status: queued WriteStatusFile requires main-run/
+publisher initialization not observed in ConPtySession; launcher/daemon still read
+its status file. Exact caller/history packet follows from independent audit.
+Do not claim a Windows failure or fix from Linux status tests. Reconcile every new
+cross-platform changeset finding with existing family evidence and retained legacy
+handlers; delete only proven dead production/reflection/script/serialization paths.
+
+## T062 bounded GREEN / connected review finding — 2026-10-08
+
+Frozen e265085f has16/16 Linux PASS,2complete descriptors,14.040s, no skips/
+timeouts/duplicates and complete cleanup; fresh PlanOnly16/2, catalog discovery
+exit0/zero executed22.274s. [Exact raw evidence](recovery/storage-migration-restoration-green-20261008/manifest.json).
+Independent Astra XHigh source review found connected P2: after a confirmed
+baseline restore, RefreshGameStateAsync may publish a player-profile mirror and
+its actual typed uncertainty is still wrapped by the second generic catch.
+Do not call compensation review PASS. New causal case seeds stale mirror99 with
+soul17, observes forward repair17 then exact stale baseline restoration, verifies
+experience baseline restored before cutting the next actual mirror publication.
+Runtime remains e265 until this new boundary reaches genuine RED. Final cleanup,
+tree carrier and participating close remain separate open tails; no whole atomicity.
+
 ## T062 reached restoration RED and minimal propagation correction — 2026-10-08
 
 Frozen cb65eeda restoration9 completed4PASS/5FAIL (9.970s): QTE forward15 then

@@ -17371,7 +17371,8 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_RestoresExactOriginalBytesWithoutAddingBom",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_PresenceMetadataDoesNotChangeCanonicalRestoreSemantics",
             "BookOfEternityClient.Tests.QteSceneServiceTests.ActualRestorationUncertaintyRetainsQteDecisionWithoutRefresh",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualPreTurnRestorationUncertaintyRetainsDecisionAndStopsLaterMutations"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualPreTurnRestorationUncertaintyRetainsDecisionAndStopsLaterMutations",
+            "BookOfEternityClient.Tests.QteSceneServiceTests.ActualPostRestorationMirrorPublicationRetainsQteUncertaintyAndPrimaryCause"
           ]
         }
       ]

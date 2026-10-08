@@ -1,0 +1,87 @@
+{
+  "Categories": [
+    "portable-restoration-publication-outcomes",
+    "portable-ordinary-outcome-recovery-neighbors"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e265085fbe27ca92f592f94c42159e052134214c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 46.9052465,
+  "Descriptors": [
+    {
+      "Name": "portable-ordinary-outcome-recovery-neighbors-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-ordinary-outcome-recovery-neighbors",
+      "Categories": [
+        "portable-ordinary-outcome-recovery-neighbors"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans|FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery|FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingMemberDecision_SettlesBeforeBrowserRollback|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.RealCompletionCommittedDebt_FreshOriginalRecoveryKeepsReward",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingMemberDecision_SettlesBeforeBrowserRollback",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.RealCompletionCommittedDebt_FreshOriginalRecoveryKeepsReward",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-restoration-publication-outcomes-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-restoration-publication-outcomes",
+      "Categories": [
+        "portable-restoration-publication-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualPreTurnRestorationUncertaintyRetainsDecisionAndStopsLaterMutations|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_PresenceMetadataDoesNotChangeCanonicalRestoreSemantics|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_RestoresExactOriginalBytesWithoutAddingBom|FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.ActualRestorationUncertaintyRetainsQteDecisionWithoutRefresh|FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresStateAfterValidationFailure",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualPreTurnRestorationUncertaintyRetainsDecisionAndStopsLaterMutations",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_PresenceMetadataDoesNotChangeCanonicalRestoreSemantics",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_RestoresExactOriginalBytesWithoutAddingBom",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualRestorationUncertaintyRetainsQteDecisionWithoutRefresh",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresStateAfterValidationFailure",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
