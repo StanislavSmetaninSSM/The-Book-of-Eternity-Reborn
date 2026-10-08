@@ -424,6 +424,32 @@
         "F05",
         "T063-REMAINING-CONSUMERS"
       ]
+    },
+    {
+      "category": "portable-browser-protocol-admission-linux",
+      "reason": "F04/F05 four shared protocol-order controls before runtime cutover. Actual journal/member cut, all recovery phases, exact retained evidence and neutral positive; may already pass on Linux, not claimed RED.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-005",
+        "FR-006",
+        "F04",
+        "F05",
+        "T063-REMAINING-CONSUMERS"
+      ]
+    },
+    {
+      "category": "portable-browser-protocol-native-windows",
+      "reason": "F04/F05 finite28 native body-required recipe, compile/discovery ONLY in this cloud. Exact original6 Stage body extraction retains current routing and creates authentic native receipts; extended declared-profile pending rows exercise external scratch filtering.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-005",
+        "FR-006",
+        "F04",
+        "F05",
+        "T063-REMAINING-CONSUMERS"
+      ]
     }
   ]
 }

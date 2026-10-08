@@ -1,3 +1,32 @@
+## F04/F05 protocol fixtures WIP — 2026-10-08
+
+Baseline carrier4f12f45c independently accepted: unchanged Linux46 PASS,
+all11 stored/expanded artifacts and21 historical source pins verified by parent
+and independent reviewer. No native execution or fresh cutover acceptance.
+
+New finite fixture packet: `portable-browser-protocol-admission-linux`4 and
+`portable-browser-protocol-native-windows`28 (8+2+4+4+2+8). Fresh PlanOnly must
+compile/discover32; actual execution here selects ONLY Linux4 after independent
+fixture/source gate. New common controls may already pass; no historical RED claim.
+They retain a genuine uncertain current journal, explicitly repair its member to
+its exact recorded after-image, then prove mixed/unknown metadata refuses before
+ALL recovery phases and mutations with full non-lock file snapshots. Neutral exact
+structural direct-gacha backup permits actual recovery but grants no adoption.
+Signed mapping/adoption remains a separately selected neighbor at runtime cutover.
+
+Native recipes hard-assert Windows and exercise ordinary/extended roots, arbitrary
+bytes/absence, alias dedup and intent, declared external and standalone profile,
+pending external scratch, JSON7/empty6 cleanup, authentic original6 receipt recovery,
+and mixed-before-effects refusal. Pending-profile ordinary rows are standalone;
+extended rows include a current declared browser transaction so outside-GameSession
+profile scratch must be filtered before relative conversion. Native execution is0.
+The exact original Stage body is structurally extracted for authentic6 fixtures;
+existing OS dispatch remains unchanged. No production cutover or classifier yet.
+
+Next: frozen fixture/source selection review and fresh32 PlanOnly, then Linux4 only.
+Runtime classifier/path/context-first dispatch implementation has a separate source
+and evidence gate. No GM-authored contract change; no prompt/example update needed.
+
 ## F04/F05 shared baseline complete — 2026-10-08
 
 Independent baseline SOURCE/SELECTION PASS534a52f4. Fresh Plan170150 built46/2/0

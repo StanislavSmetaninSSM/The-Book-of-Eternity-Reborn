@@ -366,6 +366,20 @@ public static partial class ExplorerLocalTurnRollbackArtifacts
         if (OperatingSystem.IsLinux())
             return await StageLocalBrowserTransactionAsync(fs, writeLease, trackedFiles, scope,
                 rollbackCleanupDirectories, rollbackExternalFileIds);
+        return await StageOriginalBrowserWriteTransactionAsync(fs, writeLease, trackedFiles, scope,
+            rollbackCleanupDirectories, rollbackExternalFileIds);
+    }
+
+    // Exact original schema6 generator retained for native original-evidence fixtures.
+    // Fresh dispatch above is unchanged in this structural extraction checkpoint.
+    internal static async Task<BrowserWriteRollbackTransaction> StageOriginalBrowserWriteTransactionAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        IEnumerable<string> trackedFiles,
+        string scope,
+        IEnumerable<string>? rollbackCleanupDirectories = null,
+        IEnumerable<string>? rollbackExternalFileIds = null)
+    {
         var normalizedPaths = trackedFiles
             .Where(static path => !string.IsNullOrWhiteSpace(path))
             .Select(static path => path.Replace('\\', '/').Trim())
