@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "sourceRevision": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "oldComparisonRevision": "1fc5e59b253c358a8622df66a4e9459f5f3fe78b",
+  "trackedSourceFiles": 2128,
+  "occurrences": 20844,
+  "byFamily": {
+    "script_filesystem": 441,
+    "powershell_dotnet_io": 145,
+    "stream_lifetime": 1596,
+    "notification_refresh": 1128,
+    "raw_filesystem": 7950,
+    "facade_io": 6258,
+    "observer_hook": 356,
+    "transaction_recovery": 1322,
+    "current_publisher": 858,
+    "native_storage": 266,
+    "physical_adapter": 480,
+    "frontend_storage_events": 44
+  },
+  "byCandidateClassification": {
+    "allowed-technical-non-game-transaction-write": 10485,
+    "remains-to-migrate": 2229,
+    "migrated": 7177,
+    "intentional-platform-adapter-or-scoped-compatibility": 953
+  },
+  "rules": {
+    "raw_filesystem": "\\b(?:System\\.IO\\.)?(?:File|Directory|FileInfo|DirectoryInfo)\\.\\w+\\s*\\(|\\bnew\\s+(?:FileStream|StreamWriter|FileInfo|DirectoryInfo|FileSystemWatcher)\\s*\\(",
+    "physical_adapter": "\\b(?:PhysicalFileAuthority|ReversibleFilePublication)\\.\\w+|\\b(?:RenameOpenedObjectRelative|CreateNewWritableFile|DeleteOpenedFile|DeleteOpenedDirectory|CreateHardLinkRelative)\\s*\\(",
+    "current_publisher": "\\b(?:TrustedLocalFilePublication|TrustedLocalFileScope|TrustedLocalFileImage|TrustedLocalNamespacePlan|TrustedLocalPublicationOutcome|TrustedLocalPublicationDisposition|TrustedLocalPublicationPhase)\\b|\\b(?:PublishLocal\\w*|PublishStandaloneDarenProfileAsync|RecoverTrustedLocalStorage|RequireCommittedLocalPublication|UsesTrustedLocalWriter)\\s*\\(",
+    "facade_io": "\\b(?:WriteFile\\w*|AppendFile\\w*|DeleteFile\\w*|DeleteDirectory\\w*|CreateDirectory\\w*|CopyFile\\w*|MoveFile\\w*|ReadOriginalFile\\w*|WriteRuntime\\w*|ReadRuntime\\w*|WriteExact\\w*)\\s*\\(",
+    "transaction_recovery": "\\b(?:Create\\w*Backup\\w*|Restore\\w*|Recover\\w*|Roll[Bb]ack\\w*|TryRestore\\w*|Cleanup\\w*Backup\\w*|Resolve\\w*(?:Recovery|Publication)\\w*|Stage\\w*(?:Transaction|Rollback|Snapshot)\\w*|Commit\\w*(?:Transaction|Publication|Progress)\\w*|TryCommit\\w*|Publish\\w*(?:Async|Outcome|Deferred))\\s*\\(|\\b(?:MutationIntentRecorder|IsLegacyStorageRecovery|ExternalPublicationContext|PendingLocalDecision)\\b",
+    "observer_hook": "\\b(?:AfterPhysicalFilePublishedAsync|BeforePhysicalSourcePublishedAsync|AfterPhysicalFileAuthorityValidatedAsync|BeforePhysicalRollbackAbsenceFinalValidationAsync|BeforeCanonicalMutationAsync|BeforeCanonicalMutationBoundaryAsync|AfterCanonicalMutationBoundaryValidatedAsync|LocalPublicationObserver|LocalPublicationRecoveryObserver|AfterFileMutationAppliedAsync|BeforeFileMutationRollback|AfterBackupsCapturedAsync|BeforeBackupCleanupAsync|AfterWriteAppliedAsync|afterWriteApplied|afterPublished|beforeSourcePublished)\\b",
+    "notification_refresh": "\\b(?:FileSystemWatcher|StateChanged|FileChanged)\\b|\\b(?:Refresh\\w*(?:State|View|Snapshot|Runtime|Generation)\\w*|Invalidate\\w*|Notify\\w*|Broadcast\\w*|Publish\\w*(?:Snapshot|Status|Event|Ready|State)\\w*|Signal\\w*)\\s*\\(",
+    "stream_lifetime": "\\.\\s*(?:Write|WriteAsync|WriteByte|WriteLine|WriteLineAsync|Flush|FlushAsync|Close|Dispose|DisposeAsync|CopyTo|CopyToAsync)\\s*\\(|FileMode\\.(?:CreateNew|Create|OpenOrCreate|Append|Truncate)",
+    "script_filesystem": "\\b(?:Set-Content|Add-Content|Out-File|New-Item|Remove-Item|Move-Item|Copy-Item|Rename-Item|Export-Clixml|Export-Csv)\\b|\\.(?:write_text|write_bytes|unlink|mkdir|rmdir|rename|replace|touch|open)\\s*\\(|\\b(?:os|shutil|fs|fsp)\\.(?:replace|rename|remove|unlink|mkdir|makedirs|rmdir|rmtree|copy|copy2|copytree|move|writeFile\\w*|appendFile\\w*|rename\\w*|unlink\\w*|mkdir\\w*|rm\\w*|createWriteStream)\\s*\\(|\\bopen\\s*\\([^\\n]*[\\\"\\'][wax][b+]?|^\\s*(?:cp|mv|rm|mkdir|install|tee)\\s+",
+    "powershell_dotnet_io": "\\[(?:System\\.)?IO\\.(?:File|Directory|FileStream|StreamWriter)\\]::\\w+|\\b(?:Register-ObjectEvent|Unregister-Event|Wait-Event|WaitForChanged|EnableRaisingEvents)\\b",
+    "frontend_storage_events": "\\b(?:localStorage|sessionStorage|indexedDB|EventSource)\\b|\\.\\s*(?:addEventListener|removeEventListener|dispatchEvent|invalidateQueries)\\s*\\(",
+    "native_storage": "\\b(?:fsync|fdatasync|renameat2?|unlinkat?|mkdirat?|ftruncate|FlushFileBuffers|MoveFileEx\\w*|ReplaceFile\\w*|SetFileInformationByHandle|CreateFile\\w*|WriteFile)\\s*\\("
+  },
+  "extensions": [
+    ".bash",
+    ".c",
+    ".cjs",
+    ".cpp",
+    ".cs",
+    ".csx",
+    ".h",
+    ".hpp",
+    ".js",
+    ".jsx",
+    ".mjs",
+    ".ps1",
+    ".psm1",
+    ".py",
+    ".sh",
+    ".ts",
+    ".tsx"
+  ],
+  "exclusions": [
+    "non-source extensions including docs/examples/logs/binaries/assets; embedded source in scanned scripts is retained",
+    "untracked/generated build artifacts not in pinned Git tree"
+  ],
+  "omissions": [],
+  "limits": [
+    "Lexical occurrences include definitions, comments, strings and intentional test input; not a compiler call graph.",
+    "candidateClassification is lexical triage only; reviewStatus=lexical-only grants NO approved migration/exception decision. Human reviewed family decisions are separate, conditional on actual route. Unreviewed sites stay open.",
+    "No absence-of-IO or reachability guarantee from regex alone. Human family/caller review and independent completeness review are required.",
+    "No builds/tests/runtime probes executed for this inventory."
+  ],
+  "artifacts": {
+    "callsites.jsonl.gz": "019c890b6bad5caaa85e29795ed6bfff773e29e35a589cce179830e9a9661e7f",
+    "corpus.json": "727db168afd53128e86cd18d1159472382248c36a37f1a951d8f468fefcf7d51",
+    "scan.py": "49c693f47901e5fe108be71d0919d108f3d82a0d3406b7ec1b1e036ff2861763"
+  }
+}

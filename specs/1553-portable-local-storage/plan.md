@@ -1,3 +1,29 @@
+## Active storage migration inventory — 2026-10-08 (WIP)
+
+Source [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
+Latest owner instruction authorizes systematic inventory → independent completeness
+review → bounded migration of remaining write/recovery/notification consumers.
+[Inventory, family decisions and engineering order](storage-migration-inventory.md)
+is the current block; older next-step/merge permissions below are historical and
+do not authorize merge, CI/security changes, HOME-PC/desktop or live GM here.
+Branch `1553-storage-migration-cloud-20261008`, base
+`d0241e71e349fbe2020e4a41b6be7c627c81cbb4`, published and remote SHA verified before
+edits. Parent fresh direct GitHub clone into `/workspace/boe-1553-migration-restore`
+matched the base, clean status and required instructions/spec/plan/tasks. This
+confirms source download only, not build/tests. #1536 B2–B5 remains paused on
+separate branch at `08f82cc5c485dd4826a6320defbbac981eca78aa`.
+
+Current changes are inventory/plan only. Pinned corpus and deterministic compressed
+index distinguish lexical candidates from reviewed conditional family decisions;
+match counts do not prove migration or defects. First priorities: console rollback
+legacy-root lifecycle, generic uncertain-result/compensation/visibility boundary,
+whole Windows browser/Daren consumers, helper/daemon protocols and stale test cuts.
+Original old-evidence recovery/refusal and separate native/IPC authority remain.
+No new runtime, tests, category changes or execution yet. Independent Astra XHigh
+completeness review is required before implementation; all new tasks remain open.
+Next: publish this candidate and request that review, then execute only its first
+coherent slice with causal boundary evidence and current category selection.
+
 ## Native Windows continuation 2026-10-08
 
 Source #1553; [approved bounded plan and execution ledger](relay-windows-plan.md).
