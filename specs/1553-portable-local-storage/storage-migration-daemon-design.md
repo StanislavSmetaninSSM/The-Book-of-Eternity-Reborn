@@ -54,6 +54,20 @@ hash and requested metadata from the same short lease. Canonical parsing/correla
 stays in PowerShell. Requests that require multiple authoritative files must read
 that cohort under one lease, not sequence independent snapshots and call them atomic.
 
+For the dynamic pending-turn cohort, the initial manifest determines later path names.
+Prefer a second snapshot on the same original connection that includes the exact
+manifest witness, detached authority, and every validated declared file/backup under
+one lease; reject if the initial manifest bytes or generation changed. The first read
+alone grants nothing. Alternatively a short original-connection read scope may retain
+the lease across only local parsing, with guaranteed release before any dispatch or
+sleep. Freeze that choice and its actual manifest-change control before implementation;
+a fixed QTE request+Ready batch does not by itself qualify the dynamic cohort.
+
+`Write-DaemonStatus` deliberately has a best-effort volatile fallback. Preserve it;
+this design does not claim that fallback is a publication exception-masking defect.
+Actual authoritative read refusal still must survive `Process-QteEffectResolutionRequest`
+catch handling and outer original-operation projection truthfully.
+
 Reuse/extract the bounded chunk mechanics if it reduces duplication, while keeping
 A03 and F13 roles and closure independent. Do not copy the F13 helper's write authority.
 No arbitrary new 64-KiB document ceiling or inherited 4-MiB aggregate ceiling for
