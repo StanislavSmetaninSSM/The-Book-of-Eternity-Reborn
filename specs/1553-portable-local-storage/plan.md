@@ -1,3 +1,13 @@
+## Treatment source-ordering correction — 2026-10-08
+
+Initial runtime3feb Plan225953 built15/3/0 successfully45.3001839s; no actual.
+Independent review found one connected P2: progression owns its publishing lease, so
+its direct Uncertain must be recorded BEFORE its own finally closes that lease, not
+only in the outer engine catch. The narrow catch now records the same original carrier
+before close; no new recovery, bookkeeping or gameplay policy. Source gate remains
+pending the corrected freeze; matching fresh Plan15 is required. Historical build-only
+artifacts are saved separately, current selection reasons now describe exact15 GREEN.
+
 ## Treatment runtime source candidate — 2026-10-08
 
 The original transaction now retains the first actual publication uncertainty locally.

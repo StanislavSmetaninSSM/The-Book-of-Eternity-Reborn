@@ -14,7 +14,7 @@
     },
     {
       "category": "portable-treatment-mirror-causal-linux",
-      "reason": "T062 isolated original engine mirror fixture correction; previous mirror cut was unreached. Exact one case, no repeat of accepted two causal boundaries.",
+      "reason": "T062 actual original engine mirror Uncertain propagation and retained open receipt; one reached causal row participates in current exact15 GREEN selection.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -25,7 +25,7 @@
     },
     {
       "category": "portable-treatment-storage-causal-linux",
-      "reason": "T062 two actual treatment storage outcomes: original helper settlement and original compensation/disposal. Causal RED retained at ec30e; no repeat for mirror-only correction.",
+      "reason": "T062 actual helper settlement and original compensation/disposal uncertainty; two reached causal rows participate in current exact15 GREEN selection.",
       "contracts": [
         "#1553",
         "FR-003",

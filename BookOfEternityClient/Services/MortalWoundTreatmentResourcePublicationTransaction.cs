@@ -541,6 +541,11 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                     .PublishedAgreementAdvanced);
             return result;
         }
+        catch (CoordinatedStatePublicationUncertainException uncertain)
+        {
+            ObservePublicationUncertainty(uncertain);
+            throw;
+        }
         finally
         {
             if (ownsAdvance && !advanced)
