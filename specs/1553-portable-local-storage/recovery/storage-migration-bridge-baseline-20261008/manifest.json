@@ -1,0 +1,113 @@
+{
+  "source": "22cbf7e045a2873e91a0c2535e1dff315938bcbf",
+  "platform": "Linux",
+  "executed": 5,
+  "passed": 5,
+  "failed": 0,
+  "wallSeconds": 18.8179512,
+  "selectionComplete": true,
+  "cleanupComplete": true,
+  "qualification": "Existing original Linux Bridge owner2/status3 baseline only. A01 Windows source-confirmed route has no native execution here; no Windows RED or corrected runtime claim.",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "sha256": "07eb2a514a792e831c23d23444aec40b3239eb53b752b6a52d44e92b26fa719b"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+      "sha256": "e64d6de3a210fef5426537636d48a8a8e67b52aad98f10d873c819684ca66f09"
+    },
+    {
+      "path": "BookOfEternityGMBridge/Program.cs",
+      "sha256": "2c1a43334d6391f84726fb54eaebf027f17b19ffd37599862f0c82798099f1d8"
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+      "sha256": "4a685b8c461b7888e8597f3c31b7c921b05d318d7c3a2c9d321e883314791a42"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmMainRunOwnerLinuxTests.cs",
+      "sha256": "633ab01ea12bf8271e9fdc90595e13c0f891c42996984da91979c655d466e92e"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmMainOperationLinuxTests.cs",
+      "sha256": "fecdff5c5782d63261d2d5f360b1545f1356610cf21e7506d48a4bdd99e55a9c"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "3551e2dcc3ca5728e0c2c42f3f4179fde28e25b7a7e8eb8560c2c00d80c9dd00"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "f7c82a8b7467679640cc6eebe5bbbe552080d08ba14b3402804b479ac7276df6"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "plan-plan.json",
+      "source": "TestResults/test-categories/20261008-114238-767-37489-fa42dddfb9e44225b1e15819560c1b0d-categories/plan.json",
+      "sha256": "252f62f628dc01eb8e79330fb4531e549f378f6aa4faa1645ce2839d7e80cfe8",
+      "originalSha256": "252f62f628dc01eb8e79330fb4531e549f378f6aa4faa1645ce2839d7e80cfe8"
+    },
+    {
+      "path": "plan-summary.json",
+      "source": "TestResults/test-categories/20261008-114238-767-37489-fa42dddfb9e44225b1e15819560c1b0d-categories/summary.json",
+      "sha256": "f6b8024ba25dab0a9b2daa781a0d4a374421a68d015bf8a5f407ed4db63dba1f",
+      "originalSha256": "f6b8024ba25dab0a9b2daa781a0d4a374421a68d015bf8a5f407ed4db63dba1f"
+    },
+    {
+      "path": "plan-Build-unit.log.gz",
+      "source": "TestResults/test-categories/20261008-114238-767-37489-fa42dddfb9e44225b1e15819560c1b0d-categories/Build-unit.log",
+      "sha256": "0554cef4990ed1dc021dbc023782f8de41f084ea7992e57de6262bb0e155761e",
+      "originalSha256": "bc68bef2b178824ff34094ec4ced0f744b01d2f2d8c80f892b3b9df686bd4181"
+    },
+    {
+      "path": "plan-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-114238-767-37489-fa42dddfb9e44225b1e15819560c1b0d-categories/dotnet-test.log",
+      "sha256": "43940593edd942a697979e0bc706eab9412946d49060ea175db8ed0f78bbe4a1",
+      "originalSha256": "0c72c339aa56eff51b7ce2120dfc064cd8a4c82614203c6ab2efcc06f66929ae"
+    },
+    {
+      "path": "baseline-plan.json",
+      "source": "TestResults/test-categories/20261008-114412-164-38106-fab88bca9f0e4d468c5163ae23aeee92-categories/plan.json",
+      "sha256": "5c80422dc616eb82df305fe66e1a8fdddbcd008e67bbbd8527fb2de00de8a030",
+      "originalSha256": "5c80422dc616eb82df305fe66e1a8fdddbcd008e67bbbd8527fb2de00de8a030"
+    },
+    {
+      "path": "baseline-gm-main-platform-owner-unit-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-114412-164-38106-fab88bca9f0e4d468c5163ae23aeee92-categories/gm-main-platform-owner-unit-001.trx",
+      "sha256": "96ab18ad40906669fd43591df0b6ccf08e37e541c7fb5eb4c48137538e76ffc6",
+      "originalSha256": "3dca592380486ac4eab260ef6b9bb542dff60ae164fdb7fcef27bbefa5609c64"
+    },
+    {
+      "path": "baseline-gm-main-status-early-exit-affected-linux-unit-002.trx.gz",
+      "source": "TestResults/test-categories/20261008-114412-164-38106-fab88bca9f0e4d468c5163ae23aeee92-categories/gm-main-status-early-exit-affected-linux-unit-002.trx",
+      "sha256": "bd7ac79ac7b955fd78efc7c4f520781e950113383c13bcb100d84b4fddabd93e",
+      "originalSha256": "689c525354af9b0c2223694c5df86737b7463aa6cc1adcb4a4d8c59f1c7c6b98"
+    },
+    {
+      "path": "baseline-summary.json",
+      "source": "TestResults/test-categories/20261008-114412-164-38106-fab88bca9f0e4d468c5163ae23aeee92-categories/summary.json",
+      "sha256": "f71ca3299059f3ea42cd1668b42500a391a9e9b6bf8536392581cd24038afdc8",
+      "originalSha256": "f71ca3299059f3ea42cd1668b42500a391a9e9b6bf8536392581cd24038afdc8"
+    },
+    {
+      "path": "baseline-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-114412-164-38106-fab88bca9f0e4d468c5163ae23aeee92-categories/dotnet-test.log",
+      "sha256": "3eb613b8b82c0228672ba3abb003fd7eaa55f95e31f028c18831398d794ece20",
+      "originalSha256": "972a60d8f30fd8ae3e1b707503625e1c5956f7a53e8df1c16366deeb0d5f5369"
+    },
+    {
+      "path": "plan-runner.log.gz",
+      "source": "/tmp/boe-1553-bridge-baseline-plan.log",
+      "sha256": "7270bb26b804121a16aac75e6f1674fd390da7e8671e86f2d63e3e8808244641",
+      "originalSha256": "912ad2e020ba6fd90bccc6aaa1875fe28df4b0751b99a621e62a1101e6afc08e"
+    },
+    {
+      "path": "baseline-runner.log.gz",
+      "source": "/tmp/boe-1553-bridge-baseline.log",
+      "sha256": "1b0bcd3ee33b13c0fc143781284afb19fa304aca9c9b5f44e4376a855fdf9da9",
+      "originalSha256": "bb695a05e5d7ee98a33d99ac59b57abe63f7bd03fc819ee02948c883caa21cca"
+    }
+  ]
+}

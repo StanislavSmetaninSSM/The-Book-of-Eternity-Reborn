@@ -17505,6 +17505,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-startup-observation",
+      "responsibility": "A01 strict provider-labelled restart observation parser and bounded foreground original process/pipe/debt ownership components. Controlled Linux Python children, not Windows WMI or ConPTY qualification.",
+      "excludes": "Native Windows/provider, desktop and full main/worker lifecycle.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservation.cs",
+        "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservationProbe.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.WindowsStartupObservationTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

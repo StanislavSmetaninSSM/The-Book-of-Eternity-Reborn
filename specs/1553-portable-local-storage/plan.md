@@ -1,3 +1,25 @@
+## A01 shared baseline and isolated observation component — 2026-10-08
+
+Frozen22cbf7e0 existing actual Linux owner/status5/5PASS,18.818s,2complete,
+cleanup complete; [raw baseline and source pins](recovery/storage-migration-bridge-baseline-20261008/manifest.json).
+New strict observation parser/foreground ownership component and14 controlled cases
+are now drafted, not yet built/run or connected to Bridge. Native Windows remains
+unexecuted; this is not a synthetic A01 RED. Current coordinator/ConPTY unchanged.
+
+Connected prerequisites discovered before wiring: GmSessionRunPersistence explicitly
+Linux/x64 (mkdir/fsync), worker-ledger Attach likewise Linux-only fixture metadata.
+Do not remove platform guards/drop durability or manufacture Windows worker inventory.
+Independent design review now traces native metadata barrier and declared worker
+conjunction. GmMainOwnerGuard itself uses portable exclusive stream+physical identity.
+Keep Windows worker capability separate from Linux _productionConfig refusal. Actual
+dispatch must borrow original main pin for its complete lifetime; transferred
+quarantine cleanup uses only exact marked admission refusal for its existing local
+receipt fallback, never treats storage uncertainty as successful audit fallback.
+A01 integration waits for this concrete design, while isolated probe is verified.
+
+Parent verified A04 carrier15b108:17 stored/expanded artifacts+11 source pins,
+15 original TRX cases; main staysd024. Astra A04 source/evidence PASS received.
+
 ## A01 Windows Bridge original-owner implementation checkpoint — 2026-10-08
 
 A04 independent Astra XHigh source/evidence PASS atfbec;15 exact GREEN and catalog

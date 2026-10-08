@@ -129,6 +129,15 @@
         "A01",
         "T063-REMAINING-CONSUMERS"
       ]
+    },
+    {
+      "category": "gm-main-startup-observation",
+      "reason": "New isolated bounded parser/foreground owner/debt component for reviewed Windows observation direction; Linux controlled children and strict result/cleanup counters. No native WMI claim.",
+      "contracts": [
+        "#1553",
+        "A01",
+        "T063-REMAINING-CONSUMERS"
+      ]
     }
   ]
 }
