@@ -2380,6 +2380,12 @@ public sealed partial class QteSceneService
             {
                 await RefreshGameStateAsync(writeLease);
             }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                // Refresh can publish a client-owned mirror after exact rollback.
+                uncertain.Data["QteOperationFailure"] = originalFailure;
+                throw;
+            }
             catch (Exception refreshFailure)
             {
                 recoveryFailures.Add(refreshFailure);

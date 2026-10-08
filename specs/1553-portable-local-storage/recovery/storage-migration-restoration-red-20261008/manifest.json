@@ -250,6 +250,54 @@
       "source": "TestResults/test-categories/20261008-105114-160-24860-4d3d401241d946de8cabc3cc1de13b4a-categories/summary.json",
       "sha256": "5daf0ef1801badc5e610b04f0d78b506739751162886245cda0037000f7ff741",
       "originalSha256": "5daf0ef1801badc5e610b04f0d78b506739751162886245cda0037000f7ff741"
+    },
+    {
+      "path": "refresh-plan-Build-integration.log.gz",
+      "source": "TestResults/test-categories/20261008-105723-525-26883-62723f14e3384c95b53ef310dfc24356-categories/Build-integration.log",
+      "sha256": "7ea71bf4e33dffc1369aa1d3cf879da83a084ce8a3828ea09d5ca72461475a24",
+      "originalSha256": "86a6506b92680036602f767d020791cefddd6d34bec4283d0e1ac06bf3b5ebd6"
+    },
+    {
+      "path": "refresh-plan-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-105723-525-26883-62723f14e3384c95b53ef310dfc24356-categories/dotnet-test.log",
+      "sha256": "14b626565584e2c142efe9fc1ab466d027026f4e97cab319c71bbe296304791a",
+      "originalSha256": "0d4c2b818a656b8fbbabfd5b5edc6b7ccd773233a6a33a1e2d8b8cef461e515a"
+    },
+    {
+      "path": "refresh-plan-plan.json",
+      "source": "TestResults/test-categories/20261008-105723-525-26883-62723f14e3384c95b53ef310dfc24356-categories/plan.json",
+      "sha256": "ced6ac3a8dd6db9eaa33686278029204ba37106acb5882183f57fef714adcdee",
+      "originalSha256": "ced6ac3a8dd6db9eaa33686278029204ba37106acb5882183f57fef714adcdee"
+    },
+    {
+      "path": "refresh-plan-summary.json",
+      "source": "TestResults/test-categories/20261008-105723-525-26883-62723f14e3384c95b53ef310dfc24356-categories/summary.json",
+      "sha256": "4c4fa30cb9b35103fe83301f5dd6b3a897f3563cacfb1f0ba21cd24db433d576",
+      "originalSha256": "4c4fa30cb9b35103fe83301f5dd6b3a897f3563cacfb1f0ba21cd24db433d576"
+    },
+    {
+      "path": "refresh-red-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-105824-682-27143-629a7c888110423e9b4d4b12b35ab3de-categories/dotnet-test.log",
+      "sha256": "b281370cd2ddddfda1d4963167390caa95d80dceeb82ef77af0ae96ba99f9bf4",
+      "originalSha256": "f8a9babab60de391d5cbda48d854fc29b07e3b9beb741070055aac5cecee7a59"
+    },
+    {
+      "path": "refresh-red-plan.json",
+      "source": "TestResults/test-categories/20261008-105824-682-27143-629a7c888110423e9b4d4b12b35ab3de-categories/plan.json",
+      "sha256": "f1707f6d11470af3320d0cedff65e6325042da7a6e6c682b47e962a556ae39a7",
+      "originalSha256": "f1707f6d11470af3320d0cedff65e6325042da7a6e6c682b47e962a556ae39a7"
+    },
+    {
+      "path": "refresh-red-portable-restoration-publication-outcomes-integration-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-105824-682-27143-629a7c888110423e9b4d4b12b35ab3de-categories/portable-restoration-publication-outcomes-integration-001.trx",
+      "sha256": "b06dee6a290fe292ca5cd3a3a25427af9a296ef3cea797055bff6946ec3eff3d",
+      "originalSha256": "e357d1da7888fef1ebff1bf2b9bfb8f3dab3dc74310f240ecf46e4b37f2adea0"
+    },
+    {
+      "path": "refresh-red-summary.json",
+      "source": "TestResults/test-categories/20261008-105824-682-27143-629a7c888110423e9b4d4b12b35ab3de-categories/summary.json",
+      "sha256": "c2aad091d3e2c9c6687aa0f73ad1b4742b48c47fd8fee3523a868a8c85612da8",
+      "originalSha256": "c2aad091d3e2c9c6687aa0f73ad1b4742b48c47fd8fee3523a868a8c85612da8"
     }
   ],
   "diagnosticSource": "77be7a6a46b127d3397373e082f46ab742eb1930",
@@ -315,6 +363,28 @@
     {
       "path": "tests/selection.json",
       "sha256": "9ed62e4e577e8a725e83e008d1015df928b720cbabf917710dbae626f01bdbd1"
+    }
+  ],
+  "refreshRed": {
+    "source": "9905ff4fc127696046991113e98323adc4b8bffd",
+    "executed": 10,
+    "passed": 9,
+    "failed": 1,
+    "wallSeconds": 9.464285,
+    "cause": "OriginalQTE repairs staleplayer mirror99to17, restores exactstaleprofile andexperiencebaseline, thenpostrestore refresh mirror MemberPublished reachesunknownbytes+retainedjournal/backups; genericInvalidOperation insteadtypeduncertainty."
+  },
+  "refreshSourcePins": [
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "sha256": "0bece87ec16a4a8429cd802f40712f60d06a294676025f0908a61652b5a07670"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.RestorationOutcome.cs",
+      "sha256": "6b36359b1c09c5384620fb347bb175bd8d093cdc35978a20b27ca6932a25a97b"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "57724f0de47facdd3f7853204a261f05adc8a6bde7d660ae6bc200c3ee6614b4"
     }
   ]
 }

@@ -53,7 +53,7 @@
     },
     {
       "category": "portable-restoration-publication-outcomes",
-      "reason": "T062 next causal slice isolates uncertainty during actual domain compensation, distinct from initial backup/publication faults; six reached-cut rows plus three existing exact restoration controls.",
+      "reason": "T062 actual ordinary publication uncertainty during pre-turn/QTE compensation and mirror-producing post-restore refresh; reached exact member/cause/evidence plus original exact-byte/presence and existing read-barrier controls.",
       "contracts": [
         "#1553",
         "FR-003",

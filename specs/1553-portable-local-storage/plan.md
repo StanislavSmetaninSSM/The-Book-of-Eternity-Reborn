@@ -1,3 +1,15 @@
+## T062 connected refresh P2 causal RED — 2026-10-08
+
+Source9905ff4f actual10complete:9PASS/1FAIL,9.464s,cleanup complete. New original
+QTE case reaches forward mirror99→17, exact stale profile and experience baseline
+restoration, then the next mirror MemberPublished unknown-byte cut. Journal and
+rollback evidence remain intact before the generic-versus-typed failure assertion.
+This is genuine connected P2 RED, not a fixture failure. The second refresh catch
+now preserves the same typed object and original validator cause in Data, just as
+the restore-stage catch. Fresh targeted10 GREEN and independent review pending.
+Prior unaffected seven original recovery neighbors remain source-pinned GREEN;
+no claim that final backup cleanup or original close tails are complete.
+
 ## Expanded changeset audit priorities — parent steering 2026-10-08
 
 After the current connected QTE refresh P2, examine accepted-turn normalizer

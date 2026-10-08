@@ -11,7 +11,9 @@
   "catalog": {
     "executed": 0,
     "exitCode": 0,
-    "wallSeconds": 22.2739642
+    "wallSeconds": 22.2739642,
+    "categories": 448,
+    "methodsFiles": 11226
   },
   "cleanupComplete": true,
   "qualification": "Bounded restore-stage carrier/pre-turn and affected neighbor GREEN. Independent source review reports connected P2 at post-restoration mirror-producing refresh catch; compensation acceptance remains open until causal correction. Native Windows unexecuted.",
