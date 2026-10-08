@@ -16,7 +16,7 @@
     "methodsFiles": 11226
   },
   "cleanupComplete": true,
-  "qualification": "Bounded restore-stage carrier/pre-turn and affected neighbor GREEN. Independent source review reports connected P2 at post-restoration mirror-producing refresh catch; compensation acceptance remains open until causal correction. Native Windows unexecuted.",
+  "qualification": "Latest9e30 tests10 cover restoration-stage and post-restoration mirror typed propagation, primary cause, pre-turn mutation stopping and original controls. Seven affected recovery neighbors passed at frozen cb65/e265 with source unchanged by latest QTE catch. Whole compensation, final cleanup, original participating close, accepted-turn normalization and nativeWindows remain open.",
   "sourcePins": [
     {
       "path": "BookOfEternityClient/Services/QteSceneService.cs",
@@ -139,6 +139,131 @@
       "source": "TestResults/test-categories/20261008-105446-044-26163-0d4c6844332d43c7bb5875ce4a9be7c4-categories/summary.json",
       "sha256": "3e49e6028feea41f5bdb512bd3f7b9ca51d831135238c53d91104873e1289246",
       "originalSha256": "3e49e6028feea41f5bdb512bd3f7b9ca51d831135238c53d91104873e1289246"
+    },
+    {
+      "path": "refresh-final-plan-Build-integration.log.gz",
+      "source": "TestResults/test-categories/20261008-105959-361-27837-5d9d1b07ddbd428e88ae3ad71adf224c-categories/Build-integration.log",
+      "sha256": "e2c4fcb12a9f4613426b71684ca09c4e3015f23def2408126c732f50c0fd69f8",
+      "originalSha256": "75b2d382c89ead627ae27bdacc6b8ac1ed396a8e91c3804c03fe4b75c307310a"
+    },
+    {
+      "path": "refresh-final-plan-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-105959-361-27837-5d9d1b07ddbd428e88ae3ad71adf224c-categories/dotnet-test.log",
+      "sha256": "17830120d1edcc9bc1bc1ffd0004eaea4fdd28959508ff93ccd8d36d76d13d9a",
+      "originalSha256": "83794450eb7410a1e5ec9253ce120e849a232934a3ee39cea1bd75af010cd68b"
+    },
+    {
+      "path": "refresh-final-plan-plan.json",
+      "source": "TestResults/test-categories/20261008-105959-361-27837-5d9d1b07ddbd428e88ae3ad71adf224c-categories/plan.json",
+      "sha256": "e8b5978091abf62b5ed028d5ade5ae6b3399b806455b2755b3898aa5c2444f01",
+      "originalSha256": "e8b5978091abf62b5ed028d5ade5ae6b3399b806455b2755b3898aa5c2444f01"
+    },
+    {
+      "path": "refresh-final-plan-summary.json",
+      "source": "TestResults/test-categories/20261008-105959-361-27837-5d9d1b07ddbd428e88ae3ad71adf224c-categories/summary.json",
+      "sha256": "072c2e220befc9b05ac40984b5453633fdcb6e035a12061124b8c9b2f6d7cfd3",
+      "originalSha256": "072c2e220befc9b05ac40984b5453633fdcb6e035a12061124b8c9b2f6d7cfd3"
+    },
+    {
+      "path": "refresh-final-green-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-110102-797-28146-e6171e06277946ea951ebb2a1e7638fa-categories/dotnet-test.log",
+      "sha256": "cb3426783dd33fbfc3759c0af693d18b4f569c9156683ae23e63de2abc08d8f8",
+      "originalSha256": "2e8dc54e25ab65cffff2966f786c3d535dd95189ca19da47eab03bb59a8b67c9"
+    },
+    {
+      "path": "refresh-final-green-plan.json",
+      "source": "TestResults/test-categories/20261008-110102-797-28146-e6171e06277946ea951ebb2a1e7638fa-categories/plan.json",
+      "sha256": "91160c4d87c337a7508e7ec7037c2e3b1b1e77afc1438593ca1d094a33d74708",
+      "originalSha256": "91160c4d87c337a7508e7ec7037c2e3b1b1e77afc1438593ca1d094a33d74708"
+    },
+    {
+      "path": "refresh-final-green-portable-restoration-publication-outcomes-integration-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-110102-797-28146-e6171e06277946ea951ebb2a1e7638fa-categories/portable-restoration-publication-outcomes-integration-001.trx",
+      "sha256": "6ae0b42b9c1713caebc4e1407192e1caabb5604363be6d29302840f37af34afa",
+      "originalSha256": "be20de3c54f04328fb4871312d550a605d3a31986594dc55061df2028d8f7f00"
+    },
+    {
+      "path": "refresh-final-green-summary.json",
+      "source": "TestResults/test-categories/20261008-110102-797-28146-e6171e06277946ea951ebb2a1e7638fa-categories/summary.json",
+      "sha256": "68b5b28ecce449740ddc37fa3a6c7f118cb8fae7beb1d3cc5931df13b3d244f2",
+      "originalSha256": "68b5b28ecce449740ddc37fa3a6c7f118cb8fae7beb1d3cc5931df13b3d244f2"
+    },
+    {
+      "path": "refresh-final-catalog-Build-integration.log.gz",
+      "source": "TestResults/test-categories/20261008-110208-262-28471-8ac5e36fe3084dd392b7ade4e265ecc3-categories/Build-integration.log",
+      "sha256": "28844c52a9752a10ebd1f4c7ffe36614bec0d75f8262f2405a25bab18dd08da9",
+      "originalSha256": "9091668f1eea5c2353ee870b8bd009d9f9efffdeba2ee4b4dd614d54ad2f885b"
+    },
+    {
+      "path": "refresh-final-catalog-Build-unit.log.gz",
+      "source": "TestResults/test-categories/20261008-110208-262-28471-8ac5e36fe3084dd392b7ade4e265ecc3-categories/Build-unit.log",
+      "sha256": "58bdd950eb9e6b51f7a5d2cd975802ac40eeb002e7cdace02bdce1fbd138be8a",
+      "originalSha256": "f14d25bcbbf480bfd7b69e05f53f1b3f405d8b654a45a4ed90eb949ef1ef8605"
+    },
+    {
+      "path": "refresh-final-catalog-catalog-audit.json",
+      "source": "TestResults/test-categories/20261008-110208-262-28471-8ac5e36fe3084dd392b7ade4e265ecc3-categories/catalog-audit.json",
+      "sha256": "8eb3f31b06e5fecf0412a2cb4cf2399eb1c715859a6bb31a2348d0b99fa139ed",
+      "originalSha256": "8eb3f31b06e5fecf0412a2cb4cf2399eb1c715859a6bb31a2348d0b99fa139ed"
+    },
+    {
+      "path": "refresh-final-catalog-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-110208-262-28471-8ac5e36fe3084dd392b7ade4e265ecc3-categories/dotnet-test.log",
+      "sha256": "d12796420d343ab4e0ad76f1f5f16721676decc0b89d780b44032a3ad93330c7",
+      "originalSha256": "224a35594128986f6ba7b7b0266c20e085de483ef53d84ede89de7dd1b9abd50"
+    },
+    {
+      "path": "refresh-final-catalog-summary.json",
+      "source": "TestResults/test-categories/20261008-110208-262-28471-8ac5e36fe3084dd392b7ade4e265ecc3-categories/summary.json",
+      "sha256": "c50364f12ecf72332cc59ff89465bc58506d37f45b3c8da1d69b30f986a3a409",
+      "originalSha256": "c50364f12ecf72332cc59ff89465bc58506d37f45b3c8da1d69b30f986a3a409"
     }
-  ]
+  ],
+  "refreshFinal": {
+    "source": "9e30e638637dafd68e43419c963d6bbb666d1b7d",
+    "executed": 10,
+    "passed": 10,
+    "failed": 0,
+    "wallSeconds": 9.7368337,
+    "planOnlyCases": 10,
+    "planOnlyExecuted": 0,
+    "catalog": {
+      "categories": 448,
+      "methodsFiles": 11227,
+      "executed": 0,
+      "exitCode": 0,
+      "wallSeconds": 20.4429598
+    },
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Services/QteSceneService.cs",
+        "sha256": "37f954394a3078ad9f54d1290ecbd4bcbb3021a5e5bb66c8c9bca91d87a04180"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "dc9a7da0614e05ec48297293b7b03b52fa9a71e5d4ac3eb229b1cc181e898618"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.RestorationOutcome.cs",
+        "sha256": "6b36359b1c09c5384620fb347bb175bd8d093cdc35978a20b27ca6932a25a97b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.RestorationOutcome.cs",
+        "sha256": "9781676653f832cb9bdf48e44a851b2916b45485fffe8446e43e619a18c2ef2a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "d54cde2330e6b549b6c65ece9d8c30a10d95c91244da1bea4623a593a0ffd8cb"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "57724f0de47facdd3f7853204a261f05adc8a6bde7d660ae6bc200c3ee6614b4"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "76f8f72e940543624db1906e016a80b1025f39a6d10e148f1caaae8e7d8b6a3d"
+      }
+    ],
+    "independentReview": "Independent Astra XHigh P2 re-review PASS at9e30e638: source and exact9905RED/9e30GREEN10 reviewed, no new delta findings. Earlier7neighbors retain distinct frozen sources."
+  }
 }

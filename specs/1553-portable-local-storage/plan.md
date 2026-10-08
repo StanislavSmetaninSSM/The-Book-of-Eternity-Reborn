@@ -1,3 +1,18 @@
+## T062 latest connected restoration verification — 2026-10-08
+
+Frozen9e30e638637dafd68e43419c963d6bbb666d1b7d: freshPlanOnly10 then10/10PASS,
+9.737s,complete/no skips/duplicates/timeouts,owned cleanup complete. New mirror
+row preserves actual original validator cause after verified restore and a real
+subsequent profile publication. Catalog448/11227 valid,zero executed20.443s.
+[Exact phase/source/artifact pins](recovery/storage-migration-restoration-green-20261008/manifest.json).
+Independent Astra XHigh connected-P2 source/evidence correction review PASS at9e30, no new delta findings. Prior7 recovery-neighbor
+GREEN is pinned separately at unchanged sources; do not report a fresh17 run.
+Next priority is accepted-turn publication/wrapper/compensation A02 from the
+[independent changeset audit](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/441a31c98bf116b5c458d26ca09f2b90a06cf604/specs/1553-portable-local-storage/changeset-audit-20261008/README.md).
+Audit is WIP/source-only; no accepted-turn failure or Windows Bridge native result
+is claimed yet. Final cleanup/logger and original close/directory carrier tails
+remain open; F06 follows the higher-priority accepted-turn boundary.
+
 ## T062 connected refresh P2 causal RED — 2026-10-08
 
 Source9905ff4f actual10complete:9PASS/1FAIL,9.464s,cleanup complete. New original

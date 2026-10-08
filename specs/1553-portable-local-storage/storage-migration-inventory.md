@@ -17,6 +17,12 @@ queue may have no initialized main-run/publisher in ConPtySession while consumer
 still read gm_bridge_status.json (F15 lifecycle/notification ownership). Verify exact
 old/new call chains and native boundary; Linux status tests cannot qualify Windows.
 
+T062 restoration delta:9e30 source has10/10 Linux PASS including actual second
+mirror publication after baseline restoration; earlier7 affected recovery neighbors
+remain separately pinned GREEN. Independent Astra XHigh connected source/evidence review PASS. [Evidence](recovery/storage-migration-restoration-green-20261008/manifest.json).
+A01/A02 provenance is the [independent WIP audit at441a31](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/441a31c98bf116b5c458d26ca09f2b90a06cf604/specs/1553-portable-local-storage/changeset-audit-20261008/README.md),
+read from its exact Git blob; report is linked rather than duplicated.
+
 F03 common console stage/admission/restore/cleanup has bounded Linux acceptance at
 runtime `ebd645ccd671f086dc5eded9f5b7f4a96a71432d`: 16 meaningful original console
 and controlled lifecycle/save-load cases plus14 existing signed-before-image
