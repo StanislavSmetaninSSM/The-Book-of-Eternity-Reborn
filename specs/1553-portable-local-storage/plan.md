@@ -1,3 +1,16 @@
+## A02 direct GREEN / compensation fixture and original handler — 2026-10-08
+
+Sourcec9233593 actual5complete:direct3PASS, newcompensation2 fixtureFAIL with
+forwardCut0/restoreCut0 because history precedes resource_state. Not causal RED.
+The corrected fixture waits for actual changed resource_definitions before its
+history failure, then selects exact definitions restoration (sorted write order).
+No runtime compensation-stage fix yet. Add original non-wound GameEngine accepted
+validation handler with signed pending snapshot/raw location and actual identity-index
+MemberPublished unknowncut; old knownwrite-failure/fullrollback test is unchanged
+control. Fresh seven-case baseline will distinguish carrier loss from setup failure.
+Do not claim a rollback promise was printed: old handler's fresh generation read
+may refuse first. Source-pinned fixture failure and direct GREEN are retained.
+
 ## A02 direct accepted-publication causal RED — 2026-10-08
 
 Frozen d990d8fa actual3complete:1PASS/2FAIL,11.194s,owned cleanup complete.

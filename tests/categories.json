@@ -6007,7 +6007,6 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AcceptedTurnCanonicalWriteFailure_ReturnsToCallerForOneFullRollback",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ChaosSeaToSoulGatesJourney_HygieneBlockersAndSnapshotsRemainConsistent",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckGmIncarnationTrigger_BootstrapRepairStall_ReturnsFalseAfterRollback",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CheckGmIncarnationTrigger_InputOnlySnapshotWithoutAcceptedContext_DoesNotDispatch",
@@ -17425,7 +17424,9 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedNormalizationPublicationRetainsStorageDecision",
-            "BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedCompensationUncertaintyRetainsPrimaryFailure"
+            "BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedCompensationUncertaintyRetainsPrimaryFailure",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AcceptedTurnCanonicalWriteFailure_ReturnsToCallerForOneFullRollback",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualAcceptedHandlerPreservesUncertainNormalizerDecision"
           ]
         }
       ]

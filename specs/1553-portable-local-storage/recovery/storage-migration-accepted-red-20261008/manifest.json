@@ -73,6 +73,62 @@
       "source": "TestResults/test-categories/20261008-110716-366-29370-bfc9c0f89a4844a291bb40ab9f145f34-categories/summary.json",
       "sha256": "19d3c7a6d9883cf15ebd0cc8c87cdb39627c80cb49922288b3847e2542edd2ac",
       "originalSha256": "19d3c7a6d9883cf15ebd0cc8c87cdb39627c80cb49922288b3847e2542edd2ac"
+    },
+    {
+      "path": "compensation-initial-plan-Build-integration.log.gz",
+      "source": "TestResults/test-categories/20261008-111107-811-30206-ded23521cf1f40e19fa8fe31f9fd964f-categories/Build-integration.log",
+      "sha256": "7ccc3cd75097bfc1759fac767e45af8bd3f3d145f20eae23412f168431f5fde5",
+      "originalSha256": "bf51a67f05c7f9837a57d303ae5ece2dabdfc2e0990439774ef022f201eae085"
+    },
+    {
+      "path": "compensation-initial-plan-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-111107-811-30206-ded23521cf1f40e19fa8fe31f9fd964f-categories/dotnet-test.log",
+      "sha256": "59be62f986459ec164508481063324d2b4f4a518434bc5e5caff0647a5d87479",
+      "originalSha256": "0b246549501743ccf0ed361acfbc26ad408b48e1e3039ce6d4a2f947576c403d"
+    },
+    {
+      "path": "compensation-initial-plan-plan.json",
+      "source": "TestResults/test-categories/20261008-111107-811-30206-ded23521cf1f40e19fa8fe31f9fd964f-categories/plan.json",
+      "sha256": "346b292b679366e81f61e2919b2bf0e37e3f4b55c9c1f725948a0e99daf97424",
+      "originalSha256": "346b292b679366e81f61e2919b2bf0e37e3f4b55c9c1f725948a0e99daf97424"
+    },
+    {
+      "path": "compensation-initial-plan-summary.json",
+      "source": "TestResults/test-categories/20261008-111107-811-30206-ded23521cf1f40e19fa8fe31f9fd964f-categories/summary.json",
+      "sha256": "5475a5b9a39eb9c381bf62b3c817dca7d762c2fb9fb2eeab191d6e14e33a76aa",
+      "originalSha256": "5475a5b9a39eb9c381bf62b3c817dca7d762c2fb9fb2eeab191d6e14e33a76aa"
+    },
+    {
+      "path": "compensation-initial-mixed-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-111226-888-30586-9acea6d9c9dd4c5cbe279ae02c5d4e6d-categories/dotnet-test.log",
+      "sha256": "198f76e871ae862e20137ee4bbfc98469949974e48fe6e7e91be487dcdbfc025",
+      "originalSha256": "d24570b43705fb57b447dcc01d3d5527ead3f8ecbc6bde86046f2193ea77a6bc"
+    },
+    {
+      "path": "compensation-initial-mixed-plan.json",
+      "source": "TestResults/test-categories/20261008-111226-888-30586-9acea6d9c9dd4c5cbe279ae02c5d4e6d-categories/plan.json",
+      "sha256": "c926cec2dd8e68df9e0517c21bc90f9a0be7825b57b0f5c7b1886cb5d5f7ce35",
+      "originalSha256": "c926cec2dd8e68df9e0517c21bc90f9a0be7825b57b0f5c7b1886cb5d5f7ce35"
+    },
+    {
+      "path": "compensation-initial-mixed-portable-accepted-normalization-outcomes-integration-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-111226-888-30586-9acea6d9c9dd4c5cbe279ae02c5d4e6d-categories/portable-accepted-normalization-outcomes-integration-001.trx",
+      "sha256": "6b004358c9f7c6b46779ab59694a7b18cfede60fa1d1237343ab3397e2a8cfda",
+      "originalSha256": "a2fb86172681de5c46d56c039340de31fa64601a9f726c3adc8b1f0c596d0e84"
+    },
+    {
+      "path": "compensation-initial-mixed-summary.json",
+      "source": "TestResults/test-categories/20261008-111226-888-30586-9acea6d9c9dd4c5cbe279ae02c5d4e6d-categories/summary.json",
+      "sha256": "142f3a53f7f956570db25fb31c4953b2c9165d2cf0710cf2fe5ca01aea71e37b",
+      "originalSha256": "142f3a53f7f956570db25fb31c4953b2c9165d2cf0710cf2fe5ca01aea71e37b"
     }
-  ]
+  ],
+  "compensationInitial": {
+    "source": "c923359324dddebb664315ace90bc2708c5eb923",
+    "executed": 5,
+    "passed": 3,
+    "failed": 2,
+    "wallSeconds": 9.3961234,
+    "qualification": "Earlier direct3 GREEN. New compensation2 never reached intendedcut: resource_state unchanged at selectedhistory. Fixturefailure only; inspectactualpublicationorder andselect priorchangeddefinitions."
+  }
 }

@@ -94,7 +94,7 @@ public sealed class AcceptedTurnStorageOutcomeTests
         var forwardCutHits = 0;
         var restoreCutHits = 0;
         var laterMutations = 0;
-        byte[]? originalState = null;
+        byte[]? originalDefinitions = null;
         byte[]? retainedJournal = null;
         byte[] unknown = [0xFF, 0x71];
         var originalFailure = new AcceptedPublicationCutFailure();
@@ -115,12 +115,12 @@ public sealed class AcceptedTurnStorageOutcomeTests
                 var path = document.RootElement.GetProperty("Members")[index].GetProperty("Path").GetString();
                 if (forwardCutHits == 0 && path == files.ResolvePath(ResourceMaterializationTestContext.HistoryPath))
                 {
-                    Assert.False(originalState!.SequenceEqual(File.ReadAllBytes(files.ResolvePath(ResourceMaterializationTestContext.StatePath))));
+                    if (originalDefinitions!.SequenceEqual(File.ReadAllBytes(files.ResolvePath(ResourceMaterializationTestContext.DefinitionsPath)))) return;
                     forwardCutHits++;
                     throw originalFailure;
                 }
-                if (forwardCutHits != 1 || path != files.ResolvePath(ResourceMaterializationTestContext.StatePath)) return;
-                Assert.Equal(originalState, File.ReadAllBytes(path));
+                if (forwardCutHits != 1 || path != files.ResolvePath(ResourceMaterializationTestContext.DefinitionsPath)) return;
+                Assert.Equal(originalDefinitions, File.ReadAllBytes(path));
                 restoreCutHits++;
                 File.WriteAllBytes(path, unknown);
                 retainedJournal = File.ReadAllBytes(journalPath);
@@ -138,7 +138,7 @@ public sealed class AcceptedTurnStorageOutcomeTests
             issue => issue.Severity == IssueSeverity.Error);
         Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync(),
             issue => issue.Severity == IssueSeverity.Error);
-        originalState = File.ReadAllBytes(context.FileSystem.ResolvePath(ResourceMaterializationTestContext.StatePath));
+        originalDefinitions = File.ReadAllBytes(context.FileSystem.ResolvePath(ResourceMaterializationTestContext.DefinitionsPath));
         armed = true;
         var failure = await Record.ExceptionAsync(() => AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateAsync(
             context.FileSystem, context.Normalizer, context.Validator,
@@ -146,7 +146,7 @@ public sealed class AcceptedTurnStorageOutcomeTests
         armed = false;
         Assert.True(forwardCutHits == 1 && restoreCutHits == 1,
             $"Forward cut={forwardCutHits}; restore cut={restoreCutHits}; failure={failure}");
-        Assert.Equal(unknown, File.ReadAllBytes(context.FileSystem.ResolvePath(ResourceMaterializationTestContext.StatePath)));
+        Assert.Equal(unknown, File.ReadAllBytes(context.FileSystem.ResolvePath(ResourceMaterializationTestContext.DefinitionsPath)));
         Assert.Equal(retainedJournal, File.ReadAllBytes(Path.Combine(context.FileSystem.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
         if (observation == "carrier")
         {
