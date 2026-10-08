@@ -1,3 +1,20 @@
+## A01 shared probe-host GREEN — 2026-10-08
+
+Frozen71a561 fresh PlanOnly135046 built successfully3/0; actual135142 complete
+3/3PASS8.4241520s, clean source, no skips/duplicates and both cleanup flags true.
+Actual control preserves diagnostic after refresh and refuses restart/shutdown;
+normal shutdown succeeds after original settlement. Dispose proves actual entry,
+no premature cancellation/gate disposal and bounded concurrent start refusal.
+Outer-exit proves real CTS loop cancellation retains Run until original settlement.
+[Original logs/TRX/source pins](recovery/storage-migration-bridge-consumers-20261008/manifest.json).
+
+Independent bounded source/evidence review is pending. This shared host component
+is qualified only on Linux with the explicit controlled preseed seam; native WMI,
+ConPTY/Job, Windows startup activation, first status, Load and worker dispatch are
+not accepted here. Next source work wires those original consumers after this gate.
+Startup diagnostics are client-owned technical lifecycle state, not GM-authored
+output/schema; no prompt/example behavior changes in this isolated block.
+
 ## A01 probe host causal RED and retention correction — 2026-10-08
 
 Corrected3b091 actual134833 complete2/2FAIL9.0174631s, clean source and cleanup.

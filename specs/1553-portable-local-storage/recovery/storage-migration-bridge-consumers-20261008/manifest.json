@@ -316,5 +316,109 @@
         "sha256": "85a18a58b4d7f951986367caedf125fb1a3c452cef38f62247f990e85f563759"
       }
     ]
+  },
+  "probeGreen": {
+    "planned": 3,
+    "executed": 3,
+    "passed": 3,
+    "complete": true,
+    "scope": "Actual shared host control, Dispose and outer exit retain original controlled process. Native Windows and production Windows read remain unqualified/unwired.",
+    "source": "71a561068d35b990abf9bda06ffc3474ae4888b2",
+    "artifacts": [
+      {
+        "path": "probe-green-plan-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-135046-690-61567-da9e63d333af4166ab6ba59f9f42bf9a-categories/Build-unit.log",
+        "sha256": "2b8f528dd46fcd2fc34b6399efd3894c8016126a86251d5b76b6230932fa1f56",
+        "originalSha256": "b5ad8c95a69ebf6f6fd31d9758de736d488a6958ffae4b4e58a88c9ed41e4698"
+      },
+      {
+        "path": "probe-green-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-135046-690-61567-da9e63d333af4166ab6ba59f9f42bf9a-categories/dotnet-test.log",
+        "sha256": "e8765c62786309b819fb319f757a0f2dbeb2407f9942ee697a81106604f1c5e7",
+        "originalSha256": "23172f620f644b37e8580f7d91cabc43701e6313dd025b927bcbc3443cb48f7a"
+      },
+      {
+        "path": "probe-green-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-135046-690-61567-da9e63d333af4166ab6ba59f9f42bf9a-categories/plan.json",
+        "sha256": "508e9d8011c7517e44db42fb0977ca4ccd0e4a65e0aaddeffc8f33bf5bc1f780",
+        "originalSha256": "508e9d8011c7517e44db42fb0977ca4ccd0e4a65e0aaddeffc8f33bf5bc1f780"
+      },
+      {
+        "path": "probe-green-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-135046-690-61567-da9e63d333af4166ab6ba59f9f42bf9a-categories/summary.json",
+        "sha256": "206f211230a098721619c15a6b801ca95c5a89c5b82f7fd2eb8b5ce2a03d3aad",
+        "originalSha256": "206f211230a098721619c15a6b801ca95c5a89c5b82f7fd2eb8b5ce2a03d3aad"
+      },
+      {
+        "path": "probe-green-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-135142-660-61812-4b1d099da9df4db7a739b487b35518ae-categories/dotnet-test.log",
+        "sha256": "ed570e34e53834539ee045fcb14e0f8598cdd20a0f51b760f2fb5fdd42aaa51a",
+        "originalSha256": "e9f992545722632be386558992708419f3cbbac1f5d4f4f2d73cc82a58ffb818"
+      },
+      {
+        "path": "probe-green-actual-gm-main-startup-probe-host-linux-unit-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-135142-660-61812-4b1d099da9df4db7a739b487b35518ae-categories/gm-main-startup-probe-host-linux-unit-001.trx",
+        "sha256": "357a9906be2d8338d6aa50ad07c352eeaf97c4da87003cf6bf42b141ccf9f976",
+        "originalSha256": "6f31a0a8a484ce35fd39e31e3939452904bbe1a4890ffaa0a01f5efa65995984"
+      },
+      {
+        "path": "probe-green-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-135142-660-61812-4b1d099da9df4db7a739b487b35518ae-categories/plan.json",
+        "sha256": "62e9e348d858dfaa2e7988f2ed59afaffb2c680ba11046c51e3178d7296dcd89",
+        "originalSha256": "62e9e348d858dfaa2e7988f2ed59afaffb2c680ba11046c51e3178d7296dcd89"
+      },
+      {
+        "path": "probe-green-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-135142-660-61812-4b1d099da9df4db7a739b487b35518ae-categories/summary.json",
+        "sha256": "386ffd37a577f0821131f34d35d63915277cba9a59940fabad8eff828db12faf",
+        "originalSha256": "386ffd37a577f0821131f34d35d63915277cba9a59940fabad8eff828db12faf"
+      },
+      {
+        "path": "probe-green-plan-runner-boe-1553-probe-host-green-plan.log.gz",
+        "source": "/tmp/boe-1553-probe-host-green-plan.log",
+        "sha256": "abded399577a641bf4d09bdbcd2c7c11940574b1e4377a713a3d97a40cd922c2",
+        "originalSha256": "debac7a498a8eba3418b7defc9312447162a2c429e8df482fc1b9241bf8ae493"
+      },
+      {
+        "path": "probe-green-actual-runner-boe-1553-probe-host-green-actual.log.gz",
+        "source": "/tmp/boe-1553-probe-host-green-actual.log",
+        "sha256": "c402624a342faf5ca5c91739dd6ce88641a6e62bf2985a69f53d885d3ac2a2d7",
+        "originalSha256": "ef41db153e6605bc08dbe3df5c9ed9561bc59a89da42c776507bfd2a8c90a99b"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityGMBridge/Program.cs",
+        "sha256": "14c920614d6d7f568d9678e6d4afdeba0bf09b61c49cb322aa1840d6b8c3c63c"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.LoadSession.cs",
+        "sha256": "61055512203b6c639f2737858eb3e84dfc51863e466949cde965c1524d82b0c5"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs",
+        "sha256": "6c81145fdae9396dba4214861ce1465e40075d33009dc520c4257b48b271dc7d"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservationProbe.cs",
+        "sha256": "1af28e67d431bf4e13673c44916cb4f8b543b787267ab5d4b8d4180f141f54b1"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "e86fd8d37da1ea13f29a868cc6c4c60c0256dbbd847f545d0bf8a366afaa0134"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "26eacb304bd66a955b90d29557b66f37a00d6d92ef590474758f8778083ecdea"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.StartupObservation.cs",
+        "sha256": "e55f5c28bb76504950174e859033a7182472e6900adb4fc51e95495b148a93a5"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmBridgeStartupObservationTests.cs",
+        "sha256": "6c39517b8daee72514ee0f43c70b17a00b58a95cee14968490f26c3b1d472faa"
+      }
+    ]
   }
 }
