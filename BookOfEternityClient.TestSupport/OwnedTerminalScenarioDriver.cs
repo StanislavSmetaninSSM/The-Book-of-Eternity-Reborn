@@ -362,7 +362,15 @@ internal static partial class OwnedTerminalScenarioDriver
         catch (Exception ex) { result["Failure"] = ex.ToString(); return 1; }
         finally {
             if (host != null) {
-                try { await (Task)Invoke("StopShellAsync")!; result["ScopedRetired"] = type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host) == null; }
+                try {
+                    var original=type.GetField("_mainRun",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host) as GmSessionRunCoordinator;
+                    await (Task)Invoke("StopShellAsync")!;
+                    result["ScopedRetired"] = type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host) == null;
+                    if(mode.StartsWith("production-main-config-recovery-",StringComparison.Ordinal) && original!=null) {
+                        result["OriginalConfigRunStopped"]=original.Record?.Disposition==GmSessionRunDisposition.Stopped && !original.RetainsAuthority;
+                        if(!(bool)result["OriginalConfigRunStopped"]!)throw new InvalidOperationException("Original config-run coordinator was not fully retired.");
+                    }
+                }
                 catch (Exception ex) { result["CleanupFailure"] = ex.ToString(); }
             }
             await serverCancellation.CancelAsync(); if (server != null) await server;

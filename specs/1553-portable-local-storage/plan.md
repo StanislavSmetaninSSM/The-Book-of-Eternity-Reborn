@@ -9,7 +9,12 @@ contention before releasing publisher. Pre-recovery cachedB is diagnostic, not a
 acceptance precondition. Known rollback checks exactA before original child args,
 cwd, input profile/cache; unknown valid-inertC checks retained journal/no Prepared
 or child and fresh refusal. Original guardian/stop own cleanup. Fresh PlanOnly,
-causal run and independent fixture/source review pending; no runtime fix yet.
+causal run pending; no runtime fix yet. Initial77cc Plan151415 built2/1/0
+successfully. Independent fixture review found one cleanup-oracle P2 before actual:
+new mode must fail on CleanupFailure or non-retired original owner even if guardian
+settled. Corrected mode-scoped assertions now require ScopedRetired/no cleanup
+failure and, for the launched known row, same retained coordinator Stopped with
+RetainsAuthority=false after actual original Stop. No77cc actual run occurred.
 
 Previous Windows component gate c45/9c8 independently PASS, all35 artifacts/52
 source pins verified. Root restored9c8cf50b9ee0c7507e38099d841a33130a098550 directly

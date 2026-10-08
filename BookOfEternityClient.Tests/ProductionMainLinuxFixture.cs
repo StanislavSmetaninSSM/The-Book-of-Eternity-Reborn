@@ -156,6 +156,12 @@ internal static class ProductionMainLinuxFixture
         using var report=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"guardian.json")));
         Assert.True(report.RootElement.GetProperty("echild").GetBoolean());Assert.Equal(0,report.RootElement.GetProperty("emergencySignals").GetInt32());Assert.Equal(0,report.RootElement.GetProperty("failures").GetInt32());Assert.False(report.RootElement.GetProperty("deadline").GetBoolean());
         using var result=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"scenario.json")));
+        if(mode.StartsWith("production-main-config-recovery-",StringComparison.Ordinal)) {
+            Assert.False(result.RootElement.TryGetProperty("CleanupFailure",out _),result.RootElement.ToString());
+            Assert.True(result.RootElement.TryGetProperty("ScopedRetired",out var retired) && retired.GetBoolean(),result.RootElement.ToString());
+            if(mode.EndsWith("rollback",StringComparison.Ordinal))
+                Assert.True(result.RootElement.TryGetProperty("OriginalConfigRunStopped",out var stopped) && stopped.GetBoolean(),result.RootElement.ToString());
+        }
         Assert.True(result.RootElement.TryGetProperty("Success",out var succeeded) && succeeded.GetBoolean(),result.RootElement.ToString());Assert.Equal(0,guardian.ExitCode);
         if(mode=="production-main-uncertain") {
             var cold=Path.Combine(folder,"cold-check");Directory.CreateDirectory(cold);
