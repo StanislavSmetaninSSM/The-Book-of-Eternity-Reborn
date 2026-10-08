@@ -1,0 +1,454 @@
+{
+  "Baseline": {
+    "Root": "/tmp/h3-82779715",
+    "HttpRequests": 133,
+    "StageCounts": {
+      "new-game-root-page": {
+        "Requests": 1,
+        "Statuses": {
+          "200": 1
+        }
+      },
+      "new-game-sequential": {
+        "Requests": 3,
+        "Statuses": {
+          "200": 3
+        }
+      },
+      "new-game-three-parallel": {
+        "Requests": 36,
+        "Statuses": {
+          "200": 36
+        }
+      },
+      "new-game-refresh-three-tabs": {
+        "Requests": 54,
+        "Statuses": {
+          "200": 54
+        }
+      },
+      "relay-running-sequential": {
+        "Requests": 3,
+        "Statuses": {
+          "500": 2,
+          "200": 1
+        }
+      },
+      "relay-running-three-parallel": {
+        "Requests": 36,
+        "Statuses": {
+          "500": 24,
+          "200": 12
+        }
+      }
+    },
+    "ActiveRoutes": {
+      "/api/session": {
+        "500": 13
+      },
+      "/api/game-screen": {
+        "500": 13
+      },
+      "/api/audio/settings": {
+        "200": 13
+      }
+    },
+    "MeaningfulJson200": 106,
+    "ExceptionAtMainAdmission65": 26,
+    "ElapsedSeconds": 28.027,
+    "OriginalStop": {
+      "ok": true,
+      "status": {
+        "terminalRunId": "ea7d01ef2d774fcdbd79df18388f3ab1",
+        "terminalGuarantee": "ordinary-same-namespace-lineage",
+        "terminalUncertain": false,
+        "terminalStop": {
+          "identity": {
+            "runId": "ea7d01ef2d774fcdbd79df18388f3ab1",
+            "backend": "native-lineage",
+            "guarantee": "ordinary-same-namespace-lineage",
+            "rootPid": 956083
+          },
+          "state": "stopped-within-scope",
+          "reason": "stop-requested",
+          "cleanupComplete": true,
+          "authorityRetained": false
+        },
+        "terminalOwnerRetained": false,
+        "inputBindingId": "b60a186f789c4ea4908ac715019be9b5",
+        "backend": "native-lineage",
+        "state": "ShuttingDown",
+        "ready": false,
+        "helperPid": 956067,
+        "sessionPath": "/tmp/h3-82779715/play/game_session",
+        "pipeName": "og-8b9d72cabb6c",
+        "cliLaunchCommand": "& '/usr/bin/python3' '/tmp/h3-82779715/relay/codex-gm-relay.py' --session '/tmp/h3-82779715/play/game_session' --queue '/tmp/h3-82779715/queue' --model gpt-6.1-sol",
+        "shellWorkingDirectory": "/tmp/h3-82779715/play/game_session",
+        "lastPromptDispatchState": "None",
+        "startedAtUtc": "2026-10-08T06:04:23.1192391+00:00",
+        "updatedAtUtc": "2026-10-08T06:04:25.7719259+00:00",
+        "workerStatuses": [
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "validation_repair_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+          },
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "narrative_draft_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+          },
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "analysis_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+          },
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "guardian_abode_content_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+          },
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "soul_content_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+          },
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "inventory_content_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+          },
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "skill_content_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+          },
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "npc_content_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+          }
+        ]
+      }
+    },
+    "OriginalRunningRecord": {
+      "SchemaVersion": 1,
+      "Identity": {
+        "RootKey": "/tmp/h3-82779715/play",
+        "RunId": "ea7d01ef2d774fcdbd79df18388f3ab1",
+        "GenerationId": "14ad68fa6b87461cba7b3d758fb3965b",
+        "Epoch": 1,
+        "Backend": "LinuxSupervisor",
+        "HostInstanceId": "8b6c16ee013d42d79019905e79b1e1b1",
+        "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+      },
+      "Disposition": "Running",
+      "StopEvidence": null
+    },
+    "StoppedRecord": {
+      "SchemaVersion": 1,
+      "Identity": {
+        "RootKey": "/tmp/h3-82779715/play",
+        "RunId": "ea7d01ef2d774fcdbd79df18388f3ab1",
+        "GenerationId": "14ad68fa6b87461cba7b3d758fb3965b",
+        "Epoch": 1,
+        "Backend": "LinuxSupervisor",
+        "HostInstanceId": "8b6c16ee013d42d79019905e79b1e1b1",
+        "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+      },
+      "Disposition": "Stopped",
+      "StopEvidence": {
+        "Identity": {
+          "RootKey": "/tmp/h3-82779715/play",
+          "RunId": "ea7d01ef2d774fcdbd79df18388f3ab1",
+          "GenerationId": "14ad68fa6b87461cba7b3d758fb3965b",
+          "Epoch": 1,
+          "Backend": "LinuxSupervisor",
+          "HostInstanceId": "8b6c16ee013d42d79019905e79b1e1b1",
+          "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+        },
+        "Kind": "OwnedScopeEmpty",
+        "ObservedBootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+      }
+    },
+    "Terminals": {
+      "client": {
+        "ExitCode": 0,
+        "EOF": true,
+        "TermiosRestored": true,
+        "CapturedBytes": 4431
+      },
+      "web": {
+        "ExitCode": 0,
+        "EOF": true,
+        "TermiosRestored": true,
+        "CapturedBytes": 0
+      },
+      "bridge": {
+        "ExitCode": 0,
+        "EOF": true,
+        "TermiosRestored": true,
+        "CapturedBytes": 510
+      }
+    },
+    "Guardian": {
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    "ModelRequests": 0
+  },
+  "Green": {
+    "Root": "/tmp/hg-699f95a8",
+    "HttpRequests": 133,
+    "StageCounts": {
+      "new-game-root-page": {
+        "Requests": 1,
+        "Statuses": {
+          "200": 1
+        }
+      },
+      "new-game-sequential": {
+        "Requests": 3,
+        "Statuses": {
+          "200": 3
+        }
+      },
+      "new-game-three-parallel": {
+        "Requests": 36,
+        "Statuses": {
+          "200": 36
+        }
+      },
+      "new-game-refresh-three-tabs": {
+        "Requests": 54,
+        "Statuses": {
+          "200": 54
+        }
+      },
+      "relay-running-sequential": {
+        "Requests": 3,
+        "Statuses": {
+          "500": 2,
+          "200": 1
+        }
+      },
+      "relay-running-three-parallel": {
+        "Requests": 36,
+        "Statuses": {
+          "200": 12,
+          "500": 24
+        }
+      }
+    },
+    "ActiveRoutes": {
+      "/api/session": {
+        "500": 13
+      },
+      "/api/game-screen": {
+        "500": 13
+      },
+      "/api/audio/settings": {
+        "200": 13
+      }
+    },
+    "MeaningfulJson200": 106,
+    "ExceptionAtMainAdmission65": 26,
+    "ElapsedSeconds": 26.808,
+    "OriginalStop": {
+      "ok": true,
+      "status": {
+        "terminalRunId": "6fa9f9a995f34bdd81d8fe0c678c2c71",
+        "terminalGuarantee": "ordinary-same-namespace-lineage",
+        "terminalUncertain": false,
+        "terminalStop": {
+          "identity": {
+            "runId": "6fa9f9a995f34bdd81d8fe0c678c2c71",
+            "backend": "native-lineage",
+            "guarantee": "ordinary-same-namespace-lineage",
+            "rootPid": 959694
+          },
+          "state": "stopped-within-scope",
+          "reason": "stop-requested",
+          "cleanupComplete": true,
+          "authorityRetained": false
+        },
+        "terminalOwnerRetained": false,
+        "inputBindingId": "adabb7ea393a487b8b8f9ceb5b3793b9",
+        "backend": "native-lineage",
+        "state": "ShuttingDown",
+        "ready": false,
+        "helperPid": 959678,
+        "sessionPath": "/tmp/hg-699f95a8/play/game_session",
+        "pipeName": "og-c1c2da8cf2e0",
+        "cliLaunchCommand": "& '/usr/bin/python3' '/tmp/hg-699f95a8/relay/codex-gm-relay.py' --session '/tmp/hg-699f95a8/play/game_session' --queue '/tmp/hg-699f95a8/queue' --model gpt-6.1-sol",
+        "shellWorkingDirectory": "/tmp/hg-699f95a8/play/game_session",
+        "lastPromptDispatchState": "None",
+        "startedAtUtc": "2026-10-08T06:25:18.7113907+00:00",
+        "updatedAtUtc": "2026-10-08T06:25:21.2604919+00:00",
+        "workerStatuses": [
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "validation_repair_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:25:19.1042380+00:00"
+          },
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "narrative_draft_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:25:19.1042380+00:00"
+          },
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "analysis_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:25:19.1042380+00:00"
+          },
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "guardian_abode_content_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:25:19.1042380+00:00"
+          },
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "soul_content_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:25:19.1042380+00:00"
+          },
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "inventory_content_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:25:19.1042380+00:00"
+          },
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "skill_content_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:25:19.1042380+00:00"
+          },
+          {
+            "outputsSettled": false,
+            "cleanupDeferred": false,
+            "workerId": "npc_content_codex",
+            "state": "disabled",
+            "ready": false,
+            "updatedAtUtc": "2026-10-08T06:25:19.1042380+00:00"
+          }
+        ]
+      }
+    },
+    "OriginalRunningRecord": {
+      "SchemaVersion": 1,
+      "Identity": {
+        "RootKey": "/tmp/hg-699f95a8/play",
+        "RunId": "6fa9f9a995f34bdd81d8fe0c678c2c71",
+        "GenerationId": "dd1918443e2343df9d7bf50fe01c8517",
+        "Epoch": 1,
+        "Backend": "LinuxSupervisor",
+        "HostInstanceId": "a435a45b2f0b419abdac5a909b15a969",
+        "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+      },
+      "Disposition": "Running",
+      "StopEvidence": null
+    },
+    "StoppedRecord": {
+      "SchemaVersion": 1,
+      "Identity": {
+        "RootKey": "/tmp/hg-699f95a8/play",
+        "RunId": "6fa9f9a995f34bdd81d8fe0c678c2c71",
+        "GenerationId": "dd1918443e2343df9d7bf50fe01c8517",
+        "Epoch": 1,
+        "Backend": "LinuxSupervisor",
+        "HostInstanceId": "a435a45b2f0b419abdac5a909b15a969",
+        "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+      },
+      "Disposition": "Stopped",
+      "StopEvidence": {
+        "Identity": {
+          "RootKey": "/tmp/hg-699f95a8/play",
+          "RunId": "6fa9f9a995f34bdd81d8fe0c678c2c71",
+          "GenerationId": "dd1918443e2343df9d7bf50fe01c8517",
+          "Epoch": 1,
+          "Backend": "LinuxSupervisor",
+          "HostInstanceId": "a435a45b2f0b419abdac5a909b15a969",
+          "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+        },
+        "Kind": "OwnedScopeEmpty",
+        "ObservedBootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+      }
+    },
+    "Terminals": {
+      "client": {
+        "ExitCode": 0,
+        "EOF": true,
+        "TermiosRestored": true,
+        "CapturedBytes": 4431
+      },
+      "web": {
+        "ExitCode": 0,
+        "EOF": true,
+        "TermiosRestored": true,
+        "CapturedBytes": 0
+      },
+      "bridge": {
+        "ExitCode": 0,
+        "EOF": true,
+        "TermiosRestored": true,
+        "CapturedBytes": 510
+      }
+    },
+    "Guardian": {
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    "ModelRequests": 0
+  }
+}

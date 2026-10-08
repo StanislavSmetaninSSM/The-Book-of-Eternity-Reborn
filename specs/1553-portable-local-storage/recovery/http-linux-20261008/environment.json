@@ -1,0 +1,11 @@
+{
+  "SDK": "10.0.401",
+  "Runtime": "Microsoft.AspNetCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.AspNetCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.NETCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]\nMicrosoft.NETCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]",
+  "PowerShell": "7.5.4",
+  "Python": "Python 3.13.5",
+  "Node": "v24.19.0",
+  "NativeCompiler": "cc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+  "Git": "git version 2.52.0",
+  "OS": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Architecture": "x86_64"
+}

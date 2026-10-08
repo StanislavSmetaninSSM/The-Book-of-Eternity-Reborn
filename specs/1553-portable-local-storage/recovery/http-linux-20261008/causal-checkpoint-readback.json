@@ -1,0 +1,47 @@
+{
+  "Commit": "b5e18e19ca6901f6d278525f3571ea9e39b3a757",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/http-linux-coverage-audit-20261008.md",
+      "Bytes": 6202,
+      "GitBlob": "ff0e6af8517363fad2d41667090337684ff54c69",
+      "SHA256": "adff1c39850784714a9ba0557346c039ec9657852c9ad5fd79f5473b4ad0caf2"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/causal-red-manifest.json",
+      "Bytes": 3888,
+      "GitBlob": "75ed1640d41aa5e0238ea223bde927d56c3a80df",
+      "SHA256": "b2ffe251ecb46e7675292c1be326bd16f58fbe700886a712709d89ea5f1dfe9b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/causal-red-evidence.zip",
+      "Bytes": 182351,
+      "GitBlob": "f15639e7495ff1648b29811a479d6a14a5c3e847",
+      "SHA256": "d2afbf69d306ccaac18a576167ecafec20020d705872e370b3e904d81b24a88c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/causal-green-manifest.json",
+      "Bytes": 4871,
+      "GitBlob": "41c23637d0627c52acac6eee3e7e3e36e41ae3a2",
+      "SHA256": "aa86042cfb6d4a85a78097de3252403f8851a7438d840b4ca11f186b71410d83"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/causal-green-evidence.zip",
+      "Bytes": 182145,
+      "GitBlob": "3168df93fded322e1b8c61bec38a3e2b654f626b",
+      "SHA256": "2baecf45b37597f137e590ac0aecf010a340ef9f20fd74e9f1d7f661bb617120"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/green-selection-manifest.json",
+      "Bytes": 7862,
+      "GitBlob": "f972d89e4269fe4119fcf738f7fe947f33b22408",
+      "SHA256": "58022d6a9d2d67893018f8a1e3ae511f8d564776f4ff4e7bcd4735c9caee7af7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/green-selection-evidence.zip",
+      "Bytes": 189734,
+      "GitBlob": "e6916a224be9842da73f0d3d30f3fc04556ec6e4",
+      "SHA256": "1884014cc2e39a4f0e057bcd59314fb8743e5faffc0c8eea93242032b848ea41"
+    }
+  ]
+}

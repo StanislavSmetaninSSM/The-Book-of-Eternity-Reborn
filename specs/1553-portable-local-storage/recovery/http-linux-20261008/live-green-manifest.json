@@ -1,0 +1,337 @@
+{
+  "TimestampUTC": "2026-10-08T06:26:37.433916+00:00",
+  "Source": "3d205d317244b977460fc5537f66fa35e8bc567b",
+  "Root": "/tmp/hg-699f95a8",
+  "Archive": {
+    "Path": "live-green-evidence.zip",
+    "Bytes": 593334,
+    "SHA256": "165aee08ea9deac1ff0252710ba1a80c8623212f411f8ad0ad7e135fbf5253bf"
+  },
+  "Artifacts": [
+    {
+      "Path": "live-green/result.json",
+      "Bytes": 71403,
+      "SHA256": "e537e202f661f588d2241e964594dad0ec8c52c1cec68d5010c25034aae2e389"
+    },
+    {
+      "Path": "live-green/rpc-journal.json",
+      "Bytes": 38746,
+      "SHA256": "a8d94134e4b4efc37b9c6e0325cc9701c4d890e7b2f054933427b744f9d6b29c"
+    },
+    {
+      "Path": "live-green/http-responses.json",
+      "Bytes": 8617820,
+      "SHA256": "c1838dd666ee930a015e2e44f885762f2934b82cf0f199169ec331b3dc4841b0"
+    },
+    {
+      "Path": "live-green/bridge.raw",
+      "Bytes": 510,
+      "SHA256": "407b971eaaffbaae2d1c6b44e61314895343c72e6cdc0f5d3bf46634e0e0a1bb"
+    },
+    {
+      "Path": "live-green/web-echo.raw",
+      "Bytes": 2,
+      "SHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17"
+    },
+    {
+      "Path": "live-green/web.raw",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "live-green/client-echo.raw",
+      "Bytes": 2,
+      "SHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+    },
+    {
+      "Path": "live-green/client.raw",
+      "Bytes": 4431,
+      "SHA256": "92b2bea0bc9299ffe091f42a29314d3c5d2cf11d9e5f82f29ee458894320ba38"
+    },
+    {
+      "Path": "live-green/guardian.json",
+      "Bytes": 97,
+      "SHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "live-green/diagnostic-source.json",
+      "Bytes": 120747,
+      "SHA256": "6c1232fd293247b23644febffbccf48c3958fcd99066015ad3e8a6d30007e13e"
+    },
+    {
+      "Path": "live-green/queue/closed.json",
+      "Bytes": 98,
+      "SHA256": "6cd14369aecf2c9ad787d5ea4b75f5032422211c4594168e62514bce360b4e52"
+    },
+    {
+      "Path": "live-green/queue/close-request.json",
+      "Bytes": 40,
+      "SHA256": "8b5c2d11cec6944b78ac48a6f3efab538f754e19ee8b19e764580444cffff0c0"
+    },
+    {
+      "Path": "live-green/relay/relay_contract.py",
+      "Bytes": 9311,
+      "SHA256": "9d233029aba0777b279b32e2fc0ca531f6b0f11f360090a1b8a9ed8deb9913ba"
+    },
+    {
+      "Path": "live-green/relay/relay_platform.py",
+      "Bytes": 8320,
+      "SHA256": "3090305caa50c9458d1dedc4831f073f367883913336be614f2e1aaae50eb124"
+    },
+    {
+      "Path": "live-green/relay/relay_cli.py",
+      "Bytes": 9599,
+      "SHA256": "0c8c0992db3e863d36914045cdaddd10d9a9b8a327bf70b4e7c26822acff5606"
+    },
+    {
+      "Path": "live-green/relay/input-profile.json",
+      "Bytes": 183,
+      "SHA256": "b639df2a9bf75f786fedf8978a0098d6079492a1a8233ddc14e18d613c12afb7"
+    },
+    {
+      "Path": "live-green/relay/relay_worker.py",
+      "Bytes": 2133,
+      "SHA256": "0b3d570d228281060c2586bf4a258ffea74f4f2e25a5a0547d25566f95ed4870"
+    },
+    {
+      "Path": "live-green/relay/.gitignore",
+      "Bytes": 13,
+      "SHA256": "32dae3052f331ee34d628ef535709b301259a45df7c7522c4d35dcf49873f00b"
+    },
+    {
+      "Path": "live-green/relay/relay-apply-response.ps1",
+      "Bytes": 2045,
+      "SHA256": "a478ca9b5ff24613ec4f2c2792f35674fa086708c0fb5053281648eba65d2ca6"
+    },
+    {
+      "Path": "live-green/relay/README.md",
+      "Bytes": 10365,
+      "SHA256": "f4077bf12f87090d6f4a3e0d8cc45cd02b95ebc33fafe9310db16fe57fd1f82d"
+    },
+    {
+      "Path": "live-green/relay/codex-gm-relay.py",
+      "Bytes": 374,
+      "SHA256": "4e976ec833ea94e1d31c92b1b24b7a972fa399561ddf7e1f9e4063cb0ee8ca9a"
+    },
+    {
+      "Path": "live-green/play/game_session/config.json",
+      "Bytes": 849,
+      "SHA256": "784a09bd588c9e96b6f079af8d8fde65fa861c5ff241540fce060275437ad99e"
+    },
+    {
+      "Path": "live-green/play/.boe_runtime/gm-runs/main.json",
+      "Bytes": 697,
+      "SHA256": "5b7665fc5d6811ccbb4407d99a4fee3cf81cf20e7c6e46d69415f2d43ec73547"
+    },
+    {
+      "Path": "live-green/play/.boe_runtime/worker-runs-v1/state.json",
+      "Bytes": 111,
+      "SHA256": "3d92ab98405d269c4a00564a45b1bbfaf376354b0cd1dd626a7ae6cce509290c"
+    },
+    {
+      "Path": "live-green/play/.boe_runtime/worker-runs-v1/mode.json",
+      "Bytes": 79,
+      "SHA256": "27371efad34d27301538846982dd9a473d0494b63b3e8887c7a831a05b479861"
+    },
+    {
+      "Path": "live-green/play/.boe_runtime/worker-runs-v1/journal.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "live-green/play/.boe_runtime/worker-runs-v1/owner.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "live-green/play/.boe_runtime/session-generation/current.json",
+      "Bytes": 69,
+      "SHA256": "600159f79397f0be2e5e4c33e9fd72c70f14da79b1e14f56b12ca6c02d1d140d"
+    },
+    {
+      "Path": "live-green/play/.boe_runtime/locks/session-lifecycle.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "live-green/play/.boe_runtime/locks/canonical-write.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "live-green/play/.boe_runtime/locks/gm-main-owner.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "live-green/play/game_session/lore/codex_entries.json",
+      "Bytes": 3034,
+      "SHA256": "7a7ce6d0556877a02ab6817199977feb3f06b13e3d6252864ba2eab4791ff230"
+    },
+    {
+      "Path": "live-green/play/game_session/lore/chaos_sea/cosmology.json",
+      "Bytes": 1114,
+      "SHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5"
+    },
+    {
+      "Path": "live-green/play/game_session/lore/chaos_sea/soul_system_lore.json",
+      "Bytes": 890,
+      "SHA256": "22c966e966e03339e1e57d11babb4acfb7ddda05ca542adf7e53afce0cd5aa1d"
+    },
+    {
+      "Path": "live-green/play/game_session/lore/chaos_sea/guardians_lore.json",
+      "Bytes": 1063,
+      "SHA256": "de2648f01a5475b20d15dced5334054d0393d809203b0df427ed0adac553e3ff"
+    },
+    {
+      "Path": "live-green/play/game_session/lore/chaos_sea/player_chronicle.json",
+      "Bytes": 22,
+      "SHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/resources/resource_definitions.json",
+      "Bytes": 6885,
+      "SHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/resources/resource_state.json",
+      "Bytes": 35,
+      "SHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/resources/resource_history.json",
+      "Bytes": 35,
+      "SHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/resources/resource_owner_authority.json",
+      "Bytes": 64,
+      "SHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/wounds/wound_identity_index.json",
+      "Bytes": 35,
+      "SHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/wounds/wound_history.json",
+      "Bytes": 55,
+      "SHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/history/chat_log.json",
+      "Bytes": 100,
+      "SHA256": "68824b1fb185a62e05439855144a43e3854235475a5c62d181b8cf342932dd59"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/control/gm_bridge_status.json",
+      "Bytes": 2761,
+      "SHA256": "c0207ba8038a0e2802ff71cae766fbed4de36178296c5f06b24c2c385b2616b3"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/control/progression_schedule.json",
+      "Bytes": 1022,
+      "SHA256": "bab37a7c28dff6a167de7ea356204161e43cdbcefdfb652808f243eba95bc943"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/meta/afterlife_global_flags.json",
+      "Bytes": 42,
+      "SHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/meta/afterlife_chronicles.json",
+      "Bytes": 47,
+      "SHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/meta/afterlife_spiritual_conflict_state.json",
+      "Bytes": 78,
+      "SHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/meta/guardian_projects.json",
+      "Bytes": 91,
+      "SHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/meta/achievements.json",
+      "Bytes": 402,
+      "SHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/meta/character_chronicle.json",
+      "Bytes": 1097,
+      "SHA256": "827eefa812dcd3e5290063f081752e6e7d8263917c113268ba1d000ba8e3f8d4"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/meta/afterlife_entity_profiles.json",
+      "Bytes": 6669,
+      "SHA256": "b7ee36b87320fbf9c2306bd13e9a385ade1b1617b47f3966ebc780a40f171c1a"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/meta/soul_state.json",
+      "Bytes": 868,
+      "SHA256": "cede338a1e4841a84f112b5ddf32e24f68d4baf74279624a668b18f6e655152b"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/meta/guardians.json",
+      "Bytes": 19610,
+      "SHA256": "e06982069e8eec8a64b596b7be060d3fee4df2f688a770540607ab66eb71ed9c"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/inventory/item_identity_index.json",
+      "Bytes": 44,
+      "SHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/core/game_settings.json",
+      "Bytes": 184,
+      "SHA256": "70c69fbbd75fcaacb1d1f38b2bf3f65e357833791928f1f2e1d8a642616f0423"
+    },
+    {
+      "Path": "live-green/play/game_session/game_state/core/system_mods.json",
+      "Bytes": 191,
+      "SHA256": "6d2399d9443ab87bfe6d751c51e1e6d84c9e7c32a3fd5c61829922db8e2d7673"
+    },
+    {
+      "Path": "executor/environment.json",
+      "Bytes": 879,
+      "SHA256": "3c45d1110a040e1e818daad1e033f08b213abc80dfc139bc4954836cdee6101e"
+    },
+    {
+      "Path": "executor/http-live-driver.py",
+      "Bytes": 27790,
+      "SHA256": "5000c5862ea72e9eea67d3f34c8d542bc4c28db985e6cb392fbbb56a7dacb670"
+    },
+    {
+      "Path": "executor/http-live-green-driver.py",
+      "Bytes": 27797,
+      "SHA256": "b0be71a780a3aa7224ab9fe54f107a0a1e68318754bbfdb3279ec2efe493e800"
+    },
+    {
+      "Path": "executor/live-green.log",
+      "Bytes": 287,
+      "SHA256": "4e012adf63acb32e3431aec6313fba024eaf607aa6b16e201de0b2796108cb3a"
+    },
+    {
+      "Path": "executor/green-bridge-build.log",
+      "Bytes": 7560,
+      "SHA256": "ace87e5709ddfa868918cbad7552af5ae08116662dee20e119bde35cbe26c7eb"
+    },
+    {
+      "Path": "executor/green-publish-BookOfEternityClient.log",
+      "Bytes": 92,
+      "SHA256": "1725fd48899843edbd8abb019c24384299b3d927271c0ad04bb396ccb747dfab"
+    },
+    {
+      "Path": "executor/green-publish-BookOfEternityGMBridge.log",
+      "Bytes": 96,
+      "SHA256": "ed58799f8ad13dbde75d39250320836f357fb59c54311f87aa5293d9b2bd48b0"
+    },
+    {
+      "Path": "executor/causal-checkpoint-readback.json",
+      "Bytes": 2058,
+      "SHA256": "ee651f2f65cc27ffd4360027641e98921d06ea9383347fd08f66b1962a679a68"
+    }
+  ]
+}
