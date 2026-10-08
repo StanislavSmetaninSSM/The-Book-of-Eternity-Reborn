@@ -88,3 +88,11 @@ converts LF to CR even with processed-input disabled. Candidate now uses a
 bounded console reader thread, retained thread handle, cancellation/join before
 mode restoration; CR maps to LF only inside Windows bracketed paste, never at
 submit. POSIX transport stays unchanged. GREEN/review remain pending.
+
+At 63e26d1ae0e0c75e6bf2c6d7754baf96a3058e35 native exact Unicode/multiline
+paste/no-submit/CR-submit assertions pass in all three consumer cases. Invalid
+input case passes normal reader shutdown and exact mode restoration. Overall
+4/7 PASS, 3/7 FAIL: actual worker inspect stdout raises UnicodeEncodeError on
+emoji under Windows redirected codepage. Fix worker JSON stdout as explicit UTF8
+bytes; shared packet/identity stays unchanged. Shared17 still not run because
+runner stops after native descriptor failure. Original Job cleanup complete.
