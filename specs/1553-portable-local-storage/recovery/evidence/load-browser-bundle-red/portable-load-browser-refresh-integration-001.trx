@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="7f622d63-a647-4525-83ff-0d73eb9e4973" name="@95e438a3e5cb 2026-10-04 12:55:07" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T12:55:07.4530290-04:00" queuing="2026-10-04T12:55:07.4530290-04:00" start="2026-10-04T12:55:03.7081320-04:00" finish="2026-10-04T12:55:12.0663068-04:00" />
+  <TestSettings name="default" id="ae3e5627-7776-4617-84a8-657c53154c94">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-04_12_55_07" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="d7fa8a1d-512d-4b28-921d-4c943e837b6f" testId="c23ceb08-071e-d327-073d-7acd5441986f" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds" computerName="95e438a3e5cb" duration="00:00:00.7624973" startTime="2026-10-04T12:55:11.6248553-04:00" endTime="2026-10-04T12:55:11.6248555-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d7fa8a1d-512d-4b28-921d-4c943e837b6f" />
+    <UnitTestResult executionId="81660232-fce5-4b11-a60e-4c828c374737" testId="e51d6f89-6558-59ac-c5d9-dfd56c9539b6" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;stale&quot;)" computerName="95e438a3e5cb" duration="00:00:01.4239683" startTime="2026-10-04T12:55:09.3350608-04:00" endTime="2026-10-04T12:55:09.3350610-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="81660232-fce5-4b11-a60e-4c828c374737">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Conflict
+Actual:   NotFound</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 551
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 563
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e58289f5-3886-4d11-8130-9e5c2613930b" testId="a8b54232-1c37-b614-b8c3-41f37c6d7471" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;current&quot;)" computerName="95e438a3e5cb" duration="00:00:02.3260116" startTime="2026-10-04T12:55:07.9124635-04:00" endTime="2026-10-04T12:55:07.9124637-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e58289f5-3886-4d11-8130-9e5c2613930b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: OK
+Actual:   NotFound</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 551
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 563
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7541429f-ea4e-4b20-9809-dd8e317cfb08" testId="cdde866c-d2cc-110e-eba2-25c5fc8268be" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked" computerName="95e438a3e5cb" duration="00:00:00.3820642" startTime="2026-10-04T12:55:12.0074180-04:00" endTime="2026-10-04T12:55:12.0074182-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7541429f-ea4e-4b20-9809-dd8e317cfb08" />
+    <UnitTestResult executionId="867b8dff-0fff-439d-a33d-8559bf7f2fb3" testId="7ba741b3-4afc-0e31-206e-631b5be9624d" testName="BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock" computerName="95e438a3e5cb" duration="00:00:00.1274856" startTime="2026-10-04T12:55:05.5614224-04:00" endTime="2026-10-04T12:55:05.5614364-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="867b8dff-0fff-439d-a33d-8559bf7f2fb3" />
+    <UnitTestResult executionId="b296285d-197f-44e9-9769-2e1aa6734c0b" testId="b0ba79f8-3854-dfe8-2daa-99d1d0d8ae87" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;settings-failure&quot;)" computerName="95e438a3e5cb" duration="00:00:00.7770357" startTime="2026-10-04T12:55:10.8621130-04:00" endTime="2026-10-04T12:55:10.8621133-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b296285d-197f-44e9-9769-2e1aa6734c0b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Conflict
+Actual:   NotFound</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 551
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 563
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c7a6f108-1abf-4609-ac1e-512bca3193a6" testId="b8e13f8c-bfed-b566-63c5-bd79e33a7aa9" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;missing&quot;)" computerName="95e438a3e5cb" duration="00:00:00.7485140" startTime="2026-10-04T12:55:10.0844796-04:00" endTime="2026-10-04T12:55:10.0844798-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c7a6f108-1abf-4609-ac1e-512bca3193a6">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Conflict
+Actual:   NotFound</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 551
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 563
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;stale&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e51d6f89-6558-59ac-c5d9-dfd56c9539b6">
+      <Execution id="81660232-fce5-4b11-a60e-4c828c374737" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;settings-failure&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b0ba79f8-3854-dfe8-2daa-99d1d0d8ae87">
+      <Execution id="b296285d-197f-44e9-9769-2e1aa6734c0b" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;missing&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b8e13f8c-bfed-b566-63c5-bd79e33a7aa9">
+      <Execution id="c7a6f108-1abf-4609-ac1e-512bca3193a6" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c23ceb08-071e-d327-073d-7acd5441986f">
+      <Execution id="d7fa8a1d-512d-4b28-921d-4c943e837b6f" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7ba741b3-4afc-0e31-206e-631b5be9624d">
+      <Execution id="867b8dff-0fff-439d-a33d-8559bf7f2fb3" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests" name="ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="cdde866c-d2cc-110e-eba2-25c5fc8268be">
+      <Execution id="7541429f-ea4e-4b20-9809-dd8e317cfb08" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;current&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a8b54232-1c37-b614-b8c3-41f37c6d7471">
+      <Execution id="e58289f5-3886-4d11-8130-9e5c2613930b" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c23ceb08-071e-d327-073d-7acd5441986f" executionId="d7fa8a1d-512d-4b28-921d-4c943e837b6f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e51d6f89-6558-59ac-c5d9-dfd56c9539b6" executionId="81660232-fce5-4b11-a60e-4c828c374737" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a8b54232-1c37-b614-b8c3-41f37c6d7471" executionId="e58289f5-3886-4d11-8130-9e5c2613930b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cdde866c-d2cc-110e-eba2-25c5fc8268be" executionId="7541429f-ea4e-4b20-9809-dd8e317cfb08" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7ba741b3-4afc-0e31-206e-631b5be9624d" executionId="867b8dff-0fff-439d-a33d-8559bf7f2fb3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b0ba79f8-3854-dfe8-2daa-99d1d0d8ae87" executionId="b296285d-197f-44e9-9769-2e1aa6734c0b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b8e13f8c-bfed-b566-63c5-bd79e33a7aa9" executionId="c7a6f108-1abf-4609-ac1e-512bca3193a6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="7" executed="7" passed="3" failed="4" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.32]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.28]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.31]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:03.82]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:03.82]       Expected: OK
+[xUnit.net 00:00:03.82]       Actual:   NotFound
+[xUnit.net 00:00:03.82]       Stack Trace:
+[xUnit.net 00:00:03.82]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(551,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:03.82]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(563,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:03.82]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.24]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:05.24]       Expected: Conflict
+[xUnit.net 00:00:05.24]       Actual:   NotFound
+[xUnit.net 00:00:05.24]       Stack Trace:
+[xUnit.net 00:00:05.24]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(551,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:05.24]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(563,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:05.24]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.99]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:05.99]       Expected: Conflict
+[xUnit.net 00:00:05.99]       Actual:   NotFound
+[xUnit.net 00:00:05.99]       Stack Trace:
+[xUnit.net 00:00:05.99]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(551,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:05.99]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(563,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:05.99]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.77]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:06.77]       Expected: Conflict
+[xUnit.net 00:00:06.77]       Actual:   NotFound
+[xUnit.net 00:00:06.77]       Stack Trace:
+[xUnit.net 00:00:06.77]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(551,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:06.77]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(563,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:06.77]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:07.92]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T12:55:07.9129509-04:00">
+        <Text>[xUnit.net 00:00:03.82]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: "current") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T12:55:09.3374452-04:00">
+        <Text>[xUnit.net 00:00:05.24]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: "stale") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T12:55:10.0842571-04:00">
+        <Text>[xUnit.net 00:00:05.99]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: "missing") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T12:55:10.8622966-04:00">
+        <Text>[xUnit.net 00:00:06.77]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: "settings-failure") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

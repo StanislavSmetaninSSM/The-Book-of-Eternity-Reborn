@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "maximumProtocolVersion": 2,
+  "guarantee": "ordinary-same-namespace-lineage",
+  "runtimeIdentifier": "linux-x64",
+  "minimumGlibc": "2.38",
+  "binary": "boe-lineage-supervisor",
+  "binarySha256": "127c14010ae5dd1b055b3dfc1654dd1fefd4a365fb597e5375f189223b02c4d3",
+  "sourceCommit": "ecd14793df2ebec532f7908e982dc80c40be7f09",
+  "sourceSha256": "939622a025260f29fec105d2a0dff58f10e9a1f3ded5a6fb9d0866930b9c50ce",
+  "compilerVersion": "cc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+  "compilerSha256": "a23ecab8ff08f09ad8c80602c2c5df7f49e09c25905cb8975902e101bf72635f",
+  "flags": [
+    "-std=c11",
+    "-O2",
+    "-g",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-D_FORTIFY_SOURCE=2",
+    "-fstack-protector-strong",
+    "-Wl,-z,relro,-z,now"
+  ]
+}

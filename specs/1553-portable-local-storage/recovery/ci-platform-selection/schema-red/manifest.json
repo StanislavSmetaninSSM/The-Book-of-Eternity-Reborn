@@ -1,0 +1,41 @@
+{
+  "sourceHead": "f533213cc22edfb7403697d4a27f4cb5c89b6165",
+  "command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -Category test-ci-platform-contracts -Parallelism 1 -TimeoutMinutes 3",
+  "exitCode": 1,
+  "cleanup": "complete",
+  "artifacts": [
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/schema-red/dotnet-test.log.gz",
+      "originalSize": 3944,
+      "originalSha256": "8096ae1b3451c638db52c81793626a2f6cdcdcc2fbf7dbb458ad9478efdc3ad1",
+      "storedSha256": "1fa49905693341284abca4a2518677d039db314be80a5a0669d57538bd2e9ae0"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/schema-red/plan.json.gz",
+      "originalSize": 855,
+      "originalSha256": "df59c61a5c5b006c52ed7e26ca9e0f9e9d292e4d2795dd86907d0348b8b1136e",
+      "storedSha256": "bfab0bce795cf7007ba5ccc28332e4f7033bdf80174906e73bc7d5aae05cd75b"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/schema-red/summary.json.gz",
+      "originalSize": 1543,
+      "originalSha256": "67f56e73f77ffd2ddd0d0fa841d952aaa5fb64aa90a01384c6d8744f850d8ada",
+      "storedSha256": "09f960e423cdb3bea185ea7e5dce1787b8a8dc271b19e0f3076a14885362271d"
+    }
+  ],
+  "powerShellAssertions": {
+    "passed": 18,
+    "failed": 1
+  },
+  "runnerAcceptedCaseResults": 0,
+  "preparationFailure": false,
+  "sourcePins": {
+    ".github/workflows/dotnet-ci.yml": "9c7705dfccec01ea9dee6e8f262f804ca8ace1dd0f7a65bfd2af9ba1be8bcbd7",
+    "scripts/testing/TestCategoryCatalog.psm1": "4fc817a6bd8aa32e34cf6bb7f1ff9e3557abe3e287ed1974c726f6f9a27df2d3",
+    "scripts/plan-test-ci.ps1": "0a9e17c772688a6399c50363e5a36e061d820b14a6fef5ba5c350306b13dabc3",
+    "scripts/tests/test-ci-platform.tests.ps1": "3db421de04863a9f3a7cad48b96acb509edf12f3896eec2edf1c75a37b8d5969",
+    "scripts/tests/test-category-catalog.tests.ps1": "dd9eb69274233da75b3b7b48c7f86e209041509db3e9ffe4ad1b4ba55a68e35f",
+    "tests/categories.json": "9d50885413f4776c32ce9069c45b4d57a8b292550c3385d83aad340dc75376d5",
+    "tests/selection.json": "1e32f4d9324ed7d5bfc94b2d311bd74f573555ee601d5164f2da9d99338ae57d"
+  }
+}

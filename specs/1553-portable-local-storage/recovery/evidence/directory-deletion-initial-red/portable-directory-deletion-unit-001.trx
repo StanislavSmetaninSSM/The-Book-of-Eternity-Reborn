@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="4f0cebc1-cf56-42a5-89eb-bc1779e2f2f2" name="@ff00c3d48a40 2026-10-01 16:03:42" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T16:03:42.4248862-04:00" queuing="2026-10-01T16:03:42.4248863-04:00" start="2026-10-01T16:03:40.5166080-04:00" finish="2026-10-01T16:03:42.4327518-04:00" />
+  <TestSettings name="default" id="8b1dcf9b-3851-4b61-a703-d76b55f40175">
+    <Deployment runDeploymentRoot="_ff00c3d48a40_2026-10-01_16_03_42" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="4d631edd-e671-48f4-ba18-8e45d8cda111" testId="63d8162e-1199-080e-afcd-41e6482ea539" testName="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(exists: True)" computerName="ff00c3d48a40" duration="00:00:00.0084087" startTime="2026-10-01T16:03:42.2936323-04:00" endTime="2026-10-01T16:03:42.2936323-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4d631edd-e671-48f4-ba18-8e45d8cda111">
+      <Output>
+        <ErrorInfo>
+          <Message>System.DllNotFoundException : Unable to load shared library 'kernel32.dll' or one of its dependencies. In order to help diagnose loading problems, consider using a tool like strace. If you're using glibc, consider setting the LD_DEBUG environment variable: 
+<TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll.so: cannot open shared object file: No such file or directory
+<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/kernel32.dll.so: cannot open shared object file: No such file or directory
+<TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll.so: cannot open shared object file: No such file or directory
+<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/libkernel32.dll.so: cannot open shared object file: No such file or directory
+<TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll: cannot open shared object file: No such file or directory
+<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/kernel32.dll: cannot open shared object file: No such file or directory
+<TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll: cannot open shared object file: No such file or directory
+<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/libkernel32.dll: cannot open shared object file: No such file or directory
+</Message>
+          <StackTrace>   at BookOfEternityClient.Core.PhysicalFileAuthority.CreateFile(String lpFileName, UInt32 dwDesiredAccess, UInt32 dwShareMode, IntPtr lpSecurityAttributes, UInt32 dwCreationDisposition, UInt32 dwFlagsAndAttributes, IntPtr hTemplateFile)
+   at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteEntry(StableDirectory parent, String expectedPath, String authorityName, Boolean requirePhysicalDirectory, Boolean requireSingleFileLinks, FileIdentity expectedIdentity) in <REPO>/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1660
+   at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteDirectoryTree(StableDirectory parent, String expectedPath, String authorityName, Boolean requireSingleFileLinks) in <REPO>/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1440
+   at BookOfEternityClient.Core.FileSystemManager.DeleteDirectoryTree(CanonicalWriteLease writeLease, String relativePath) in <REPO>/BookOfEternityClient/Core/FileSystemManager.cs:line 1627
+   at BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(Boolean exists) in <REPO>/BookOfEternityClient.Tests/PortableDirectoryDeletionTests.cs:line 26
+   at BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(Boolean exists) in <REPO>/BookOfEternityClient.Tests/PortableDirectoryDeletionTests.cs:line 26
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="fff8fa12-3c7b-445d-81b3-c551198ef877" testId="a911159f-dcc5-51de-920e-7425cba35c1c" testName="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(exists: False)" computerName="ff00c3d48a40" duration="00:00:00.0279142" startTime="2026-10-01T16:03:42.2898919-04:00" endTime="2026-10-01T16:03:42.2899055-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fff8fa12-3c7b-445d-81b3-c551198ef877">
+      <Output>
+        <ErrorInfo>
+          <Message>System.DllNotFoundException : Unable to load shared library 'kernel32.dll' or one of its dependencies. In order to help diagnose loading problems, consider using a tool like strace. If you're using glibc, consider setting the LD_DEBUG environment variable: 
+<TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll.so: cannot open shared object file: No such file or directory
+<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/kernel32.dll.so: cannot open shared object file: No such file or directory
+<TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll.so: cannot open shared object file: No such file or directory
+<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/libkernel32.dll.so: cannot open shared object file: No such file or directory
+<TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll: cannot open shared object file: No such file or directory
+<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/kernel32.dll: cannot open shared object file: No such file or directory
+<TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll: cannot open shared object file: No such file or directory
+<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/libkernel32.dll: cannot open shared object file: No such file or directory
+</Message>
+          <StackTrace>   at BookOfEternityClient.Core.PhysicalFileAuthority.CreateFile(String lpFileName, UInt32 dwDesiredAccess, UInt32 dwShareMode, IntPtr lpSecurityAttributes, UInt32 dwCreationDisposition, UInt32 dwFlagsAndAttributes, IntPtr hTemplateFile)
+   at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteEntry(StableDirectory parent, String expectedPath, String authorityName, Boolean requirePhysicalDirectory, Boolean requireSingleFileLinks, FileIdentity expectedIdentity) in <REPO>/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1660
+   at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteDirectoryTree(StableDirectory parent, String expectedPath, String authorityName, Boolean requireSingleFileLinks) in <REPO>/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1440
+   at BookOfEternityClient.Core.FileSystemManager.DeleteDirectoryTree(CanonicalWriteLease writeLease, String relativePath) in <REPO>/BookOfEternityClient/Core/FileSystemManager.cs:line 1627
+   at BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(Boolean exists) in <REPO>/BookOfEternityClient.Tests/PortableDirectoryDeletionTests.cs:line 26
+   at BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(Boolean exists) in <REPO>/BookOfEternityClient.Tests/PortableDirectoryDeletionTests.cs:line 26
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5cc50c40-4de2-4335-9889-ec840a166092" testId="405edcd4-6cac-71c6-8f77-45adaea24443" testName="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling" computerName="ff00c3d48a40" duration="00:00:00.0232486" startTime="2026-10-01T16:03:42.3124740-04:00" endTime="2026-10-01T16:03:42.3124740-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5cc50c40-4de2-4335-9889-ec840a166092">
+      <Output>
+        <ErrorInfo>
+          <Message>System.DllNotFoundException : Unable to load shared library 'kernel32.dll' or one of its dependencies. In order to help diagnose loading problems, consider using a tool like strace. If you're using glibc, consider setting the LD_DEBUG environment variable: 
+<TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll.so: cannot open shared object file: No such file or directory
+<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/kernel32.dll.so: cannot open shared object file: No such file or directory
+<TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll.so: cannot open shared object file: No such file or directory
+<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/libkernel32.dll.so: cannot open shared object file: No such file or directory
+<TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll: cannot open shared object file: No such file or directory
+<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/kernel32.dll: cannot open shared object file: No such file or directory
+<TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll: cannot open shared object file: No such file or directory
+<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/libkernel32.dll: cannot open shared object file: No such file or directory
+</Message>
+          <StackTrace>   at BookOfEternityClient.Core.PhysicalFileAuthority.CreateFile(String lpFileName, UInt32 dwDesiredAccess, UInt32 dwShareMode, IntPtr lpSecurityAttributes, UInt32 dwCreationDisposition, UInt32 dwFlagsAndAttributes, IntPtr hTemplateFile)
+   at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteEntry(StableDirectory parent, String expectedPath, String authorityName, Boolean requirePhysicalDirectory, Boolean requireSingleFileLinks, FileIdentity expectedIdentity) in <REPO>/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1660
+   at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteDirectoryTree(StableDirectory parent, String expectedPath, String authorityName, Boolean requireSingleFileLinks) in <REPO>/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1440
+   at BookOfEternityClient.Core.FileSystemManager.DeleteDirectoryTree(CanonicalWriteLease writeLease, String relativePath) in <REPO>/BookOfEternityClient/Core/FileSystemManager.cs:line 1627
+   at BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling() in <REPO>/BookOfEternityClient.Tests/PortableDirectoryDeletionTests.cs:line 53
+   at BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling() in <REPO>/BookOfEternityClient.Tests/PortableDirectoryDeletionTests.cs:line 53
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(exists: False)" storage="<REPO>/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a911159f-dcc5-51de-920e-7425cba35c1c">
+      <Execution id="fff8fa12-3c7b-445d-81b3-c551198ef877" />
+      <TestMethod codeBase="<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableDirectoryDeletionTests" name="EmptyOrAbsentTreeDoesNotPublishOrInventGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(exists: True)" storage="<REPO>/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="63d8162e-1199-080e-afcd-41e6482ea539">
+      <Execution id="4d631edd-e671-48f4-ba18-8e45d8cda111" />
+      <TestMethod codeBase="<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableDirectoryDeletionTests" name="EmptyOrAbsentTreeDoesNotPublishOrInventGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling" storage="<REPO>/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="405edcd4-6cac-71c6-8f77-45adaea24443">
+      <Execution id="5cc50c40-4de2-4335-9889-ec840a166092" />
+      <TestMethod codeBase="<REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableDirectoryDeletionTests" name="NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="63d8162e-1199-080e-afcd-41e6482ea539" executionId="4d631edd-e671-48f4-ba18-8e45d8cda111" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a911159f-dcc5-51de-920e-7425cba35c1c" executionId="fff8fa12-3c7b-445d-81b3-c551198ef877" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="405edcd4-6cac-71c6-8f77-45adaea24443" executionId="5cc50c40-4de2-4335-9889-ec840a166092" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="3" executed="3" passed="0" failed="3" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.26]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.29]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.30]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.38]       System.DllNotFoundException : Unable to load shared library 'kernel32.dll' or one of its dependencies. In order to help diagnose loading problems, consider using a tool like strace. If you're using glibc, consider setting the LD_DEBUG environment variable: 
+[xUnit.net 00:00:01.38]       <TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.38]       <REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/kernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.38]       <TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.38]       <REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/libkernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.38]       <TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.38]       <REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/kernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.38]       <TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.38]       <REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/libkernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.38]       
+[xUnit.net 00:00:01.39]       Stack Trace:
+[xUnit.net 00:00:01.39]            at BookOfEternityClient.Core.PhysicalFileAuthority.CreateFile(String lpFileName, UInt32 dwDesiredAccess, UInt32 dwShareMode, IntPtr lpSecurityAttributes, UInt32 dwCreationDisposition, UInt32 dwFlagsAndAttributes, IntPtr hTemplateFile)
+[xUnit.net 00:00:01.39]         <REPO>/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1660,0): at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteEntry(StableDirectory parent, String expectedPath, String authorityName, Boolean requirePhysicalDirectory, Boolean requireSingleFileLinks, FileIdentity expectedIdentity)
+[xUnit.net 00:00:01.39]         <REPO>/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1440,0): at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteDirectoryTree(StableDirectory parent, String expectedPath, String authorityName, Boolean requireSingleFileLinks)
+[xUnit.net 00:00:01.39]         <REPO>/BookOfEternityClient/Core/FileSystemManager.cs(1627,0): at BookOfEternityClient.Core.FileSystemManager.DeleteDirectoryTree(CanonicalWriteLease writeLease, String relativePath)
+[xUnit.net 00:00:01.39]         <REPO>/BookOfEternityClient.Tests/PortableDirectoryDeletionTests.cs(26,0): at BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(Boolean exists)
+[xUnit.net 00:00:01.39]         <REPO>/BookOfEternityClient.Tests/PortableDirectoryDeletionTests.cs(26,0): at BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(Boolean exists)
+[xUnit.net 00:00:01.39]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.39]       System.DllNotFoundException : Unable to load shared library 'kernel32.dll' or one of its dependencies. In order to help diagnose loading problems, consider using a tool like strace. If you're using glibc, consider setting the LD_DEBUG environment variable: 
+[xUnit.net 00:00:01.39]       <TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.39]       <REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/kernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.39]       <TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.39]       <REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/libkernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.39]       <TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.39]       <REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/kernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.39]       <TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.39]       <REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/libkernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.39]       
+[xUnit.net 00:00:01.39]       Stack Trace:
+[xUnit.net 00:00:01.39]            at BookOfEternityClient.Core.PhysicalFileAuthority.CreateFile(String lpFileName, UInt32 dwDesiredAccess, UInt32 dwShareMode, IntPtr lpSecurityAttributes, UInt32 dwCreationDisposition, UInt32 dwFlagsAndAttributes, IntPtr hTemplateFile)
+[xUnit.net 00:00:01.39]         <REPO>/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1660,0): at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteEntry(StableDirectory parent, String expectedPath, String authorityName, Boolean requirePhysicalDirectory, Boolean requireSingleFileLinks, FileIdentity expectedIdentity)
+[xUnit.net 00:00:01.39]         <REPO>/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1440,0): at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteDirectoryTree(StableDirectory parent, String expectedPath, String authorityName, Boolean requireSingleFileLinks)
+[xUnit.net 00:00:01.39]         <REPO>/BookOfEternityClient/Core/FileSystemManager.cs(1627,0): at BookOfEternityClient.Core.FileSystemManager.DeleteDirectoryTree(CanonicalWriteLease writeLease, String relativePath)
+[xUnit.net 00:00:01.39]         <REPO>/BookOfEternityClient.Tests/PortableDirectoryDeletionTests.cs(26,0): at BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(Boolean exists)
+[xUnit.net 00:00:01.39]         <REPO>/BookOfEternityClient.Tests/PortableDirectoryDeletionTests.cs(26,0): at BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(Boolean exists)
+[xUnit.net 00:00:01.39]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.41]       System.DllNotFoundException : Unable to load shared library 'kernel32.dll' or one of its dependencies. In order to help diagnose loading problems, consider using a tool like strace. If you're using glibc, consider setting the LD_DEBUG environment variable: 
+[xUnit.net 00:00:01.41]       <TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.41]       <REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/kernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.41]       <TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.41]       <REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/libkernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.41]       <TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.41]       <REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/kernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.41]       <TOOLCHAIN>/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.41]       <REPO>/BookOfEternityClient.Tests/bin/Debug/net8.0/libkernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:01.41]       
+[xUnit.net 00:00:01.41]       Stack Trace:
+[xUnit.net 00:00:01.41]            at BookOfEternityClient.Core.PhysicalFileAuthority.CreateFile(String lpFileName, UInt32 dwDesiredAccess, UInt32 dwShareMode, IntPtr lpSecurityAttributes, UInt32 dwCreationDisposition, UInt32 dwFlagsAndAttributes, IntPtr hTemplateFile)
+[xUnit.net 00:00:01.41]         <REPO>/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1660,0): at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteEntry(StableDirectory parent, String expectedPath, String authorityName, Boolean requirePhysicalDirectory, Boolean requireSingleFileLinks, FileIdentity expectedIdentity)
+[xUnit.net 00:00:01.41]         <REPO>/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1440,0): at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteDirectoryTree(StableDirectory parent, String expectedPath, String authorityName, Boolean requireSingleFileLinks)
+[xUnit.net 00:00:01.41]         <REPO>/BookOfEternityClient/Core/FileSystemManager.cs(1627,0): at BookOfEternityClient.Core.FileSystemManager.DeleteDirectoryTree(CanonicalWriteLease writeLease, String relativePath)
+[xUnit.net 00:00:01.41]         <REPO>/BookOfEternityClient.Tests/PortableDirectoryDeletionTests.cs(53,0): at BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling()
+[xUnit.net 00:00:01.41]         <REPO>/BookOfEternityClient.Tests/PortableDirectoryDeletionTests.cs(53,0): at BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling()
+[xUnit.net 00:00:01.41]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.42]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T16:03:42.2818864-04:00">
+        <Text>[xUnit.net 00:00:01.38]     BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(exists: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T16:03:42.2936457-04:00">
+        <Text>[xUnit.net 00:00:01.39]     BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(exists: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T16:03:42.3124444-04:00">
+        <Text>[xUnit.net 00:00:01.41]     BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

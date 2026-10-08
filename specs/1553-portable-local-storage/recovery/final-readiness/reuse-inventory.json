@@ -1,0 +1,95 @@
+{
+  "relay-reusable": {
+    "matchedRuntimePins": 24,
+    "paths": [
+      "tools/gm-relay/relay_contract.py",
+      "tools/gm-relay/relay_cli.py",
+      "tools/gm-relay/input-profile.json",
+      "tools/gm-relay/relay_worker.py",
+      "tools/gm-relay/.gitignore",
+      "tools/gm-relay/relay-apply-response.ps1",
+      "tools/gm-relay/README.md",
+      "BookOfEternityClient.Tests/GmRelayReusableTests.cs",
+      "BookOfEternityClient.Tests/GmRelayTransportTests.cs",
+      "BookOfEternityClient.Tests/GmRelayRepairTests.cs",
+      "BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs",
+      "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.Relay.cs",
+      "tests/fixtures/ProductionMain/codex-gm-relay.py",
+      "tests/fixtures/ProductionMain/relay-apply-response.ps1",
+      "tests/fixtures/ProductionMain/relay-reusable-checks.py",
+      "tests/fixtures/ProductionMain/relay-transport-checks.py",
+      "tests/fixtures/ProductionMain/relay-repair-checks.py",
+      "tests/fixtures/ProductionMain/live-game-one-turn.py",
+      "tests/fixtures/LinuxHost/host-guardian.c",
+      "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "BookOfEternityGMBridge/TerminalScreen.cs",
+      "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "scripts/build-linux-supervisor.ps1"
+    ],
+    "excludedChangedSelectionMetadata": [
+      "tests/categories.json",
+      "tests/selection.json"
+    ],
+    "reviewedTestRunnerDelta": {
+      "path": "scripts/test-csharp.ps1",
+      "acceptedSha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "currentSha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "reason": "Owned child BOE_REPO_ROOT pins exact current checkout after causal fixture-root failure; no application/relay/fixture transport change",
+      "qualification": "schema-managed-green18PASS and prior explicit-root diagnostic7PASS",
+      "relayReplayRequired": false
+    }
+  },
+  "systemd-main-s2a": {
+    "matchedRuntimePins": 16,
+    "paths": [
+      "BookOfEternityClient/Services/GmRuntime/SystemdCgroupSource.cs",
+      "BookOfEternityClient/Services/GmRuntime/LinuxSystemdCgroupFiles.cs",
+      "BookOfEternityClient.TestSupport/SystemdControlledScenarioDriver.cs",
+      "BookOfEternityClient.Tests/GmMainSystemdCgroupSourceTests.cs",
+      "BookOfEternityClient.Tests/GmMainSystemdCgroupConnectedTests.cs",
+      "BookOfEternityClient/Services/GmRuntime/SystemdScopeContracts.cs",
+      "BookOfEternityClient/Services/GmRuntime/SystemdCgroupObservation.cs",
+      "BookOfEternityClient/Services/GmRuntime/SystemdUserScopeOwner.cs",
+      "BookOfEternityClient/Services/GmRuntime/SystemdOwnedTerminalSession.cs",
+      "BookOfEternityClient/Services/GmRuntime/SystemdUserBus.cs",
+      "BookOfEternityClient/Services/GmRuntime/SystemdSdBusTransport.cs",
+      "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+      "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
+      "BookOfEternityClient/Services/GmWorkers/NativeHeldTerminalPidfd.cs",
+      "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs"
+    ],
+    "excludedChangedSelectionMetadata": [
+      "tests/categories.json",
+      "tests/selection.json"
+    ]
+  },
+  "HistoricalF2Unpassed": [
+    {
+      "Id": "BrowserLocalWriteCoordinatorTests.ExecuteAsync_SessionReplacementWaitsForWholeLegacyTransaction",
+      "Reason": "Original Linux timeout before callback; legacy physical fixture",
+      "NewExecutions": 0
+    },
+    {
+      "Id": "BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
+      "Reason": "Original Linux timeout before callback; legacy physical fixture",
+      "NewExecutions": 0
+    },
+    {
+      "Id": "BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_LockReleaseFailureDoesNotRollbackCommittedMutation",
+      "Reason": "Original Windows physical creation unavailable on Linux; legacy fixture",
+      "NewExecutions": 0
+    },
+    {
+      "Id": "BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ExplicitLeaseWritesWithoutAmbientAuthority",
+      "Reason": "Original Windows physical creation unavailable on Linux; legacy fixture",
+      "NewExecutions": 0
+    }
+  ],
+  "ApplicationTreeChangedPathsSinceAcceptedRelay": [
+    "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+    "BookOfEternityClient/Services/GmRuntime/LinuxSystemdCgroupFiles.cs",
+    "BookOfEternityClient/Services/GmRuntime/SystemdCgroupSource.cs"
+  ]
+}

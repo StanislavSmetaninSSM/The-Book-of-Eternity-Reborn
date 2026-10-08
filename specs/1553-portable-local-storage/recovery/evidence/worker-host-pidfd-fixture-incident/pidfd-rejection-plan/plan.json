@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "worker-native-pidfd-rejection"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "78af9d409dcc3150639e94cecc548598fbf5fe51",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 46.4739561,
+  "Descriptors": [
+    {
+      "Name": "worker-native-pidfd-rejection-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pidfd-rejection",
+      "Categories": [
+        "worker-native-pidfd-rejection"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.SupervisorPidfd_CannotBecomeHostIdentity|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.GatedBootstrapLoss_RetiresWithoutExecutingRoot",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.SupervisorPidfd_CannotBecomeHostIdentity",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.GatedBootstrapLoss_RetiresWithoutExecutingRoot",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

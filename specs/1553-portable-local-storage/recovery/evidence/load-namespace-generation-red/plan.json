@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "portable-storage-namespace-generation"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-storage-namespace-generation",
+      "reason": "Independent review found that pending v3 rollback does not remove a generation file whose original state was absent. Two independent decisions establish the causal baseline before production correction; the connected generation-published cut belongs to portable-load-topology.",
+      "contracts": [
+        "#1553 preserved exact generation absence; LOAD-FS-002/003/006"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "a8ec943d2abe9be772b684f7df8a71376baf5ea2",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 150.2798211,
+  "Descriptors": [
+    {
+      "Name": "portable-storage-namespace-generation-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-namespace-generation",
+      "Categories": [
+        "portable-storage-namespace-generation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentNewGenerationFramePreservesExactAbsence",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentNewGenerationFramePreservesExactAbsence",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

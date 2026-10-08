@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-backup-review-regressions",
+      "reason": "Affected P1 ordering dependencies: debt-free generation and malformed input remain known errors; no-op/real lease/original route/same-lease debt preserve their boundary.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-generation-debt",
+      "reason": "Actual bound StateDistributor generation conflict after a committed backup retains journal uncertainty before compensation; outer SessionOperationContext finalization remains separate.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-consumers",
+      "reason": "Actual StateDistributor backup capture, reverse restoration and accepted cleanup uncertainty; no later compensation or diagnostic reversal.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-qte",
+      "reason": "Actual QTE backup publication and same-lease debt reach its immediate distributor boundary; uncertainty excludes wider baseline compensation and later writes.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    }
+  ]
+}

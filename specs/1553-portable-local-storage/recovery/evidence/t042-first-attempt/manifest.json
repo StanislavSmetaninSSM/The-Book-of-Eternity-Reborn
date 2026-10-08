@@ -1,0 +1,271 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "df21035c079fbfa09efea6e3770f805b882b6fac",
+  "Commands": [
+    {
+      "Log": "first-green.log.gz",
+      "Entrypoint": "scripts/test-csharp.ps1; exact category/options and counts in retained runner artifacts"
+    },
+    {
+      "Log": "daemon-first-green.log.gz",
+      "Entrypoint": "scripts/test-csharp.ps1; exact category/options and counts in retained runner artifacts"
+    }
+  ],
+  "Inputs": [
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Sha256": "9788117b2081320c7df37fa79114ccc876b2e4e16cca45d933197c99a663bba8",
+      "GitBlob": "913fb07886ccbd776a2b0011740f24dc334eef0e"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs",
+      "Sha256": "a548a1f334fc727b7caf666cb2f5c84c31afd2e3bca6d1e8b1137a8224e14cc4",
+      "GitBlob": "1c7bc99fecc5766637e9cbfa61bfef1f68bd224f"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "GitBlob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmBridgeDiagnosticsContractTests.cs",
+      "Sha256": "9099347c559006189c342cb3fe0fda66868dca7b74557086d98c17185c4ecd64",
+      "GitBlob": "aeb48de5b1f86006dbe2300434dd3bf4158e6c5e"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs",
+      "Sha256": "ede4205bdabd064cb7e2f8fb9d78542ae7ea92a3a2f1271b6390647c9b96573c",
+      "GitBlob": "30bffb2ebff60e9fc39dd22faaf6b159dbee1c98"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs",
+      "Sha256": "210c46a2b7cd79cb540af8d78f9ccd3975957ce9ba4a386b476a9063ff228fd6",
+      "GitBlob": "a809342747e17e3e98579896fdb963723838758c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs",
+      "Sha256": "8fbb6290aaa52b6ff83372e6a26c027bb59b6bc23b43e00b1fd74376ebe745db",
+      "GitBlob": "83302aa4fd189641728ebfb5b4b826aee1bbecb0"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs",
+      "Sha256": "3e7fd4644645cfd44bd5b23c1ee4fdb63b0ef0cffb8628b61a27c48456bca66c",
+      "GitBlob": "ed87bbfe470aae42d516db58a712bdb69b551e9a"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Sha256": "009f4dbfe71f80887561227b708af0abb9a153a8de2a75c10af0be1487f6e4c6",
+      "GitBlob": "e6e78f3b5797ed6367763878790309e48041befe"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GameSettings.cs",
+      "Sha256": "d5eb75ad362ea2d910773f16f1ec413a01cbab562526d4d6acb9c438bf1333bd",
+      "GitBlob": "eab5078234b144a88a7e38484fe6843bb565dee0"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
+      "Sha256": "d3a5b5b91d9e9e1621214ee87314b1519308ce548a7d948e5c9a8bdb7e8eabf9",
+      "GitBlob": "301ec89f509fa67d9982c878ec8ee9fc08865c32"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/bookofeternity.ps1",
+      "Sha256": "c9b51cbb67e1426489b83f630a53263e307515671a9033a835b153f0627dfdfc",
+      "GitBlob": "eb8e84c924a27edc079a4ee508aeecd673d1a592"
+    },
+    {
+      "Path": "BookOfEternityClient/game_master_daemon.ps1",
+      "Sha256": "2d873c1cf9bdd80a947330d5329ec4572076011212224908e451ae485d1ed342",
+      "GitBlob": "e83f3dff4d6763a7a3277cac9c078ca72ceb8525"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+      "Sha256": "aea4e886f3f2209b32e3f79ab37b62793567d6e7510109a6622be31f2af9de4d",
+      "GitBlob": "603f4886992cc8326a72d4249e9042390cf539f4"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "Sha256": "c240bbb251e430d83baa5a6aa883fce3ca44c1734251fe9f340326498bb22231",
+      "GitBlob": "e3a6472ea1571a5b459cb8b62b00aa76da766d07"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/ConPtySession.cs",
+      "Sha256": "8c609242e9c9f6fe2e29526184c7350058a959b56bf02852826572b762d152c7",
+      "GitBlob": "9f23aba595233798908a1f211c05534574c2f293"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Sha256": "361c1db0ea246655769f6adda6c332440ae0049567900f5ff1dde81ff41f1fee",
+      "GitBlob": "49351a80f388bf52db10b1240ad77dc53b9f5199"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "Sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "GitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Sha256": "d1f1016aa0c9e2f4be48435a2c7b30238c05365c091f38114666340da6692572",
+      "GitBlob": "131083bc75c3504b5bf36917ddf6e248c0370f2d"
+    },
+    {
+      "Path": "tests/fixtures/GmPromptDelivery/daemon-functions.ps1",
+      "Sha256": "64852ec517d0fa3679d9f3790d6f7c8a0dfc8fec72e0aad242d3963def7c1e35",
+      "GitBlob": "07bac2c83469bcc7ca90b7461f94260ca553e5b9"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Sha256": "cb39abe95e94a217f85128150ccb26fe13a99a21890152fba0cd6536bf4a74d8",
+      "GitBlob": "6a1e3a805b4adae6a7564924505ec883061f3483"
+    }
+  ],
+  "Binaries": [
+    {
+      "Path": "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityGMBridge.dll",
+      "Bytes": 112128,
+      "Sha256": "5f9159d92d9fb054e87a8f0335989b9d6b56fe74b46cf4bc04c3ba796b5d74c2"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityClient.pdb",
+      "Bytes": 5481892,
+      "Sha256": "92f28d89ec11acb13ac81c72916c2c9ea72b874df20689e472ac97c4aed95f14"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityClient.dll",
+      "Bytes": 24404992,
+      "Sha256": "cbf18a070f65f082c0622b89e5e70116d5fd868097f3cc194a5a0efd0e98e678"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityGMBridge.pdb",
+      "Bytes": 47664,
+      "Sha256": "ac27a200d9927aade92a5f1043e605b87220780e3343aae2cb58a17a99a20713"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb",
+      "Bytes": 1679804,
+      "Sha256": "331eaaa0e7fa241abf7af635ebf55cc25a6ab7b3e117118ad11510d773b7f419"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "Bytes": 771584,
+      "Sha256": "99ba420197709c8d656e674100f968a396eb1f50d7456f529a11bec4afbb82ca"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb",
+      "Bytes": 139936,
+      "Sha256": "9a7d96e2e69960bf0d96713fbf3d7a4819270c51d3df8f1156863a31576eec1c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.pdb",
+      "Bytes": 5481892,
+      "Sha256": "92f28d89ec11acb13ac81c72916c2c9ea72b874df20689e472ac97c4aed95f14"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "Bytes": 8480768,
+      "Sha256": "ad0cbe264e782fb01fc791252d294950c5f1028ccadddca4939a970838415994"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "Bytes": 24404992,
+      "Sha256": "cbf18a070f65f082c0622b89e5e70116d5fd868097f3cc194a5a0efd0e98e678"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "Bytes": 771584,
+      "Sha256": "9bd0680e7f33a8080730c3edb09d133401ef2a79d2f62008f1f64646cf6993cd"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb",
+      "Bytes": 139936,
+      "Sha256": "a0fba1368f89179ae8d0aec475c5faccb77c1553c461c9e57d95f39c534704a2"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb",
+      "Bytes": 4048200,
+      "Sha256": "4817ad6c1b6e0d2cacb92870e9843547aa29adab4d1fa75f3737f8d84c5efd7f"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb",
+      "Bytes": 5480860,
+      "Sha256": "3fd091a733822c7218fccd704bae9d159a7e18e7ebe3abb7aa267ff699fa314b"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "Bytes": 24994304,
+      "Sha256": "8c13120f71a480d004fcfaba23ccadc5a22bb0079b351f4306e9b9fe7979e7aa"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "Bytes": 24400896,
+      "Sha256": "899795a06054634819eb74a9f8ea53a41fe70d5de9e7f7e671b0c43f3b446ec9"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "daemon-first-green/dotnet-test.log.gz",
+      "Bytes": 170901,
+      "Sha256": "e28a19365593324a85851e2df4c4f890295ab2d76b1caba9cab9bb3819ec1921",
+      "DecompressedSha256": "87f7e14c3515f750e142b90a9550c222241f58b65f0f4c37c73e785e127857db"
+    },
+    {
+      "Path": "daemon-first-green/gm-daemon-prompt-delivery-unit-001.trx",
+      "Bytes": 4323,
+      "Sha256": "f06a56e12516ea6bba9939a16026c322e0cf860296645fb1d666fe68bf23f21e"
+    },
+    {
+      "Path": "daemon-first-green/plan.json",
+      "Bytes": 1347,
+      "Sha256": "eac33842e14b2050c10cdb603e69bf8f0f11c2860e234a3c8492465fcbb409f7"
+    },
+    {
+      "Path": "daemon-first-green/summary.json",
+      "Bytes": 1456,
+      "Sha256": "6ff0d9baece65ecbbac9ed132296763e448cfc30f06fab75c5da3de0b76591d2"
+    },
+    {
+      "Path": "daemon-first-green.log.gz",
+      "Bytes": 780,
+      "Sha256": "f3958167b4f6bc59d3e4b14316bc2d8da532a3c71d0f9622707953f76c1bd9fb",
+      "DecompressedSha256": "51b1ab6120cba2b2333c1e28c4056304ae9ec778b32b50dc4ce2cb0fd01d654a"
+    },
+    {
+      "Path": "first-green/Build-unit.log.gz",
+      "Bytes": 1288,
+      "Sha256": "3e4c4b0101e02fa3c0e7f7059427237721a003914183a43353b4f0e45791c8e0",
+      "DecompressedSha256": "57a46cb34a260551411bdc49f73a714d4624147dfb99e7e596587c9933c0ed66"
+    },
+    {
+      "Path": "first-green/dotnet-test.log.gz",
+      "Bytes": 172514,
+      "Sha256": "7aa7eed3ae281121550762a2fbd8847a9db57ac0f8923cc253a479242914c49f",
+      "DecompressedSha256": "50bb00d95c8f8cc2551abeb6dbc092804d39a3b75002d71143041f389b7b4605"
+    },
+    {
+      "Path": "first-green/gm-bridge-prompt-operation-unit-001.trx",
+      "Bytes": 26597,
+      "Sha256": "7ecf8bbe1e265a136525d7198d0cc9da04458cf00c7b871de975f4be6adda877"
+    },
+    {
+      "Path": "first-green/plan.json",
+      "Bytes": 4720,
+      "Sha256": "98d2daebd4505b2ffb52acd052d2a3e31f2a3a532fa49dd4bbfa0f1feec2167e"
+    },
+    {
+      "Path": "first-green/summary.json",
+      "Bytes": 1544,
+      "Sha256": "a926337e58dd33278993e238d9825a9dcfeed79f493c23dd7a0888d7d0159432"
+    },
+    {
+      "Path": "first-green.log.gz",
+      "Bytes": 1465,
+      "Sha256": "42107a0180a8e8c7e5a74889e644cc06a4e6c0b5a663c54c5f6101770060acf5",
+      "DecompressedSha256": "86ca68a5e1bd9c84592dcdcd74950ffb793f5da40cc89b00b6ccbf69736f9f9a"
+    },
+    {
+      "Path": "toolchain.txt",
+      "Bytes": 413,
+      "Sha256": "ee2714bcee59ae98bc32bbcb42e0e22eaf61380bf3024c06c620fe0bbad32f98"
+    }
+  ],
+  "MetadataCorrection": "Added omitted directly-consumed profile source input; original source, artifacts and binary hashes unchanged."
+}

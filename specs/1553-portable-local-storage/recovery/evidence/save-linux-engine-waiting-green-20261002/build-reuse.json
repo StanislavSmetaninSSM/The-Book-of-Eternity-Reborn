@@ -1,0 +1,40 @@
+{
+  "unitBuildSource": "f331a5231a00823ae33f3fd87b11b349a46aa034",
+  "integrationBuildSource": "ced9b5401b111553022cac483b42d7e46119ab5d",
+  "change": "One integration fixture corrected; production, unit tests and shared support unchanged.",
+  "priorBuildProof": {
+    "buildSource": "f331a5231a00823ae33f3fd87b11b349a46aa034",
+    "verifiedEquivalentThrough": "24f3a1ad19b8bcbe854dc6643755773ea1c8a1ea",
+    "sourceDiffPaths": "",
+    "buildEvidence": "specs/1553-portable-local-storage/recovery/evidence/save-linux-catalog-audit-20261002/manifest.json",
+    "binaries": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "70186c61bab08fa2568d093037b0738f915ef97d8a37a9afcb47c639dbffe501",
+        "bytes": 7701504,
+        "mtimeUtc": "2026-10-02T17:45:57.803080+00:00"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "68958a63e5963a654b3b4dcaa273ab3187d4910ebdeeff2dc4047ca3c40cca58",
+        "bytes": 24705536,
+        "mtimeUtc": "2026-10-02T17:44:56.649849+00:00"
+      }
+    ]
+  },
+  "integrationBuildPlanResult": "TestResults/test-categories/20261002-143423-228-47-8ced56cd07bb4e7590fce4df9b94a998-categories",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "70186c61bab08fa2568d093037b0738f915ef97d8a37a9afcb47c639dbffe501",
+      "bytes": 7701504,
+      "mtimeUtc": "2026-10-02T17:45:57.803080+00:00"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "c2f097be818c19489e6d14eb63c9eeb49b8d302230414f704488dca28e9af12c",
+      "bytes": 24706048,
+      "mtimeUtc": "2026-10-02T18:38:18.184997+00:00"
+    }
+  ]
+}

@@ -1,0 +1,293 @@
+{
+  "SourceCommit": "046e42e1bb0bc2e5066ec2e1df3ac638506d2337",
+  "LiveModelResponseGenerated": true,
+  "Model": "gpt-6.1-sol",
+  "AgentTask": "/root/relay_live_gm_turn1",
+  "PromptSHA256": "6139374a3ae22480dbabc9f5dd228fbfc48e77a630b046b8b6cbf022632ab3a4",
+  "ResponseSHA256": "42fcd80934d3e56b3f3945621d09d1ed8434f4467af2c8f5060b986d04137744",
+  "RealConsumer": {
+    "Executed": true,
+    "ExitCode": 0,
+    "ChildExited": true,
+    "IoDrained": true
+  },
+  "ActualGameEvidence": {
+    "StoryAcceptedTurn": 1,
+    "ActualPlayerActionAndModelNarrative": true,
+    "CanonicalChronicleAndProgressionApplied": true,
+    "FreshTurn1PlayerScreen": true,
+    "RequestReadyPendingAllAbsent": true,
+    "ChatLogTurns": 0
+  },
+  "HistoricalDriverCounter": 0,
+  "DriverFailure": "JSONDecodeError UTF8 BOM reading real JSONL; original result unchanged",
+  "OriginalMainStop": {
+    "Scoped": true,
+    "StoppedACK": true,
+    "BridgeEOF": true,
+    "DaemonEOF": true
+  },
+  "ClientCleanup": "Unqualified; stale driver wait flag caused bad cleanup after read error",
+  "Guardian": {
+    "ECHILD": true,
+    "EmergencySignals": 0
+  },
+  "Artifacts": [
+    {
+      "Path": "probe-result.json",
+      "Bytes": 135385,
+      "SHA256": "c60722c7910646601c18f3a4c6f8effb17ab359620ce3f170ed01708bcd07c34",
+      "StoredPath": "probe-result.json.gz",
+      "StoredBytes": 37988,
+      "StoredSHA256": "a3edcea2586e0a0a449bcf2a1ec505df5ec2290ac7ff5ed3c91636976b70fbd2"
+    },
+    {
+      "Path": "guardian.json",
+      "Bytes": 97,
+      "SHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "StoredPath": "guardian.json.gz",
+      "StoredBytes": 104,
+      "StoredSHA256": "4a3b0059fa67390b10d972bcdc68fb8a39a3a11f5a922f20018e3c4660692a35"
+    },
+    {
+      "Path": "guardian.log",
+      "Bytes": 222,
+      "SHA256": "711689f746b84b73b9a721642fdf229c3f5082586489394e214425eb4c28b365",
+      "StoredPath": "guardian.log.gz",
+      "StoredBytes": 197,
+      "StoredSHA256": "e0d71e996e2694d4bbeacb94b4293498fcced37669502834507f6fe8485ca93f"
+    },
+    {
+      "Path": "rpc-journal.json",
+      "Bytes": 34507623,
+      "SHA256": "4e0af908536d07e2b058f7ef7902f7b35ee3c44feb065d4f8ae4531f04d6212b",
+      "StoredPath": "rpc-journal.json.gz",
+      "StoredBytes": 292768,
+      "StoredSHA256": "dd59cc0820835d179a3d7dc4df4bfe076d422f41cb14ec6c74dd779e0edc34e9"
+    },
+    {
+      "Path": "client.raw",
+      "Bytes": 37120,
+      "SHA256": "189d417d1ef1ea5e05f22a31534ee86c591fd6ff8e6550a4de5c9182450748a9",
+      "StoredPath": "client.raw.gz",
+      "StoredBytes": 3344,
+      "StoredSHA256": "283d89f80b692cd27e41c169268d6c8a79f6a3a69059f157a6b5912f01e3d1ef"
+    },
+    {
+      "Path": "client-echo.raw",
+      "Bytes": 2,
+      "SHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "StoredPath": "client-echo.raw.gz",
+      "StoredBytes": 22,
+      "StoredSHA256": "3827170a82238309b60bbe54f61f44a944267563d05ea7b34f44afe350742c00"
+    },
+    {
+      "Path": "bridge.raw",
+      "Bytes": 40756,
+      "SHA256": "b4b03f3494edfad12574f0edfd4bd5d981f558b8ee56d94f1a93b9fd0ccb745f",
+      "StoredPath": "bridge.raw.gz",
+      "StoredBytes": 12817,
+      "StoredSHA256": "693e46d2a47c4bfdf5353b4e7adb66fef0a7dc0e3e896f860e56400368dcc58f"
+    },
+    {
+      "Path": "daemon.raw",
+      "Bytes": 1029,
+      "SHA256": "427dd8599fdeecbeeb8d7b0735b42d551a29edcfdc7512aba726597edf88a67e",
+      "StoredPath": "daemon.raw.gz",
+      "StoredBytes": 523,
+      "StoredSHA256": "a368fe25ec3becfe397c7837890901adc5da815a95d00cd49f95e8e04b78df57"
+    },
+    {
+      "Path": "daemon.log",
+      "Bytes": 840,
+      "SHA256": "d5049dc8addcd10336886d31958b135f4fdc57044398ab0e7d92dce4aae3ae3c",
+      "StoredPath": "daemon.log.gz",
+      "StoredBytes": 471,
+      "StoredSHA256": "459b8e3de2f44573ce53b85cf2f4e2453fb5eff96c4a3f3a3fe934b80003cd1d"
+    },
+    {
+      "Path": "actual-turn-request.json",
+      "Bytes": 59167,
+      "SHA256": "c0a6f8abd8fdc0e94178ca62326c566d7c353270a4c0aa5f5b860ebd318c7fb8",
+      "StoredPath": "actual-turn-request.json.gz",
+      "StoredBytes": 17934,
+      "StoredSHA256": "7dd2650e2b5ef70ecee6916bbd19ac7276395ba4c6a9a507f4cfcc1d54271fc4"
+    },
+    {
+      "Path": "orchestration.jsonl",
+      "Bytes": 404,
+      "SHA256": "4d48504f2fad76aba5ba65c5d317d292d7d581c7067d24aa238f8337603f1338",
+      "StoredPath": "orchestration.jsonl.gz",
+      "StoredBytes": 311,
+      "StoredSHA256": "0b846254eaf4a0c93e061b49943a897a5370bf8693efc307ba6d53dba2cf4920"
+    },
+    {
+      "Path": "observer-status.jsonl",
+      "Bytes": 2902,
+      "SHA256": "bd7844d52eebc029ec96f44a1896ce28b4d1ffd656ad62778bc9ee811f420ebf",
+      "StoredPath": "observer-status.jsonl.gz",
+      "StoredBytes": 877,
+      "StoredSHA256": "069dc5e3f44cefdce6830e84085f84e6821eee5eb041a882c02bb1244f42ac54"
+    },
+    {
+      "Path": "observer-diagnostics.jsonl",
+      "Bytes": 30369,
+      "SHA256": "77762cf420862eb8a2d5a8f33f3163196fc9c2b923dcc62db14426775d801f61",
+      "StoredPath": "observer-diagnostics.jsonl.gz",
+      "StoredBytes": 5926,
+      "StoredSHA256": "15f69e2fd124932c3e4e4943bba17cf615cddbabec894f4bd9ecc69bc95c639d"
+    },
+    {
+      "Path": "queue/close-request.json",
+      "Bytes": 41,
+      "SHA256": "679794484a1ddb438e1d683b4a361974416e885352f5ca7ed38fa9e588396fae",
+      "StoredPath": "queue__close-request.json.gz",
+      "StoredBytes": 61,
+      "StoredSHA256": "672302b804f8f15343e03bced3e2663047c468ef69e52898c4417ace0b86aa9e"
+    },
+    {
+      "Path": "queue/closed.json",
+      "Bytes": 98,
+      "SHA256": "9dd79d76bb7736cbdaee5767c1b07336f3bdddfdb9364825a744785ae59537e9",
+      "StoredPath": "queue__closed.json.gz",
+      "StoredBytes": 89,
+      "StoredSHA256": "966b9db2ba2eb2d06ed297ce83357be6a2210936bdd30812f1ac222afbf64e2f"
+    },
+    {
+      "Path": "play/game_session/stories/chaos_sea.jsonl",
+      "Bytes": 1812,
+      "SHA256": "2218525b502b4a182062716a863b962ffcc64d5b9a3f6b6bd7bbbe315d29e181",
+      "StoredPath": "play__game_session__stories__chaos_sea.jsonl.gz",
+      "StoredBytes": 888,
+      "StoredSHA256": "4ce5119735ffffecf91af9548b568480b8ecf1d900fbdfe7ea7f6d188ba0e5d0"
+    },
+    {
+      "Path": "play/game_session/game_state/meta/afterlife_chronicles.json",
+      "Bytes": 1420,
+      "SHA256": "bef7505092f11c5ffc54c258bb10e1960e01ecb70f839e9d838d42ec30a25953",
+      "StoredPath": "play__game_session__game_state__meta__afterlife_chronicles.json.gz",
+      "StoredBytes": 676,
+      "StoredSHA256": "6a507e4da7c0870c4526ae3637de1abf4a883802226f562ee662d8792ccb1d7d"
+    },
+    {
+      "Path": "play/game_session/game_state/meta/guardian_thought_journal.json",
+      "Bytes": 702,
+      "SHA256": "3c10fc1a383969daf729c6386eaff99af4fdfcf1d6cd8d98792571762e396a79",
+      "StoredPath": "play__game_session__game_state__meta__guardian_thought_journal.json.gz",
+      "StoredBytes": 450,
+      "StoredSHA256": "201dd82334fa5ce8b833fefbc1b39b537b49d2934050a57aba26e31b70d8f9bc"
+    },
+    {
+      "Path": "play/game_session/game_state/control/progression_schedule.json",
+      "Bytes": 1022,
+      "SHA256": "c8835d10dac052a7715b0c0dd8e424ddb81b04c4aeb58be2bc42b4a8a3dd8ff8",
+      "StoredPath": "play__game_session__game_state__control__progression_schedule.json.gz",
+      "StoredBytes": 370,
+      "StoredSHA256": "0bb070f7c40638669d680713f80458299cc7711947f5a85266079700e2acc090"
+    },
+    {
+      "Path": "play/game_session/game_state/control/gm_trajectory_ledger.jsonl",
+      "Bytes": 1632,
+      "SHA256": "515f9ea2debc0f3fe4c0c150a530a1fca3b65bb620386566ac216736b8d926c8",
+      "StoredPath": "play__game_session__game_state__control__gm_trajectory_ledger.jsonl.gz",
+      "StoredBytes": 928,
+      "StoredSHA256": "13371f8595367bd9c1faaf40ab578e277a95e0664ed494d4e5ae377659d93702"
+    },
+    {
+      "Path": "play/game_session/game_state/history/chat_log.json",
+      "Bytes": 100,
+      "SHA256": "ebec5e2617cb1399dd23c658d9e7a993fd2422728984ee64ef7dd1a9a5c8f456",
+      "StoredPath": "play__game_session__game_state__history__chat_log.json.gz",
+      "StoredBytes": 110,
+      "StoredSHA256": "ad31c7b3a735e41b9f3f1dfbf89adc5f05d186e83cbbbc22b8ecb7efb6363586"
+    },
+    {
+      "Path": "queue/request-1-d80064ecbba34043b5dd3f08b47eb5ea/consumer.log",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredPath": "queue__request-1-d80064ecbba34043b5dd3f08b47eb5ea__consumer.log.gz",
+      "StoredBytes": 20,
+      "StoredSHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "queue/request-1-d80064ecbba34043b5dd3f08b47eb5ea/dispatch.json",
+      "Bytes": 359,
+      "SHA256": "418c599b1bf604b87db36b5bff5f274fb936048c84dc64a72ad0d17705bb0fc0",
+      "StoredPath": "queue__request-1-d80064ecbba34043b5dd3f08b47eb5ea__dispatch.json.gz",
+      "StoredBytes": 252,
+      "StoredSHA256": "0e6336640c0e736f72a6ee83c693b293b847b36d96acd3087b5d471d142101c3"
+    },
+    {
+      "Path": "queue/request-1-d80064ecbba34043b5dd3f08b47eb5ea/executing-response.json",
+      "Bytes": 14771,
+      "SHA256": "42fcd80934d3e56b3f3945621d09d1ed8434f4467af2c8f5060b986d04137744",
+      "StoredPath": "queue__request-1-d80064ecbba34043b5dd3f08b47eb5ea__executing-response.json.gz",
+      "StoredBytes": 4964,
+      "StoredSHA256": "659604af9c453c926562b050390356e2fdf57cf84d9e92fb5f78aac03218441e"
+    },
+    {
+      "Path": "queue/request-1-d80064ecbba34043b5dd3f08b47eb5ea/execution.json",
+      "Bytes": 84,
+      "SHA256": "7e426ad6fda5819bdf65828970877d427d034d5ea707750c4d4cf65ba9358820",
+      "StoredPath": "queue__request-1-d80064ecbba34043b5dd3f08b47eb5ea__execution.json.gz",
+      "StoredBytes": 74,
+      "StoredSHA256": "ea6b039d916390dfeefc736f4aabc3170b9f00cf70e3f9448bfa2c8798bc7322"
+    },
+    {
+      "Path": "queue/request-1-d80064ecbba34043b5dd3f08b47eb5ea/game-request.json",
+      "Bytes": 59167,
+      "SHA256": "c0a6f8abd8fdc0e94178ca62326c566d7c353270a4c0aa5f5b860ebd318c7fb8",
+      "StoredPath": "queue__request-1-d80064ecbba34043b5dd3f08b47eb5ea__game-request.json.gz",
+      "StoredBytes": 17934,
+      "StoredSHA256": "7dd2650e2b5ef70ecee6916bbd19ac7276395ba4c6a9a507f4cfcc1d54271fc4"
+    },
+    {
+      "Path": "queue/request-1-d80064ecbba34043b5dd3f08b47eb5ea/gm-evidence.json",
+      "Bytes": 11554,
+      "SHA256": "aa68c0d0b008589185ff7bc1c9b82477c5fce76ad83b2c1200251c7375c2156e",
+      "StoredPath": "queue__request-1-d80064ecbba34043b5dd3f08b47eb5ea__gm-evidence.json.gz",
+      "StoredBytes": 3707,
+      "StoredSHA256": "6dcf398e0f3b34a05780383c398751c48d4b544f28a7605f7091bb740d6acf9e"
+    },
+    {
+      "Path": "queue/request-1-d80064ecbba34043b5dd3f08b47eb5ea/prompt.txt",
+      "Bytes": 40139,
+      "SHA256": "6139374a3ae22480dbabc9f5dd228fbfc48e77a630b046b8b6cbf022632ab3a4",
+      "StoredPath": "queue__request-1-d80064ecbba34043b5dd3f08b47eb5ea__prompt.txt.gz",
+      "StoredBytes": 12550,
+      "StoredSHA256": "3a0b4d731b20c47bdfc20443afece6faa247f92a0efa77a655d3ba3f4dd4f6aa"
+    },
+    {
+      "Path": "queue/request-1-d80064ecbba34043b5dd3f08b47eb5ea/reply.json",
+      "Bytes": 484,
+      "SHA256": "7590781c240973f5e6c4d21d5ddcf623c38bcf3a003949800405330c85101018",
+      "StoredPath": "queue__request-1-d80064ecbba34043b5dd3f08b47eb5ea__reply.json.gz",
+      "StoredBytes": 300,
+      "StoredSHA256": "1f52f33d263e734e5628f65de09f9e8f1301c7e9bf16f2e94923d124fcb683bb"
+    },
+    {
+      "Path": "queue/request-1-d80064ecbba34043b5dd3f08b47eb5ea/request.json",
+      "Bytes": 1070,
+      "SHA256": "060fe771b90aac8ecee8d9346ab35175d0e4d45f0f97923bfd7352eabab9e018",
+      "StoredPath": "queue__request-1-d80064ecbba34043b5dd3f08b47eb5ea__request.json.gz",
+      "StoredBytes": 552,
+      "StoredSHA256": "a86851f3ff2ae64e778a3fbcbec19336623c1131ec0eb610eec9c25c72119694"
+    },
+    {
+      "Path": "queue/request-1-d80064ecbba34043b5dd3f08b47eb5ea/response.json",
+      "Bytes": 14771,
+      "SHA256": "42fcd80934d3e56b3f3945621d09d1ed8434f4467af2c8f5060b986d04137744",
+      "StoredPath": "queue__request-1-d80064ecbba34043b5dd3f08b47eb5ea__response.json.gz",
+      "StoredBytes": 4964,
+      "StoredSHA256": "659604af9c453c926562b050390356e2fdf57cf84d9e92fb5f78aac03218441e"
+    },
+    {
+      "Path": "queue/request-1-d80064ecbba34043b5dd3f08b47eb5ea/started.json",
+      "Bytes": 183,
+      "SHA256": "e89040bf015873905ee5df1f6ecf34e4444bdda3da29d8ddac77cfc9dc2bb84e",
+      "StoredPath": "queue__request-1-d80064ecbba34043b5dd3f08b47eb5ea__started.json.gz",
+      "StoredBytes": 174,
+      "StoredSHA256": "12b4033065e776ee65752546e14682dd32ca3cb0dccfc8b8a37ecd22c7aa698f"
+    }
+  ]
+}

@@ -11,7 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class QteDeferredEffectContinuationIntegrationTests
+public sealed partial class QteDeferredEffectContinuationIntegrationTests
 {
     private const string ContinuationPath =
         "game_state/control/qte_deferred_effect_continuation.json";
@@ -1280,7 +1280,12 @@ public sealed class QteDeferredEffectContinuationIntegrationTests
     public async Task BoundedReceipt_NextWaveFailureAtEveryMutationRestoresExactCurrentWave(
         string failurePoint)
     {
-        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        Action<TrustedLocalPublicationPhase, int>? observer = null;
+        var cutHits = 0;
+        await using var context = await EffectMaterializationTestContext.CreateAsync(new FileSystemManagerHooks
+        {
+            LocalPublicationObserver = (phase, index) => observer?.Invoke(phase, index)
+        });
         const int sourceTurn = 42;
         var scenario = await PrepareAwaitingReceiptAsync(
             context,
@@ -1293,17 +1298,24 @@ public sealed class QteDeferredEffectContinuationIntegrationTests
             amount: 2m);
         var before = await context.CaptureBytesAsync(
             ReceiptResumeProtectedPaths);
-        var injected = new IOException(
+        // The cut proves deterministic rollback, not B1 transient-I/O retry.
+        var injected = new InvalidOperationException(
             $"Injected deferred QTE failure at {failurePoint}.");
-        var service = CreateQteService(
-            context.FileSystem,
-            new QteSceneServiceHooks
-            {
-                AfterDeferredEffectMutationAsync = actual =>
-                    string.Equals(actual, failurePoint, StringComparison.Ordinal)
-                        ? Task.FromException(injected)
-                        : Task.CompletedTask
-            });
+        observer = (phase, index) =>
+        {
+            if (phase != TrustedLocalPublicationPhase.MemberPublished) return;
+            using var journal = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(
+                context.FileSystem.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
+            var members = journal.RootElement.GetProperty("Members").EnumerateArray()
+                .Select(member => member.GetProperty("Path").GetString()!).ToArray();
+            if (members.Length != 6 ||
+                !members.Contains(context.FileSystem.ResolvePath(QteDeferredEffectContinuation.ReceiptPath), StringComparer.Ordinal)) return;
+            var target = context.FileSystem.ResolvePath(failurePoint["next_wave:".Length..]);
+            if (!string.Equals(members[index], target, StringComparison.Ordinal)) return;
+            cutHits++;
+            throw injected;
+        };
+        var service = CreateQteService(context.FileSystem);
 
         var error = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
         {
@@ -1319,6 +1331,7 @@ public sealed class QteDeferredEffectContinuationIntegrationTests
                     allowPreexistingStateIssues: true));
         });
 
+        Assert.Equal(1, cutHits);
         Assert.Contains(
             "qte_deferred_next_wave_publication_conflict",
             error.Message,

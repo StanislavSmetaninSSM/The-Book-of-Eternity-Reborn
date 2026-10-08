@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A3",
+  "sourceCommit": "427afdb534da0368f730e9696c07edd91520f6aa",
+  "status": "Frozen427afdb5 integrationbinaries:4executed1passed3failed. Existinguncertaintycontrolpassed; committedwarning/committedAgentConsoletext causalRED; knownrollbackfixture20IOretries setupfailure. No nativeLinuxrun.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-engine-save-presentation"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:23.3376776",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 4,
+    "CompletedCases": 4,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 1,
+    "Failed": 3
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "BE69612E4680F5B6E872EA9FFEC9353398D344D5E9A7CB480289825890F85043",
+      "sha256": "65768F84DE2410A94E5969B96CD0FC320D9E966EEBDDDDE249ED97C7379E9AD3"
+    },
+    {
+      "path": "portable-engine-save-presentation-integration-001.trx",
+      "originalSha256": "846FAC1A45DFE21A96E1E356876A7F8C08B9F0769EAAA1F7DE5729D2D155DC86",
+      "sha256": "2D43F797D45B1684D7198D03F3902C3CD55CFE8B341D7885E3F25DABFA7039BD"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "75CFEBEE4FCD788A0F29DC61CB6BBD5A7D530B895B19BBA98F89160DF7FF1AA8",
+      "sha256": "3110FED0AB49E1AF8BDFEB01B75B695006A64A9961721E36751816C155FD0120"
+    },
+    {
+      "path": "dotnet-test.log",
+      "originalSha256": "74C820DD703A6E0C39BE92FA58635DD849BDC1CD516757477146E3AF515B872D",
+      "sha256": "56C4C759C4D0EE15849722E3B753BF4876D2E2AD30E6E726290338FAEC9F38D5",
+      "transform": "sanitized paths and LF; execution tail excludes discovery listing"
+    }
+  ]
+}

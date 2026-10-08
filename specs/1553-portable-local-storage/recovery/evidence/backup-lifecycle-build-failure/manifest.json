@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "Head": "eeb411c5d1bc083af34ca22e5ce6405728b70b73",
+    "WorkingTreeFingerprint": "1DD5276A9F2E40B2D922B687A50460DB471314D8FE4B1A5AAF05687AD84A928A",
+    "ChangedFiles": 2
+  },
+  "command": "scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+  "summary": {
+    "ExitCode": 1,
+    "WallTime": "00:02:16.9927560",
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "Selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "DuplicateTests": []
+  },
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "285ed112d4538f869cdbce2e4a91650afa01ae4cfb59c8281b0065b93f73d471",
+      "sanitizedSha256": "285ed112d4538f869cdbce2e4a91650afa01ae4cfb59c8281b0065b93f73d471"
+    }
+  ],
+  "sanitization": "Role-based path tokens without angle brackets; all sanitized TRX parsed as XML before publication. Raw hashes retain original provenance.",
+  "packet": {
+    "schemaVersion": 1,
+    "baseCommit": "df300cb6604957f2a5632f29ab5f067394f437e9",
+    "patchFile": "backup-lifecycle-pending.patch",
+    "patchBytes": 7897,
+    "patchSha256": "57e8f8b06b43077ecf105994bf8d56fe75c5dc080b0f8b977d81732b1943d363",
+    "entries": [
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "beforeBlob": "70079f9db26fd60980f9a7868a2644436bbeb9d8",
+        "afterBlob": "4dc1ce302c9f0db8c167901f61c548513098d296",
+        "beforeSha256": "8cfec1a97f1ec180325b5b4cb7ebf3082300bf31f6e6d8421f128e368cbecf83",
+        "afterSha256": "764e3698d84bdeeffa372e0830b8b643373b14e5e963132fde88562c1ae5805f"
+      },
+      {
+        "path": "tests/categories.json",
+        "beforeBlob": "0a621b605dac7029df573211c7dd091615f870fe",
+        "afterBlob": "73b498c3abd00a389a2dd986f99bba1ddada5faf",
+        "beforeSha256": "e90132627211590d9b78798133175d6468b59907801c83a9818500cd610bc045",
+        "afterSha256": "99a9ca33d3975467a273458d41a6bdda5b73d5ef478785164a351637e12ba0da"
+      }
+    ],
+    "appliedSourceTree": "e7ab5ce68c07ab1a28c3f7765ec3c064790d375b",
+    "comparisonExcludes": [
+      "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.patch",
+      "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.json"
+    ],
+    "scope": "T030-G ordinary backup lifecycle; current plan records exact execution and remaining scope"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "ReportedHead": "172feb0f214e9e1479abab81fcbd30dbabb35ede",
+  "WorkingTreeFingerprint": "E009642E7D4CA4445C0D2EAD857FF1A00E44647DC964F69517AAEE86D7DB8D97",
+  "CasesExecuted": 21,
+  "Passed": 21,
+  "Scope": "Saved controlled transport/view/driver report; no repair or live model/game acceptance; not rerun during reconciliation",
+  "CreationProvenance": "unknown for67a559b1/cca9272c/172feb0f; no actor attribution by author",
+  "ReconciliationReview": "Independent Sol6.1/xhigh PASS relay_base_reconciliation_review; sole writer confirmed by parent; no conflict; exact snapshot/patch stable",
+  "Artifacts": [
+    {
+      "Path": "summary.json",
+      "Bytes": 1608,
+      "SHA256": "c8b003f6c543ed67daca372503ea4a7599f1ae813955c82ed997d717874e8930",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 629,
+      "StoredSHA256": "fc30be38a376699019b245471335e92215b542f66fd27b0f9337f3a1f99f4b9f"
+    },
+    {
+      "Path": "gm-relay-view-driver-unit-002.trx",
+      "Bytes": 21325,
+      "SHA256": "08979171e4034fd67397466ee0075ec6f3d4e3bac0fe342243e93941587d96fd",
+      "StoredPath": "gm-relay-view-driver-unit-002.trx.gz",
+      "StoredBytes": 2867,
+      "StoredSHA256": "fca1df5822641920e1f3fb78cf8a0ddef1b42451ba858857bc50f94be8c6e920"
+    },
+    {
+      "Path": "gm-relay-transport-unit-001.trx",
+      "Bytes": 11361,
+      "SHA256": "37325d932b960287e17835f09fdb6ac31167b452f82df688432e6b0a6b7f0306",
+      "StoredPath": "gm-relay-transport-unit-001.trx.gz",
+      "StoredBytes": 1994,
+      "StoredSHA256": "c5faa8a71658b4e7a2ea3822a59997689690ac87608cbd4fa45af0708cd024a3"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 2899,
+      "SHA256": "4c6f108ee5c27cffe24c7b689090fb99d73f5be2912f5c77cab9cbb445b3ac0e",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 754,
+      "StoredSHA256": "d71fe0b2189869e763f2cf0f230d979e13e1ba27afddd8e69547f47bd3fb1253"
+    }
+  ]
+}

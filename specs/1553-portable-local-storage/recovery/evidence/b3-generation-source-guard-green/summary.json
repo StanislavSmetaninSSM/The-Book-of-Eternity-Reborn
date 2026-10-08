@@ -1,0 +1,82 @@
+{
+  "Categories": [
+    "portable-session-generation-source"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-session-generation-source",
+      "reason": "Observe the single existing stale parser-chain guard against freshly built unchanged runtime/test assemblies; all other browser guards remain excluded.",
+      "contracts": [
+        "strict generation parser delegation",
+        "existing authority classification and lease bookkeeping"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "32be77c8c4adc340c33625bb03d3ff62dd4b757d",
+    "WorkingTreeFingerprint": "4839B74231ABF4DEF9E5EC5897E5585ED894EF1F241CA2CB8F4108F84AAC1305",
+    "ChangedFiles": 3
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-session-generation-source",
+      "Seconds": 2.8912661,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0873769,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.021008,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.017603,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 130.4809799,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0046032,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:02:17.6065775",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 1,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -1,0 +1,149 @@
+{
+  "phase": "launcher-load-green",
+  "command": "pwsh -NoProfile -Command \"& ./scripts/test-csharp.ps1 -Category @(\\\"gm-main-linux-launcher\\\",\\\"gm-load-installed-profile\\\") -NoBuild -Parallelism 1 -TimeoutMinutes 7\"",
+  "revision": "2b4e94d7729a42f41884a26ce648765d011fe179",
+  "summary": {
+    "Categories": [
+      "gm-main-linux-launcher",
+      "gm-load-installed-profile"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "2b4e94d7729a42f41884a26ce648765d011fe179",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "gm-load-installed-profile",
+        "Seconds": 26.4741585,
+        "BudgetMinutes": 3,
+        "Completed": true
+      },
+      {
+        "Category": "gm-main-linux-launcher",
+        "Seconds": 27.6929685,
+        "BudgetMinutes": 3,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0652371,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0724012,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1275915,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.004994,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 7,
+    "WallTime": "00:00:59.8748303",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 2,
+      "PlannedCases": 9,
+      "CompletedCases": 9,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 9,
+      "Executed": 9,
+      "Passed": 9,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "sourcePins": [
+    {
+      "path": "README.md",
+      "size": 7769,
+      "sha256": "12882faa49e037e963b20eab56577119f3230747b560ebd9578e842533247832"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+      "size": 13657,
+      "sha256": "edd73ec994fb2eae95bbc441f50846b0655063cf2ece34e71d6300c8cf651edf"
+    },
+    {
+      "path": "scripts/tests/linux-main-guide.tests.ps1",
+      "size": 4747,
+      "sha256": "f54141319363ae46c39a72cdf90ab908aa07cda2eef1a3afd80cdafbb5570e2f"
+    },
+    {
+      "path": "tests/categories.json",
+      "size": 1194521,
+      "sha256": "46a1ea0725d7b6ac2583393d8ce1c0568e6cbbe118d7566f3ded067decaa8e7b"
+    },
+    {
+      "path": "tests/selection.json",
+      "size": 1404,
+      "sha256": "7654450596fab684974ca5f8491e461c5952642cd8560abf2e5d5d37b4f84ec6"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "recovery/final-readiness/launcher-load-green-dotnet-test.log.gz",
+      "size": 180053,
+      "sha256": "3f9fa65763e73ee90f58e4df6447f7df688dbac65a30e2e39d7bdd3f5f37aca3",
+      "rawPath": "dotnet-test.log",
+      "rawSize": 1624337,
+      "rawSha256": "6ea01ff8f4dad1b23a63274a794d9d559cc91bf01da5d1837827b7ff53257ddc"
+    },
+    {
+      "path": "recovery/final-readiness/launcher-load-green-gm-load-installed-profile-unit-001.trx.gz",
+      "size": 1208,
+      "sha256": "14ec948749cf9be6059cc557dbb4cc02b0181d98ac7d8c460716cb28cebc215c",
+      "rawPath": "gm-load-installed-profile-unit-001.trx",
+      "rawSize": 2970,
+      "rawSha256": "854ac49494a357211a73347bebeaa0f5558bbe8a7489b4d4ffa8394cfc7be07d"
+    },
+    {
+      "path": "recovery/final-readiness/launcher-load-green-gm-main-linux-launcher-unit-002.trx.gz",
+      "size": 2306,
+      "sha256": "5356dbff6e27c1247c49a639b3e8dcaf36167efba76541a9985e6d40e413b588",
+      "rawPath": "gm-main-linux-launcher-unit-002.trx",
+      "rawSize": 13007,
+      "rawSha256": "72db40e7d47a5cb29afd658f340d3cbe07e7796d00a0c345a1b2f9380186a2f4"
+    },
+    {
+      "path": "recovery/final-readiness/launcher-load-green-plan.json.gz",
+      "size": 898,
+      "sha256": "3ed65c015e6ed5cab3fa087e96f515c2129969163fcc0a1bcd50284423d2117c",
+      "rawPath": "plan.json",
+      "rawSize": 3744,
+      "rawSha256": "cba5b505c98b54a34b5cc250a9fb2c355432ae845e882b644ce02c6f5060a348"
+    },
+    {
+      "path": "recovery/final-readiness/launcher-load-green-summary.json.gz",
+      "size": 637,
+      "sha256": "fb5c39c15b915b5870ef0d1b7140c4941b9aacc6553298d9ed1a2aaba26295c4",
+      "rawPath": "summary.json",
+      "rawSize": 1623,
+      "rawSha256": "938906cce0d0130fa55fad7aa9b586b935d6b1111b3206b26325e2e87761458a"
+    }
+  ]
+}

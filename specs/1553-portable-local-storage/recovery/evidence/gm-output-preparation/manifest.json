@@ -1,0 +1,31 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "ae2084a0757c54d15e535771962a8858b61521c3",
+  "SourceResultDirectory": "20261005-132005-683-27643-9c056183c96143d6b7fd8d2ebe8a80fa-categories",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-bridge-output-stream -Parallelism 1 -PlanOnly",
+  "Os": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Sdk": "10.0.401",
+  "Runtime": "8.0.31",
+  "PowerShell": "7.6.6",
+  "EffectiveUid": 1000,
+  "TMPDIR": "/workspace/ipc-tmp",
+  "DOTNET_PROCESSOR_COUNT": null,
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 4554,
+      "OriginalSha256": "9be40c59b8e9cd290f27e181634f3c42895eb45362e353ac6d53efc5699bbae1",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 1157,
+      "StoredSha256": "7c315eb3d9a2fb53392168c2737e0148a4924b45e67151652e523f8daea0ee9e"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1311,
+      "OriginalSha256": "36b9c2f77f10693b08234198dd36488aa12dc445a458615192e11df9db9c7ec3",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1311,
+      "StoredSha256": "36b9c2f77f10693b08234198dd36488aa12dc445a458615192e11df9db9c7ec3"
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "Success": false,
+  "InheritedTERM": "dumb",
+  "Dimensions": [
+    100,
+    25
+  ],
+  "InputJournal": [
+    {
+      "AtSeconds": 1.459,
+      "Kind": "Exact authorized TERM warning",
+      "BytesHex": "790d",
+      "Attempt": 1,
+      "WrittenBytes": 2
+    }
+  ],
+  "KeyboardBytes": 2,
+  "TERMAnswersAttempted": 1,
+  "ModelPromptsSent": 0,
+  "ProfileIsSupported": false,
+  "ConfiguredCommand": "codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox",
+  "NoNeutralPackage": true,
+  "Scope": "ordinary-same-namespace-lineage",
+  "Argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "/workspace/qualification-1553-codex-live-q1/ship/BookOfEternityClient/Launcher/bookofeternity.ps1",
+    "start-bridge",
+    "visible",
+    "-SessionPath",
+    "/workspace/qualification-1553-codex-live-q1/fixture-root/game_session"
+  ],
+  "OriginalLauncherPid": 688293,
+  "BeforeConfirmationStatus": {
+    "ok": true,
+    "status": {
+      "terminalRunId": "8bc88d42b525441097bf6b153dd61cd8",
+      "terminalGuarantee": "ordinary-same-namespace-lineage",
+      "terminalUncertain": false,
+      "terminalOwnerRetained": true,
+      "inputBindingId": "8a645091043b4d788020e46314874284",
+      "backend": "native-lineage",
+      "state": "OperatorNotReady",
+      "ready": false,
+      "helperPid": 688313,
+      "sessionPath": "/workspace/qualification-1553-codex-live-q1/fixture-root/game_session",
+      "shellPid": 688329,
+      "pipeName": "live-q1-49e6140e5de34020a97ffa1ad96c0d87",
+      "cliLaunchCommand": "codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox",
+      "shellWorkingDirectory": "/workspace/qualification-1553-codex-live-q1/empty-codex-scratch",
+      "lastPromptDispatchState": "None",
+      "startedAtUtc": "2026-10-07T06:07:07.3807368+00:00",
+      "updatedAtUtc": "2026-10-07T06:07:08.2062640+00:00",
+      "workerStatuses": [
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "validation_repair_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T06:07:07.8118588+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "narrative_draft_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T06:07:07.8118588+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "analysis_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T06:07:07.8118588+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "guardian_abode_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T06:07:07.8118588+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "soul_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T06:07:07.8118588+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "inventory_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T06:07:07.8118588+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "skill_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T06:07:07.8118588+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "npc_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T06:07:07.8118588+00:00"
+        }
+      ]
+    }
+  },
+  "ConfirmationGateRevalidatedAtSeconds": 1.459,
+  "OriginalConfirmationGateStillCurrent": true,
+  "PostConfirmationOffset": 766,
+  "ObservationEndedAtSeconds": 5.476,
+  "Gate": "Post-TERM bounded presentation captured; readiness unqualified",
+  "RunningRecord": {
+    "SchemaVersion": 1,
+    "Identity": {
+      "RootKey": "/workspace/qualification-1553-codex-live-q1/fixture-root",
+      "RunId": "8bc88d42b525441097bf6b153dd61cd8",
+      "GenerationId": "ba7c0e1885d642ba8717eee1d2f021be",
+      "Epoch": 1,
+      "Backend": "LinuxSupervisor",
+      "HostInstanceId": "bb13da848d134df598fb8e9a5586bbb3",
+      "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+    },
+    "Disposition": "Uncertain",
+    "StopEvidence": null
+  },
+  "Failure": "AssertionError: M1 did not reach acknowledged Running",
+  "LauncherExitCode": null,
+  "ForegroundPtyEOF": false,
+  "ForegroundTermiosRestored": false,
+  "ForegroundDescriptorsClosed": true,
+  "CleanupErrors": [
+    "Original foreground termios was not restored"
+  ],
+  "ScratchFilesAfter": [],
+  "ElapsedSeconds": 5.477,
+  "CapturedBytes": 3570
+}

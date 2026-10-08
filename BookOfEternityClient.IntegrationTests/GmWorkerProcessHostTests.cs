@@ -1,13 +1,14 @@
 using System.Diagnostics;
 using System.IO.Pipes;
 using System.Text.Json;
+using System.Text;
 using BookOfEternityClient.Services.GmWorkers;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "ProcessIntegration")]
-public sealed class GmWorkerProcessHostTests
+public sealed partial class GmWorkerProcessHostTests
 {
     private const string LaunchNonce = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
@@ -24,6 +25,7 @@ public sealed class GmWorkerProcessHostTests
                 WorkingDirectory = root,
                 UseShellExecute = false
             };
+            worker.Environment.Clear();
             worker.ArgumentList.Add("-NoProfile");
             worker.ArgumentList.Add("-Command");
             worker.ArgumentList.Add("exit 0");
@@ -55,58 +57,121 @@ public sealed class GmWorkerProcessHostTests
     }
 
     [Fact]
-    public async Task WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch()
-    {
-        if (!OperatingSystem.IsWindows())
-            return;
+    public Task WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch() =>
+        AssertForeignChannelsRejectedAsync(foreignControl: true, foreignStatus: true);
 
+    [Fact]
+    public Task WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost() =>
+        AssertForeignChannelsRejectedAsync(foreignControl: true, foreignStatus: false);
+
+    [Fact]
+    public Task WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost() =>
+        AssertForeignChannelsRejectedAsync(foreignControl: false, foreignStatus: true);
+
+    [Fact]
+    public async Task WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker()
+    {
         var root = CreateTempRoot();
-        Process? foreignClient = null;
+        var marker = Path.Combine(root, "worker-started");
+        Process? host = null;
         try
         {
-            var worker = new ProcessStartInfo
-            {
-                FileName = "powershell.exe",
-                WorkingDirectory = root,
-                UseShellExecute = false
-            };
+            var worker = CreateWorker(root);
             worker.ArgumentList.Add("-NoProfile");
+            worker.ArgumentList.Add("-NonInteractive");
             worker.ArgumentList.Add("-Command");
-            worker.ArgumentList.Add("exit 0");
-
-            await using var launch = GmWorkerProcessHostLaunch.Create(worker, root);
-            var arguments = launch.StartInfo.ArgumentList.ToArray();
-            var controlEndpoint = arguments[1];
-            var statusEndpoint = arguments[2];
-            foreignClient = StartForeignPipeClient(root, controlEndpoint, statusEndpoint);
-
-            using var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            using var expectedHost = Process.GetCurrentProcess();
-            var error = await Assert.ThrowsAsync<InvalidDataException>(() =>
-                launch.WaitUntilReadyAsync(expectedHost, cancellation.Token));
-
-            Assert.Contains("unexpected process", error.Message, StringComparison.OrdinalIgnoreCase);
-            Assert.False(foreignClient.HasExited);
+            worker.ArgumentList.Add("[IO.File]::WriteAllText($env:BOE_START_MARKER, 'started')");
+            worker.Environment["BOE_START_MARKER"] = marker;
+            await using (var launch = GmWorkerProcessHostLaunch.Create(worker, root))
+            {
+                host = Process.Start(launch.StartInfo)!;
+                Assert.NotEqual(Environment.ProcessId, host.Id);
+                using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+                await launch.WaitUntilReadyAsync(host, deadline.Token);
+                Assert.False(host.HasExited);
+                Assert.False(File.Exists(marker));
+                // Deliberately never send Release. Closing ownership must end admission.
+            }
+            await host.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal(125, host.ExitCode);
+            Assert.False(File.Exists(marker));
+            Assert.DoesNotContain(marker, await host.StandardError.ReadToEndAsync(), StringComparison.Ordinal);
         }
         finally
         {
-            if (foreignClient is { HasExited: false })
-            {
-                foreignClient.Kill(entireProcessTree: true);
-                await foreignClient.WaitForExitAsync();
-            }
-            foreignClient?.Dispose();
+            await StopOwnedProcessAsync(host);
             CleanupTempRoot(root);
         }
     }
 
-    [Fact]
-    public Task WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost() =>
-        AssertSingleForeignChannelRejectedAsync(foreignControlChannel: true);
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task WaitUntilReadyAsync_StatusFrameByteLimitIsExact(bool oversized)
+    {
+        const int maximumBytes = 64 * 1024;
+        await WithOwnedStatusPeerAsync(nonce =>
+        {
+            var json = ReadyJson(nonce);
+            return Encoding.UTF8.GetBytes(new string(' ', maximumBytes - Encoding.UTF8.GetByteCount(json) + (oversized ? 1 : 0)) + json + "\n");
+        }, rejected: oversized);
+    }
 
     [Fact]
-    public Task WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost() =>
-        AssertSingleForeignChannelRejectedAsync(foreignControlChannel: false);
+    public async Task WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected()
+    {
+        await WithOwnedStatusPeerAsync(nonce => Encoding.UTF8.GetBytes(ReadyJson(nonce)),
+            rejected: true, closeStatus: true);
+    }
+
+    [Fact]
+    public async Task WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing()
+    {
+        await WithOwnedStatusPeerAsync(nonce =>
+        {
+            var prefix = Encoding.UTF8.GetBytes($"{{\"schemaVersion\":1,\"launchNonce\":\"{nonce}\",\"kind\":\"failed\",\"exitCode\":null,\"error\":\"");
+            return prefix.Concat(new byte[] { 0xc3, 0x28 }).Concat(Encoding.UTF8.GetBytes("\"}\n")).ToArray();
+        }, rejected: true);
+    }
+
+    [Theory]
+    [InlineData("nonce")]
+    [InlineData("schema")]
+    public Task WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(string invalidField) =>
+        WithOwnedStatusPeerAsync(nonce => Encoding.UTF8.GetBytes(
+            GmWorkerProcessHostProtocol.SerializeStatus(new(
+                invalidField == "schema" ? 2 : 1,
+                invalidField == "nonce" ? LaunchNonce : nonce,
+                GmWorkerProcessHostStatusKind.Ready, null, null)) + "\n"), rejected: true);
+
+    [Theory]
+    [InlineData("malformed")]
+    [InlineData("duplicate")]
+    [InlineData("unknown")]
+    public void ParseControl_DiagnosticsNeverIncludePayloadExcerpts(string shape)
+    {
+        const string secret = "SECRET_PAYLOAD_SENTINEL";
+        var json = shape switch
+        {
+            "malformed" => $"{{\"schemaVersion\": {secret}}}",
+            "duplicate" => $"{{\"{secret}\":1,\"{secret}\":2}}",
+            _ => $"{{\"{secret}\":1}}"
+        };
+        var error = Assert.Throws<InvalidDataException>(() =>
+            GmWorkerProcessHostProtocol.ParseControl(json, LaunchNonce, GmWorkerProcessHostControlKind.Launch));
+        Assert.DoesNotContain(secret, error.ToString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ParseStatus_FailedDiagnosticNeverIncludesPeerText()
+    {
+        const string secret = "SECRET_ENVIRONMENT_SENTINEL";
+        var json = GmWorkerProcessHostProtocol.SerializeStatus(new(1, LaunchNonce,
+            GmWorkerProcessHostStatusKind.Failed, null, secret));
+        var error = Assert.Throws<InvalidOperationException>(() =>
+            GmWorkerProcessHostProtocol.ParseStatus(json, LaunchNonce, GmWorkerProcessHostStatusKind.Ready));
+        Assert.DoesNotContain(secret, error.ToString(), StringComparison.Ordinal);
+    }
 
     [Fact]
     public void ParseStatus_WrongLaunchNonceIsRejected()
@@ -177,7 +242,7 @@ public sealed class GmWorkerProcessHostTests
                 LaunchNonce,
                 GmWorkerProcessHostStatusKind.Ready));
 
-        Assert.Contains("kind", error.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("malformed", error.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     [Theory]
@@ -217,7 +282,7 @@ public sealed class GmWorkerProcessHostTests
                 LaunchNonce,
                 GmWorkerProcessHostControlKind.Release));
 
-        Assert.Contains("kind", error.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("malformed", error.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -439,172 +504,85 @@ public sealed class GmWorkerProcessHostTests
         return root;
     }
 
-    private static Process StartForeignPipeClient(
-        string workingDirectory,
-        string controlEndpoint,
-        string statusEndpoint)
+    private static ProcessStartInfo CreateWorker(string root)
     {
-        const string script = """
-            $control = [System.IO.Pipes.NamedPipeClientStream]::new(
-                '.',
-                $env:BOE_CONTROL_PIPE,
-                [System.IO.Pipes.PipeDirection]::In)
-            $status = [System.IO.Pipes.NamedPipeClientStream]::new(
-                '.',
-                $env:BOE_STATUS_PIPE,
-                [System.IO.Pipes.PipeDirection]::Out)
-            try {
-                $control.Connect(10000)
-                $status.Connect(10000)
-                Start-Sleep -Seconds 30
-            }
-            finally {
-                $control.Dispose()
-                $status.Dispose()
-            }
-            """;
-        var startInfo = new ProcessStartInfo
+        var worker = new ProcessStartInfo
         {
-            FileName = "powershell.exe",
-            WorkingDirectory = workingDirectory,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            WindowStyle = ProcessWindowStyle.Hidden,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true
+            FileName = ResolvePowerShellExecutable(),
+            WorkingDirectory = root,
+            UseShellExecute = false
         };
-        startInfo.ArgumentList.Add("-NoProfile");
-        startInfo.ArgumentList.Add("-NonInteractive");
-        startInfo.ArgumentList.Add("-Command");
-        startInfo.ArgumentList.Add(script);
-        startInfo.Environment["BOE_CONTROL_PIPE"] = controlEndpoint;
-        startInfo.Environment["BOE_STATUS_PIPE"] = statusEndpoint;
-
-        var process = new Process { StartInfo = startInfo };
-        if (!process.Start())
-        {
-            process.Dispose();
-            throw new InvalidOperationException("Foreign named-pipe client did not start.");
-        }
-
-        return process;
+        // The fixture owns its payload. Inheriting machine/provider environment
+        // would add unrelated secrets and Linux case-variant key collisions.
+        worker.Environment.Clear();
+        return worker;
     }
 
-    private static async Task AssertSingleForeignChannelRejectedAsync(bool foreignControlChannel)
-    {
-        if (!OperatingSystem.IsWindows())
-            return;
+    private static string ReadyJson(string nonce) => GmWorkerProcessHostProtocol.SerializeStatus(
+        new(1, nonce, GmWorkerProcessHostStatusKind.Ready, null, null));
 
+    private static async Task AssertForeignChannelsRejectedAsync(bool foreignControl, bool foreignStatus)
+    {
         var root = CreateTempRoot();
-        Process? foreignClient = null;
+        Process? foreign = null;
+        NamedPipeClientStream? localControl = null;
+        NamedPipeClientStream? localStatus = null;
         try
         {
-            var worker = new ProcessStartInfo
+            await using (var launch = GmWorkerProcessHostLaunch.Create(CreateWorker(root), root))
             {
-                FileName = "powershell.exe",
-                WorkingDirectory = root,
-                UseShellExecute = false
-            };
-            worker.ArgumentList.Add("-NoProfile");
-            worker.ArgumentList.Add("-Command");
-            worker.ArgumentList.Add("exit 0");
-
-            await using var launch = GmWorkerProcessHostLaunch.Create(worker, root);
-            var arguments = launch.StartInfo.ArgumentList.ToArray();
-            var controlEndpoint = arguments[1];
-            var statusEndpoint = arguments[2];
-            var foreignEndpoint = foreignControlChannel ? controlEndpoint : statusEndpoint;
-            var foreignDirection = foreignControlChannel ? PipeDirection.In : PipeDirection.Out;
-            foreignClient = StartForeignPipeClient(root, foreignEndpoint, foreignDirection);
-
-            var localEndpoint = foreignControlChannel ? statusEndpoint : controlEndpoint;
-            var localDirection = foreignControlChannel ? PipeDirection.Out : PipeDirection.In;
-            await using var localClient = new NamedPipeClientStream(
-                ".",
-                localEndpoint,
-                localDirection,
-                PipeOptions.Asynchronous);
-            using var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-            var localConnect = localClient.ConnectAsync(cancellation.Token);
-            using var expectedHost = Process.GetCurrentProcess();
-
-            var error = await Assert.ThrowsAsync<InvalidDataException>(() =>
-                launch.WaitUntilReadyAsync(expectedHost, cancellation.Token));
-            await localConnect;
-
-            Assert.Contains(
-                foreignControlChannel ? "control" : "status",
-                error.Message,
-                StringComparison.OrdinalIgnoreCase);
-            Assert.False(foreignClient.HasExited);
+                var args = launch.StartInfo.ArgumentList.ToArray();
+                foreign = StartPipePeer(root, foreignControl ? args[^3] : "", foreignStatus ? args[^2] : "", "foreign");
+                using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                if (!foreignControl)
+                {
+                    localControl = new NamedPipeClientStream(".", args[^3], PipeDirection.In, PipeOptions.Asynchronous);
+                    await localControl.ConnectAsync(timeout.Token);
+                }
+                if (!foreignStatus)
+                {
+                    localStatus = new NamedPipeClientStream(".", args[^2], PipeDirection.Out, PipeOptions.Asynchronous);
+                    await localStatus.ConnectAsync(timeout.Token);
+                }
+                using var expectedHost = Process.GetCurrentProcess();
+                var error = await Assert.ThrowsAsync<InvalidDataException>(() =>
+                    launch.WaitUntilReadyAsync(expectedHost, timeout.Token));
+                Assert.Contains(foreignControl ? "control" : "status", error.Message, StringComparison.OrdinalIgnoreCase);
+                Assert.Contains("unexpected process", error.Message, StringComparison.OrdinalIgnoreCase);
+                await AssertConnectedPeerAsync(foreign, timeout.Token);
+                await Assert.ThrowsAnyAsync<Exception>(() => launch.WaitUntilReadyAsync(expectedHost, timeout.Token));
+                await Assert.ThrowsAnyAsync<Exception>(() => launch.ReleaseAsync(timeout.Token));
+            }
+            if (localControl != null)
+                Assert.Equal(0, await localControl.ReadAsync(new byte[1]).AsTask().WaitAsync(TimeSpan.FromSeconds(3)));
+            if (!foreignControl) await foreign.StandardInput.WriteLineAsync("close");
+            await foreign.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.Equal(0, foreign.ExitCode);
+            Assert.Equal(foreignControl ? "-1" : "no-control", (await foreign.StandardOutput.ReadToEndAsync()).Trim());
         }
         finally
         {
-            if (foreignClient is { HasExited: false })
-            {
-                foreignClient.Kill(entireProcessTree: true);
-                await foreignClient.WaitForExitAsync();
-            }
-            foreignClient?.Dispose();
+            localControl?.Dispose();
+            localStatus?.Dispose();
+            await StopOwnedProcessAsync(foreign);
             CleanupTempRoot(root);
         }
     }
 
-    private static Process StartForeignPipeClient(
-        string workingDirectory,
-        string endpoint,
-        PipeDirection direction)
+    private static async Task StopOwnedProcessAsync(Process? process)
     {
-        const string script = """
-            $pipe = [System.IO.Pipes.NamedPipeClientStream]::new(
-                '.',
-                $env:BOE_PIPE,
-                [System.IO.Pipes.PipeDirection]::$($env:BOE_PIPE_DIRECTION))
-            try {
-                $pipe.Connect(10000)
-                Start-Sleep -Seconds 30
-            }
-            finally {
-                $pipe.Dispose()
-            }
-            """;
-        var startInfo = new ProcessStartInfo
+        if (process == null) return;
+        try
         {
-            FileName = "powershell.exe",
-            WorkingDirectory = workingDirectory,
-            UseShellExecute = false,
-            CreateNoWindow = true,
-            WindowStyle = ProcessWindowStyle.Hidden,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true
-        };
-        startInfo.ArgumentList.Add("-NoProfile");
-        startInfo.ArgumentList.Add("-NonInteractive");
-        startInfo.ArgumentList.Add("-Command");
-        startInfo.ArgumentList.Add(script);
-        startInfo.Environment["BOE_PIPE"] = endpoint;
-        startInfo.Environment["BOE_PIPE_DIRECTION"] = direction.ToString();
-
-        var process = new Process { StartInfo = startInfo };
-        if (!process.Start())
-        {
-            process.Dispose();
-            throw new InvalidOperationException("Foreign named-pipe client did not start.");
+            if (!process.HasExited) process.Kill(entireProcessTree: true);
+            await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(5));
         }
-
-        return process;
+        finally { process.Dispose(); }
     }
 
     private static void CleanupTempRoot(string root)
     {
-        try
-        {
-            if (Directory.Exists(root))
-                Directory.Delete(root, recursive: true);
-        }
-        catch
-        {
-            // ignored
-        }
+        if (Directory.Exists(root)) Directory.Delete(root, recursive: true);
+        Assert.False(Directory.Exists(root));
     }
 }

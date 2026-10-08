@@ -1,0 +1,350 @@
+{
+  "Categories": [
+    "portable-backup-consumers",
+    "portable-backup-qte",
+    "portable-backup-treatment-claims",
+    "portable-backup-recovery",
+    "portable-backup-linux-special",
+    "portable-backup-routing",
+    "portable-backup-linux-case",
+    "portable-backup-existing-consumers",
+    "portable-backup-existing-api",
+    "portable-directory-backup-prerequisite"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-backup-consumers",
+      "reason": "Actual StateDistributor backup capture, reverse restoration and accepted cleanup uncertainty; no later compensation or diagnostic reversal.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-qte",
+      "reason": "Actual QTE backup publication and same-lease debt reach its immediate distributor boundary; uncertainty excludes wider baseline compensation and later writes.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-treatment-claims",
+      "reason": "Actual StateDistributor accepted wound input and real held treatment/resource/item claim retention across unresolved backup and same-lease committed debt.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-recovery",
+      "reason": "Actual public backup APIs interrupted in owned processes, normal separate-process lease recovery, exact complete decisions, conflicts, hard links and unchanged synthetic save ZIPs.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-linux-special",
+      "reason": "Required Linux FIFO source/target/backup rejection through public APIs in bounded owned processes; no Windows early return.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-routing",
+      "reason": "Backup source-link revalidation and explicit original recorder/recovery/evidence routes. Linux verifies original blocking; native bodies verify original publication and unchanged recorder bypass.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-linux-case",
+      "reason": "Actual Linux case-distinct backup/target names remain independent.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-existing-consumers",
+      "reason": "Existing actual distributor known-failure compensation, writer contention, accepted cleanup and malformed JSON controls; waits observe task failures as well as reached hooks.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-existing-api",
+      "reason": "Existing actual backup API contention and outside/missing evidence controls.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-directory-backup-prerequisite",
+      "reason": "Known Linux-blocked actual quarantine fixture: preparation advances past tree cleanup but original StateDistributor CreateBackupCore descriptor-bound publication fails before quarantine assertions. Explicit separate reproducer; native qualification is allowed.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+    "WorkingTreeFingerprint": "D73BA68C47E47FDC75469A48F6BED7DFB500ADAB20E1A7802D2A057DD2B08C3A",
+    "ChangedFiles": 4
+  },
+  "PreparationSeconds": 195.9615757,
+  "Descriptors": [
+    {
+      "Name": "portable-backup-consumers-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-consumers",
+      "Categories": [
+        "portable-backup-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-backup-existing-api-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-backup-existing-api",
+      "Categories": [
+        "portable-backup-existing-api"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.CleanupBackup_WaitsForCanonicalWriteLease|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.CreateBackup_WaitsForCanonicalWriteLease|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_MissingBeforeImageFailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_RejectsBackupOutsideCanonicalSession|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_WaitsForCanonicalWriteLease",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.CleanupBackup_WaitsForCanonicalWriteLease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.CreateBackup_WaitsForCanonicalWriteLease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_MissingBeforeImageFailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_RejectsBackupOutsideCanonicalSession",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_WaitsForCanonicalWriteLease",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-backup-existing-consumers-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-existing-consumers",
+      "Categories": [
+        "portable-backup-existing-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_BackupCleanupFailure_DoesNotRollbackCommittedDistribution|FullyQualifiedName=BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter|FullyQualifiedName=BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter|FullyQualifiedName=BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_MalformedExistingJson_FailsClosedAndPreservesExactBytes",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_BackupCleanupFailure_DoesNotRollbackCommittedDistribution",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_MalformedExistingJson_FailsClosedAndPreservesExactBytes",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-backup-linux-case-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-linux-case",
+      "Categories": [
+        "portable-backup-linux-case"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.LinuxCaseDistinctBackupAndTargetAreIndependentNames",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.LinuxCaseDistinctBackupAndTargetAreIndependentNames",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-backup-linux-special-unit-005",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-linux-special",
+      "Categories": [
+        "portable-backup-linux-special"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "portable-backup-qte-integration-006",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-backup-qte",
+      "Categories": [
+        "portable-backup-qte"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "portable-backup-recovery-unit-007",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-recovery",
+      "Categories": [
+        "portable-backup-recovery"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdUnknownLaterBackupOrGenerationRetainsEarlierTargetAndEvidence",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 18,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+          "Cases": 14
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdUnknownLaterBackupOrGenerationRetainsEarlierTargetAndEvidence",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-backup-routing-unit-008",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-routing",
+      "Categories": [
+        "portable-backup-routing"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.ExistingOriginalEvidenceBlocksEvenOrdinaryAbsenceWithoutDeletingEvidence|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.SourceLinkBeforeOrAtReadBoundaryCannotBeBackedUp",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.ExistingOriginalEvidenceBlocksEvenOrdinaryAbsenceWithoutDeletingEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SourceLinkBeforeOrAtReadBoundaryCannotBeBackedUp",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-backup-treatment-claims-integration-009",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-backup-treatment-claims",
+      "Categories": [
+        "portable-backup-treatment-claims"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BackupUncertaintyRetainsRealTreatmentResourceAndItemClaims",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BackupUncertaintyRetainsRealTreatmentResourceAndItemClaims",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-directory-backup-prerequisite-integration-010",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-directory-backup-prerequisite",
+      "Categories": [
+        "portable-directory-backup-prerequisite"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "Model": "gpt-6.1-sol",
+  "Effort": "xhigh",
+  "Agent": "/root/fallback_design_review",
+  "Source": "4882e3b3eb17511b73c570111e410dc791389bc6",
+  "Verdict": "PASS",
+  "RuntimeExecuted": false,
+  "Obligations": [
+    "unreapedsoleparentidentitybeforepidfd",
+    "strictfinalcommdelimiter/NSpidcoordinates",
+    "independentexpiryonallfixturechildbranches",
+    "cancelhelperinheritedalarm",
+    "sentinelpidfdnonterminalobservation"
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "Categories": [
+    "console-audio-linux",
+    "browser-audio-isolation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b785619a12d962acd326c427114f0911944a2c4c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 42.6238896,
+  "Descriptors": [
+    {
+      "Name": "browser-audio-isolation-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "browser-audio-isolation",
+      "Categories": [
+        "browser-audio-isolation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserAudioIsolationTests.ActualBrowserSettingsCommit_AppliesAcceptedVolumesWithoutServerOutput|FullyQualifiedName=BookOfEternityClient.Tests.BrowserAudioIsolationTests.ActualHostRegistration_LeavesPlaybackInBrowserWithoutServerNativeCalls|FullyQualifiedName=BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioSeparatesRollbackFromCommittedCleanupWarning|FullyQualifiedName=BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioUsesOneDeclaredConfigMemberAndKeepsProjectionUntouched",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserAudioIsolationTests.ActualBrowserSettingsCommit_AppliesAcceptedVolumesWithoutServerOutput",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserAudioIsolationTests.ActualHostRegistration_LeavesPlaybackInBrowserWithoutServerNativeCalls",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioSeparatesRollbackFromCommittedCleanupWarning",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserSettingsTests.AudioUsesOneDeclaredConfigMemberAndKeepsProjectionUntouched",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "console-audio-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "console-audio-linux",
+      "Categories": [
+        "console-audio-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ActualEngineRefreshAndExceptionExit_PreviewRestoresVolumeAndFinallyStopsAll|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.AllRealCues_StopAllMuteThrottleAndDisposeOwnEverySession|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ExplicitNativeDummyOnly_RealWavAndPositiveMp3DecodeQueueDrainAndClose|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.OriginalMusic_NonrepeatContextVolumeAndMuteDoNotReopenCurrentTrack|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.PlaybackAndCleanupFailures_NoRetryAndNoReplacementWithCleanupDebt|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.PublicService_SelectsLinuxAndReportsUnavailableWithoutWindowsOrDeviceCalls|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlQueueBackend_StreamsPcmAndChangesGainWithoutReopen|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.StopTimeout_RetainsOriginalAuthorityAndBlocksReplacementUntilActualCompletion|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 14,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ActualEngineRefreshAndExceptionExit_PreviewRestoresVolumeAndFinallyStopsAll",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.AllRealCues_StopAllMuteThrottleAndDisposeOwnEverySession",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ExplicitNativeDummyOnly_RealWavAndPositiveMp3DecodeQueueDrainAndClose",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.OriginalMusic_NonrepeatContextVolumeAndMuteDoNotReopenCurrentTrack",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.PlaybackAndCleanupFailures_NoRetryAndNoReplacementWithCleanupDebt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.PublicService_SelectsLinuxAndReportsUnavailableWithoutWindowsOrDeviceCalls",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlQueueBackend_StreamsPcmAndChangesGainWithoutReopen",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.StopTimeout_RetainsOriginalAuthorityAndBlocksReplacementUntilActualCompletion",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

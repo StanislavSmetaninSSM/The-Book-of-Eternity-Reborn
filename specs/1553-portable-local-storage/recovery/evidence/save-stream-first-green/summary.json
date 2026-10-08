@@ -1,0 +1,95 @@
+{
+  "Categories": [
+    "portable-storage-images",
+    "portable-storage-stream-publication"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-storage-images",
+      "reason": "T032-A1 internal image source transport, exact bytes/absence and source admission/drift; current caller cutover remains outside this prerequisite.",
+      "contracts": [
+        "#1553 FR-002 through FR-007; T032-A1"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-publication",
+      "reason": "T032-A1 shared B1 image path/codec/canonical adapter, v2 active authority and strict cold admission with original v1 controls. Broader consumers are selected only if their contracts change.",
+      "contracts": [
+        "#1553 FR-002 through FR-007; T032-A1 v1/v2 compatibility and exact-byte recovery"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "fcd71676c13caaf735f48116af658d009448fc40",
+    "WorkingTreeFingerprint": "D2E227FE07ED58B584D6461D1AA80AC4CD527FB923BE25017A0935F9B8F7ED61",
+    "ChangedFiles": 2
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-storage-images",
+      "Seconds": 2.9021417,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-stream-publication",
+      "Seconds": 2.8583643,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0932355,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0244789,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0341858,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 149.3930769,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0045275,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:02:39.0260950",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 40,
+    "CompletedCases": 40,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 40,
+    "Executed": 40,
+    "Passed": 40,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

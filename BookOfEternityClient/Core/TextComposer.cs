@@ -23,6 +23,11 @@ internal sealed class TextComposerOptions
     public string ClearCommand { get; init; } = "/clear";
 }
 
+internal sealed class TextComposerInputClosedException(string draft) : OperationCanceledException("Ввод закрыт; черновик не отправлен.")
+{
+    public string Draft { get; } = draft;
+}
+
 internal static class TextComposer
 {
     public static string Read(
@@ -60,16 +65,22 @@ internal static class TextComposer
         IClipboardService? clipboardService,
         TextComposerOptions options)
     {
-        var firstLine = console.ReadLine() ?? string.Empty;
-        if (TryResolveClipboardShortcut(firstLine, clipboardService, out var clipboardText))
-            return FinalizeValue(clipboardText, options);
-
-        var pastedRemainder = BufferedConsolePasteCapture.Drain(
-            () => console.KeyAvailable,
-            console.ReadKey);
-
-        var combined = Combine(firstLine, pastedRemainder);
-        return FinalizeValue(combined, options);
+        var draft = options.DefaultValue ?? string.Empty;
+        while (true)
+        {
+            var line = ReadLine(console, draft);
+            if (IsClipboardShortcut(line))
+            {
+                if (ReadClipboard(console, clipboardService, out var text)) draft = text;
+                console.Markup("[dim]Enter = подтвердить черновик; новый текст = заменить: [/]");
+                continue;
+            }
+            if (options.AllowClearCommand && line.Trim().Equals(options.ClearCommand, StringComparison.OrdinalIgnoreCase))
+                return string.Empty;
+            var pastedRemainder = BufferedConsolePasteCapture.Drain(() => console.KeyAvailable, console.ReadKey);
+            var combined = Combine(line, pastedRemainder);
+            return FinalizeValue(string.IsNullOrEmpty(combined) ? draft : combined, options);
+        }
     }
 
     private static string ReadMultiline(
@@ -77,29 +88,20 @@ internal static class TextComposer
         IClipboardService? clipboardService,
         TextComposerOptions options)
     {
-        var firstLine = console.ReadLine() ?? string.Empty;
-        if (TryResolveSpecialCommand(firstLine, clipboardService, options, out var specialValue))
-            return specialValue;
-
-        var pastedRemainder = BufferedConsolePasteCapture.Drain(
-            () => console.KeyAvailable,
-            console.ReadKey);
-        if (!string.IsNullOrEmpty(pastedRemainder))
-            return NormalizeMultiline(Combine(firstLine, pastedRemainder), options.DefaultValue);
-
-        if (string.IsNullOrEmpty(firstLine))
-            return NormalizeMultiline(options.DefaultValue ?? string.Empty, options.DefaultValue);
-
-        var lines = new List<string> { firstLine };
+        var lines = new List<string>();
+        var started = false;
         var blankStreak = 0;
-
         while (true)
         {
-            var line = console.ReadLine() ?? string.Empty;
-
-            if (TryResolveClipboardShortcut(line, clipboardService, out var clipboardText))
+            var draft = lines.Count == 0 ? options.DefaultValue ?? string.Empty : string.Join("\n", lines);
+            var line = ReadLine(console, draft);
+            if (IsClipboardShortcut(line))
             {
-                AppendClipboard(lines, clipboardText);
+                if (ReadClipboard(console, clipboardService, out var text))
+                {
+                    AppendClipboard(lines, text);
+                    started = true;
+                }
                 blankStreak = 0;
                 continue;
             }
@@ -108,6 +110,16 @@ internal static class TextComposer
                 line.Trim().Equals(options.ClearCommand, StringComparison.OrdinalIgnoreCase))
             {
                 return string.Empty;
+            }
+
+            if (!started)
+            {
+                var pastedRemainder = BufferedConsolePasteCapture.Drain(() => console.KeyAvailable, console.ReadKey);
+                if (!string.IsNullOrEmpty(pastedRemainder))
+                    return NormalizeMultiline(Combine(line, pastedRemainder), options.DefaultValue);
+                if (string.IsNullOrEmpty(line))
+                    return NormalizeMultiline(options.DefaultValue ?? string.Empty, options.DefaultValue);
+                started = true;
             }
 
             if (string.IsNullOrEmpty(line))
@@ -130,42 +142,30 @@ internal static class TextComposer
         }
     }
 
-    private static bool TryResolveSpecialCommand(
-        string input,
-        IClipboardService? clipboardService,
-        TextComposerOptions options,
-        out string value)
-    {
-        if (TryResolveClipboardShortcut(input, clipboardService, out value))
-            return true;
+    private static string ReadLine(ITextComposerConsole console, string draft) =>
+        console.ReadLine() ?? throw new TextComposerInputClosedException(draft);
 
-        if (options.AllowClearCommand &&
-            input.Trim().Equals(options.ClearCommand, StringComparison.OrdinalIgnoreCase))
-        {
-            value = string.Empty;
-            return true;
-        }
-
-        value = string.Empty;
-        return false;
-    }
-
-    private static bool TryResolveClipboardShortcut(
-        string input,
-        IClipboardService? clipboardService,
-        out string value)
+    private static bool IsClipboardShortcut(string input)
     {
         var trimmed = input.Trim();
-        if (!trimmed.Equals("\\p", StringComparison.OrdinalIgnoreCase) &&
-            !trimmed.Equals("/paste", StringComparison.OrdinalIgnoreCase) &&
-            !trimmed.Equals("/вставить", StringComparison.OrdinalIgnoreCase))
+        return trimmed.Equals("\\p", StringComparison.OrdinalIgnoreCase) ||
+            trimmed.Equals("/paste", StringComparison.OrdinalIgnoreCase) ||
+            trimmed.Equals("/вставить", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool ReadClipboard(ITextComposerConsole console, IClipboardService? clipboardService, out string value)
+    {
+        var result = clipboardService?.TryReadText() ?? ClipboardReadResult.Refused(ClipboardReadOutcome.Unavailable);
+        if (!result.Success)
         {
+            console.MarkupLine($"[yellow]{Markup.Escape(result.Error ?? "Не удалось прочитать буфер обмена.")}[/]");
             value = string.Empty;
             return false;
         }
-
-        var result = clipboardService?.TryReadText();
-        value = result is { Success: true } clipboardResult ? clipboardResult.Text ?? string.Empty : string.Empty;
+        value = result.Text ?? string.Empty;
+        // Preview is bounded and cannot interpret markup or terminal control characters.
+        var preview = new string(value.Take(512).Select(c => char.IsControl(c) && c != '\n' && c != '\t' ? '�' : c).ToArray());
+        console.MarkupLine($"[dim]Черновик из буфера (ещё не отправлен):[/] {Markup.Escape(preview)}");
         return true;
     }
 

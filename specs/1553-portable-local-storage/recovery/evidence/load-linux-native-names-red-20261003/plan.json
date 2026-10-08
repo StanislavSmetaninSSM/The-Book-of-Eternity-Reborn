@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "portable-load-native-names"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "95a61076d84b255649b06ce8e42cacf6f8beaaf3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 117.7883678,
+  "Descriptors": [
+    {
+      "Name": "portable-load-native-names-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-native-names",
+      "Categories": [
+        "portable-load-native-names"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}

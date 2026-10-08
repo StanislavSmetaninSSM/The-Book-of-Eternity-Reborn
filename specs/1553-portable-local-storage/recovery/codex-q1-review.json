@@ -1,0 +1,72 @@
+{
+  "Design": {
+    "Verdict": "PASS \u2014 design feasibility only",
+    "Candidate": "ca6f7ed7359e6eaf62537849a10383c5c88f3afe",
+    "Agent": "/root/codex_q1_design_review",
+    "ActualModel": "gpt-6.1-sol",
+    "ActualReasoningEffort": "xhigh",
+    "MaterialFindings": [
+      {
+        "ID": "D1",
+        "Finding": "Accepted guardian rejects limit>30000ms; plan originally specified35s.",
+        "Resolution": "Corrected to30000ms unchanged guardian;25s driver cap.",
+        "Status": "closed by actual independent reinspection"
+      }
+    ],
+    "RemainingMaterialFindings": 0,
+    "ExecutedBuildTestsCLIProbes": 0
+  },
+  "Source": {
+    "Verdict": "PASS \u2014 source feasibility",
+    "Candidate": "a8aa533fab866260d7a01a6d1499002c3d695c0a",
+    "Agent": "/root/codex_q1_source_review",
+    "ActualModel": "gpt-6.1-sol",
+    "ActualReasoningEffort": "xhigh",
+    "ProbeSHA256": "3d18109c7a1d1115471b8269d3d780db352401145b696e4e77ff860c525017a0",
+    "MaterialFindings": [
+      {
+        "ID": "S1",
+        "Finding": "Success could precede foreground termios restoration observation.",
+        "Resolution": "Success now requires recorded restoration and descriptor closure; failure evidence retained.",
+        "Status": "closed by actual independent reinspection"
+      }
+    ],
+    "RemainingMaterialFindings": 0,
+    "ReviewerExecutedBuildTestsCLIProbes": 0
+  },
+  "Evidence": {
+    "Verdict": "PASS \u2014 bounded actual M1 startup/stop evidence; Q1 readiness BLOCKED",
+    "Candidate": "953398c4fb32417176b9cb6fb302e58ad4f68c0d",
+    "SourcePredicateAlsoVerifiedAt": "1c9049d82c1dc3964bb017c637342d4653003d14",
+    "Agent": "/root/codex_q1_evidence_review",
+    "ActualModel": "gpt-6.1-sol",
+    "ActualReasoningEffort": "xhigh",
+    "SourcePinsVerified": 25,
+    "ExecutionArtifactsVerified": 19,
+    "AcceptedNativeInputsVerified": 4,
+    "PackageFilesVerified": 677,
+    "RemainingMaterialFindings": 0,
+    "ReviewerExecutedCLIProbesBuildTests": 0,
+    "Scope": "One startup-only real M1 attempt at unanswered TERM gate, original logical and physical cleanup observed; no readiness/VT/provider/turn/Q2 qualification."
+  },
+  "Metadata": {
+    "Verdict": "PASS \u2014 metadata and source-only restore guard; writer exact-tip closure pending",
+    "Candidate": "1c9049d82c1dc3964bb017c637342d4653003d14",
+    "Agent": "/root/codex_q1_metadata_review",
+    "ActualModel": "gpt-6.1-sol",
+    "ActualReasoningEffort": "xhigh",
+    "RemainingMaterialFindings": 0,
+    "SourcePinsVerified": 25,
+    "ExecutionArtifactsVerified": 19,
+    "AcceptedNativeInputsVerified": 4,
+    "ReviewerExecutedCLIProbesBuildTests": 0,
+    "ExactTipClosure": "Writer must publish carrier, verify remote/byte readback, fresh HTTPS GitHub-only restore, then provide proof for narrow metadata closure."
+  },
+  "FinalVerdict": {
+    "Result": "PASS bounded actual startup/stop evidence; Q1 readiness BLOCKED",
+    "OpenTask": "T043-Q1-CODEX-STARTUP remains unchecked; full T043/SC-004 and Q2 remain open",
+    "RuntimeTestsCatalogUnchanged": true,
+    "RemainingMaterialFindings": 0,
+    "WriterClosureRequired": true
+  }
+}

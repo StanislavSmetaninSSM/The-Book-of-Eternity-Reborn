@@ -1,0 +1,734 @@
+{
+  "Schema": 1,
+  "Task": "T050-CLIPBOARD-LINUX",
+  "#Issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
+  "AcceptedBase": "113edbb00eeeb9172ee3a02e00585f7bde442243",
+  "RuntimeAndTestsCheckpoint": "b5255b1fb96e405eb1ed195c6437b16ad5788246",
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityClient.TestSupport/ClipboardConsoleProbe.cs",
+      "Blob": "18647a24e80bad8b698e99a7f2fe5ad586e58534",
+      "Bytes": 8297,
+      "SHA256": "b0d6cb8b58278a825c7104ea3a049e493b7c896a9e92e3e4ec83bac0f04222a7"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/ClipboardConsoleConsumerTests.cs",
+      "Blob": "bf5dc52513571fbeea5e1f80c0b4e6606886940a",
+      "Bytes": 7829,
+      "SHA256": "bdd7c53c91e0c14bf30c0f980f0512b7e9b22e8282b1d7d9ec8a2000e8ef4ee8"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/ClipboardLinuxAdapterTests.cs",
+      "Blob": "9b383870b44db92bbef5c3afda42aff72dbbcbca",
+      "Bytes": 5926,
+      "SHA256": "9efd4d74b6d5c81254dd77548557b08d2b46568fc87874cc51a51f45912f67fa"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/ClipboardLinuxFixture.cs",
+      "Blob": "5270c6f06fc3a26f60d1da3d13dc014153e725aa",
+      "Bytes": 6263,
+      "SHA256": "d215039eeb8bf0e0b34c1431924120070a6bda963e5b1561a11ceff0a60a7db3"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GameEngineSourceGuardTests.cs",
+      "Blob": "89eeabb91b52f84bec5806f80cd25db830c64817",
+      "Bytes": 112377,
+      "SHA256": "a70aa3f0b86d849888bd4cadfd5c410f8a4ab5118857309acb9decef6afbc460"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/TextComposerTests.cs",
+      "Blob": "d38e32cab0d239a6dbcb70905ba60c9869fef371",
+      "Bytes": 7535,
+      "SHA256": "f2951461ff52ad510d8d23d5c104dd2f7c98d99ec00755f5c5bca247b2a9530f"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "Blob": "4f359fd8fb7ce1bd9c2d4d84195f18d18b259910",
+      "Bytes": 260894,
+      "SHA256": "12b2e79a9f59a6c1078b187a949d816066a641e0f56ebe7b846c410f43357334"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TextComposer.cs",
+      "Blob": "08d1ece6560756e494ee93470f7036f05f0e3466",
+      "Bytes": 8259,
+      "SHA256": "5e10cfa329c516bd1d3f829622e1197c417bc54c76acde32a0470773a25a63cb"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/ClipboardCommandReader.cs",
+      "Blob": "4b4e60a798719a118a32b7bc33772a2c9f739858",
+      "Bytes": 4914,
+      "SHA256": "fe2cf3f7464dd304b932e73e8f59b3857b83257376c8b7560136a79cedf4447b"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/ClipboardService.cs",
+      "Blob": "ca5db54bc1f44aaaa6e237b8a3843949b6726a1c",
+      "Bytes": 5865,
+      "SHA256": "5f28106e8048955c7a9a163f38404f9a220eb8622331a6c83cea060e33f6dfa0"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/LinuxClipboardReaderIdentity.cs",
+      "Blob": "099e79aba99c63626ba286e4ed3dc292c1aa2229",
+      "Bytes": 2316,
+      "SHA256": "bd98d3bcb2dfca55412e2ee90d43ad68de11a2ec6c7196e78975465702d1b927"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Blob": "8b05de028467dd8101bc7a76af7998f5a647655d",
+      "Bytes": 1137132,
+      "SHA256": "a7208bb380230899fcdbfbf08a0cf2a64d8ec1f925214249f2ef7eeded625417"
+    },
+    {
+      "Path": "tests/fixtures/PortableStorageCrashHost/Program.cs",
+      "Blob": "87d7f3ee47ac1f101bb20c62399cdd464988c8d8",
+      "Bytes": 2099,
+      "SHA256": "724de06f3da0b7710f644438a1de484a39f360a665694952ca185df64c95a562"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Blob": "eed44cc288c9057402c236a1d8fb56e690bea441",
+      "Bytes": 937,
+      "SHA256": "2505f9b8d9beb4880522f94d097cb30e0e670f8ce3364decc74141f79d474409"
+    }
+  ],
+  "Environment": {
+    "OS": "Linux x86_64",
+    "SDK": "10.0.401",
+    "ExecutedRuntime": "8.0.31",
+    "AlsoInstalledRuntime": "10.0.12",
+    "PowerShell": "7.5.4",
+    "NativeCompilerUsed": false,
+    "RealClipboardReads": 0,
+    "RealClipboardWrites": 0,
+    "RealDesktopToolsOnPATH": [],
+    "OwnDISPLAYPresent": false,
+    "OwnWAYLAND_DISPLAYPresent": false
+  },
+  "Runs": [
+    {
+      "Id": "first-plan",
+      "Head": "16871c3ea2737ed9f2844656823a49349eb03f90",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -Category clipboard-linux-adapter,clipboard-console-consumers -PlanOnly -Parallelism 1'",
+      "Meaning": "Discovery/preparation only",
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 3,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "clipboard-console-consumers-unit-001",
+          "clipboard-linux-adapter-unit-002"
+        ],
+        "Complete": false
+      },
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "WallTime": "00:01:46.4157202",
+      "CatalogAudit": null,
+      "Artifacts": "recovery/clipboard-linux-evidence/first-plan"
+    },
+    {
+      "Id": "first-red",
+      "Head": "16871c3ea2737ed9f2844656823a49349eb03f90",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -Category clipboard-linux-adapter,clipboard-console-consumers -NoBuild -Parallelism 1'",
+      "Meaning": "2 causal consumer RED; runner stopped before adapter",
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 3,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [
+          "clipboard-linux-adapter-unit-002"
+        ],
+        "Complete": false
+      },
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 0,
+        "Failed": 2
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "WallTime": "00:00:09.4446044",
+      "CatalogAudit": null,
+      "Artifacts": "recovery/clipboard-linux-evidence/first-red"
+    },
+    {
+      "Id": "adapter-red",
+      "Head": "16871c3ea2737ed9f2844656823a49349eb03f90",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -Category clipboard-linux-adapter -NoBuild -Parallelism 1'",
+      "Meaning": "1 causal real public Linux service RED",
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "WallTime": "00:00:08.9296344",
+      "CatalogAudit": null,
+      "Artifacts": "recovery/clipboard-linux-evidence/adapter-red"
+    },
+    {
+      "Id": "first-green",
+      "Head": "30027e4555ab297108c7f69d313910e2b9ef9bca",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -Category clipboard-linux-adapter,clipboard-console-consumers -Parallelism 1'",
+      "Meaning": "3 causal GREEN; later Linux signal race invalidated cleanup ownership claim",
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 3,
+        "CompletedCases": 3,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 3,
+        "Executed": 3,
+        "Passed": 3,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "WallTime": "00:00:53.4448645",
+      "CatalogAudit": null,
+      "Artifacts": "recovery/clipboard-linux-evidence/first-green"
+    },
+    {
+      "Id": "matrix",
+      "Head": "00f46cee40e201388fd23ce802a69370fdeb7383",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -Category clipboard-linux-adapter,clipboard-console-consumers -Parallelism 1'",
+      "Meaning": "19 PASS/1 assertion defect (culture ignores ESC); adapter16 not executed",
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 36,
+        "CompletedCases": 20,
+        "UnderfilledDescriptors": [
+          "clipboard-linux-adapter-unit-002"
+        ],
+        "Complete": false
+      },
+      "Tests": {
+        "Total": 20,
+        "Executed": 20,
+        "Passed": 19,
+        "Failed": 1
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "WallTime": "00:00:52.7084246",
+      "CatalogAudit": null,
+      "Artifacts": "recovery/clipboard-linux-evidence/matrix"
+    },
+    {
+      "Id": "identity-green",
+      "Head": "b5255b1fb96e405eb1ed195c6437b16ad5788246",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -Category clipboard-linux-adapter,clipboard-console-consumers -Parallelism 1'",
+      "Meaning": "38 PASS after stable identity/fixture corrections",
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 38,
+        "CompletedCases": 38,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 38,
+        "Executed": 38,
+        "Passed": 38,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "WallTime": "00:01:06.5085591",
+      "CatalogAudit": null,
+      "Artifacts": "recovery/clipboard-linux-evidence/identity-green"
+    },
+    {
+      "Id": "affected",
+      "Head": "b5255b1fb96e405eb1ed195c6437b16ad5788246",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -Category clipboard-affected-managed -NoBuild -Parallelism 1'",
+      "Meaning": "12 exact affected managed regression PASS after fresh same-source unit build",
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 12,
+        "CompletedCases": 12,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 12,
+        "Executed": 12,
+        "Passed": 12,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "WallTime": "00:00:09.4347175",
+      "CatalogAudit": null,
+      "Artifacts": "recovery/clipboard-linux-evidence/affected"
+    },
+    {
+      "Id": "catalog",
+      "Head": "b5255b1fb96e405eb1ed195c6437b16ad5788246",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -ValidateCatalog'",
+      "Meaning": "Inventory discovery only, zero executed tests",
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "WallTime": "00:00:37.3224599",
+      "CatalogAudit": {
+        "Valid": true,
+        "Methods": 11072,
+        "Categories": 381,
+        "Unmapped": [],
+        "StaleSelectors": []
+      },
+      "Artifacts": "recovery/clipboard-linux-evidence/catalog"
+    }
+  ],
+  "FinalDistinctPass": 50,
+  "NewCases": 38,
+  "AffectedExistingCases": 12,
+  "AllExecutionIncludingHistoricalRuns": {
+    "Executed": 76,
+    "Passed": 72,
+    "Failed": 4,
+    "CausalBaselineFailures": 3,
+    "FixtureAssertionFailures": 1,
+    "PreparationFailures": 0
+  },
+  "FixtureSummary": [
+    {
+      "Phase": "first-red-fixtures",
+      "Reports": 3,
+      "CleanupReceipts": 3,
+      "ReaderProcesses": 0,
+      "RemainingRecordedReaderIdentities": 0,
+      "RemainingFixtureRoots": 0,
+      "SyntheticOnly": true
+    },
+    {
+      "Phase": "first-green-fixtures",
+      "Reports": 3,
+      "CleanupReceipts": 3,
+      "ReaderProcesses": 1,
+      "RemainingRecordedReaderIdentities": 0,
+      "RemainingFixtureRoots": 0,
+      "SyntheticOnly": true
+    },
+    {
+      "Phase": "matrix-fixtures",
+      "Reports": 20,
+      "CleanupReceipts": 20,
+      "ReaderProcesses": 18,
+      "RemainingRecordedReaderIdentities": 0,
+      "RemainingFixtureRoots": 0,
+      "SyntheticOnly": true
+    },
+    {
+      "Phase": "identity-green-fixtures",
+      "Reports": 38,
+      "CleanupReceipts": 38,
+      "ReaderProcesses": 34,
+      "RemainingRecordedReaderIdentities": 0,
+      "RemainingFixtureRoots": 0,
+      "SyntheticOnly": true
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "recovery/clipboard-linux-evidence/adapter-red/clipboard-linux-adapter-unit-001.trx.gz",
+      "Bytes": 1632,
+      "SHA256": "067e82b1ae7ad776030b564a06f77ebc42c00f1b0be6204bd594ef750358f51e"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/adapter-red/dotnet-test.log.gz",
+      "Bytes": 174752,
+      "SHA256": "c1e54d9dc36ce41cf04347c0d12274fee104837fcf1ff2bf2f252d5a338254f7"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/adapter-red/plan.json",
+      "Bytes": 1062,
+      "SHA256": "50960410ff242493b9563842cf7a4c65420b646f0bc1738b578bf764e3ae9d86"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/adapter-red/runner.log.gz",
+      "Bytes": 1082,
+      "SHA256": "cedbbfc897b8ea68b36099da8ec109f466667ffca3b547e1e193a550476d4306"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/adapter-red/summary.json",
+      "Bytes": 1356,
+      "SHA256": "dceae1aa6da8634ae8e5547febb0a6f0ba48f6c58c8d93911e548b26f3274e41"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/affected/clipboard-affected-managed-unit-001.trx.gz",
+      "Bytes": 2825,
+      "SHA256": "11c23a4094b946cb4deb6bc2ec61c09882e70d76651f830f43b76cbb7eb2f194"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/affected/dotnet-test.log.gz",
+      "Bytes": 175200,
+      "SHA256": "03e5875c0e17ea7d45ebf6bc3932247c1e1e4514699140a8128ccd78ef33efb6"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/affected/plan.json",
+      "Bytes": 4333,
+      "SHA256": "0deba2c4769adfb6d725f97936dd066c51cd91db70efd16fb6a041fbbe368860"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/affected/runner.log.gz",
+      "Bytes": 1161,
+      "SHA256": "24e39367c3a2f1a650aa0d408428b07820fedc72451a62f9599d6a03f6ca6bb0"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/affected/summary.json",
+      "Bytes": 1462,
+      "SHA256": "58f0a8afea2c208a6605b718984f57c432e4575e2a7bb17e2098dd62b3a8c4cd"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/catalog/Build-integration.log.gz",
+      "Bytes": 721,
+      "SHA256": "817dcab5e9cefa71a6bc4896a911566edf2a419d9e9ec60f9bf7750ce71b7e21"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/catalog/Build-unit.log.gz",
+      "Bytes": 292,
+      "SHA256": "5bf9c066730371defaa796d2b09b4641a7fb6d103cb612277946ca18ceba6af5"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/catalog/dotnet-test.log.gz",
+      "Bytes": 346990,
+      "SHA256": "632314cc91ef1366c0de47182779c990129aa65b91029e19b1660af65aa8bcc3"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/catalog/runner.log.gz",
+      "Bytes": 383,
+      "SHA256": "093af99f31f21e8547d43bc740c6be6021c906b4d0bdfdad3ddc7f4ddca13f7e"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/catalog/summary.json",
+      "Bytes": 1599,
+      "SHA256": "ed644ba472076ad697da0f5ba80d75e77574817246c6938c6d1c28b200ab2793"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/final-distinct-cases.json",
+      "Bytes": 13897,
+      "SHA256": "b4307b33273284218981ec9ec3a208fb18f003b5331acde6037ea7cdd5f9f01b"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-green/Build-unit.log.gz",
+      "Bytes": 2024,
+      "SHA256": "847b2f61160612c07085648c7dcfa1952fd9a4256aa8a18578919452d9abfbd4"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-green/clipboard-console-consumers-unit-001.trx.gz",
+      "Bytes": 1377,
+      "SHA256": "01992855d6829b708aa8ddc32714a409b3121f42916d7b0237344d8883ab75c7"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-green/clipboard-linux-adapter-unit-002.trx.gz",
+      "Bytes": 1189,
+      "SHA256": "0eea2ba46597b225f883bc9245a646cfb59961d1423da185e56bee09f438d67d"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-green/dotnet-test.log.gz",
+      "Bytes": 176411,
+      "SHA256": "ca57b5e62cac7127f2c63ea8cc2ab29bd5bb37c44b9971014668d25cf33d7c79"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-green/plan.json",
+      "Bytes": 2236,
+      "SHA256": "6e562bb733dc2eef1a2d8d35a46e57b8339b6f841d2377dd7f0f540afe639e59"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-green/runner.log.gz",
+      "Bytes": 916,
+      "SHA256": "03363df8f314e17e54df8d33bf2fb09b34f67ca4b66c9abbb527ac3170b9ae52"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-green/summary.json",
+      "Bytes": 1722,
+      "SHA256": "6d8a81fe831976ea21751ffd8585ca272bd2e51368aeff891e2abb401dd075d7"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-green-fixtures.json.gz",
+      "Bytes": 994,
+      "SHA256": "5eeff2508bc8e32af8e371d071d53d58167b9677a05d5ffd362c120195ac11cf"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-plan/Build-unit.log.gz",
+      "Bytes": 2026,
+      "SHA256": "2b12bcba0150f3d513ff71fa516e52638d6f17e192874a30ad50d7208675a4e5"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-plan/dotnet-test.log.gz",
+      "Bytes": 176101,
+      "SHA256": "a5228f1a04c127e77055b78885dcdbe6c4bb2e8712b3a08ca99699bbef0217da"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-plan/plan.json",
+      "Bytes": 2236,
+      "SHA256": "d47b9f5594b6c5ba4546b10b50fbe6c5a46fcd4ab1ec523e33676620a3465c58"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-plan/runner.log.gz",
+      "Bytes": 735,
+      "SHA256": "7e75ddc3618bc8cbb5e1740269cb491c924458107bfa487349fe7cf7c9d6e931"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-plan/summary.json",
+      "Bytes": 1535,
+      "SHA256": "86f3b884cf5c424c95fd7bb9804f52762f56f7ee485a253fa4dccc883624b944"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-red/clipboard-console-consumers-unit-001.trx.gz",
+      "Bytes": 1853,
+      "SHA256": "58e16e8f0c6251389a41379c03bd581b08e768fcf24e2e6d28f53ea7ebed8e8f"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-red/dotnet-test.log.gz",
+      "Bytes": 174739,
+      "SHA256": "096e1439b10ebcd80f4fe6bbc3ecc1dffd77c915271805e187081ed0d4fa432a"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-red/plan.json",
+      "Bytes": 2235,
+      "SHA256": "a2941c6b6cea2100b621e480de7abde18efaf1f5d00449f244986ba02984e6f4"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-red/runner.log.gz",
+      "Bytes": 1233,
+      "SHA256": "8c67525b5301d4d99f5c3427774625d22da384cb5b04479be9a3517e4182ba20"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-red/summary.json",
+      "Bytes": 1443,
+      "SHA256": "dd31c3a10743e6da18a4f7a3fd29deecff03c43e55e8cd26f5c0ab09d8d0d789"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/first-red-fixtures.json.gz",
+      "Bytes": 863,
+      "SHA256": "755ff5d69cf90c5645e9fcbf245f400c9116bc02f1c6c7c33a1ac8a5d05a5ee1"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/identity-green/Build-unit.log.gz",
+      "Bytes": 2023,
+      "SHA256": "fea4285c852d396ec5def7c516770b4f28ba2bc37a1796b85468a2ec440901bb"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/identity-green/clipboard-console-consumers-unit-001.trx.gz",
+      "Bytes": 3950,
+      "SHA256": "092322b893ecc4b149e15ca6c73fedd873ad8d42864e082aec62fd7793ac0f87"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/identity-green/clipboard-linux-adapter-unit-002.trx.gz",
+      "Bytes": 3579,
+      "SHA256": "4ce638d5f7ba520c41046a45104f1027fb3242a4a4621bbf79e90244023a54c3"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/identity-green/dotnet-test.log.gz",
+      "Bytes": 177226,
+      "SHA256": "a35f7f744695a819e3119a156f47abcd78f736ef5c2e990176d9855f72889a7c"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/identity-green/plan.json",
+      "Bytes": 7930,
+      "SHA256": "0c58ed08b12fae63a353b80e102ced3df07c37489df2b789d3449afca5a80738"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/identity-green/runner.log.gz",
+      "Bytes": 1460,
+      "SHA256": "86592f6a825c0afd6f0a383822ed112ccbac068d6795395ef58266dde936af12"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/identity-green/summary.json",
+      "Bytes": 1729,
+      "SHA256": "1d12c0689d3666b6b9e651c7172b07b9fff7ede355df4725821a4919e520f60b"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/identity-green-fixtures.json.gz",
+      "Bytes": 6556,
+      "SHA256": "5106de19bb1c3bcefe9c4d276464032dbbe2be60d100b6f965dd9b366640e81a"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/matrix/Build-unit.log.gz",
+      "Bytes": 2025,
+      "SHA256": "ca85c15734e3d5983c28c51be85209aadd01835811e5df624a002a68d1fa8fe0"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/matrix/clipboard-console-consumers-unit-001.trx.gz",
+      "Bytes": 4368,
+      "SHA256": "5f41d522c6688819f7afb461ccc11fd2784d38d8a7135dc7b9e32ab78f96205f"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/matrix/dotnet-test.log.gz",
+      "Bytes": 177455,
+      "SHA256": "b4f158551b49cf077c50ec2f03f333c92134b7fbfa9365a19ef7d0fea70ab13e"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/matrix/plan.json",
+      "Bytes": 7312,
+      "SHA256": "b553059c2bf2c99322787410652917542104e19406784944a6ecd54e75b37a5c"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/matrix/runner.log.gz",
+      "Bytes": 1665,
+      "SHA256": "f403453b6ca27c8131ef88a9797a7c2272dcdd2d5c68bd38e3e34f5b45fb51af"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/matrix/summary.json",
+      "Bytes": 1542,
+      "SHA256": "713a4e231ea4d45a2c034120495acfb302711eb85a7fbbbe58b2bbd0232d8bbf"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/matrix-fixtures.json.gz",
+      "Bytes": 2376,
+      "SHA256": "5f558d98fb1005dd0790376fe2996d78711927e0f460fcfe1d3df5e52cec3582"
+    },
+    {
+      "Path": "recovery/clipboard-linux-evidence/toolchain.txt",
+      "Bytes": 495,
+      "SHA256": "abc30c49f5abc1fa80937d57c70fb4f004662d2ca90a88ec8d946aa4a6e757b1"
+    }
+  ],
+  "PrimaryIdentityProofSources": [
+    {
+      "Name": "Process.Unix.cs",
+      "Bytes": 44603,
+      "SHA256": "f3f8cbdfe50e51e3c0118068ff2ee9903be798f60600f8f5ade33661670cebe3",
+      "Ref": "dotnet/runtime v8.0.31",
+      "URL": "https://raw.githubusercontent.com/dotnet/runtime/v8.0.31/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/Process.Unix.cs"
+    },
+    {
+      "Name": "Process.cs",
+      "Bytes": 62210,
+      "SHA256": "6309ac0c8fd5b81033a7ab0a1b94b43a30e47b4c2f2fafee1fd859d49b1a8310",
+      "Ref": "dotnet/runtime v8.0.31",
+      "URL": "https://raw.githubusercontent.com/dotnet/runtime/v8.0.31/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/Process.cs"
+    },
+    {
+      "Name": "ProcessWaitState.Unix.cs",
+      "Bytes": 30826,
+      "SHA256": "862d9ca02b402caee6e8824b759c6d9bc02e8373eae40c68b0f69c27db7bc94d",
+      "Ref": "dotnet/runtime v8.0.31",
+      "URL": "https://raw.githubusercontent.com/dotnet/runtime/v8.0.31/src/libraries/System.Diagnostics.Process/src/System/Diagnostics/ProcessWaitState.Unix.cs"
+    },
+    {
+      "Name": "pal_signal.c",
+      "Bytes": 21003,
+      "SHA256": "316c42a7d06fd1cbdccd951f2625f77a7f63a1b1b11b3a1700dd6bd571ae04b5",
+      "Ref": "dotnet/runtime v8.0.31",
+      "URL": "https://raw.githubusercontent.com/dotnet/runtime/v8.0.31/src/native/libs/System.Native/pal_signal.c"
+    }
+  ],
+  "IndependentReviews": {
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Design": {
+      "Agent": "/root/clipboard_linux_design_review",
+      "Verdict": "PASS",
+      "Checkpoints": [
+        "02639ebbe21c15619e1714fc3c63ce3e7991dcfb",
+        "297690828c4eb3d5e3df1078efe2ec339104e5aa",
+        "75fed432e69bee333877f98545be7b549f118ca8"
+      ]
+    },
+    "Source": {
+      "Agent": "/root/clipboard_linux_source_review",
+      "Verdict": "PASS",
+      "Checkpoint": "b5255b1fb96e405eb1ed195c6437b16ad5788246",
+      "PriorFinding": "Linux managed Process.Kill reaping/PID-reuse race; fixed by source-reviewed pidfd capture/self child-table barrier, no Linux PID fallback"
+    },
+    "Evidence": {
+      "Agent": "/root/clipboard_linux_final_evidence_review",
+      "Verdict": "PASS",
+      "Checkpoint": "61a548ab5def2ab5fb8136b8215918e7dce54b2f",
+      "Model": "gpt-6.1-sol",
+      "ReasoningEffort": "xhigh"
+    },
+    "Metadata": {
+      "Agent": "/root/clipboard_linux_metadata_review",
+      "Verdict": "PASS",
+      "Checkpoint": "61a548ab5def2ab5fb8136b8215918e7dce54b2f",
+      "Model": "gpt-6.1-sol",
+      "ReasoningEffort": "xhigh"
+    }
+  },
+  "Limits": [
+    "Synthetic adapter/real consumer wiring only; no positive desktop Wayland/X11 clipboard qualification",
+    "Windows command/STA adapter retained in source; no native Windows execution",
+    "Linux signal identity proof depends on reviewed .NET8.0.31 implementation; future runtime changes require rechecking",
+    "libc pidfd_open/pidfd_send_signal capability required; unsupported/denied capability is honest Unavailable, no installation/settings/PID fallback",
+    "No actual PID-reuse race forced; kernel identity argument is source-backed; capture failure/debt is controlled real-process test",
+    "No GM/provider/browser/Codex/Q1/Q2/systemd/audio/real saves/full game/cold guarantee/bridge paste-submit policy change"
+  ],
+  "Closure": "Bounded source/evidence/metadata PASS and candidate GitHub-only restore verified. Final carrier is metadata-only; after ordinary push/readback the writer must verify fresh restoration of that exact final tip and report its SHA/proof. No further runtime tests or stage launch.",
+  "CandidateGitHubOnlyRestoration": {
+    "Checkpoint": "61a548ab5def2ab5fb8136b8215918e7dce54b2f",
+    "Proof": "recovery/clipboard-linux-candidate-restore.json",
+    "TrackedFilesByteCompared": 20755,
+    "Clean": true,
+    "FullFsck": true,
+    "LocalObjectOrCacheReuse": false,
+    "SourcePinsVerified": 14,
+    "EvidenceArtifactsVerified": 51,
+    "TestsExecuted": 0
+  }
+}

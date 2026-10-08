@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-backup-generation-debt"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0b2be663320a89e3be30ba1d57298c67f7d73cd4",
+    "WorkingTreeFingerprint": "BD6D9EC856EF86EA2FFC9BC5B6AEB0AFD3672FE18781713B3496201F37A9F151",
+    "ChangedFiles": 4
+  },
+  "PreparationSeconds": 139.8188496,
+  "Descriptors": [
+    {
+      "Name": "portable-backup-generation-debt-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-generation-debt",
+      "Categories": [
+        "portable-backup-generation-debt"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupConsumerTests.BoundDistributorClassifiesGenerationConflictInCommittedBackupDebtBeforeCompensation",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.BoundDistributorClassifiesGenerationConflictInCommittedBackupDebtBeforeCompensation",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

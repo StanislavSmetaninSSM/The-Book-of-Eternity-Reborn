@@ -1,0 +1,99 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="4647a880-9042-4b3e-afec-da9138907bd6" name="coordinated-boundary-green" runUser="$USER">
+  <ns0:Times creation="2026-10-01T12:36:34.5202223-04:00" queuing="2026-10-01T12:36:34.5202224-04:00" start="2026-10-01T12:36:30.5271078-04:00" finish="2026-10-01T12:36:39.4096367-04:00" />
+  <ns0:TestSettings name="default" id="7f16141a-9aaa-42df-9215-aced79fe958b">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="0df552eb-fd62-4b99-b2f4-87ca5262b7ba" testId="0fc67e0a-5b10-0935-4346-22c7949d2207" testName="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;IntentPublished&quot;, committed: False)" computerName="$HOST" duration="00:00:00.4752856" startTime="2026-10-01T12:36:36.8978374-04:00" endTime="2026-10-01T12:36:36.8978376-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0df552eb-fd62-4b99-b2f4-87ca5262b7ba" />
+    <ns0:UnitTestResult executionId="113a749f-a195-4de8-80ab-9a82e811b249" testId="4e22239a-eaf1-6977-8e40-3ebed62fc5d4" testName="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ColdRecoveryUnknownLaterMemberKeepsEarlierPublishedBytesAndEvidence" computerName="$HOST" duration="00:00:00.4783409" startTime="2026-10-01T12:36:34.8681258-04:00" endTime="2026-10-01T12:36:34.8681260-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="113a749f-a195-4de8-80ab-9a82e811b249" />
+    <ns0:UnitTestResult executionId="ab12f71a-d8ce-4b1e-80c1-4c59bcd53561" testId="d5b453c7-4d65-36ea-5fc6-3a56c2454b92" testName="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;CleanupMember&quot;, committed: True)" computerName="$HOST" duration="00:00:00.4740877" startTime="2026-10-01T12:36:37.7768909-04:00" endTime="2026-10-01T12:36:37.7768911-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ab12f71a-d8ce-4b1e-80c1-4c59bcd53561" />
+    <ns0:UnitTestResult executionId="eb279c5e-9bbe-4abe-80a8-8d515644d112" testId="8a3ffd68-d1bb-cbf5-677d-a234f56aa101" testName="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink(cut: &quot;first-member&quot;, committed: False)" computerName="$HOST" duration="00:00:00.7493484" startTime="2026-10-01T12:36:34.3854255-04:00" endTime="2026-10-01T12:36:34.3854257-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eb279c5e-9bbe-4abe-80a8-8d515644d112" />
+    <ns0:UnitTestResult executionId="66afbc78-0216-4c66-91ec-cbb9b6e46640" testId="13380c52-196d-2bb6-fd48-7a47e24a5024" testName="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink(cut: &quot;Committed&quot;, committed: True)" computerName="$HOST" duration="00:00:00.6681356" startTime="2026-10-01T12:36:33.6346826-04:00" endTime="2026-10-01T12:36:33.6346958-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="66afbc78-0216-4c66-91ec-cbb9b6e46640" />
+    <ns0:UnitTestResult executionId="d04324d3-f678-43e7-bd60-fcaf82e648d7" testId="77c4beea-2fcd-e7d5-ffd0-f0d3e7606981" testName="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;Committed&quot;, committed: True)" computerName="$HOST" duration="00:00:00.6190175" startTime="2026-10-01T12:36:38.3969787-04:00" endTime="2026-10-01T12:36:38.3969790-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d04324d3-f678-43e7-bd60-fcaf82e648d7" />
+    <ns0:UnitTestResult executionId="b3b1a11e-9e98-4f59-9d91-d68219cd5559" testId="3980ebaa-4437-6ae3-402e-1dfe04f29f56" testName="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;IntentStaged&quot;, committed: False)" computerName="$HOST" duration="00:00:00.4034684" startTime="2026-10-01T12:36:37.3018430-04:00" endTime="2026-10-01T12:36:37.3018433-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b3b1a11e-9e98-4f59-9d91-d68219cd5559" />
+    <ns0:UnitTestResult executionId="639ccba4-74e6-4990-bd3d-b697c1a3001c" testId="b4f2443e-bda9-b6ad-1fb0-022d5f454f81" testName="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ColdRecoveryChangedGenerationKeepsCompleteEvidenceAndCurrentImages" computerName="$HOST" duration="00:00:00.4382380" startTime="2026-10-01T12:36:39.3333923-04:00" endTime="2026-10-01T12:36:39.3333927-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="639ccba4-74e6-4990-bd3d-b697c1a3001c" />
+    <ns0:UnitTestResult executionId="7fbe509a-c8de-43a8-9069-6a7e770e79f3" testId="6edfe37c-9e56-0be4-2e93-75afc6973499" testName="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;first-member&quot;, committed: False)" computerName="$HOST" duration="00:00:00.6157356" startTime="2026-10-01T12:36:36.4214146-04:00" endTime="2026-10-01T12:36:36.4214148-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7fbe509a-c8de-43a8-9069-6a7e770e79f3" />
+    <ns0:UnitTestResult executionId="d1f0bfbe-54eb-4994-b8a9-3ae23eb537fa" testId="85300cde-1dcc-14d2-5f65-89aa9cb15b21" testName="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;CommitStaged&quot;, committed: False)" computerName="$HOST" duration="00:00:00.4885994" startTime="2026-10-01T12:36:38.8921358-04:00" endTime="2026-10-01T12:36:38.8921362-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d1f0bfbe-54eb-4994-b8a9-3ae23eb537fa" />
+    <ns0:UnitTestResult executionId="695960ad-f732-46c0-94ef-3ccb39617703" testId="68500ce8-a84e-6b2b-6c55-9cea30e622ca" testName="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;last-member&quot;, committed: False)" computerName="$HOST" duration="00:00:00.5205248" startTime="2026-10-01T12:36:35.3898410-04:00" endTime="2026-10-01T12:36:35.3898412-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="695960ad-f732-46c0-94ef-3ccb39617703" />
+    <ns0:UnitTestResult executionId="e0f972f2-186d-4174-839a-93a42fee00e1" testId="8c478d43-3cf8-4b25-88a2-8bc78b8e79fc" testName="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;CleanupComplete&quot;, committed: True)" computerName="$HOST" duration="00:00:00.4128851" startTime="2026-10-01T12:36:35.8039593-04:00" endTime="2026-10-01T12:36:35.8039596-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e0f972f2-186d-4174-839a-93a42fee00e1" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ColdRecoveryUnknownLaterMemberKeepsEarlierPublishedBytesAndEvidence" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4e22239a-eaf1-6977-8e40-3ebed62fc5d4">
+      <ns0:Execution id="113a749f-a195-4de8-80ab-9a82e811b249" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests" name="ColdRecoveryUnknownLaterMemberKeepsEarlierPublishedBytesAndEvidence" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;IntentStaged&quot;, committed: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3980ebaa-4437-6ae3-402e-1dfe04f29f56">
+      <ns0:Execution id="b3b1a11e-9e98-4f59-9d91-d68219cd5559" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests" name="ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink(cut: &quot;first-member&quot;, committed: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8a3ffd68-d1bb-cbf5-677d-a234f56aa101">
+      <ns0:Execution id="eb279c5e-9bbe-4abe-80a8-8d515644d112" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests" name="ActualHelperColdRecoveryPreservesTheOutsideHardLink" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ColdRecoveryChangedGenerationKeepsCompleteEvidenceAndCurrentImages" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b4f2443e-bda9-b6ad-1fb0-022d5f454f81">
+      <ns0:Execution id="639ccba4-74e6-4990-bd3d-b697c1a3001c" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests" name="ColdRecoveryChangedGenerationKeepsCompleteEvidenceAndCurrentImages" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;last-member&quot;, committed: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="68500ce8-a84e-6b2b-6c55-9cea30e622ca">
+      <ns0:Execution id="695960ad-f732-46c0-94ef-3ccb39617703" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests" name="ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;CommitStaged&quot;, committed: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="85300cde-1dcc-14d2-5f65-89aa9cb15b21">
+      <ns0:Execution id="d1f0bfbe-54eb-4994-b8a9-3ae23eb537fa" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests" name="ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;CleanupComplete&quot;, committed: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8c478d43-3cf8-4b25-88a2-8bc78b8e79fc">
+      <ns0:Execution id="e0f972f2-186d-4174-839a-93a42fee00e1" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests" name="ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink(cut: &quot;Committed&quot;, committed: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="13380c52-196d-2bb6-fd48-7a47e24a5024">
+      <ns0:Execution id="66afbc78-0216-4c66-91ec-cbb9b6e46640" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests" name="ActualHelperColdRecoveryPreservesTheOutsideHardLink" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;Committed&quot;, committed: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="77c4beea-2fcd-e7d5-ffd0-f0d3e7606981">
+      <ns0:Execution id="d04324d3-f678-43e7-bd60-fcaf82e648d7" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests" name="ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;first-member&quot;, committed: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6edfe37c-9e56-0be4-2e93-75afc6973499">
+      <ns0:Execution id="7fbe509a-c8de-43a8-9069-6a7e770e79f3" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests" name="ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;IntentPublished&quot;, committed: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0fc67e0a-5b10-0935-4346-22c7949d2207">
+      <ns0:Execution id="0df552eb-fd62-4b99-b2f4-87ca5262b7ba" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests" name="ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess(cut: &quot;CleanupMember&quot;, committed: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d5b453c7-4d65-36ea-5fc6-3a56c2454b92">
+      <ns0:Execution id="ab12f71a-d8ce-4b1e-80c1-4c59bcd53561" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests" name="ActualHelperAbruptExitRecoversOneWholeSetInASeparateProcess" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="0fc67e0a-5b10-0935-4346-22c7949d2207" executionId="0df552eb-fd62-4b99-b2f4-87ca5262b7ba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="4e22239a-eaf1-6977-8e40-3ebed62fc5d4" executionId="113a749f-a195-4de8-80ab-9a82e811b249" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d5b453c7-4d65-36ea-5fc6-3a56c2454b92" executionId="ab12f71a-d8ce-4b1e-80c1-4c59bcd53561" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="8a3ffd68-d1bb-cbf5-677d-a234f56aa101" executionId="eb279c5e-9bbe-4abe-80a8-8d515644d112" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="13380c52-196d-2bb6-fd48-7a47e24a5024" executionId="66afbc78-0216-4c66-91ec-cbb9b6e46640" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="77c4beea-2fcd-e7d5-ffd0-f0d3e7606981" executionId="d04324d3-f678-43e7-bd60-fcaf82e648d7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3980ebaa-4437-6ae3-402e-1dfe04f29f56" executionId="b3b1a11e-9e98-4f59-9d91-d68219cd5559" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="b4f2443e-bda9-b6ad-1fb0-022d5f454f81" executionId="639ccba4-74e6-4990-bd3d-b697c1a3001c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="6edfe37c-9e56-0be4-2e93-75afc6973499" executionId="7fbe509a-c8de-43a8-9069-6a7e770e79f3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="85300cde-1dcc-14d2-5f65-89aa9cb15b21" executionId="d1f0bfbe-54eb-4994-b8a9-3ae23eb537fa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="68500ce8-a84e-6b2b-6c55-9cea30e622ca" executionId="695960ad-f732-46c0-94ef-3ccb39617703" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="8c478d43-3cf8-4b25-88a2-8bc78b8e79fc" executionId="e0f972f2-186d-4174-839a-93a42fee00e1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="12" executed="12" passed="12" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.20]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.76]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.79]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:08.23]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>

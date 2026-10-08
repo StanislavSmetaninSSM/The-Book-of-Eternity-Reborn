@@ -1,0 +1,53 @@
+[
+  {
+    "Child": {
+      "Operation": "seed",
+      "Workload": "many",
+      "HeapBytes": 805306368,
+      "Completed": true,
+      "Os": "Debian GNU/Linux 13 (trixie)",
+      "BaselineEntryCount": 13,
+      "AdditionalIncomingCount": 8179,
+      "ArchiveEntries": 8192,
+      "ArchiveNameBytes": 2096128,
+      "ExpandedBytes": 4256396,
+      "ManifestBytes": 3201951,
+      "ArchiveBytes": 6272475,
+      "IncomingFileCount": 8191,
+      "RequestedBulkPayloadBytes": 0,
+      "OldAdditionalFileCount": 9216,
+      "OldAdditionalBytes": 1179648,
+      "PredictedPayloadFootprintBytes": 89689471,
+      "PhaseMilliseconds": 21296.1762,
+      "PhaseAllocatedBytes": 1902128696,
+      "ProcessPeakWorkingSetBytes": 158109696,
+      "Phase": "SeedCompleted"
+    },
+    "Parent": {
+      "Operation": "seed",
+      "Workload": "many",
+      "ParentTerminated": false,
+      "SampleCount": 203,
+      "SampledPeakWorkingSetBytes": 157822976,
+      "OwnedDiskPeakBytes": 12881301,
+      "PhaseSampleCount": 200,
+      "SampledPhasePeakWorkingSetBytes": 157822976,
+      "OwnedPhaseDiskPeakBytes": 12880730,
+      "ParentMilliseconds": 21599.2083,
+      "OwnedProcessExited": true,
+      "Progress": [],
+      "ChildCeilingSeconds": 180,
+      "OriginalQualification": true,
+      "DeclaredResourceQualification": true,
+      "DiagnosticOnly": false,
+      "DiskSamplingIntervalMilliseconds": 1000,
+      "DiskSampleCount": 23,
+      "PhaseDiskSampleCount": 21,
+      "PhaseStartedParentMilliseconds": 104.2563,
+      "PhaseStoppedParentMilliseconds": 21468.1137,
+      "DiskSampleMilliseconds": 791.1479,
+      "MaximumDiskSampleMilliseconds": 68.8185
+    },
+    "Stderr": ""
+  }
+]

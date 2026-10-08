@@ -1,9 +1,14 @@
 using System.Collections.Concurrent;
+using BookOfEternityClient.Services.GmWorkers;
 
 namespace BookOfEternityClient.Core;
 
 internal sealed class CanonicalRootIdentity
 {
+    internal object WorkerContextGate { get; } = new();
+    internal GmWorkerRootContext? WorkerContext { get; set; }
+    internal BookOfEternityClient.Services.GmRuntime.GmSessionRunCoordinator? MainCoordinator { get; set; }
+
     private readonly SemaphoreSlim _gmWorkerAuditAppendAdmission = new(1, 1);
     private WeakReference<CanonicalRootIdentity>? _registration;
     private long _sessionGenerationRevision;
@@ -84,11 +89,23 @@ internal static class CanonicalRootIdentityInterner
         WeakReference<CanonicalRootIdentity>> Identities =
         new(RootPathComparer);
 
+    // These are in-process keys only; filesystem and original journal paths keep their spelling.
+    internal static string NormalizeRootKey(string fullPath, bool windows)
+    {
+        if (!windows)
+            return Path.TrimEndingDirectorySeparator(fullPath);
+
+        var normalized = TrustedLocalFileScope.NormalizeWindowsPathSpelling(fullPath).TrimEnd('\\');
+        return normalized.Length == 2 && normalized[1] == ':'
+            ? normalized + '\\'
+            : normalized;
+    }
+
     internal static CanonicalRootIdentity Get(string canonicalRoot)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(canonicalRoot);
-        var normalizedRoot = Path.TrimEndingDirectorySeparator(
-            Path.GetFullPath(canonicalRoot));
+        var normalizedRoot = NormalizeRootKey(
+            Path.GetFullPath(canonicalRoot), OperatingSystem.IsWindows());
 
         while (true)
         {

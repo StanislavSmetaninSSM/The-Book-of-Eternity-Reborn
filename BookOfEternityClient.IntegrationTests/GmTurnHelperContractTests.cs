@@ -5208,7 +5208,7 @@ public sealed class GmTurnHelperContractTests
         var functionBlock = ExtractFunctionBlock(daemon, "function Process-RepairRequest");
 
         Assert.Contains("$repairDispatchMaxWaitSeconds", functionBlock, StringComparison.Ordinal);
-        Assert.Contains("Dispatch-WithRetry -Message $message -PendingPath $RepairPath -ReturnDetails -MaxWaitSeconds $repairDispatchMaxWaitSeconds", functionBlock, StringComparison.Ordinal);
+        Assert.Contains("Dispatch-WithRetry -Message $message -PendingPath $RepairPath -ExpectedSourceHash $pendingSnapshot.Hash -OperationKind repair -OperationRevision ([string]$attempt) -ReturnDetails -MaxWaitSeconds $repairDispatchMaxWaitSeconds", functionBlock, StringComparison.Ordinal);
         Assert.Contains("$dispatchDiagnostics.Status -eq \"bridge-dispatch-timeout\"", functionBlock, StringComparison.Ordinal);
         Assert.Contains("gm_validation_repair_dispatch_unavailable", functionBlock, StringComparison.Ordinal);
         Assert.Contains("Write-DaemonJsonFileBestEffort -Path $ValidationRepairArtifactStallReportFile", functionBlock, StringComparison.Ordinal);
@@ -5382,7 +5382,7 @@ public sealed class GmTurnHelperContractTests
         var artifactBranch = daemon[artifactProbeIndex..timeoutIndex];
         Assert.Contains("Stop-GmBridgeAfterTurnTimeout -TurnRequest $turnRequest -ElapsedSeconds $elapsed -Reason \"gm_bridge_artifact_write_stall\"", artifactBranch, StringComparison.Ordinal);
         Assert.Contains("artifactWriteStall = $artifactStall", artifactBranch, StringComparison.Ordinal);
-        Assert.Contains("Set-Content -Path $errorPath", artifactBranch, StringComparison.Ordinal);
+        Assert.Contains("Write-GmCanonicalText -SessionPath $GameSessionPath -Path $errorPath", artifactBranch, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -5528,8 +5528,9 @@ public sealed class GmTurnHelperContractTests
         Assert.Contains("GM bridge did not accept dispatch before the dispatch timeout.", daemon, StringComparison.Ordinal);
 
         var dispatchFunction = ExtractFunctionBlock(daemon, "function Dispatch-WithRetry");
-        Assert.Contains("New-GmDispatchDiagnostics -Status \"bridge-dispatch-timeout\"", dispatchFunction, StringComparison.Ordinal);
-        Assert.Contains("-Timeout $true", dispatchFunction, StringComparison.Ordinal);
+        Assert.Contains("Complete-GmPromptDispatch 'bridge-dispatch-timeout'", dispatchFunction, StringComparison.Ordinal);
+        Assert.Contains("'not-written'", dispatchFunction, StringComparison.Ordinal);
+        Assert.Contains("Test-GmPromptDispatchPaused $dispatchDiagnostics", daemon, StringComparison.Ordinal);
 
         var dispatchIndex = daemon.IndexOf("$dispatchDiagnostics = Dispatch-WithRetry -Message $message", StringComparison.Ordinal);
         var timeoutBranchIndex = daemon.IndexOf("$dispatchDiagnostics.Status -eq \"bridge-dispatch-timeout\"", dispatchIndex, StringComparison.Ordinal);

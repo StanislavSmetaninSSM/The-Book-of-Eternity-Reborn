@@ -1,0 +1,99 @@
+{
+  "Categories": [
+    "portable-directory-deletion",
+    "portable-directory-recovery",
+    "portable-directory-linux-special",
+    "portable-directory-consumers"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-directory-deletion",
+      "reason": "Bounded Linux T030-F reproduction: ordinary deletion, recovery and reached consumers. The separately owned portable-directory-backup-prerequisite preserves the known failed Linux quarantine setup; it is not counted as passed or hidden by an OS guard.",
+      "contracts": [
+        "FR-002 through FR-007; canonical directory deletion"
+      ]
+    },
+    {
+      "category": "portable-directory-recovery",
+      "reason": "Bounded Linux T030-F reproduction: ordinary deletion, recovery and reached consumers. The separately owned portable-directory-backup-prerequisite preserves the known failed Linux quarantine setup; it is not counted as passed or hidden by an OS guard.",
+      "contracts": [
+        "FR-002 through FR-007; canonical directory deletion"
+      ]
+    },
+    {
+      "category": "portable-directory-linux-special",
+      "reason": "Bounded Linux T030-F reproduction: ordinary deletion, recovery and reached consumers. The separately owned portable-directory-backup-prerequisite preserves the known failed Linux quarantine setup; it is not counted as passed or hidden by an OS guard.",
+      "contracts": [
+        "FR-002 through FR-007; canonical directory deletion"
+      ]
+    },
+    {
+      "category": "portable-directory-consumers",
+      "reason": "Bounded Linux T030-F reproduction: ordinary deletion, recovery and reached consumers. The separately owned portable-directory-backup-prerequisite preserves the known failed Linux quarantine setup; it is not counted as passed or hidden by an OS guard.",
+      "contracts": [
+        "FR-002 through FR-007; canonical directory deletion"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "29348885d890a9930914ca5a0dbc565f14fbf0fc",
+    "WorkingTreeFingerprint": "E554088E16DA53A941AAC99A95A88E8DFB85C34A3321C387B511A74B298F092E",
+    "ChangedFiles": 5
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0546655,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0178555,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0124757,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0169232,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 25,
+  "WallTime": "00:00:07.7715685",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 58,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-directory-consumers-integration-001",
+      "portable-directory-consumers-unit-002",
+      "portable-directory-deletion-unit-003",
+      "portable-directory-linux-special-unit-004",
+      "portable-directory-recovery-unit-005"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

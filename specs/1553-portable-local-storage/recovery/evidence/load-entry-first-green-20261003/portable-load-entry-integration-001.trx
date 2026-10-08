@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="044b62b2-fb53-4472-b5db-67e42e1da233" name="@8578fe379cc9 2026-10-03 04:47:56" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T04:47:56.1860663-04:00" queuing="2026-10-03T04:47:56.1860663-04:00" start="2026-10-03T04:47:51.7448416-04:00" finish="2026-10-03T04:47:56.4182996-04:00" />
+  <TestSettings name="default" id="0afd2bd4-188f-40bb-b436-f7d45a6b9283">
+    <Deployment runDeploymentRoot="_8578fe379cc9_2026-10-03_04_47_56" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="13450221-ad02-4b13-b5b2-94aa1b5c2b77" testId="c703f2b0-227e-0a0a-fa14-25ad9f6c9cdf" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes(archiveHasConfig: False)" computerName="8578fe379cc9" duration="00:00:00.1721980" startTime="2026-10-03T04:47:55.8517146-04:00" endTime="2026-10-03T04:47:55.8517147-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="13450221-ad02-4b13-b5b2-94aa1b5c2b77">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberPublished, 5),(MemberStaged, 6),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9f928288-762d-47f9-aec1-085ef255581d" testId="7e97b08c-e19c-ed37-4af5-826ce137edc7" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.BothConfigsAbsentUsesFreshDefaultsWithoutPersistingConfiguration" computerName="8578fe379cc9" duration="00:00:00.1625295" startTime="2026-10-03T04:47:55.6773093-04:00" endTime="2026-10-03T04:47:55.6773095-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9f928288-762d-47f9-aec1-085ef255581d">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberPublished, 5),(MemberStaged, 6),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="46fe5494-ee32-4588-8d80-cfc0c3fc6b53" testId="d80228d1-42ea-8a89-c08d-aec6ca415137" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration" computerName="8578fe379cc9" duration="00:00:00.1496022" startTime="2026-10-03T04:47:56.2884421-04:00" endTime="2026-10-03T04:47:56.2884423-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="46fe5494-ee32-4588-8d80-cfc0c3fc6b53">
+      <Output>
+        <StdOut>Disposition=RolledBack; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1)
+System.InvalidOperationException: load later-member cut
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;&gt;c__DisplayClass19_0.&lt;LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration&gt;b__0(TrustedLocalPublicationPhase phase, Int32 index) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 101
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;.ctor&gt;b__17_0(TrustedLocalPublicationPhase phase, Int32 index) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 42
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in /repo/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 403
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in /repo/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 197
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass47_0.&lt;PublishImagesWithOutcome&gt;b__0(PublicationAttempt attempt) in /repo/BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs:line 18
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in /repo/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 86
+System.InvalidOperationException: load later-member cut
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;&gt;c__DisplayClass19_0.&lt;LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration&gt;b__0(TrustedLocalPublicationPhase phase, Int32 index) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 101
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;.ctor&gt;b__17_0(TrustedLocalPublicationPhase phase, Int32 index) in /repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 42
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in /repo/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 403
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in /repo/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 197
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass47_0.&lt;PublishImagesWithOutcome&gt;b__0(PublicationAttempt attempt) in /repo/BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs:line 18
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in /repo/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 86</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="27c51bc2-38bf-4709-ae96-da3d2bc4f1ab" testId="53c5700b-de16-15dd-fd22-f361386a00fa" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: &quot;imports/source.zip&quot;)" computerName="8578fe379cc9" duration="00:00:00.0856874" startTime="2026-10-03T04:47:55.3998122-04:00" endTime="2026-10-03T04:47:55.3998124-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="27c51bc2-38bf-4709-ae96-da3d2bc4f1ab">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.IO.InvalidDataException: Incoming payload collides with the selected archive or its topology.
+   at BookOfEternityClient.Services.SaveLoadService.ValidateLoadSourceCollision(String destination, String source) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 318
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 246
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 115
+System.IO.InvalidDataException: Incoming payload collides with the selected archive or its topology.
+   at BookOfEternityClient.Services.SaveLoadService.ValidateLoadSourceCollision(String destination, String source) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 318
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 246
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 115</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d4831dec-9ac0-443d-9b88-8039b77757ca" testId="ae804b56-01e7-71fa-5e15-32a5e54a72af" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes(archiveHasConfig: True)" computerName="8578fe379cc9" duration="00:00:00.1332973" startTime="2026-10-03T04:47:55.9856969-04:00" endTime="2026-10-03T04:47:55.9856971-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d4831dec-9ac0-443d-9b88-8039b77757ca">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5e11a7c1-5d72-462a-8b50-eef6b6187270" testId="2e151fa4-4617-a9de-31cd-cfc492204dd1" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable" computerName="8578fe379cc9" duration="00:00:00.1514654" startTime="2026-10-03T04:47:56.1380489-04:00" endTime="2026-10-03T04:47:56.1380491-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5e11a7c1-5d72-462a-8b50-eef6b6187270">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.InvalidOperationException: Load cannot run inside a generation-bound session operation.
+Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberPublished, 5),(MemberStaged, 6),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="fb4873c9-3156-445c-8c1f-a9083bec8125" testId="566bbab1-4fe9-0b9f-5dac-595e834a54a7" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: &quot;imports/source.zip/child.bin&quot;)" computerName="8578fe379cc9" duration="00:00:00.0651906" startTime="2026-10-03T04:47:55.4656745-04:00" endTime="2026-10-03T04:47:55.4656747-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fb4873c9-3156-445c-8c1f-a9083bec8125">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.IO.InvalidDataException: Incoming payload collides with the selected archive or its topology.
+   at BookOfEternityClient.Services.SaveLoadService.ValidateLoadSourceCollision(String destination, String source) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 318
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 246
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 115
+System.IO.InvalidDataException: Incoming payload collides with the selected archive or its topology.
+   at BookOfEternityClient.Services.SaveLoadService.ValidateLoadSourceCollision(String destination, String source) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 318
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 246
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 115</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0f444be8-9527-420b-aec2-1db7617bd25d" testId="9ee973c1-20e0-18e2-04d9-5c0940562b0e" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadPublishesOneReplacementAndPreservesSelectedRootArchive" computerName="8578fe379cc9" duration="00:00:00.6833200" startTime="2026-10-03T04:47:55.3100657-04:00" endTime="2026-10-03T04:47:55.3100825-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0f444be8-9527-420b-aec2-1db7617bd25d">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberPublished, 5),(MemberStaged, 6),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b3270e2a-e878-4bea-a9cb-ca6d5d842632" testId="2d173328-1221-1490-a510-fb8bfcc21494" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: &quot;imports&quot;)" computerName="8578fe379cc9" duration="00:00:00.0474629" startTime="2026-10-03T04:47:55.5137911-04:00" endTime="2026-10-03T04:47:55.5137913-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b3270e2a-e878-4bea-a9cb-ca6d5d842632">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.IO.InvalidDataException: Incoming payload collides with the selected archive or its topology.
+   at BookOfEternityClient.Services.SaveLoadService.ValidateLoadSourceCollision(String destination, String source) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 318
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 246
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 115
+System.IO.InvalidDataException: Incoming payload collides with the selected archive or its topology.
+   at BookOfEternityClient.Services.SaveLoadService.ValidateLoadSourceCollision(String destination, String source) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 318
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 246
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in /repo/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 115</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: &quot;imports&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2d173328-1221-1490-a510-fb8bfcc21494">
+      <Execution id="b3270e2a-e878-4bea-a9cb-ca6d5d842632" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2e151fa4-4617-a9de-31cd-cfc492204dd1">
+      <Execution id="5e11a7c1-5d72-462a-8b50-eef6b6187270" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: &quot;imports/source.zip&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="53c5700b-de16-15dd-fd22-f361386a00fa">
+      <Execution id="27c51bc2-38bf-4709-ae96-da3d2bc4f1ab" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d80228d1-42ea-8a89-c08d-aec6ca415137">
+      <Execution id="46fe5494-ee32-4588-8d80-cfc0c3fc6b53" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes(archiveHasConfig: True)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ae804b56-01e7-71fa-5e15-32a5e54a72af">
+      <Execution id="d4831dec-9ac0-443d-9b88-8039b77757ca" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes(archiveHasConfig: False)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c703f2b0-227e-0a0a-fa14-25ad9f6c9cdf">
+      <Execution id="13450221-ad02-4b13-b5b2-94aa1b5c2b77" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.BothConfigsAbsentUsesFreshDefaultsWithoutPersistingConfiguration" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7e97b08c-e19c-ed37-4af5-826ce137edc7">
+      <Execution id="9f928288-762d-47f9-aec1-085ef255581d" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="BothConfigsAbsentUsesFreshDefaultsWithoutPersistingConfiguration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadPublishesOneReplacementAndPreservesSelectedRootArchive" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="9ee973c1-20e0-18e2-04d9-5c0940562b0e">
+      <Execution id="0f444be8-9527-420b-aec2-1db7617bd25d" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CurrentProducerLoadPublishesOneReplacementAndPreservesSelectedRootArchive" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology(incomingPath: &quot;imports/source.zip/child.bin&quot;)" storage="/repo/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="566bbab1-4fe9-0b9f-5dac-595e834a54a7">
+      <Execution id="fb4873c9-3156-445c-8c1f-a9083bec8125" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c703f2b0-227e-0a0a-fa14-25ad9f6c9cdf" executionId="13450221-ad02-4b13-b5b2-94aa1b5c2b77" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7e97b08c-e19c-ed37-4af5-826ce137edc7" executionId="9f928288-762d-47f9-aec1-085ef255581d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d80228d1-42ea-8a89-c08d-aec6ca415137" executionId="46fe5494-ee32-4588-8d80-cfc0c3fc6b53" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="53c5700b-de16-15dd-fd22-f361386a00fa" executionId="27c51bc2-38bf-4709-ae96-da3d2bc4f1ab" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ae804b56-01e7-71fa-5e15-32a5e54a72af" executionId="d4831dec-9ac0-443d-9b88-8039b77757ca" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2e151fa4-4617-a9de-31cd-cfc492204dd1" executionId="5e11a7c1-5d72-462a-8b50-eef6b6187270" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="566bbab1-4fe9-0b9f-5dac-595e834a54a7" executionId="fb4873c9-3156-445c-8c1f-a9083bec8125" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9ee973c1-20e0-18e2-04d9-5c0940562b0e" executionId="0f444be8-9527-420b-aec2-1db7617bd25d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2d173328-1221-1490-a510-fb8bfcc21494" executionId="b3270e2a-e878-4bea-a9cb-ca6d5d842632" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="9" executed="9" passed="9" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.58]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.09]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.11]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:03.86]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

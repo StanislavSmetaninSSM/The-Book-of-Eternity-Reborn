@@ -1,0 +1,48 @@
+{
+  "sourceCommit": "3442c169575b40d06a385920393f8ed7639552b0",
+  "catalogBlobAfterPatch": "ba9b41236b5df635fbf4bb151f8d5710f3b44435",
+  "kind": "newly executed b2b-review1-green; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Extra JSON/log line endings normalized to LF and trailing whitespace removed; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "3d07ebdfeed596fbb99d13bace8f8e8dad50298ed61d9a0c27bf2bbeb92ddc0a",
+      "sanitizedSha256": "3d07ebdfeed596fbb99d13bace8f8e8dad50298ed61d9a0c27bf2bbeb92ddc0a"
+    },
+    {
+      "path": "portable-settings-consumers-frontend-001.trx",
+      "originalSha256": "892ee791d9a2958128ee968a06d24ff293d0d9096c0c1c9b6fed570aff6a8ea3",
+      "sanitizedSha256": "1a92c8901eaae48bae6f85faed5b26df5a849eb40e98c483a691b8e701379656"
+    },
+    {
+      "path": "portable-settings-consumers-frontend-002.trx",
+      "originalSha256": "8794c2fb16894b2bb2c473578b666c74e7b06ee13a63568fdcea5c49d807050c",
+      "sanitizedSha256": "cb96d5f2cf1fc7bdd5490efe8d59b882dc1fd739de0eaa5b4bec0f7025b026b1"
+    },
+    {
+      "path": "portable-settings-notices-frontend-003.trx",
+      "originalSha256": "911a3eaa5b44afa2b3d20a04b02fdd8a422a8a5f57ee1c6f3347a1d5ad50faa1",
+      "sanitizedSha256": "c15b3ef252f05ea4a26275b5c3cb478092dd36d1415417ec0ee473aeab9b7f81"
+    },
+    {
+      "path": "portable-settings-notices-frontend-004.trx",
+      "originalSha256": "dd1a31bc4883830c9714df019e3dffa21c0cd0106ac7bc3fb30a7b4c5843120e",
+      "sanitizedSha256": "9d1f2f8734386f47330e212ca065e076d674eda5df03178769e8bbf82f3acf67"
+    },
+    {
+      "path": "portable-settings-notices-frontend-004.vitest.json",
+      "originalSha256": "b7893e94f1772d15f0f0c3d579ad6584b657f619f447955a1bce8d61b63c4850",
+      "sanitizedSha256": "75915a7928a072c6be7db760aee92f35cd11c43c88d3c43093d26b65383615e4"
+    },
+    {
+      "path": "portable-settings-consumers-frontend-002.vitest.json",
+      "originalSha256": "6008e65c78654490de3ae9a2e584c56e0e7e39371c598f91e144d22da02fe824",
+      "sanitizedSha256": "40811e13da7eb598c4524c0b53fe94a2fb6b82b0747e50529dd2be1e2c337222"
+    },
+    {
+      "path": "phase.log",
+      "originalSha256": "0efb591186afa0b262a70f832c1ea33445c5fcb60d070ba2ebd227771a8ff33e",
+      "sanitizedSha256": "dceff59744b62bcc6889b972134b51c81ab610bfdf5f47a01883f2e7a7d7fc59"
+    }
+  ]
+}

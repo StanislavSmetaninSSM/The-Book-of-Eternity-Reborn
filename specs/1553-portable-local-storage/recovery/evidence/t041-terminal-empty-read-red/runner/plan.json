@@ -1,0 +1,70 @@
+{
+  "Categories": [
+    "gm-owned-terminal-session"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0ac1b522fcdce8a356695d8c36442ae196b7b703",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 52.8976285,
+  "Descriptors": [
+    {
+      "Name": "gm-owned-terminal-session-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-owned-terminal-session",
+      "Categories": [
+        "gm-owned-terminal-session"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualLauncher_UsesRetargetedBridgeAndKeepsProjectFallback|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedKeyboard_PairsUnicodeScalarsBeforeWriting|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_OutputTimeoutIsAbsorbingWithOriginalOwner|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_EraseWithoutHomeCannotCertifyIdle|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_PartialUtf8AndUnsupportedVtCannotBorrowIdle|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualWindowsStream_ZeroLengthReadDoesNotEstablishTransportEof|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.WindowsMainSource_HoldsJobBeforeReleaseAndOwnedPseudoConsoleClose|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalSessionTests.ActualStop_RetainsOriginalOwnerWhileScopedStopAndOutputAreUnfinished",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualLauncher_UsesRetargetedBridgeAndKeepsProjectFallback",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedKeyboard_PairsUnicodeScalarsBeforeWriting",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_OutputTimeoutIsAbsorbingWithOriginalOwner",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_EraseWithoutHomeCannotCertifyIdle",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_PartialUtf8AndUnsupportedVtCannotBorrowIdle",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualWindowsStream_ZeroLengthReadDoesNotEstablishTransportEof",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.WindowsMainSource_HoldsJobBeforeReleaseAndOwnedPseudoConsoleClose",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalSessionTests.ActualStop_RetainsOriginalOwnerWhileScopedStopAndOutputAreUnfinished",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

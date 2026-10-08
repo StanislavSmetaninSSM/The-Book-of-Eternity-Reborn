@@ -1,0 +1,75 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="753e32d2-0451-4cfd-b2cd-6cafff7b81ae" name="b2c-session-green" runUser="$USER">
+  <ns0:Times creation="2026-10-01T00:09:47.2809906-04:00" queuing="2026-10-01T00:09:47.2809907-04:00" start="2026-10-01T00:09:44.2425766-04:00" finish="2026-10-01T00:09:47.2864394-04:00" />
+  <ns0:TestSettings name="default" id="c9a7e0fc-3967-4918-a804-38fd408ace0f">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="03f82d9e-116a-491f-82d7-e20fd0df97e5" testId="2ab5f3a4-9aa0-5ca2-75fd-dabe3a38ab86" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.RuntimeOrClosingFailureCannotRelabelCommittedFiles(closing: True)" computerName="$HOST" duration="00:00:00.0329519" startTime="2026-10-01T00:09:46.3156637-04:00" endTime="2026-10-01T00:09:46.3156639-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="03f82d9e-116a-491f-82d7-e20fd0df97e5" />
+    <ns0:UnitTestResult executionId="c3c6ff73-6536-4e81-a496-d082d9db83fa" testId="3d22374c-eb49-2436-6ddc-77fc22ed41ad" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: &quot;uncertain&quot;)" computerName="$HOST" duration="00:00:00.0365225" startTime="2026-10-01T00:09:47.0862620-04:00" endTime="2026-10-01T00:09:47.0862623-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c3c6ff73-6536-4e81-a496-d082d9db83fa" />
+    <ns0:UnitTestResult executionId="14a93b4b-1cbe-4c39-b842-a9709e6959f3" testId="d1b229bc-587a-a663-7c34-d53b9de0fa63" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.DraftIsDetachedAndDoesNotKeepTheCanonicalLeaseAcrossMenuInput" computerName="$HOST" duration="00:00:00.0170784" startTime="2026-10-01T00:09:47.1806816-04:00" endTime="2026-10-01T00:09:47.1806817-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="14a93b4b-1cbe-4c39-b842-a9709e6959f3" />
+    <ns0:UnitTestResult executionId="a4cc4f0f-7fac-489c-9fbc-6a86f7bd87cc" testId="14c70289-d99c-25ac-9993-851f2943e8c1" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed" computerName="$HOST" duration="00:00:00.0080249" startTime="2026-10-01T00:09:47.0949727-04:00" endTime="2026-10-01T00:09:47.0949729-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a4cc4f0f-7fac-489c-9fbc-6a86f7bd87cc" />
+    <ns0:UnitTestResult executionId="5098b95b-703b-492b-bd8c-ea6059ba2bee" testId="d8fe0f48-6898-4f0d-c382-ba8c2ea93961" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.RuntimeOrClosingFailureCannotRelabelCommittedFiles(closing: False)" computerName="$HOST" duration="00:00:00.2621131" startTime="2026-10-01T00:09:46.2822331-04:00" endTime="2026-10-01T00:09:46.2822481-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5098b95b-703b-492b-bd8c-ea6059ba2bee" />
+    <ns0:UnitTestResult executionId="3e5b058c-680b-4b25-b0f0-4e46ada81dde" testId="d6f390ed-3773-3b66-704e-f28b924f2002" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: &quot;rollback&quot;)" computerName="$HOST" duration="00:00:00.6976838" startTime="2026-10-01T00:09:47.0159171-04:00" endTime="2026-10-01T00:09:47.0159173-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3e5b058c-680b-4b25-b0f0-4e46ada81dde" />
+    <ns0:UnitTestResult executionId="6f748532-6ac2-4a13-9c3a-e62f1286dbc3" testId="2998bc8f-0d49-7844-25de-277ae41c2cd7" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.CommitUsesConsoleOwnerAndKeepsLiveSettingsReferenceThenAdvancesBaseline" computerName="$HOST" duration="00:00:00.0668950" startTime="2026-10-01T00:09:47.1629284-04:00" endTime="2026-10-01T00:09:47.1629287-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6f748532-6ac2-4a13-9c3a-e62f1286dbc3" />
+    <ns0:UnitTestResult executionId="ac9cbe61-e94e-478b-bc5c-f8d89045ef5f" testId="d44fb6a9-2b2f-540e-673e-4871849b71bb" testName="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: &quot;committed-cleanup&quot;)" computerName="$HOST" duration="00:00:00.0316690" startTime="2026-10-01T00:09:47.0490558-04:00" endTime="2026-10-01T00:09:47.0490560-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ac9cbe61-e94e-478b-bc5c-f8d89045ef5f" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.DraftIsDetachedAndDoesNotKeepTheCanonicalLeaseAcrossMenuInput" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d1b229bc-587a-a663-7c34-d53b9de0fa63">
+      <ns0:Execution id="14a93b4b-1cbe-4c39-b842-a9709e6959f3" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="DraftIsDetachedAndDoesNotKeepTheCanonicalLeaseAcrossMenuInput" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: &quot;rollback&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d6f390ed-3773-3b66-704e-f28b924f2002">
+      <ns0:Execution id="3e5b058c-680b-4b25-b0f0-4e46ada81dde" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.CommitUsesConsoleOwnerAndKeepsLiveSettingsReferenceThenAdvancesBaseline" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2998bc8f-0d49-7844-25de-277ae41c2cd7">
+      <ns0:Execution id="6f748532-6ac2-4a13-9c3a-e62f1286dbc3" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="CommitUsesConsoleOwnerAndKeepsLiveSettingsReferenceThenAdvancesBaseline" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: &quot;committed-cleanup&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d44fb6a9-2b2f-540e-673e-4871849b71bb">
+      <ns0:Execution id="ac9cbe61-e94e-478b-bc5c-f8d89045ef5f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime(cut: &quot;uncertain&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3d22374c-eb49-2436-6ddc-77fc22ed41ad">
+      <ns0:Execution id="c3c6ff73-6536-4e81-a496-d082d9db83fa" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="PublicationOutcomePreservesDraftAndOnlyAcceptsCommittedRuntime" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="14c70289-d99c-25ac-9993-851f2943e8c1">
+      <ns0:Execution id="a4cc4f0f-7fac-489c-9fbc-6a86f7bd87cc" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.RuntimeOrClosingFailureCannotRelabelCommittedFiles(closing: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d8fe0f48-6898-4f0d-c382-ba8c2ea93961">
+      <ns0:Execution id="5098b95b-703b-492b-bd8c-ea6059ba2bee" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="RuntimeOrClosingFailureCannotRelabelCommittedFiles" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ConsoleSettingsSessionTests.RuntimeOrClosingFailureCannotRelabelCommittedFiles(closing: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2ab5f3a4-9aa0-5ca2-75fd-dabe3a38ab86">
+      <ns0:Execution id="03f82d9e-116a-491f-82d7-e20fd0df97e5" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleSettingsSessionTests" name="RuntimeOrClosingFailureCannotRelabelCommittedFiles" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="2ab5f3a4-9aa0-5ca2-75fd-dabe3a38ab86" executionId="03f82d9e-116a-491f-82d7-e20fd0df97e5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3d22374c-eb49-2436-6ddc-77fc22ed41ad" executionId="c3c6ff73-6536-4e81-a496-d082d9db83fa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d1b229bc-587a-a663-7c34-d53b9de0fa63" executionId="14a93b4b-1cbe-4c39-b842-a9709e6959f3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="14c70289-d99c-25ac-9993-851f2943e8c1" executionId="a4cc4f0f-7fac-489c-9fbc-6a86f7bd87cc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d8fe0f48-6898-4f0d-c382-ba8c2ea93961" executionId="5098b95b-703b-492b-bd8c-ea6059ba2bee" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d6f390ed-3773-3b66-704e-f28b924f2002" executionId="3e5b058c-680b-4b25-b0f0-4e46ada81dde" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="2998bc8f-0d49-7844-25de-277ae41c2cd7" executionId="6f748532-6ac2-4a13-9c3a-e62f1286dbc3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d44fb6a9-2b2f-540e-673e-4871849b71bb" executionId="ac9cbe61-e94e-478b-bc5c-f8d89045ef5f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="8" executed="8" passed="8" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.14]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.17]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.19]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.41]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>

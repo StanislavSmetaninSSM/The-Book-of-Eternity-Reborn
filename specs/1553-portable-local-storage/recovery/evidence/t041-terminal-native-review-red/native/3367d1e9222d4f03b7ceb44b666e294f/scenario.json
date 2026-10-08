@@ -1,0 +1,1 @@
+{"HeldRootHasNoHelperChannels":false,"Failure":"GmWorkerOwnedLaunchException: Terminal partial launch retains owner.","PartialOwnerCleanup":{"RunId":"20fe765dae5946fe81efe38306f953af","Backend":2,"Guarantee":"ordinary-same-namespace-lineage","State":1,"Reason":"partial-terminal-launch","CleanupComplete":true,"AuthorityRetained":false,"RootExitCode":125}}

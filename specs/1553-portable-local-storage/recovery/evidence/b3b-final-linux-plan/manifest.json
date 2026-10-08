@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "bcecdd3aa7b1e8f53b7fdd43441724c65cf658a1",
+  "catalogBlobAfterPatch": "f8dd72a355a4639ca7b95ccce7eee5cd23c43038",
+  "kind": "newly executed b3b-final-linux-plan; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "e161213a5b83b8b0d9722f55611abb120dda9ef1ccfd5d15b0209ae256ff9791",
+      "sanitizedSha256": "e161213a5b83b8b0d9722f55611abb120dda9ef1ccfd5d15b0209ae256ff9791"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "15f6c35b6cd2025f7dce4e9e5a41d71802e0b0c3356b572b9a37820f8f3d2e35",
+      "sanitizedSha256": "15f6c35b6cd2025f7dce4e9e5a41d71802e0b0c3356b572b9a37820f8f3d2e35"
+    }
+  ],
+  "sourceAppliedTree": "418c8a56440631e7e989d5fff50a689c4ebe4421",
+  "selectionBlob": "3ef6dd248116c38d2a8286116afe31f0ae74fc81",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly -NoBuild -Parallelism 1",
+  "platform": "Linux x64",
+  "result": "Nine descriptors / 123 cases planned; zero tests executed. Uses both fresh successful builds from b3b-final-audit. Prior successful behavioral cohorts are preserved, not repeated."
+}

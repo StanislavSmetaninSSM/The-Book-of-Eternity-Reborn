@@ -1,0 +1,82 @@
+{
+  "Categories": [
+    "worker-synthetic-bundle-publication"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "fde47a7059d35a8de9d430614603efe0dfd6dd82",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.6576773,
+  "Descriptors": [
+    {
+      "Name": "worker-synthetic-bundle-publication-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-synthetic-bundle-publication",
+      "Categories": [
+        "worker-synthetic-bundle-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.CancellationWhileWaitingForCanonicalLease_PublishesNothing|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DefaultStore_RetainsExistingLinuxDescriptorBackendRefusal|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationOutsideSingleSafeBundle_IsRejected|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ForeignManagerLease_DoesNotAuthorizeThisFixture|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidatedLeaseAfterAwait_CannotReachNativeMove|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidNestedTreeEntryAtFinalBoundary_IsRejectedWithoutFollowingIt|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.NativeRename_ExistingDirectoryActuallyFailsWithoutOverwrite|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.NativeRename_MissingSourceReportsErrnoWithoutCreatingDestination|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SourceMustBeMatchingBundleInsidePrivateStaging|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.StaleTaskOrGeneration_RetainsExistingEmptyStructure|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.WrongFixtureRoot_CannotPublishIntoThisManager",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 26,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.CancellationWhileWaitingForCanonicalLease_PublishesNothing",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DefaultStore_RetainsExistingLinuxDescriptorBackendRefusal",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationOutsideSingleSafeBundle_IsRejected",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ForeignManagerLease_DoesNotAuthorizeThisFixture",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidatedLeaseAfterAwait_CannotReachNativeMove",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidNestedTreeEntryAtFinalBoundary_IsRejectedWithoutFollowingIt",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.NativeRename_ExistingDirectoryActuallyFailsWithoutOverwrite",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.NativeRename_MissingSourceReportsErrnoWithoutCreatingDestination",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SourceMustBeMatchingBundleInsidePrivateStaging",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.StaleTaskOrGeneration_RetainsExistingEmptyStructure",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.WrongFixtureRoot_CannotPublishIntoThisManager",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

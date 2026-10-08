@@ -1,0 +1,70 @@
+{
+  "Categories": [
+    "test-ci-platform-contracts"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "9fde68013d111040719bf868c074c756976f988c",
+    "WorkingTreeFingerprint": "DA4F1BC1626E90E104C202D8D164DF5CBABE5175ECDC0ABDD359BFFC63E8AF71",
+    "ChangedFiles": 3
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "test-ci-platform-contracts",
+      "Seconds": 3.579144,
+      "BudgetMinutes": 2,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.072001,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0695742,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1428858,
+      "Completed": true
+    },
+    {
+      "Name": "test-ci-platform-contracts-powershell-001",
+      "Seconds": 3.5568418,
+      "Completed": false
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 7,
+  "WallTime": "00:00:04.1007266",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 1,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "test-ci-platform-contracts-powershell-001"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

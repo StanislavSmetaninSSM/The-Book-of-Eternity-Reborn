@@ -1,0 +1,13 @@
+{
+  "Commit": "7829279496584f65ea51dd9e8037e57f143064cf",
+  "Tree": "9daee298ca938298f954bdc65dbf0cee41b2f9fa",
+  "Parent": "1a3d936d8e8be1ad14eb342e489c96c247bb4247",
+  "RestoredDirectory": "/workspace/t042-review-github-78292794",
+  "Transport": "fresh clone from GitHub HTTPS only; no local source/object/cache reuse",
+  "Clean": true,
+  "TrackedFilesByteCompared": 13128,
+  "Comparison": "each restored and writer checkout file byte-identical to independent GitHub-fetched blob",
+  "ConnectivityFsck": true,
+  "RemoteAfterRestoration": "7829279496584f65ea51dd9e8037e57f143064cf",
+  "TestsExecutedForRestoration": 0
+}

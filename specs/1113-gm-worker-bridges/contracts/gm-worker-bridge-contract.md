@@ -107,8 +107,48 @@ marker files exist. After both channels connect, parent-side client PID
 authentication authenticates both connected pipe clients as the exact
 hidden-host PID. The parent only after authentication sends a typed `Launch`
 frame containing the executable, arguments, working directory, and environment.
+
+Environment names are case-sensitive on Linux and case-insensitive on Windows,
+matching the local ProcessStartInfo environment through capture, Launch JSON and
+host reconstruction. HTTP_PROXY and http_proxy keep distinct values on Linux.
+No environment names are filtered or normalized; the existing caller-selected
+inheritance policy is unchanged. For example, synthetic BOE_CASE=upper and
+boe_case=lower remain two Linux entries with their exact spelling and values;
+Windows retains one case-insensitive entry with the caller's latest assignment.
+Null/empty values are preserved through transport; actual process interpretation
+remains the platform's behavior. Exact duplicate JSON names are still rejected.
+Native Ready/owner-close evidence stops before Release; pure reconstruction
+checks do not qualify successful worker execution or its process-tree/workspace.
 The hidden host retains both channels; the configured worker receives neither
 channel nor any pipe handle.
+
+Host framing uses strict UTF-8 and LF delimiters. Launch is limited to 1 MiB;
+status and Release are limited to 64 KiB of encoded bytes, excluding LF (an
+optional preceding CR counts toward the limit). Invalid UTF-8, oversized frames
+and unterminated EOF are rejected without truncation. One absolute 15-second
+readiness deadline covers connection, authentication, Launch write and Ready read;
+Release retains its 60-second ownership deadline. Slow bytes do not renew a frame
+deadline. Completion/output-drain may wait under the owner's lifetime token, but
+once a frame starts it must finish within 15 seconds. Underlying I/O cancellation
+is awaited. Diagnostics never include payload, environment or parser excerpts.
+Windows uses GetNamedPipeClientProcessId; Linux uses SO_PEERCRED for the expected
+host PID and the owner’s effective UID on both channels. Both identities must pass
+before any Launch byte. Native identity errors, malformed credential length,
+foreign peers, cancellation and owner loss fail closed; failed admission closes
+both channels and cannot be retried into Release. Unsupported platforms fail closed.
+This IPC admission contract does not enable Linux worker execution;
+Linux process-tree and detached-workspace gates remain closed. Main GM/PTY and
+live gameplay qualification are separate. Ready then owner close without Release
+must exit the hidden host with code 125 and never start the configured worker.
+
+The bounded detached-workspace component stages exact pinned bytes and performs
+bounded artifact reads without launching any process. Fresh trusted-local
+path, kind and link checks precede creation and opening; Linux cleanup preflights
+the whole owned tree and preserves unexpected evidence for retry. Linux ordinary
+hardlinks may be read and unlinked only; staging never overwrites an existing
+name or changes an outside alias. Windows retains its single-link handle checks;
+native Windows qualification remains separate. This byte component does not
+qualify quarantine receipt publication, process ownership, confirmed stop or PTY.
 
 Unknown, duplicate, or missing frame fields are rejected. The host emits typed
 `Ready` after accepting the launch payload while the configured worker remains
@@ -116,8 +156,8 @@ stopped. The parent sends typed `Release`, and only then may the host start the
 configured worker. Typed `Completed` requires a non-null exit code and is
 published immediately after the direct worker exits, before output pipes are
 drained. Typed `OutputDrained` follows bounded output capture and is awaited
-before ordinary host teardown; this explicit `OutputDrained` acknowledgement is
-diagnostic and cannot replace the authoritative completion. These are complete
+before Windows host teardown; this explicit `OutputDrained` acknowledgement is
+diagnostic and cannot replace authoritative scoped stop and owned-output settlement. These are complete
 typed frames bound to the per-launch nonce.
 
 A proposal becomes applyable only after confirmed zero exit and confirmed process-tree termination.
@@ -126,9 +166,9 @@ code, incomplete process-tree cleanup, or uncertain host cleanup is
 diagnostic-only: any bytes written by that execution must not be imported as a
 worker proposal or passed to the apply gate.
 
-Windows Job Object is the supported complete descendant boundary. Platforms
-without an equivalent queryable kernel containment boundary fail closed before
-worker release. Timeout and cancellation remain authoritative; cleanup
+Windows Job Object is the supported complete descendant boundary. Ordinary
+Linux profiles still fail closed before worker release; the isolated synthetic
+native capability below has its separately declared lineage scope. Timeout and cancellation remain authoritative; cleanup
 uncertainty quarantines the worker slot rather than changing the result or
 releasing uncertain capacity. Complete-tree termination and unattached-host
 cleanup is bounded. One fixed-capacity reaper entry retains the complete
@@ -182,13 +222,13 @@ The apply gate has no replaceable lock inside `game_session`; the external lease
 is its sole exclusion authority. Built-in backup, restore, game-state clear, and
 current-world lore clear use the same lease. Save and load operations use the
 same canonical write lease so a save is one coherent snapshot and load cannot
-replace live state during apply. Load uses an external durable journal under
+replace live state during apply. Original Load uses an external durable journal under
 `.boe_runtime/load-transactions`: startup restores an interrupted swap before
 creating session directories, and failed rollback preserves the backup and
 journal for a later recovery attempt. State refresh and client-owned mirror
 repair are one lease-scoped read/modify/write. Every canonical writer must
 recover an interrupted load transaction immediately after acquiring the canonical write lease
-or fail closed before it touches live state. Worker apply uses an external
+or fail closed before it touches live state. Original worker apply uses an external
 durable journal under `.boe_runtime/worker-apply-transactions`; intent,
 before-images, and expected applied hashes are durable before the first canonical
 write. Every canonical writer recovers an interrupted worker apply transaction
@@ -197,6 +237,19 @@ canonical bytes remain authoritative: committed journal cleanup cannot roll back
 accepted bytes and may be retried.
 Detached workspace deletion never follows reparse points; a cleanup failure is an audit diagnostic
 and cannot replace the worker result.
+
+Ordinary Load uses B1 under lifecycle then replacement leases with its complete namespace decision; the load-transactions namespace above is original recovery evidence only.
+
+Ordinary worker apply (#1553) uses the existing `.boe_runtime/trusted-local-publication-v1`
+B1 journal with a v2 self-contained frame and one deferred worker decision. The complete
+member set is pending while the same canonical lease holds validation and ownership
+checks; only that exact lease/transaction can commit or roll back. Nested publication,
+recovery and empty-parent cleanup are refused during that decision. Recovery preflights
+the whole set and preserves unknown bytes/evidence; rollback is confirmed only against
+all exact before-images and generation. A late cleanup failure cannot revoke commitment.
+Original `.boe_runtime/worker-apply-transactions` evidence is retained for its original
+supported handler or blocks mutation; it is never reinterpreted as a B1 journal. This
+storage change adds no GM-authored command, field or gameplay mechanic.
 
 ## Worker Profile Contract
 
@@ -827,3 +880,34 @@ Every worker task must produce durable audit events for dispatch and terminal re
   }
 }
 ```
+
+
+Client-owned synthetic Linux pool qualification (#1553): ordinary public Linux
+WorkerRelease remains closed; only explicit internal admission bound to an isolated
+fixture root reaches the native pool. No profile, environment or command-line switch
+enables it. The declared native guarantee is ordinary same-namespace lineage; external
+services and work outside the tracked lineage are excluded. The existing systemd user
+manager remains the primary design, but has no positive native qualification here.
+
+The actual native pool stops the original lineage after correlated Completed, before
+waiting for owned stdout/stderr to settle. Windows retains its diagnostic drain grace
+before original Job stop. Neither OutputDrained, root/helper exit nor pidfd readiness
+proves scoped cleanup. Success requires matching original run/backend/scope stop evidence,
+settled owned outputs, exit0, current cancellation/timeout outcome, exact reserved task
+bytes and successful generation/lease-bound proposal publication. Both dispatch consumers
+require the original execution publication permit; public result copies cannot substitute
+a task/proposal body or turn failed cleanup into success. Existing apply/generation gates
+still govern any later canonical change.
+
+Native Uncertain is permanent for that execution: late observation completion or independent
+guardian cleanup cannot authorize acceptance, delete retained workspace, publish a
+cleanup-confirmed receipt or release its slot/reservation. Known lost helper authority
+is rechecked on the original Ready identity immediately before native Release. This is
+not an atomic promise against failure immediately after that check. After already validated
+stop and output settlement, disposal/filesystem/audit/receipt failures retain the same
+cleanup phase state for retry. A successfully published proposal is not revoked by a
+later cleanup-only failure; CleanupDeferred keeps the slot held. Required audit I/O errors
+retain capacity; absent audit sink or replaced generation uses the existing exact create-only
+fallback receipt. Lost receipt acknowledgement is retried without rewriting bytes; conflicting
+receipt bytes retain the original runtime authority and capacity. No durable reconstruction,
+main PTY, real GM/provider or new GM-authored payload/schema is introduced by this slice.

@@ -452,6 +452,11 @@ public sealed class StateManagerTests
                 PhysicalLoadTransactionOperations.Instance,
                 new FileSystemManagerHooks
                 {
+                    MainOwnerLockContendedAsync = () =>
+                    {
+                        writerContended.TrySetResult();
+                        return Task.CompletedTask;
+                    },
                     CanonicalWriteLockContendedAsync = () =>
                     {
                         writerContended.TrySetResult();

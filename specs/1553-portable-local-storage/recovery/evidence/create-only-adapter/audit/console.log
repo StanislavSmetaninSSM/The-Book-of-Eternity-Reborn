@@ -1,0 +1,15 @@
+CATALOG-VALID categories=175 methods/files=10462; no tests executed.
+
+Category result
+  Categories: 
+  Filter: <none>
+  Timeout: 10 minute(s)
+  Wall time: 00:00:07.2951308
+  Exit code: 0
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=0, cases=0; completed descriptors=0, cases=0, complete=False
+  Tests: total=0, executed=0, passed=0, failed=0
+  Duplicate test IDs: 0
+  Results: REPO_ROOT/TestResults/test-categories/20261002-042853-993-5-4339bac4d0d94c47bf4d258dfaec0c91-categories
+  Log: REPO_ROOT/TestResults/test-categories/20261002-042853-993-5-4339bac4d0d94c47bf4d258dfaec0c91-categories/dotnet-test.log

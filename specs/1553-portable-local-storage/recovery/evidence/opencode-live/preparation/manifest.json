@@ -1,0 +1,52 @@
+{
+  "Source": "54bd84af30b5d82a7f88308da0493f235e7911f6",
+  "TestedRuntimeSource": "2e9f66e05f99980ba4fa4012fdb30878f7a7f4a1",
+  "GuardianSource": "6dffd5e9944323ec59327c108e38d46290bb2399",
+  "ProviderRequests": 0,
+  "GameTurns": 0,
+  "PackageFiles": 678,
+  "PackageBytes": 99035258,
+  "DriverPin": {
+    "Path": "tests/fixtures/ProductionMain/live-game-one-turn.py",
+    "Bytes": 18248,
+    "SHA256": "a1f66b79c5a612ab297653b72ef843e996cb87634241edc6c683f922802b3ce0"
+  },
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/preparation/package-manifest.json.gz",
+      "Bytes": 143613,
+      "SHA256": "1a56af5a8852b711c8d58d54d1b57dc1f3fa2710bbba35fac5a305f60664b729",
+      "StoredSHA256": "270ba0d11f22fec86f15a9e7302eefa030f26ce2afd5365b0a9a32c3765e2ad5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/preparation/helper-build.log.gz",
+      "Bytes": 44,
+      "SHA256": "112c35add815a5c6f4e177f9b2235e66f09b79cd5f4a50a43454b56c5395be3f",
+      "StoredSHA256": "21c86c285ac6acdc4a267f39862ad1720808a283c82bec4f1011a0ee221c58f7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/preparation/publish-client.log.gz",
+      "Bytes": 90,
+      "SHA256": "dd377df00cb3b1536e2201d1cc3f935d4cf540381ad02b3ee1ac2e7b76d05953",
+      "StoredSHA256": "9bf9beb757f56463de76f775f0534175c29f2125181a566507c164c09c904999"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/preparation/publish-bridge.log.gz",
+      "Bytes": 94,
+      "SHA256": "5a4c2efe8759f1f7929ae0b4359998d91933e8bbb9f835c4c677cd7bf74a295a",
+      "StoredSHA256": "95010182c095d27ab851a7ade5a21b02d3b5de85b276af4c8d482da32e13487b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/preparation/native-build-provenance.json.gz",
+      "Bytes": 1153,
+      "SHA256": "4df74fc8d02634ae894f4c3825d0e47cc9595946e17cb0f083f9fcc774c0d07b",
+      "StoredSHA256": "1f25114f59c89368cac802a5c31876bcaabf7e70c38e290f266ad05554aa4af9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/preparation/native-package-manifest.json.gz",
+      "Bytes": 968,
+      "SHA256": "843c3782e3f0279b6f47af153e87389f850c6d5673901a4aff46654dd99d4580",
+      "StoredSHA256": "8883859f0c86f74932b6036a8d84f733009199fdc0098febc7a2b87a3b1b1a15"
+    }
+  ]
+}

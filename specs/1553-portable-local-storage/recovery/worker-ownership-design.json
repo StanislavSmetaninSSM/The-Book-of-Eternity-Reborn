@@ -1,0 +1,165 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-OWNERSHIP-DESIGN",
+  "Date": "2026-10-05",
+  "SourceIssue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
+  "SourceBase": "31de2e33a6f44001fee9c0c3b6c4e61c8d3aab0e",
+  "Kind": "Analysis/design only; no runtime implementation or native tree qualification",
+  "Design": "specs/1553-portable-local-storage/linux-ownership-design.md",
+  "EvidenceManifest": "specs/1553-portable-local-storage/recovery/evidence/worker-ownership-design/manifest.json",
+  "UserInputRequiredForCompletedWork": false,
+  "ProductionReleaseEnabled": false,
+  "PriorCohortsRepeated": false,
+  "ApplicationOrTestCodeChanged": false,
+  "Checks": [
+    {
+      "Status": "PASS",
+      "Name": "Spec Kit prerequisites",
+      "Command": "SPECIFY_FEATURE=1553-portable-local-storage pwsh -NoProfile -File .specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks",
+      "Log": "prerequisites.log.gz",
+      "ExitCode": 0
+    },
+    {
+      "Status": "PASS",
+      "Name": "Normal subreaper/pidfd/one owned child capability",
+      "Result": "probe-result.json",
+      "BuildExitCode": 0,
+      "ExitCode": 0,
+      "ExpectedErrnos": {
+        "StalePidfd": 3,
+        "NoChildren": 10
+      },
+      "NotProved": [
+        "PID reuse forcing",
+        "full tree stop",
+        "namespace containment",
+        "host integration"
+      ]
+    },
+    {
+      "Status": "PASS",
+      "Name": "Normal combined user/PID namespace creation capability",
+      "Result": "namespace-probe-result.json",
+      "BuildExitCode": 0,
+      "ExitCode": 0,
+      "Children": 0,
+      "MappingsWritten": 0,
+      "NotProved": [
+        "native PID1 child",
+        "mapping",
+        "clone plus pidfd",
+        "namespace terminal stop",
+        "CLI compatibility"
+      ]
+    },
+    {
+      "Status": "BLOCKED",
+      "Name": "Normal UID/GID mapping route for faithful namespace bootstrap",
+      "Evidence": "environment.json",
+      "Observed": "/proc/self/uid_map and gid_map reside on proc ro,nosuid,nodev,noexec,relatime",
+      "WriteAttempted": false,
+      "Errno": null,
+      "Action": "No remount or alternate proc route; parent assessment before implementation"
+    },
+    {
+      "Status": "BLOCKED",
+      "Name": "Delegated writable per-run cgroup backend",
+      "Evidence": "environment.json",
+      "Observed": "cgroup2 is read-only; no authorized writable delegation",
+      "OperationAttempted": false
+    },
+    {
+      "Status": "NOT_RUN",
+      "Name": "Full descendant stop/host wiring/Release/PTY/real GM/native Windows/durable restart proof",
+      "Reason": "analysis-only scope and unqualified prerequisites"
+    }
+  ],
+  "Review": {
+    "ReviewedCommit": "39df05024cecefe7266f41cec1b772895155e576",
+    "ReviewerAgent": "/root/ownership_design_review",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Verdict": "PASS for bounded design and evidence only",
+    "ActionableFindings": [],
+    "ReviewedDesignCorrection": "Subreaper-only ECHILD rejected due namespace-level reparenting; prefer fresh per-run PID namespace with terminal init reap as candidate proof",
+    "ConfirmedClarification": "Current Attach cannot transplant existing neutral host into PID namespace; Linux monitor/fresh init/managed host must be created before Ready; Windows Attach preserved",
+    "Verified": [
+      "remote ref",
+      "clean fresh GitHub-only restore, tree and fsck",
+      "16 changed file bytes",
+      "11 unchanged input hashes",
+      "10 packet artifact hashes",
+      "probe log/result rows and source hashes",
+      "source lifecycle seams and requirements consistency",
+      "scope and no prior C# cohort repeats"
+    ],
+    "RuntimeExecutionByReviewer": false,
+    "OpenGates": [
+      "mapped UID/GID and proc compatibility",
+      "native bootstrap and identity protocol",
+      "actual complete-tree stop qualification",
+      "cold restart authenticated durable proof",
+      "external broker ownership",
+      "production Release/PTy/real GM/native Windows"
+    ],
+    "ObservedUtc": "2026-10-05T12:18:12.684530+00:00"
+  },
+  "VerificationInputs": {
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs": {
+      "Sha256": "812c10afbef30f0117126e209dcb5b2926995a9afdec2d8d329b53a59eb0fa74",
+      "GitBlob": "4c99db4f3b8770a660018135f9edade0747567a1",
+      "UnchangedFromBase": true
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs": {
+      "Sha256": "3a1dac5619ee4c6bc1e0292a82476a2c6fe6bdb2b6c0c7e9868fefd2773e9d7f",
+      "GitBlob": "473abc4659edacfbedca584317077da1891bd7cd",
+      "UnchangedFromBase": true
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs": {
+      "Sha256": "3da5134089e1b3748a0525805c0e716f807dd64a78b2a9ff391b5187a3074cea",
+      "GitBlob": "44ad2eec1427ff7256142804741ce3fdb8f4e658",
+      "UnchangedFromBase": true
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs": {
+      "Sha256": "6817c1b4c76374fbfbd5d483394e059ed884e9297f6a6b51333fbea8635313c2",
+      "GitBlob": "ed9e24d1afd8c3e53d74e11260d862fd72b4874a",
+      "UnchangedFromBase": true
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs": {
+      "Sha256": "c1f32c968ca6f8ff8e9b0358a8721f813a8a54688e48dc87e6080480dec60507",
+      "GitBlob": "8919337e8bbe25fb7d6af799bfd10d8c2a9da78c",
+      "UnchangedFromBase": true
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs": {
+      "Sha256": "24024e137e3d262cd5d5be2857923e74580c28c173f81f14e3d82c196fcdfdfa",
+      "GitBlob": "42e2446919116adc1a562684dd9ff678e473c99a",
+      "UnchangedFromBase": true
+    },
+    "tests/categories.json": {
+      "Sha256": "61d61585ac417df2faaa0179237f21164858f54af59fc5ae2d3e8e25bc2780e2",
+      "GitBlob": "601d3a19dde083fb9f470439ea19dab3e0a3db6b",
+      "UnchangedFromBase": true
+    },
+    "tests/selection.json": {
+      "Sha256": "f301e6065db1466882238432d82d87571597826c37ae5eba71cf9ed8b16c58aa",
+      "GitBlob": "31cda12900a9c38079cada8c0d2043d1a3ff9fd1",
+      "UnchangedFromBase": true
+    },
+    "docs/development-workflow.md": {
+      "Sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "GitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "UnchangedFromBase": true
+    },
+    "docs/testing.md": {
+      "Sha256": "20ea808053428488ac21e5b1fee9f05b3e981e503dc8f610f0b25f91d44b84a1",
+      "GitBlob": "eb036aa06c716d19467bc6aadaff5fbd535c4a3a",
+      "UnchangedFromBase": true
+    },
+    "AGENTS.md": {
+      "Sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "GitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "UnchangedFromBase": true
+    }
+  },
+  "ReviewAndRestoreManifest": "specs/1553-portable-local-storage/recovery/evidence/worker-ownership-design-review/manifest.json"
+}

@@ -1,0 +1,136 @@
+{
+  "Categories": [
+    "daren-standalone-linux",
+    "daren-standalone-linux-boundaries",
+    "daren-standalone-browser-dispatch"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b1dc3e46cd618b90f2b496640aa753245bdfb0a7",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.3863212,
+  "Descriptors": [
+    {
+      "Name": "daren-standalone-browser-dispatch-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "daren-standalone-browser-dispatch",
+      "Categories": [
+        "daren-standalone-browser-dispatch"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "daren-standalone-linux-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "daren-standalone-linux",
+      "Categories": [
+        "daren-standalone-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExistingProfileRead_NormalizesThroughRealStore|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxTests.PublicConsoleQte_CompletesOriginalStandaloneRouteWithoutBootstrap|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxTests.SupportedCheckAbsentRestoreAndPreCancel_HaveNoPreparationEffects",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExistingProfileRead_NormalizesThroughRealStore",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.PublicConsoleQte_CompletesOriginalStandaloneRouteWithoutBootstrap",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.SupportedCheckAbsentRestoreAndPreCancel_HaveNoPreparationEffects",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "daren-standalone-linux-boundaries-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "daren-standalone-linux-boundaries",
+      "Categories": [
+        "daren-standalone-linux-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualOriginalMainFence_RefusesColdOrHeldLeaseBeforeProfilePreparation|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualOriginalPreparedWorker_RefusesStandaloneCompletion|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualStoreUnsupportedOriginalAuthority_RefusesBeforePreparation|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualUndeclaredBrowserProfile_RefusesWithoutStandaloneEscape|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.HeldRealProfileWrite_SerializesActualSessionReplacement|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalBoundGenerationRevokedBeforeWrite_RefusesBeforeIntent|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalCancellationAtProfileBoundary_DoesNotPublish|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalTaskPurpose_CannotWriteStandaloneProfile|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.PublicConsoleTerminalWriteFailure_DoesNotReportCompletionOrAward|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.RealCompletionCommittedDebt_FreshOriginalRecoveryKeepsReward",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 30,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualOriginalMainFence_RefusesColdOrHeldLeaseBeforeProfilePreparation",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualOriginalPreparedWorker_RefusesStandaloneCompletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence",
+          "Cases": 12
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualStoreUnsupportedOriginalAuthority_RefusesBeforePreparation",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualUndeclaredBrowserProfile_RefusesWithoutStandaloneEscape",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.HeldRealProfileWrite_SerializesActualSessionReplacement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalBoundGenerationRevokedBeforeWrite_RefusesBeforeIntent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalCancellationAtProfileBoundary_DoesNotPublish",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalTaskPurpose_CannotWriteStandaloneProfile",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.PublicConsoleTerminalWriteFailure_DoesNotReportCompletionOrAward",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.RealCompletionCommittedDebt_FreshOriginalRecoveryKeepsReward",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

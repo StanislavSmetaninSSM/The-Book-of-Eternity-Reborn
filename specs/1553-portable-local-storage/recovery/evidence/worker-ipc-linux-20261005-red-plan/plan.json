@@ -1,0 +1,98 @@
+{
+  "Categories": [
+    "worker-host-ipc-admission"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a1ac8c215c21caf2f579c78b01d530cedb574332",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 150.9466853,
+  "Descriptors": [
+    {
+      "Name": "worker-host-ipc-admission-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "worker-host-ipc-admission",
+      "Categories": [
+        "worker-host-ipc-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 15,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-host-ipc-admission-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-host-ipc-admission",
+      "Categories": [
+        "worker-host-ipc-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

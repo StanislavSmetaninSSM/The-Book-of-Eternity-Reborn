@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "worker-restart-publication-races-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4e8e4f18d5e35146a76d95906dc4f465854d8f77",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 44.1718614,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-publication-races-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-publication-races-linux",
+      "Categories": [
+        "worker-restart-publication-races-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationRace_PreservesUnresolvedWorkspaceAndAuthority",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationRace_PreservesUnresolvedWorkspaceAndAuthority",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

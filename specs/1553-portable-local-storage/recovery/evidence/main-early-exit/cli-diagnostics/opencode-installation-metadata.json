@@ -1,0 +1,30 @@
+{
+  "Which": null,
+  "MetadataOnly": true,
+  "Candidates": [
+    {
+      "Path": "/home/agent/.opencode/bin/opencode",
+      "Exists": false
+    },
+    {
+      "Path": "/home/agent/.local/bin/opencode",
+      "Exists": false
+    },
+    {
+      "Path": "/opt/node/lib/node_modules/opencode-ai/bin/opencode",
+      "Exists": false
+    },
+    {
+      "Path": "/usr/local/lib/node_modules/opencode-ai/bin/opencode",
+      "Exists": false
+    },
+    {
+      "Path": "/usr/lib/node_modules/opencode-ai/bin/opencode",
+      "Exists": false
+    },
+    {
+      "Path": "/workspace/node_modules/opencode-ai/bin/opencode",
+      "Exists": false
+    }
+  ]
+}

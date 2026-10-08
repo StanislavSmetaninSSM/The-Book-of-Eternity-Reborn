@@ -1,0 +1,74 @@
+{
+  "Categories": [
+    "worker-quarantine-audit-receipt"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "d74aca1678c05d48f10e828407e2e33d6ec1d852",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0905141,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.021903,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0190811,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 120.1296297,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 21.0527315,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0091469,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:02:35.1645407",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 41,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "worker-quarantine-audit-receipt-integration-001",
+      "worker-quarantine-audit-receipt-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

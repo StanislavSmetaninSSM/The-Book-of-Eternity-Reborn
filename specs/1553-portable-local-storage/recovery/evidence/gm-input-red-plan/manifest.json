@@ -1,0 +1,54 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "red-plan",
+  "Artifacts": [
+    {
+      "Path": "Build-unit.log",
+      "StoredPath": "Build-unit.log.gz",
+      "StoredBytes": 882,
+      "StoredSha256": "9a315b969d38cb5a03f61ce64148e95fa3b74794a421336ed6b2c734a4b50af6",
+      "OriginalBytes": 9914,
+      "OriginalSha256": "73bc1b6fa89c3c55555b37971213d6d4d893fafb4ee41cf17ab21e918e8554df"
+    },
+    {
+      "Path": "command-result.json",
+      "StoredPath": "command-result.json",
+      "StoredBytes": 432,
+      "StoredSha256": "af94eec11f2175b1157e2a604d6de17454f4372e96041084191b14591615f928",
+      "OriginalBytes": 432,
+      "OriginalSha256": "af94eec11f2175b1157e2a604d6de17454f4372e96041084191b14591615f928"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 163928,
+      "StoredSha256": "67e25f15aa873c058b7c7278d3408aad29fe2847e3bea3d171c5c74032116f6b",
+      "OriginalBytes": 1495986,
+      "OriginalSha256": "d0af95819a364f7aafedf157edd5b5ce397d55df579abeef6b0b8d9db7816368"
+    },
+    {
+      "Path": "plan.json",
+      "StoredPath": "plan.json",
+      "StoredBytes": 6372,
+      "StoredSha256": "6e00278287769e6a130eae501814250a82f80e1860b64c7a3c9c858e216d849b",
+      "OriginalBytes": 6372,
+      "OriginalSha256": "6e00278287769e6a130eae501814250a82f80e1860b64c7a3c9c858e216d849b"
+    },
+    {
+      "Path": "runner.log",
+      "StoredPath": "runner.log.gz",
+      "StoredBytes": 1228,
+      "StoredSha256": "35d07e6ac10441a373d13e4e87a3f20a562645f32cf23dce4ac60960f9675e77",
+      "OriginalBytes": 5820,
+      "OriginalSha256": "7916c8d3e7cdbf34dff0997d971a24eb93ed797092fc258690154c3af20d5985"
+    },
+    {
+      "Path": "summary.json",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1458,
+      "StoredSha256": "c038cebf341fe3fc97269c449f5113980b03804de78413ada2c8066ebd8d72c1",
+      "OriginalBytes": 1458,
+      "OriginalSha256": "c038cebf341fe3fc97269c449f5113980b03804de78413ada2c8066ebd8d72c1"
+    }
+  ]
+}

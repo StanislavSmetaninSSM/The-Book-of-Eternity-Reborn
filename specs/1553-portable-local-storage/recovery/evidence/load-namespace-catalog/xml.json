@@ -1,0 +1,35 @@
+{
+  "source": "5a222cfaeccaa3afe493780b9eb6f6f5d7de5c80",
+  "xml": [
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.xml",
+      "validXml": true,
+      "members": 2415
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+      "validXml": true,
+      "members": 18
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.xml",
+      "validXml": true,
+      "members": 691
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.xml",
+      "validXml": true,
+      "members": 972
+    }
+  ],
+  "referenceWarningsInTouchedFiles": 0,
+  "preExistingCs1587Files": [
+    "Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+    "UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs",
+    "UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs"
+  ],
+  "buildEvidence": [
+    "20261004-042831-466-32624-400e6522d1604d57b738a85c16ce3002-categories/Build-integration.log",
+    "20261004-043648-724-39292-22b0a0c3e5524e0ca13dd0b8e4e72af9-categories/Build-unit.log"
+  ]
+}

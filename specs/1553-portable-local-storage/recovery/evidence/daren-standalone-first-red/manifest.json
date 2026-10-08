@@ -1,0 +1,289 @@
+{
+  "Task": "T031-DAREN-STANDALONE-LINUX",
+  "SourceCommit": "00ce5557b743cb8779923c93ea120b006fa25d00",
+  "SourceWasCleanBeforeCapture": true,
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category daren-standalone-linux",
+  "Inputs": [
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Bytes": 1712,
+      "Sha256": "9788117b2081320c7df37fa79114ccc876b2e4e16cca45d933197c99a663bba8",
+      "GitBlob": "913fb07886ccbd776a2b0011740f24dc334eef0e"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxBoundaryTests.External.cs",
+      "Bytes": 3798,
+      "Sha256": "facc58bb177cbfd924f03cc1c9bb0a3ec2800a78abbb4cc00cbe153f028e0e96",
+      "GitBlob": "c6cc67a466c220072f19d7a4f43abe63a063a069"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxBoundaryTests.cs",
+      "Bytes": 9700,
+      "Sha256": "4540aae8567ecd3b9124e0838d0a111674c5df495f225e80aa54c455fb5cb03a",
+      "GitBlob": "4001978d4c1d925f9f8ba714ef19ac943021cb77"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxFixture.cs",
+      "Bytes": 2777,
+      "Sha256": "5427bd7b18d5137828ff5c2a15d4cfe447b74447803e120f68bab5161da80026",
+      "GitBlob": "8eea713fcdb5c366c7f534b6dbc17d312373af4f"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxTests.cs",
+      "Bytes": 2671,
+      "Sha256": "0634da994a648114a9367917a5c723dc22114ea279fa7abc1ea750e0be66a3d9",
+      "GitBlob": "cbb8061ee256678b1e585ce32bedd6b01bb9d479"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Bytes": 5737,
+      "Sha256": "d94bd0c3606a710e58166e7085bff7d0cc5bc00be6402201690ea5ace4aec8ec",
+      "GitBlob": "d4e6e0b02c8d9c874588d5a240639291ed47bf28"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
+      "Bytes": 7641,
+      "Sha256": "d5c87b378313f1c18b724c89696f01a878afd683d4cafd93ac0d0d17eada757e",
+      "GitBlob": "bedd15cf51e6f4b0b0991348e1b28bb34ab3a66c"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+      "Bytes": 5932,
+      "Sha256": "5eaa52316f4b1f51ed49911b938aa5042785f547d325c0d6a48c5a2a372992b6",
+      "GitBlob": "27a069df6345146959c98781a4edf6aef6971f63"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs",
+      "Bytes": 4805,
+      "Sha256": "031e90c217daf0e3ab72317f0c67371714c2528d1441e6ebcedb0333787932b5",
+      "GitBlob": "b2b13f437706452bdab82ed558ace8d5d3c07df7"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "Bytes": 2823,
+      "Sha256": "06d1e16f65dfdd64ec6b9f75f6c60a1a9c7b079e59e685f3338a041f9a7b638b",
+      "GitBlob": "d25d2cd134219e0c94de0bb8d2b6ff2465014bab"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs",
+      "Bytes": 3886,
+      "Sha256": "ae147b09feb7152aa7a7dfed8b0fc801119f5f7d366524bf1bdccd6825e55a94",
+      "GitBlob": "a8fe1ec081a6fcbf5a05170a8386e9fb7ee5a273"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs",
+      "Bytes": 15169,
+      "Sha256": "228cb24f1ebbce770a328c0ab21b203980d7b7b0039895ec0571bad04d0fa82a",
+      "GitBlob": "64a8cf5fb7b1d4d040fd9678eeb1f5ac6c1ce8a2"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+      "Bytes": 6154,
+      "Sha256": "a3c3125953985a95996c7eb21295f3e9f1daa8156e4b97150860854aa5e85941",
+      "GitBlob": "f55330f7d0b68f17585c8912c90054520e8e5b7c"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "Bytes": 13311,
+      "Sha256": "b72c0c17ae10aa3cd9b1e837722fd8d2e0328df9f087fc8f8d16ae7babd921e1",
+      "GitBlob": "35a207806b33149a18936f3e49499478ebf70899"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReadStreams.cs",
+      "Bytes": 6166,
+      "Sha256": "323d61e2ef12ff77662712d5ce199a2ca0dfe6211544ff8e19cd60e984b93cd1",
+      "GitBlob": "982b17545fa2e83e78627c54ac607a9abd87dbef"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "Bytes": 8847,
+      "Sha256": "4a738f91985c2dd42a9117e22f0d9e0b824495b3594798a9b5579095fb0db6d4",
+      "GitBlob": "34ce9c9a829e3367d78fc174559d6a3859074909"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+      "Bytes": 7681,
+      "Sha256": "6d8312a8ad842467ea378421b4c978beeffa7cef2c98c1b6590a9aca9c594d86",
+      "GitBlob": "cf18449820917bdd6b03e4be4013778a3e950c0d"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.SyntheticBundlePublication.cs",
+      "Bytes": 4882,
+      "Sha256": "f5ee6627f47e9c5503b6cf8bc1c7903c3413debc4496717375f153c74700b142",
+      "GitBlob": "aad6dc977adf6a04486fe7cc751aba545fdf0cbc"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "Bytes": 14704,
+      "Sha256": "82bb06e0eac1ab251fc4e945a7358e86f8e431c6234864fa24319f659ec90767",
+      "GitBlob": "18411f435d2daf67ce8612823e45c3c05ece25dd"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+      "Bytes": 3583,
+      "Sha256": "d372ecf78ecde37d351272d0e0c9b2476bb4a54f494d48762c1579e13885ab8b",
+      "GitBlob": "1acfdd100a4cf566fb55ffadf3ac4014a9fbe8f7"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.WorkerPublication.cs",
+      "Bytes": 3431,
+      "Sha256": "5f5d1c7e810fd1a82a7dd786800506ebeb97435663c114baa5486f6bcab9a9dc",
+      "GitBlob": "37056261a566bc46f963bdb92aef7b98ac29f4f3"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "Bytes": 236035,
+      "Sha256": "5226c6c86ae76b70d7cbd8eed8cdd5cb734986808afdff7e46108271d8643d3f",
+      "GitBlob": "e11392548638ac4335a4e61604d478aa496abdde"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "Bytes": 165863,
+      "Sha256": "dcc3208ff55f5c06d75cc1e3afe336f72c4876e220b167e006a6e007a1dc6437",
+      "GitBlob": "8d26da246f68bc79d0768dc45ac7a6c14c47b517"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "Bytes": 19882,
+      "Sha256": "e3b4a5d8ee83dbce297761c6e1e24b95d438544425b934a67499d8151c0d0dba",
+      "GitBlob": "597bface73e5541b83edb7dd850de343c0da4665"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "Bytes": 7553,
+      "Sha256": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
+      "GitBlob": "418b8da4bdd6c8f3f41f82cd313d600fb234db63"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "Bytes": 30619,
+      "Sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b",
+      "GitBlob": "c8f5458f9e7e00c96e4294bc16a991134c63aedf"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "Bytes": 17671,
+      "Sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2",
+      "GitBlob": "c4c9d46904efd9361c02e690d6d142c799e9d672"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/DarenQteRewardProfileService.cs",
+      "Bytes": 28225,
+      "Sha256": "959c79ff2e05fd492632b7708f9b8331d3771c033f1df8aca1109d475e7282ab",
+      "GitBlob": "76eab6a85e2d0916a2957f0cf3d828ee388a7503"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
+      "Bytes": 9328,
+      "Sha256": "3b2a4d08cb2c30bfe715f1bac50b7441ba59a4ea9a706e1a812d17bf74b23279",
+      "GitBlob": "37d24d92ee862220be6a6dd34263a498f3158307"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalBrowser.cs",
+      "Bytes": 12519,
+      "Sha256": "4626edeb96be79417e03510c3b2a763a9e2c87e2938cf6b7dd8f18827f6ef837",
+      "GitBlob": "602d968b17627604fda47644e42760190b2a4ca5"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalDirectGacha.cs",
+      "Bytes": 4935,
+      "Sha256": "17f9703d63568d8e7eaa85d6f94f25c75b7d11465ca36d4f522be8b035b8ffef",
+      "GitBlob": "9af80b802aba0411cce5e4e8ae09b76a5d58977d"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalRecovery.cs",
+      "Bytes": 12767,
+      "Sha256": "b815317fa8b8adc65ded4da692b151e359603e782cc7f6f2c4c58745ca5d9ffb",
+      "GitBlob": "e06bdf18e77bc30ffe4720c2dc82a19c7684eb8b"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "Bytes": 84347,
+      "Sha256": "a33966fd92aad3ae5dc1d529eb8986694cc7b366eb52534d59a93827e44726bc",
+      "GitBlob": "40b5b902d03aef0c3aab718c83bd4956d5377dff"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/QteSceneService.Daren.cs",
+      "Bytes": 255653,
+      "Sha256": "3a800f8a707fbdd1d670d4d26d6dc7a245fe337dafcad591ae12f5c77f2c48a3",
+      "GitBlob": "e81d4de8128791609a32172b5e3a82b0540bef8c"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "Bytes": 256045,
+      "Sha256": "aedb827fecd686b904f549d4c22008176932896edb8f2c7b73c194476d272d50",
+      "GitBlob": "17ddc4efbeaee534b32cce33bd56bcb2ec3a27e8"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "Bytes": 24731,
+      "Sha256": "675d36a4036e7e31620a2907dde56e70418d139a0cfd5adb4b17b3a5506a1190",
+      "GitBlob": "49b0561c518b37bf665ca8c855206ef2fd4b938c"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "Bytes": 81475,
+      "Sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "GitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    },
+    {
+      "Path": "scripts/testing/TestCategoryCatalog.psm1",
+      "Bytes": 10313,
+      "Sha256": "865b7e528b48bca008524865abe6186d5c61f3e623f73f785ce1f41c3da53112",
+      "GitBlob": "eaee76832cb5fb99ea20598862ed6b4822532bcc"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1131127,
+      "Sha256": "ecb25be5d83e4b78a4c273449a81c9e41ce1900f21cf18c245b6362cec9016d2",
+      "GitBlob": "192070080fc441807c8a0621832788a2dcf8a800"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 403,
+      "Sha256": "2f131c631b5108188e10a464196dfed3f493465c26b6cf1e2fc11421c3ac5fab",
+      "GitBlob": "d4624b0d6b22aa1b14a35deebd7b19b1b920030b"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "20261007-011419-922-602038-a340a5c01d124110bc6e1452f92fad26-categories/Build-integration.log.gz",
+      "Bytes": 1427,
+      "Sha256": "408266067a788311d95489a96f154830b528238b145e1818a35dc228455ea4ff",
+      "DecompressedSha256": "c1f77cea6a95192368def7d39e94d1f5db8ff4758a30700a7a089633873fd940"
+    },
+    {
+      "Path": "20261007-011419-922-602038-a340a5c01d124110bc6e1452f92fad26-categories/daren-standalone-linux-integration-001.trx",
+      "Bytes": 12582,
+      "Sha256": "ffa6a2e51f311bad0d5d61403d407b9469a92a1dcec9bbc5d779db09c804eaae"
+    },
+    {
+      "Path": "20261007-011419-922-602038-a340a5c01d124110bc6e1452f92fad26-categories/dotnet-test.log.gz",
+      "Bytes": 173918,
+      "Sha256": "233a77065083bf91b9736fbb7cc185b9e034666ca89bc0c2d58e3afa9852a6ea",
+      "DecompressedSha256": "8fa966b2ffa52584d28b997e568c85877f9da7e95e3e8bcd9f8a4ebbbe77cf49"
+    },
+    {
+      "Path": "20261007-011419-922-602038-a340a5c01d124110bc6e1452f92fad26-categories/plan.json",
+      "Bytes": 1112,
+      "Sha256": "32406f24ae4feb5a83bc6d9740d992a26eb578bb3bb07de2232cf11d238789bf"
+    },
+    {
+      "Path": "20261007-011419-922-602038-a340a5c01d124110bc6e1452f92fad26-categories/summary.json",
+      "Bytes": 1454,
+      "Sha256": "2c1ca6ef6a71bd1be047b57709ba705af76b104126f950856681401ec7850a96"
+    }
+  ],
+  "FixtureCleanup": [
+    {
+      "Root": "/tmp/boe-daren-standalone-linux-86cb10fe55154f778238e8a7014304f1",
+      "ReportedRemoved": true,
+      "ExistsAtCapture": false
+    },
+    {
+      "Root": "/tmp/boe-daren-standalone-linux-86cb10fe55154f778238e8a7014304f1",
+      "ReportedRemoved": true,
+      "ExistsAtCapture": false
+    }
+  ]
+}

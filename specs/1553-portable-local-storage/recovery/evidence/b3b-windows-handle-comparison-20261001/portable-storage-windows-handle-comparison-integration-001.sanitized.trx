@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="7256c7cd-af17-4656-8fc0-52f8ef0c35bd" name="{USER}@{HOST} 2026-10-01 22:27:26" runUser="{HOST}\{USER}" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T22:27:26.5571112+10:00" queuing="2026-10-01T22:27:26.5571116+10:00" start="2026-10-01T22:27:22.6150855+10:00" finish="2026-10-01T22:27:26.5659381+10:00" />
+  <TestSettings name="default" id="480003c4-6d82-4341-b6c2-288ea1dbc671">
+    <Deployment runDeploymentRoot="{USER}_{HOST}_2026-10-01_22_27_26" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="09c6ac9c-a423-4283-b847-7fdf7a9839ca" testId="8a4c4437-6ccc-57fd-cecc-34cce52d006c" testName="BookOfEternityClient.Tests.FileSystemManagerTests.AcquireSessionLifecycleLease_RejectsOpenedExternalLockHandleAfterPathSwap" computerName="{HOST}" duration="00:00:00.1442952" startTime="2026-10-01T22:27:26.1631156+10:00" endTime="2026-10-01T22:27:26.1631422+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="09c6ac9c-a423-4283-b847-7fdf7a9839ca" />
+    <UnitTestResult executionId="9bc7be94-98de-42be-a848-ff588bfd6b83" testId="3a48ae25-c1d3-6447-898d-93ca46035153" testName="BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile(isLifecycleLease: True)" computerName="{HOST}" duration="00:00:00.0604915" startTime="2026-10-01T22:27:26.4092145+10:00" endTime="2026-10-01T22:27:26.4092148+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9bc7be94-98de-42be-a848-ff588bfd6b83" />
+    <UnitTestResult executionId="dba37034-5dfe-4143-a6ad-3fe9483641a2" testId="f560af46-d5e9-6771-f33e-5021a9e7f803" testName="BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile(isLifecycleLease: False)" computerName="{HOST}" duration="00:00:00.0703476" startTime="2026-10-01T22:27:26.3474743+10:00" endTime="2026-10-01T22:27:26.3474746+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dba37034-5dfe-4143-a6ad-3fe9483641a2" />
+    <UnitTestResult executionId="b7c967b4-0a2b-4120-be51-15e1e2cd1219" testId="7c11a71c-378d-61bb-379c-8e87666a1951" testName="BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsOpenedExternalLockHandleAfterPathSwap" computerName="{HOST}" duration="00:00:00.1111567" startTime="2026-10-01T22:27:26.2740187+10:00" endTime="2026-10-01T22:27:26.2740190+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b7c967b4-0a2b-4120-be51-15e1e2cd1219" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.AcquireSessionLifecycleLease_RejectsOpenedExternalLockHandleAfterPathSwap" storage="{SOURCE_ROOT}\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="8a4c4437-6ccc-57fd-cecc-34cce52d006c">
+      <Execution id="09c6ac9c-a423-4283-b847-7fdf7a9839ca" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="AcquireSessionLifecycleLease_RejectsOpenedExternalLockHandleAfterPathSwap" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsOpenedExternalLockHandleAfterPathSwap" storage="{SOURCE_ROOT}\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="7c11a71c-378d-61bb-379c-8e87666a1951">
+      <Execution id="b7c967b4-0a2b-4120-be51-15e1e2cd1219" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="AcquireCanonicalWriteLease_RejectsOpenedExternalLockHandleAfterPathSwap" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile(isLifecycleLease: True)" storage="{SOURCE_ROOT}\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="3a48ae25-c1d3-6447-898d-93ca46035153">
+      <Execution id="9bc7be94-98de-42be-a848-ff588bfd6b83" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="LeaseAcquisition_RejectsHardLinkedLockFile" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile(isLifecycleLease: False)" storage="{SOURCE_ROOT}\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="f560af46-d5e9-6771-f33e-5021a9e7f803">
+      <Execution id="dba37034-5dfe-4143-a6ad-3fe9483641a2" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="LeaseAcquisition_RejectsHardLinkedLockFile" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="8a4c4437-6ccc-57fd-cecc-34cce52d006c" executionId="09c6ac9c-a423-4283-b847-7fdf7a9839ca" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3a48ae25-c1d3-6447-898d-93ca46035153" executionId="9bc7be94-98de-42be-a848-ff588bfd6b83" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f560af46-d5e9-6771-f33e-5021a9e7f803" executionId="dba37034-5dfe-4143-a6ad-3fe9483641a2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7c11a71c-378d-61bb-379c-8e87666a1951" executionId="b7c967b4-0a2b-4120-be51-15e1e2cd1219" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="4" executed="4" passed="4" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.52]   Discovering: BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:02.70]   Discovered:  BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:02.73]   Starting:    BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:03.18]   Finished:    BookOfEternityClient.IntegrationTests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

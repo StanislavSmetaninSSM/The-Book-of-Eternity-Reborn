@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-backup-consumers",
+      "reason": "Actual StateDistributor backup capture, reverse restoration and accepted cleanup uncertainty; no later compensation or diagnostic reversal.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-qte",
+      "reason": "Actual QTE backup publication and same-lease debt reach its immediate distributor boundary; uncertainty excludes wider baseline compensation and later writes.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-treatment-claims",
+      "reason": "Actual StateDistributor accepted wound input and real held treatment/resource/item claim retention across unresolved backup and same-lease committed debt.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-recovery",
+      "reason": "Actual public backup APIs interrupted in owned processes, normal separate-process lease recovery, exact complete decisions, conflicts, hard links and unchanged synthetic save ZIPs.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-linux-special",
+      "reason": "Required Linux FIFO source/target/backup rejection through public APIs in bounded owned processes; no Windows early return.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-routing",
+      "reason": "Backup source-link revalidation and explicit original recorder/recovery/evidence routes. Linux verifies original blocking; native bodies verify original publication and unchanged recorder bypass.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-linux-case",
+      "reason": "Actual Linux case-distinct backup/target names remain independent.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-existing-consumers",
+      "reason": "Existing actual distributor known-failure compensation, writer contention, accepted cleanup and malformed JSON controls; waits observe task failures as well as reached hooks.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-backup-existing-api",
+      "reason": "Existing actual backup API contention and outside/missing evidence controls.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    },
+    {
+      "category": "portable-directory-backup-prerequisite",
+      "reason": "Known Linux-blocked actual quarantine fixture: preparation advances past tree cleanup but original StateDistributor CreateBackupCore descriptor-bound publication fails before quarantine assertions. Explicit separate reproducer; native qualification is allowed.",
+      "contracts": [
+        "FR-002 through FR-007; backup lifecycle and actual immediate consumers"
+      ]
+    }
+  ]
+}

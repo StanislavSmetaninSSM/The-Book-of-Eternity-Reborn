@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a493c403-796f-479c-a94c-47296a21e733" name="@95e438a3e5cb 2026-10-04 11:09:17" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T11:09:17.5960703-04:00" queuing="2026-10-04T11:09:17.5960704-04:00" start="2026-10-04T11:09:13.8681912-04:00" finish="2026-10-04T11:09:17.8432496-04:00" />
+  <TestSettings name="default" id="70f1fe91-c657-48fe-9f52-1fa37a47bc7b">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-04_11_09_17" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="668968b9-5dc3-401f-9204-f7c72427ad55" testId="ac2ac991-fdd1-2f36-2ef2-d9a8efef0661" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_EmptyReplacementReturnsToMenu" computerName="95e438a3e5cb" duration="00:00:00.0351860" startTime="2026-10-04T11:09:17.7318177-04:00" endTime="2026-10-04T11:09:17.7318179-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="668968b9-5dc3-401f-9204-f7c72427ad55" />
+    <UnitTestResult executionId="a261ba6a-06dc-4a1a-8447-219254f9e8f4" testId="788d4f57-b842-e9f4-a150-b1b456e9f1e1" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState" computerName="95e438a3e5cb" duration="00:00:00.0444746" startTime="2026-10-04T11:09:17.7861121-04:00" endTime="2026-10-04T11:09:17.7861123-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a261ba6a-06dc-4a1a-8447-219254f9e8f4" />
+    <UnitTestResult executionId="de9b905f-409d-4928-b5ad-c9e00c78eb4b" testId="983d39eb-a48d-c240-9d43-01106076ce93" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RebindUsesEstablishedGeneration" computerName="95e438a3e5cb" duration="00:00:00.1094336" startTime="2026-10-04T11:09:17.6968927-04:00" endTime="2026-10-04T11:09:17.6968928-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="de9b905f-409d-4928-b5ad-c9e00c78eb4b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+Expected: ""
+Actual:   "5db9c25175b847708f8bf8b6576f7b65"
+           ↑ (pos 0)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RebindUsesEstablishedGeneration() in [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs:line 67
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="813782b8-3010-4f39-aeac-521382af716e" testId="47da4ae5-8d70-1442-829a-520edd13765a" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata" computerName="95e438a3e5cb" duration="00:00:01.0934981" startTime="2026-10-04T11:09:17.5847427-04:00" endTime="2026-10-04T11:09:17.5847429-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="813782b8-3010-4f39-aeac-521382af716e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type
+Expected: typeof(BookOfEternityClient.Services.LoadReplacementResult)
+Actual:   typeof(bool)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata() in [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 1085
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="39f3a14d-bfce-4042-be1a-4baf2464725e" testId="ab78c107-ea84-a72a-8926-fa29c8007745" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation(activeOwner: False)" computerName="95e438a3e5cb" duration="00:00:00.1202524" startTime="2026-10-04T11:09:16.2616496-04:00" endTime="2026-10-04T11:09:16.2616498-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="39f3a14d-bfce-4042-be1a-4baf2464725e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Collections differ
+                    ↓ (pos 2)
+Expected: [123, 34, 115, 99, 104, ···]
+Actual:   [123, 34, 83, 99, 104, ···]
+                    ↑ (pos 2)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation(Boolean activeOwner) in [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs:line 104
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="96c2801a-d683-49b1-9f8f-6884ba4d3aef" testId="35d2d5e2-6164-616c-bd1d-2c436a158d25" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation(activeOwner: True)" computerName="95e438a3e5cb" duration="00:00:00.5202504" startTime="2026-10-04T11:09:16.1435932-04:00" endTime="2026-10-04T11:09:16.1436068-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="96c2801a-d683-49b1-9f8f-6884ba4d3aef">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Collections differ
+                    ↓ (pos 2)
+Expected: [123, 34, 115, 99, 104, ···]
+Actual:   [123, 34, 83, 99, 104, ···]
+                    ↑ (pos 2)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation(Boolean activeOwner) in [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs:line 104
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="15df7cf7-6f1b-4351-872b-833e370f7138" testId="fc108ea5-f5d0-50a8-cb25-221d2108b587" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation(serviceRefresh: False)" computerName="95e438a3e5cb" duration="00:00:00.1019073" startTime="2026-10-04T11:09:16.3782677-04:00" endTime="2026-10-04T11:09:16.3782679-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="15df7cf7-6f1b-4351-872b-833e370f7138">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.IOException : Injected accepted-turn canonical write failure for 'game_state/control/progression_schedule.json'.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.FileSystemManager.InvokeBeforeCanonicalMutationBoundaryAsync(String relativePath) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 5399
+   at BookOfEternityClient.Core.FileSystemManager.PublishLocalCoreAsync(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, CancellationToken cancellationToken, Action validatePreparedNamespace) in [checkout]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 141
+   at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in [checkout]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 228
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 811
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 800
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 800
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicAsync(String relativePath, String content) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 724
+   at BookOfEternityClient.Services.ProgressionScheduleService.WriteScheduleAsync(ProgressionScheduleState schedule) in [checkout]/BookOfEternityClient/Services/ProgressionScheduleService.cs:line 1434
+   at BookOfEternityClient.Services.ProgressionScheduleService.EnsureInitializedAsync() in [checkout]/BookOfEternityClient/Services/ProgressionScheduleService.cs:line 204
+   at BookOfEternityClient.Core.GameEngine.RefreshRuntimeStateAsync() in [checkout]/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 181
+   at BookOfEternityClient.Core.GameEngine.&lt;RebindRuntimeAfterSessionReplacementAsync&gt;b__259_0() in [checkout]/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 200
+   at BookOfEternityClient.Core.SessionOperationContext.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RunBoundAsync&gt;b__0&gt;d.MoveNext() in [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs:line 37
+--- End of stack trace from previous location ---
+   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs:line 258
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs:line 128
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs:line 190
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs:line 47
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync(FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs:line 32
+   at BookOfEternityClient.Core.GameEngine.RebindRuntimeAfterSessionReplacementAsync() in [checkout]/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 198
+   at BookOfEternityClient.Core.GameEngine.LoadSelectedSaveAndRebindRuntimeAsync(String saveFilePath) in [checkout]/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs:line 3287
+   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokeConsoleLoadResultAsync(GameEngine engine, String path) in [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs:line 138
+   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation(Boolean serviceRefresh) in [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs:line 29
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4420d75c-f5c4-439f-aaad-b0f5ecd35870" testId="1b0df10a-058d-cca2-f26c-657e935a5376" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation(serviceRefresh: True)" computerName="95e438a3e5cb" duration="00:00:00.1102376" startTime="2026-10-04T11:09:16.4894581-04:00" endTime="2026-10-04T11:09:16.4894583-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4420d75c-f5c4-439f-aaad-b0f5ecd35870">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation(Boolean serviceRefresh) in [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs:line 31
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0fc4fbe6-52b9-48ac-b699-a5134a5ab4eb" testId="44640cac-4de8-36fa-b3e9-516e5ccb99ef" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InvalidSourceRetainsOldRuntime" computerName="95e438a3e5cb" duration="00:00:00.0082206" startTime="2026-10-04T11:09:17.7414958-04:00" endTime="2026-10-04T11:09:17.7414960-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0fc4fbe6-52b9-48ac-b699-a5134a5ab4eb">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type
+Expected: typeof(BookOfEternityClient.Services.LoadReplacementResult)
+Actual:   typeof(bool)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InvalidSourceRetainsOldRuntime() in [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs:line 123
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation(activeOwner: True)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="35d2d5e2-6164-616c-bd1d-2c436a158d25">
+      <Execution id="96c2801a-d683-49b1-9f8f-6884ba4d3aef" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InvalidSourceRetainsOldRuntime" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="44640cac-4de8-36fa-b3e9-516e5ccb99ef">
+      <Execution id="0fc4fbe6-52b9-48ac-b699-a5134a5ab4eb" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_InvalidSourceRetainsOldRuntime" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation(serviceRefresh: False)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="fc108ea5-f5d0-50a8-cb25-221d2108b587">
+      <Execution id="15df7cf7-6f1b-4351-872b-833e370f7138" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation(activeOwner: False)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ab78c107-ea84-a72a-8926-fa29c8007745">
+      <Execution id="39f3a14d-bfce-4042-be1a-4baf2464725e" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RebindUsesEstablishedGeneration" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="983d39eb-a48d-c240-9d43-01106076ce93">
+      <Execution id="de9b905f-409d-4928-b5ad-c9e00c78eb4b" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_RebindUsesEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_EmptyReplacementReturnsToMenu" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ac2ac991-fdd1-2f36-2ef2-d9a8efef0661">
+      <Execution id="668968b9-5dc3-401f-9204-f7c72427ad55" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="RebindRuntimeAfterSessionReplacement_EmptyReplacementReturnsToMenu" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="788d4f57-b842-e9f4-a150-b1b456e9f1e1">
+      <Execution id="a261ba6a-06dc-4a1a-8447-219254f9e8f4" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="47da4ae5-8d70-1442-829a-520edd13765a">
+      <Execution id="813782b8-3010-4f39-aeac-521382af716e" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation(serviceRefresh: True)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1b0df10a-058d-cca2-f26c-657e935a5376">
+      <Execution id="4420d75c-f5c4-439f-aaad-b0f5ecd35870" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="ac2ac991-fdd1-2f36-2ef2-d9a8efef0661" executionId="668968b9-5dc3-401f-9204-f7c72427ad55" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="788d4f57-b842-e9f4-a150-b1b456e9f1e1" executionId="a261ba6a-06dc-4a1a-8447-219254f9e8f4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="983d39eb-a48d-c240-9d43-01106076ce93" executionId="de9b905f-409d-4928-b5ad-c9e00c78eb4b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="47da4ae5-8d70-1442-829a-520edd13765a" executionId="813782b8-3010-4f39-aeac-521382af716e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ab78c107-ea84-a72a-8926-fa29c8007745" executionId="39f3a14d-bfce-4042-be1a-4baf2464725e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="35d2d5e2-6164-616c-bd1d-2c436a158d25" executionId="96c2801a-d683-49b1-9f8f-6884ba4d3aef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fc108ea5-f5d0-50a8-cb25-221d2108b587" executionId="15df7cf7-6f1b-4351-872b-833e370f7138" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1b0df10a-058d-cca2-f26c-657e935a5376" executionId="4420d75c-f5c4-439f-aaad-b0f5ecd35870" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="44640cac-4de8-36fa-b3e9-516e5ccb99ef" executionId="0fc4fbe6-52b9-48ac-b699-a5134a5ab4eb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="9" executed="9" passed="2" failed="7" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.29]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.31]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.33]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.90]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:01.90]                           ↓ (pos 2)
+[xUnit.net 00:00:01.90]       Expected: [123, 34, 115, 99, 104, ···]
+[xUnit.net 00:00:01.90]       Actual:   [123, 34, 83, 99, 104, ···]
+[xUnit.net 00:00:01.90]                           ↑ (pos 2)
+[xUnit.net 00:00:01.90]       Stack Trace:
+[xUnit.net 00:00:01.90]         [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs(104,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation(Boolean activeOwner)
+[xUnit.net 00:00:01.90]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.02]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:02.02]                           ↓ (pos 2)
+[xUnit.net 00:00:02.02]       Expected: [123, 34, 115, 99, 104, ···]
+[xUnit.net 00:00:02.02]       Actual:   [123, 34, 83, 99, 104, ···]
+[xUnit.net 00:00:02.02]                           ↑ (pos 2)
+[xUnit.net 00:00:02.02]       Stack Trace:
+[xUnit.net 00:00:02.02]         [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs(104,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation(Boolean activeOwner)
+[xUnit.net 00:00:02.02]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.14]       System.IO.IOException : Injected accepted-turn canonical write failure for 'game_state/control/progression_schedule.json'.
+[xUnit.net 00:00:02.14]       Stack Trace:
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/FileSystemManager.cs(5399,0): at BookOfEternityClient.Core.FileSystemManager.InvokeBeforeCanonicalMutationBoundaryAsync(String relativePath)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(141,0): at BookOfEternityClient.Core.FileSystemManager.PublishLocalCoreAsync(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, CancellationToken cancellationToken, Action validatePreparedNamespace)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(228,0): at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/FileSystemManager.cs(811,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/FileSystemManager.cs(800,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/FileSystemManager.cs(800,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(String relativePath, Byte[] content)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/FileSystemManager.cs(724,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicAsync(String relativePath, String content)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Services/ProgressionScheduleService.cs(1434,0): at BookOfEternityClient.Services.ProgressionScheduleService.WriteScheduleAsync(ProgressionScheduleState schedule)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Services/ProgressionScheduleService.cs(204,0): at BookOfEternityClient.Services.ProgressionScheduleService.EnsureInitializedAsync()
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs(181,0): at BookOfEternityClient.Core.GameEngine.RefreshRuntimeStateAsync()
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs(200,0): at BookOfEternityClient.Core.GameEngine.&lt;RebindRuntimeAfterSessionReplacementAsync&gt;b__259_0()
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs(37,0): at BookOfEternityClient.Core.SessionOperationContext.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RunBoundAsync&gt;b__0&gt;d.MoveNext()
+[xUnit.net 00:00:02.14]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs(258,0): at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs(128,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs(190,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs(47,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs(32,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync(FileSystemManager fileSystem, String expectedGeneration, Func`1 operation)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs(198,0): at BookOfEternityClient.Core.GameEngine.RebindRuntimeAfterSessionReplacementAsync()
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs(3287,0): at BookOfEternityClient.Core.GameEngine.LoadSelectedSaveAndRebindRuntimeAsync(String saveFilePath)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs(138,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokeConsoleLoadResultAsync(GameEngine engine, String path)
+[xUnit.net 00:00:02.14]         [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs(29,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation(Boolean serviceRefresh)
+[xUnit.net 00:00:02.14]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.25]       Assert.False() Failure
+[xUnit.net 00:00:02.25]       Expected: False
+[xUnit.net 00:00:02.25]       Actual:   True
+[xUnit.net 00:00:02.25]       Stack Trace:
+[xUnit.net 00:00:02.25]         [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs(31,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation(Boolean serviceRefresh)
+[xUnit.net 00:00:02.25]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.34]       Assert.IsType() Failure: Value is not the exact type
+[xUnit.net 00:00:03.35]       Expected: typeof(BookOfEternityClient.Services.LoadReplacementResult)
+[xUnit.net 00:00:03.35]       Actual:   typeof(bool)
+[xUnit.net 00:00:03.35]       Stack Trace:
+[xUnit.net 00:00:03.35]         [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs(1085,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata()
+[xUnit.net 00:00:03.35]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.46]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:03.46]       Expected: ""
+[xUnit.net 00:00:03.46]       Actual:   "5db9c25175b847708f8bf8b6576f7b65"
+[xUnit.net 00:00:03.46]                  ↑ (pos 0)
+[xUnit.net 00:00:03.46]       Stack Trace:
+[xUnit.net 00:00:03.46]         [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs(67,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RebindUsesEstablishedGeneration()
+[xUnit.net 00:00:03.46]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.50]       Assert.IsType() Failure: Value is not the exact type
+[xUnit.net 00:00:03.50]       Expected: typeof(BookOfEternityClient.Services.LoadReplacementResult)
+[xUnit.net 00:00:03.50]       Actual:   typeof(bool)
+[xUnit.net 00:00:03.50]       Stack Trace:
+[xUnit.net 00:00:03.50]         [checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs(123,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InvalidSourceRetainsOldRuntime()
+[xUnit.net 00:00:03.50]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.55]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T11:09:16.1416704-04:00">
+        <Text>[xUnit.net 00:00:01.90]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation(activeOwner: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T11:09:16.2618206-04:00">
+        <Text>[xUnit.net 00:00:02.02]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation(activeOwner: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T11:09:16.3781910-04:00">
+        <Text>[xUnit.net 00:00:02.14]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation(serviceRefresh: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T11:09:16.4896317-04:00">
+        <Text>[xUnit.net 00:00:02.25]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation(serviceRefresh: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T11:09:17.6025081-04:00">
+        <Text>[xUnit.net 00:00:03.34]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T11:09:17.6962492-04:00">
+        <Text>[xUnit.net 00:00:03.46]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RebindUsesEstablishedGeneration [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T11:09:17.7416960-04:00">
+        <Text>[xUnit.net 00:00:03.50]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InvalidSourceRetainsOldRuntime [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

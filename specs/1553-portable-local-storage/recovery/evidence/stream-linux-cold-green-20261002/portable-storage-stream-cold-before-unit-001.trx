@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="63e7b76a-fc6c-4fa8-a517-fee8ff058359" name="@owned-linux-executor 2026-10-02 12:35:15" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-02T12:35:15.8148444-04:00" queuing="2026-10-02T12:35:15.8148444-04:00" start="2026-10-02T12:35:07.9309749-04:00" finish="2026-10-02T12:35:21.8100773-04:00" />
+  <TestSettings name="default" id="01cc0169-9334-4510-99df-3ac532e3d215">
+    <Deployment runDeploymentRoot="_owned-linux-executor_2026-10-02_12_35_15" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="b2df921b-37b6-4cd1-b196-4e0347e93981" testId="99cef876-b8d0-9f77-98af-ea6e96ad61fa" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources(recoveryCut: &quot;RollbackStaged&quot;)" computerName="owned-linux-executor" duration="00:00:05.8233736" startTime="2026-10-02T12:35:15.7549638-04:00" endTime="2026-10-02T12:35:15.7549795-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b2df921b-37b6-4cd1-b196-4e0347e93981">
+      <Output>
+        <StdOut>mode=stream-publish; cut=last-member; exit=73; sampledPeakBytes=56082432; {"Phase":"AbruptExit","Cut":"MemberPublished","Index":2,"HeapBytes":805306368}
+
+mode=stream-recover-cut; cut=RollbackStaged; exit=73; sampledPeakBytes=55304192; {"Phase":"AbruptExit","Cut":"RollbackStaged","Index":0,"HeapBytes":805306368}
+
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=55443456; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4cf298af-1694-41c4-bdc8-11d1bc08b080" testId="f8ef58b0-44e6-6014-00c8-58e891b7aa20" testName="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources(recoveryCut: &quot;MemberRestored&quot;)" computerName="owned-linux-executor" duration="00:00:05.9752908" startTime="2026-10-02T12:35:21.7328601-04:00" endTime="2026-10-02T12:35:21.7328602-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4cf298af-1694-41c4-bdc8-11d1bc08b080">
+      <Output>
+        <StdOut>mode=stream-publish; cut=last-member; exit=73; sampledPeakBytes=55726080; {"Phase":"AbruptExit","Cut":"MemberPublished","Index":2,"HeapBytes":805306368}
+
+mode=stream-recover-cut; cut=MemberRestored; exit=73; sampledPeakBytes=55316480; {"Phase":"AbruptExit","Cut":"MemberRestored","Index":0,"HeapBytes":805306368}
+
+mode=stream-recover; cut=unused; exit=0; sampledPeakBytes=55205888; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368}</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources(recoveryCut: &quot;MemberRestored&quot;)" storage="/repo/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f8ef58b0-44e6-6014-00c8-58e891b7aa20">
+      <Execution id="4cf298af-1694-41c4-bdc8-11d1bc08b080" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources(recoveryCut: &quot;RollbackStaged&quot;)" storage="/repo/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="99cef876-b8d0-9f77-98af-ea6e96ad61fa">
+      <Execution id="b2df921b-37b6-4cd1-b196-4e0347e93981" />
+      <TestMethod codeBase="/repo/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests" name="LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="99cef876-b8d0-9f77-98af-ea6e96ad61fa" executionId="b2df921b-37b6-4cd1-b196-4e0347e93981" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f8ef58b0-44e6-6014-00c8-58e891b7aa20" executionId="4cf298af-1694-41c4-bdc8-11d1bc08b080" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.17]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.48]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.50]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:13.37]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

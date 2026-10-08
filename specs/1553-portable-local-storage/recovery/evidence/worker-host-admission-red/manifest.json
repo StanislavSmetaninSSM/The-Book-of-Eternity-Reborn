@@ -1,0 +1,188 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "6728db47b5b98025886b3bbae3b34be2c2bd0c82",
+  "Inputs": [
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Sha256": "b8b6ed123ca2b437713e51e022f9fe943d0d762967e6d7388f040e2ae68f8b9a",
+      "GitBlob": "beeb7e12a25ffb7f3874db41b17b8d6f46836702"
+    },
+    {
+      "Path": "scripts/build-linux-supervisor.ps1",
+      "Sha256": "14a665eb1734e3d4cca3607efc69c1b37ef3a355dd94d93487989d2fd6882485",
+      "GitBlob": "f0bde0ae108612a995ecab179ad655cb3d3747a9"
+    },
+    {
+      "Path": "tests/fixtures/LinuxLineage/lineage-fixture.c",
+      "Sha256": "49861138606b63e591e5768276b291f2f6b2fa2791252001543a4f2b937164ea",
+      "GitBlob": "65dc5adefda6742b1122f9ffbac97f8b44393609"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs",
+      "Sha256": "5d2499a966de61ead072aead6b72a0d32ba1e354c3519653c0ac04adaeee0bca",
+      "GitBlob": "e19014edd1382362120ed836d100878d421134d6"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Sha256": "840503ed7fc753306136e485ed1ce71700b8b4ec031c499593e44b42ff97b60f",
+      "GitBlob": "b7b20b5918c3278fd88b043109363f8cb7aa009a"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Sha256": "09f8447c0d18e67746974d5c5518b8b9b4dd6a44cebba8476524dc0d0ba6ee1f",
+      "GitBlob": "38bc4ce1ec97159bf5878da96e0609c0327de146"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs",
+      "Sha256": "305be9e8bdb3ff1b9e746e1f658a00daa37e89082acb6a0e2dd13efb7c8b94b0",
+      "GitBlob": "2aa8074ce650664693ea2c5bbd3d1bc933c1d5e8"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs",
+      "Sha256": "c02d231ecc979f76c08a2eb8ae1c1300b14728821081f28cae5bf4a81bb312de",
+      "GitBlob": "1b63f80616e77137c71425f0ab0af7f43154bd16"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativePackageTests.cs",
+      "Sha256": "2254d97ddcbdcb32031849e7f612ee6336d73271d19d235740c77b134652dea5",
+      "GitBlob": "01b54ed03506e7ce7a94616fb2636b4eb5543dc0"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Sha256": "009f4dbfe71f80887561227b708af0abb9a153a8de2a75c10af0be1487f6e4c6",
+      "GitBlob": "e6e78f3b5797ed6367763878790309e48041befe"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Sha256": "c84fc6eb14dd0495ca64b6bf7f8aa5e8298dbd4bf3f14ca2ef799f8b9cc386a4",
+      "GitBlob": "60504f3b44d02923bf940df7a979c87a49a4a934"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativeGuardianTests.cs",
+      "Sha256": "c5cb165f3a054b57f05c1be9ac6082187905c37c8c007f859fa583e913577370",
+      "GitBlob": "5c598f0c56d9b34735adbdafc947decf87482a64"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerOwnedLaunch.cs",
+      "Sha256": "f490080021c9c64db9aef5df31a8ff7b35afdd650380f86ca33a32f388405eb8",
+      "GitBlob": "97331c22b35d40a1b7059d38d73301a5b2a428f6"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+      "Sha256": "9e5947339ba6615113de03ab5032805a4157152ba4737b0f31b7f563f5fb0c52",
+      "GitBlob": "84017e11b4880297039bcddea09ba25feb9d1037"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "Sha256": "e179a0dea8ea8fa08fcdf88af0f63368b0b6309b4609cbf86d5e4dc50551b82c",
+      "GitBlob": "65612d29102134a1b9efe599e3d67ddc0d129a60"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+      "Sha256": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+      "GitBlob": "ddbbc890b30c53a35df72256552c195aa57f6b4c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativeHostTests.cs",
+      "Sha256": "15375281677bb6047101fee1b1e1de174ef2932c056dc001f3a47958f7d332f1",
+      "GitBlob": "245522c3f206e4609ae7e934035b93a61889b659"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePackage.cs",
+      "Sha256": "20fcd945a355ab36c09ea1aecc7c3438a2eaa93fe65fe73b4eab1c0d5525a9c4",
+      "GitBlob": "ff2ad06c6c5e57fc55b2fd249f600822bf34a676"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeDescriptors.cs",
+      "Sha256": "59540c43658b8a079ae842eb252196ad3878c3912a3726a4a6b2c1a1f8a62160",
+      "GitBlob": "0d889a1d4cc5f1048c50122feebb85082d119808"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerHostIdentity.cs",
+      "Sha256": "3608c00268e73f5cf67a4ce56e1e0b9f3837886bf989603cf3fcda6648ea205b",
+      "GitBlob": "b5dfc87649a40de2d633ac956d6fe1254d91d948"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs",
+      "Sha256": "43c6b29411d62588b0d682cbbad2a4083c307c1917bbe707fe41bcd36beb4d8b",
+      "GitBlob": "864c2f56140b37dab5c01e6986500c0f23799872"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs",
+      "Sha256": "8bd8b3103b6c09f2dd375480d910ca8515018c291963681901edd7896e0fa58c",
+      "GitBlob": "c38e4115e90dc24a68ea496e7bcbb6fec8ee15db"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "Sha256": "3a1dac5619ee4c6bc1e0292a82476a2c6fe6bdb2b6c0c7e9868fefd2773e9d7f",
+      "GitBlob": "473abc4659edacfbedca584317077da1891bd7cd"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativeAdmissionTests.cs",
+      "Sha256": "22bd95ffbe8389bc49657fdb55ee63b5dcee93bede34cabd8ea9571542b05db5",
+      "GitBlob": "c98566e0ba9d6c6a267b56d2a8a7cc5302971d19"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerBridgeDocumentationTests.cs",
+      "Sha256": "a0df42a65f29985c2335048a776626f6e71fd483910d942638f0a9e5f6da3785",
+      "GitBlob": "62fce772e5829a4b8cf2666403aa7813db8782c7"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "admission-red/dotnet-test.log.gz",
+      "Bytes": 164725,
+      "Sha256": "1360c09daa98de59eb2c91ba210a83d4a7529a9d521e1733a839889750cbac3a",
+      "DecompressedSha256": "ade978b12282713714d89911556d707252782938f0529d6fa0a37e59e8d48aa0"
+    },
+    {
+      "Path": "admission-red/plan.json",
+      "Bytes": 1426,
+      "Sha256": "c56832fe3a1f520c438cd62893b6250294c58e6e3017861883106f5928f7bc1b"
+    },
+    {
+      "Path": "admission-red/summary.json",
+      "Bytes": 1355,
+      "Sha256": "1601ae22e38569842c2cecf4fb28650ebcced91ebcd66747311b2bd379072504"
+    },
+    {
+      "Path": "admission-red/worker-native-admission-unit-001.trx",
+      "Bytes": 8842,
+      "Sha256": "03bd3a23da66bf2a61858cd5ed8909b9ede7352c0697da7adb578a15711be0cb"
+    },
+    {
+      "Path": "admission-red-plan/Build-unit.log.gz",
+      "Bytes": 1193,
+      "Sha256": "a574de04634042997556fa97c3f173dee241aea8ef1ad0d620d02a3bc78cd756",
+      "DecompressedSha256": "a530b4a1f9cf0a2c8c526b9b7f7a1fc5640053d3ec864c15e9e6bc21d3302742"
+    },
+    {
+      "Path": "admission-red-plan/dotnet-test.log.gz",
+      "Bytes": 165371,
+      "Sha256": "aeaf2e89c526cd4a4fbd427e3da65edbafa951b30bc0d91e42a0e2102060b64b",
+      "DecompressedSha256": "b5a88b3e0e4cba0a93ca4e37079ae6bb25c555c3865484abbb3f9092d6c76eed"
+    },
+    {
+      "Path": "admission-red-plan/plan.json",
+      "Bytes": 1427,
+      "Sha256": "1476edcb5ddb5b9b5a56ba8ee1ce11c825ca24dfb2e2502023805ea063ddfd61"
+    },
+    {
+      "Path": "admission-red-plan/summary.json",
+      "Bytes": 1452,
+      "Sha256": "7a5340b1315ff02877cb4d5b537924db596636cdc93f15fdd4868f52694a8f8b"
+    },
+    {
+      "Path": "admission-red-plan.log.gz",
+      "Bytes": 646,
+      "Sha256": "3842cdf567c2b7f70d031d72c3e494a209ccea0ed96fcd3bdf689b79b955a251",
+      "DecompressedSha256": "91d3d75949434023002a09a17d8216b7c139c7da581f0c719a08079bb0e94650"
+    },
+    {
+      "Path": "admission-red.log.gz",
+      "Bytes": 979,
+      "Sha256": "89b4b6be6ddf0a2625f3bf0cebb70175fcf9c6238e29fa1886c51f2050d28d6b",
+      "DecompressedSha256": "79acefab031d661617eaf079462ba65b53acef5322e0c03582a795bb973a9a8d"
+    }
+  ]
+}

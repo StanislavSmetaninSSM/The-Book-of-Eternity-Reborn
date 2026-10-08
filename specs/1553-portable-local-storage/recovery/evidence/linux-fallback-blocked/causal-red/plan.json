@@ -1,0 +1,78 @@
+{
+  "Categories": [
+    "linux-fallback-supervisor"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "690a975593e3696530a355057c761480f3d43e70",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.334386,
+  "Descriptors": [
+    {
+      "Name": "linux-fallback-supervisor-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "linux-fallback-supervisor",
+      "Categories": [
+        "linux-fallback-supervisor"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.BeforeStart_SealPreventsAnyChild|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.CancellationAfterStart_StopsActualChild|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Deadline_RetainsAuthorityAndUncertaintyThroughLateCleanup|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.FullStatusPipe_BeforeReadyFailsClosedWithoutAnyLaunch|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ObservedOutsideContractWork_IsVisibleAndRemainsUncertain|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.StalePidfdCannotSignalAnotherOwnedIncarnation",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 19,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.BeforeStart_SealPreventsAnyChild",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.CancellationAfterStart_StopsActualChild",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Deadline_RetainsAuthorityAndUncertaintyThroughLateCleanup",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.FullStatusPipe_BeforeReadyFailsClosedWithoutAnyLaunch",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ObservedOutsideContractWork_IsVisibleAndRemainsUncertain",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.StalePidfdCannotSignalAnotherOwnedIncarnation",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

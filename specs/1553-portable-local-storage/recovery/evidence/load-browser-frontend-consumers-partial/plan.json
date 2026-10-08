@@ -1,0 +1,128 @@
+{
+  "Categories": [
+    "portable-load-browser-handlers",
+    "portable-settings-consumers",
+    "portable-settings-notices"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0491944c3a2873984decfedb1d063bf6515cd830",
+    "WorkingTreeFingerprint": "C831AB8522BB0ACB84B0217A4C236CADEFC0862103159E500D44FE265756F9FC",
+    "ChangedFiles": 8
+  },
+  "PreparationSeconds": 0.1422743,
+  "Descriptors": [
+    {
+      "Name": "portable-load-browser-handlers-frontend-001",
+      "Project": "frontend",
+      "Category": "portable-load-browser-handlers",
+      "Categories": [
+        "portable-load-browser-handlers"
+      ],
+      "Filter": null,
+      "Adapter": "vitest",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-settings-consumers-frontend-002",
+      "Project": "frontend",
+      "Category": "portable-settings-consumers",
+      "Categories": [
+        "portable-settings-consumers"
+      ],
+      "Filter": null,
+      "Adapter": "node",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/audioPanelCatalogVisibility.test.ts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/gracefulDegradation.test.ts",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-settings-consumers-frontend-003",
+      "Project": "frontend",
+      "Category": "portable-settings-consumers",
+      "Categories": [
+        "portable-settings-consumers"
+      ],
+      "Filter": null,
+      "Adapter": "vitest",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/browserSettingsSavesAudio.test.ts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/playerCopyRobustness.test.ts",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-settings-notices-frontend-004",
+      "Project": "frontend",
+      "Category": "portable-settings-notices",
+      "Categories": [
+        "portable-settings-notices"
+      ],
+      "Filter": null,
+      "Adapter": "node",
+      "Exclusive": false,
+      "FrontendBuild": true,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/settingsPersistenceNotice.test.ts",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-settings-notices-frontend-005",
+      "Project": "frontend",
+      "Category": "portable-settings-notices",
+      "Categories": [
+        "portable-settings-notices"
+      ],
+      "Filter": null,
+      "Adapter": "vitest",
+      "Exclusive": false,
+      "FrontendBuild": true,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/settingsLoadReconciliation.test.ts",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

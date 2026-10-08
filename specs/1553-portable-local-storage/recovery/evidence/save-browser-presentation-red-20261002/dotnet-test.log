@@ -1,0 +1,83 @@
+RequestedLane: Categories
+EffectiveLane: Categories
+Filter: <pending validation>
+TimeoutMinutes: 7
+StartedUtc: 2026-10-02T13:57:05.5113045Z
+Owned process 'Revision': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=C:\Program Files\PowerShell\7\pwsh.exe
+
+===== Revision: stdout =====
+427afdb534da0368f730e9696c07edd91520f6aa
+
+===== Revision: stderr =====
+
+===== Revision: exit 0 =====
+Owned process 'Changed-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=C:\Program Files\PowerShell\7\pwsh.exe
+
+===== Changed-paths: stdout =====
+BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs
+BookOfEternityClient.Tests/PortableBrowserSaveCreationTests.cs
+BookOfEternityClient.Tests/WebUi/BrowserGenerationFencingSourceTests.cs
+BookOfEternityClient/WebUi/LocalWebUiHost.cs
+BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs
+tests/categories.json
+
+===== Changed-paths: stderr =====
+warning: in the working copy of 'BookOfEternityClient.Tests/PortableBrowserSaveCreationTests.cs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/categories.json', LF will be replaced by CRLF the next time Git touches it
+
+===== Changed-paths: exit 0 =====
+Owned process 'New-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=C:\Program Files\PowerShell\7\pwsh.exe
+
+===== New-paths: stdout =====
+BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.SaveCreation.cs
+
+===== New-paths: stderr =====
+
+===== New-paths: exit 0 =====
+Owned process 'portable-browser-save-presentation-frontend-001-compile': FileName=node; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=C:\Program Files\PowerShell\7\pwsh.exe
+
+===== portable-browser-save-presentation-frontend-001-compile: stdout =====
+
+===== portable-browser-save-presentation-frontend-001-compile: stderr =====
+
+===== portable-browser-save-presentation-frontend-001-compile: exit 0 =====
+Owned process 'portable-browser-save-presentation-frontend-001-savePersistenceNotice.test.js': FileName=node; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=C:\Program Files\PowerShell\7\pwsh.exe
+
+===== portable-browser-save-presentation-frontend-001-savePersistenceNotice.test.js: stdout =====
+0 passed, 5 failed
+
+===== portable-browser-save-presentation-frontend-001-savePersistenceNotice.test.js: stderr =====
+FAIL committed follow-up survives the success transport and retains exact identity: Error: Committed follow-up became an ordinary success or failure.
+FAIL committed decision in an HTTP failure remains committed and blocks continuation: Error: The HTTP failure erased an established commit.
+FAIL uncertain failure retains uncertainty and never claims known non-creation: Error: Uncertain evidence was treated as a retryable failure.
+FAIL known rollback stays distinct from uncertainty: Error: Known rollback was not preserved.
+FAIL a lost response blocks continuation instead of claiming rollback: Error: Missing response falsely established non-creation.
+file:///[USER]/.codex/worktrees/portable-save-windows/The%20Book%20of%20Eternity%20Reborn/TestResults/test-categories/20261002-235705-486-25404-7d3f482af9cf4d3b861c69cc73bd3ffd-categories/portable-browser-save-presentation-frontend-001-compiled/test/savePersistenceNotice.test.js:55
+    throw new Error(failures.join('\n'));
+          ^
+
+Error: committed follow-up survives the success transport and retains exact identity: Error: Committed follow-up became an ordinary success or failure.
+committed decision in an HTTP failure remains committed and blocks continuation: Error: The HTTP failure erased an established commit.
+uncertain failure retains uncertainty and never claims known non-creation: Error: Uncertain evidence was treated as a retryable failure.
+known rollback stays distinct from uncertainty: Error: Known rollback was not preserved.
+a lost response blocks continuation instead of claiming rollback: Error: Missing response falsely established non-creation.
+    at file:///[USER]/.codex/worktrees/portable-save-windows/The%20Book%20of%20Eternity%20Reborn/TestResults/test-categories/20261002-235705-486-25404-7d3f482af9cf4d3b861c69cc73bd3ffd-categories/portable-browser-save-presentation-frontend-001-compiled/test/savePersistenceNotice.test.js:55:11
+
+Node.js v24.21.0
+
+===== portable-browser-save-presentation-frontend-001-savePersistenceNotice.test.js: exit 1 =====
+
+Category result
+  Categories: portable-browser-save-presentation
+  Filter: <none>
+  Timeout: 7 minute(s)
+  Wall time: 00:00:07.8750574
+  Exit code: 1
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=1, cases=1; completed descriptors=0, cases=0, complete=False
+  Tests: total=0, executed=0, passed=0, failed=0
+  Duplicate test IDs: 0
+  Results: [WORKTREE]\TestResults\test-categories\20261002-235705-486-25404-7d3f482af9cf4d3b861c69cc73bd3ffd-categories
+  Log: [WORKTREE]\TestResults\test-categories\20261002-235705-486-25404-7d3f482af9cf4d3b861c69cc73bd3ffd-categories\dotnet-test.log
+  Failure: portable-browser-save-presentation-frontend-001-savePersistenceNotice.test.js failed with exit code 1.

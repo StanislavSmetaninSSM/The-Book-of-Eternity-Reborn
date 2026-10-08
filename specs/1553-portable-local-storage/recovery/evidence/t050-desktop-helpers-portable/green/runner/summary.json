@@ -1,0 +1,104 @@
+{
+  "Categories": [
+    "desktop-image-consumers",
+    "desktop-folder-consumers",
+    "desktop-launch-contracts"
+  ],
+  "Reasons": [
+    {
+      "category": "desktop-image-consumers",
+      "reason": "Original ImageService viewer/gallery manual outcomes and display/creation/error boundaries through controlled association adapter",
+      "contracts": [
+        "T050-DESKTOP-HELPERS-PORTABLE"
+      ]
+    },
+    {
+      "category": "desktop-folder-consumers",
+      "reason": "Actual settings/Explorer mods-menu and main/related folder manual outcomes, acknowledgements and next-frame visibility",
+      "contracts": [
+        "T050-DESKTOP-HELPERS-PORTABLE"
+      ]
+    },
+    {
+      "category": "desktop-launch-contracts",
+      "reason": "Typed capability/request semantics and image suppression/force; same real consumer helper, no broad cohorts",
+      "contracts": [
+        "T050-DESKTOP-HELPERS-PORTABLE"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "04c9717a5290d001816fb394c276c3a2754f3dad",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "desktop-folder-consumers",
+      "Seconds": 3.7777971,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "desktop-image-consumers",
+      "Seconds": 3.0520894,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "desktop-launch-contracts",
+      "Seconds": 3.0602854,
+      "BudgetMinutes": 5,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0581822,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0483733,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1010328,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0037839,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:00:14.9647432",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 23,
+    "CompletedCases": 23,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 23,
+    "Executed": 23,
+    "Passed": 23,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

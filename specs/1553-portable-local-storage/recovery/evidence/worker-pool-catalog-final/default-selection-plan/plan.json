@@ -1,0 +1,170 @@
+{
+  "Categories": [
+    "worker-execution-scoped-evidence",
+    "worker-consumer-execution-evidence",
+    "worker-pool-regression-managed-policy",
+    "worker-pool-regression-docs"
+  ],
+  "Reasons": [
+    {
+      "category": "worker-execution-scoped-evidence",
+      "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-consumer-execution-evidence",
+      "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-managed-policy",
+      "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-docs",
+      "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.535394,
+  "Descriptors": [
+    {
+      "Name": "worker-consumer-execution-evidence-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-consumer-execution-evidence",
+      "Categories": [
+        "worker-consumer-execution-evidence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-execution-scoped-evidence-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-execution-scoped-evidence",
+      "Categories": [
+        "worker-execution-scoped-evidence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-pool-regression-docs-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-pool-regression-docs",
+      "Categories": [
+        "worker-pool-regression-docs"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-pool-regression-managed-policy-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-pool-regression-managed-policy",
+      "Categories": [
+        "worker-pool-regression-managed-policy"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.DefaultWindowsCompletion_PreservesDiagnosticDrainBeforeStop|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.NativeCompletion_DoesNotWaitForDiagnosticDrainBeforeScopedStop|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.WindowsOwner_DoesNotTreatArbitraryProcessTreeAsRetainedJob",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.DefaultWindowsCompletion_PreservesDiagnosticDrainBeforeStop",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.NativeCompletion_DoesNotWaitForDiagnosticDrainBeforeScopedStop",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.WindowsOwner_DoesNotTreatArbitraryProcessTreeAsRetainedJob",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "SchemaVersion": 1,
+  "Issue": "#1553",
+  "Task": "T041-RUN-RECORD",
+  "RuntimeSource": "dc8c742cb3dc86d6cff09dadbbb412c77ae779a6",
+  "RuntimeTree": "4d1f0e595983dab702692f7804e8357607c7784a",
+  "Status": "PASS for bounded persistent-main record codec, pure transitions, slot-local admission and isolated ordinary-file interpretation. Final evidence carrier publication/restoration remains pending separate verification.",
+  "ProductionConsumersWired": false,
+  "VerificationInputs": {
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs": {
+      "GitBlob": "877b16da222a4326d3228d08a1a253b0b81ecbbb",
+      "Sha256": "d31a714f9485647ab68b6ee7b7d07da852cb1e88edb3f0df7a1e6bf5ff9ec8c8"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecordCodec.cs": {
+      "GitBlob": "19f6293794a283e666c220912c2ea6cb47a535ab",
+      "Sha256": "7e269f884c4ca2dd9277d9b1e3813dc8f15d405bd163160d6fc671247849ad63"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunAdmission.cs": {
+      "GitBlob": "aaa6433bb7ca0caa687f66d660be85ff82f83983",
+      "Sha256": "aa1338fbfa3ba4b8a89851acaa41b4a5bfa3b95c8cc3239116fc24057add621a"
+    },
+    "BookOfEternityClient.Tests/GmSessionRunRecordTests.cs": {
+      "GitBlob": "1e0c9733dbdad4ff3bfbdc2ebb1bac212fbda9dd",
+      "Sha256": "4203e8b0df8774bdc46856f1cf8caf8ade9479cabf72e12e03f04776a2cb8311"
+    },
+    "BookOfEternityClient.Tests/GmSessionRunAdmissionTests.cs": {
+      "GitBlob": "47af198aaec594d663d0964c874f681f8fe45fd2",
+      "Sha256": "232f0c8a1a691424969efc95585f7ddec62d0aa79c8f8a4ea3b14cfe16b41667"
+    },
+    "tests/categories.json": {
+      "GitBlob": "ad3459e38af08a55c33fbe6b9cea8da5a4997ae4",
+      "Sha256": "e6892c433d94a6c5ac84958445d20c43b5c835ed64fd0ed2eb8f996057a4934e"
+    },
+    "tests/selection.json": {
+      "GitBlob": "11ba073b6642e2a5d1a5290a0e05542945d71875",
+      "Sha256": "76e2f391979e2b5ab0f56f017f07d337140626d6cb1f6e8019303c07e50d850b"
+    }
+  },
+  "CausalRed": {
+    "Commit": "46e641a1d83daa32ba199e04ccb61a0d4edd8756",
+    "Planned": 90,
+    "Completed": 90,
+    "Passed": 27,
+    "Failed": 63,
+    "FailureClasses": {
+      "MissingRejection": 49,
+      "Admission": 11,
+      "ColdState": 3
+    },
+    "Seconds": 6.0012379,
+    "BuildPlanSeconds": 121.7400754,
+    "Evidence": "evidence/gm-run-record-red/manifest.json",
+    "Sessions": [
+      86273,
+      75174
+    ]
+  },
+  "Green": {
+    "Completed": 90,
+    "Passed": 90,
+    "Failed": 0,
+    "Skipped": 0,
+    "Duplicates": 0,
+    "CompleteSelection": true,
+    "CompleteCleanup": true,
+    "Seconds": 5.9631301,
+    "PlanSeconds": 3.0981098,
+    "Evidence": "evidence/gm-run-record-candidate-green/manifest.json",
+    "Session": 70742
+  },
+  "CatalogAudit": {
+    "Categories": 238,
+    "Identities": 10648,
+    "Unmapped": 0,
+    "Stale": 0,
+    "ExecutedTests": 0,
+    "FreshBuildProjects": [
+      "unit",
+      "integration"
+    ],
+    "Seconds": 176.5963086,
+    "Evidence": "evidence/gm-run-record-candidate-audit/manifest.json",
+    "Session": 42893
+  },
+  "GeneratedDocumentation": {
+    "ParsedXmlCopies": 5
+  },
+  "IndependentReview": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Result": "PASS",
+    "FindingsRemaining": 0,
+    "Scope": "Source, source trace, fixtures, selection and independently inspected exact RED/GREEN/audit/clean source restoration.",
+    "FinalDocsEvidenceCheck": "PASS: embedded/raw evidence hashes, seven verification inputs, candidate restoration and original 30-entry native-capability archive verified independently; no new required test."
+  },
+  "SourceRestoration": {
+    "Method": "New empty GitHub-only clone, no local object/source cache",
+    "Commit": "dc8c742cb3dc86d6cff09dadbbb412c77ae779a6",
+    "Tree": "4d1f0e595983dab702692f7804e8357607c7784a",
+    "TrackedFiles": 5142,
+    "ChangedManifestHashes": 14,
+    "Clean": true,
+    "ConnectivityFsck": "PASS",
+    "Session": 97795
+  },
+  "NotQualified": [
+    "atomic record persistence or crash durability",
+    "no-follow persisted-record reader",
+    "authenticated live/stop/reboot evidence",
+    "all-worker/global-root composition",
+    "canonical and held-lease mutation/recovery wiring",
+    "native IPC/process/workspace/PTY",
+    "native Windows or live GM/gameplay",
+    "full T041/T042/T043 or whole #1553"
+  ],
+  "SeparateSavedEnvironmentEvidence": "evidence/linux-named-pipe-capability-20261005/manifest.json"
+}

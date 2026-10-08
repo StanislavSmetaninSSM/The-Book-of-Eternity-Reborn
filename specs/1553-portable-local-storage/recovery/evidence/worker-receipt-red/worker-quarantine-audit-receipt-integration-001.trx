@@ -1,0 +1,961 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="7b494d17-d1c4-4a7d-be3c-0f6221c1c464" name="@3a7834d0640d 2026-10-05 12:44:12" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T12:44:12.6918803+00:00" queuing="2026-10-05T12:44:12.6918814+00:00" start="2026-10-05T12:44:09.5516170+00:00" finish="2026-10-05T12:44:13.1681266+00:00" />
+  <TestSettings name="default" id="aec86cdd-018d-4761-8671-c1d9b77903b9">
+    <Deployment runDeploymentRoot="_3a7834d0640d_2026-10-05_12_44_12" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="d652191b-4745-4ced-aa2b-fd702ab15e2b" testId="69fdd883-a890-8265-14b8-7ae27ed8627e" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnsafeEventIdentityCannotCreateReceipt(eventId: &quot;&quot;)" computerName="3a7834d0640d" duration="00:00:00.0090729" startTime="2026-10-05T12:44:13.0090682+00:00" endTime="2026-10-05T12:44:13.0090683+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d652191b-4745-4ced-aa2b-fd702ab15e2b" />
+    <UnitTestResult executionId="ef827d36-b51e-4f04-8e5f-23183546d7a3" testId="d06c5d6c-2a6b-a0e3-0689-8aab8e6561b0" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten(same: True)" computerName="3a7834d0640d" duration="00:00:00.0113183" startTime="2026-10-05T12:44:12.8904928+00:00" endTime="2026-10-05T12:44:12.8904929+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ef827d36-b51e-4f04-8e5f-23183546d7a3">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   System.PlatformNotSupportedException: Opened-file identity capture is available only on Windows.
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten(Boolean same) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 157
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten(Boolean same) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 159
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b4ff0d28-8738-45fb-9f41-8fdc6ab0906e" testId="b3862260-8fab-ce1f-c574-17af874bd709" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: True, afterPublication: False, canonicalUnavailable: True)" computerName="3a7834d0640d" duration="00:00:00.0230434" startTime="2026-10-05T12:44:12.5909933+00:00" endTime="2026-10-05T12:44:12.5909934+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b4ff0d28-8738-45fb-9f41-8fdc6ab0906e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: Collection was not empty
+Collection: ["/workspace/ipc-tmp/boe-quarantine-receipt-ab3e7408"···]</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.Fixture.AssertNoTemps() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 416
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 316
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 325
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3e0d84a4-f940-42a3-84ed-c48b41b8c049" testId="86781a40-5129-531c-504c-8cde05ae5f60" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(kind: &quot;fifo&quot;)" computerName="3a7834d0640d" duration="00:00:00.0145234" startTime="2026-10-05T12:44:12.6485746+00:00" endTime="2026-10-05T12:44:12.6485747+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3e0d84a4-f940-42a3-84ed-c48b41b8c049">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(String kind) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 256
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(String kind) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 259
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8e23b189-812e-4e42-b887-77ea3b317952" testId="afccf985-26d2-7b33-b044-f42bfb619ba9" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingIdentityRejectsDifferentExactBytesWithoutReplacement(kind: &quot;generation&quot;)" computerName="3a7834d0640d" duration="00:00:00.0098383" startTime="2026-10-05T12:44:13.0637101+00:00" endTime="2026-10-05T12:44:13.0637102+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8e23b189-812e-4e42-b887-77ea3b317952" />
+    <UnitTestResult executionId="7d11cd00-a558-49ce-a750-bebcb5e929d7" testId="13236d46-294a-eb38-90d5-f430090a206c" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish(truncate: False)" computerName="3a7834d0640d" duration="00:00:00.1325364" startTime="2026-10-05T12:44:12.5287160+00:00" endTime="2026-10-05T12:44:12.5287317+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7d11cd00-a558-49ce-a750-bebcb5e929d7">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish(Boolean truncate) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 179
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish(Boolean truncate) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 181
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d59440bb-875e-4da8-bc73-816f8eff24da" testId="624fb0c1-bfe7-cfbf-f749-ef8e7c7b69f6" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(kind: &quot;symlink&quot;)" computerName="3a7834d0640d" duration="00:00:00.0102826" startTime="2026-10-05T12:44:12.6637038+00:00" endTime="2026-10-05T12:44:12.6637039+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d59440bb-875e-4da8-bc73-816f8eff24da">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(String kind) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 256
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(String kind) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 259
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2a359d49-fc01-45af-ac86-68cc140e15c2" testId="72a793bc-2d4e-accb-4d73-290ab018c406" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingIdentityRejectsDifferentExactBytesWithoutReplacement(kind: &quot;whitespace&quot;)" computerName="3a7834d0640d" duration="00:00:00.0119409" startTime="2026-10-05T12:44:13.0436281+00:00" endTime="2026-10-05T12:44:13.0436282+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2a359d49-fc01-45af-ac86-68cc140e15c2" />
+    <UnitTestResult executionId="3b1a0a42-6756-4004-a75e-a88bb60dde58" testId="c78d2e94-a378-41b3-1c2b-4db0f7a0b894" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: False, afterPublication: False, canonicalUnavailable: False)" computerName="3a7834d0640d" duration="00:00:00.0123808" startTime="2026-10-05T12:44:12.6039810+00:00" endTime="2026-10-05T12:44:12.6039811+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3b1a0a42-6756-4004-a75e-a88bb60dde58">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: Collection was not empty
+Collection: ["/workspace/ipc-tmp/boe-quarantine-receipt-c5850f6a"···]</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.Fixture.AssertNoTemps() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 416
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 316
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 325
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7d3dc187-60fd-441d-aade-ba32d6032c11" testId="593d657c-4cf8-4933-b5bd-187994a8af10" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnsafeEventIdentityCannotCreateReceipt(eventId: &quot; &quot;)" computerName="3a7834d0640d" duration="00:00:00.0095870" startTime="2026-10-05T12:44:12.9895564+00:00" endTime="2026-10-05T12:44:12.9895565+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7d3dc187-60fd-441d-aade-ba32d6032c11" />
+    <UnitTestResult executionId="14408dd6-18b9-49e9-b070-f7fc66868bf9" testId="c02fa74a-e96f-91a2-e1ac-6586e6503fe7" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten(same: False)" computerName="3a7834d0640d" duration="00:00:00.0118584" startTime="2026-10-05T12:44:12.8791573+00:00" endTime="2026-10-05T12:44:12.8791574+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="14408dd6-18b9-49e9-b070-f7fc66868bf9">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is not the exact type
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten(Boolean same) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 157
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten(Boolean same) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 159
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f4b0b19c-aaf0-40b8-999b-3883e7ba21cd" testId="9db8318a-2ed6-e33b-cbe4-cd946cb6eea4" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(kind: &quot;fifo&quot;)" computerName="3a7834d0640d" duration="00:00:00.0172074" startTime="2026-10-05T12:44:12.6795102+00:00" endTime="2026-10-05T12:44:12.6795103+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f4b0b19c-aaf0-40b8-999b-3883e7ba21cd">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotSupportedException)
+---- System.NotSupportedException : Stream does not support seeking.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(String kind) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 195
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(String kind) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 197
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at System.IO.RandomAccess.ValidateInput(SafeFileHandle handle, Int64 fileOffset, Boolean allowUnseekableHandles)
+   at System.IO.RandomAccess.GetLength(SafeFileHandle handle)
+   at BookOfEternityClient.Core.PhysicalFileAuthority.ReadOpenedFileBytes(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1003
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.EnsureQuarantineAuditReceiptMatches(FileStream stream, String receiptPath, Byte[] expectedBytes) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 1078
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 305</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="487d31cd-01c1-474e-b130-457951488503" testId="1082c566-4b5c-a097-cb58-7301b8484093" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot" computerName="3a7834d0640d" duration="00:00:00.0096764" startTime="2026-10-05T12:44:12.7425977+00:00" endTime="2026-10-05T12:44:12.7425978+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="487d31cd-01c1-474e-b130-457951488503" />
+    <UnitTestResult executionId="8cce7fce-029c-4ba4-bc73-cd82899a2bce" testId="7d0c8afb-6228-fa93-ca00-7c20d7456e98" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(afterPublication: False, cancelled: False)" computerName="3a7834d0640d" duration="00:00:00.0097520" startTime="2026-10-05T12:44:12.8476096+00:00" endTime="2026-10-05T12:44:12.8476097+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8cce7fce-029c-4ba4-bc73-cd82899a2bce">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Same() Failure: Values are not the same instance
+Expected: System.IO.IOException: synthetic receipt failure
+Actual:   System.PlatformNotSupportedException: Opened-file identity capture is available only on Windows.
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 134
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 141
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e1b4a6f9-c581-4c39-a868-b71f2bc37b2e" testId="8d505877-9543-b269-9ec1-d42a9fab451d" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.MissingGenerationCannotCreateReceipt(generation: &quot; &quot;)" computerName="3a7834d0640d" duration="00:00:00.0104204" startTime="2026-10-05T12:44:12.8999737+00:00" endTime="2026-10-05T12:44:12.8999738+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e1b4a6f9-c581-4c39-a868-b71f2bc37b2e" />
+    <UnitTestResult executionId="8f2a8987-c030-410a-a1bc-7266849c42d9" testId="6d012bf4-2b14-f8f1-a836-ab7e5cd0ace1" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(kind: &quot;symlink&quot;)" computerName="3a7834d0640d" duration="00:00:00.0116612" startTime="2026-10-05T12:44:12.7072652+00:00" endTime="2026-10-05T12:44:12.7072653+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8f2a8987-c030-410a-a1bc-7266849c42d9" />
+    <UnitTestResult executionId="a9a8615c-f434-446a-aa5c-12587080a0a9" testId="1bb11524-297b-4a52-8f9f-5560aac964ad" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingOrdinaryHardlinkAllowsSameBytesAndNeverChangesOutsideAlias" computerName="3a7834d0640d" duration="00:00:00.0112593" startTime="2026-10-05T12:44:13.0312700+00:00" endTime="2026-10-05T12:44:13.0312700+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a9a8615c-f434-446a-aa5c-12587080a0a9" />
+    <UnitTestResult executionId="7ce561f2-7416-4201-9d2a-a2cda2ce0db3" testId="6b24d892-d343-c9dc-b484-1006331a89c4" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: True, afterPublication: True, canonicalUnavailable: False)" computerName="3a7834d0640d" duration="00:00:00.0255440" startTime="2026-10-05T12:44:12.5678987+00:00" endTime="2026-10-05T12:44:12.5678988+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7ce561f2-7416-4201-9d2a-a2cda2ce0db3">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Same() Failure: Values are not the same instance
+Expected: System.OperationCanceledException: synthetic receipt cancellation
+Actual:   System.PlatformNotSupportedException: Opened-file identity capture is available only on Windows.
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerQuarantinedExecution.CleanupConfirmedAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs:line 177
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerQuarantineReaper.QuarantineEntry.TryReapAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs:line 468</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 309
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 325
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="83fef9ca-85ac-4917-8c2e-f23389e0502b" testId="813e45a6-893f-bad6-7e7d-3f59c2cd7b51" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries(cancelled: True)" computerName="3a7834d0640d" duration="00:00:00.0098076" startTime="2026-10-05T12:44:12.9346091+00:00" endTime="2026-10-05T12:44:12.9346092+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="83fef9ca-85ac-4917-8c2e-f23389e0502b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: Collection was not empty
+Collection: ["/workspace/ipc-tmp/boe-quarantine-receipt-83d10756"···]</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.Fixture.AssertNoTemps() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 416
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries(Boolean cancelled) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 111
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries(Boolean cancelled) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 114
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d0fdc375-2915-4f3e-8558-d2a0226a0937" testId="ada3d5e9-d6bd-3587-1e48-3b7f2eabeca6" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(afterPublication: True, cancelled: True)" computerName="3a7834d0640d" duration="00:00:00.0168520" startTime="2026-10-05T12:44:12.8639653+00:00" endTime="2026-10-05T12:44:12.8639654+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d0fdc375-2915-4f3e-8558-d2a0226a0937">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Same() Failure: Values are not the same instance
+Expected: System.OperationCanceledException: synthetic receipt cancellation
+Actual:   System.PlatformNotSupportedException: Opened-file identity capture is available only on Windows.
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 134
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 141
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="55b590dc-5d69-4838-b22c-e811e9395ad1" testId="62783cad-b3c5-389e-f477-0d72887b256c" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(afterPublication: False, cancelled: True)" computerName="3a7834d0640d" duration="00:00:00.0770630" startTime="2026-10-05T12:44:12.8359966+00:00" endTime="2026-10-05T12:44:12.8359967+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="55b590dc-5d69-4838-b22c-e811e9395ad1">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Same() Failure: Values are not the same instance
+Expected: System.OperationCanceledException: synthetic receipt cancellation
+Actual:   System.PlatformNotSupportedException: Opened-file identity capture is available only on Windows.
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 134
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 141
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f566c6d6-3228-40ed-986e-bc5e10fdd036" testId="70538ac2-26c0-bbef-b3f4-30dfd5962b7e" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish(truncate: True)" computerName="3a7834d0640d" duration="00:00:00.0125626" startTime="2026-10-05T12:44:12.5382549+00:00" endTime="2026-10-05T12:44:12.5382551+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f566c6d6-3228-40ed-986e-bc5e10fdd036">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish(Boolean truncate) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 179
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish(Boolean truncate) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 181
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="48b1c8c0-1c4c-4d6b-9f17-fcb7440715fc" testId="a3161f77-20b0-9fda-9936-72bd7f5ea0e5" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence(ancestor: True)" computerName="3a7834d0640d" duration="00:00:00.0132873" startTime="2026-10-05T12:44:12.7240462+00:00" endTime="2026-10-05T12:44:12.7240463+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="48b1c8c0-1c4c-4d6b-9f17-fcb7440715fc">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence(Boolean ancestor) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 214
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence(Boolean ancestor) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 218
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="80346137-d512-4b4a-a108-97ca3424f484" testId="c16016d3-f78d-d4b3-73dd-3a88cd9e20c9" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence(ancestor: False)" computerName="3a7834d0640d" duration="00:00:00.0107014" startTime="2026-10-05T12:44:12.7325735+00:00" endTime="2026-10-05T12:44:12.7325736+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="80346137-d512-4b4a-a108-97ca3424f484" />
+    <UnitTestResult executionId="8045824f-bba0-42f3-a0bc-be463c9c6d1a" testId="32cacfd0-5373-801a-86c6-c577a96bf189" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(afterPublication: True, cancelled: False)" computerName="3a7834d0640d" duration="00:00:00.0133871" startTime="2026-10-05T12:44:12.7576328+00:00" endTime="2026-10-05T12:44:12.7576329+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8045824f-bba0-42f3-a0bc-be463c9c6d1a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Same() Failure: Values are not the same instance
+Expected: System.IO.IOException: synthetic receipt failure
+Actual:   System.PlatformNotSupportedException: Opened-file identity capture is available only on Windows.
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 134
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 141
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="065c744f-4be8-4aa7-ad91-643ed5788569" testId="ebce65ef-fe91-94db-159c-c871affca165" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.TemporaryReplacedWithLinkBeforeWriteCannotModifyOutsideBytes" computerName="3a7834d0640d" duration="00:00:00.0115510" startTime="2026-10-05T12:44:12.9699387+00:00" endTime="2026-10-05T12:44:12.9699387+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="065c744f-4be8-4aa7-ad91-643ed5788569">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.TemporaryReplacedWithLinkBeforeWriteCannotModifyOutsideBytes() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 234
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.TemporaryReplacedWithLinkBeforeWriteCannotModifyOutsideBytes() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 237
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2957ccde-c9fe-4281-844b-b1fa04a9c8b3" testId="5e488729-727d-128a-0860-e7c579098136" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExactReceiptAndStableRetrySurviveDetachedWorkspaceDeletion" computerName="3a7834d0640d" duration="00:00:00.0113214" startTime="2026-10-05T12:44:12.9569405+00:00" endTime="2026-10-05T12:44:12.9569406+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2957ccde-c9fe-4281-844b-b1fa04a9c8b3">
+      <Output>
+        <ErrorInfo>
+          <Message>System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExactReceiptAndStableRetrySurviveDetachedWorkspaceDeletion() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 32
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExactReceiptAndStableRetrySurviveDetachedWorkspaceDeletion() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 42
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="771ca2bb-0287-4d0c-88b6-80ee63e0e974" testId="1f7c2f91-e2e2-b403-2f23-0ea53fb210ff" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.MissingGenerationCannotCreateReceipt(generation: &quot;&quot;)" computerName="3a7834d0640d" duration="00:00:00.0104165" startTime="2026-10-05T12:44:12.9112439+00:00" endTime="2026-10-05T12:44:12.9112440+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="771ca2bb-0287-4d0c-88b6-80ee63e0e974" />
+    <UnitTestResult executionId="22612c6d-2d4b-4aa0-803c-ac28f920de9c" testId="3fb3f7ef-0507-65e4-d61b-2188a774eefd" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnsafeEventIdentityCannotCreateReceipt(eventId: &quot;nested/name&quot;)" computerName="3a7834d0640d" duration="00:00:00.0094293" startTime="2026-10-05T12:44:12.9793322+00:00" endTime="2026-10-05T12:44:12.9793323+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="22612c6d-2d4b-4aa0-803c-ac28f920de9c" />
+    <UnitTestResult executionId="42ec447a-e2c2-420b-b18a-0c29aab28ed1" testId="cacb33c8-0522-f7e3-614f-a14e0a9e4370" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnsafeEventIdentityCannotCreateReceipt(eventId: &quot;../escape&quot;)" computerName="3a7834d0640d" duration="00:00:00.0098181" startTime="2026-10-05T12:44:13.0194777+00:00" endTime="2026-10-05T12:44:13.0194778+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="42ec447a-e2c2-420b-b18a-0c29aab28ed1" />
+    <UnitTestResult executionId="c5000d5c-1697-4f19-8241-8969865496ce" testId="b638925b-17c0-7e61-a636-ff5a8a71aa5d" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot" computerName="3a7834d0640d" duration="00:00:00.0135021" startTime="2026-10-05T12:44:13.0917628+00:00" endTime="2026-10-05T12:44:13.0917629+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c5000d5c-1697-4f19-8241-8969865496ce">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 341
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 345
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerQuarantinedExecution.CleanupConfirmedAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs:line 177</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f1d5836c-af6e-475a-a0d5-e7584bf79339" testId="edfcfd23-17c3-30ca-0511-cbbe40a0f25a" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingIdentityRejectsDifferentExactBytesWithoutReplacement(kind: &quot;longer&quot;)" computerName="3a7834d0640d" duration="00:00:00.0095002" startTime="2026-10-05T12:44:13.0736151+00:00" endTime="2026-10-05T12:44:13.0736152+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f1d5836c-af6e-475a-a0d5-e7584bf79339" />
+    <UnitTestResult executionId="753506ce-7924-4790-b2e5-ed516ff96daf" testId="dcba2479-8332-02c7-ace8-bb456dcca14d" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce" computerName="3a7834d0640d" duration="00:00:00.0097451" startTime="2026-10-05T12:44:12.9443488+00:00" endTime="2026-10-05T12:44:12.9443488+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="753506ce-7924-4790-b2e5-ed516ff96daf" />
+    <UnitTestResult executionId="b932a80c-f837-4e06-9794-fcc5210ac0b6" testId="e0bcfac4-f48c-ceea-8ef1-3cebb91d8822" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: False, afterPublication: True, canonicalUnavailable: True)" computerName="3a7834d0640d" duration="00:00:00.0129244" startTime="2026-10-05T12:44:12.6175799+00:00" endTime="2026-10-05T12:44:12.6175800+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b932a80c-f837-4e06-9794-fcc5210ac0b6">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Same() Failure: Values are not the same instance
+Expected: System.IO.IOException: synthetic receipt failure
+Actual:   System.PlatformNotSupportedException: Opened-file identity capture is available only on Windows.
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerQuarantinedExecution.CleanupConfirmedAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs:line 177
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerQuarantineReaper.QuarantineEntry.TryReapAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs:line 468</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 309
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 325
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1bea0de4-7bfa-4b91-b9f9-9095ea254eaf" testId="d60a7213-c612-f917-fdbe-d7fa58a5860f" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries(cancelled: False)" computerName="3a7834d0640d" duration="00:00:00.0117104" startTime="2026-10-05T12:44:12.9269149+00:00" endTime="2026-10-05T12:44:12.9269150+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1bea0de4-7bfa-4b91-b9f9-9095ea254eaf">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: Collection was not empty
+Collection: ["/workspace/ipc-tmp/boe-quarantine-receipt-eea4b1d3"···]</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.Fixture.AssertNoTemps() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 416
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries(Boolean cancelled) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 111
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries(Boolean cancelled) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 114
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="288793ff-2d2d-40db-9edc-ebe844bda7e8" testId="1fb38252-ac78-67aa-7c2a-2a690f33cc54" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(kind: &quot;directory&quot;)" computerName="3a7834d0640d" duration="00:00:00.0134296" startTime="2026-10-05T12:44:12.6325154+00:00" endTime="2026-10-05T12:44:12.6325155+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="288793ff-2d2d-40db-9edc-ebe844bda7e8">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(String kind) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 256
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(String kind) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 259
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+   at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="dc3dcf91-f4d7-44ab-8b7c-5bb41d8b344c" testId="500a4736-a40a-9c77-81c7-ebe5760b318c" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnsafeEventIdentityCannotCreateReceipt(eventId: &quot;bad\0name&quot;)" computerName="3a7834d0640d" duration="00:00:00.0095710" startTime="2026-10-05T12:44:12.9996170+00:00" endTime="2026-10-05T12:44:12.9996171+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dc3dcf91-f4d7-44ab-8b7c-5bb41d8b344c" />
+    <UnitTestResult executionId="1b5dcbe5-525a-4fc3-b9a2-b100beb5e7fc" testId="752570b2-6902-df9e-a64e-bfdc4a3e9db0" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingIdentityRejectsDifferentExactBytesWithoutReplacement(kind: &quot;event&quot;)" computerName="3a7834d0640d" duration="00:00:00.0093282" startTime="2026-10-05T12:44:13.0533881+00:00" endTime="2026-10-05T12:44:13.0533882+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1b5dcbe5-525a-4fc3-b9a2-b100beb5e7fc" />
+    <UnitTestResult executionId="fc554607-efab-4692-9705-f6dfd99a629e" testId="137ad168-1661-58a0-77df-366ab6f81b4e" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(kind: &quot;directory&quot;)" computerName="3a7834d0640d" duration="00:00:00.0141181" startTime="2026-10-05T12:44:12.6951561+00:00" endTime="2026-10-05T12:44:12.6951562+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fc554607-efab-4692-9705-f6dfd99a629e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.UnauthorizedAccessException)
+---- System.UnauthorizedAccessException : Access to the path '/workspace/ipc-tmp/boe-quarantine-receipt-6a9d7d7900044b9985f5979d8851c017/runtime/.worker_runtime/98c3d29d317fdea11fdf4824/quarantine-audit/cleanup-stable.json' is denied.
+-------- System.IO.IOException : Permission denied</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(String kind) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 195
+   at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(String kind) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs:line 197
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)
+   at BookOfEternityClient.Core.PhysicalFileAuthority.OpenReadFile(StableDirectory parent, String expectedPath, String authorityName, Boolean asynchronous, Boolean shareDelete, Action afterOpenedBeforeValidation, Boolean requireSingleLink, Boolean shareWrite) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 614
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 297
+----- Inner Stack Trace -----
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="dcba2479-8332-02c7-ace8-bb456dcca14d">
+      <Execution id="753506ce-7924-4790-b2e5-ed516ff96daf" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingIdentityRejectsDifferentExactBytesWithoutReplacement(kind: &quot;generation&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="afccf985-26d2-7b33-b044-f42bfb619ba9">
+      <Execution id="8e23b189-812e-4e42-b887-77ea3b317952" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ExistingIdentityRejectsDifferentExactBytesWithoutReplacement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(kind: &quot;symlink&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6d012bf4-2b14-f8f1-a836-ab7e5cd0ace1">
+      <Execution id="8f2a8987-c030-410a-a1bc-7266849c42d9" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="NonRegularReceiptIsRejectedBeforeOpening" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnsafeEventIdentityCannotCreateReceipt(eventId: &quot;nested/name&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3fb3f7ef-0507-65e4-d61b-2188a774eefd">
+      <Execution id="22612c6d-2d4b-4aa0-803c-ac28f920de9c" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="UnsafeEventIdentityCannotCreateReceipt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: False, afterPublication: True, canonicalUnavailable: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e0bcfac4-f48c-ceea-8ef1-3cebb91d8822">
+      <Execution id="b932a80c-f837-4e06-9794-fcc5210ac0b6" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(afterPublication: False, cancelled: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="62783cad-b3c5-389e-f477-0d72887b256c">
+      <Execution id="55b590dc-5d69-4838-b22c-e811e9395ad1" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="StagedOrPublishedFailureRecoversExactReceipt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten(same: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d06c5d6c-2a6b-a0e3-0689-8aab8e6561b0">
+      <Execution id="ef827d36-b51e-4f04-8e5f-23183546d7a3" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="DestinationAppearingBeforePublishIsComparedNeverOverwritten" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries(cancelled: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="813e45a6-893f-bad6-7e7d-3f59c2cd7b51">
+      <Execution id="83fef9ca-85ac-4917-8c2e-f23389e0502b" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="PartialTemporaryFailurePreservesExceptionCleansTempAndRetries" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish(truncate: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="13236d46-294a-eb38-90d5-f430090a206c">
+      <Execution id="7d11cd00-a558-49ce-a750-bebcb5e929d7" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: True, afterPublication: False, canonicalUnavailable: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b3862260-8fab-ce1f-c574-17af874bd709">
+      <Execution id="b4ff0d28-8738-45fb-9f41-8fdc6ab0906e" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries(cancelled: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d60a7213-c612-f917-fdbe-d7fa58a5860f">
+      <Execution id="1bea0de4-7bfa-4b91-b9f9-9095ea254eaf" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="PartialTemporaryFailurePreservesExceptionCleansTempAndRetries" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(kind: &quot;fifo&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="9db8318a-2ed6-e33b-cbe4-cd946cb6eea4">
+      <Execution id="f4b0b19c-aaf0-40b8-999b-3883e7ba21cd" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="NonRegularReceiptIsRejectedBeforeOpening" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(kind: &quot;directory&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="137ad168-1661-58a0-77df-366ab6f81b4e">
+      <Execution id="fc554607-efab-4692-9705-f6dfd99a629e" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="NonRegularReceiptIsRejectedBeforeOpening" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnsafeEventIdentityCannotCreateReceipt(eventId: &quot; &quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="593d657c-4cf8-4933-b5bd-187994a8af10">
+      <Execution id="7d3dc187-60fd-441d-aade-ba32d6032c11" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="UnsafeEventIdentityCannotCreateReceipt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(kind: &quot;fifo&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="86781a40-5129-531c-504c-8cde05ae5f60">
+      <Execution id="3e0d84a4-f940-42a3-84ed-c48b41b8c049" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="StagedReplacementKindIsRetainedWithoutPublication" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(kind: &quot;symlink&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="624fb0c1-bfe7-cfbf-f749-ef8e7c7b69f6">
+      <Execution id="d59440bb-875e-4da8-bc73-816f8eff24da" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="StagedReplacementKindIsRetainedWithoutPublication" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.MissingGenerationCannotCreateReceipt(generation: &quot;&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1f7c2f91-e2e2-b403-2f23-0ea53fb210ff">
+      <Execution id="771ca2bb-0287-4d0c-88b6-80ee63e0e974" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="MissingGenerationCannotCreateReceipt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(afterPublication: False, cancelled: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7d0c8afb-6228-fa93-ca00-7c20d7456e98">
+      <Execution id="8cce7fce-029c-4ba4-bc73-cd82899a2bce" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="StagedOrPublishedFailureRecoversExactReceipt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish(truncate: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="70538ac2-26c0-bbef-b3f4-30dfd5962b7e">
+      <Execution id="f566c6d6-3228-40ed-986e-bc5e10fdd036" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1082c566-4b5c-a097-cb58-7301b8484093">
+      <Execution id="487d31cd-01c1-474e-b130-457951488503" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence(ancestor: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c16016d3-f78d-d4b3-73dd-3a88cd9e20c9">
+      <Execution id="80346137-d512-4b4a-a108-97ca3424f484" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingIdentityRejectsDifferentExactBytesWithoutReplacement(kind: &quot;longer&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="edfcfd23-17c3-30ca-0511-cbbe40a0f25a">
+      <Execution id="f1d5836c-af6e-475a-a0d5-e7584bf79339" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ExistingIdentityRejectsDifferentExactBytesWithoutReplacement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.TemporaryReplacedWithLinkBeforeWriteCannotModifyOutsideBytes" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ebce65ef-fe91-94db-159c-c871affca165">
+      <Execution id="065c744f-4be8-4aa7-ad91-643ed5788569" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="TemporaryReplacedWithLinkBeforeWriteCannotModifyOutsideBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: False, afterPublication: False, canonicalUnavailable: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c78d2e94-a378-41b3-1c2b-4db0f7a0b894">
+      <Execution id="3b1a0a42-6756-4004-a75e-a88bb60dde58" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingIdentityRejectsDifferentExactBytesWithoutReplacement(kind: &quot;whitespace&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="72a793bc-2d4e-accb-4d73-290ab018c406">
+      <Execution id="2a359d49-fc01-45af-ac86-68cc140e15c2" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ExistingIdentityRejectsDifferentExactBytesWithoutReplacement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnsafeEventIdentityCannotCreateReceipt(eventId: &quot;../escape&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="cacb33c8-0522-f7e3-614f-a14e0a9e4370">
+      <Execution id="42ec447a-e2c2-420b-b18a-0c29aab28ed1" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="UnsafeEventIdentityCannotCreateReceipt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExactReceiptAndStableRetrySurviveDetachedWorkspaceDeletion" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5e488729-727d-128a-0860-e7c579098136">
+      <Execution id="2957ccde-c9fe-4281-844b-b1fa04a9c8b3" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ExactReceiptAndStableRetrySurviveDetachedWorkspaceDeletion" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b638925b-17c0-7e61-a636-ff5a8a71aa5d">
+      <Execution id="c5000d5c-1697-4f19-8241-8969865496ce" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.MissingGenerationCannotCreateReceipt(generation: &quot; &quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="8d505877-9543-b269-9ec1-d42a9fab451d">
+      <Execution id="e1b4a6f9-c581-4c39-a868-b71f2bc37b2e" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="MissingGenerationCannotCreateReceipt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(afterPublication: True, cancelled: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ada3d5e9-d6bd-3587-1e48-3b7f2eabeca6">
+      <Execution id="d0fdc375-2915-4f3e-8558-d2a0226a0937" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="StagedOrPublishedFailureRecoversExactReceipt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: True, afterPublication: True, canonicalUnavailable: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6b24d892-d343-c9dc-b484-1006331a89c4">
+      <Execution id="7ce561f2-7416-4201-9d2a-a2cda2ce0db3" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnsafeEventIdentityCannotCreateReceipt(eventId: &quot;&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="69fdd883-a890-8265-14b8-7ae27ed8627e">
+      <Execution id="d652191b-4745-4ced-aa2b-fd702ab15e2b" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="UnsafeEventIdentityCannotCreateReceipt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingOrdinaryHardlinkAllowsSameBytesAndNeverChangesOutsideAlias" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1bb11524-297b-4a52-8f9f-5560aac964ad">
+      <Execution id="a9a8615c-f434-446a-aa5c-12587080a0a9" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ExistingOrdinaryHardlinkAllowsSameBytesAndNeverChangesOutsideAlias" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten(same: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c02fa74a-e96f-91a2-e1ac-6586e6503fe7">
+      <Execution id="14408dd6-18b9-49e9-b070-f7fc66868bf9" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="DestinationAppearingBeforePublishIsComparedNeverOverwritten" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence(ancestor: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a3161f77-20b0-9fda-9936-72bd7f5ea0e5">
+      <Execution id="48b1c8c0-1c4c-4d6b-9f17-fcb7440715fc" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(afterPublication: True, cancelled: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="32cacfd0-5373-801a-86c6-c577a96bf189">
+      <Execution id="8045824f-bba0-42f3-a0bc-be463c9c6d1a" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="StagedOrPublishedFailureRecoversExactReceipt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnsafeEventIdentityCannotCreateReceipt(eventId: &quot;bad\0name&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="500a4736-a40a-9c77-81c7-ebe5760b318c">
+      <Execution id="dc3dcf91-f4d7-44ab-8b7c-5bb41d8b344c" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="UnsafeEventIdentityCannotCreateReceipt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingIdentityRejectsDifferentExactBytesWithoutReplacement(kind: &quot;event&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="752570b2-6902-df9e-a64e-bfdc4a3e9db0">
+      <Execution id="1b5dcbe5-525a-4fc3-b9a2-b100beb5e7fc" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ExistingIdentityRejectsDifferentExactBytesWithoutReplacement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(kind: &quot;directory&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1fb38252-ac78-67aa-7c2a-2a690f33cc54">
+      <Execution id="288793ff-2d2d-40db-9edc-ebe844bda7e8" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="StagedReplacementKindIsRetainedWithoutPublication" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="69fdd883-a890-8265-14b8-7ae27ed8627e" executionId="d652191b-4745-4ced-aa2b-fd702ab15e2b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d06c5d6c-2a6b-a0e3-0689-8aab8e6561b0" executionId="ef827d36-b51e-4f04-8e5f-23183546d7a3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b3862260-8fab-ce1f-c574-17af874bd709" executionId="b4ff0d28-8738-45fb-9f41-8fdc6ab0906e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="86781a40-5129-531c-504c-8cde05ae5f60" executionId="3e0d84a4-f940-42a3-84ed-c48b41b8c049" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="afccf985-26d2-7b33-b044-f42bfb619ba9" executionId="8e23b189-812e-4e42-b887-77ea3b317952" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="13236d46-294a-eb38-90d5-f430090a206c" executionId="7d11cd00-a558-49ce-a750-bebcb5e929d7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="624fb0c1-bfe7-cfbf-f749-ef8e7c7b69f6" executionId="d59440bb-875e-4da8-bc73-816f8eff24da" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="72a793bc-2d4e-accb-4d73-290ab018c406" executionId="2a359d49-fc01-45af-ac86-68cc140e15c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c78d2e94-a378-41b3-1c2b-4db0f7a0b894" executionId="3b1a0a42-6756-4004-a75e-a88bb60dde58" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="593d657c-4cf8-4933-b5bd-187994a8af10" executionId="7d3dc187-60fd-441d-aade-ba32d6032c11" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c02fa74a-e96f-91a2-e1ac-6586e6503fe7" executionId="14408dd6-18b9-49e9-b070-f7fc66868bf9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9db8318a-2ed6-e33b-cbe4-cd946cb6eea4" executionId="f4b0b19c-aaf0-40b8-999b-3883e7ba21cd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1082c566-4b5c-a097-cb58-7301b8484093" executionId="487d31cd-01c1-474e-b130-457951488503" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7d0c8afb-6228-fa93-ca00-7c20d7456e98" executionId="8cce7fce-029c-4ba4-bc73-cd82899a2bce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8d505877-9543-b269-9ec1-d42a9fab451d" executionId="e1b4a6f9-c581-4c39-a868-b71f2bc37b2e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6d012bf4-2b14-f8f1-a836-ab7e5cd0ace1" executionId="8f2a8987-c030-410a-a1bc-7266849c42d9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1bb11524-297b-4a52-8f9f-5560aac964ad" executionId="a9a8615c-f434-446a-aa5c-12587080a0a9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6b24d892-d343-c9dc-b484-1006331a89c4" executionId="7ce561f2-7416-4201-9d2a-a2cda2ce0db3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="813e45a6-893f-bad6-7e7d-3f59c2cd7b51" executionId="83fef9ca-85ac-4917-8c2e-f23389e0502b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ada3d5e9-d6bd-3587-1e48-3b7f2eabeca6" executionId="d0fdc375-2915-4f3e-8558-d2a0226a0937" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="62783cad-b3c5-389e-f477-0d72887b256c" executionId="55b590dc-5d69-4838-b22c-e811e9395ad1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="70538ac2-26c0-bbef-b3f4-30dfd5962b7e" executionId="f566c6d6-3228-40ed-986e-bc5e10fdd036" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a3161f77-20b0-9fda-9936-72bd7f5ea0e5" executionId="48b1c8c0-1c4c-4d6b-9f17-fcb7440715fc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c16016d3-f78d-d4b3-73dd-3a88cd9e20c9" executionId="80346137-d512-4b4a-a108-97ca3424f484" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="32cacfd0-5373-801a-86c6-c577a96bf189" executionId="8045824f-bba0-42f3-a0bc-be463c9c6d1a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ebce65ef-fe91-94db-159c-c871affca165" executionId="065c744f-4be8-4aa7-ad91-643ed5788569" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5e488729-727d-128a-0860-e7c579098136" executionId="2957ccde-c9fe-4281-844b-b1fa04a9c8b3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1f7c2f91-e2e2-b403-2f23-0ea53fb210ff" executionId="771ca2bb-0287-4d0c-88b6-80ee63e0e974" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3fb3f7ef-0507-65e4-d61b-2188a774eefd" executionId="22612c6d-2d4b-4aa0-803c-ac28f920de9c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cacb33c8-0522-f7e3-614f-a14e0a9e4370" executionId="42ec447a-e2c2-420b-b18a-0c29aab28ed1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b638925b-17c0-7e61-a636-ff5a8a71aa5d" executionId="c5000d5c-1697-4f19-8241-8969865496ce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="edfcfd23-17c3-30ca-0511-cbbe40a0f25a" executionId="f1d5836c-af6e-475a-a0d5-e7584bf79339" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dcba2479-8332-02c7-ace8-bb456dcca14d" executionId="753506ce-7924-4790-b2e5-ed516ff96daf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e0bcfac4-f48c-ceea-8ef1-3cebb91d8822" executionId="b932a80c-f837-4e06-9794-fcc5210ac0b6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d60a7213-c612-f917-fdbe-d7fa58a5860f" executionId="1bea0de4-7bfa-4b91-b9f9-9095ea254eaf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1fb38252-ac78-67aa-7c2a-2a690f33cc54" executionId="288793ff-2d2d-40db-9edc-ebe844bda7e8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="500a4736-a40a-9c77-81c7-ebe5760b318c" executionId="dc3dcf91-f4d7-44ab-8b7c-5bb41d8b344c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="752570b2-6902-df9e-a64e-bfdc4a3e9db0" executionId="1b5dcbe5-525a-4fc3-b9a2-b100beb5e7fc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="137ad168-1661-58a0-77df-366ab6f81b4e" executionId="fc554607-efab-4692-9705-f6dfd99a629e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="39" executed="39" passed="16" failed="23" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.37]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.25]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.28]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.48]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.48]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.48]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:02.48]       ---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.48]       Stack Trace:
+[xUnit.net 00:00:02.48]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(179,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish(Boolean truncate)
+[xUnit.net 00:00:02.48]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(181,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish(Boolean truncate)
+[xUnit.net 00:00:02.48]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.48]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.48]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(896,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName)
+[xUnit.net 00:00:02.48]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1167,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName)
+[xUnit.net 00:00:02.48]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(335,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.48]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(413,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.49]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.49]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.49]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:02.49]       ---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.49]       Stack Trace:
+[xUnit.net 00:00:02.49]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(179,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish(Boolean truncate)
+[xUnit.net 00:00:02.49]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(181,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish(Boolean truncate)
+[xUnit.net 00:00:02.49]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.49]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.49]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(896,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName)
+[xUnit.net 00:00:02.49]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1167,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName)
+[xUnit.net 00:00:02.49]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(335,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.49]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(413,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.52]       Assert.Same() Failure: Values are not the same instance
+[xUnit.net 00:00:02.52]       Expected: System.OperationCanceledException: synthetic receipt cancellation
+[xUnit.net 00:00:02.52]       Actual:   System.PlatformNotSupportedException: Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.52]          at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+[xUnit.net 00:00:02.52]          at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+[xUnit.net 00:00:02.52]          at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+[xUnit.net 00:00:02.52]          at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+[xUnit.net 00:00:02.52]          at BookOfEternityClient.Services.GmWorkers.GmWorkerQuarantinedExecution.CleanupConfirmedAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs:line 177
+[xUnit.net 00:00:02.52]          at BookOfEternityClient.Services.GmWorkers.GmWorkerQuarantineReaper.QuarantineEntry.TryReapAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs:line 468
+[xUnit.net 00:00:02.52]       Stack Trace:
+[xUnit.net 00:00:02.52]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(309,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable)
+[xUnit.net 00:00:02.52]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(325,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable)
+[xUnit.net 00:00:02.52]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.54]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.54]       Collection: ["/workspace/ipc-tmp/boe-quarantine-receipt-ab3e7408"···]
+[xUnit.net 00:00:02.54]       Stack Trace:
+[xUnit.net 00:00:02.54]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(416,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.Fixture.AssertNoTemps()
+[xUnit.net 00:00:02.54]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(316,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable)
+[xUnit.net 00:00:02.54]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(325,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable)
+[xUnit.net 00:00:02.54]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.56]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.56]       Collection: ["/workspace/ipc-tmp/boe-quarantine-receipt-c5850f6a"···]
+[xUnit.net 00:00:02.56]       Stack Trace:
+[xUnit.net 00:00:02.56]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(416,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.Fixture.AssertNoTemps()
+[xUnit.net 00:00:02.56]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(316,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable)
+[xUnit.net 00:00:02.56]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(325,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable)
+[xUnit.net 00:00:02.56]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.57]       Assert.Same() Failure: Values are not the same instance
+[xUnit.net 00:00:02.57]       Expected: System.IO.IOException: synthetic receipt failure
+[xUnit.net 00:00:02.57]       Actual:   System.PlatformNotSupportedException: Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.57]          at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+[xUnit.net 00:00:02.57]          at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+[xUnit.net 00:00:02.57]          at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+[xUnit.net 00:00:02.57]          at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+[xUnit.net 00:00:02.57]          at BookOfEternityClient.Services.GmWorkers.GmWorkerQuarantinedExecution.CleanupConfirmedAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs:line 177
+[xUnit.net 00:00:02.57]          at BookOfEternityClient.Services.GmWorkers.GmWorkerQuarantineReaper.QuarantineEntry.TryReapAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs:line 468
+[xUnit.net 00:00:02.57]       Stack Trace:
+[xUnit.net 00:00:02.57]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(309,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable)
+[xUnit.net 00:00:02.57]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(325,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(Boolean cancelled, Boolean afterPublication, Boolean canonicalUnavailable)
+[xUnit.net 00:00:02.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.58]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.58]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.58]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:02.58]       ---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.58]       Stack Trace:
+[xUnit.net 00:00:02.58]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(256,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(String kind)
+[xUnit.net 00:00:02.58]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(259,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(String kind)
+[xUnit.net 00:00:02.58]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.58]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.59]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(896,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName)
+[xUnit.net 00:00:02.59]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1167,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName)
+[xUnit.net 00:00:02.59]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(335,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.59]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(413,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.60]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.60]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.60]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:02.60]       ---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.60]       Stack Trace:
+[xUnit.net 00:00:02.60]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(256,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(String kind)
+[xUnit.net 00:00:02.60]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(259,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(String kind)
+[xUnit.net 00:00:02.60]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.60]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.60]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(896,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName)
+[xUnit.net 00:00:02.60]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1167,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName)
+[xUnit.net 00:00:02.60]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(335,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.60]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(413,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.62]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.62]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.62]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:02.62]       ---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.62]       Stack Trace:
+[xUnit.net 00:00:02.62]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(256,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(String kind)
+[xUnit.net 00:00:02.62]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(259,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(String kind)
+[xUnit.net 00:00:02.62]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.62]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.62]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(896,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName)
+[xUnit.net 00:00:02.62]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1167,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName)
+[xUnit.net 00:00:02.62]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(335,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.62]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(413,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.63]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.63]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.63]       Actual:   typeof(System.NotSupportedException)
+[xUnit.net 00:00:02.63]       ---- System.NotSupportedException : Stream does not support seeking.
+[xUnit.net 00:00:02.63]       Stack Trace:
+[xUnit.net 00:00:02.63]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(195,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(String kind)
+[xUnit.net 00:00:02.63]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(197,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(String kind)
+[xUnit.net 00:00:02.63]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.63]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.63]            at System.IO.RandomAccess.ValidateInput(SafeFileHandle handle, Int64 fileOffset, Boolean allowUnseekableHandles)
+[xUnit.net 00:00:02.63]            at System.IO.RandomAccess.GetLength(SafeFileHandle handle)
+[xUnit.net 00:00:02.63]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1003,0): at BookOfEternityClient.Core.PhysicalFileAuthority.ReadOpenedFileBytes(SafeFileHandle handle, String authorityName)
+[xUnit.net 00:00:02.63]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(1078,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.EnsureQuarantineAuditReceiptMatches(FileStream stream, String receiptPath, Byte[] expectedBytes)
+[xUnit.net 00:00:02.63]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(305,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.65]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.65]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.65]       Actual:   typeof(System.UnauthorizedAccessException)
+[xUnit.net 00:00:02.65]       ---- System.UnauthorizedAccessException : Access to the path '/workspace/ipc-tmp/boe-quarantine-receipt-6a9d7d7900044b9985f5979d8851c017/runtime/.worker_runtime/98c3d29d317fdea11fdf4824/quarantine-audit/cleanup-stable.json' is denied.
+[xUnit.net 00:00:02.65]       -------- System.IO.IOException : Permission denied
+[xUnit.net 00:00:02.65]       Stack Trace:
+[xUnit.net 00:00:02.65]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(195,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(String kind)
+[xUnit.net 00:00:02.65]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(197,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(String kind)
+[xUnit.net 00:00:02.65]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.65]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.65]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+[xUnit.net 00:00:02.65]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:02.65]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:02.65]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:02.65]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)
+[xUnit.net 00:00:02.65]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(614,0): at BookOfEternityClient.Core.PhysicalFileAuthority.OpenReadFile(StableDirectory parent, String expectedPath, String authorityName, Boolean asynchronous, Boolean shareDelete, Action afterOpenedBeforeValidation, Boolean requireSingleLink, Boolean shareWrite)
+[xUnit.net 00:00:02.65]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(297,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.65]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.65]         
+[xUnit.net 00:00:02.68]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.68]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.68]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:02.68]       ---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.68]       Stack Trace:
+[xUnit.net 00:00:02.68]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(214,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence(Boolean ancestor)
+[xUnit.net 00:00:02.68]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(218,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence(Boolean ancestor)
+[xUnit.net 00:00:02.68]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.68]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.68]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(896,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName)
+[xUnit.net 00:00:02.68]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1167,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName)
+[xUnit.net 00:00:02.68]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(335,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.68]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(413,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.71]       Assert.Same() Failure: Values are not the same instance
+[xUnit.net 00:00:02.71]       Expected: System.IO.IOException: synthetic receipt failure
+[xUnit.net 00:00:02.71]       Actual:   System.PlatformNotSupportedException: Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.71]          at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+[xUnit.net 00:00:02.71]          at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+[xUnit.net 00:00:02.71]          at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+[xUnit.net 00:00:02.71]          at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+[xUnit.net 00:00:02.71]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76
+[xUnit.net 00:00:02.71]       Stack Trace:
+[xUnit.net 00:00:02.71]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(134,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled)
+[xUnit.net 00:00:02.71]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(141,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled)
+[xUnit.net 00:00:02.71]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.79]       Assert.Same() Failure: Values are not the same instance
+[xUnit.net 00:00:02.79]       Expected: System.OperationCanceledException: synthetic receipt cancellation
+[xUnit.net 00:00:02.79]       Actual:   System.PlatformNotSupportedException: Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.79]          at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+[xUnit.net 00:00:02.79]          at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+[xUnit.net 00:00:02.79]          at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+[xUnit.net 00:00:02.79]          at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+[xUnit.net 00:00:02.79]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76
+[xUnit.net 00:00:02.79]       Stack Trace:
+[xUnit.net 00:00:02.79]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(134,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled)
+[xUnit.net 00:00:02.79]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(141,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled)
+[xUnit.net 00:00:02.79]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.80]       Assert.Same() Failure: Values are not the same instance
+[xUnit.net 00:00:02.80]       Expected: System.IO.IOException: synthetic receipt failure
+[xUnit.net 00:00:02.80]       Actual:   System.PlatformNotSupportedException: Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.80]          at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+[xUnit.net 00:00:02.80]          at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+[xUnit.net 00:00:02.80]          at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+[xUnit.net 00:00:02.80]          at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+[xUnit.net 00:00:02.80]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76
+[xUnit.net 00:00:02.80]       Stack Trace:
+[xUnit.net 00:00:02.80]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(134,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled)
+[xUnit.net 00:00:02.80]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(141,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled)
+[xUnit.net 00:00:02.80]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.82]       Assert.Same() Failure: Values are not the same instance
+[xUnit.net 00:00:02.82]       Expected: System.OperationCanceledException: synthetic receipt cancellation
+[xUnit.net 00:00:02.82]       Actual:   System.PlatformNotSupportedException: Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.82]          at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+[xUnit.net 00:00:02.82]          at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+[xUnit.net 00:00:02.82]          at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+[xUnit.net 00:00:02.82]          at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+[xUnit.net 00:00:02.82]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76
+[xUnit.net 00:00:02.82]       Stack Trace:
+[xUnit.net 00:00:02.82]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(134,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled)
+[xUnit.net 00:00:02.82]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(141,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(Boolean afterPublication, Boolean cancelled)
+[xUnit.net 00:00:02.82]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.83]       Assert.IsType() Failure: Value is not the exact type
+[xUnit.net 00:00:02.83]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.83]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:02.83]       Stack Trace:
+[xUnit.net 00:00:02.83]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(157,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten(Boolean same)
+[xUnit.net 00:00:02.83]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(159,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten(Boolean same)
+[xUnit.net 00:00:02.83]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.84]       Assert.Null() Failure: Value is not null
+[xUnit.net 00:00:02.84]       Expected: null
+[xUnit.net 00:00:02.84]       Actual:   System.PlatformNotSupportedException: Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.84]          at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 896
+[xUnit.net 00:00:02.84]          at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1167
+[xUnit.net 00:00:02.84]          at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 335
+[xUnit.net 00:00:02.84]          at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs:line 413
+[xUnit.net 00:00:02.84]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76
+[xUnit.net 00:00:02.84]       Stack Trace:
+[xUnit.net 00:00:02.84]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(157,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten(Boolean same)
+[xUnit.net 00:00:02.84]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(159,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten(Boolean same)
+[xUnit.net 00:00:02.84]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.88]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.88]       Collection: ["/workspace/ipc-tmp/boe-quarantine-receipt-eea4b1d3"···]
+[xUnit.net 00:00:02.88]       Stack Trace:
+[xUnit.net 00:00:02.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(416,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.Fixture.AssertNoTemps()
+[xUnit.net 00:00:02.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(111,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries(Boolean cancelled)
+[xUnit.net 00:00:02.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(114,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries(Boolean cancelled)
+[xUnit.net 00:00:02.88]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.89]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.89]       Collection: ["/workspace/ipc-tmp/boe-quarantine-receipt-83d10756"···]
+[xUnit.net 00:00:02.89]       Stack Trace:
+[xUnit.net 00:00:02.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(416,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.Fixture.AssertNoTemps()
+[xUnit.net 00:00:02.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(111,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries(Boolean cancelled)
+[xUnit.net 00:00:02.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(114,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries(Boolean cancelled)
+[xUnit.net 00:00:02.89]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.91]       System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.91]       Stack Trace:
+[xUnit.net 00:00:02.91]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(896,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName)
+[xUnit.net 00:00:02.91]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1167,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName)
+[xUnit.net 00:00:02.91]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(335,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.91]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(413,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.91]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(32,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExactReceiptAndStableRetrySurviveDetachedWorkspaceDeletion()
+[xUnit.net 00:00:02.91]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(42,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExactReceiptAndStableRetrySurviveDetachedWorkspaceDeletion()
+[xUnit.net 00:00:02.91]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.92]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.92]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.92]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:02.92]       ---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:02.92]       Stack Trace:
+[xUnit.net 00:00:02.92]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(234,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.TemporaryReplacedWithLinkBeforeWriteCannotModifyOutsideBytes()
+[xUnit.net 00:00:02.92]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(237,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.TemporaryReplacedWithLinkBeforeWriteCannotModifyOutsideBytes()
+[xUnit.net 00:00:02.92]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.92]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.92]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(896,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName)
+[xUnit.net 00:00:02.92]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1167,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName)
+[xUnit.net 00:00:02.92]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(335,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:02.92]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(413,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:03.04]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:03.04]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:03.04]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:03.04]       ---- System.PlatformNotSupportedException : Opened-file identity capture is available only on Windows.
+[xUnit.net 00:00:03.04]       Stack Trace:
+[xUnit.net 00:00:03.04]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(341,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot()
+[xUnit.net 00:00:03.04]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs(345,0): at BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot()
+[xUnit.net 00:00:03.04]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.04]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:03.04]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(896,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureFileIdentity(SafeFileHandle handle, String authorityName)
+[xUnit.net 00:00:03.04]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1167,0): at BookOfEternityClient.Core.PhysicalFileAuthority.CaptureOpenedFileAuthority(SafeFileHandle handle, String expectedPath, String authorityName)
+[xUnit.net 00:00:03.04]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(335,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:03.04]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs(413,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync(String sessionGeneration, WorkerAuditEvent auditEvent)
+[xUnit.net 00:00:03.04]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs(177,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerQuarantinedExecution.CleanupConfirmedAsync()
+[xUnit.net 00:00:03.05]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.5277017+00:00">
+        <Text>[xUnit.net 00:00:02.48]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish(truncate: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.5379854+00:00">
+        <Text>[xUnit.net 00:00:02.49]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish(truncate: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.5676148+00:00">
+        <Text>[xUnit.net 00:00:02.52]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: True, afterPublication: True, canonicalUnavailable: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.5912683+00:00">
+        <Text>[xUnit.net 00:00:02.54]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: True, afterPublication: False, canonicalUnavailable: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.6061984+00:00">
+        <Text>[xUnit.net 00:00:02.56]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: False, afterPublication: False, canonicalUnavailable: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.6181720+00:00">
+        <Text>[xUnit.net 00:00:02.57]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: False, afterPublication: True, canonicalUnavailable: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.6326299+00:00">
+        <Text>[xUnit.net 00:00:02.58]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(kind: "directory") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.6486926+00:00">
+        <Text>[xUnit.net 00:00:02.60]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(kind: "fifo") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.6672701+00:00">
+        <Text>[xUnit.net 00:00:02.62]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication(kind: "symlink") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.7037960+00:00">
+        <Text>[xUnit.net 00:00:02.63]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(kind: "fifo") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.7038865+00:00">
+        <Text>[xUnit.net 00:00:02.65]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening(kind: "directory") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.7237279+00:00">
+        <Text>[xUnit.net 00:00:02.68]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence(ancestor: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.7573304+00:00">
+        <Text>[xUnit.net 00:00:02.71]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(afterPublication: True, cancelled: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.8358111+00:00">
+        <Text>[xUnit.net 00:00:02.79]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(afterPublication: False, cancelled: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.8476262+00:00">
+        <Text>[xUnit.net 00:00:02.80]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(afterPublication: False, cancelled: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.8673874+00:00">
+        <Text>[xUnit.net 00:00:02.82]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt(afterPublication: True, cancelled: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.8794578+00:00">
+        <Text>[xUnit.net 00:00:02.83]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten(same: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.8892096+00:00">
+        <Text>[xUnit.net 00:00:02.84]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten(same: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.9268516+00:00">
+        <Text>[xUnit.net 00:00:02.88]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries(cancelled: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.9345490+00:00">
+        <Text>[xUnit.net 00:00:02.89]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries(cancelled: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.9593323+00:00">
+        <Text>[xUnit.net 00:00:02.91]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExactReceiptAndStableRetrySurviveDetachedWorkspaceDeletion [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:12.9700594+00:00">
+        <Text>[xUnit.net 00:00:02.92]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.TemporaryReplacedWithLinkBeforeWriteCannotModifyOutsideBytes [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T12:44:13.0919596+00:00">
+        <Text>[xUnit.net 00:00:03.04]     BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

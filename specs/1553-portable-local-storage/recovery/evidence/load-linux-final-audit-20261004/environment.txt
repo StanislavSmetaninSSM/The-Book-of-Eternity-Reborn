@@ -1,0 +1,72 @@
+StartedUtc=2026-10-04T00:56:20Z
+Linux 6.18.44 x86_64
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+NAME="Debian GNU/Linux"
+VERSION_ID="13"
+VERSION="13 (trixie)"
+VERSION_CODENAME=trixie
+DEBIAN_VERSION_FULL=13.6
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+DOTNET_CLI_TELEMETRY_OPTOUT=1
+POWERSHELL_TELEMETRY_OPTOUT=1
+TESTINGPLATFORM_TELEMETRY_OPTOUT=1
+DOTNET_PROCESSOR_COUNT=1
+GenerateDocumentationFile=true
+NoWarn=1591
+.NET SDK:
+ Version:           10.0.401
+ Commit:            e34a38d2ae
+ Workload version:  10.0.400-manifests.63b36e85
+ MSBuild version:   18.9.11+e34a38d2a
+
+Runtime Environment:
+ OS Name:     debian
+ OS Version:  13
+ OS Platform: Linux
+ RID:         linux-x64
+ Base Path:   [toolchain]/dotnet/sdk/10.0.401/
+
+.NET workloads installed:
+There are no installed workloads to display.
+Configured to use workload sets when installing new manifests.
+No workload sets are installed. Run "dotnet workload restore" to install a workload set.
+
+Host:
+  Version:      10.0.12
+  Architecture: x64
+  Commit:       95017c711e
+
+.NET SDKs installed:
+  10.0.401 [[toolchain]/dotnet/sdk]
+
+.NET runtimes installed:
+  Microsoft.AspNetCore.App 8.0.31 [[toolchain]/dotnet/shared/Microsoft.AspNetCore.App]
+  Microsoft.AspNetCore.App 10.0.12 [[toolchain]/dotnet/shared/Microsoft.AspNetCore.App]
+  Microsoft.NETCore.App 8.0.31 [[toolchain]/dotnet/shared/Microsoft.NETCore.App]
+  Microsoft.NETCore.App 10.0.12 [[toolchain]/dotnet/shared/Microsoft.NETCore.App]
+
+Other architectures found:
+  None
+
+Environment variables:
+  DOTNET_CLI_HOME                          [[run-root]/dotnet-home]
+  DOTNET_CLI_TELEMETRY_OPTOUT              [1]
+  DOTNET_GENERATE_ASPNET_CERTIFICATE       [false]
+  DOTNET_PROCESSOR_COUNT                   [1]
+  DOTNET_ROOT                              [[toolchain]/dotnet]
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE        [1]
+
+global.json file:
+  Not found
+
+Learn more:
+  https://aka.ms/dotnet/info
+
+Download .NET:
+  https://aka.ms/dotnet/download
+7.6.6
+Debian GNU/Linux 13 (trixie)
+[run-root]/temp/

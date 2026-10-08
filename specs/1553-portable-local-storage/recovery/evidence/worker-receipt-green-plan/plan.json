@@ -1,0 +1,122 @@
+{
+  "Categories": [
+    "worker-quarantine-audit-receipt"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "da35de5498d8edf2787c987bd5a45ea5aa39e988",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 72.7201112,
+  "Descriptors": [
+    {
+      "Name": "worker-quarantine-audit-receipt-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "worker-quarantine-audit-receipt",
+      "Categories": [
+        "worker-quarantine-audit-receipt"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExactReceiptAndStableRetrySurviveDetachedWorkspaceDeletion|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingIdentityRejectsDifferentExactBytesWithoutReplacement|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingOrdinaryHardlinkAllowsSameBytesAndNeverChangesOutsideAlias|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.MissingGenerationCannotCreateReceipt|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.TemporaryReplacedWithLinkBeforeWriteCannotModifyOutsideBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnsafeEventIdentityCannotCreateReceipt",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 39,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.DestinationAppearingBeforePublishIsComparedNeverOverwritten",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExactReceiptAndStableRetrySurviveDetachedWorkspaceDeletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingIdentityRejectsDifferentExactBytesWithoutReplacement",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ExistingOrdinaryHardlinkAllowsSameBytesAndNeverChangesOutsideAlias",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.MissingGenerationCannotCreateReceipt",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.NonRegularReceiptIsRejectedBeforeOpening",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PartialTemporaryFailurePreservesExceptionCleansTempAndRetries",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReceiptDirectoryOrRuntimeAncestorLinkCannotRedirectEvidence",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedBytesAreCheckedAgainstSuppliedReceiptBeforePublish",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedOrPublishedFailureRecoversExactReceipt",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.StagedReplacementKindIsRetainedWithoutPublication",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.TemporaryReplacedWithLinkBeforeWriteCannotModifyOutsideBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnsafeEventIdentityCannotCreateReceipt",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "worker-quarantine-audit-receipt-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-quarantine-audit-receipt",
+      "Categories": [
+        "worker-quarantine-audit-receipt"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

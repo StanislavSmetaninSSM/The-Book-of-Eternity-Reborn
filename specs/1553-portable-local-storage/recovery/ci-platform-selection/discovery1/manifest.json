@@ -1,0 +1,41 @@
+{
+  "sourceHead": "f533213cc22edfb7403697d4a27f4cb5c89b6165",
+  "command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -TimeoutMinutes 15",
+  "exitCode": 0,
+  "cleanup": "complete",
+  "artifacts": [
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/discovery1/Build-integration.log.gz",
+      "originalSize": 16422,
+      "originalSha256": "2ba2826fdee12b9d2cf22a959773d9290c66a62ef7221c3175b973dff9ef4afb",
+      "storedSha256": "603f7d463d3c7752230360eff440f7a0dadf610b2430463eb867ac6c8efde61b"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/discovery1/Build-unit.log.gz",
+      "originalSize": 19988,
+      "originalSha256": "9c0fff8835e913d17878b20da6f372149724b4ab18ab0528da30c55c13a27d70",
+      "storedSha256": "0f9455d74828a2a6829a2313413a2a389563cb5f7ad023b4e9a71af9dc169223"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/discovery1/catalog-audit.json.gz",
+      "originalSize": 103,
+      "originalSha256": "82cdeb7e995f46d74893d26b341a1b3e863aafcd81c40cd0517a2aaaea29daad",
+      "storedSha256": "3daa5f68a68e308f28a1bd9ddb9f9b616a2978efe335f89bd13bdb16c190108e"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/discovery1/dotnet-test.log.gz",
+      "originalSize": 3179570,
+      "originalSha256": "8108f9fb9666b0d410fc2fe87fedaffb236af5a1c78b16b58c14bf548f70bdce",
+      "storedSha256": "792d16b2e58cdf3532300cbdb2cec0e699fa02f538e4b0bd2aa1789b90d4d3a6"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/discovery1/summary.json.gz",
+      "originalSize": 1600,
+      "originalSha256": "45b7b07e1b1ba8d84446f85cd7eeb7141162d9dc87fa2345636deed9cfd24c25",
+      "storedSha256": "975320f5c50cab65b3e07ec3c09a7ee7ba73e0661cb9699134dc50c8f43714db"
+    }
+  ],
+  "categories": 434,
+  "identities": 11193,
+  "executed": 0
+}

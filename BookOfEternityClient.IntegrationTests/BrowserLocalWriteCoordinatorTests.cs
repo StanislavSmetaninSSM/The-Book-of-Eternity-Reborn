@@ -9,7 +9,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "RegressionIntegration")]
-public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
+public sealed partial class BrowserLocalWriteCoordinatorTests : IDisposable
 {
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
@@ -1237,6 +1237,8 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
     [Fact]
     public async Task ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock()
     {
+        await using (var bootstrapLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            _fs.GetOrCreateSessionGeneration(bootstrapLease);
         var lockService = new LocalUiSessionLockService(_fs, _timeProvider);
         var coordinator = CreateCoordinator(lockService);
         var replacementOwner = Owner(
@@ -1249,7 +1251,7 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
                 replacementOwner.OwnerId,
                 replacementOwner.OwnerLabel,
                 "browser save load"),
-            async () =>
+            async admission =>
             {
                 await SessionReplacementTestHarness.RotateGenerationAsync(_fs);
                 var replacementLock = await lockService.AcquireOrRefreshAsync(
@@ -1264,7 +1266,8 @@ public sealed class BrowserLocalWriteCoordinatorTests : IDisposable
                     "deterministic replacement failure");
             });
 
-        Assert.False(result.Success);
+        Assert.Equal(LoadReplacementDisposition.Uncertain, result.Disposition);
+        Assert.True(result.ContinuationBlocked);
         Assert.NotNull(replacementLockBytes);
         Assert.Equal(
             replacementLockBytes,

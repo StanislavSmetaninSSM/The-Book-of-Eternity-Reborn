@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-load-storage-faults"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "1ffda2e8972080dfc9d74c5a299b6301c28f7826",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 43.5136594,
+  "Descriptors": [
+    {
+      "Name": "gm-load-storage-faults-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-storage-faults",
+      "Categories": [
+        "gm-load-storage-faults"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_TypedStorageAndIndependentAdmission",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_TypedStorageAndIndependentAdmission",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

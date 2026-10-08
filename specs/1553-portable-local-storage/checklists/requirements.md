@@ -1,0 +1,29 @@
+# Requirements consistency: #1553
+
+## Historical original feature review
+
+- [x] Approved storage design and latest user scope preserved; no redundant approval gate
+- [x] Current branch is main-based; wound acceptance remains deferred
+- [x] Both real Linux clients and persistent arbitrary CLI are explicit acceptance scenarios
+- [x] Windows execution is owner-run and never represented as tested here
+- [x] Trusted-player simplification retains data-loss recovery, path/schema validation and accepted-turn integrity
+- [x] Legacy journal cutover, unknown contents, generation and power-loss boundary are explicit
+- [x] No fabricated recovery of old code/test results
+- [x] Requirements map to bounded plan/tasks; generic GM draft is not labeled approved
+- [x] Category-only testing, isolated state, remote checkpoints and independent review preserved
+- [x] Independent Astra XHigh reconstruction review complete
+- [x] Spec Kit prerequisite/consistency checks recorded in plan.md
+
+## Local load-filesystem revision 1 — 2026-10-03
+
+- [x] Requested complete filesystem scope maps to existing T032-B1/B2/B3 and the filesystem part of B5; public clients and live game remain separate.
+- [x] Preserved archive limits, logical state/history authority, library/source protection, settings absence, recovery and typed outcomes are explicit in LOAD-FS-001–008.
+- [x] Current nine GREEN cases, five unfixed defects and unverified fixture correction retain their actual status.
+- [x] Native Windows and Linux evidence are required; Linux CI introduces no remote gameplay dependency.
+- [x] Category selection, isolated mutable fixtures, causal proof and verified remote restoration remain required.
+- [x] Current Sol 6.1 XHigh independent-review strategy is distinguished from historical Astra review identities.
+- [x] Scope contains no guessed screening cause or screening experiment; no GM-authored mechanic changes are proposed.
+- [x] User has reviewed and approved this exact written specification revision 1 through the explicit approval reply.
+- [x] Incremental detailed plan/tasks phases and read-only cross-artifact consistency completed: 8/8 local requirements map to six dependency-ordered execution owners; implementation/design are authorized by the owner's subsequent review waiver; independent development review remains mandatory.
+- [x] Owner explicitly waived further written spec/plan/revision review and authorized recommended autonomous decisions, covering execution plan revision 1 and its explicit v3 namespace addendum.
+- [x] Independent Sol 6.1 XHigh review cleared the complete eight-document design block at `8ca3fbcab5ba92f0ffe2db1c109229246e589eac` with no actionable finding; this is design clearance, not implementation/native acceptance.

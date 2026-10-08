@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun>
+  <Results>
+    <UnitTestResult testId="73041D89F773E1446A478172F4905A52AA018ADC6A5D639F80E01D6DCA9CA79E" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh launcher: missing-source preserves Committed and blocks fresh continuation)" outcome="Passed" />
+    <UnitTestResult testId="3B678036FAFEF48962FBED56630902CC4C4E6D17812F0CF1EF0EB26DF1288311" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh launcher: lost-restart preserves Committed and blocks fresh continuation)" outcome="Passed" />
+    <UnitTestResult testId="551431C3201E5E229B92B70288FB65EB25F95974AF68CE4A32582A0D10950701" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh launcher: cannot navigate while fresh launch remains unconfirmed)" outcome="Passed" />
+    <UnitTestResult testId="E2157274998A735B5A0E9B3B5A0F088E4EFDDB65A0FFA6B431FECB4035CCD0D7" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh settings: missing-source preserves Committed and blocks fresh continuation)" outcome="Passed" />
+    <UnitTestResult testId="B57093D9436460AD6B6E77FE35094779FB7593A157EE68AABA66606F5A6729BA" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh settings: lost-restart preserves Committed and blocks fresh continuation)" outcome="Passed" />
+    <UnitTestResult testId="342C111C184E57F80B37CB33DC1CE303898598D22134A2A61FEB30A84F34C1E4" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh settings: cannot navigate while fresh launch remains unconfirmed)" outcome="Passed" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest id="73041D89F773E1446A478172F4905A52AA018ADC6A5D639F80E01D6DCA9CA79E" storage="category-vitest" />
+    <UnitTest id="3B678036FAFEF48962FBED56630902CC4C4E6D17812F0CF1EF0EB26DF1288311" storage="category-vitest" />
+    <UnitTest id="551431C3201E5E229B92B70288FB65EB25F95974AF68CE4A32582A0D10950701" storage="category-vitest" />
+    <UnitTest id="E2157274998A735B5A0E9B3B5A0F088E4EFDDB65A0FFA6B431FECB4035CCD0D7" storage="category-vitest" />
+    <UnitTest id="B57093D9436460AD6B6E77FE35094779FB7593A157EE68AABA66606F5A6729BA" storage="category-vitest" />
+    <UnitTest id="342C111C184E57F80B37CB33DC1CE303898598D22134A2A61FEB30A84F34C1E4" storage="category-vitest" />
+  </TestDefinitions>
+  <ResultSummary>
+    <Counters total="6" executed="6" passed="6" failed="0" />
+  </ResultSummary>
+</TestRun>

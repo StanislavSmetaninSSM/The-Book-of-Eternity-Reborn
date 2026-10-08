@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/opt/codex/bin/codex",
+    "--no-daemon",
+    "-C",
+    "/workspace/qualification-1553-production-main-design/empty-scratch"
+  ],
+  "noPromptArgument": true,
+  "noModelInput": true,
+  "ptyRetainedUntilRootReap": true,
+  "dimensions": [
+    100,
+    25
+  ],
+  "rootPid": 427311,
+  "exitCode": -2,
+  "elapsedSeconds": 4.014,
+  "inputJournal": [
+    {
+      "atSeconds": 4.011,
+      "hex": "03",
+      "purpose": "exit-only Ctrl+C; no acceptance or prompt"
+    }
+  ],
+  "scopedSignals": [],
+  "rawBytes": 220,
+  "scratchFilesAfter": []
+}

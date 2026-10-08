@@ -1,0 +1,87 @@
+{
+  "Categories": [
+    "portable-session-generation-consumers"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-session-generation-consumers",
+      "reason": "Observe the actual legacy CommitLoadTransaction reader-boundary regression before restoring that private gate; prior 138-case common-reader covering evidence stays separate.",
+      "contracts": [
+        "original load-journal generation read gate",
+        "journal retained before legacy commit"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "81cee6b208fa1c99108477cedc41bde431e043c6",
+    "WorkingTreeFingerprint": "D8313E7F82B67709BE0933F2DBF58829052CA24A9317151DAEFA9EB820995CB8",
+    "ChangedFiles": 3
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-session-generation-consumers",
+      "Seconds": 6.7099596,
+      "BudgetMinutes": 5,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0833059,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0157209,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0136152,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 178.5702202,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 37.3526063,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0040161,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:03:50.9894749",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 10,
+    "CompletedCases": 10,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 10,
+    "Executed": 10,
+    "Passed": 10,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

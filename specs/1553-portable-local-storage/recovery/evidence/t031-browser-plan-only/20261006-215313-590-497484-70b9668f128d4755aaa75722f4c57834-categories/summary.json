@@ -1,0 +1,81 @@
+{
+  "Categories": [
+    "browser-rollback-linux",
+    "browser-rollback-linux-boundaries"
+  ],
+  "Reasons": [
+    {
+      "category": "browser-rollback-linux",
+      "reason": "T031 first causal RED against actual existing consumer, bootstrapped isolated Linux root. New positive oracles reach staging and record callback execution; no unrelated cohort.",
+      "contracts": [
+        "#1553 T031 trusted-local browser original main/worker/generation/UI lease rollback"
+      ]
+    },
+    {
+      "category": "browser-rollback-linux-boundaries",
+      "reason": "T031 connected trusted-local browser recorder/recovery/external participant and original outcome finalization. Include only independent-review-selected exact affected ordinary publication/admission/closing and both actual Browser Load full-bundle regressions, once after final source fixes; no old class/cohort reruns.",
+      "contracts": [
+        "#1553 T031 original browser record byte intent + scoped recovery + exact outcome retention"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "b08159ee8ea818c4339fc0554f24388a441c261d",
+    "WorkingTreeFingerprint": "A934A720FCF1168F01D1FFF12A44935CC74EAE34D19B62934161CD978A5E0591",
+    "ChangedFiles": 9
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0778281,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0499757,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0897767,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0039778,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:09.7508994",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 71,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "browser-rollback-linux-integration-001",
+      "browser-rollback-linux-boundaries-integration-002",
+      "browser-rollback-linux-boundaries-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

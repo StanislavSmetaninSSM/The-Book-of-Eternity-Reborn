@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "gm-main-browser-bundle",
+    "gm-main-browser-bundle-client"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "49525f8f0e0de9e3ef3d81949a86d971342a100b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 40.8255594,
+  "Descriptors": [
+    {
+      "Name": "gm-main-browser-bundle-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "gm-main-browser-bundle",
+      "Categories": [
+        "gm-main-browser-bundle"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": true,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-browser-bundle-client-frontend-002",
+      "Project": "frontend",
+      "Category": "gm-main-browser-bundle-client",
+      "Categories": [
+        "gm-main-browser-bundle-client"
+      ],
+      "Filter": null,
+      "Adapter": "vitest",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

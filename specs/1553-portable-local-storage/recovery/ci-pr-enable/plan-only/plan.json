@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "test-ci-platform-contracts"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "9fde68013d111040719bf868c074c756976f988c",
+    "WorkingTreeFingerprint": "33621C3395A8B722642D06A361E46D2F5E315027788D72970A9CDFE3C58E367E",
+    "ChangedFiles": 6
+  },
+  "PreparationSeconds": 0.0927284,
+  "Descriptors": [
+    {
+      "Name": "test-ci-platform-contracts-powershell-001",
+      "Project": "powershell",
+      "Category": "test-ci-platform-contracts",
+      "Categories": [
+        "test-ci-platform-contracts"
+      ],
+      "Filter": null,
+      "Adapter": "powershell",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "scripts/tests/test-ci-platform.tests.ps1",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

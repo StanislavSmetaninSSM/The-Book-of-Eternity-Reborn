@@ -1,0 +1,38 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "Independent design, read-only selected environment and completed build-server cleanup",
+  "Artifacts": [
+    {
+      "Path": "build-server-shutdown-result.json",
+      "StoredPath": "build-server-shutdown-result.json",
+      "StoredBytes": 325,
+      "StoredSha256": "7b46b953354e0794b1d4a126e75ab9bf5b8c57cb747f6bbbfce78502b3e9c55d",
+      "OriginalBytes": 325,
+      "OriginalSha256": "7b46b953354e0794b1d4a126e75ab9bf5b8c57cb747f6bbbfce78502b3e9c55d"
+    },
+    {
+      "Path": "build-server-shutdown.log",
+      "StoredPath": "build-server-shutdown.log.gz",
+      "StoredBytes": 97,
+      "StoredSha256": "84c53ffe297096af1ac00c41255a2f44f6f76f43aee361514ef58041c4d5f77c",
+      "OriginalBytes": 156,
+      "OriginalSha256": "830e5cd707f90e485d1b96b500318ea1d4c6248cd46f3da146a5887084144dbf"
+    },
+    {
+      "Path": "design-review.json",
+      "StoredPath": "design-review.json",
+      "StoredBytes": 341,
+      "StoredSha256": "7038ff1b14128b1424bcf04526193ccc40c19a5e3291fcdb495961e62252e230",
+      "OriginalBytes": 341,
+      "OriginalSha256": "7038ff1b14128b1424bcf04526193ccc40c19a5e3291fcdb495961e62252e230"
+    },
+    {
+      "Path": "environment.json",
+      "StoredPath": "environment.json",
+      "StoredBytes": 1429,
+      "StoredSha256": "690e5caee46e43b97480a265a291bbe2b1408f4e83177186863b8d1bcd14a676",
+      "OriginalBytes": 1429,
+      "OriginalSha256": "690e5caee46e43b97480a265a291bbe2b1408f4e83177186863b8d1bcd14a676"
+    }
+  ]
+}

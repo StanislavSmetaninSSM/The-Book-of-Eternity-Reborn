@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "sourceCommit": "e0ec857a3b5ee9750592c60b493d6726b19d05f6",
+  "sourceTree": "6d7fabc5db7043b7c57db34f513a2ec68276fcfb",
+  "method": "Fresh GitHub-only git clone --depth 32 --single-branch --branch codex/1553-save-windows into a new empty directory; no old checkout, local object, source cache or stash copied.",
+  "trackedFiles": 4389,
+  "cleanWorkingTree": true,
+  "connectivityFsckExitCode": 0,
+  "verifiedNewBundles": 10,
+  "verifiedStoredArtifactHashes": 64,
+  "verifiedSourceIdentityAssertions": 428,
+  "largeGeneratedLogsNotEmbedded": [
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/evidence/save-linux-boundaries-green-20261002/manifest.json",
+      "path": "dotnet-test.log",
+      "originalSha256": "ece93a7927534e1fb2d2c0fecfd9757807fdd3dd6acc5216a64402959f5644bf",
+      "reason": "Large discovery/build output; exact selection, terminal result and causal failure remain in plan/summary/TRX."
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/evidence/save-linux-consumer-audit-20261002/manifest.json",
+      "path": "dotnet-test.log",
+      "originalSha256": "b0170abd65a33535d0652564bb1e5a519e2543f29c8f0cdfaf12ac4fec63a002",
+      "reason": "Large discovery/build output; exact selection, terminal result and causal failure remain in plan/summary/TRX."
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/evidence/save-linux-consumer-preparation-failure-20261002/manifest.json",
+      "path": "dotnet-test.log",
+      "originalSha256": "6bb3f8496fbc514539fd01677208f1191f566fda05414b8ca330a1662c34b189",
+      "reason": "Large discovery log; full original retained in owned TestResults; exact selection, result and causal failure preserved in plan/summary/TRX."
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/evidence/save-linux-engine-late-green-20261002/manifest.json",
+      "path": "dotnet-test.log",
+      "originalSha256": "e5f8bdf748980a654b0e27356079f60440c266e0fef08db493721eab79c49962",
+      "reason": "Large discovery/build output; exact selection, terminal result and causal failure remain in plan/summary/TRX."
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/evidence/save-linux-engine-player-green-20261002/manifest.json",
+      "path": "dotnet-test.log",
+      "originalSha256": "0a4af08fb6a1e6c2bb80cbb0cd17a0c207dca1f1703e451c471c815152d8f522",
+      "reason": "Large discovery/build output; exact selection, terminal result and causal failure remain in plan/summary/TRX."
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/evidence/save-linux-engine-waiting-green-20261002/manifest.json",
+      "path": "dotnet-test.log",
+      "originalSha256": "76cdfe2c707cb6b54412107a677632ddbc064158a88eb327b3c5b72cb064ae6c",
+      "reason": "Large discovery/build output; exact selection, terminal result and causal failure remain in plan/summary/TRX."
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/evidence/save-linux-profile-green-20261002/manifest.json",
+      "path": "dotnet-test.log",
+      "originalSha256": "74a73cc1476026875c358f73f47ce15a27c7565c9c228e3950f5ff6521683c58",
+      "reason": "Large discovery/build output; exact selection, terminal result and causal failure remain in plan/summary/TRX."
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/evidence/save-linux-residue-build-plan-20261002/manifest.json",
+      "path": "dotnet-test.log",
+      "originalSha256": "a1690e8a7f03b05082b37df4b0430010331adc5b84f17bd6affe82c4a52376f4",
+      "reason": "Large discovery/build output; exact selection, terminal result and causal failure remain in plan/summary/TRX."
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/evidence/save-linux-residue-green-20261002/manifest.json",
+      "path": "dotnet-test.log",
+      "originalSha256": "906c5a331dd9603a744a7c24db5f333a955100d99ec16a250a3c87b1e8106d96",
+      "reason": "Large discovery/build output; exact selection, terminal result and causal failure remain in plan/summary/TRX."
+    }
+  ],
+  "limits": "Source/evidence restoration only; no builds, tests, apps or browser were executed in the fresh restore. Original large discovery logs remain task-local with their hashes and omission reason; complete plans, summaries, TRX and frontend/build output are embedded. Earlier inherited bundles retain their separate accepted restoration proofs."
+}

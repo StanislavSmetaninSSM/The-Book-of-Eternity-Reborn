@@ -1,0 +1,16 @@
+{
+  "StartedUtc": "2026-10-05T14:38:09.306350+00:00",
+  "EndedUtc": "2026-10-05T14:38:20.531665+00:00",
+  "Source": "dc29b37d0c3e3067acf9943a048360fbba66d0e3",
+  "Command": [
+    "pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-ValidateCatalog",
+    "-NoBuild"
+  ],
+  "ExitCode": 0,
+  "DurationSeconds": 11.225357504998101,
+  "Log": "final-audit.log"
+}

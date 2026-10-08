@@ -1,0 +1,115 @@
+{
+  "task": "T052-CI-PR-ENABLE",
+  "base": "9fde68013d111040719bf868c074c756976f988c",
+  "startupRun": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/runs/37718428447",
+  "startupConclusion": "startup_failure",
+  "jobs": 0,
+  "rootCause": "Repository allowed-action policy rejects actions/setup-node@v4 before conditional steps can be evaluated",
+  "allowedActions": [
+    "actions/checkout@v4",
+    "actions/setup-dotnet@v4",
+    "actions/upload-artifact@v4"
+  ],
+  "correction": "Frontend-only installed Node22 stable version, minor>=12 and successful exit; no installer, download, cache fallback or policy change",
+  "designReview": "Independent gpt-6.1-sol/xhigh PASS",
+  "localRed": {
+    "internalPassed": 19,
+    "internalFailed": 2,
+    "adapterAccepted": 0,
+    "cleanup": "complete"
+  },
+  "localGreen": {
+    "passed": 21,
+    "failed": 0,
+    "descriptors": 1,
+    "complete": true,
+    "cleanup": "complete"
+  },
+  "planOnly": {
+    "descriptors": 1,
+    "estimatedCases": 1,
+    "executed": 0
+  },
+  "hostedResult": {
+    "run": 37719162311,
+    "url": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/actions/runs/37719162311",
+    "head": "c7afc4eaad9399f3dcfa26c8efb43576c1f9303d",
+    "event": "pull_request",
+    "conclusion": "failure",
+    "plan": "success",
+    "linux": "failure",
+    "gate": "failure",
+    "failingStep": "Verify explicitly selected contracts",
+    "causalRuntimeFailure": "Unknown; available annotation only exit code1",
+    "testCounts": "Unknown",
+    "cleanup": "Unknown",
+    "logsHostDenied": "results-receiver.actions.githubusercontent.com",
+    "artifactHostDenied": "productionresultssa9.blob.core.windows.net"
+  },
+  "originalFiveSelectionsPreserved": true,
+  "addedAffectedSelection": "test-ci-platform-contracts",
+  "nodeImageSources": [
+    "https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md",
+    "https://github.com/actions/runner-images/blob/main/images/windows/Windows2025-Readme.md"
+  ],
+  "verifiedMergePermission": {
+    "viewer": "StanislavSmetaninSSM",
+    "repositoryViewerPermission": "ADMIN",
+    "viewerCanMergeAsAdmin": true,
+    "noActualMerge": true,
+    "noSelfReview": true
+  },
+  "sourcePins": {
+    ".github/workflows/dotnet-ci.yml": {
+      "bytes": 4649,
+      "sha256": "5d33e5bf08ec81264d583566544b3ceb7e716686d014d09799814440ac379bfe"
+    },
+    "scripts/tests/test-ci-platform.tests.ps1": {
+      "bytes": 16852,
+      "sha256": "decd3d893899f87cfa7abefc94c7fb5d5e3c00e88830a13241772a48446f3782"
+    },
+    "tests/selection.json": {
+      "bytes": 1735,
+      "sha256": "359c07468a243f2bde0f309bcbb1587d31dbf22f862fbe84b431e392a9d5afa4"
+    },
+    "docs/testing.md": {
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+    }
+  },
+  "catalog": {
+    "categories": 435,
+    "methodsFiles": 11194,
+    "executed": 0,
+    "exit": 0,
+    "cleanup": "complete",
+    "NoBuildRationale": "SelectedCSharpProjectsFreshBuiltBeforeFinal30NoCSharpSourceChangesSince"
+  },
+  "sourceFixReview": {
+    "model": "gpt-6.1-sol",
+    "effort": "xhigh",
+    "verdict": "PASS",
+    "source": "c7afc4eaad9399f3dcfa26c8efb43576c1f9303d"
+  },
+  "ownerIntegrationDecision": {
+    "recordedUtc": "2026-10-08T02:52:53.337638+00:00",
+    "instruction": "Отключай эти Github CI и мерджи в мастер",
+    "acceptedBasis": "Accepted bounded local final30 plus causalCI21 and independent reviews; hostedgreen no longer required by owner",
+    "workflowsDisabled": [
+      280957256,
+      374267479
+    ],
+    "defaultBranchVerified": "main",
+    "existingAdminMergeCapability": true,
+    "noFictitiousApproval": true,
+    "noProtectionPermissionsNetworkChange": true,
+    "mergeAuthorized": true,
+    "mergePerformedAtThisSourceCheckpoint": false,
+    "mergeDelivery": "Exact merged main SHA and GitHub-only recovery to be verified separately",
+    "mergeMethod": "GitHub ordinary supported squash, original branch/history retained; explicit Refs-only message to avoid issue-closing keywords in3historicalcommits",
+    "issue1553BeforeMerge": "open",
+    "automaticBranchDeletion": false,
+    "closingIssuesReferencesBeforeMerge": [],
+    "issueLifecycleCheck": "Verify1553stillopenaftermerge; noissuewrite"
+  }
+}

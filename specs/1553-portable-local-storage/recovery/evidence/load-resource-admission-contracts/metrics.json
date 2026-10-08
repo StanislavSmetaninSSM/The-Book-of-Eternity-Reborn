@@ -1,0 +1,18 @@
+{
+  "Source": "405f7fdd3d26c3400563ee61f56e0c17150393e1",
+  "Tests": {
+    "Total": 46,
+    "Executed": 46,
+    "Passed": 46,
+    "Failed": 0
+  },
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 46,
+    "CompletedCases": 46,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Measurements": []
+}

@@ -1,0 +1,480 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A1-CREATE",
+  "status": "Bounded create-only source/evidence accepted after independent review and coordinator disposition; final proof/status-only readback pending. Full T032-A1 remains unaccepted.",
+  "source": {
+    "testedSourceCommit": "2b757469fd3f3596c4e32006be1ecbbdbdc59cb5",
+    "baseCommit": "c94469e8c5bb80072020001182085066589d6dd5",
+    "runtimeSourceCommit": "26c0327c20b41e82e647287a455b7a8018f0796a",
+    "rawSourceTree": "e82f7f3c10bbca7bf627f6e9f0e29e5807faaddd",
+    "fullAppliedSourceTree": "c2d8cb204785f9f676f9e954d22290af98346d60",
+    "carrierExcludedSourceTree": "e748bb051252ea2de0ef9a6eb5fe416935b709a3",
+    "packetSha256": "1f01a7816301eb97d5d95f2f58e4772200ab2427cfc0a51cecc8bc068a283aa1",
+    "identities": [
+      {
+        "path": "BookOfEternityClient.Tests/PortableSaveCreateOnlyAdapterTests.cs",
+        "gitBlob": "c5b63cf197d0b5fec3e1c35d3287c0235ee1c938",
+        "sha256": "9f17bde47cb7bafada6a8fe686578b6fd51341e7a85566a2c0ca8feaf8316bb3",
+        "bytes": 7795
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs",
+        "gitBlob": "a8fe1ec081a6fcbf5a05170a8386e9fb7ee5a273",
+        "sha256": "ae147b09feb7152aa7a7dfed8b0fc801119f5f7d366524bf1bdccd6825e55a94",
+        "bytes": 3886
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+        "gitBlob": "34bb94a325381be80eac63fee5caab9cbf128624",
+        "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9",
+        "bytes": 7153
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "gitBlob": "48fde8733d2f210c624adde08a068f414b7e0afd",
+        "sha256": "a6d53b803f384018856f0ffe42b58fbfe335d954f474986ac9696e738739bbf7",
+        "bytes": 22834
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+        "gitBlob": "69d480b2cc10c640dcf79cd906f8a59263eba4e3",
+        "sha256": "158838814f3d55c1669538e9bc0e4d2593b3d4adf356901007609d779fc68d9d",
+        "bytes": 11880
+      },
+      {
+        "path": "tests/categories.json",
+        "gitBlob": "e3ffd8cabbd066d44a8d72cebda81e889a766d09",
+        "sha256": "5aacf2e28db2d19c2159f92d7772523528a6a8fc0bf1f37373ca65cbd3465d3b",
+        "bytes": 876575
+      },
+      {
+        "path": "tests/selection.json",
+        "gitBlob": "0354830aa26e5f0a4af3e7d554205bea1d2798d3",
+        "sha256": "b70ea36bf64d583d286cacee7ed6a86050b57cd41ff31e66086c4eecfa1f798b",
+        "bytes": 649
+      }
+    ],
+    "productionTrees": [
+      {
+        "path": "BookOfEternityClient",
+        "gitTree": "2fcdd4aadfe5e3959a1348a70ff0c27247f5cdc3",
+        "unchangedFromRuntimeSource": true
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport",
+        "gitTree": "72e2411155f4b6591f80a48af0a314799594247b",
+        "unchangedFromRuntimeSource": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests",
+        "gitTree": "7a3635589c74956bb3c5b93eaa629f586d8cebb6",
+        "unchangedFromRuntimeSource": true
+      },
+      {
+        "path": "BookOfEternityGMBridge",
+        "gitTree": "29e6682727b3b77b69a9eacb53dd656f738c2440",
+        "unchangedFromRuntimeSource": true
+      },
+      {
+        "path": "tests/fixtures",
+        "gitTree": "2e15ec992c661b30f1c4f8ba066a86ab6599449a",
+        "unchangedFromRuntimeSource": true
+      }
+    ]
+  },
+  "commands": {
+    "plan-only": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-save-create-only-adapter -PlanOnly -Parallelism 1",
+    "run": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-save-create-only-adapter -Parallelism 1 -NoBuild",
+    "integration-build": "dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --verbosity minimal -p:GenerateDocumentationFile=true -p:NoWarn=1591",
+    "audit": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild"
+  },
+  "buildReuse": "Fresh successful unit build in PlanOnly; unchanged source/runtime/catalog/selection reused once for the sole behavior run. Zero tests executed by PlanOnly.",
+  "environment": {
+    "os": "Debian 13 x64",
+    "sdk": "10.0.401",
+    "dotnetRuntime": "8.0.31",
+    "powershell": "7.6.6",
+    "processLocal": {
+      "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+      "POWERSHELL_TELEMETRY_OPTOUT": "1",
+      "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1",
+      "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+      "DOTNET_PROCESSOR_COUNT": "1"
+    },
+    "paths": "New task-local official binaries, CLI/cache/temp/output paths; HOME/home/CODEX_HOME unchanged. No resource limits or global settings.",
+    "startup": "All five settings applied before installers and first version checks; build log has no certificate installation line. No certificate/key/trust inspection."
+  },
+  "unitBuild": {
+    "exitCode": 0,
+    "warnings": 4,
+    "warningCodes": [
+      "CS1587 (3 existing)",
+      "CS8600 (1 existing)"
+    ],
+    "errors": 0,
+    "msbuildElapsed": "00:03:47.51",
+    "testsExecuted": 0
+  },
+  "results": {
+    "plan-only": {
+      "Categories": [
+        "portable-save-create-only-adapter"
+      ],
+      "Reasons": [],
+      "DiscoveryOnly": false,
+      "PlanOnly": true,
+      "Revision": {
+        "Head": "2b757469fd3f3596c4e32006be1ecbbdbdc59cb5",
+        "WorkingTreeFingerprint": "5263B75F0F6430843DE37AE1A9EE45377060FEF2A47565C3AE8393B0DAEFAA29",
+        "ChangedFiles": 2
+      },
+      "CatalogAudit": null,
+      "CategoryResults": [],
+      "AdapterResults": [],
+      "PhaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0619951,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0094365,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.0097982,
+          "Completed": true
+        },
+        {
+          "Name": "Build-unit",
+          "Seconds": 227.7037224,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0120662,
+          "Completed": true
+        }
+      ],
+      "Strategy": "SelectedCategories",
+      "TimeoutMinutes": 8,
+      "WallTime": "00:03:50.9379247",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "RuntimeCleanup": null,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 1,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "portable-save-create-only-adapter-unit-001"
+        ],
+        "Complete": false
+      },
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "DuplicateTests": []
+    },
+    "run": {
+      "Categories": [
+        "portable-save-create-only-adapter"
+      ],
+      "Reasons": [],
+      "DiscoveryOnly": false,
+      "PlanOnly": false,
+      "Revision": {
+        "Head": "2b757469fd3f3596c4e32006be1ecbbdbdc59cb5",
+        "WorkingTreeFingerprint": "5263B75F0F6430843DE37AE1A9EE45377060FEF2A47565C3AE8393B0DAEFAA29",
+        "ChangedFiles": 2
+      },
+      "CatalogAudit": null,
+      "CategoryResults": [
+        {
+          "Category": "portable-save-create-only-adapter",
+          "Seconds": 2.6518788,
+          "BudgetMinutes": 3,
+          "Completed": true
+        }
+      ],
+      "AdapterResults": [],
+      "PhaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0516723,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0080029,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.0102841,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0037735,
+          "Completed": true
+        }
+      ],
+      "Strategy": "SelectedCategories",
+      "TimeoutMinutes": 8,
+      "WallTime": "00:00:05.6039534",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "RuntimeCleanup": null,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 1,
+        "Failed": 0
+      },
+      "DuplicateTests": []
+    },
+    "audit": {
+      "Categories": [
+        null
+      ],
+      "Reasons": [],
+      "DiscoveryOnly": true,
+      "PlanOnly": false,
+      "Revision": {
+        "Head": "4d312a62cff53963ace68385307250620061e321",
+        "WorkingTreeFingerprint": "D4149930A40D5D13257570B3CDC417DC3B00D1172FF39099F552795E4C8E34EA",
+        "ChangedFiles": 2
+      },
+      "CatalogAudit": {
+        "Valid": true,
+        "Methods": 10462,
+        "Categories": 175,
+        "Unmapped": [],
+        "StaleSelectors": []
+      },
+      "CategoryResults": [],
+      "AdapterResults": [],
+      "PhaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0501676,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0087632,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.0148254,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0068425,
+          "Completed": true
+        }
+      ],
+      "Strategy": "SelectedCategories",
+      "TimeoutMinutes": 10,
+      "WallTime": "00:00:07.2951308",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "RuntimeCleanup": null,
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "DuplicateTests": []
+    }
+  },
+  "actualCases": [
+    {
+      "name": "BookOfEternityClient.Tests.PortableSaveCreateOnlyAdapterTests.SecondCreateOfIdenticalZipRejectsWithoutChangingArchiveGenerationOrLibrary",
+      "outcome": "Passed",
+      "duration": "00:00:00.1029187"
+    }
+  ],
+  "invariants": {
+    "firstCreate": "Committed, one member, no failure",
+    "secondIdenticalCreate": "InvalidDataException: An image member changed before publication.",
+    "archiveCandidateBytes": 151,
+    "archiveCandidateSha256": "aa5c98711e4d44d107d10012cf5e5d4616ff3acebb39d12d3dba5f74b6391b17",
+    "generation": "Exact preexisting bytes and generation identity unchanged",
+    "library": "All three synthetic manual/autosave/checkpoint ZIP sentinels and complete library membership preserved",
+    "debtScratch": "No publication journal entry or .boe-local-* sibling remains after either call",
+    "fixtureCleanup": "Finally block removed owned root, asserted absence; test output and zero task-temp fixture remainders corroborate cleanup"
+  },
+  "artifacts": [
+    {
+      "file": "plan-only/summary.json",
+      "originalSha256": "2f8f99dd9b9b01b06622bf49ca6d8656b8c084d0bec3fe28c8b7f2df9f1c0105",
+      "sanitizedSha256": "2f8f99dd9b9b01b06622bf49ca6d8656b8c084d0bec3fe28c8b7f2df9f1c0105",
+      "originalBytes": 1476,
+      "sanitizedBytes": 1476
+    },
+    {
+      "file": "plan-only/plan.json",
+      "originalSha256": "4b89b2787588b5b2345eda9f6712fdb3164f8b2b5b8d969c7eb75259af072fa2",
+      "sanitizedSha256": "4b89b2787588b5b2345eda9f6712fdb3164f8b2b5b8d969c7eb75259af072fa2",
+      "originalBytes": 1172,
+      "sanitizedBytes": 1172
+    },
+    {
+      "file": "plan-only/dotnet-test.log",
+      "originalSha256": "a90ca568375ccada618e2bbd833fd4ba3da0cd9bc02c4d166f4dee63d9a97a47",
+      "sanitizedSha256": "4b1884a0ae22ecf7deca2765236ef550318bf8628290648bea82e6d6f3f2f5a5",
+      "originalBytes": 1431675,
+      "sanitizedBytes": 1430298,
+      "contentNotEmbedded": "Full unit discovery inventory; focused plan, summary and console log preserved separately."
+    },
+    {
+      "file": "run/summary.json",
+      "originalSha256": "321c24987877a2df35caf75f8063065d3cf2f01566ff5745766ee6f03258e1da",
+      "sanitizedSha256": "321c24987877a2df35caf75f8063065d3cf2f01566ff5745766ee6f03258e1da",
+      "originalBytes": 1473,
+      "sanitizedBytes": 1473
+    },
+    {
+      "file": "run/plan.json",
+      "originalSha256": "4ffbe85f482bc2efa9043ec8a7b36747ca5b9a7b35328b071daa76973469ff1f",
+      "sanitizedSha256": "4ffbe85f482bc2efa9043ec8a7b36747ca5b9a7b35328b071daa76973469ff1f",
+      "originalBytes": 1170,
+      "sanitizedBytes": 1170
+    },
+    {
+      "file": "run/dotnet-test.log",
+      "originalSha256": "402fada38f0aba1c11f86a0a702775a3377713e9d5c694fae14b63ccef3dae5b",
+      "sanitizedSha256": "66bc57f692010207c84bdee63466fe8b5e863eb0b94aabc0287dd5334fe9615a",
+      "originalBytes": 1427896,
+      "sanitizedBytes": 1427641,
+      "contentNotEmbedded": "Full unit discovery inventory; focused plan, summary and console log preserved separately."
+    },
+    {
+      "file": "plan-only/Build-unit.log",
+      "originalSha256": "a396544ee8057e87ffcf37f46c77a21d576bc2ce30bfbb97825b86e2176edbf0",
+      "sanitizedSha256": "23a05dbd927d6877f668aad038d6acff8280ef911f03022f25885045788d0584",
+      "originalBytes": 4485,
+      "sanitizedBytes": 3261
+    },
+    {
+      "file": "plan-only/console.log",
+      "originalSha256": "87976bec57a8942e587aabb750e1a2a52468cc65239f5c1fb31aa07cd95c8e6f",
+      "sanitizedSha256": "27dda5aad57a9881b7e8b9e53116525dc3da37e4e160a7de4d148af480b1b6b8",
+      "originalBytes": 1385,
+      "sanitizedBytes": 1283
+    },
+    {
+      "file": "run/console.log",
+      "originalSha256": "800c2a879c7618581fb3c7e0972b301f379f0c01b5570ac06e8905953d2099f5",
+      "sanitizedSha256": "0eb71c0902e25572f12b84867ae7f68cc31685b79f2b700fb6f27c046a448944",
+      "originalBytes": 1962,
+      "sanitizedBytes": 1758
+    },
+    {
+      "file": "run/portable-save-create-only-adapter-unit-001.trx",
+      "originalSha256": "17b8d03564ebea3861b63e9db6ac4d19083a11500a9d763496d58f77693363ed",
+      "sanitizedSha256": "b1e6a3076df9e77c5a6b7dbafd56fe2b7139e47b7fe228dcc9a33d462405964b",
+      "originalBytes": 3642,
+      "sanitizedBytes": 3513
+    },
+    {
+      "file": "audit/summary.json",
+      "originalSha256": "46569d2984f87f92feddccb97e230ad85cb9d475b09844a53455a0473649068f",
+      "sanitizedSha256": "46569d2984f87f92feddccb97e230ad85cb9d475b09844a53455a0473649068f",
+      "originalBytes": 1405,
+      "sanitizedBytes": 1405
+    },
+    {
+      "file": "audit/catalog-audit.json",
+      "originalSha256": "cc5695541365da96b20c54d5cdb8bd7f1798a9f57195a0fe0ab065eb7f72cfed",
+      "sanitizedSha256": "cc5695541365da96b20c54d5cdb8bd7f1798a9f57195a0fe0ab065eb7f72cfed",
+      "originalBytes": 103,
+      "sanitizedBytes": 103
+    },
+    {
+      "file": "audit/Build-integration.log",
+      "originalSha256": "851bb924ae65900f06a98e6ad4185d5489de69dabd42d6b1651b8fd34becc148",
+      "sanitizedSha256": "baaa0e19262c550b133f1239883cab09ec1762b64fe62717cc624b50e6df4f08",
+      "originalBytes": 2802,
+      "sanitizedBytes": 1986
+    },
+    {
+      "file": "audit/console.log",
+      "originalSha256": "793b9bed85a0c95d873a1cf4200717c8a825d25a2a6c4eebe9e3e18bd83f35c1",
+      "sanitizedSha256": "99337775d87c591e394041d0e599d28d5316b5d2eb75980c0f65554a848a6f86",
+      "originalBytes": 748,
+      "sanitizedBytes": 646
+    },
+    {
+      "file": "audit/dotnet-test.log",
+      "originalSha256": "4f70845b89173e5cf5359f01792e29195f92e5c00e50d5b1af29eec767da8d12",
+      "sanitizedSha256": "d5e51dbf9237ea6aaae42ad836bcf776e49d183d89ab02f120687940ffd30227",
+      "originalBytes": 2893190,
+      "sanitizedBytes": 2892986,
+      "contentNotEmbedded": "Full unit/integration discovery inventories; complete ownership summary, audit JSON and compact console log preserved."
+    }
+  ],
+  "sanitization": "Replace only current repo/toolchain absolute paths and host name with role tokens; preserve original hashes; all stored JSON and XML TRX parsed. Full large discovery-inventory logs have original/sanitized hashes, with compact console logs preserved.",
+  "limits": [
+    "Adapter create-only collision with one tiny valid ZIP; ZIP-container validity alone is not game-save/archive-schema/load/gameplay validity.",
+    "No production edit, fabricated RED, injected failure, crash/interruption, malformed evidence, resource or memory workload, native stream-lifetime check, browser/provider/audio/clipboard/security probe or broad suite.",
+    "Historical v1 two-case source/evidence is unchanged and was not rerun.",
+    "Full T032-A1, separate-process v2 interruption, large-before restoration, resource envelope, remaining adapter/generation boundaries, Windows stream lifetime, SaveGame caller cutover and end-to-end game remain open."
+  ],
+  "auditBuild": {
+    "sourceCommit": "4d312a62cff53963ace68385307250620061e321",
+    "exitCode": 0,
+    "errors": 0,
+    "warnings": 3,
+    "warningCodes": [
+      "CS1587"
+    ],
+    "msbuildElapsed": "00:02:21.59",
+    "testsExecuted": 0,
+    "reuse": "Built only the missing integration project for catalog discovery; existing fresh unit build reused. Runtime/test/catalog identities equal behavioral source 2b757469."
+  },
+  "auditInterpretation": "175 owners and 10462 method/file identities, no unmapped/stale selectors, zero tests. Selection.Complete=false is expected for discovery only, not a behavioral pass.",
+  "review": {
+    "reviewer": "Independent GPT-6 Astra XHigh",
+    "sourceAndBehaviorEvidenceCommit": "4d312a62cff53963ace68385307250620061e321",
+    "auditSupplementCommit": "9ac5422e666f663d3bb0355f070f9e096a436b44",
+    "status": "passed",
+    "actionableFindings": 0,
+    "coordinatorDisposition": "Accept the bounded create-only result, subject only to honest final proof/status readback; keep T032-A1 and all broader gates open.",
+    "metadataReadback": "Pending for this later proof/status checkpoint; no behavioral rerun requested."
+  }
+}

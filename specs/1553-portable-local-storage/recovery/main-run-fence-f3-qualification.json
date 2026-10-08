@@ -1,0 +1,182 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-RUN-FENCE-F3",
+  "State": "Bounded neutral F3 independent source/evidence/metadata/selection PASS; final writer publication/restoration closure",
+  "AcceptedF2": "8b0c416e1ec5c132d82776b4fdc348ee90cfdbe5",
+  "AcceptedF1": "f4e7621fe85c7aa0393552708d28eec4bfe36d8f",
+  "AcceptedDesign": "0658e4405a4d0d958eb1b64b11b83956917fb81b",
+  "LatestRuntimeAndTestSource": "2fb042eee6e6cce2c793ddd9446e5e2c37423cde",
+  "Implementation": "Only internal fixed-neutral same-root fresh fixture admission added to production source; existing coordinator/persistence/terminal/pin/storage runtime unchanged. TestSupport invokes original BridgeHost and actual process/pipe/FS/Load.",
+  "Latest": {
+    "UniqueCases": 23,
+    "Passed": 23,
+    "Failed": 0,
+    "Skipped": 0,
+    "PortableAdmissionCases": 2,
+    "NativeCases": 21,
+    "NativeGuardians": 21
+  },
+  "Historical": {
+    "Executed": 41,
+    "Passed": 27,
+    "Failed": 14,
+    "DistinctNativeGuardians": 37,
+    "CausalAdmissionRedFailures": 2,
+    "FixtureOrOracleFailures": 12
+  },
+  "Cohorts": [
+    {
+      "Label": "admission-green",
+      "Category": "gm-main-crash-fixture-admission",
+      "SourceCommit": "9542eb31402e542e0f2498dd36ac6c06756bb248",
+      "Cases": 2,
+      "Passed": 2,
+      "Skipped": 0,
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-crash-fixture-admission",
+      "Manifest": "evidence/t041-f3-admission-green/manifest.json"
+    },
+    {
+      "Label": "launch-a-pass",
+      "Category": "gm-main-crash-launch-linux",
+      "SourceCommit": "cf123da871381c6b08786062eab18575a2b2ad50",
+      "Cases": 5,
+      "Passed": 5,
+      "Skipped": 0,
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-crash-launch-linux",
+      "Manifest": "evidence/t041-f3-launch-a-pass/manifest.json"
+    },
+    {
+      "Label": "pins-b-pass",
+      "Category": "gm-main-crash-pins-linux",
+      "SourceCommit": "d26f676132a2264ccac42a8ee524020de0016693",
+      "Cases": 3,
+      "Passed": 3,
+      "Skipped": 0,
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-crash-pins-linux",
+      "Manifest": "evidence/t041-f3-pins-b-pass/manifest.json"
+    },
+    {
+      "Label": "stop-c-pass",
+      "Category": "gm-main-crash-stop-linux",
+      "SourceCommit": "082ba6f1036a666b935f31ab26357b13f6d55be4",
+      "Cases": 6,
+      "Passed": 6,
+      "Skipped": 0,
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-crash-stop-linux",
+      "Manifest": "evidence/t041-f3-stop-c-pass/manifest.json"
+    },
+    {
+      "Label": "replacement-d-pass",
+      "Category": "gm-main-crash-replacement-linux",
+      "SourceCommit": "3199d127b2676705f32b2024ec395c657ddee7b7",
+      "Cases": 3,
+      "Passed": 3,
+      "Skipped": 0,
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-crash-replacement-linux",
+      "Manifest": "evidence/t041-f3-replacement-d-pass/manifest.json"
+    },
+    {
+      "Label": "conjunction-d-pass",
+      "Category": "gm-main-crash-conjunction-linux",
+      "SourceCommit": "2fb042eee6e6cce2c793ddd9446e5e2c37423cde",
+      "Cases": 2,
+      "Passed": 2,
+      "Skipped": 0,
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-crash-conjunction-linux",
+      "Manifest": "evidence/t041-f3-conjunction-d-pass/manifest.json"
+    },
+    {
+      "Label": "cold-boundary-d-pass",
+      "Category": "gm-main-crash-cold-boundary-linux",
+      "SourceCommit": "7f53a1de2d933af627ccf8c00797ff2ef7bdd117",
+      "Cases": 2,
+      "Passed": 2,
+      "Skipped": 0,
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-crash-cold-boundary-linux -NoBuild",
+      "Manifest": "evidence/t041-f3-cold-boundary-d-pass/manifest.json"
+    }
+  ],
+  "GuardianEvidence": {
+    "AllEchild": true,
+    "EmergencySignals": 0,
+    "Failures": 0,
+    "Deadlines": 0
+  },
+  "EvidenceAudit": "main-run-fence-f3-evidence-audit.json",
+  "FixtureCleanup": "main-run-fence-f3-final-fixture-cleanup.json",
+  "CountsInterpretation": "23 latest distinct source-backed PASS across frozen cohorts; not all rerun at final HEAD.41 historical executions retain2causal new admission RED and12fixture/oracle failures, never counted as acceptance.",
+  "SourceReuse": "Ordinary Create/NextEpoch and core runtime unchanged. Later router branches preserve A/B/C paths; top-level post-guardian witness cleanup excludes canonical BOM/binary JSON; exact worker owner.lock exclusion has no effect on roots without worker ledger. Independent review checked source/fixture identity. No unrelated F1/F2/R1-R3 cohorts repeated.",
+  "ActualBoundaries": [
+    "Prepared before held creation; Running before one release; actual killed owner and new process cold nonterminal refusal",
+    "Actual original SessionOperationContext/pipe client death before receipt remains Unresolved/Uncertain; after receipt preserves ClosedObserved without replay",
+    "Stopping survives pending actual output/scoped empty; stage remains nonterminal; genuine pre-seal output fault stays Uncertain despite physical cleanup",
+    "Stopped readback seals actual I/O/disposal; original warm pending ACK guard blocks replacement; after owner death only fresh epoch can launch",
+    "Typed new-process Load exact Committed/RolledBack/Uncertain canonical file inventory/generation; source archive/main stopped bytes preserved",
+    "Independent registered cooperating worker durable inventory and retained storage still refuse before Prepared/creation; actual private Uncertain Load preparation is retained separately with exact archive images",
+    "Actual positive Clear after stopped owner death and original immutable T042 queued request revoked/drained through real pipe before stop ACK; fresh CLI never receives original queued text"
+  ],
+  "DiscoveryOnly": {
+    "Catalog": {
+      "Categories": 350,
+      "MethodsOrFiles": 10968,
+      "Executed": 0,
+      "Manifest": "evidence/t041-f3-catalog-audit/manifest.json"
+    },
+    "Selection": {
+      "Descriptors": 7,
+      "Cases": 23,
+      "Executed": 0,
+      "Manifest": "evidence/t041-f3-selection-plan/manifest.json"
+    }
+  },
+  "Environment": {
+    "Sdk": "10.0.401",
+    "Runtimes": [
+      "8.0.31",
+      "10.0.12"
+    ],
+    "PowerShell": "7.5.4",
+    "NativeCompiler": "/usr/bin/cc",
+    "NativeCompilerVersion": "cc (Debian 14.2.0-19) 14.2.0",
+    "Provenance": "Actual F3 preparation version commands and per-case build-provenance.json source/binary hashes; no installs or settings changes."
+  },
+  "WindowsUnavailable": {
+    "Category": "gm-main-affected-browser-native-windows",
+    "ExactIds": [
+      "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_SessionReplacementWaitsForWholeLegacyTransaction",
+      "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
+      "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_LockReleaseFailureDoesNotRollbackCommittedMutation",
+      "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ExplicitLeaseWritesWithoutAmbientAuthority"
+    ],
+    "Qualified": false,
+    "F3Executions": 0,
+    "OriginalF2Linux": {
+      "Executed": 18,
+      "Passed": 14,
+      "Failed": 4
+    },
+    "OriginalCause": "First two time out before callback; last two: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.",
+    "Classification": "Real remaining Linux BrowserLocalWriteCoordinator rollback backups/manifest/recorder consumer bypasses trusted local writer and reaches unchanged Windows-only descriptor publication, not fixture-only.",
+    "RemainingTask": "T031-BROWSER-ROLLBACK-LINUX",
+    "OutsideF3": true
+  },
+  "NoCausalCoreRuntimeDefectFound": true,
+  "NoNewProductDecision": true,
+  "Unqualified": [
+    "Primary existing-manager systemd-user adapter/qualification; no manager here and no setup",
+    "Native Windows ConPTY/Job execution",
+    "Production/public arbitrary or game-writing main launch and enabled production worker admission",
+    "Live Codex CLI/TUI/provider/game-writing integration, ordinary launcher, real saves",
+    "Power-loss/reboot salvage/cold exactly-once/force-clear/old input or unknown-command replay",
+    "Final stop/load/fresh-start UX; accepted low-level refusal remains"
+  ],
+  "FinalReview": {
+    "Verdict": "PASS; no confirmed blockers within bounded F3",
+    "Reviewer": "/root/f3_final_review",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "ReviewedCandidate": "9dd5bae06051051bf1dc2d97e6486f087f13b4ec",
+    "ReviewRecord": "main-run-fence-f3-review.json"
+  },
+  "FinalPublicationRestoration": "Ordinary non-force final carrier push/remote byte readback/fresh GitHub-only clone pending writer closure; exact final SHA/tree/files/proof returned after execution."
+}

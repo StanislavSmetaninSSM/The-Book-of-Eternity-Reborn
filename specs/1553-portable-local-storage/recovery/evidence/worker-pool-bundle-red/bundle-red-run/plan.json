@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "worker-synthetic-bundle-publication"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "611d9ee078d9a0efb84dc8446a8d64b9c271c0d8",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.4934408,
+  "Descriptors": [
+    {
+      "Name": "worker-synthetic-bundle-publication-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-synthetic-bundle-publication",
+      "Categories": [
+        "worker-synthetic-bundle-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DefaultStore_RetainsExistingLinuxDescriptorBackendRefusal",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DefaultStore_RetainsExistingLinuxDescriptorBackendRefusal",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

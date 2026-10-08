@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "fixture": "neutral-cli",
+  "source": "tests/fixtures/LinuxTerminal/neutral-cli.c",
+  "sourceSha256": "6ec4eea428053d292c0dfeb84e1e474cc21add3c6a667a3b16030a6dd3ac05a8",
+  "binarySha256": "168b1c42a89902b777e1afd4a9b908d5ce0e1dac8408ca39f11a6dd835aefde7",
+  "profile": "neutral-v1",
+  "argv": []
+}

@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-backup-compensation-cause"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "df602d2708010a965f004a73a1dc3b3e7a2eae4d",
+    "WorkingTreeFingerprint": "5F364B4F49AF098BF599E7E11EE19B555F0C52A52ACD67AB483DB944E1809DEC",
+    "ChangedFiles": 4
+  },
+  "PreparationSeconds": 151.6567739,
+  "Descriptors": [
+    {
+      "Name": "portable-backup-compensation-cause-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-compensation-cause",
+      "Categories": [
+        "portable-backup-compensation-cause"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

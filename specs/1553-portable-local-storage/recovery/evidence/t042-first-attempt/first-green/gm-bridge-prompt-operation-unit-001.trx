@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="2e6e39ae-bfc5-4067-bda8-c7dddfd42080" name="@c7669543e9c7 2026-10-06 07:29:58" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T07:29:58.6812578+00:00" queuing="2026-10-06T07:29:58.6812578+00:00" start="2026-10-06T07:29:56.0832907+00:00" finish="2026-10-06T07:29:59.8703586+00:00" />
+  <TestSettings name="default" id="cf7d3cd7-7461-42c5-8ba0-77dcd582abe0">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_07_29_58" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="5167e5e4-0694-4071-806a-719ac72ed864" testId="8292e3c6-9400-ec6d-e05b-aea50811fc83" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit(afterSubmit: False, expected: &quot;draft-uncertain&quot;)" computerName="c7669543e9c7" duration="00:00:00.0106290" startTime="2026-10-06T07:29:59.7646809+00:00" endTime="2026-10-06T07:29:59.7646812+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5167e5e4-0694-4071-806a-719ac72ed864" />
+    <UnitTestResult executionId="35b808b4-ff4d-4889-adf5-2ca189c45563" testId="bcbd06f6-9989-5a5a-3055-10b9339d38f7" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.PasteNeedsFreshObservation_TimeoutRetainsDraftAndPause" computerName="c7669543e9c7" duration="00:00:01.0314715" startTime="2026-10-06T07:29:59.6881986+00:00" endTime="2026-10-06T07:29:59.6881991+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="35b808b4-ff4d-4889-adf5-2ca189c45563" />
+    <UnitTestResult executionId="8c10d343-7fc0-42d5-88ca-8be0879fa3d5" testId="da891458-896d-f863-338d-52bca7beaf29" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(submit: True, expected: &quot;unknown-outcome&quot;)" computerName="c7669543e9c7" duration="00:00:00.0074919" startTime="2026-10-06T07:29:58.6555144+00:00" endTime="2026-10-06T07:29:58.6555146+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8c10d343-7fc0-42d5-88ca-8be0879fa3d5">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "unknown-outcome"
+Actual:   "draft-uncertain"
+           ↑ (pos 0)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(Boolean submit, String expected) in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 108
+   at BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(Boolean submit, String expected) in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 111
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3d334df2-a43a-42aa-89ba-9be520f12419" testId="e3a5e745-b241-ec2a-4220-786c3dcdb16f" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;CONTROLLED CLI\nUPDATE\n› &quot;)" computerName="c7669543e9c7" duration="00:00:00.0047926" startTime="2026-10-06T07:29:58.6078979+00:00" endTime="2026-10-06T07:29:58.6078981+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3d334df2-a43a-42aa-89ba-9be520f12419" />
+    <UnitTestResult executionId="cf3a81ac-267c-47ee-ad60-b29cc4ab0ef0" testId="c6cc4827-5169-b838-b772-9c02c863cf92" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding" computerName="c7669543e9c7" duration="00:00:00.0067773" startTime="2026-10-06T07:29:59.7913642+00:00" endTime="2026-10-06T07:29:59.7913645+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cf3a81ac-267c-47ee-ad60-b29cc4ab0ef0" />
+    <UnitTestResult executionId="5b9b4ebe-53cb-4bfe-a43c-486b80a05c13" testId="969cfc66-a641-7d25-95a4-a3b400af89d5" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;&quot;)" computerName="c7669543e9c7" duration="00:00:00.0045563" startTime="2026-10-06T07:29:58.6130628+00:00" endTime="2026-10-06T07:29:58.6130630+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5b9b4ebe-53cb-4bfe-a43c-486b80a05c13" />
+    <UnitTestResult executionId="881eddd5-325f-4336-a6dd-ef55d2426a93" testId="8e88b00b-90af-37e6-d8cf-950f416a88d8" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit(afterSubmit: True, expected: &quot;unknown-outcome&quot;)" computerName="c7669543e9c7" duration="00:00:00.0177473" startTime="2026-10-06T07:29:59.7508783+00:00" endTime="2026-10-06T07:29:59.7508798+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="881eddd5-325f-4336-a6dd-ef55d2426a93" />
+    <UnitTestResult executionId="11fbfeb5-99df-4169-bfa0-765ae5dc3529" testId="01faa2a3-3058-c27b-9241-de09fab4f6ff" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke" computerName="c7669543e9c7" duration="00:00:00.0435837" startTime="2026-10-06T07:29:59.7325938+00:00" endTime="2026-10-06T07:29:59.7325940+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="11fbfeb5-99df-4169-bfa0-765ae5dc3529" />
+    <UnitTestResult executionId="6d643af0-d35d-4275-abce-4d13259d3b25" testId="480c515b-ac8f-5790-cbf8-80ddf56f6cff" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.TwoPromptsOneBinding_CustomSequences_OneSubmitEach" computerName="c7669543e9c7" duration="00:00:00.0102688" startTime="2026-10-06T07:29:59.7839233+00:00" endTime="2026-10-06T07:29:59.7839236+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6d643af0-d35d-4275-abce-4d13259d3b25" />
+    <UnitTestResult executionId="80700442-b82e-4cd0-aac6-aae5244bd4c9" testId="8a0f74c6-acd4-b104-a488-72cce4bc2952" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus" computerName="c7669543e9c7" duration="00:00:00.0096338" startTime="2026-10-06T07:29:59.7728275+00:00" endTime="2026-10-06T07:29:59.7728277+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="80700442-b82e-4cd0-aac6-aae5244bd4c9" />
+    <UnitTestResult executionId="45be7d81-4ff5-445d-87ea-5d192f560080" testId="48768043-53c1-bf62-cec2-6fc9d1f33fcd" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft" computerName="c7669543e9c7" duration="00:00:00.0062274" startTime="2026-10-06T07:29:58.6559948+00:00" endTime="2026-10-06T07:29:58.6559950+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="45be7d81-4ff5-445d-87ea-5d192f560080" />
+    <UnitTestResult executionId="3f3d4b64-72e9-406c-8c24-d0f0a47003fe" testId="097deac2-bda8-3b2f-4f53-7057799e3780" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;unknown&quot;)" computerName="c7669543e9c7" duration="00:00:00.0030927" startTime="2026-10-06T07:29:58.6166747+00:00" endTime="2026-10-06T07:29:58.6166749+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3f3d4b64-72e9-406c-8c24-d0f0a47003fe" />
+    <UnitTestResult executionId="6ff76eeb-8517-4509-a2ee-570a230f53c7" testId="55f3b239-657c-c931-978d-b9c252523cb1" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;CONTROLLED CLI\nTRUST\n› &quot;)" computerName="c7669543e9c7" duration="00:00:00.0063069" startTime="2026-10-06T07:29:58.6063587+00:00" endTime="2026-10-06T07:29:58.6063589+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6ff76eeb-8517-4509-a2ee-570a230f53c7" />
+    <UnitTestResult executionId="43b5ca22-63d5-4301-8f5c-d3928c7f26c2" testId="6905e732-988e-5c37-1a97-2b988a74107f" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(submit: False, expected: &quot;draft-uncertain&quot;)" computerName="c7669543e9c7" duration="00:00:00.0109984" startTime="2026-10-06T07:29:58.6283759+00:00" endTime="2026-10-06T07:29:58.6283763+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="43b5ca22-63d5-4301-8f5c-d3928c7f26c2" />
+    <UnitTestResult executionId="d17aa588-4794-41d5-8061-d04d72e4f671" testId="df5d9eaf-1d05-65de-6db5-0e4208d89bff" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;CONTROLLED CLI\nAUTH\n› &quot;)" computerName="c7669543e9c7" duration="00:00:00.0111451" startTime="2026-10-06T07:29:58.5964378+00:00" endTime="2026-10-06T07:29:58.5964380+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d17aa588-4794-41d5-8061-d04d72e4f671" />
+    <UnitTestResult executionId="a8e6b938-a8e3-439f-b9ce-93d14e9d4e36" testId="5ce29ef7-7165-444b-6554-8d298f51ecf8" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateAndChangedBody_RetainOriginalWithoutRepaste" computerName="c7669543e9c7" duration="00:00:00.2590561" startTime="2026-10-06T07:29:58.5857967+00:00" endTime="2026-10-06T07:29:58.5858227+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a8e6b938-a8e3-439f-b9ce-93d14e9d4e36" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;unknown&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="097deac2-bda8-3b2f-4f53-7057799e3780">
+      <Execution id="3f3d4b64-72e9-406c-8c24-d0f0a47003fe" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="UnsupportedOrBlockedView_WritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="01faa2a3-3058-c27b-9241-de09fab4f6ff">
+      <Execution id="11fbfeb5-99df-4169-bfa0-765ae5dc3529" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.PasteNeedsFreshObservation_TimeoutRetainsDraftAndPause" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bcbd06f6-9989-5a5a-3055-10b9339d38f7">
+      <Execution id="35b808b4-ff4d-4889-adf5-2ca189c45563" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="PasteNeedsFreshObservation_TimeoutRetainsDraftAndPause" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8a0f74c6-acd4-b104-a488-72cce4bc2952">
+      <Execution id="80700442-b82e-4cd0-aac6-aae5244bd4c9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="ActualPipe_SlowPeerDoesNotBlockStatus" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="48768043-53c1-bf62-cec2-6fc9d1f33fcd">
+      <Execution id="45be7d81-4ff5-445d-87ea-5d192f560080" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="AutomaticDispatch_DoesNotEraseManualDraft" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateAndChangedBody_RetainOriginalWithoutRepaste" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5ce29ef7-7165-444b-6554-8d298f51ecf8">
+      <Execution id="a8e6b938-a8e3-439f-b9ce-93d14e9d4e36" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="DuplicateAndChangedBody_RetainOriginalWithoutRepaste" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(submit: True, expected: &quot;unknown-outcome&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="da891458-896d-f863-338d-52bca7beaf29">
+      <Execution id="8c10d343-7fc0-42d5-88ca-8be0879fa3d5" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="PartialWrite_RecordsPhaseAndNeverReplays" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="969cfc66-a641-7d25-95a4-a3b400af89d5">
+      <Execution id="5b9b4ebe-53cb-4bfe-a43c-486b80a05c13" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="UnsupportedOrBlockedView_WritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.TwoPromptsOneBinding_CustomSequences_OneSubmitEach" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="480c515b-ac8f-5790-cbf8-80ddf56f6cff">
+      <Execution id="6d643af0-d35d-4275-abce-4d13259d3b25" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="TwoPromptsOneBinding_CustomSequences_OneSubmitEach" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(submit: False, expected: &quot;draft-uncertain&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6905e732-988e-5c37-1a97-2b988a74107f">
+      <Execution id="43b5ca22-63d5-4301-8f5c-d3928c7f26c2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="PartialWrite_RecordsPhaseAndNeverReplays" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;CONTROLLED CLI\nAUTH\n› &quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="df5d9eaf-1d05-65de-6db5-0e4208d89bff">
+      <Execution id="d17aa588-4794-41d5-8061-d04d72e4f671" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="UnsupportedOrBlockedView_WritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit(afterSubmit: True, expected: &quot;unknown-outcome&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8e88b00b-90af-37e6-d8cf-950f416a88d8">
+      <Execution id="881eddd5-325f-4336-a6dd-ef55d2426a93" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="ActualPipe_ManualTakeoverBeforeOrAfterSubmit" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c6cc4827-5169-b838-b772-9c02c863cf92">
+      <Execution id="cf3a81ac-267c-47ee-ad60-b29cc4ab0ef0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;CONTROLLED CLI\nUPDATE\n› &quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e3a5e745-b241-ec2a-4220-786c3dcdb16f">
+      <Execution id="3d334df2-a43a-42aa-89ba-9be520f12419" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="UnsupportedOrBlockedView_WritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;CONTROLLED CLI\nTRUST\n› &quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="55f3b239-657c-c931-978d-b9c252523cb1">
+      <Execution id="6ff76eeb-8517-4509-a2ee-570a230f53c7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="UnsupportedOrBlockedView_WritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit(afterSubmit: False, expected: &quot;draft-uncertain&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8292e3c6-9400-ec6d-e05b-aea50811fc83">
+      <Execution id="5167e5e4-0694-4071-806a-719ac72ed864" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="ActualPipe_ManualTakeoverBeforeOrAfterSubmit" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="8292e3c6-9400-ec6d-e05b-aea50811fc83" executionId="5167e5e4-0694-4071-806a-719ac72ed864" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bcbd06f6-9989-5a5a-3055-10b9339d38f7" executionId="35b808b4-ff4d-4889-adf5-2ca189c45563" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="da891458-896d-f863-338d-52bca7beaf29" executionId="8c10d343-7fc0-42d5-88ca-8be0879fa3d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e3a5e745-b241-ec2a-4220-786c3dcdb16f" executionId="3d334df2-a43a-42aa-89ba-9be520f12419" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c6cc4827-5169-b838-b772-9c02c863cf92" executionId="cf3a81ac-267c-47ee-ad60-b29cc4ab0ef0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="969cfc66-a641-7d25-95a4-a3b400af89d5" executionId="5b9b4ebe-53cb-4bfe-a43c-486b80a05c13" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8e88b00b-90af-37e6-d8cf-950f416a88d8" executionId="881eddd5-325f-4336-a6dd-ef55d2426a93" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="01faa2a3-3058-c27b-9241-de09fab4f6ff" executionId="11fbfeb5-99df-4169-bfa0-765ae5dc3529" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="480c515b-ac8f-5790-cbf8-80ddf56f6cff" executionId="6d643af0-d35d-4275-abce-4d13259d3b25" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8a0f74c6-acd4-b104-a488-72cce4bc2952" executionId="80700442-b82e-4cd0-aac6-aae5244bd4c9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="48768043-53c1-bf62-cec2-6fc9d1f33fcd" executionId="45be7d81-4ff5-445d-87ea-5d192f560080" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="097deac2-bda8-3b2f-4f53-7057799e3780" executionId="3f3d4b64-72e9-406c-8c24-d0f0a47003fe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="55f3b239-657c-c931-978d-b9c252523cb1" executionId="6ff76eeb-8517-4509-a2ee-570a230f53c7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6905e732-988e-5c37-1a97-2b988a74107f" executionId="43b5ca22-63d5-4301-8f5c-d3928c7f26c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="df5d9eaf-1d05-65de-6db5-0e4208d89bff" executionId="d17aa588-4794-41d5-8061-d04d72e4f671" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5ce29ef7-7165-444b-6554-8d298f51ecf8" executionId="a8e6b938-a8e3-439f-b9ce-93d14e9d4e36" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="16" executed="16" passed="15" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.22]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.63]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.66]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.04]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.04]                  ↓ (pos 0)
+[xUnit.net 00:00:02.04]       Expected: "unknown-outcome"
+[xUnit.net 00:00:02.04]       Actual:   "draft-uncertain"
+[xUnit.net 00:00:02.04]                  ↑ (pos 0)
+[xUnit.net 00:00:02.04]       Stack Trace:
+[xUnit.net 00:00:02.05]         /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs(108,0): at BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(Boolean submit, String expected)
+[xUnit.net 00:00:02.05]         /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs(111,0): at BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(Boolean submit, String expected)
+[xUnit.net 00:00:02.05]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.19]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T07:29:58.6537375+00:00">
+        <Text>[xUnit.net 00:00:02.04]     BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(submit: True, expected: "unknown-outcome") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

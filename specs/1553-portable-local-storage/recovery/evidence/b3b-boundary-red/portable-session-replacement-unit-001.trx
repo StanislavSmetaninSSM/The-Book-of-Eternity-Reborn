@@ -1,0 +1,380 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="1a09026e-a6e6-453d-a84e-2307e335df2b" name="b3b-boundary-red" runUser="$USER">
+  <ns0:Times creation="2026-10-01T05:46:10.9014142-04:00" queuing="2026-10-01T05:46:10.9014142-04:00" start="2026-10-01T05:46:08.4586924-04:00" finish="2026-10-01T05:46:14.5208082-04:00" />
+  <ns0:TestSettings name="default" id="6fd881f0-2a93-44db-9415-eae66d656aff">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="1a2cac90-c889-4e4f-a89a-967170c50a54" testId="ce5d7b23-fd13-99b6-2463-65664190a24f" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty(containsFile: False)" computerName="$HOST" duration="00:00:00.0323255" startTime="2026-10-01T05:46:13.6282150-04:00" endTime="2026-10-01T05:46:13.6282152-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1a2cac90-c889-4e4f-a89a-967170c50a54">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty(Boolean containsFile) in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.Boundaries.cs:line 27
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="263e6ed7-3699-443a-b253-3984010877b8" testId="874ed893-7ede-f1ac-a92a-0341c94fef1c" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue(cut: &quot;cleanup&quot;, committed: True)" computerName="$HOST" duration="00:00:00.5546367" startTime="2026-10-01T05:46:12.8567342-04:00" endTime="2026-10-01T05:46:12.8567347-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="263e6ed7-3699-443a-b253-3984010877b8" />
+    <ns0:UnitTestResult executionId="2efb3645-a13c-4577-8b80-56eda4397f9d" testId="dc829e6f-cb6a-015b-9a96-384aaa4aec60" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidLockLinkRetainsOutsideBytesAndAllSelectedMembers" computerName="$HOST" duration="00:00:00.0097925" startTime="2026-10-01T05:46:13.5901226-04:00" endTime="2026-10-01T05:46:13.5901228-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2efb3645-a13c-4577-8b80-56eda4397f9d" />
+    <ns0:UnitTestResult executionId="e3fe1e18-da43-421d-9c93-0aa8f1a5eb70" testId="6ff76703-13f9-490b-c045-11ae054319da" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 8)" computerName="$HOST" duration="00:00:00.0378786" startTime="2026-10-01T05:46:11.1978935-04:00" endTime="2026-10-01T05:46:11.1978938-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e3fe1e18-da43-421d-9c93-0aa8f1a5eb70" />
+    <ns0:UnitTestResult executionId="61d93799-5f9a-4e5b-b8b5-bcd94ea7acae" testId="26c2f35d-52e8-2495-3b2c-e46705adc8cf" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_IgnoresEmptySnapshotDescendantsButCountsZeroByteFiles" computerName="$HOST" duration="00:00:00.0437880" startTime="2026-10-01T05:46:10.7853226-04:00" endTime="2026-10-01T05:46:10.7853691-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="61d93799-5f9a-4e5b-b8b5-bcd94ea7acae" />
+    <ns0:UnitTestResult executionId="0ece0128-bc22-4096-b8e8-6e404b09ea45" testId="add4240e-d7ad-cf4e-38e0-7c8e36490eb9" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackFifoRemainsUnopenedInColdProcess" computerName="$HOST" duration="00:00:00.2594971" startTime="2026-10-01T05:46:13.5800523-04:00" endTime="2026-10-01T05:46:13.5800526-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0ece0128-bc22-4096-b8e8-6e404b09ea45" />
+    <ns0:UnitTestResult executionId="49702fbc-839d-4be0-a27b-b73d1084c1cf" testId="e65f11ef-65d7-7933-c9a2-7f1976e93d41" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 0)" computerName="$HOST" duration="00:00:00.0273459" startTime="2026-10-01T05:46:11.1591735-04:00" endTime="2026-10-01T05:46:11.1591739-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="49702fbc-839d-4be0-a27b-b73d1084c1cf" />
+    <ns0:UnitTestResult executionId="64a65c71-9039-40d0-b16f-8eb4ce65a317" testId="15c6d002-ece1-f305-d162-f3f065f73d95" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(root: &quot;\\\\?\\UNC\\server\\share\\session\\game_state&quot;, member: &quot;\\\\server\\share\\session\\game_state\\control\\g&quot;···)" computerName="$HOST" duration="00:00:00.0030087" startTime="2026-10-01T05:46:10.8037949-04:00" endTime="2026-10-01T05:46:10.8037950-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="64a65c71-9039-40d0-b16f-8eb4ce65a317">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.FileSystemManager.GetLocalRelativePath(String root, String path, Boolean windows) in $REPO/BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(String root, String member) in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.Boundaries.cs:line 224
+   at InvokeStub_PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="ea368f85-e6f5-4c05-88ad-966f14395d8f" testId="08287f9f-fd09-47a2-d7eb-5b84d9cbdbbc" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_DeletesCompleteSelectedSetAndPreservesExcludedBytes" computerName="$HOST" duration="00:00:00.0387954" startTime="2026-10-01T05:46:14.3675543-04:00" endTime="2026-10-01T05:46:14.3675546-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ea368f85-e6f5-4c05-88ad-966f14395d8f" />
+    <ns0:UnitTestResult executionId="c2b36457-1b28-4a0e-a4c8-d898bdedeef5" testId="0b1fe83b-c235-0dc4-65c4-15d07c1ab626" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_SelectedFifoIsRejectedBeforeOpenInColdProcess(relative: &quot;worker_tasks/task/nonregular.bin&quot;)" computerName="$HOST" duration="00:00:00.1734173" startTime="2026-10-01T05:46:14.0302474-04:00" endTime="2026-10-01T05:46:14.0302478-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c2b36457-1b28-4a0e-a4c8-d898bdedeef5" />
+    <ns0:UnitTestResult executionId="864fe48d-f159-40ea-911f-ab3368b346c8" testId="4323b4cb-e5d9-f40c-ff18-f335b80302b9" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_AbsentGenerationRollsBackAsAbsenceWithSelectedMembers" computerName="$HOST" duration="00:00:00.0334053" startTime="2026-10-01T05:46:14.2850363-04:00" endTime="2026-10-01T05:46:14.2850365-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="864fe48d-f159-40ea-911f-ab3368b346c8" />
+    <ns0:UnitTestResult executionId="01a93e03-0c90-434a-aaa2-6ff763ee69b0" testId="337f8398-1336-68e2-aa36-d631abe2d578" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries" computerName="$HOST" duration="00:00:00.0023534" startTime="2026-10-01T05:46:13.6618577-04:00" endTime="2026-10-01T05:46:13.6618581-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="01a93e03-0c90-434a-aaa2-6ff763ee69b0" />
+    <ns0:UnitTestResult executionId="e8b2e0d2-2c96-469d-b0ce-01120edec3a5" testId="c5bc696c-0409-d03f-be03-005b45b3a115" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidRequiredDirectoryRejectsBeforeGenerationOrSelectedMutation" computerName="$HOST" duration="00:00:00.0059455" startTime="2026-10-01T05:46:14.3278889-04:00" endTime="2026-10-01T05:46:14.3278891-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e8b2e0d2-2c96-469d-b0ce-01120edec3a5" />
+    <ns0:UnitTestResult executionId="024737c7-9b27-4596-a79d-046cc10566d6" testId="18532960-926e-2ce9-60df-e09712eaf5d4" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 5)" computerName="$HOST" duration="00:00:00.0539376" startTime="2026-10-01T05:46:11.0114493-04:00" endTime="2026-10-01T05:46:11.0114495-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="024737c7-9b27-4596-a79d-046cc10566d6" />
+    <ns0:UnitTestResult executionId="7400bd94-8689-43f3-94d9-16cb3f07f7a7" testId="c931f6cc-9a3c-63b1-ce6a-88290d9a64a1" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_RejectsWrongTypeRootOrLinkedDescendant(descendantLink: True)" computerName="$HOST" duration="00:00:00.0145042" startTime="2026-10-01T05:46:10.9545261-04:00" endTime="2026-10-01T05:46:10.9545264-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7400bd94-8689-43f3-94d9-16cb3f07f7a7" />
+    <ns0:UnitTestResult executionId="211b8205-d0d4-43be-b091-50a159cac9f7" testId="ecec1e7e-28e9-1a10-4255-7aeca3a849e0" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_HardLinkedGenerationAndMemberLeaveOutsideNamesUnchanged" computerName="$HOST" duration="00:00:00.0187077" startTime="2026-10-01T05:46:11.3032381-04:00" endTime="2026-10-01T05:46:11.3032383-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="211b8205-d0d4-43be-b091-50a159cac9f7" />
+    <ns0:UnitTestResult executionId="56620b0c-5512-4a95-8a92-92abd13f3f75" testId="c605ccd6-5fcf-e1df-0ffa-6b0a7b8ca814" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ChangedGenerationRetainsPartialMembersAndJournal" computerName="$HOST" duration="00:00:00.0307815" startTime="2026-10-01T05:46:14.4289072-04:00" endTime="2026-10-01T05:46:14.4289074-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="56620b0c-5512-4a95-8a92-92abd13f3f75" />
+    <ns0:UnitTestResult executionId="7ae7e165-9883-420b-bb91-75be26b6b2b3" testId="41c96886-1d68-7ca1-19af-3dac4edf19fd" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackLinkIsPreservedWithoutFollowingIt" computerName="$HOST" duration="00:00:00.1311033" startTime="2026-10-01T05:46:10.9380716-04:00" endTime="2026-10-01T05:46:10.9380720-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7ae7e165-9883-420b-bb91-75be26b6b2b3" />
+    <ns0:UnitTestResult executionId="5088c72a-c187-47cb-99c8-6f29043f2b9d" testId="ea1591af-9759-aa66-7ffc-ef1ba746609f" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue(cut: &quot;committed&quot;, committed: True)" computerName="$HOST" duration="00:00:00.5136444" startTime="2026-10-01T05:46:11.8178775-04:00" endTime="2026-10-01T05:46:11.8178779-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5088c72a-c187-47cb-99c8-6f29043f2b9d" />
+    <ns0:UnitTestResult executionId="7f87f5be-2762-4d3e-8d0c-26cd52d72155" testId="8cd8020f-3fe8-d703-bc04-ab0101ba9576" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 3)" computerName="$HOST" duration="00:00:00.0319587" startTime="2026-10-01T05:46:11.2304817-04:00" endTime="2026-10-01T05:46:11.2304819-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7f87f5be-2762-4d3e-8d0c-26cd52d72155" />
+    <ns0:UnitTestResult executionId="29777f94-c320-474b-acce-82ccc0aebc01" testId="d2d638af-f97f-c42c-ef03-815c4aaf078b" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue(cut: &quot;early-member&quot;, committed: False)" computerName="$HOST" duration="00:00:00.4615818" startTime="2026-10-01T05:46:13.3207246-04:00" endTime="2026-10-01T05:46:13.3207251-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="29777f94-c320-474b-acce-82ccc0aebc01" />
+    <ns0:UnitTestResult executionId="712587fc-41f1-4733-b909-bdeb6e7ca871" testId="67fb0cef-5a93-9fb7-6c72-6c31ac17c257" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(root: &quot;\\\\server\\share\\session\\game_state&quot;, member: &quot;\\\\?\\UNC\\server\\share\\session\\game_state\\co&quot;···)" computerName="$HOST" duration="00:00:00.0006288" startTime="2026-10-01T05:46:10.8050663-04:00" endTime="2026-10-01T05:46:10.8050664-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="712587fc-41f1-4733-b909-bdeb6e7ca871">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.FileSystemManager.GetLocalRelativePath(String root, String path, Boolean windows) in $REPO/BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(String root, String member) in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.Boundaries.cs:line 224
+   at InvokeStub_PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="334012e8-5901-47e6-82c7-e21af0b41f73" testId="8da8f774-ceb7-88af-4592-1c3b28670c5b" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.ConsolePendingProjection_EmptySnapshotAllowsFormAndActualFileBlocksIt" computerName="$HOST" duration="00:00:00.0415181" startTime="2026-10-01T05:46:14.2512327-04:00" endTime="2026-10-01T05:46:14.2512332-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="334012e8-5901-47e6-82c7-e21af0b41f73">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Equal() Failure: Values differ
+Expected: RequiresInput
+Actual:   Pending</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.ConsolePendingProjection_EmptySnapshotAllowsFormAndActualFileBlocksIt() in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.Boundaries.cs:line 43
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="9a56f2cc-611c-4a67-b808-81e94eeb8349" testId="3de3e073-2ed1-850d-ba08-4c0e6e7e1243" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_SelectedFifoIsRejectedBeforeOpenInColdProcess(relative: &quot;input/nonregular.json&quot;)" computerName="$HOST" duration="00:00:00.1772299" startTime="2026-10-01T05:46:14.2083827-04:00" endTime="2026-10-01T05:46:14.2083830-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a56f2cc-611c-4a67-b808-81e94eeb8349" />
+    <ns0:UnitTestResult executionId="20bd55ca-8e9f-4ff4-87b9-784ef7909a95" testId="08d86242-d493-9b43-cfd1-ec158bb09477" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_SelectedFifoIsRejectedBeforeOpenInColdProcess(relative: &quot;game_state/core/nonregular.bin&quot;)" computerName="$HOST" duration="00:00:00.1901278" startTime="2026-10-01T05:46:13.8561191-04:00" endTime="2026-10-01T05:46:13.8561195-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="20bd55ca-8e9f-4ff4-87b9-784ef7909a95" />
+    <ns0:UnitTestResult executionId="f9089415-cd96-40d4-bb91-81b4add05335" testId="ca64774f-da18-9c53-90cc-6677e15a99fb" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty(containsFile: True)" computerName="$HOST" duration="00:00:00.0300322" startTime="2026-10-01T05:46:13.6597263-04:00" endTime="2026-10-01T05:46:13.6597267-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f9089415-cd96-40d4-bb91-81b4add05335">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty(Boolean containsFile) in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.Boundaries.cs:line 27
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="54fb91b7-c6b6-4527-9f39-a777cf0d3093" testId="798a9e20-7d9e-e127-dff3-3093c10e0dfe" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue(cut: &quot;after-generation&quot;, committed: False)" computerName="$HOST" duration="00:00:00.4823805" startTime="2026-10-01T05:46:12.3010442-04:00" endTime="2026-10-01T05:46:12.3010445-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="54fb91b7-c6b6-4527-9f39-a777cf0d3093" />
+    <ns0:UnitTestResult executionId="00adcaa3-f1f3-48ab-9d3e-ab9a8ea9491b" testId="45c70954-cbf0-a07b-ed0a-aa083b6ef250" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(root: &quot;\\\\?\\C:\\session\\game_state&quot;, member: &quot;C:\\session\\game_state\\control\\gm_context_pack\&quot;···)" computerName="$HOST" duration="00:00:00.0012853" startTime="2026-10-01T05:46:10.8046939-04:00" endTime="2026-10-01T05:46:10.8046940-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="00adcaa3-f1f3-48ab-9d3e-ab9a8ea9491b">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.FileSystemManager.GetLocalRelativePath(String root, String path, Boolean windows) in $REPO/BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(String root, String member) in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.Boundaries.cs:line 224
+   at InvokeStub_PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="ac1e9b7f-13b2-45bb-9edf-82dd347536f2" testId="de88fbe1-52c6-932e-affb-3257bb8cfefa" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ManifestlessLegacyEvidenceRemainsBlockedAndIntact" computerName="$HOST" duration="00:00:00.0061651" startTime="2026-10-01T05:46:14.4352721-04:00" endTime="2026-10-01T05:46:14.4352724-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ac1e9b7f-13b2-45bb-9edf-82dd347536f2" />
+    <ns0:UnitTestResult executionId="1efe019e-5421-452c-8b99-009d78033280" testId="1ba6ddf1-e715-e58f-c57a-5d457c916d10" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 1)" computerName="$HOST" duration="00:00:00.0340822" startTime="2026-10-01T05:46:11.1309697-04:00" endTime="2026-10-01T05:46:11.1309699-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1efe019e-5421-452c-8b99-009d78033280" />
+    <ns0:UnitTestResult executionId="828d3284-a6c6-4684-85b9-d70703b6723f" testId="a329331c-76a4-fc90-755a-e20857379e77" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_RejectsWrongTypeRootOrLinkedDescendant(descendantLink: False)" computerName="$HOST" duration="00:00:00.0016356" startTime="2026-10-01T05:46:10.9564331-04:00" endTime="2026-10-01T05:46:10.9564332-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="828d3284-a6c6-4684-85b9-d70703b6723f" />
+    <ns0:UnitTestResult executionId="626dd870-26d7-4ddc-8f3b-c6b60d4534e4" testId="08752ec1-3916-bb7d-3cb0-e569ced798a3" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_UnknownLaterMemberBlocksCompleteRollbackAndRetainsEvidence" computerName="$HOST" duration="00:00:00.0356476" startTime="2026-10-01T05:46:14.3216202-04:00" endTime="2026-10-01T05:46:14.3216204-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="626dd870-26d7-4ddc-8f3b-c6b60d4534e4" />
+    <ns0:UnitTestResult executionId="e8864b42-b468-4355-a48a-4f8cb075bc37" testId="25b5154a-d2b8-c41f-a6d1-0ee2850f7b99" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 2)" computerName="$HOST" duration="00:00:00.0375163" startTime="2026-10-01T05:46:11.0500999-04:00" endTime="2026-10-01T05:46:11.0501001-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e8864b42-b468-4355-a48a-4f8cb075bc37" />
+    <ns0:UnitTestResult executionId="4507ed07-d218-47cd-8909-4142e4038e47" testId="dc82c54a-f5e7-caca-72d6-8f564689ce32" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 9)" computerName="$HOST" duration="00:00:00.0453458" startTime="2026-10-01T05:46:11.0961638-04:00" endTime="2026-10-01T05:46:11.0961641-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4507ed07-d218-47cd-8909-4142e4038e47" />
+    <ns0:UnitTestResult executionId="bd78ad0a-9946-49a8-9dd2-ce4e237f31fe" testId="81029f37-75b8-8de8-79e6-af87604d6375" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 4)" computerName="$HOST" duration="00:00:00.0525919" startTime="2026-10-01T05:46:11.2837200-04:00" endTime="2026-10-01T05:46:11.2837202-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bd78ad0a-9946-49a8-9dd2-ce4e237f31fe" />
+    <ns0:UnitTestResult executionId="32756ef0-74d3-4dfe-b756-dd88100a53ea" testId="c65046a0-0624-e828-7df6-de6d23c663be" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(root: &quot;C:\\session\\game_state&quot;, member: &quot;\\\\?\\C:\\session\\game_state\\control\\gm_contex&quot;···)" computerName="$HOST" duration="00:00:00.0015872" startTime="2026-10-01T05:46:10.8028761-04:00" endTime="2026-10-01T05:46:10.8028764-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="32756ef0-74d3-4dfe-b756-dd88100a53ea">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.FileSystemManager.GetLocalRelativePath(String root, String path, Boolean windows) in $REPO/BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(String root, String member) in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.Boundaries.cs:line 224
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="61cb2b1e-c689-49b5-839e-5d6aa5b38ff7" testId="4b9449bb-5c19-de91-8fba-10894acd7857" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Rotate_WorkerCleanupAndGenerationRollbackTogether" computerName="$HOST" duration="00:00:00.0292846" startTime="2026-10-01T05:46:14.3972022-04:00" endTime="2026-10-01T05:46:14.3972024-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="61cb2b1e-c689-49b5-839e-5d6aa5b38ff7" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_IgnoresEmptySnapshotDescendantsButCountsZeroByteFiles" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="26c2f35d-52e8-2495-3b2c-e46705adc8cf">
+      <ns0:Execution id="61d93799-5f9a-4e5b-b8b5-bcd94ea7acae" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="PendingInspector_IgnoresEmptySnapshotDescendantsButCountsZeroByteFiles" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.ConsolePendingProjection_EmptySnapshotAllowsFormAndActualFileBlocksIt" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8da8f774-ceb7-88af-4592-1c3b28670c5b">
+      <ns0:Execution id="334012e8-5901-47e6-82c7-e21af0b41f73" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="ConsolePendingProjection_EmptySnapshotAllowsFormAndActualFileBlocksIt" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_UnknownLaterMemberBlocksCompleteRollbackAndRetainsEvidence" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="08752ec1-3916-bb7d-3cb0-e569ced798a3">
+      <ns0:Execution id="626dd870-26d7-4ddc-8f3b-c6b60d4534e4" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_UnknownLaterMemberBlocksCompleteRollbackAndRetainsEvidence" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(root: &quot;C:\\session\\game_state&quot;, member: &quot;\\\\?\\C:\\session\\game_state\\control\\gm_contex&quot;···)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c65046a0-0624-e828-7df6-de6d23c663be">
+      <ns0:Execution id="32756ef0-74d3-4dfe-b756-dd88100a53ea" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue(cut: &quot;after-generation&quot;, committed: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="798a9e20-7d9e-e127-dff3-3093c10e0dfe">
+      <ns0:Execution id="54fb91b7-c6b6-4527-9f39-a777cf0d3093" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 9)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="dc82c54a-f5e7-caca-72d6-8f564689ce32">
+      <ns0:Execution id="4507ed07-d218-47cd-8909-4142e4038e47" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(root: &quot;\\\\?\\C:\\session\\game_state&quot;, member: &quot;C:\\session\\game_state\\control\\gm_context_pack\&quot;···)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="45c70954-cbf0-a07b-ed0a-aa083b6ef250">
+      <ns0:Execution id="00adcaa3-f1f3-48ab-9d3e-ab9a8ea9491b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_RejectsWrongTypeRootOrLinkedDescendant(descendantLink: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c931f6cc-9a3c-63b1-ce6a-88290d9a64a1">
+      <ns0:Execution id="7400bd94-8689-43f3-94d9-16cb3f07f7a7" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="PendingInspector_RejectsWrongTypeRootOrLinkedDescendant" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidRequiredDirectoryRejectsBeforeGenerationOrSelectedMutation" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c5bc696c-0409-d03f-be03-005b45b3a115">
+      <ns0:Execution id="e8b2e0d2-2c96-469d-b0ce-01120edec3a5" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_InvalidRequiredDirectoryRejectsBeforeGenerationOrSelectedMutation" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(root: &quot;\\\\?\\UNC\\server\\share\\session\\game_state&quot;, member: &quot;\\\\server\\share\\session\\game_state\\control\\g&quot;···)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="15c6d002-ece1-f305-d162-f3f065f73d95">
+      <ns0:Execution id="64a65c71-9039-40d0-b16f-8eb4ce65a317" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_AbsentGenerationRollsBackAsAbsenceWithSelectedMembers" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4323b4cb-e5d9-f40c-ff18-f335b80302b9">
+      <ns0:Execution id="864fe48d-f159-40ea-911f-ab3368b346c8" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_AbsentGenerationRollsBackAsAbsenceWithSelectedMembers" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidLockLinkRetainsOutsideBytesAndAllSelectedMembers" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="dc829e6f-cb6a-015b-9a96-384aaa4aec60">
+      <ns0:Execution id="2efb3645-a13c-4577-8b80-56eda4397f9d" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_InvalidLockLinkRetainsOutsideBytesAndAllSelectedMembers" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue(cut: &quot;committed&quot;, committed: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ea1591af-9759-aa66-7ffc-ef1ba746609f">
+      <ns0:Execution id="5088c72a-c187-47cb-99c8-6f29043f2b9d" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackLinkIsPreservedWithoutFollowingIt" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="41c96886-1d68-7ca1-19af-3dac4edf19fd">
+      <ns0:Execution id="7ae7e165-9883-420b-bb91-75be26b6b2b3" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_OpaqueContextPackLinkIsPreservedWithoutFollowingIt" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_SelectedFifoIsRejectedBeforeOpenInColdProcess(relative: &quot;input/nonregular.json&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3de3e073-2ed1-850d-ba08-4c0e6e7e1243">
+      <ns0:Execution id="9a56f2cc-611c-4a67-b808-81e94eeb8349" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_SelectedFifoIsRejectedBeforeOpenInColdProcess" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 3)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8cd8020f-3fe8-d703-bc04-ab0101ba9576">
+      <ns0:Execution id="7f87f5be-2762-4d3e-8d0c-26cd52d72155" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue(cut: &quot;cleanup&quot;, committed: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="874ed893-7ede-f1ac-a92a-0341c94fef1c">
+      <ns0:Execution id="263e6ed7-3699-443a-b253-3984010877b8" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 2)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="25b5154a-d2b8-c41f-a6d1-0ee2850f7b99">
+      <ns0:Execution id="e8864b42-b468-4355-a48a-4f8cb075bc37" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_RejectsWrongTypeRootOrLinkedDescendant(descendantLink: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a329331c-76a4-fc90-755a-e20857379e77">
+      <ns0:Execution id="828d3284-a6c6-4684-85b9-d70703b6723f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="PendingInspector_RejectsWrongTypeRootOrLinkedDescendant" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="337f8398-1336-68e2-aa36-d631abe2d578">
+      <ns0:Execution id="01a93e03-0c90-434a-aaa2-6ff763ee69b0" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 0)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e65f11ef-65d7-7933-c9a2-7f1976e93d41">
+      <ns0:Execution id="49702fbc-839d-4be0-a27b-b73d1084c1cf" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_DeletesCompleteSelectedSetAndPreservesExcludedBytes" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="08287f9f-fd09-47a2-d7eb-5b84d9cbdbbc">
+      <ns0:Execution id="ea368f85-e6f5-4c05-88ad-966f14395d8f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_DeletesCompleteSelectedSetAndPreservesExcludedBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty(containsFile: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ce5d7b23-fd13-99b6-2463-65664190a24f">
+      <ns0:Execution id="1a2cac90-c889-4e4f-a89a-967170c50a54" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 5)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="18532960-926e-2ce9-60df-e09712eaf5d4">
+      <ns0:Execution id="024737c7-9b27-4596-a79d-046cc10566d6" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Rotate_WorkerCleanupAndGenerationRollbackTogether" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4b9449bb-5c19-de91-8fba-10894acd7857">
+      <ns0:Execution id="61cb2b1e-c689-49b5-839e-5d6aa5b38ff7" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Rotate_WorkerCleanupAndGenerationRollbackTogether" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(root: &quot;\\\\server\\share\\session\\game_state&quot;, member: &quot;\\\\?\\UNC\\server\\share\\session\\game_state\\co&quot;···)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="67fb0cef-5a93-9fb7-6c72-6c31ac17c257">
+      <ns0:Execution id="712587fc-41f1-4733-b909-bdeb6e7ca871" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue(cut: &quot;early-member&quot;, committed: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d2d638af-f97f-c42c-ef03-815c4aaf078b">
+      <ns0:Execution id="29777f94-c320-474b-acce-82ccc0aebc01" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_ColdProcessRecoveryIncludesGenerationWorkersAndEmptyResidue" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_HardLinkedGenerationAndMemberLeaveOutsideNamesUnchanged" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ecec1e7e-28e9-1a10-4255-7aeca3a849e0">
+      <ns0:Execution id="211b8205-d0d4-43be-b091-50a159cac9f7" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_HardLinkedGenerationAndMemberLeaveOutsideNamesUnchanged" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 4)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="81029f37-75b8-8de8-79e6-af87604d6375">
+      <ns0:Execution id="bd78ad0a-9946-49a8-9dd2-ce4e237f31fe" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ManifestlessLegacyEvidenceRemainsBlockedAndIntact" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="de88fbe1-52c6-932e-affb-3257bb8cfefa">
+      <ns0:Execution id="ac1e9b7f-13b2-45bb-9edf-82dd347536f2" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_ManifestlessLegacyEvidenceRemainsBlockedAndIntact" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackFifoRemainsUnopenedInColdProcess" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="add4240e-d7ad-cf4e-38e0-7c8e36490eb9">
+      <ns0:Execution id="0ece0128-bc22-4096-b8e8-6e404b09ea45" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_OpaqueContextPackFifoRemainsUnopenedInColdProcess" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty(containsFile: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ca64774f-da18-9c53-90cc-6677e15a99fb">
+      <ns0:Execution id="f9089415-cd96-40d4-bb91-81b4add05335" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ChangedGenerationRetainsPartialMembersAndJournal" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c605ccd6-5fcf-e1df-0ffa-6b0a7b8ca814">
+      <ns0:Execution id="56620b0c-5512-4a95-8a92-92abd13f3f75" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_ChangedGenerationRetainsPartialMembersAndJournal" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 1)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1ba6ddf1-e715-e58f-c57a-5d457c916d10">
+      <ns0:Execution id="1efe019e-5421-452c-8b99-009d78033280" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_SelectedFifoIsRejectedBeforeOpenInColdProcess(relative: &quot;worker_tasks/task/nonregular.bin&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0b1fe83b-c235-0dc4-65c4-15d07c1ab626">
+      <ns0:Execution id="c2b36457-1b28-4a0e-a4c8-d898bdedeef5" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_SelectedFifoIsRejectedBeforeOpenInColdProcess" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_SelectedFifoIsRejectedBeforeOpenInColdProcess(relative: &quot;game_state/core/nonregular.bin&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="08d86242-d493-9b43-cfd1-ec158bb09477">
+      <ns0:Execution id="20bd55ca-8e9f-4ff4-87b9-784ef7909a95" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_SelectedFifoIsRejectedBeforeOpenInColdProcess" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 8)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6ff76703-13f9-490b-c045-11ae054319da">
+      <ns0:Execution id="e3fe1e18-da43-421d-9c93-0aa8f1a5eb70" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="ce5d7b23-fd13-99b6-2463-65664190a24f" executionId="1a2cac90-c889-4e4f-a89a-967170c50a54" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="874ed893-7ede-f1ac-a92a-0341c94fef1c" executionId="263e6ed7-3699-443a-b253-3984010877b8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="dc829e6f-cb6a-015b-9a96-384aaa4aec60" executionId="2efb3645-a13c-4577-8b80-56eda4397f9d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="6ff76703-13f9-490b-c045-11ae054319da" executionId="e3fe1e18-da43-421d-9c93-0aa8f1a5eb70" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="26c2f35d-52e8-2495-3b2c-e46705adc8cf" executionId="61d93799-5f9a-4e5b-b8b5-bcd94ea7acae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="add4240e-d7ad-cf4e-38e0-7c8e36490eb9" executionId="0ece0128-bc22-4096-b8e8-6e404b09ea45" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e65f11ef-65d7-7933-c9a2-7f1976e93d41" executionId="49702fbc-839d-4be0-a27b-b73d1084c1cf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="15c6d002-ece1-f305-d162-f3f065f73d95" executionId="64a65c71-9039-40d0-b16f-8eb4ce65a317" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="08287f9f-fd09-47a2-d7eb-5b84d9cbdbbc" executionId="ea368f85-e6f5-4c05-88ad-966f14395d8f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="0b1fe83b-c235-0dc4-65c4-15d07c1ab626" executionId="c2b36457-1b28-4a0e-a4c8-d898bdedeef5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="4323b4cb-e5d9-f40c-ff18-f335b80302b9" executionId="864fe48d-f159-40ea-911f-ab3368b346c8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="337f8398-1336-68e2-aa36-d631abe2d578" executionId="01a93e03-0c90-434a-aaa2-6ff763ee69b0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="c5bc696c-0409-d03f-be03-005b45b3a115" executionId="e8b2e0d2-2c96-469d-b0ce-01120edec3a5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="18532960-926e-2ce9-60df-e09712eaf5d4" executionId="024737c7-9b27-4596-a79d-046cc10566d6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="c931f6cc-9a3c-63b1-ce6a-88290d9a64a1" executionId="7400bd94-8689-43f3-94d9-16cb3f07f7a7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ecec1e7e-28e9-1a10-4255-7aeca3a849e0" executionId="211b8205-d0d4-43be-b091-50a159cac9f7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="c605ccd6-5fcf-e1df-0ffa-6b0a7b8ca814" executionId="56620b0c-5512-4a95-8a92-92abd13f3f75" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="41c96886-1d68-7ca1-19af-3dac4edf19fd" executionId="7ae7e165-9883-420b-bb91-75be26b6b2b3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ea1591af-9759-aa66-7ffc-ef1ba746609f" executionId="5088c72a-c187-47cb-99c8-6f29043f2b9d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="8cd8020f-3fe8-d703-bc04-ab0101ba9576" executionId="7f87f5be-2762-4d3e-8d0c-26cd52d72155" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d2d638af-f97f-c42c-ef03-815c4aaf078b" executionId="29777f94-c320-474b-acce-82ccc0aebc01" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="67fb0cef-5a93-9fb7-6c72-6c31ac17c257" executionId="712587fc-41f1-4733-b909-bdeb6e7ca871" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="8da8f774-ceb7-88af-4592-1c3b28670c5b" executionId="334012e8-5901-47e6-82c7-e21af0b41f73" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3de3e073-2ed1-850d-ba08-4c0e6e7e1243" executionId="9a56f2cc-611c-4a67-b808-81e94eeb8349" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="08d86242-d493-9b43-cfd1-ec158bb09477" executionId="20bd55ca-8e9f-4ff4-87b9-784ef7909a95" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ca64774f-da18-9c53-90cc-6677e15a99fb" executionId="f9089415-cd96-40d4-bb91-81b4add05335" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="798a9e20-7d9e-e127-dff3-3093c10e0dfe" executionId="54fb91b7-c6b6-4527-9f39-a777cf0d3093" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="45c70954-cbf0-a07b-ed0a-aa083b6ef250" executionId="00adcaa3-f1f3-48ab-9d3e-ab9a8ea9491b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="de88fbe1-52c6-932e-affb-3257bb8cfefa" executionId="ac1e9b7f-13b2-45bb-9edf-82dd347536f2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="1ba6ddf1-e715-e58f-c57a-5d457c916d10" executionId="1efe019e-5421-452c-8b99-009d78033280" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="a329331c-76a4-fc90-755a-e20857379e77" executionId="828d3284-a6c6-4684-85b9-d70703b6723f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="08752ec1-3916-bb7d-3cb0-e569ced798a3" executionId="626dd870-26d7-4ddc-8f3b-c6b60d4534e4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="25b5154a-d2b8-c41f-a6d1-0ee2850f7b99" executionId="e8864b42-b468-4355-a48a-4f8cb075bc37" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="dc82c54a-f5e7-caca-72d6-8f564689ce32" executionId="4507ed07-d218-47cd-8909-4142e4038e47" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="81029f37-75b8-8de8-79e6-af87604d6375" executionId="bd78ad0a-9946-49a8-9dd2-ce4e237f31fe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="c65046a0-0624-e828-7df6-de6d23c663be" executionId="32756ef0-74d3-4dfe-b756-dd88100a53ea" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="4b9449bb-5c19-de91-8fba-10894acd7857" executionId="61cb2b1e-c689-49b5-839e-5d6aa5b38ff7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="37" executed="37" passed="30" failed="7" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.17]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.36]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.39]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.65]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.65]       Stack Trace:
+[xUnit.net 00:00:01.65]         $REPO/BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.GetLocalRelativePath(String root, String path, Boolean windows)
+[xUnit.net 00:00:01.65]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.Boundaries.cs(224,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(String root, String member)
+[xUnit.net 00:00:01.65]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.65]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.66]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.GetLocalRelativePath(String root, String path, Boolean windows)
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.Boundaries.cs(224,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(String root, String member)
+[xUnit.net 00:00:01.66]            at InvokeStub_PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(Object, Span`1)
+[xUnit.net 00:00:01.66]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.66]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.GetLocalRelativePath(String root, String path, Boolean windows)
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.Boundaries.cs(224,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(String root, String member)
+[xUnit.net 00:00:01.66]            at InvokeStub_PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(Object, Span`1)
+[xUnit.net 00:00:01.66]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.66]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.GetLocalRelativePath(String root, String path, Boolean windows)
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.Boundaries.cs(224,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(String root, String member)
+[xUnit.net 00:00:01.66]            at InvokeStub_PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(Object, Span`1)
+[xUnit.net 00:00:01.66]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:04.48]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:04.48]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:04.48]       Stack Trace:
+[xUnit.net 00:00:04.48]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.Boundaries.cs(27,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty(Boolean containsFile)
+[xUnit.net 00:00:04.48]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.51]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:04.51]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:04.51]       Stack Trace:
+[xUnit.net 00:00:04.51]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.Boundaries.cs(27,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty(Boolean containsFile)
+[xUnit.net 00:00:04.51]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.10]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:05.10]       Expected: RequiresInput
+[xUnit.net 00:00:05.10]       Actual:   Pending
+[xUnit.net 00:00:05.10]       Stack Trace:
+[xUnit.net 00:00:05.10]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.Boundaries.cs(43,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.ConsolePendingProjection_EmptySnapshotAllowsFormAndActualFileBlocksIt()
+[xUnit.net 00:00:05.10]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.30]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:46:10.8022850-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.65]     BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(root: "C:\\session\\game_state", member: "\\\\?\\C:\\session\\game_state\\control\\gm_contex"···) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:46:10.8037910-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(root: "\\\\?\\UNC\\server\\share\\session\\game_state", member: "\\\\server\\share\\session\\game_state\\control\\g"···) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:46:10.8044036-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(root: "\\\\?\\C:\\session\\game_state", member: "C:\\session\\game_state\\control\\gm_context_pack\"···) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:46:10.8071531-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.PortableSessionReplacementTests.LocalRelativePath_CanonicalizesSupportedWindowsRootAndMemberSpellings(root: "\\\\server\\share\\session\\game_state", member: "\\\\?\\UNC\\server\\share\\session\\game_state\\co"···) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:46:13.6282183-04:00">
+        <ns0:Text>[xUnit.net 00:00:04.48]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty(containsFile: False) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:46:13.6599157-04:00">
+        <ns0:Text>[xUnit.net 00:00:04.51]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_LockDirectoryIsInvalidEvenWhenStructurallyEmpty(containsFile: True) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:46:14.2515601-04:00">
+        <ns0:Text>[xUnit.net 00:00:05.10]     BookOfEternityClient.Tests.PortableSessionReplacementTests.ConsolePendingProjection_EmptySnapshotAllowsFormAndActualFileBlocksIt [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

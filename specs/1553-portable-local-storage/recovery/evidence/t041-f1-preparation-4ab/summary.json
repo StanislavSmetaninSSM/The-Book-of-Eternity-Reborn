@@ -1,0 +1,77 @@
+{
+  "Categories": [
+    "gm-main-run-fence",
+    "gm-main-run-owner-linux"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-main-run-fence",
+      "reason": "F1 new portable admission plus exact changed common lease/generation/publication/browser/terminal methods. Windows CI verifies source/portable behavior only; Linux native qualification is in explicit separate selection.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F1 FR-009/012/013/014/015; T042 original input lifetime"
+      ]
+    },
+    {
+      "category": "gm-main-run-owner-linux",
+      "reason": "Actual Linux-x64 fixed neutral original owner, one schema1 persistence, frozen metadata debt, real output/input/stop, in-generation held settlement, independent guardian; exactly affected native primitive only.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F1 FR-009/012/013/014/015; T042 original input lifetime"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "4ab85fbc55408bb18eaf90a76c9baf20fb072993",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1254159,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0450512,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1149189,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 40.4951707,
+      "Completed": false
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:40.9761169",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 0,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 0,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

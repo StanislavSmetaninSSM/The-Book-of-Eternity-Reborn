@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-crash-replacement-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b5f0d67987b4c8ecc0ed9c4a52de72bc46241124",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 50.5309058,
+  "Descriptors": [
+    {
+      "Name": "gm-main-crash-replacement-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-crash-replacement-linux",
+      "Categories": [
+        "gm-main-crash-replacement-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.Replacement_FreshProcessRetainsExactTypedDecisionAndConjunction",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.Replacement_FreshProcessRetainsExactTypedDecisionAndConjunction",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

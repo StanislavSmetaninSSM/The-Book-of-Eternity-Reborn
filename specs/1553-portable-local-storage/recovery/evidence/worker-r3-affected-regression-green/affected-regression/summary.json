@@ -1,0 +1,129 @@
+{
+  "Categories": [
+    "worker-restart-publication-races-linux",
+    "worker-restart-cleanup-loss-linux",
+    "worker-restart-boundaries-linux",
+    "worker-restart-root-linux",
+    "worker-restart-control-linux",
+    "worker-restart-launch-linux",
+    "worker-restart-lifecycle-linux",
+    "worker-restart-warm-linux",
+    "worker-restart-crash-retirement-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "worker-restart-boundaries-linux",
+      "Seconds": 14.079319,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-restart-cleanup-loss-linux",
+      "Seconds": 9.2680693,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-restart-control-linux",
+      "Seconds": 8.6053534,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-restart-crash-retirement-linux",
+      "Seconds": 22.3123224,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-restart-launch-linux",
+      "Seconds": 11.4768645,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-restart-lifecycle-linux",
+      "Seconds": 7.1520328,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-restart-publication-races-linux",
+      "Seconds": 14.425408,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-restart-root-linux",
+      "Seconds": 11.0603514,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-restart-warm-linux",
+      "Seconds": 5.740809,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0812736,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0401292,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0703933,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 37.0603018,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0045978,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:02:25.9106193",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 9,
+    "CompletedDescriptors": 9,
+    "PlannedCases": 24,
+    "CompletedCases": 24,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 24,
+    "Executed": 24,
+    "Passed": 24,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

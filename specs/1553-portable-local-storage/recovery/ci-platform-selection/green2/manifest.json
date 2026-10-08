@@ -1,0 +1,41 @@
+{
+  "sourceHead": "21c2a0791b936572996b710784a6bd93a87ce84f",
+  "command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -Category test-ci-platform-contracts -Parallelism 1 -TimeoutMinutes 3",
+  "exitCode": 0,
+  "executed": 18,
+  "passed": 18,
+  "failed": 0,
+  "distinctAcceptedIncludingUnchangedCatalogAssertions": 27,
+  "cleanup": "complete",
+  "nativeWindowsExecuted": false,
+  "hostedActionsExecuted": false,
+  "sourcePins": {
+    ".github/workflows/dotnet-ci.yml": "9c7705dfccec01ea9dee6e8f262f804ca8ace1dd0f7a65bfd2af9ba1be8bcbd7",
+    "scripts/testing/TestCategoryCatalog.psm1": "4fc817a6bd8aa32e34cf6bb7f1ff9e3557abe3e287ed1974c726f6f9a27df2d3",
+    "scripts/plan-test-ci.ps1": "0a9e17c772688a6399c50363e5a36e061d820b14a6fef5ba5c350306b13dabc3",
+    "scripts/tests/test-ci-platform.tests.ps1": "03b6422a1e316f7277d76959c1e056e74fa0f2a4f5f9ee451eb5d36e875adc1c",
+    "scripts/tests/test-category-catalog.tests.ps1": "dd9eb69274233da75b3b7b48c7f86e209041509db3e9ffe4ad1b4ba55a68e35f",
+    "tests/categories.json": "9d50885413f4776c32ce9069c45b4d57a8b292550c3385d83aad340dc75376d5",
+    "tests/selection.json": "1e32f4d9324ed7d5bfc94b2d311bd74f573555ee601d5164f2da9d99338ae57d"
+  },
+  "artifacts": [
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/green2/plan.json.gz",
+      "originalSize": 855,
+      "originalSha256": "f68e8ef3ee10a6f24c15c5cac06dce6fb74a93fb23556b152f61d157ce2ddb98",
+      "storedSha256": "682dea3692e70e632bde19663144ab015a665f69d9dbd9db8c296f9d53a05840"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/green2/summary.json.gz",
+      "originalSize": 1781,
+      "originalSha256": "ce5f295882f07145b3cbfc83bd59ebf87c30e8f333e128ab7f3cc7ea018c4c21",
+      "storedSha256": "c05bb911d1c7aef3f235f124ffb681c895b433adc5e1ffdf269a673b4b25b1d6"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/green2/dotnet-test.log.gz",
+      "originalSize": 3291,
+      "originalSha256": "e41a30c03a9ea4001b3f17db30e49e825002a0f457dafaf3fd8b2335ca8143ca",
+      "storedSha256": "a03eb4699362e29b17053a6cbf597d87ee463682ea29900f1a77f1a140cf300d"
+    }
+  ]
+}

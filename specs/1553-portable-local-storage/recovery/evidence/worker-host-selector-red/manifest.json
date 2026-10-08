@@ -1,0 +1,103 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "6e917c5559222e749363e0fd60a4fef4ce8a39a6",
+  "Inputs": [
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Sha256": "1f12338f013eb54070a198d0dd4a5998bbb5a7f426249442db4dfe5653b0217c",
+      "GitBlob": "e2c3add66cde56d64de90ca087304f9554e2cd0c"
+    },
+    {
+      "Path": "scripts/build-linux-supervisor.ps1",
+      "Sha256": "7644f02870fa97d53e50f7507d8ca3c85c0ade9dc274bb2a459587456f196474",
+      "GitBlob": "6692494f8996ff3c7f43a44730f601560b462c35"
+    },
+    {
+      "Path": "tests/fixtures/LinuxLineage/lineage-fixture.c",
+      "Sha256": "49861138606b63e591e5768276b291f2f6b2fa2791252001543a4f2b937164ea",
+      "GitBlob": "65dc5adefda6742b1122f9ffbac97f8b44393609"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs",
+      "Sha256": "5d2499a966de61ead072aead6b72a0d32ba1e354c3519653c0ac04adaeee0bca",
+      "GitBlob": "e19014edd1382362120ed836d100878d421134d6"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Sha256": "698c0f6a795aebd3f8bb3a3e35a7addafaecab7f9f493452d15b0cf5f6205be7",
+      "GitBlob": "091756da08a6ccd80b7637d9be6891884d9db50d"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Sha256": "3f6b5d7b42ff4ba3e6750c855de122d8828cbe261e3ea6bb1c1216ae6d83f03c",
+      "GitBlob": "2e9ff9804c064fc6764763c2dba2c49c02744729"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs",
+      "Sha256": "a36b9c6df4f65d103fde417a05955c0db7b5b521a2b039efe3c98a847dd5d729",
+      "GitBlob": "2f8e6b1d1f1fb848dd6b506c2e1d786862956f76"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs",
+      "Sha256": "c02d231ecc979f76c08a2eb8ae1c1300b14728821081f28cae5bf4a81bb312de",
+      "GitBlob": "1b63f80616e77137c71425f0ab0af7f43154bd16"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "selector-red/dotnet-test.log.gz",
+      "Bytes": 164902,
+      "Sha256": "27328a83f36185eb7f24762b72434ceeb95861fff569ad3894d4a05d0539e212",
+      "DecompressedSha256": "8cf778b7f6776f996b05ec55e395c21ec6c5f6138342ef6440d4252b9b2fa888"
+    },
+    {
+      "Path": "selector-red/plan.json",
+      "Bytes": 2274,
+      "Sha256": "789e5f1d68851b00e4394754988a9a8c6e13c54c7881c1fd06781e9dcfc30599"
+    },
+    {
+      "Path": "selector-red/summary.json",
+      "Bytes": 1356,
+      "Sha256": "85161f3dbe70db76daf44dba1cf0b243966a8692558d289e1074f9ef945579c8"
+    },
+    {
+      "Path": "selector-red/worker-backend-selection-unit-001.trx",
+      "Bytes": 21974,
+      "Sha256": "7ccb435986e08fbb17f7e30a3c5ee392afe968258b9c4b8cb4aa3ee89ae65d26"
+    },
+    {
+      "Path": "selector-red-plan/Build-unit.log.gz",
+      "Bytes": 1026,
+      "Sha256": "9b6044d679c989c40edeae6d0eab75e95018588202f4cdbcc9ea1f961749e41f",
+      "DecompressedSha256": "2bc817f25f87b7b1b307a5bf980b4e2ab6732a181c1250abbde833679e04de3d"
+    },
+    {
+      "Path": "selector-red-plan/dotnet-test.log.gz",
+      "Bytes": 164971,
+      "Sha256": "5f9182dd67024ed02d220f78051efa07f53563d7a8c8038caf4e0e200c0f84b7",
+      "DecompressedSha256": "04135fe29497ee08091f8a5f33189991dee39e0e2799d1ee4a097dac1f917a0c"
+    },
+    {
+      "Path": "selector-red-plan/plan.json",
+      "Bytes": 2275,
+      "Sha256": "a3d76c0bfa7eae8205d811e1f054cbf6f0a0254ad32c27b17b6f4b0759a317f1"
+    },
+    {
+      "Path": "selector-red-plan/summary.json",
+      "Bytes": 1456,
+      "Sha256": "b485894ba4a6a95b7debc6e5e5e47fc621d80e72f795646e5f1d5df2d688fc44"
+    },
+    {
+      "Path": "selector-red-plan.log.gz",
+      "Bytes": 749,
+      "Sha256": "8c08593090faaa53d8fd1791055dc1588c32c7422a06b9ea714f47ef7897c11d",
+      "DecompressedSha256": "9ab7778d1ba2c4383a57570e02f149d59a26f151b239ceeb7de309434140fa85"
+    },
+    {
+      "Path": "selector-red.log.gz",
+      "Bytes": 1450,
+      "Sha256": "d061cc7bf65fcc8030be8930fbb37142e9b76312973060c887a480736111fd5b",
+      "DecompressedSha256": "1e33db82ed633cbc01b32633658f0e38d962dc3e0bfd00cfb11dd52724cb56be"
+    }
+  ]
+}

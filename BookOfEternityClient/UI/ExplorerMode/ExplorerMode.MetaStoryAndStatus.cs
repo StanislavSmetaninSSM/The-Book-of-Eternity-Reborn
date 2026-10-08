@@ -18,6 +18,7 @@ public partial class ExplorerMode
             return;
         }
 
+        DesktopOpenResult? folderOpenResult = null;
         while (true)
         {
             var mods = await _systemModService.GetAvailableModsAsync(includeContent: false);
@@ -30,6 +31,9 @@ public partial class ExplorerMode
                 "[white]Включение и выключение выполняется через /опции.[/]",
                 "[yellow]Перед включением проверьте описание: мод может менять баланс, тон и доступные правила.[/]"
             };
+
+            if (folderOpenResult is not null) lines.Add(folderOpenResult.ToMarkup());
+            else lines.Add($"[dim]Путь для ручного открытия: {Markup.Escape(_systemModService.GetModsDirectoryPath())}[/]");
 
             if (mods.Count == 0)
             {
@@ -82,17 +86,10 @@ public partial class ExplorerMode
 
             if (choice == "📂 Открыть папку модов")
             {
-                try
+                folderOpenResult = _desktopPathOpener.OpenFolder(_systemModService.GetModsDirectoryPath(), createIfMissing: false);
+                if (folderOpenResult.Status != DesktopOpenStatus.Requested)
                 {
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = _systemModService.GetModsDirectoryPath(),
-                        UseShellExecute = true
-                    });
-                }
-                catch
-                {
-                    MarkupLine($"[yellow]{Markup.Escape(_systemModService.GetModsDirectoryPath())}[/]");
+                    MarkupLine(folderOpenResult.ToMarkup());
                     WaitForKey();
                 }
                 continue;

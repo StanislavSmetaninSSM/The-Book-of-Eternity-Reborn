@@ -1,0 +1,1046 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="ccc5216a-c5ba-4b15-b34f-7c86ff92e10b" name="@3a7834d0640d 2026-10-05 10:18:24" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T10:18:24.2547926+00:00" queuing="2026-10-05T10:18:24.2547931+00:00" start="2026-10-05T10:18:21.8957697+00:00" finish="2026-10-05T10:18:42.9951217+00:00" />
+  <TestSettings name="default" id="756622f0-a91a-49e3-86bd-9df9dcf2ebab">
+    <Deployment runDeploymentRoot="_3a7834d0640d_2026-10-05_10_18_24" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9e5e7c71-ac50-4141-9ed2-98b2dd92fdef" testId="5269e0b5-fbfb-4244-adf3-a99a548afbd5" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.Validate_DisposedHandleFailsClosed" computerName="3a7834d0640d" duration="00:00:00.0004087" startTime="2026-10-05T10:18:24.2387086+00:00" endTime="2026-10-05T10:18:24.2387087+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9e5e7c71-ac50-4141-9ed2-98b2dd92fdef">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.ObjectDisposedException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Worker host peer identity adapter is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.Validate_DisposedHandleFailsClosed() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 76
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.Validate(SafePipeHandle pipe, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 12
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass6_0.&lt;Validate_DisposedHandleFailsClosed&gt;b__0() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 77</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7db376f0-a906-4e16-a335-3ac56c05ef9e" testId="93ddcde7-593c-52d6-3b78-10a584e947d6" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_ExactProcessAndEffectiveUserAreAccepted(userId: 1000)" computerName="3a7834d0640d" duration="00:00:00.0001957" startTime="2026-10-05T10:18:24.2186746+00:00" endTime="2026-10-05T10:18:24.2186747+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7db376f0-a906-4e16-a335-3ac56c05ef9e">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : Worker host peer identity policy is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 16
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_ExactProcessAndEffectiveUserAreAccepted(UInt32 userId) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 14
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="abe09096-afd7-4f20-ba7b-cbb4d392ca76" testId="947e6d92-7e85-a31e-da28-407f7b9d4956" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(length: 13)" computerName="3a7834d0640d" duration="00:00:00.0003111" startTime="2026-10-05T10:18:24.2367971+00:00" endTime="2026-10-05T10:18:24.2367973+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="abe09096-afd7-4f20-ba7b-cbb4d392ca76">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Worker host peer identity policy is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(UInt32 length) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 44
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 16
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass3_0.&lt;LinuxResult_SimulatedMalformedCredentialLengthIsRejected&gt;b__0() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 45</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4c3848dc-755b-41ce-a956-77810b0a5248" testId="4655362e-65d8-4d76-1091-9f7a811f8aa0" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(result: -1, errno: 9)" computerName="3a7834d0640d" duration="00:00:00.0003513" startTime="2026-10-05T10:18:24.2205545+00:00" endTime="2026-10-05T10:18:24.2205545+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4c3848dc-755b-41ce-a956-77810b0a5248">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.ComponentModel.Win32Exception)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Worker host peer identity policy is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(Int32 result, Int32 errno) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 55
+   at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 16
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass4_0.&lt;LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields&gt;b__0() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 56</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5d49fa33-78fd-4f66-8576-bec409bcdefa" testId="c8ecc4c2-86e2-013d-23a1-6210444a9d53" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing" computerName="3a7834d0640d" duration="00:00:00.2310984" startTime="2026-10-05T10:18:42.9161630+00:00" endTime="2026-10-05T10:18:42.9161634+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5d49fa33-78fd-4f66-8576-bec409bcdefa">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 150
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 153
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 161
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 130
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 547
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 529
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 369</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="906f666d-9b2d-4056-8eec-41c417459fdf" testId="4fddc5ca-1581-0b4b-c519-0f0dd75be9b7" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: True)" computerName="3a7834d0640d" duration="00:00:00.2540093" startTime="2026-10-05T10:18:25.9654374+00:00" endTime="2026-10-05T10:18:25.9654378+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="906f666d-9b2d-4056-8eec-41c417459fdf" />
+    <UnitTestResult executionId="84956f2f-19f3-41ce-ab67-ab2213449426" testId="f847d1f7-270c-6649-907b-d2f48ecf0993" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost" computerName="3a7834d0640d" duration="00:00:00.2748185" startTime="2026-10-05T10:18:24.4522070+00:00" endTime="2026-10-05T10:18:24.4522072+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="84956f2f-19f3-41ce-ab67-ab2213449426">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 548
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 555
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 569
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 547
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 529
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 369</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5977086c-db9b-4872-a50b-9e65c9f53098" testId="e27ce202-a5a9-7275-a7da-a46dc16e7a04" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected" computerName="3a7834d0640d" duration="00:00:00.2771840" startTime="2026-10-05T10:18:42.6858487+00:00" endTime="2026-10-05T10:18:42.6858496+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5977086c-db9b-4872-a50b-9e65c9f53098">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 150
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 153
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 161
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 123
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 547
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 529
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 369</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ba4cfde7-4dee-4e2f-b572-dcc0d57f98e6" testId="8a296819-97a8-8799-e3d8-f0291e4e2bb5" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels" computerName="3a7834d0640d" duration="00:00:00.4039019" startTime="2026-10-05T10:18:42.1793950+00:00" endTime="2026-10-05T10:18:42.1793954+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ba4cfde7-4dee-4e2f-b572-dcc0d57f98e6">
+      <Output>
+        <ErrorInfo>
+          <Message>System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.</Message>
+          <StackTrace>   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 547
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 529
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 369
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 113
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 124
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 130
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ce9c0f2e-4167-49ab-9715-f5d46a252ba4" testId="9c06fc6d-da45-36a4-fabe-fbec8b4a37fb" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: &quot;schema&quot;)" computerName="3a7834d0640d" duration="00:00:00.2666689" startTime="2026-10-05T10:18:41.2656397+00:00" endTime="2026-10-05T10:18:41.2656401+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ce9c0f2e-4167-49ab-9715-f5d46a252ba4">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 150
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 153
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 161
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 547
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 529
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 369</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="525ac3c4-f65d-415f-ad51-435efa8e3ab0" testId="fc4c514b-04ed-05fb-7a74-a0d8e2e60c63" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(actual: 123, expected: 0)" computerName="3a7834d0640d" duration="00:00:00.0049261" startTime="2026-10-05T10:18:24.2122006+00:00" endTime="2026-10-05T10:18:24.2122245+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="525ac3c4-f65d-415f-ad51-435efa8e3ab0">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Worker host peer identity policy is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(Int32 actual, Int32 expected) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 24
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 16
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass1_0.&lt;LinuxResult_InvalidOrForeignProcessIsRejected&gt;b__0() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 25</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ba55a793-b5f3-4f1e-98ca-8b4bf68354a3" testId="32f8accd-23ab-eb4a-6a1b-546a9136b012" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(result: -1, errno: 13)" computerName="3a7834d0640d" duration="00:00:00.0000950" startTime="2026-10-05T10:18:24.2210015+00:00" endTime="2026-10-05T10:18:24.2210015+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ba55a793-b5f3-4f1e-98ca-8b4bf68354a3">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.ComponentModel.Win32Exception)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Worker host peer identity policy is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(Int32 result, Int32 errno) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 55
+   at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 16
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass4_0.&lt;LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields&gt;b__0() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 56</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b16af0b0-ec78-415b-be4e-222ef8d3c003" testId="cdc7d809-4b02-6eaa-459d-1e07873aad54" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_ExactProcessAndEffectiveUserAreAccepted(userId: 0)" computerName="3a7834d0640d" duration="00:00:00.0002792" startTime="2026-10-05T10:18:24.2189964+00:00" endTime="2026-10-05T10:18:24.2189964+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b16af0b0-ec78-415b-be4e-222ef8d3c003">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : Worker host peer identity policy is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 16
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_ExactProcessAndEffectiveUserAreAccepted(UInt32 userId) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 14
+   at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_ExactProcessAndEffectiveUserAreAccepted(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7cd78749-4a99-4621-bd12-f2b5f145a684" testId="d1fa634a-d69f-ca37-dc04-7ee0aaa98bf4" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: False)" computerName="3a7834d0640d" duration="00:00:00.2462247" startTime="2026-10-05T10:18:25.4194862+00:00" endTime="2026-10-05T10:18:25.4194868+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7cd78749-4a99-4621-bd12-f2b5f145a684">
+      <Output>
+        <ErrorInfo>
+          <Message>System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.</Message>
+          <StackTrace>   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 547
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 529
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 369
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 151
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 153
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 161
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 113
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e0539211-15ae-42c0-9149-20519716ce79" testId="2d637dc7-56fc-e37a-b60a-4d1f9ab2e57d" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths" computerName="3a7834d0640d" duration="00:00:00.0068103" startTime="2026-10-05T10:18:41.5091265+00:00" endTime="2026-10-05T10:18:41.5091269+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e0539211-15ae-42c0-9149-20519716ce79" />
+    <UnitTestResult executionId="29567916-95f2-49b1-a64e-25e005c45cfc" testId="cd20bd23-0a20-3e9d-5ba8-973657bb4131" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(actual: 124, expected: 123)" computerName="3a7834d0640d" duration="00:00:00.0006579" startTime="2026-10-05T10:18:24.2168034+00:00" endTime="2026-10-05T10:18:24.2168036+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="29567916-95f2-49b1-a64e-25e005c45cfc">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Worker host peer identity policy is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(Int32 actual, Int32 expected) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 24
+   at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 16
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass1_0.&lt;LinuxResult_InvalidOrForeignProcessIsRejected&gt;b__0() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 25</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8469d19e-f90b-4807-be06-fb77630abb2e" testId="c3a125c3-665d-0af7-7ee9-be125b109b61" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.Validate_InvalidNativeHandleFailsClosed" computerName="3a7834d0640d" duration="00:00:00.0005415" startTime="2026-10-05T10:18:24.2383735+00:00" endTime="2026-10-05T10:18:24.2383735+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8469d19e-f90b-4807-be06-fb77630abb2e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.ComponentModel.Win32Exception)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Worker host peer identity adapter is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.Validate_InvalidNativeHandleFailsClosed() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 65
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.Validate(SafePipeHandle pipe, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 12
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass5_0.&lt;Validate_InvalidNativeHandleFailsClosed&gt;b__0() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 66</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f698cdc0-a21c-4060-9f5c-aabfbc8cad77" testId="be01edbc-ddd4-32b4-2998-13ab0b8b194b" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: &quot;nonce&quot;)" computerName="3a7834d0640d" duration="00:00:00.2356516" startTime="2026-10-05T10:18:41.5026858+00:00" endTime="2026-10-05T10:18:41.5026862+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f698cdc0-a21c-4060-9f5c-aabfbc8cad77">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 150
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 153
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 161
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 547
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 529
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 369</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4e69a9a9-672b-44c4-99a0-641f19fba1d5" testId="96bfe5ca-584d-ab8b-515c-29b9c23ea1d8" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: True)" computerName="3a7834d0640d" duration="00:00:00.2717354" startTime="2026-10-05T10:18:25.1716935+00:00" endTime="2026-10-05T10:18:25.1716940+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4e69a9a9-672b-44c4-99a0-641f19fba1d5">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 150
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 153
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 161
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 113
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 547
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 529
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 369</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="714cc7ad-46b2-4742-8f98-50db87929e96" testId="246ac2f6-8728-c692-d36c-7cd1d7a99db0" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(actual: -1, expected: 123)" computerName="3a7834d0640d" duration="00:00:00.0000860" startTime="2026-10-05T10:18:24.2183213+00:00" endTime="2026-10-05T10:18:24.2183214+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="714cc7ad-46b2-4742-8f98-50db87929e96">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Worker host peer identity policy is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(Int32 actual, Int32 expected) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 24
+   at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 16
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass1_0.&lt;LinuxResult_InvalidOrForeignProcessIsRejected&gt;b__0() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 25</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ea5a327d-7b81-4ce5-a97e-408321be9f34" testId="7a67044a-3784-2916-f33c-38be6332fdf8" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch" computerName="3a7834d0640d" duration="00:00:00.2306796" startTime="2026-10-05T10:18:24.6878623+00:00" endTime="2026-10-05T10:18:24.6878627+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ea5a327d-7b81-4ce5-a97e-408321be9f34">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 548
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 555
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 569
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 547
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 529
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 369</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="930e84ed-ecc6-4f35-8495-a730669b89db" testId="b2aee4e9-0446-99ba-f139-41ba95e6c671" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: False)" computerName="3a7834d0640d" duration="00:00:00.2895652" startTime="2026-10-05T10:18:25.7097333+00:00" endTime="2026-10-05T10:18:25.7097338+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="930e84ed-ecc6-4f35-8495-a730669b89db" />
+    <UnitTestResult executionId="3f3e9d51-38e8-41a3-9379-02f5171896e4" testId="acde0528-2c26-c53e-ebe9-64efdd2c7599" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(result: 1, errno: 0)" computerName="3a7834d0640d" duration="00:00:00.0003601" startTime="2026-10-05T10:18:24.2200185+00:00" endTime="2026-10-05T10:18:24.2200192+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3f3e9d51-38e8-41a3-9379-02f5171896e4">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.ComponentModel.Win32Exception)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Worker host peer identity policy is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(Int32 result, Int32 errno) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 55
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 16
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass4_0.&lt;LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields&gt;b__0() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 56</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="06520a50-8dd7-4840-a189-2664b92831db" testId="20af7b4c-93f6-6f2a-f14f-824dc8f64c98" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker" computerName="3a7834d0640d" duration="00:00:00.2254412" startTime="2026-10-05T10:18:42.4049017+00:00" endTime="2026-10-05T10:18:42.4049020+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="06520a50-8dd7-4840-a189-2664b92831db">
+      <Output>
+        <ErrorInfo>
+          <Message>System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.</Message>
+          <StackTrace>   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 547
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 529
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 369
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 90
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 94
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 104
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="28f38cc8-6830-42b2-a48e-b1ea0ded4660" testId="189cd7e2-ba40-7494-6990-3cd7feb0d096" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_PartialConnectionExpiresAbsoluteReadyDeadline" computerName="3a7834d0640d" duration="00:00:15.0308709" startTime="2026-10-05T10:18:40.9951464+00:00" endTime="2026-10-05T10:18:40.9951468+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="28f38cc8-6830-42b2-a48e-b1ea0ded4660" />
+    <UnitTestResult executionId="c3c02b7b-6152-474b-b42b-a1df67c95c12" testId="8c12490b-7a7e-a849-058a-86bc16b24280" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(actual: 0, expected: 123)" computerName="3a7834d0640d" duration="00:00:00.0001219" startTime="2026-10-05T10:18:24.2179314+00:00" endTime="2026-10-05T10:18:24.2179316+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c3c02b7b-6152-474b-b42b-a1df67c95c12">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Worker host peer identity policy is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(Int32 actual, Int32 expected) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 24
+   at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 16
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass1_0.&lt;LinuxResult_InvalidOrForeignProcessIsRejected&gt;b__0() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 25</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="45dfa3bb-188d-496b-a52a-2fac40aca062" testId="73aba18e-c45f-affc-51f2-ddd131ec66cf" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(length: 11)" computerName="3a7834d0640d" duration="00:00:00.0003030" startTime="2026-10-05T10:18:24.2372520+00:00" endTime="2026-10-05T10:18:24.2372521+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="45dfa3bb-188d-496b-a52a-2fac40aca062">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Worker host peer identity policy is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(UInt32 length) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 44
+   at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 16
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass3_0.&lt;LinuxResult_SimulatedMalformedCredentialLengthIsRejected&gt;b__0() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 45</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="90ef4a95-346e-4d97-8473-f0704a390280" testId="e296c3e3-3317-833c-8b76-e63147805e44" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted" computerName="3a7834d0640d" duration="00:00:00.2606679" startTime="2026-10-05T10:18:41.7724216+00:00" endTime="2026-10-05T10:18:41.7724220+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="90ef4a95-346e-4d97-8473-f0704a390280">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.InvalidOperationException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 79
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 82
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 88
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 547
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 529
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 369</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6964a838-0173-45fc-83a4-ce1ca44be3fc" testId="4e70987a-fd34-0db2-b842-3c0d0e8ecc15" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(length: 4294967295)" computerName="3a7834d0640d" duration="00:00:00.0001127" startTime="2026-10-05T10:18:24.2380154+00:00" endTime="2026-10-05T10:18:24.2380155+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6964a838-0173-45fc-83a4-ce1ca44be3fc">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Worker host peer identity policy is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(UInt32 length) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 44
+   at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 16
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass3_0.&lt;LinuxResult_SimulatedMalformedCredentialLengthIsRejected&gt;b__0() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 45</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a74795db-592b-4ec2-87d0-6bdc9e13db81" testId="60aa339f-222f-7ed1-5cb2-b93e1fdedc3e" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost" computerName="3a7834d0640d" duration="00:00:00.2097681" startTime="2026-10-05T10:18:24.8982820+00:00" endTime="2026-10-05T10:18:24.8982823+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a74795db-592b-4ec2-87d0-6bdc9e13db81">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 548
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 555
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 569
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 547
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 529
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 369</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f50ddb37-79c3-4007-a00a-0f19c13f2622" testId="a8b01dea-eec8-7b34-336d-fa1ab1764804" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedDifferentEffectiveUserIsRejected" computerName="3a7834d0640d" duration="00:00:00.0004373" startTime="2026-10-05T10:18:24.2361524+00:00" endTime="2026-10-05T10:18:24.2361526+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f50ddb37-79c3-4007-a00a-0f19c13f2622">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Worker host peer identity policy is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedDifferentEffectiveUserIsRejected() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 32
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 16
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c.&lt;LinuxResult_SimulatedDifferentEffectiveUserIsRejected&gt;b__2_0() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 33</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9c941d65-2bf5-4b10-9b27-96c523a862d9" testId="398c2211-a4d1-64d9-d90b-562cd8684345" testName="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(length: 0)" computerName="3a7834d0640d" duration="00:00:00.0000764" startTime="2026-10-05T10:18:24.2376072+00:00" endTime="2026-10-05T10:18:24.2376073+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9c941d65-2bf5-4b10-9b27-96c523a862d9">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Worker host peer identity policy is not implemented.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(UInt32 length) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 44
+   at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs:line 16
+   at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass3_0.&lt;LinuxResult_SimulatedMalformedCredentialLengthIsRejected&gt;b__0() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs:line 45</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: &quot;nonce&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="be01edbc-ddd4-32b4-2998-13ab0b8b194b">
+      <Execution id="f698cdc0-a21c-4060-9f5c-aabfbc8cad77" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(actual: 0, expected: 123)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="8c12490b-7a7e-a849-058a-86bc16b24280">
+      <Execution id="c3c02b7b-6152-474b-b42b-a1df67c95c12" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="LinuxResult_InvalidOrForeignProcessIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_PartialConnectionExpiresAbsoluteReadyDeadline" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="189cd7e2-ba40-7494-6990-3cd7feb0d096">
+      <Execution id="28f38cc8-6830-42b2-a48e-b1ea0ded4660" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_PartialConnectionExpiresAbsoluteReadyDeadline" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: &quot;schema&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="9c06fc6d-da45-36a4-fabe-fbec8b4a37fb">
+      <Execution id="ce9c0f2e-4167-49ab-9715-f5d46a252ba4" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7a67044a-3784-2916-f33c-38be6332fdf8">
+      <Execution id="ea5a327d-7b81-4ce5-a97e-408321be9f34" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f847d1f7-270c-6649-907b-d2f48ecf0993">
+      <Execution id="84956f2f-19f3-41ce-ab67-ab2213449426" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(length: 0)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="398c2211-a4d1-64d9-d90b-562cd8684345">
+      <Execution id="9c941d65-2bf5-4b10-9b27-96c523a862d9" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="LinuxResult_SimulatedMalformedCredentialLengthIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e296c3e3-3317-833c-8b76-e63147805e44">
+      <Execution id="90ef4a95-346e-4d97-8473-f0704a390280" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(actual: 124, expected: 123)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="cd20bd23-0a20-3e9d-5ba8-973657bb4131">
+      <Execution id="29567916-95f2-49b1-a64e-25e005c45cfc" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="LinuxResult_InvalidOrForeignProcessIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="20af7b4c-93f6-6f2a-f14f-824dc8f64c98">
+      <Execution id="06520a50-8dd7-4840-a189-2664b92831db" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(length: 11)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="73aba18e-c45f-affc-51f2-ddd131ec66cf">
+      <Execution id="45dfa3bb-188d-496b-a52a-2fac40aca062" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="LinuxResult_SimulatedMalformedCredentialLengthIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="96bfe5ca-584d-ab8b-515c-29b9c23ea1d8">
+      <Execution id="4e69a9a9-672b-44c4-99a0-641f19fba1d5" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_StatusFrameByteLimitIsExact" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="60aa339f-222f-7ed1-5cb2-b93e1fdedc3e">
+      <Execution id="a74795db-592b-4ec2-87d0-6bdc9e13db81" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b2aee4e9-0446-99ba-f139-41ba95e6c671">
+      <Execution id="930e84ed-ecc6-4f35-8495-a730669b89db" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_ExactProcessAndEffectiveUserAreAccepted(userId: 0)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="cdc7d809-4b02-6eaa-459d-1e07873aad54">
+      <Execution id="b16af0b0-ec78-415b-be4e-222ef8d3c003" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="LinuxResult_ExactProcessAndEffectiveUserAreAccepted" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2d637dc7-56fc-e37a-b60a-4d1f9ab2e57d">
+      <Execution id="e0539211-15ae-42c0-9149-20519716ce79" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(result: 1, errno: 0)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="acde0528-2c26-c53e-ebe9-64efdd2c7599">
+      <Execution id="3f3e9d51-38e8-41a3-9379-02f5171896e4" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(actual: -1, expected: 123)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="246ac2f6-8728-c692-d36c-7cd1d7a99db0">
+      <Execution id="714cc7ad-46b2-4742-8f98-50db87929e96" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="LinuxResult_InvalidOrForeignProcessIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_ExactProcessAndEffectiveUserAreAccepted(userId: 1000)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="93ddcde7-593c-52d6-3b78-10a584e947d6">
+      <Execution id="7db376f0-a906-4e16-a335-3ac56c05ef9e" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="LinuxResult_ExactProcessAndEffectiveUserAreAccepted" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(length: 13)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="947e6d92-7e85-a31e-da28-407f7b9d4956">
+      <Execution id="abe09096-afd7-4f20-ba7b-cbb4d392ca76" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="LinuxResult_SimulatedMalformedCredentialLengthIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="4fddc5ca-1581-0b4b-c519-0f0dd75be9b7">
+      <Execution id="906f666d-9b2d-4056-8eec-41c417459fdf" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c8ecc4c2-86e2-013d-23a1-6210444a9d53">
+      <Execution id="5d49fa33-78fd-4f66-8576-bec409bcdefa" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(result: -1, errno: 9)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="4655362e-65d8-4d76-1091-9f7a811f8aa0">
+      <Execution id="4c3848dc-755b-41ce-a956-77810b0a5248" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d1fa634a-d69f-ca37-dc04-7ee0aaa98bf4">
+      <Execution id="7cd78749-4a99-4621-bd12-f2b5f145a684" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_StatusFrameByteLimitIsExact" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedDifferentEffectiveUserIsRejected" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a8b01dea-eec8-7b34-336d-fa1ab1764804">
+      <Execution id="f50ddb37-79c3-4007-a00a-0f19c13f2622" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="LinuxResult_SimulatedDifferentEffectiveUserIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e27ce202-a5a9-7275-a7da-a46dc16e7a04">
+      <Execution id="5977086c-db9b-4872-a50b-9e65c9f53098" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(actual: 123, expected: 0)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="fc4c514b-04ed-05fb-7a74-a0d8e2e60c63">
+      <Execution id="525ac3c4-f65d-415f-ad51-435efa8e3ab0" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="LinuxResult_InvalidOrForeignProcessIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.Validate_InvalidNativeHandleFailsClosed" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c3a125c3-665d-0af7-7ee9-be125b109b61">
+      <Execution id="8469d19e-f90b-4807-be06-fb77630abb2e" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="Validate_InvalidNativeHandleFailsClosed" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="8a296819-97a8-8799-e3d8-f0291e4e2bb5">
+      <Execution id="ba4cfde7-4dee-4e2f-b572-dcc0d57f98e6" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.Validate_DisposedHandleFailsClosed" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5269e0b5-fbfb-4244-adf3-a99a548afbd5">
+      <Execution id="9e5e7c71-ac50-4141-9ed2-98b2dd92fdef" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="Validate_DisposedHandleFailsClosed" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(result: -1, errno: 13)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="32f8accd-23ab-eb4a-6a1b-546a9136b012">
+      <Execution id="ba55a793-b5f3-4f1e-98ca-8b4bf68354a3" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(length: 4294967295)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="4e70987a-fd34-0db2-b842-3c0d0e8ecc15">
+      <Execution id="6964a838-0173-45fc-83a4-ce1ca44be3fc" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests" name="LinuxResult_SimulatedMalformedCredentialLengthIsRejected" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="5269e0b5-fbfb-4244-adf3-a99a548afbd5" executionId="9e5e7c71-ac50-4141-9ed2-98b2dd92fdef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="93ddcde7-593c-52d6-3b78-10a584e947d6" executionId="7db376f0-a906-4e16-a335-3ac56c05ef9e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="947e6d92-7e85-a31e-da28-407f7b9d4956" executionId="abe09096-afd7-4f20-ba7b-cbb4d392ca76" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4655362e-65d8-4d76-1091-9f7a811f8aa0" executionId="4c3848dc-755b-41ce-a956-77810b0a5248" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c8ecc4c2-86e2-013d-23a1-6210444a9d53" executionId="5d49fa33-78fd-4f66-8576-bec409bcdefa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4fddc5ca-1581-0b4b-c519-0f0dd75be9b7" executionId="906f666d-9b2d-4056-8eec-41c417459fdf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f847d1f7-270c-6649-907b-d2f48ecf0993" executionId="84956f2f-19f3-41ce-ab67-ab2213449426" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e27ce202-a5a9-7275-a7da-a46dc16e7a04" executionId="5977086c-db9b-4872-a50b-9e65c9f53098" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8a296819-97a8-8799-e3d8-f0291e4e2bb5" executionId="ba4cfde7-4dee-4e2f-b572-dcc0d57f98e6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9c06fc6d-da45-36a4-fabe-fbec8b4a37fb" executionId="ce9c0f2e-4167-49ab-9715-f5d46a252ba4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fc4c514b-04ed-05fb-7a74-a0d8e2e60c63" executionId="525ac3c4-f65d-415f-ad51-435efa8e3ab0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="32f8accd-23ab-eb4a-6a1b-546a9136b012" executionId="ba55a793-b5f3-4f1e-98ca-8b4bf68354a3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cdc7d809-4b02-6eaa-459d-1e07873aad54" executionId="b16af0b0-ec78-415b-be4e-222ef8d3c003" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d1fa634a-d69f-ca37-dc04-7ee0aaa98bf4" executionId="7cd78749-4a99-4621-bd12-f2b5f145a684" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2d637dc7-56fc-e37a-b60a-4d1f9ab2e57d" executionId="e0539211-15ae-42c0-9149-20519716ce79" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cd20bd23-0a20-3e9d-5ba8-973657bb4131" executionId="29567916-95f2-49b1-a64e-25e005c45cfc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c3a125c3-665d-0af7-7ee9-be125b109b61" executionId="8469d19e-f90b-4807-be06-fb77630abb2e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="be01edbc-ddd4-32b4-2998-13ab0b8b194b" executionId="f698cdc0-a21c-4060-9f5c-aabfbc8cad77" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="96bfe5ca-584d-ab8b-515c-29b9c23ea1d8" executionId="4e69a9a9-672b-44c4-99a0-641f19fba1d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="246ac2f6-8728-c692-d36c-7cd1d7a99db0" executionId="714cc7ad-46b2-4742-8f98-50db87929e96" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7a67044a-3784-2916-f33c-38be6332fdf8" executionId="ea5a327d-7b81-4ce5-a97e-408321be9f34" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b2aee4e9-0446-99ba-f139-41ba95e6c671" executionId="930e84ed-ecc6-4f35-8495-a730669b89db" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="acde0528-2c26-c53e-ebe9-64efdd2c7599" executionId="3f3e9d51-38e8-41a3-9379-02f5171896e4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="20af7b4c-93f6-6f2a-f14f-824dc8f64c98" executionId="06520a50-8dd7-4840-a189-2664b92831db" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="189cd7e2-ba40-7494-6990-3cd7feb0d096" executionId="28f38cc8-6830-42b2-a48e-b1ea0ded4660" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8c12490b-7a7e-a849-058a-86bc16b24280" executionId="c3c02b7b-6152-474b-b42b-a1df67c95c12" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="73aba18e-c45f-affc-51f2-ddd131ec66cf" executionId="45dfa3bb-188d-496b-a52a-2fac40aca062" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e296c3e3-3317-833c-8b76-e63147805e44" executionId="90ef4a95-346e-4d97-8473-f0704a390280" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4e70987a-fd34-0db2-b842-3c0d0e8ecc15" executionId="6964a838-0173-45fc-83a4-ce1ca44be3fc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60aa339f-222f-7ed1-5cb2-b93e1fdedc3e" executionId="a74795db-592b-4ec2-87d0-6bdc9e13db81" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a8b01dea-eec8-7b34-336d-fa1ab1764804" executionId="f50ddb37-79c3-4007-a00a-0f19c13f2622" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="398c2211-a4d1-64d9-d90b-562cd8684345" executionId="9c941d65-2bf5-4b10-9b27-96c523a862d9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="32" executed="32" passed="4" failed="28" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.30]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.75]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.78]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.87]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.87]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.87]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.87]       ---- System.NotImplementedException : Worker host peer identity policy is not implemented.
+[xUnit.net 00:00:01.87]       Stack Trace:
+[xUnit.net 00:00:01.87]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(24,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(Int32 actual, Int32 expected)
+[xUnit.net 00:00:01.87]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.87]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.87]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.87]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(16,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.87]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(25,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass1_0.&lt;LinuxResult_InvalidOrForeignProcessIsRejected&gt;b__0()
+[xUnit.net 00:00:01.87]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.87]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.87]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.87]       ---- System.NotImplementedException : Worker host peer identity policy is not implemented.
+[xUnit.net 00:00:01.87]       Stack Trace:
+[xUnit.net 00:00:01.87]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(24,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(Int32 actual, Int32 expected)
+[xUnit.net 00:00:01.87]            at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(Object, Span`1)
+[xUnit.net 00:00:01.87]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.87]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.87]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(16,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.87]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(25,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass1_0.&lt;LinuxResult_InvalidOrForeignProcessIsRejected&gt;b__0()
+[xUnit.net 00:00:01.87]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.87]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.87]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.87]       ---- System.NotImplementedException : Worker host peer identity policy is not implemented.
+[xUnit.net 00:00:01.87]       Stack Trace:
+[xUnit.net 00:00:01.87]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(24,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(Int32 actual, Int32 expected)
+[xUnit.net 00:00:01.87]            at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(Object, Span`1)
+[xUnit.net 00:00:01.87]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.87]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.87]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(16,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.87]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(25,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass1_0.&lt;LinuxResult_InvalidOrForeignProcessIsRejected&gt;b__0()
+[xUnit.net 00:00:01.87]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.87]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.87]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.87]       ---- System.NotImplementedException : Worker host peer identity policy is not implemented.
+[xUnit.net 00:00:01.87]       Stack Trace:
+[xUnit.net 00:00:01.87]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(24,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(Int32 actual, Int32 expected)
+[xUnit.net 00:00:01.87]            at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(Object, Span`1)
+[xUnit.net 00:00:01.87]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.87]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.87]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(16,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.87]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(25,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass1_0.&lt;LinuxResult_InvalidOrForeignProcessIsRejected&gt;b__0()
+[xUnit.net 00:00:01.87]       System.NotImplementedException : Worker host peer identity policy is not implemented.
+[xUnit.net 00:00:01.87]       Stack Trace:
+[xUnit.net 00:00:01.87]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(16,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.87]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(14,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_ExactProcessAndEffectiveUserAreAccepted(UInt32 userId)
+[xUnit.net 00:00:01.87]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.87]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.88]       System.NotImplementedException : Worker host peer identity policy is not implemented.
+[xUnit.net 00:00:01.88]       Stack Trace:
+[xUnit.net 00:00:01.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(16,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(14,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_ExactProcessAndEffectiveUserAreAccepted(UInt32 userId)
+[xUnit.net 00:00:01.88]            at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_ExactProcessAndEffectiveUserAreAccepted(Object, Span`1)
+[xUnit.net 00:00:01.88]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.88]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.88]       Expected: typeof(System.ComponentModel.Win32Exception)
+[xUnit.net 00:00:01.88]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.88]       ---- System.NotImplementedException : Worker host peer identity policy is not implemented.
+[xUnit.net 00:00:01.88]       Stack Trace:
+[xUnit.net 00:00:01.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(55,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(Int32 result, Int32 errno)
+[xUnit.net 00:00:01.88]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.88]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.88]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(16,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(56,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass4_0.&lt;LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields&gt;b__0()
+[xUnit.net 00:00:01.88]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.88]       Expected: typeof(System.ComponentModel.Win32Exception)
+[xUnit.net 00:00:01.88]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.88]       ---- System.NotImplementedException : Worker host peer identity policy is not implemented.
+[xUnit.net 00:00:01.88]       Stack Trace:
+[xUnit.net 00:00:01.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(55,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(Int32 result, Int32 errno)
+[xUnit.net 00:00:01.88]            at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(Object, Span`1)
+[xUnit.net 00:00:01.88]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.88]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(16,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(56,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass4_0.&lt;LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields&gt;b__0()
+[xUnit.net 00:00:01.88]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.88]       Expected: typeof(System.ComponentModel.Win32Exception)
+[xUnit.net 00:00:01.88]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.88]       ---- System.NotImplementedException : Worker host peer identity policy is not implemented.
+[xUnit.net 00:00:01.88]       Stack Trace:
+[xUnit.net 00:00:01.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(55,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(Int32 result, Int32 errno)
+[xUnit.net 00:00:01.88]            at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(Object, Span`1)
+[xUnit.net 00:00:01.88]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.88]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(16,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(56,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass4_0.&lt;LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields&gt;b__0()
+[xUnit.net 00:00:01.89]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.89]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.89]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.89]       ---- System.NotImplementedException : Worker host peer identity policy is not implemented.
+[xUnit.net 00:00:01.89]       Stack Trace:
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(32,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedDifferentEffectiveUserIsRejected()
+[xUnit.net 00:00:01.89]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.89]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.89]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(16,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(33,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c.&lt;LinuxResult_SimulatedDifferentEffectiveUserIsRejected&gt;b__2_0()
+[xUnit.net 00:00:01.89]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.89]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.89]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.89]       ---- System.NotImplementedException : Worker host peer identity policy is not implemented.
+[xUnit.net 00:00:01.89]       Stack Trace:
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(44,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(UInt32 length)
+[xUnit.net 00:00:01.89]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.89]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.89]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(16,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(45,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass3_0.&lt;LinuxResult_SimulatedMalformedCredentialLengthIsRejected&gt;b__0()
+[xUnit.net 00:00:01.89]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.89]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.89]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.89]       ---- System.NotImplementedException : Worker host peer identity policy is not implemented.
+[xUnit.net 00:00:01.89]       Stack Trace:
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(44,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(UInt32 length)
+[xUnit.net 00:00:01.89]            at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(Object, Span`1)
+[xUnit.net 00:00:01.89]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.89]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(16,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(45,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass3_0.&lt;LinuxResult_SimulatedMalformedCredentialLengthIsRejected&gt;b__0()
+[xUnit.net 00:00:01.89]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.89]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.89]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.89]       ---- System.NotImplementedException : Worker host peer identity policy is not implemented.
+[xUnit.net 00:00:01.89]       Stack Trace:
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(44,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(UInt32 length)
+[xUnit.net 00:00:01.89]            at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(Object, Span`1)
+[xUnit.net 00:00:01.89]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.89]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(16,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(45,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass3_0.&lt;LinuxResult_SimulatedMalformedCredentialLengthIsRejected&gt;b__0()
+[xUnit.net 00:00:01.89]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.89]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.89]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.89]       ---- System.NotImplementedException : Worker host peer identity policy is not implemented.
+[xUnit.net 00:00:01.89]       Stack Trace:
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(44,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(UInt32 length)
+[xUnit.net 00:00:01.89]            at InvokeStub_GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(Object, Span`1)
+[xUnit.net 00:00:01.89]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.89]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(16,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.ValidateLinuxResult(GmWorkerLinuxPeerQueryResult result, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(45,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass3_0.&lt;LinuxResult_SimulatedMalformedCredentialLengthIsRejected&gt;b__0()
+[xUnit.net 00:00:01.89]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.89]       Expected: typeof(System.ComponentModel.Win32Exception)
+[xUnit.net 00:00:01.89]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.89]       ---- System.NotImplementedException : Worker host peer identity adapter is not implemented.
+[xUnit.net 00:00:01.89]       Stack Trace:
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(65,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.Validate_InvalidNativeHandleFailsClosed()
+[xUnit.net 00:00:01.89]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.89]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.89]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(12,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.Validate(SafePipeHandle pipe, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(66,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass5_0.&lt;Validate_InvalidNativeHandleFailsClosed&gt;b__0()
+[xUnit.net 00:00:01.89]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.89]       Expected: typeof(System.ObjectDisposedException)
+[xUnit.net 00:00:01.89]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.89]       ---- System.NotImplementedException : Worker host peer identity adapter is not implemented.
+[xUnit.net 00:00:01.89]       Stack Trace:
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(76,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.Validate_DisposedHandleFailsClosed()
+[xUnit.net 00:00:01.89]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.89]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.89]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs(12,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostPeerIdentity.Validate(SafePipeHandle pipe, Int32 expectedProcessId, UInt32 expectedUserId, String channelName)
+[xUnit.net 00:00:01.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostPeerIdentityTests.cs(77,0): at BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.&lt;&gt;c__DisplayClass6_0.&lt;Validate_DisposedHandleFailsClosed&gt;b__0()
+[xUnit.net 00:00:02.11]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.11]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.11]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:02.11]       ---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.
+[xUnit.net 00:00:02.11]       Stack Trace:
+[xUnit.net 00:00:02.11]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(548,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.11]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(555,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.11]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(569,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.11]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.11]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.11]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(547,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName)
+[xUnit.net 00:00:02.11]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(529,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:02.11]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(369,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:02.34]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.34]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.34]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:02.34]       ---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.
+[xUnit.net 00:00:02.34]       Stack Trace:
+[xUnit.net 00:00:02.34]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(548,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.34]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(555,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.34]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(569,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.34]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.34]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.34]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(547,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName)
+[xUnit.net 00:00:02.34]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(529,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:02.34]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(369,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:02.55]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.55]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.55]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:02.55]       ---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.
+[xUnit.net 00:00:02.55]       Stack Trace:
+[xUnit.net 00:00:02.55]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(548,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.55]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(555,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.55]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(569,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:02.55]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.55]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.55]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(547,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName)
+[xUnit.net 00:00:02.55]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(529,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:02.55]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(369,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:02.83]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:02.83]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.83]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:02.83]       ---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.
+[xUnit.net 00:00:02.83]       Stack Trace:
+[xUnit.net 00:00:02.83]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(150,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.83]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(153,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.83]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(161,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:02.83]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(113,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized)
+[xUnit.net 00:00:02.83]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.83]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:02.83]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(547,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName)
+[xUnit.net 00:00:02.83]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(529,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:02.83]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(369,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:03.08]       System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.
+[xUnit.net 00:00:03.08]       Stack Trace:
+[xUnit.net 00:00:03.08]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(547,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName)
+[xUnit.net 00:00:03.08]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(529,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:03.08]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(369,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:03.08]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(151,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:03.08]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(153,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:03.08]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(161,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:03.08]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(113,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized)
+[xUnit.net 00:00:03.08]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:18.92]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:18.92]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:18.92]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:18.92]       ---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.
+[xUnit.net 00:00:18.92]       Stack Trace:
+[xUnit.net 00:00:18.92]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(150,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:18.92]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(153,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:18.92]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(161,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:18.92]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:18.92]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:18.92]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(547,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName)
+[xUnit.net 00:00:18.92]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(529,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:18.92]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(369,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:19.16]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:19.16]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:19.16]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:19.16]       ---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.
+[xUnit.net 00:00:19.16]       Stack Trace:
+[xUnit.net 00:00:19.16]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(150,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:19.16]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(153,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:19.16]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(161,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:19.16]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:19.16]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:19.16]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(547,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName)
+[xUnit.net 00:00:19.16]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(529,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:19.16]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(369,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:19.43]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:19.43]       Expected: typeof(System.InvalidOperationException)
+[xUnit.net 00:00:19.43]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:19.43]       ---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.
+[xUnit.net 00:00:19.43]       Stack Trace:
+[xUnit.net 00:00:19.43]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(79,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted()
+[xUnit.net 00:00:19.43]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(82,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted()
+[xUnit.net 00:00:19.43]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(88,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted()
+[xUnit.net 00:00:19.43]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:19.43]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:19.43]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(547,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName)
+[xUnit.net 00:00:19.43]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(529,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:19.43]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(369,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:19.84]       System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.
+[xUnit.net 00:00:19.84]       Stack Trace:
+[xUnit.net 00:00:19.84]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(547,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName)
+[xUnit.net 00:00:19.84]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(529,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:19.84]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(369,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:19.84]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(113,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels()
+[xUnit.net 00:00:19.84]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(124,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels()
+[xUnit.net 00:00:19.84]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(130,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels()
+[xUnit.net 00:00:19.84]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:20.06]       System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.
+[xUnit.net 00:00:20.06]       Stack Trace:
+[xUnit.net 00:00:20.06]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(547,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName)
+[xUnit.net 00:00:20.06]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(529,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:20.06]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(369,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:20.06]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(90,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker()
+[xUnit.net 00:00:20.06]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(94,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker()
+[xUnit.net 00:00:20.06]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(104,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker()
+[xUnit.net 00:00:20.06]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:20.34]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:20.34]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:20.34]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:20.34]       ---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.
+[xUnit.net 00:00:20.34]       Stack Trace:
+[xUnit.net 00:00:20.34]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(150,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:20.34]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(153,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:20.34]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(161,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:20.34]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(123,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected()
+[xUnit.net 00:00:20.34]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:20.34]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:20.34]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(547,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName)
+[xUnit.net 00:00:20.34]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(529,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:20.34]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(369,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:20.57]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:20.57]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:20.57]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:20.57]       ---- System.PlatformNotSupportedException : Worker process host channel authentication requires Windows named-pipe client identity.
+[xUnit.net 00:00:20.57]       Stack Trace:
+[xUnit.net 00:00:20.57]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(150,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:20.57]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(153,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:20.57]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(161,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:20.57]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(130,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing()
+[xUnit.net 00:00:20.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:20.57]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:20.57]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(547,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ValidateConnectedHost(NamedPipeServerStream pipe, Int32 expectedProcessId, String channelName)
+[xUnit.net 00:00:20.57]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(529,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.ConnectAndAuthenticateAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:20.57]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(369,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.WaitUntilReadyAsync(Process hostProcess, CancellationToken cancellationToken)
+[xUnit.net 00:00:20.58]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2473082+00:00">
+        <Text>[xUnit.net 00:00:01.86]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(actual: 123, expected: 0) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2476353+00:00">
+        <Text>[xUnit.net 00:00:01.87]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(actual: 124, expected: 123) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2476855+00:00">
+        <Text>[xUnit.net 00:00:01.87]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(actual: 0, expected: 123) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2477556+00:00">
+        <Text>[xUnit.net 00:00:01.87]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_InvalidOrForeignProcessIsRejected(actual: -1, expected: 123) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2478022+00:00">
+        <Text>[xUnit.net 00:00:01.87]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_ExactProcessAndEffectiveUserAreAccepted(userId: 1000) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2478604+00:00">
+        <Text>[xUnit.net 00:00:01.87]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_ExactProcessAndEffectiveUserAreAccepted(userId: 0) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2478802+00:00">
+        <Text>[xUnit.net 00:00:01.88]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(result: 1, errno: 0) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2479258+00:00">
+        <Text>[xUnit.net 00:00:01.88]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(result: -1, errno: 9) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2479638+00:00">
+        <Text>[xUnit.net 00:00:01.88]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedNativeFailureRejectsEvenMatchingFields(result: -1, errno: 13) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2630853+00:00">
+        <Text>[xUnit.net 00:00:01.89]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedDifferentEffectiveUserIsRejected [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2631276+00:00">
+        <Text>[xUnit.net 00:00:01.89]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(length: 13) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2633091+00:00">
+        <Text>[xUnit.net 00:00:01.89]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(length: 11) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2633584+00:00">
+        <Text>[xUnit.net 00:00:01.89]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(length: 0) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2633970+00:00">
+        <Text>[xUnit.net 00:00:01.89]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.LinuxResult_SimulatedMalformedCredentialLengthIsRejected(length: 4294967295) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2634367+00:00">
+        <Text>[xUnit.net 00:00:01.89]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.Validate_InvalidNativeHandleFailsClosed [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.2634790+00:00">
+        <Text>[xUnit.net 00:00:01.89]     BookOfEternityClient.Tests.GmWorkerProcessHostPeerIdentityTests.Validate_DisposedHandleFailsClosed [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.4521523+00:00">
+        <Text>[xUnit.net 00:00:02.11]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.6876885+00:00">
+        <Text>[xUnit.net 00:00:02.34]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:24.8981754+00:00">
+        <Text>[xUnit.net 00:00:02.55]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:25.1714144+00:00">
+        <Text>[xUnit.net 00:00:02.83]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:25.4191918+00:00">
+        <Text>[xUnit.net 00:00:03.08]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:41.2655548+00:00">
+        <Text>[xUnit.net 00:00:18.92]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: "schema") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:41.5025759+00:00">
+        <Text>[xUnit.net 00:00:19.16]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: "nonce") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:41.7722263+00:00">
+        <Text>[xUnit.net 00:00:19.43]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:42.1792749+00:00">
+        <Text>[xUnit.net 00:00:19.84]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:42.4049413+00:00">
+        <Text>[xUnit.net 00:00:20.06]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:42.6853871+00:00">
+        <Text>[xUnit.net 00:00:20.34]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:18:42.9163959+00:00">
+        <Text>[xUnit.net 00:00:20.57]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

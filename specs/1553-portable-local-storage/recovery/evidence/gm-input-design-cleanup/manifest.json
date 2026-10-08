@@ -1,0 +1,30 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "Independent design and final managed build-server shutdown",
+  "Artifacts": [
+    {
+      "Path": "design-review.json",
+      "StoredPath": "design-review.json",
+      "StoredBytes": 948,
+      "StoredSha256": "966e1d29c01859bf514c16eec416693c78782d94a1b4ab38d3e4c37877cffbc5",
+      "OriginalBytes": 948,
+      "OriginalSha256": "966e1d29c01859bf514c16eec416693c78782d94a1b4ab38d3e4c37877cffbc5"
+    },
+    {
+      "Path": "final-build-server-shutdown-result.json",
+      "StoredPath": "final-build-server-shutdown-result.json",
+      "StoredBytes": 332,
+      "StoredSha256": "7cf8661f755f57ab8caf9f929b48e03e2fc7354e4d23a57aa532b0af54d2b8cd",
+      "OriginalBytes": 332,
+      "OriginalSha256": "7cf8661f755f57ab8caf9f929b48e03e2fc7354e4d23a57aa532b0af54d2b8cd"
+    },
+    {
+      "Path": "final-build-server-shutdown.log",
+      "StoredPath": "final-build-server-shutdown.log.gz",
+      "StoredBytes": 97,
+      "StoredSha256": "84c53ffe297096af1ac00c41255a2f44f6f76f43aee361514ef58041c4d5f77c",
+      "OriginalBytes": 156,
+      "OriginalSha256": "830e5cd707f90e485d1b96b500318ea1d4c6248cd46f3da146a5887084144dbf"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A1-WIN",
+  "sourceCommit": "ec5e5ccf05cccb4c611c0ebe8be5e78cc628509c",
+  "status": "32/32: shared format29 and full archive resources3. NoBuild used exact fresh ec5e5ccf binaries from preceding recorded build; later unbuilt test-only edits excluded. Windows only, 15 sequential owned resource children, no timeout, complete cleanup.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-storage-stream-publication",
+    "portable-storage-stream-resource"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:04:31.7495702",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 32,
+    "CompletedCases": 32,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 32,
+    "Executed": 32,
+    "Passed": 32,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "0FD9AECFE458BAF005B6E7B5F420A3FDC1564F10D2F4882B0EF5EC10B8CFD9FD",
+      "sha256": "9D41646EB8F3458CA9F6229FEDD5724553849CB64277ABB2DFE3F155C237C61A"
+    },
+    {
+      "path": "portable-storage-stream-publication-unit-001.trx",
+      "originalSha256": "94C0B3A4A7040FE0E138B5C6C2CEFFAAEA5FBFEC5172F2FCC422E729BFCF43D3",
+      "sha256": "4957653DBF563AEA7B32CB2E8F98095D419EBBDA72F571B95992A1584DF40BE5"
+    },
+    {
+      "path": "portable-storage-stream-resource-unit-002.trx",
+      "originalSha256": "A1F7B969AB23E70FE9214C9ED8F5B7E757A8CEEC9DA42B13C57082DDF8F13FC7",
+      "sha256": "2F8871DC4AAB4502D4E907AD78D32DA58A84D1A38592E6EF8B4EC4D80E825C0B"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "DD65A6342DA62F7DCAE364CEFA72BB7FC684BBFFFA8CA6367A48B876DD865BDE",
+      "sha256": "C3D4603028BA1F69F2D23541E91C92258EF76C2006C6763E56A2B4782DBA41F2"
+    },
+    {
+      "sha256": "25615D17DCA2CC0101FE481A07F56DC888722C635C925FA00C58A9E7C7D076B2",
+      "derivation": "Parsed reports from the sanitized resource TRX; diagnostic header allocation is not total codec metadata allocation.",
+      "path": "measurements.json"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="27b84055-9462-4415-827c-b01f57fbd572" name="Eja@[HOST] 2026-10-03 00:27:48" runUser="[HOST]\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T00:27:49.0017831+10:00" queuing="2026-10-03T00:27:49.0017842+10:00" start="2026-10-03T00:27:45.2398306+10:00" finish="2026-10-03T00:27:49.0141287+10:00" />
+  <TestSettings name="default" id="3362ccd4-9c15-4586-9443-80b664de2698">
+    <Deployment runDeploymentRoot="Eja_[HOST]_2026-10-03_00_27_48" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="0c4ab15b-259a-473d-9750-97e632d589be" testId="a9bd1aee-a40f-dca9-2a90-28ffde42fc26" testName="BookOfEternityClient.Tests.PortableSaveCreationTests.FailedPreparationCleansActualOwnedRuntimeSaveScratch" computerName="[HOST]" duration="00:00:00.6511494" startTime="2026-10-03T00:27:48.4443951+10:00" endTime="2026-10-03T00:27:48.4444218+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0c4ab15b-259a-473d-9750-97e632d589be">
+      <Output>
+        <StdOut>Prepared hook: 1&#xD;
+System.InvalidOperationException: owned preparation cut&#xD;
+   at BookOfEternityClient.Tests.PortableSaveCreationTests.&lt;&gt;c__DisplayClass4_0.&lt;FailedPreparationCleansActualOwnedRuntimeSaveScratch&gt;b__0() in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveCreationTests.cs:line 60&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareSaveArchiveAsync(CanonicalWriteLease canonicalSnapshotLease, String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.cs:line 335&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareSaveArchiveAsync(CanonicalWriteLease canonicalSnapshotLease, String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.cs:line 350&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(CanonicalWriteLease lease, String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 306</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c849b518-5dc4-442d-9163-0130c02bd1ce" testId="10d8da38-0846-21a4-a4cc-2e564a2b7dba" testName="BookOfEternityClient.Tests.PortableSaveCreationTests.PublicSaveReachesCompletedArchiveAndPublishesOneCreateOnlyDecision" computerName="[HOST]" duration="00:00:00.4019194" startTime="2026-10-03T00:27:48.8481765+10:00" endTime="2026-10-03T00:27:48.8481768+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c849b518-5dc4-442d-9163-0130c02bd1ce">
+      <Output>
+        <StdOut>Prepared hook: 1; committed B1 decisions: 1; saved: True</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveCreationTests.FailedPreparationCleansActualOwnedRuntimeSaveScratch" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="a9bd1aee-a40f-dca9-2a90-28ffde42fc26">
+      <Execution id="0c4ab15b-259a-473d-9750-97e632d589be" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveCreationTests" name="FailedPreparationCleansActualOwnedRuntimeSaveScratch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveCreationTests.PublicSaveReachesCompletedArchiveAndPublishesOneCreateOnlyDecision" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="10d8da38-0846-21a4-a4cc-2e564a2b7dba">
+      <Execution id="c849b518-5dc4-442d-9163-0130c02bd1ce" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveCreationTests" name="PublicSaveReachesCompletedArchiveAndPublishesOneCreateOnlyDecision" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="a9bd1aee-a40f-dca9-2a90-28ffde42fc26" executionId="0c4ab15b-259a-473d-9750-97e632d589be" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="10d8da38-0846-21a4-a4cc-2e564a2b7dba" executionId="c849b518-5dc4-442d-9163-0130c02bd1ce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.25]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.76]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.80]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.92]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

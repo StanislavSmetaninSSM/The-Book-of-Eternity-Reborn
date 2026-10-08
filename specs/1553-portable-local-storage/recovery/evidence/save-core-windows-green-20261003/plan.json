@@ -1,0 +1,95 @@
+{
+  "Categories": [
+    "portable-save-read-refresh",
+    "portable-save-outcomes"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "dafd37e589eaf6fd4e05a996fd3ecf00e74e4a97",
+    "WorkingTreeFingerprint": "D9708B455044D1A27587ACE62023139424B0A699EDDE88E0241C6CED22D51A87",
+    "ChangedFiles": 3
+  },
+  "PreparationSeconds": 6.4007581,
+  "Descriptors": [
+    {
+      "Name": "portable-save-outcomes-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-outcomes",
+      "Categories": [
+        "portable-save-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRejectsGenerationDriftAndCreateCollision|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRequiresItsOriginalContinuouslyHeldLease|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveRetainsFollowUpWhenDeletionRollsBack",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.CommittedAutosaveWithUnresolvedDebtStopsBeforeRetention",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRejectsGenerationDriftAndCreateCollision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PreparedCandidateRequiresItsOriginalContinuouslyHeldLease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "portable-save-read-refresh-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-read-refresh",
+      "Categories": [
+        "portable-save-read-refresh"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.MatchingProfileRefreshPreservesExactBomBytesWithoutPublication|FullyQualifiedName=BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamCompletionRejectsLinkedOrWrongTypeName|FullyQualifiedName=BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamReadsFullFileAndAcceptsHardLinkedInput|FullyQualifiedName=BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.ProfileRepairPublishesOneCommonDecisionOnTheSuppliedLease|FullyQualifiedName=BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.RetainedDebtBlocksStreamAndRefreshBeforeAnyReadOnTheSameLease|FullyQualifiedName=BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.UncertainMirrorRepairPropagatesWithoutRefreshingRuntime",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.MatchingProfileRefreshPreservesExactBomBytesWithoutPublication",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamCompletionRejectsLinkedOrWrongTypeName",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamReadsFullFileAndAcceptsHardLinkedInput",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.ProfileRepairPublishesOneCommonDecisionOnTheSuppliedLease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.RetainedDebtBlocksStreamAndRefreshBeforeAnyReadOnTheSameLease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.UncertainMirrorRepairPropagatesWithoutRefreshingRuntime",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

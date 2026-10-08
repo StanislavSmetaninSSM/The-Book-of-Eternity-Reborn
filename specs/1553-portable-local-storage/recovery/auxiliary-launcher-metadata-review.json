@@ -1,0 +1,29 @@
+{
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "Verdict": "PASS",
+  "ReviewedCheckpoint": "574fd2d4dabe8dea73bdf9f37909920eeba1f089",
+  "ReadOnly": true,
+  "FinalExactTipClosure": "Writer performs final remote/readback/fresh GitHub-only restore after carrier; no further runtime tests.",
+  "Agent": "/root/auxiliary_portable_metadata_review",
+  "InitialCheckpoint": "f40772da0c7eeb2d929ab4922aa0cd7cb96477ce",
+  "RelativeDocLinksVerified": 688,
+  "SourcePinsVerified": 29,
+  "ArtifactsVerified": 294,
+  "QualifiedCasesMatched": 21,
+  "Catalog": {
+    "Categories": 387,
+    "Methods": 11097,
+    "TestsExecuted": 0
+  },
+  "PlanOnly": {
+    "Cases": 21,
+    "TestsExecuted": 0
+  },
+  "ClosurePermission": "No blocker to recording review PASS/checking only bounded auxiliary task, subject to writer final exact-tip restore/readback",
+  "Notes": [
+    "Existing Microsoft.AspNetCore.App project reference; no new player dependency",
+    "Candidate proof inspected exact GitHub clone21216bytes/fullfsck/noalternates",
+    "Historical audits remain source-bounded; full T050/desktop/systemd/live/nativeWindows remain open"
+  ]
+}

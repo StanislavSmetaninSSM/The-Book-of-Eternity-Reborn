@@ -1,0 +1,58 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-OWNED-MAIN-TERMINAL-DESIGN",
+  "CandidateCommit": "ed435a6062e1a0b5554e3d1374f29b2a3412cd33",
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "IndependentAgent": "/root/native_review",
+  "ReadOnly": true,
+  "Verdict": "DESIGN PASS",
+  "UnresolvedSubstantialDefects": 0,
+  "RuntimeImplementationAuthorizedByReview": false,
+  "Findings": [
+    {
+      "Kind": "confirmed lifecycle design gap",
+      "Location": "owned-main-terminal-design.md Windows adapter/retirement",
+      "Scenario": "HPCON may be needed to close output; old Windows ClosePseudoConsole can block without active output draining.",
+      "Correction": "After retained Job-empty proof, one retained ClosePseudoConsole task on a separate thread with output reader active; join actual close task and EOF/I/O before final owner release. Timeout retains Job/task/session, transport close is not stop proof.",
+      "CorrectionCommit": "6a63d31cb3faf3e2d213c115c010fc868a16543e",
+      "Status": "Closed"
+    },
+    {
+      "Kind": "confirmed causal staging ambiguity",
+      "Location": "owned-main-terminal-design.md Execution steps",
+      "Scenario": "Current bridge has sealed concrete ConPtySession and no neutral seam; missing type/entry/DLL preparation cannot be executed causal RED.",
+      "Correction": "Compile-ready consumed seam preserves original StopShell ordering, then actual BridgeHost/StopShell retained-owner/no-replacement assertion with controlled unfinished tasks; release in finally. Native availability failures remain separately classified.",
+      "CorrectionCommit": "ed435a6062e1a0b5554e3d1374f29b2a3412cd33",
+      "Status": "Closed"
+    }
+  ],
+  "EvidenceAudit": {
+    "AcceptedSourceInputsExact": 18,
+    "ReusedAuditHashesExact": 5,
+    "ProbeInputsExact": 2,
+    "ArtifactsExact": 3,
+    "GzipExact": 1,
+    "LocalBinaryHashesExact": 2,
+    "CompilerHashExact": true,
+    "ProbeDrivers": 1,
+    "PrimitiveChecksPassed": 8,
+    "GuardianEchild": true,
+    "GuardianEmergencySignals": 0,
+    "GuardianFailures": 0,
+    "GuardianDeadline": false,
+    "CandidateRestorationCommit": "63c1383884f03294d82da8e6bb46d1d0d25644cb",
+    "CandidateRestoredFiles": 13137
+  },
+  "CoverageVerdict": "Executable neutral first slice consumes real input/view/retirement paths; planned selection sufficient. No integrated backend or main qualification follows from the primitive probe.",
+  "ReviewExecutedTestsOrProbes": 0,
+  "ReviewerFileWrites": 0,
+  "RemainingStages": [
+    "Neutral implementation not started",
+    "Existing-manager systemd terminal and native Windows qualification",
+    "Durable authentic main run fence before game-writing launch",
+    "Normal Linux launcher/daemon/live configured CLI",
+    "Enabled production workers admission as separately needed",
+    "Live profile UX/cold semantics remain unqualified"
+  ]
+}

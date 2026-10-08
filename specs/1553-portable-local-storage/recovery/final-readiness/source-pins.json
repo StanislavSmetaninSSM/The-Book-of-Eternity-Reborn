@@ -1,0 +1,305 @@
+{
+  "source": "9cac331d8d6ceaa88f71416959029c690a96849c",
+  "pins": {
+    ".github/workflows/dotnet-ci.yml": {
+      "bytes": 4351,
+      "sha256": "9c7705dfccec01ea9dee6e8f262f804ca8ace1dd0f7a65bfd2af9ba1be8bcbd7"
+    },
+    "BookOfEternityClient.TestSupport/ValidatorFixtureHarness.cs": {
+      "bytes": 15848,
+      "sha256": "08f95e4ed639789ff60cef19dd1c3927ded5b28fa230a475cab92f03ea42e935"
+    },
+    "BookOfEternityClient.Tests/GmMainLinuxLauncherTests.cs": {
+      "bytes": 2842,
+      "sha256": "0a539c6e96ffaaaac0fd7286e8519c4915148bf6aa5728329d557074428952f4"
+    },
+    "BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs": {
+      "bytes": 19937,
+      "sha256": "169f5c21cdca33d80670acfd328b54bf498e843bb3878190e1f36c60a369fec5"
+    },
+    "BookOfEternityClient/Configuration/GameSettings.cs": {
+      "bytes": 16393,
+      "sha256": "0191f2f8bc0dead66da78c8e539d09366fc9e30774a7263b2623a94568f5a7c6"
+    },
+    "BookOfEternityClient/Configuration/GmCliInputProfile.cs": {
+      "bytes": 2895,
+      "sha256": "a07fa2ff57b1b34e0fc4863b7857b259eb3f966777e115cf3b455a3314a48d01"
+    },
+    "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md": {
+      "bytes": 13657,
+      "sha256": "edd73ec994fb2eae95bbc441f50846b0655063cf2ece34e71d6300c8cf651edf"
+    },
+    "BookOfEternityClient/Launcher/bookofeternity.ps1": {
+      "bytes": 42854,
+      "sha256": "0e05d358847cefdeaf04da6bafab61a67a1b95118de38fdbb161e122faf29ae4"
+    },
+    "BookOfEternityClient/Launcher/gm_main_operation.ps1": {
+      "bytes": 9952,
+      "sha256": "47b93542d18d3b32a3460af796d11053762cc537e2e81884bb7df0951f75d58f"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs": {
+      "bytes": 7526,
+      "sha256": "6c81145fdae9396dba4214861ce1465e40075d33009dc520c4257b48b271dc7d"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmLoadSessionProtocol.cs": {
+      "bytes": 740,
+      "sha256": "8633c78bf0c31039848e4030d433960f1e2e94e9195f79db534cd0d894413f57"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs": {
+      "bytes": 6421,
+      "sha256": "a835f855f27cb883b60374c8555cc99a42df8b45fef593d36e69067d48ade37a"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs": {
+      "bytes": 2993,
+      "sha256": "199378d4f0477a2cfdd7e7afc6745ffdebe58935f49b5169342e0e58d0b9b2c9"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs": {
+      "bytes": 7210,
+      "sha256": "cecf180e0d597a33469deb938021e8ba2a23dd6d78a160a17830815b3014db7e"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunAdmission.cs": {
+      "bytes": 4093,
+      "sha256": "aa1338fbfa3ba4b8a89851acaa41b4a5bfa3b95c8cc3239116fc24057add621a"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs": {
+      "bytes": 5169,
+      "sha256": "68fa7b62e42003ebfe2a47931986c02860448e46adf8bbd597a959230601077a"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs": {
+      "bytes": 18135,
+      "sha256": "07eb2a514a792e831c23d23444aec40b3239eb53b752b6a52d44e92b26fa719b"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs": {
+      "bytes": 7342,
+      "sha256": "d31a714f9485647ab68b6ee7b7d07da852cb1e88edb3f0df7a1e6bf5ff9ec8c8"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecordCodec.cs": {
+      "bytes": 5526,
+      "sha256": "7e269f884c4ca2dd9277d9b1e3813dc8f15d405bd163160d6fc671247849ad63"
+    },
+    "BookOfEternityClient/Services/GmRuntime/IOwnedTerminalSession.cs": {
+      "bytes": 901,
+      "sha256": "d368c7be21cb2edb72935d8a86fb0f25da2f7f714792c66fab4d9b1ff389cbb7"
+    },
+    "BookOfEternityClient/Services/GmRuntime/LinuxOwnedTerminalSession.cs": {
+      "bytes": 4102,
+      "sha256": "69b9943d4e3ce1e6b271508019936c4849a7585cb03391c06116d8bc4c1f5d60"
+    },
+    "BookOfEternityClient/Services/GmRuntime/LinuxPtyStream.cs": {
+      "bytes": 7869,
+      "sha256": "8af14b69d3235041e9bc44203eb736917be6db9d86e35bd82c458130f46590af"
+    },
+    "BookOfEternityClient/Services/GmRuntime/LinuxSystemdCgroupFiles.cs": {
+      "bytes": 8299,
+      "sha256": "daeb3e6ec5f37e1d53724ac54c4b8bc65b7a32a4636881ca5af9345303d5658e"
+    },
+    "BookOfEternityClient/Services/GmRuntime/NeutralTerminalLaunch.cs": {
+      "bytes": 2396,
+      "sha256": "327652cb6c5c4085e0c665aff68e135b1838210218bf301cba3aa9ebe12a56e0"
+    },
+    "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs": {
+      "bytes": 4982,
+      "sha256": "524f05673fd4b4f890896e43c06ed46fb11170e5112abcb214e1acecaeae07df"
+    },
+    "BookOfEternityClient/Services/GmRuntime/PartialNativeTerminalSession.cs": {
+      "bytes": 1355,
+      "sha256": "26fd5e7f39d3b910c8f07ed480c084205d0194e459df6c25e8302da8a00e0998"
+    },
+    "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs": {
+      "bytes": 3009,
+      "sha256": "46b141084f32f109d9bf921a4f551c0ccd3bae4d557b4ec77d5f649bca07c34b"
+    },
+    "BookOfEternityClient/Services/GmRuntime/SdBusScopeCodec.cs": {
+      "bytes": 2405,
+      "sha256": "8c18e7739c4f13397914e6060b73bd6c87d98a30c1bc094d99c9e1dd7d09fff1"
+    },
+    "BookOfEternityClient/Services/GmRuntime/SystemdCgroupObservation.cs": {
+      "bytes": 1219,
+      "sha256": "0b4243729b0eda83c587ecc68f3508933b6c8eb7b9824e5f25c5005620b77b7b"
+    },
+    "BookOfEternityClient/Services/GmRuntime/SystemdCgroupSource.cs": {
+      "bytes": 6343,
+      "sha256": "58e721520b8b6c4754138d34bcedd6f5a007992f5188795dc388a8f8885c8ec5"
+    },
+    "BookOfEternityClient/Services/GmRuntime/SystemdOwnedTerminalSession.cs": {
+      "bytes": 3485,
+      "sha256": "c1b902543b297cdefdcd3e9d32047eb124531e7055dbd62e121a0a864679f91e"
+    },
+    "BookOfEternityClient/Services/GmRuntime/SystemdScopeContracts.cs": {
+      "bytes": 2741,
+      "sha256": "8e94176cce17c735bd55d8224bd894a85fd8e3ded6151103890b5955f5cb81f1"
+    },
+    "BookOfEternityClient/Services/GmRuntime/SystemdSdBusTransport.cs": {
+      "bytes": 15118,
+      "sha256": "e347e655701605376353f8ff2caff2898d6d40f490dbada556b694758973bd07"
+    },
+    "BookOfEternityClient/Services/GmRuntime/SystemdUserBus.cs": {
+      "bytes": 3516,
+      "sha256": "89ae5b8ac08556ec8ee5716a91e4410b8161783ac5eee964244b5f4931c50d59"
+    },
+    "BookOfEternityClient/Services/GmRuntime/SystemdUserScopeOwner.cs": {
+      "bytes": 5104,
+      "sha256": "1a2d1750e3fb08902c50652867a44d3a1caf977979ca72973000131a2582d31c"
+    },
+    "BookOfEternityClient/game_master_daemon.ps1": {
+      "bytes": 392046,
+      "sha256": "dfcc191569760be0f5fca3cb2ae08ad6bdec2c14e83262a83fc6791827267fbf"
+    },
+    "BookOfEternityGMBridge/BridgeHost.DraftObservation.cs": {
+      "bytes": 8337,
+      "sha256": "e0ac9791df84c6ad58cf9a18c1133ba421415b821a2f25f16733a6def4bf8bf1"
+    },
+    "BookOfEternityGMBridge/BridgeHost.LoadSession.cs": {
+      "bytes": 8201,
+      "sha256": "61055512203b6c639f2737858eb3e84dfc51863e466949cde965c1524d82b0c5"
+    },
+    "BookOfEternityGMBridge/BridgeHost.MainOperations.cs": {
+      "bytes": 2234,
+      "sha256": "064a9d5db5cefd74d8378d8ed4896004f6d0737ca3df5ba6403c2cf199f1f3a6"
+    },
+    "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs": {
+      "bytes": 6039,
+      "sha256": "9a4b02645433732c059f1a5ffb9329827999a53f39fff56cd7b577437ae97b66"
+    },
+    "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs": {
+      "bytes": 20668,
+      "sha256": "92982796e3573122cbd2b8045835b6090b5564010ebd59043a1fb075a109f55e"
+    },
+    "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs": {
+      "bytes": 4582,
+      "sha256": "4a685b8c461b7888e8597f3c31b7c921b05d318d7c3a2c9d321e883314791a42"
+    },
+    "BookOfEternityGMBridge/ConPtySession.cs": {
+      "bytes": 16916,
+      "sha256": "c4f0a7a86987333997e57e6af672c612a35dbc141ddd3ec205e108515eb757c6"
+    },
+    "BookOfEternityGMBridge/DraftObservation.cs": {
+      "bytes": 8385,
+      "sha256": "3ca0e90475c150efb5e5d92aaf8c5955def8683b3eba9d3d9a4ba4fcc6eaffc1"
+    },
+    "BookOfEternityGMBridge/Program.cs": {
+      "bytes": 90099,
+      "sha256": "2c1a43334d6391f84726fb54eaebf027f17b19ffd37599862f0c82798099f1d8"
+    },
+    "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs": {
+      "bytes": 10650,
+      "sha256": "4129fffc3d2d5f28354ecfea2c2d544ac205480deb4a8ae2eea7833a24d7bd00"
+    },
+    "BookOfEternityGMBridge/TerminalScreen.cs": {
+      "bytes": 4389,
+      "sha256": "437973f7adbe3ac6f1e0b5fa57d3d3091731dda2331d7aa51b3cebb03324527c"
+    },
+    "README.md": {
+      "bytes": 7769,
+      "sha256": "12882faa49e037e963b20eab56577119f3230747b560ebd9578e842533247832"
+    },
+    "native/linux/boe-lineage-supervisor.c": {
+      "bytes": 24566,
+      "sha256": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080"
+    },
+    "scripts/build-linux-supervisor.ps1": {
+      "bytes": 4556,
+      "sha256": "ed7f9ed701801e95562afc76ead02c4e4887aee054c873d162bc0f81f3c15914"
+    },
+    "scripts/plan-test-ci.ps1": {
+      "bytes": 752,
+      "sha256": "0a9e17c772688a6399c50363e5a36e061d820b14a6fef5ba5c350306b13dabc3"
+    },
+    "scripts/test-csharp.ps1": {
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+    },
+    "scripts/testing/TestCategoryCatalog.psm1": {
+      "bytes": 13349,
+      "sha256": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d"
+    },
+    "scripts/tests/linux-main-guide.tests.ps1": {
+      "bytes": 4747,
+      "sha256": "f54141319363ae46c39a72cdf90ab908aa07cda2eef1a3afd80cdafbb5570e2f"
+    },
+    "tests/categories.json": {
+      "bytes": 1194593,
+      "sha256": "f333a7b142eb38f15303cddb827cc0472401fcf5601738cddcc92076522d0517"
+    },
+    "tests/fixtures/LinuxHost/host-guardian.c": {
+      "bytes": 9633,
+      "sha256": "1b6802637dc6ae2fc30df6f8fe82e0b1467c63f1ea3cf533e690a8ca691440e3"
+    },
+    "tests/fixtures/ProductionMain/codex-gm-relay.py": {
+      "bytes": 374,
+      "sha256": "4e976ec833ea94e1d31c92b1b24b7a972fa399561ddf7e1f9e4063cb0ee8ca9a"
+    },
+    "tests/fixtures/ProductionMain/configured-neutral-cli.c": {
+      "bytes": 4877,
+      "sha256": "b6fe081dd23f54df320875a9e86d01c8536ae40bd85bf1d6d726630bb6e551b4"
+    },
+    "tests/fixtures/ProductionMain/consumer-boundaries.ps1": {
+      "bytes": 6394,
+      "sha256": "d5c06ab93ef1c35d75ea0397b705c6366c9028f2db0bfb4b07f0f0b388cad590"
+    },
+    "tests/fixtures/ProductionMain/daemon-artifact-stall.ps1": {
+      "bytes": 3667,
+      "sha256": "fa325d452c9f4684cdae78c42e74b787af3972b39eb97264583c550a02a30bd2"
+    },
+    "tests/fixtures/ProductionMain/daemon-close-diagnostic.ps1": {
+      "bytes": 3288,
+      "sha256": "7697e23779b45e6cf1dbc72aa1c53c3454abaa8559d6e35291707eb77e2cc0d7"
+    },
+    "tests/fixtures/ProductionMain/driver-failure-checks.py": {
+      "bytes": 9204,
+      "sha256": "ab05554a34f02742b7d571177f9aa6dfc88ce40be2a2073332b5cd330f202f55"
+    },
+    "tests/fixtures/ProductionMain/idle-daemon-stop.py": {
+      "bytes": 3767,
+      "sha256": "14472dd58e03a70ca66bd4b5cfb0f4f9773c44bb9d298731dec7a8a25b353b98"
+    },
+    "tests/fixtures/ProductionMain/live-game-one-turn.py": {
+      "bytes": 36250,
+      "sha256": "c42d6f98bfdc6a822f91212c183524d64d5767c8ee2ce0445cb10636c2225f62"
+    },
+    "tests/fixtures/ProductionMain/ordinary.py": {
+      "bytes": 8097,
+      "sha256": "ba346d9c3d57b2ee78d343cc8d880a9af0342909092e5fc699ea82feadab093a"
+    },
+    "tests/fixtures/ProductionMain/persistent-cli-startup.py": {
+      "bytes": 17586,
+      "sha256": "6850cb16d21d4de6dd745c81b361633a2d472c703b5c0f5628e7d61013aa75cf"
+    },
+    "tests/fixtures/ProductionMain/read-only-draft-observer.py": {
+      "bytes": 2209,
+      "sha256": "c5e49afe16a05e2736f8cd083ab4ec9f8bfeaa0e13f40b8b4503a43b1629e645"
+    },
+    "tests/fixtures/ProductionMain/relay-acceptance-checks.py": {
+      "bytes": 5305,
+      "sha256": "3d55c4fb9d88e2ed00cdd203c18e7025ddb72af2177ec0bfb5fb599dd7db8bf6"
+    },
+    "tests/fixtures/ProductionMain/relay-apply-response.ps1": {
+      "bytes": 392,
+      "sha256": "1fe960625a0d6bf5198441217fc976ec66aeab1e2da309d149716c42b55aeff8"
+    },
+    "tests/fixtures/ProductionMain/relay-driver-checks.py": {
+      "bytes": 2015,
+      "sha256": "1fce446fe8070f333422bf3f3aa5ae9b284094809b80905153dd0910739d2f10"
+    },
+    "tests/fixtures/ProductionMain/relay-repair-checks.py": {
+      "bytes": 5623,
+      "sha256": "f04b747c99a0c0d2557395697528e8be275a90453f3b0934901fd877ce6aaa8d"
+    },
+    "tests/fixtures/ProductionMain/relay-reusable-checks.py": {
+      "bytes": 6334,
+      "sha256": "e6e115e98c3848741c1ba1c6cb0572605d007d8f4cad684effd82af233ce09e6"
+    },
+    "tests/fixtures/ProductionMain/relay-transport-checks.py": {
+      "bytes": 8307,
+      "sha256": "e357f27b384d7a5318e49307efbdcffe2a9ee06bb153bf71e76d8de371ab6410"
+    },
+    "tests/fixtures/ProductionMain/standalone-bootstrap-trace.py": {
+      "bytes": 16392,
+      "sha256": "c38daa3a818dc086aec194a9e430fcdbd95435d200f0c342dabcc14aecfde3a2"
+    },
+    "tests/selection.json": {
+      "bytes": 1404,
+      "sha256": "7654450596fab684974ca5f8491e461c5952642cd8560abf2e5d5d37b4f84ec6"
+    }
+  }
+}

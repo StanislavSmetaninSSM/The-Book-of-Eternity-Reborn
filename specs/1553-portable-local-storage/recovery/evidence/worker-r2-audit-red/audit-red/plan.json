@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "worker-restart-audit-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d7da77d1ab1df81a1d055357d5b671d519baa4ce",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 38.8743375,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-audit-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-audit-linux",
+      "Categories": [
+        "worker-restart-audit-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartAuditTests.OriginalCleanupPurpose_OnlyAppendsItsExactAuditOnce",
+          "Cases": 9
+        }
+      ]
+    }
+  ]
+}

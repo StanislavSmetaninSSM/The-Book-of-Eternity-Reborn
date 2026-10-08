@@ -1,0 +1,58 @@
+{
+  "Categories": [
+    "gm-main-run-fence"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "8e9cd8fc0a099bccf16bbccbd921829f0620cb6a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 58.974418,
+  "Descriptors": [
+    {
+      "Name": "gm-main-run-fence-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-run-fence",
+      "Categories": [
+        "gm-main-run-fence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.StoppedTombstone_ClearRetainsEpochOutsideReplacement",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 16,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.StoppedTombstone_ClearRetainsEpochOutsideReplacement",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

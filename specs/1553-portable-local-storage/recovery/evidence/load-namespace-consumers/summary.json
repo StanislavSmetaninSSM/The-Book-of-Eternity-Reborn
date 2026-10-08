@@ -1,0 +1,165 @@
+{
+  "Categories": [
+    "portable-load-native-boundaries",
+    "portable-load-cleanup-debt",
+    "portable-load-entry",
+    "portable-load-alias-admission",
+    "portable-load-outcomes",
+    "portable-storage-stream-dispatch",
+    "portable-storage-original-v1-fixtures"
+  ],
+  "Reasons": [
+    {
+      "reason": "New actual native boundary/source-library and outside hard-link controls qualify B2 grants.",
+      "contracts": [
+        "LOAD-FS-002/004/008"
+      ],
+      "category": "portable-load-native-boundaries"
+    },
+    {
+      "reason": "New exact-stage native-link and committed cleanup-debt controls qualify preserved authority and continuation.",
+      "contracts": [
+        "LOAD-FS-003/004/006"
+      ],
+      "category": "portable-load-cleanup-debt"
+    },
+    {
+      "reason": "Typed load changed from file-only adapter to complete v3 namespace; retain exact connected source/library/config/late rollback consumers.",
+      "contracts": [
+        "LOAD-FS-002/003/004"
+      ],
+      "category": "portable-load-entry"
+    },
+    {
+      "reason": "Complete namespace capture/revalidation now consumes prepared case spelling and protected-source topology decisions.",
+      "contracts": [
+        "LOAD-FS-001/004"
+      ],
+      "category": "portable-load-alias-admission"
+    },
+    {
+      "reason": "New v3 publication/recovery is consumed by typed disposition/cleanup and blocked-uncertainty orchestration.",
+      "contracts": [
+        "LOAD-FS-003/006"
+      ],
+      "category": "portable-load-outcomes"
+    },
+    {
+      "reason": "Recover adds v3 dispatch; retain strict original v1/v2 dispatch controls.",
+      "contracts": [
+        "Preserved v1/v2 reader authority"
+      ],
+      "category": "portable-storage-stream-dispatch"
+    },
+    {
+      "reason": "New v3 normal acquisition dispatch must preserve independent historical v1 pending/committed fixtures.",
+      "contracts": [
+        "Preserved original-v1 exact bytes and generation"
+      ],
+      "category": "portable-storage-original-v1-fixtures"
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "2746f1c1bee5bb3853240c9202c12bda5026c8de",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-load-alias-admission",
+      "Seconds": 39.3377131,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-cleanup-debt",
+      "Seconds": 15.2719869,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-entry",
+      "Seconds": 22.0396039,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-native-boundaries",
+      "Seconds": 14.4057671,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-outcomes",
+      "Seconds": 12.6228346,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-original-v1-fixtures",
+      "Seconds": 5.847019,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-stream-dispatch",
+      "Seconds": 12.1915795,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.6066817,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.1870889,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.258534,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 197.5626672,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 51.254047,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:06:30.2555728",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 7,
+    "CompletedDescriptors": 7,
+    "PlannedCases": 53,
+    "CompletedCases": 53,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 53,
+    "Executed": 53,
+    "Passed": 52,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

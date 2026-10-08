@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="c7560d72-3108-4b88-866a-a4dac98212a0" name="@c7669543e9c7 2026-10-06 04:52:21" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T04:52:21.9187178+00:00" queuing="2026-10-06T04:52:21.9187178+00:00" start="2026-10-06T04:52:19.6295566+00:00" finish="2026-10-06T04:52:21.9711722+00:00" />
+  <TestSettings name="default" id="3b2b7872-95e9-471a-a2c9-7a8d74981e01">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_04_52_21" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="c159ef6c-60fb-4189-bb0f-454624a02495" testId="a594e3a3-f76a-23cc-9390-19e72dfc3f18" testName="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 0, capability: 2)" computerName="c7669543e9c7" duration="00:00:00.0005252" startTime="2026-10-06T04:52:21.9059361+00:00" endTime="2026-10-06T04:52:21.9059362+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c159ef6c-60fb-4189-bb0f-454624a02495" />
+    <UnitTestResult executionId="4a13dcb3-bf3a-4dba-874b-d16825c81898" testId="6de17269-7677-8c24-4273-c69393e07c40" testName="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.WindowsOwner_DoesNotTreatArbitraryProcessTreeAsRetainedJob" computerName="c7669543e9c7" duration="00:00:00.0128705" startTime="2026-10-06T04:52:21.7889947+00:00" endTime="2026-10-06T04:52:21.7890091+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4a13dcb3-bf3a-4dba-874b-d16825c81898" />
+    <UnitTestResult executionId="0e12c97b-023f-4bbb-b689-2af54f9d64d8" testId="dda0001f-2c26-fac5-dc60-60257a7f0c16" testName="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob(windows: False, retainedJob: False)" computerName="c7669543e9c7" duration="00:00:00.0008978" startTime="2026-10-06T04:52:21.8732860+00:00" endTime="2026-10-06T04:52:21.8732860+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0e12c97b-023f-4bbb-b689-2af54f9d64d8" />
+    <UnitTestResult executionId="6014cf2a-400b-4262-95d9-21be5371a544" testId="a44c5b17-faf6-3e99-cdde-d40163ffbef7" testName="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight" computerName="c7669543e9c7" duration="00:00:00.0148243" startTime="2026-10-06T04:52:21.7918472+00:00" endTime="2026-10-06T04:52:21.7918473+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6014cf2a-400b-4262-95d9-21be5371a544" />
+    <UnitTestResult executionId="0682ca1f-14a7-49a3-b53c-3d045a565058" testId="66ab0ee6-f80f-f6c5-2a20-f3e922ac7b3a" testName="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 2, capability: 1)" computerName="c7669543e9c7" duration="00:00:00.0006445" startTime="2026-10-06T04:52:21.9058986+00:00" endTime="2026-10-06T04:52:21.9058986+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0682ca1f-14a7-49a3-b53c-3d045a565058" />
+    <UnitTestResult executionId="7d93d5d0-f592-49bf-934b-91c024b92be8" testId="77b360b4-3b54-cfd6-71c3-d18b6f3ef5a5" testName="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 2, capability: 2)" computerName="c7669543e9c7" duration="00:00:00.0004804" startTime="2026-10-06T04:52:21.9059660+00:00" endTime="2026-10-06T04:52:21.9059660+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7d93d5d0-f592-49bf-934b-91c024b92be8" />
+    <UnitTestResult executionId="642cb684-7773-4801-b3bf-27156aabb252" testId="0418c6c8-befc-f146-10f9-e27d50c5e43c" testName="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease" computerName="c7669543e9c7" duration="00:00:00.1149878" startTime="2026-10-06T04:52:21.8867381+00:00" endTime="2026-10-06T04:52:21.8867382+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="642cb684-7773-4801-b3bf-27156aabb252" />
+    <UnitTestResult executionId="b8c768e9-39e2-4e17-bc34-3b98244bd46a" testId="d7c27218-1bd5-180d-7641-9464346de7a6" testName="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob(windows: True, retainedJob: False)" computerName="c7669543e9c7" duration="00:00:00.0727051" startTime="2026-10-06T04:52:21.8722498+00:00" endTime="2026-10-06T04:52:21.8722500+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b8c768e9-39e2-4e17-bc34-3b98244bd46a" />
+    <UnitTestResult executionId="c2090673-33ed-4f4b-8ff8-6e5580be821f" testId="2550f9f0-690f-2349-beb6-fcf3c33b3f1b" testName="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 0, capability: 1)" computerName="c7669543e9c7" duration="00:00:00.0086539" startTime="2026-10-06T04:52:21.8955172+00:00" endTime="2026-10-06T04:52:21.8955173+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c2090673-33ed-4f4b-8ff8-6e5580be821f" />
+    <UnitTestResult executionId="298b6dc9-257f-456f-8db8-01f2de6af7ad" testId="6e7ab483-f64a-9973-848b-d91cdbf159fc" testName="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob(windows: True, retainedJob: True)" computerName="c7669543e9c7" duration="00:00:00.0013131" startTime="2026-10-06T04:52:21.8746670+00:00" endTime="2026-10-06T04:52:21.8746670+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="298b6dc9-257f-456f-8db8-01f2de6af7ad" />
+    <UnitTestResult executionId="5dc2ba56-ee82-42bd-9f98-b47822a4eff4" testId="7c5ab57b-2b2b-6cb8-dc10-556c272e0d9d" testName="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 1, capability: 0)" computerName="c7669543e9c7" duration="00:00:00.0011821" startTime="2026-10-06T04:52:21.9058559+00:00" endTime="2026-10-06T04:52:21.9058561+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5dc2ba56-ee82-42bd-9f98-b47822a4eff4" />
+    <UnitTestResult executionId="572c4999-1144-4806-a117-ab9fd6b9612d" testId="11ab1e69-8c09-1403-9887-19eceb9e949a" testName="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.DefaultWindowsCompletion_PreservesDiagnosticDrainBeforeStop" computerName="c7669543e9c7" duration="00:00:00.0063003" startTime="2026-10-06T04:52:21.8846302+00:00" endTime="2026-10-06T04:52:21.8846302+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="572c4999-1144-4806-a117-ab9fd6b9612d" />
+    <UnitTestResult executionId="f3674ee8-3cc7-419b-a3ac-bd68b5f02162" testId="007fed91-974a-59a2-9bf8-ca9460b217ab" testName="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.NativeCompletion_DoesNotWaitForDiagnosticDrainBeforeScopedStop" computerName="c7669543e9c7" duration="00:00:00.0081566" startTime="2026-10-06T04:52:21.7993670+00:00" endTime="2026-10-06T04:52:21.7993670+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f3674ee8-3cc7-419b-a3ac-bd68b5f02162" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob(windows: True, retainedJob: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6e7ab483-f64a-9973-848b-d91cdbf159fc">
+      <Execution id="298b6dc9-257f-456f-8db8-01f2de6af7ad" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests" name="ObservationException_RetriesOnlyRetainedAssignedWindowsJob" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 2, capability: 1)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="66ab0ee6-f80f-f6c5-2a20-f3e922ac7b3a">
+      <Execution id="0682ca1f-14a7-49a3-b53c-3d045a565058" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests" name="SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.DefaultWindowsCompletion_PreservesDiagnosticDrainBeforeStop" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="11ab1e69-8c09-1403-9887-19eceb9e949a">
+      <Execution id="572c4999-1144-4806-a117-ab9fd6b9612d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests" name="DefaultWindowsCompletion_PreservesDiagnosticDrainBeforeStop" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a44c5b17-faf6-3e99-cdde-d40163ffbef7">
+      <Execution id="6014cf2a-400b-4262-95d9-21be5371a544" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerBackendSelectionTests" name="WindowsAuto_PreservesJobCapabilityWithoutNativePreflight" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 0, capability: 1)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2550f9f0-690f-2349-beb6-fcf3c33b3f1b">
+      <Execution id="c2090673-33ed-4f4b-8ff8-6e5580be821f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests" name="SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob(windows: True, retainedJob: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d7c27218-1bd5-180d-7641-9464346de7a6">
+      <Execution id="b8c768e9-39e2-4e17-bc34-3b98244bd46a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests" name="ObservationException_RetriesOnlyRetainedAssignedWindowsJob" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.NativeCompletion_DoesNotWaitForDiagnosticDrainBeforeScopedStop" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="007fed91-974a-59a2-9bf8-ca9460b217ab">
+      <Execution id="f3674ee8-3cc7-419b-a3ac-bd68b5f02162" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests" name="NativeCompletion_DoesNotWaitForDiagnosticDrainBeforeScopedStop" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0418c6c8-befc-f146-10f9-e27d50c5e43c">
+      <Execution id="642cb684-7773-4801-b3bf-27156aabb252" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests" name="ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 1, capability: 0)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7c5ab57b-2b2b-6cb8-dc10-556c272e0d9d">
+      <Execution id="5dc2ba56-ee82-42bd-9f98-b47822a4eff4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests" name="SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 2, capability: 2)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="77b360b4-3b54-cfd6-71c3-d18b6f3ef5a5">
+      <Execution id="7d93d5d0-f592-49bf-934b-91c024b92be8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests" name="SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob(windows: False, retainedJob: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="dda0001f-2c26-fac5-dc60-60257a7f0c16">
+      <Execution id="0e12c97b-023f-4bbb-b689-2af54f9d64d8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests" name="ObservationException_RetriesOnlyRetainedAssignedWindowsJob" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.WindowsOwner_DoesNotTreatArbitraryProcessTreeAsRetainedJob" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6de17269-7677-8c24-4273-c69393e07c40">
+      <Execution id="4a13dcb3-bf3a-4dba-874b-d16825c81898" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests" name="WindowsOwner_DoesNotTreatArbitraryProcessTreeAsRetainedJob" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 0, capability: 2)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a594e3a3-f76a-23cc-9390-19e72dfc3f18">
+      <Execution id="c159ef6c-60fb-4189-bb0f-454624a02495" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests" name="SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="a594e3a3-f76a-23cc-9390-19e72dfc3f18" executionId="c159ef6c-60fb-4189-bb0f-454624a02495" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6de17269-7677-8c24-4273-c69393e07c40" executionId="4a13dcb3-bf3a-4dba-874b-d16825c81898" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dda0001f-2c26-fac5-dc60-60257a7f0c16" executionId="0e12c97b-023f-4bbb-b689-2af54f9d64d8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a44c5b17-faf6-3e99-cdde-d40163ffbef7" executionId="6014cf2a-400b-4262-95d9-21be5371a544" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="66ab0ee6-f80f-f6c5-2a20-f3e922ac7b3a" executionId="0682ca1f-14a7-49a3-b53c-3d045a565058" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="77b360b4-3b54-cfd6-71c3-d18b6f3ef5a5" executionId="7d93d5d0-f592-49bf-934b-91c024b92be8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0418c6c8-befc-f146-10f9-e27d50c5e43c" executionId="642cb684-7773-4801-b3bf-27156aabb252" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d7c27218-1bd5-180d-7641-9464346de7a6" executionId="b8c768e9-39e2-4e17-bc34-3b98244bd46a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2550f9f0-690f-2349-beb6-fcf3c33b3f1b" executionId="c2090673-33ed-4f4b-8ff8-6e5580be821f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6e7ab483-f64a-9973-848b-d91cdbf159fc" executionId="298b6dc9-257f-456f-8db8-01f2de6af7ad" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7c5ab57b-2b2b-6cb8-dc10-556c272e0d9d" executionId="5dc2ba56-ee82-42bd-9f98-b47822a4eff4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="11ab1e69-8c09-1403-9887-19eceb9e949a" executionId="572c4999-1144-4806-a117-ab9fd6b9612d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="007fed91-974a-59a2-9bf8-ca9460b217ab" executionId="f3674ee8-3cc7-419b-a3ac-bd68b5f02162" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="13" executed="13" passed="13" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.21]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.67]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.69]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.87]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

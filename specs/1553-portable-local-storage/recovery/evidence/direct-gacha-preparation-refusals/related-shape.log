@@ -1,0 +1,6 @@
+Read-TestCategoryCatalog: /workspace/native-1553/scripts/test-csharp.ps1:57
+Line |
+  57 |  …  $catalog = Read-TestCategoryCatalog -Path (Join-Path $repoRoot 'test …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | The property 'id' cannot be found on this object. Verify that the
+     | property exists.

@@ -785,15 +785,17 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
         var fs = CreateFileSystem();
         if (string.Equals(decision, "accept", StringComparison.Ordinal))
             await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(fs);
+        Func<QteSceneService.QteRuntimeState, Task> failRuntime = _ =>
+        {
+            runtimeWriteObserved = true;
+            return Task.FromException(failure);
+        };
         var web = CreateWebService(
             fs,
             new QteSceneServiceHooks
             {
-                AfterRuntimeWrittenAsync = _ =>
-                {
-                    runtimeWriteObserved = true;
-                    return Task.FromException(failure);
-                }
+                AfterLegacyAcceptanceRuntimeWrittenAsync = decision == "accept" ? failRuntime : null,
+                AfterRuntimeWrittenAsync = decision == "decline" ? failRuntime : null
             });
         await WriteOfferAsync(fs, BuildTerminalOffer());
         var interactionToken = RequiredInteractionToken(

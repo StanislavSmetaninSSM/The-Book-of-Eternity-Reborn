@@ -1,0 +1,22 @@
+{
+  "GuardianECHILD": true,
+  "GuardianEmergencySignals": 1,
+  "GuardianReaped": 3,
+  "GuardianFailures": 0,
+  "GuardianDeadline": false,
+  "OwnOrphanPipeWasPresent": true,
+  "OwnOrphanSocketUnlinkedOnlyAfterECHILD": true,
+  "OwnEmptyScratchRemoved": true,
+  "MainRecordDispositionRetained": "Uncertain",
+  "MainRecordSHA256Retained": "0c3706ea50e876e043dbb3a7ff6013e3479f6fe243056fb4fcf920289fb79bfe",
+  "OriginalScopedStopNotProven": true,
+  "ForegroundTermiosRestorationNotProven": true,
+  "ActiveToolSessions": [],
+  "CodexHomeMountReadOnly": true,
+  "CodexHomeObservation": "statvfs mount flag only; no file contents/listing/auth/session reads or writes",
+  "ModelRequests": 0,
+  "GameTurns": 0,
+  "OtherConfirmations": 0,
+  "RepeatedStartup": 0,
+  "TERMAnswers": 1
+}

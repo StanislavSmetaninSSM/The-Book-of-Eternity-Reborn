@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "82e30691d4c197fb560033b2f057bb622912bb0a",
+  "catalogBlobAfterPatch": "dd51f5e50a73baeed77ac23c29895b7f5a0cb7a1",
+  "kind": "newly executed b3b-handle-fix-audit; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "26ae63519114ce71e5407afcea67705c7c9d36ca0feed635f3e9fd508c38718d",
+      "sanitizedSha256": "26ae63519114ce71e5407afcea67705c7c9d36ca0feed635f3e9fd508c38718d"
+    },
+    {
+      "path": "catalog-audit.json",
+      "originalSha256": "86466135c89d6b611ec7270ed2478ea48140fe5d0efd9a6fb3f1adaafb234190",
+      "sanitizedSha256": "86466135c89d6b611ec7270ed2478ea48140fe5d0efd9a6fb3f1adaafb234190"
+    }
+  ],
+  "sourceAppliedTree": "368ec7c2806fddb71c0e009823cb709673bf0a9b",
+  "selectionBlob": "7ae4542ff8b8b9833fd6817730f5ff24737db068",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+  "platform": "Linux x64",
+  "result": "Fresh integration and unit builds succeeded; 122 categories / 10,340 methods or files, no unmapped/stale selectors. Zero tests executed."
+}

@@ -1,0 +1,155 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "3e1b11c220ea3286002ea78c90e4eb4498e887dd",
+  "Inputs": [
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Sha256": "1f12338f013eb54070a198d0dd4a5998bbb5a7f426249442db4dfe5653b0217c",
+      "GitBlob": "e2c3add66cde56d64de90ca087304f9554e2cd0c"
+    },
+    {
+      "Path": "scripts/build-linux-supervisor.ps1",
+      "Sha256": "7644f02870fa97d53e50f7507d8ca3c85c0ade9dc274bb2a459587456f196474",
+      "GitBlob": "6692494f8996ff3c7f43a44730f601560b462c35"
+    },
+    {
+      "Path": "tests/fixtures/LinuxLineage/lineage-fixture.c",
+      "Sha256": "e9390cf97b3e371a043b40a3936a694f5fb20727b71e9e64eac2bed5a8d35bcd",
+      "GitBlob": "08867f39ca748c6aa69b67f314136ade333c7f8c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs",
+      "Sha256": "8e655d5d443e06b34d3afd092051b4be95571a826155bd2bd5c46f8fac25681e",
+      "GitBlob": "85a81249ff3be4c30c93e4d02ab457bc30b1a836"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Sha256": "d0f09dae231f8d485e88b9071640655879ddbf4ec9f43502dddcb878e94c5be6",
+      "GitBlob": "43aced5f46a7e0a46d538dd8fcabe0f08b524082"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Sha256": "50a020773c072cfe3f43bd9801ea38c88e3f23e89bc0707b52ebf3d7ef75e485",
+      "GitBlob": "40f6690f40434466295f6114fd1e3fd8144da996"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "compiler-version.txt",
+      "Bytes": 231,
+      "Sha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+    },
+    {
+      "Path": "descendant-green/dotnet-test.log.gz",
+      "Bytes": 164024,
+      "Sha256": "46b3ce2a8fe45c8801b4bec91f104f78f8d0e0835e67c06371554840e3f13cd7",
+      "DecompressedSha256": "265588f9ce8496bb8b59cd5c6539cef6015b30bcf9209f815ae62fced3d394a2"
+    },
+    {
+      "Path": "descendant-green/linux-fallback-proc-discovery-unit-001.trx",
+      "Bytes": 2994,
+      "Sha256": "441b269328fa898769e288b7abef76c9905b37def5b2b3134671fa57ed7e2fe1"
+    },
+    {
+      "Path": "descendant-green/plan.json",
+      "Bytes": 1116,
+      "Sha256": "d3f471d441dcb8574c51b2cdb6478217ab8ba7b8c12eed5bbf7966f6e76a2376"
+    },
+    {
+      "Path": "descendant-green/summary.json",
+      "Bytes": 1464,
+      "Sha256": "e31e704247647c5aecb9c2c8e07cbd1575fec3abe09db8c7ec2a659d2bfe7f52"
+    },
+    {
+      "Path": "descendant-green.log.gz",
+      "Bytes": 733,
+      "Sha256": "6f56fa514af60ceffb35fb38bba51bb3f8e3724e1f5693cd62d645753dc1ee21",
+      "DecompressedSha256": "086d7372c82c288620dbc6f209eabcbe309f487bd8ec32f348ff4296ab9a447f"
+    },
+    {
+      "Path": "descendant-plan/Build-unit.log.gz",
+      "Bytes": 1060,
+      "Sha256": "f5d98d8437291e16a69a7b8cc1520640b374b30080e3ac8b3f17a523009690cf",
+      "DecompressedSha256": "69797eb3ef1afcb9810e79e1cef6d7257ee49cfb939f135ca585b957bcaab724"
+    },
+    {
+      "Path": "descendant-plan/dotnet-test.log.gz",
+      "Bytes": 164766,
+      "Sha256": "13bce1314dc213ddf0798aacfd9e34f38e89dfb866aee5cdfbe404805d959914",
+      "DecompressedSha256": "63cfa75cec856ce676d36ed38a74770fb7a3c5cd4e2a8d4cca72479b449317d7"
+    },
+    {
+      "Path": "descendant-plan/plan.json",
+      "Bytes": 1117,
+      "Sha256": "59f9193110ccf4e700e5a4fd65b335f24c210144dc9dad73bf7f944fcecf55c1"
+    },
+    {
+      "Path": "descendant-plan/summary.json",
+      "Bytes": 1467,
+      "Sha256": "3c55b6e8ae8cac1e6a92b2854fbebeb8caadcf8332b2eb08975779ec42c8f6e8"
+    },
+    {
+      "Path": "descendant-plan.log.gz",
+      "Bytes": 587,
+      "Sha256": "affcb38993238e21a2d0c56bf9a9d56785cb11db46820c3d53eeae9ff21524e3",
+      "DecompressedSha256": "b0576b7c4c000e72cd3f2bf761eaa86426fa04b0dfe93d0fa8e9adba32b7e34e"
+    },
+    {
+      "Path": "dotnet-info.txt",
+      "Bytes": 1569,
+      "Sha256": "fc87dc94987db5fc9773f2d4af52beb73cad8c02045544abfd50e3d952cc5cc0"
+    },
+    {
+      "Path": "kernel.txt",
+      "Bytes": 31,
+      "Sha256": "a164a7476099393f767b3f53c7132871252964e31801ef536d5b99cbebb99119"
+    },
+    {
+      "Path": "managed-build.json",
+      "Bytes": 458,
+      "Sha256": "0d5beb904f3128039b49e50974717faba85927d38356cb00da32b12c3fe8fa21"
+    },
+    {
+      "Path": "native/26fce7e51be545569b2867f20d45e7fc/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "852d4e7885f0a67650a3e430361cd6697549419e0f9d470f78fbd1182c4c37fc"
+    },
+    {
+      "Path": "native/26fce7e51be545569b2867f20d45e7fc/build.log.gz",
+      "Bytes": 110,
+      "Sha256": "ce8708ea61696708cb15975d241b3572aac703f63a232a566f318d3d625ae100",
+      "DecompressedSha256": "1a12311064726ba3e04b7e27955ff1057033c0621782acc6608c323ee4b748b9"
+    },
+    {
+      "Path": "native/26fce7e51be545569b2867f20d45e7fc/events.jsonl",
+      "Bytes": 127,
+      "Sha256": "6058b3bedb4fef09002a0b45112c01a24dc4a4c4ceedc1c4b6748f5a32e2b30a"
+    },
+    {
+      "Path": "native/26fce7e51be545569b2867f20d45e7fc/guardian.json",
+      "Bytes": 176,
+      "Sha256": "7a1096b0553f0d318f7e7ee9d1d566f5745e396bef77c4fd2929c0e355a121be"
+    },
+    {
+      "Path": "native/26fce7e51be545569b2867f20d45e7fc/status.jsonl",
+      "Bytes": 1059,
+      "Sha256": "17d0f8e1fcc3ad62cbf4ccca3bfcbb41861a1b6606cae8349e76aebf0f85dd59"
+    },
+    {
+      "Path": "native/26fce7e51be545569b2867f20d45e7fc/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "powershell-info.json",
+      "Bytes": 1863,
+      "Sha256": "a7e0af1affefadf1af44f49bc7d693375e520f09858ce21faae0e85b6d741a19"
+    },
+    {
+      "Path": "restoration.json",
+      "Bytes": 6908,
+      "Sha256": "ad8b280c8457b8f0353ca11d0260489d1f38137ac1135a671c81c8ab7418fc10"
+    }
+  ]
+}

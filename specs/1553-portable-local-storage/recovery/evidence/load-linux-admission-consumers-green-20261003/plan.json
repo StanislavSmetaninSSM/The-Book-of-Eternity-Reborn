@@ -1,0 +1,402 @@
+{
+  "Categories": [
+    "portable-storage-namespace",
+    "portable-storage-namespace-generation",
+    "portable-load-topology",
+    "portable-load-native-boundaries",
+    "portable-load-cleanup-debt",
+    "portable-load-cold-decision",
+    "portable-load-cold-topology",
+    "portable-storage-stream-dispatch",
+    "portable-storage-original-v1-fixtures",
+    "portable-storage-stream-publication",
+    "portable-storage-stream-generation"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-storage-namespace",
+      "reason": "Scratch admission and namespace parent validation changed; strict v3 authority/full preflight must retain all prior cases.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-namespace-generation",
+      "reason": "Shared namespace admission retains exact missing-generation restoration and committed generation.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-topology",
+      "reason": "Connected load consumes the new batch admission across file/directory shapes.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-native-boundaries",
+      "reason": "Fresh admission must preserve native junction/link/hard-link and protected source/library boundaries.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-cleanup-debt",
+      "reason": "Batch admission cannot loosen scratch conflict or committed cleanup decisions.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-cold-decision",
+      "reason": "Pending/committed restart consumes changed namespace validation with extraction absent.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-load-cold-topology",
+      "reason": "Interrupted structural rollback consumes changed namespace validation; exact repeated recovery required.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-dispatch",
+      "reason": "Shared crash-host dispatch gained a resource-only mode; preserve previous v1/v2 format dispatch.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-original-v1-fixtures",
+      "reason": "Shared TrustedLocalFileScope changed; source-derived original v1 admission remains exact.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-publication",
+      "reason": "Shared scalar/batch scope leaf implementation must preserve existing v2 publication consumers.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    },
+    {
+      "category": "portable-storage-stream-generation",
+      "reason": "Shared host and scope retain existing v2 cold generation ordering.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/005/006/008; T032-B3-RESOURCE-ADMISSION"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "46414e4f136105f01586187a970997c5782e7405",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.5633189,
+  "Descriptors": [
+    {
+      "Name": "portable-load-cleanup-debt-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-cleanup-debt",
+      "Categories": [
+        "portable-load-cleanup-debt"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.CommittedUnknownEmptyDirectoryDebtPreservesDecisionUntilFreshCleanup|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeExactStageJunctionRetainsIntentUntilRemovedAndFreshlyRecovered|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PlainCommittedCallbackFailureKeepsEstablishedLoadDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CommittedUnknownEmptyDirectoryDebtPreservesDecisionUntilFreshCleanup",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeExactStageJunctionRetainsIntentUntilRemovedAndFreshlyRecovered",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PlainCommittedCallbackFailureKeepsEstablishedLoadDecision",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-cold-decision-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-load-cold-decision",
+      "Categories": [
+        "portable-load-cold-decision"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.ColdUnknownLaterMemberRetainsAllEarlierStateAndEvidence|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.FreshAcquisitionRecoversActualLoadWithoutExtractionSources|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.IncompleteExactOwnedScratchRecoversCompleteBeforeDecision",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 8,
+      "EstimatedCases": 19,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.ColdUnknownLaterMemberRetainsAllEarlierStateAndEvidence",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.FreshAcquisitionRecoversActualLoadWithoutExtractionSources",
+          "Cases": 13
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.IncompleteExactOwnedScratchRecoversCompleteBeforeDecision",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-cold-topology-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-load-cold-topology",
+      "Categories": [
+        "portable-load-cold-topology"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.InterruptedTopologyRecoveryConvergesWithoutExtraction",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 8,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadColdRecoveryTests.InterruptedTopologyRecoveryConvergesWithoutExtraction",
+          "Cases": 10
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-native-boundaries-integration-004",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-native-boundaries",
+      "Categories": [
+        "portable-load-native-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.LibrarySelectedSourceCommitsWithoutChangingOpaqueLibrary|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeHardLinkedMarkerReplacementPreservesOutsideSessionAlias",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.LibrarySelectedSourceCommitsWithoutChangingOpaqueLibrary",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeHardLinkedMarkerReplacementPreservesOutsideSessionAlias",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-topology-integration-005",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-topology",
+      "Categories": [
+        "portable-load-topology"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.FreshGenerationInterruptionRestoresExactAbsence|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.InterruptedTopologyRestoresExactBeforeNamespace",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.FreshGenerationInterruptionRestoresExactAbsence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.InterruptedTopologyRestoresExactBeforeNamespace",
+          "Cases": 8
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-namespace-unit-006",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-namespace",
+      "Categories": [
+        "portable-storage-namespace"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.EveryV3FieldRejectsOmissionWrongTypeAndForbiddenNull|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.LateInvalidV3MetadataRetainsEveryEarlierMemberAndEvidence|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnknownLaterChildRetainsEveryEarlierAfterImage|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnsupportedNamespaceAuthorityRetainsExactEvidence",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 33,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.EveryV3FieldRejectsOmissionWrongTypeAndForbiddenNull",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.LateInvalidV3MetadataRetainsEveryEarlierMemberAndEvidence",
+          "Cases": 18
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnknownLaterChildRetainsEveryEarlierAfterImage",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnsupportedNamespaceAuthorityRetainsExactEvidence",
+          "Cases": 6
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-namespace-generation-unit-007",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-namespace-generation",
+      "Categories": [
+        "portable-storage-namespace-generation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentNewGenerationFramePreservesExactAbsence",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentNewGenerationFramePreservesExactAbsence",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-original-v1-fixtures-unit-008",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-original-v1-fixtures",
+      "Categories": [
+        "portable-storage-original-v1-fixtures"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-stream-dispatch-unit-009",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-dispatch",
+      "Categories": [
+        "portable-storage-stream-dispatch"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.PlausibleV1PreservesReorderedPropertiesAndLongLeadingWhitespace|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.UnknownLargeFrameRejectsBeforeLegacyWholeFileAllocation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.PlausibleV1PreservesReorderedPropertiesAndLongLeadingWhitespace",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamDispatchTests.UnknownLargeFrameRejectsBeforeLegacyWholeFileAllocation",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-stream-generation-unit-010",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-generation",
+      "Categories": [
+        "portable-storage-stream-generation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages",
+          "Cases": 6
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-stream-publication-unit-011",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-publication",
+      "Categories": [
+        "portable-storage-stream-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.OriginalV1EvidenceKeepsItsOriginalPendingAndCommittedSemantics|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.UnknownLaterMemberPreventsEarlierRollbackAndRetainsV2Authority|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 29,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation",
+          "Cases": 14
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.OriginalV1EvidenceKeepsItsOriginalPendingAndCommittedSemantics",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.UnknownLaterMemberPreventsEarlierRollbackAndRetainsV2Authority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}

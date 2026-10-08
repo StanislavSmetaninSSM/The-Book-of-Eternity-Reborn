@@ -1,0 +1,78 @@
+{
+  "Categories": [
+    "gm-load-lost-reply",
+    "gm-load-installed-profile",
+    "gm-load-storage-faults"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "5671d19c31b941e776c7e9181140a803d0f6186f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-load-installed-profile",
+      "Seconds": 26.5555007,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-load-lost-reply",
+      "Seconds": 22.9060806,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.2250259,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0848564,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1295925,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 39.3767852,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 14,
+  "WallTime": "00:01:34.3232179",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 6,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [
+      "gm-load-storage-faults-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 1,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

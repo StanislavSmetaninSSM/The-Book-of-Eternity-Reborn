@@ -1,0 +1,1748 @@
+{
+  "SchemaVersion": 1,
+  "Task": "#1553 T041-FALLBACK-HOST",
+  "BaseCommit": "e7b26f9c8515dd0423388eaa18752e2d496c49a9",
+  "CandidateSourceCommit": "85b96e79a55002cd22402f06b72381a62ebe80c7",
+  "Status": "Bounded HOST A qualified with independent gpt-6.1-sol/xhigh PASS and clean GitHub-only candidate restoration; final verdict carrier is restored separately in handoff",
+  "Environment": {
+    "DotnetSdk": "10.0.401",
+    "InstalledRuntimes": "Microsoft.AspNetCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.AspNetCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.NETCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]\nMicrosoft.NETCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]",
+    "PowerShell": "7.5.4",
+    "NativeCompiler": "/usr/bin/x86_64-linux-gnu-gcc-14",
+    "NativeCompilerSha256": "a23ecab8ff08f09ad8c80602c2c5df7f49e09c25905cb8975902e101bf72635f",
+    "NativeCompilerVersion": "cc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    "Readelf": "GNU readelf (GNU Binutils for Debian) 2.44\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis program is free software; you may redistribute it under the terms of\nthe GNU General Public License version 3 or (at your option) any later version.\nThis program has absolutely no warranty.",
+    "Libc": "ldd (Debian GLIBC 2.41-12+deb13u3) 2.41\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\nWritten by Roland McGrath and Ulrich Drepper.",
+    "Kernel": "6.18.44",
+    "Architecture": "x86_64"
+  },
+  "Manifests": [
+    {
+      "Path": "evidence/worker-host-admission-first-green/manifest.json",
+      "Sha256": "5f654c9abaa9e33614ecf1aebfcbb8771767db803cf1caf3e4f7bc3ff8c2bd57",
+      "SourceCommit": "510156d07dd9599bca12ef568a2fe05eb86d51ad",
+      "Artifacts": 11
+    },
+    {
+      "Path": "evidence/worker-host-admission-red/manifest.json",
+      "Sha256": "f7d35a04bce038ae2e6a6acaaed532b3fb6a5a54f9d152e5b17e5939a4f95184",
+      "SourceCommit": "6728db47b5b98025886b3bbae3b34be2c2bd0c82",
+      "Artifacts": 10
+    },
+    {
+      "Path": "evidence/worker-host-affected-regressions-green/manifest.json",
+      "Sha256": "4a7855776201d4805ca6a052ff85ef123e30714e1d088ec50eb778058a23b6a7",
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Artifacts": 59
+    },
+    {
+      "Path": "evidence/worker-host-bootstrap-output-green/manifest.json",
+      "Sha256": "1837c517d0ca974057ba295604e25f9a240ddf1425baa559d02286e913e66aae",
+      "SourceCommit": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+      "Artifacts": 54
+    },
+    {
+      "Path": "evidence/worker-host-boundaries-green/manifest.json",
+      "Sha256": "142cfd07e417bdedc85b1912b535bee51cdeef43929931e44c6a76920b4a2aca",
+      "SourceCommit": "02cd9dc931dc08b7d2d740a7e5c206b8ee89eeca",
+      "Artifacts": 52
+    },
+    {
+      "Path": "evidence/worker-host-catalog-final/manifest.json",
+      "Sha256": "6de8c5b38cab052492956d493488923b4a0fb3c47bc9b9007fedcff06b0b86cd",
+      "SourceCommit": "85b96e79a55002cd22402f06b72381a62ebe80c7",
+      "Artifacts": 10
+    },
+    {
+      "Path": "evidence/worker-host-descriptor-red/manifest.json",
+      "Sha256": "5553a7f530c8fc6b2a970fe2145ab159875d5e7e13721723dab001c051840bdf",
+      "SourceCommit": "f512b37f14711b2ed7e91438a8bd94911e643af2",
+      "Artifacts": 10
+    },
+    {
+      "Path": "evidence/worker-host-guardian-package-green/manifest.json",
+      "Sha256": "4524c34309ebaa5695d79751a1683e195afd40734a0115144e9fff8d675126c7",
+      "SourceCommit": "0e78152a6e0e485cbb0e06c03699df9ed783d632",
+      "Artifacts": 38
+    },
+    {
+      "Path": "evidence/worker-host-package-red/manifest.json",
+      "Sha256": "c10c966df476214989fb26bfbb7117a68d4d80fcea599d14b040fc25e4018b5b",
+      "SourceCommit": "8cb425f57ed7c7a0aedf1313ea46904144ce6c9a",
+      "Artifacts": 13
+    },
+    {
+      "Path": "evidence/worker-host-package-runtime-green/manifest.json",
+      "Sha256": "146ba5df2ddca89c84c203260473e9d8e23a51615f8fd763cf2a9b1e3686dbad",
+      "SourceCommit": "88e1c9c1edb495dac16d46ccadbd5ec7bef9a678",
+      "Artifacts": 58
+    },
+    {
+      "Path": "evidence/worker-host-pidfd-fixture-incident/manifest.json",
+      "Sha256": "a588b43bb049c49803699596a7036a463a20c6bbaaec36dcbb8143ebca94d617",
+      "SourceCommit": "78af9d409dcc3150639e94cecc548598fbf5fe51",
+      "Artifacts": 26
+    },
+    {
+      "Path": "evidence/worker-host-pidfd-rejection-green/manifest.json",
+      "Sha256": "c445b4c6db766d24af50ed81bef866480453aa6c097dd7eb4779f06a1f5e8391",
+      "SourceCommit": "66ca39bb5abdf06431cdfcd0320fb03b1f753989",
+      "Artifacts": 26
+    },
+    {
+      "Path": "evidence/worker-host-ready-first-green/manifest.json",
+      "Sha256": "d53a85f06b632260668bb97d206d1bb502df01360313e685ed1d94d2d7e64182",
+      "SourceCommit": "55cf7bad043ca1e61a08cf09078ef98b3499aac1",
+      "Artifacts": 16
+    },
+    {
+      "Path": "evidence/worker-host-ready-red/manifest.json",
+      "Sha256": "10167d0258ae59b219dbf168ff06ac47dac74e2db33c92b3dd6ef96d332982d6",
+      "SourceCommit": "74d978bd81634a349b537c2db97a8ab4f74b7133",
+      "Artifacts": 16
+    },
+    {
+      "Path": "evidence/worker-host-retention-green/manifest.json",
+      "Sha256": "5c5c71a7eff70ba047cc93728c02c4e7ea9a11f32d5ddd5cf2ae33a05a61e136",
+      "SourceCommit": "19d032d3fcd84e4e35ccd31ee422905fc7ce3aa6",
+      "Artifacts": 32
+    },
+    {
+      "Path": "evidence/worker-host-retention-red/manifest.json",
+      "Sha256": "e6ad69f42b50f49b77f67d2f6e9588c4c7f0ab7fd2719f668d115ae69459eda0",
+      "SourceCommit": "979a4ca9b88e3d46f4f155e67c183e42d7d78dc6",
+      "Artifacts": 28
+    },
+    {
+      "Path": "evidence/worker-host-selector-red/manifest.json",
+      "Sha256": "e27a0340f0ec1d8967d8ace7b6cc11d68962c739784f61b1525f39f1ba91dc5e",
+      "SourceCommit": "6e917c5559222e749363e0fd60a4fef4ce8a39a6",
+      "Artifacts": 10
+    }
+  ],
+  "Runs": [
+    {
+      "SourceCommit": "510156d07dd9599bca12ef568a2fe05eb86d51ad",
+      "Path": "evidence/worker-host-admission-first-green/admission-green/summary.json",
+      "Categories": [
+        "worker-native-admission",
+        "worker-owned-preparation-source-contract"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 5,
+        "Executed": 5,
+        "Passed": 4,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 5,
+        "CompletedCases": 5,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:12.1360252",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "510156d07dd9599bca12ef568a2fe05eb86d51ad",
+      "Path": "evidence/worker-host-admission-first-green/admission-green-plan/summary.json",
+      "Categories": [
+        "worker-native-admission",
+        "worker-owned-preparation-source-contract"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 5,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-admission-unit-001",
+          "worker-owned-preparation-source-contract-unit-002"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:42.9504689",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "6728db47b5b98025886b3bbae3b34be2c2bd0c82",
+      "Path": "evidence/worker-host-admission-red/admission-red/summary.json",
+      "Categories": [
+        "worker-native-admission"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 4,
+        "Executed": 4,
+        "Passed": 3,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 4,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:08.8346738",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "6728db47b5b98025886b3bbae3b34be2c2bd0c82",
+      "Path": "evidence/worker-host-admission-red/admission-red-plan/summary.json",
+      "Categories": [
+        "worker-native-admission"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 4,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-admission-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:42.4851549",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Path": "evidence/worker-host-affected-regressions-green/affected-regressions/summary.json",
+      "Categories": [
+        "worker-native-v1-transport-regression",
+        "worker-owned-original-ipc-regression"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 12,
+        "Executed": 12,
+        "Passed": 12,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 12,
+        "CompletedCases": 12,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:23.7365513",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Path": "evidence/worker-host-affected-regressions-green/affected-regressions-plan/summary.json",
+      "Categories": [
+        "worker-native-v1-transport-regression",
+        "worker-owned-original-ipc-regression"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 12,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-v1-transport-regression-unit-001",
+          "worker-owned-original-ipc-regression-integration-002"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:01:07.0846126",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+      "Path": "evidence/worker-host-bootstrap-output-green/bootstrap-output/summary.json",
+      "Categories": [
+        "worker-native-descriptor-transfer",
+        "worker-native-transfer-consumers",
+        "worker-native-bootstrap-output"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 13,
+        "Executed": 13,
+        "Passed": 13,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 3,
+        "PlannedCases": 13,
+        "CompletedCases": 13,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:23.5514223",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+      "Path": "evidence/worker-host-bootstrap-output-green/bootstrap-output-plan/summary.json",
+      "Categories": [
+        "worker-native-descriptor-transfer",
+        "worker-native-transfer-consumers",
+        "worker-native-bootstrap-output"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 13,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-bootstrap-output-unit-001",
+          "worker-native-descriptor-transfer-unit-002",
+          "worker-native-transfer-consumers-unit-003"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:45.7612827",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "02cd9dc931dc08b7d2d740a7e5c206b8ee89eeca",
+      "Path": "evidence/worker-host-boundaries-green/host-boundaries/summary.json",
+      "Categories": [
+        "worker-native-host-boundaries"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 7,
+        "Executed": 7,
+        "Passed": 7,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 7,
+        "CompletedCases": 7,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:21.5415315",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "02cd9dc931dc08b7d2d740a7e5c206b8ee89eeca",
+      "Path": "evidence/worker-host-boundaries-green/host-boundaries-plan/summary.json",
+      "Categories": [
+        "worker-native-host-boundaries"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 7,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-host-boundaries-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:44.3403026",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "85b96e79a55002cd22402f06b72381a62ebe80c7",
+      "Path": "evidence/worker-host-catalog-final/catalog-final/summary.json",
+      "Categories": [
+        null
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": true,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:01:09.8934466",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "f512b37f14711b2ed7e91438a8bd94911e643af2",
+      "Path": "evidence/worker-host-descriptor-red/descriptor-red/summary.json",
+      "Categories": [
+        "worker-native-descriptor-transfer"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 7,
+        "Executed": 7,
+        "Passed": 6,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 7,
+        "CompletedCases": 7,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:08.2590778",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "f512b37f14711b2ed7e91438a8bd94911e643af2",
+      "Path": "evidence/worker-host-descriptor-red/descriptor-red-plan/summary.json",
+      "Categories": [
+        "worker-native-descriptor-transfer"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 7,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-descriptor-transfer-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:01:28.1085163",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "0e78152a6e0e485cbb0e06c03699df9ed783d632",
+      "Path": "evidence/worker-host-guardian-package-green/guardian-package-green/summary.json",
+      "Categories": [
+        "worker-native-package",
+        "worker-native-guardian"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 5,
+        "Executed": 5,
+        "Passed": 5,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 5,
+        "CompletedCases": 5,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:21.2935660",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "0e78152a6e0e485cbb0e06c03699df9ed783d632",
+      "Path": "evidence/worker-host-guardian-package-green/guardian-package-plan/summary.json",
+      "Categories": [
+        "worker-native-package",
+        "worker-native-guardian"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 5,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-guardian-unit-001",
+          "worker-native-package-unit-002"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:44.4768312",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "8cb425f57ed7c7a0aedf1313ea46904144ce6c9a",
+      "Path": "evidence/worker-host-package-red/package-red/summary.json",
+      "Categories": [
+        "worker-backend-selection",
+        "worker-native-package"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 8,
+        "Executed": 8,
+        "Passed": 7,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 8,
+        "CompletedCases": 8,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:13.1461940",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "8cb425f57ed7c7a0aedf1313ea46904144ce6c9a",
+      "Path": "evidence/worker-host-package-red/package-red-plan/summary.json",
+      "Categories": [
+        "worker-backend-selection",
+        "worker-native-package"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 8,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-backend-selection-unit-001",
+          "worker-native-package-unit-002"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:44.8895364",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "88e1c9c1edb495dac16d46ccadbd5ec7bef9a678",
+      "Path": "evidence/worker-host-package-runtime-green/package-runtime/summary.json",
+      "Categories": [
+        "worker-native-package-preflight",
+        "worker-native-package-publish"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 9,
+        "Executed": 9,
+        "Passed": 9,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 9,
+        "CompletedCases": 9,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:24.0619829",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "88e1c9c1edb495dac16d46ccadbd5ec7bef9a678",
+      "Path": "evidence/worker-host-package-runtime-green/package-runtime-plan/summary.json",
+      "Categories": [
+        "worker-native-package-preflight",
+        "worker-native-package-publish"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 9,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-package-preflight-unit-001",
+          "worker-native-package-publish-unit-002"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:43.8163774",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "78af9d409dcc3150639e94cecc548598fbf5fe51",
+      "Path": "evidence/worker-host-pidfd-fixture-incident/pidfd-rejection/summary.json",
+      "Categories": [
+        "worker-native-pidfd-rejection"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 3,
+        "Executed": 3,
+        "Passed": 1,
+        "Failed": 2
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 3,
+        "CompletedCases": 3,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:11.2865782",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "78af9d409dcc3150639e94cecc548598fbf5fe51",
+      "Path": "evidence/worker-host-pidfd-fixture-incident/pidfd-rejection-plan/summary.json",
+      "Categories": [
+        "worker-native-pidfd-rejection"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 3,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-pidfd-rejection-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:46.6768365",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "66ca39bb5abdf06431cdfcd0320fb03b1f753989",
+      "Path": "evidence/worker-host-pidfd-rejection-green/pidfd-final/summary.json",
+      "Categories": [
+        "worker-native-pidfd-rejection"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 3,
+        "Executed": 3,
+        "Passed": 3,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 3,
+        "CompletedCases": 3,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:11.6240654",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "66ca39bb5abdf06431cdfcd0320fb03b1f753989",
+      "Path": "evidence/worker-host-pidfd-rejection-green/pidfd-final-plan/summary.json",
+      "Categories": [
+        "worker-native-pidfd-rejection"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 3,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-pidfd-rejection-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:42.0205397",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "55cf7bad043ca1e61a08cf09078ef98b3499aac1",
+      "Path": "evidence/worker-host-ready-first-green/host-ready-first/summary.json",
+      "Categories": [
+        "worker-native-host-ready"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 1,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:10.8435383",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "55cf7bad043ca1e61a08cf09078ef98b3499aac1",
+      "Path": "evidence/worker-host-ready-first-green/host-ready-first-plan/summary.json",
+      "Categories": [
+        "worker-native-host-ready"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 1,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-host-ready-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:44.0221970",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "74d978bd81634a349b537c2db97a8ab4f74b7133",
+      "Path": "evidence/worker-host-ready-red/host-ready-red/summary.json",
+      "Categories": [
+        "worker-native-host-ready"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:09.5754636",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "74d978bd81634a349b537c2db97a8ab4f74b7133",
+      "Path": "evidence/worker-host-ready-red/host-ready-red-plan/summary.json",
+      "Categories": [
+        "worker-native-host-ready"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 1,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-host-ready-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:46.9246752",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "19d032d3fcd84e4e35ccd31ee422905fc7ce3aa6",
+      "Path": "evidence/worker-host-retention-green/retention-green/summary.json",
+      "Categories": [
+        "worker-native-owner-retention",
+        "worker-owned-original-identity",
+        "worker-owned-preparation-source-contract",
+        "worker-native-host-ready"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 5,
+        "Executed": 5,
+        "Passed": 5,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 4,
+        "CompletedDescriptors": 4,
+        "PlannedCases": 5,
+        "CompletedCases": 5,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:00:29.7482406",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "19d032d3fcd84e4e35ccd31ee422905fc7ce3aa6",
+      "Path": "evidence/worker-host-retention-green/retention-green-plan/summary.json",
+      "Categories": [
+        "worker-native-owner-retention",
+        "worker-owned-original-identity",
+        "worker-owned-preparation-source-contract",
+        "worker-native-host-ready"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 4,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 5,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-host-ready-unit-001",
+          "worker-native-owner-retention-unit-002",
+          "worker-owned-original-identity-integration-003",
+          "worker-owned-preparation-source-contract-unit-004"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:01:11.0599276",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "979a4ca9b88e3d46f4f155e67c183e42d7d78dc6",
+      "Path": "evidence/worker-host-retention-red/original-identity-red/summary.json",
+      "Categories": [
+        "worker-owned-original-identity"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 1,
+        "CompletedCases": 1,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:11.7007082",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "979a4ca9b88e3d46f4f155e67c183e42d7d78dc6",
+      "Path": "evidence/worker-host-retention-red/retention-red/summary.json",
+      "Categories": [
+        "worker-native-owner-retention",
+        "worker-owned-original-identity",
+        "worker-owned-preparation-source-contract"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 0,
+        "Failed": 2
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [
+          "worker-owned-original-identity-integration-002",
+          "worker-owned-preparation-source-contract-unit-003"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:16.2614425",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "979a4ca9b88e3d46f4f155e67c183e42d7d78dc6",
+      "Path": "evidence/worker-host-retention-red/retention-red-plan/summary.json",
+      "Categories": [
+        "worker-native-owner-retention",
+        "worker-owned-original-identity",
+        "worker-owned-preparation-source-contract"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 4,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-native-owner-retention-unit-001",
+          "worker-owned-original-identity-integration-002",
+          "worker-owned-preparation-source-contract-unit-003"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:01:14.6554063",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "6e917c5559222e749363e0fd60a4fef4ce8a39a6",
+      "Path": "evidence/worker-host-selector-red/selector-red/summary.json",
+      "Categories": [
+        "worker-backend-selection"
+      ],
+      "PlanOnly": false,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 7,
+        "Executed": 7,
+        "Passed": 1,
+        "Failed": 6
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 7,
+        "CompletedCases": 7,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "ExitCode": 1,
+      "TimedOut": false,
+      "WallTime": "00:00:07.7687953",
+      "OwnedTreeCleanupSucceeded": true
+    },
+    {
+      "SourceCommit": "6e917c5559222e749363e0fd60a4fef4ce8a39a6",
+      "Path": "evidence/worker-host-selector-red/selector-red-plan/summary.json",
+      "Categories": [
+        "worker-backend-selection"
+      ],
+      "PlanOnly": true,
+      "DiscoveryOnly": false,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 7,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "worker-backend-selection-unit-001"
+        ],
+        "Complete": false
+      },
+      "ExitCode": 0,
+      "TimedOut": false,
+      "WallTime": "00:01:33.8263162",
+      "OwnedTreeCleanupSucceeded": true
+    }
+  ],
+  "Inputs": [
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs",
+      "Sha256": "145d79232612a70a4d1ee8c377bb35f1bfb35f251b8f3c27f1a466c132ae518b",
+      "GitBlob": "8f883aace819f2e9035039578204fdacf924fc98"
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs",
+      "Sha256": "be280e552a1e1548b0d3eebaa96f0c64b436a40363fac1ab93022ccebe637333",
+      "GitBlob": "5949d22cbc2a536efa0aa7224a03bae22e199238"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+      "Sha256": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+      "GitBlob": "ddbbc890b30c53a35df72256552c195aa57f6b4c"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativeBootstrapScenario.cs",
+      "Sha256": "2a75ab96c2ec4a80e52bfc1b5f33d6004ef6b56aac62419e7d1a68b885677362",
+      "GitBlob": "2e1c18fff3f88bf064555713a96f4b6e3d12f20c"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "Sha256": "52eede1c296283f5f316ddbd3be7a0503b0ecb9b2f5e9c7cafbee561bc7b23a7",
+      "GitBlob": "ced6c5c69bb833c810651a0517797c751a26b253"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs",
+      "Sha256": "c02d231ecc979f76c08a2eb8ae1c1300b14728821081f28cae5bf4a81bb312de",
+      "GitBlob": "1b63f80616e77137c71425f0ab0af7f43154bd16"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerBridgeDocumentationTests.cs",
+      "Sha256": "fe78d1669bbe9b5041034ed730a9512a675d5c65e39ed90bbd810032c192a944",
+      "GitBlob": "258a44199611851e3d4411bd3e1daeab39d04663"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativeAdmissionTests.cs",
+      "Sha256": "22bd95ffbe8389bc49657fdb55ee63b5dcee93bede34cabd8ea9571542b05db5",
+      "GitBlob": "c98566e0ba9d6c6a267b56d2a8a7cc5302971d19"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativeDescriptorTests.cs",
+      "Sha256": "cb75a5e80f5e5820fa4fa818a2852e309568f96f8acc4285d178a7f67a69e9b0",
+      "GitBlob": "af30189e2d39daf26f5a004938d132a839242591"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativeGuardianTests.cs",
+      "Sha256": "c5cb165f3a054b57f05c1be9ac6082187905c37c8c007f859fa583e913577370",
+      "GitBlob": "5c598f0c56d9b34735adbdafc947decf87482a64"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativeHostTests.cs",
+      "Sha256": "2f9df4ebda78c3841dad1f31b4917ed5bbeed51146d620c348d46fdac33d08a2",
+      "GitBlob": "de12d9b9f49d0ddd446797a3dde163b2fbea6765"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativePackageTests.cs",
+      "Sha256": "de90a7213533b20f97ff63f36c8fd2f11d6327da597defb0844bf857f045567a",
+      "GitBlob": "59ac99fc5c269936995f08a276a1e4cb2cb636f3"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs",
+      "Sha256": "5d2499a966de61ead072aead6b72a0d32ba1e354c3519653c0ac04adaeee0bca",
+      "GitBlob": "e19014edd1382362120ed836d100878d421134d6"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Sha256": "009f4dbfe71f80887561227b708af0abb9a153a8de2a75c10af0be1487f6e4c6",
+      "GitBlob": "e6e78f3b5797ed6367763878790309e48041befe"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs",
+      "Sha256": "305be9e8bdb3ff1b9e746e1f658a00daa37e89082acb6a0e2dd13efb7c8b94b0",
+      "GitBlob": "2aa8074ce650664693ea2c5bbd3d1bc933c1d5e8"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "Sha256": "5b97c9e1c7288a190abcfb52d19a39142226d98891a1d64d7e16d92f187c74d2",
+      "GitBlob": "e64044a3428d91ef8c667471ef67702cb5ab8531"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerHostIdentity.cs",
+      "Sha256": "a326c6cf0593f104181857c5c10d02071163a8d4f23a3d5470a2a0c01667f0b0",
+      "GitBlob": "7025af2c54fce9f7ee6cd615e8c17ebdfed7207e"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeDescriptors.cs",
+      "Sha256": "59540c43658b8a079ae842eb252196ad3878c3912a3726a4a6b2c1a1f8a62160",
+      "GitBlob": "0d889a1d4cc5f1048c50122feebb85082d119808"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs",
+      "Sha256": "b397478907ae39d243b137f3280ff16fa93fbc4fe6a492c311f21b91c7243d79",
+      "GitBlob": "26dd7a720afb5fab2130b5ef415cd9823e654a41"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePackage.cs",
+      "Sha256": "20fcd945a355ab36c09ea1aecc7c3438a2eaa93fe65fe73b4eab1c0d5525a9c4",
+      "GitBlob": "ff2ad06c6c5e57fc55b2fd249f600822bf34a676"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerOwnedLaunch.cs",
+      "Sha256": "f490080021c9c64db9aef5df31a8ff7b35afdd650380f86ca33a32f388405eb8",
+      "GitBlob": "97331c22b35d40a1b7059d38d73301a5b2a428f6"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+      "Sha256": "9e5947339ba6615113de03ab5032805a4157152ba4737b0f31b7f563f5fb0c52",
+      "GitBlob": "84017e11b4880297039bcddea09ba25feb9d1037"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs",
+      "Sha256": "8bd8b3103b6c09f2dd375480d910ca8515018c291963681901edd7896e0fa58c",
+      "GitBlob": "c38e4115e90dc24a68ea496e7bcbb6fec8ee15db"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerWindowsOwnedLaunch.cs",
+      "Sha256": "9b8396fce7e3a1bf1b0ffc2b51a51cdff335bb3371ee82bc86112e159fbaaba2",
+      "GitBlob": "af5cc09e981bc13c467c7c23cf3873cfb324209a"
+    },
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Sha256": "b8b6ed123ca2b437713e51e022f9fe943d0d762967e6d7388f040e2ae68f8b9a",
+      "GitBlob": "beeb7e12a25ffb7f3874db41b17b8d6f46836702"
+    },
+    {
+      "Path": "scripts/build-linux-supervisor.ps1",
+      "Sha256": "14a665eb1734e3d4cca3607efc69c1b37ef3a355dd94d93487989d2fd6882485",
+      "GitBlob": "f0bde0ae108612a995ecab179ad655cb3d3747a9"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Sha256": "43480682439f13bea86dbd9a20ba4ec29b89cb66c3f772a182a8ec42e4e050ab",
+      "GitBlob": "95b2de3425d6d5251f67a93d94166539aa8d78b1"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Sha256": "d7963c86632153ec2bf1adf9a7c30dea29e1cea5c274e5fa0ea311a0518cc3db",
+      "GitBlob": "6c3ddbc42282d9b0ee2251764fda61250f97984c"
+    },
+    {
+      "Path": "tests/fixtures/LinuxLineage/lineage-fixture.c",
+      "Sha256": "49861138606b63e591e5768276b291f2f6b2fa2791252001543a4f2b937164ea",
+      "GitBlob": "65dc5adefda6742b1122f9ffbac97f8b44393609"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Sha256": "590208e7e05d8f706291b5388bbc205f73f499827db99202f51108ff3dbcd421",
+      "GitBlob": "4418aeac628a26d114d97f81e210018109aa7bab"
+    }
+  ],
+  "HistoricalExecutions": {
+    "Total": 93,
+    "Executed": 93,
+    "Passed": 77,
+    "Failed": 16
+  },
+  "LatestCaseOutcomes": [
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.ExplicitSystemd_DoesNotPretendSuccessOrSilentlyDowngrade",
+      "Outcome": "Passed",
+      "SourceCommit": "8cb425f57ed7c7a0aedf1313ea46904144ce6c9a",
+      "Path": "evidence/worker-host-package-red/package-red/worker-backend-selection-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight(mode: 0)",
+      "Outcome": "Passed",
+      "SourceCommit": "8cb425f57ed7c7a0aedf1313ea46904144ce6c9a",
+      "Path": "evidence/worker-host-package-red/package-red/worker-backend-selection-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxNeutralHost_SelectsDeclaredFallbackPendingActualPreflight(mode: 2)",
+      "Outcome": "Passed",
+      "SourceCommit": "8cb425f57ed7c7a0aedf1313ea46904144ce6c9a",
+      "Path": "evidence/worker-host-package-red/package-red/worker-backend-selection-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch(mode: 0)",
+      "Outcome": "Passed",
+      "SourceCommit": "8cb425f57ed7c7a0aedf1313ea46904144ce6c9a",
+      "Path": "evidence/worker-host-package-red/package-red/worker-backend-selection-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.LinuxWorkerRelease_IsUnavailableBeforeAnyLaunch(mode: 2)",
+      "Outcome": "Passed",
+      "SourceCommit": "8cb425f57ed7c7a0aedf1313ea46904144ce6c9a",
+      "Path": "evidence/worker-host-package-red/package-red/worker-backend-selection-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.OtherPlatform_RemainsUnavailable",
+      "Outcome": "Passed",
+      "SourceCommit": "8cb425f57ed7c7a0aedf1313ea46904144ce6c9a",
+      "Path": "evidence/worker-host-package-red/package-red/worker-backend-selection-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight",
+      "Outcome": "Passed",
+      "SourceCommit": "8cb425f57ed7c7a0aedf1313ea46904144ce6c9a",
+      "Path": "evidence/worker-host-package-red/package-red/worker-backend-selection-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+      "Outcome": "Passed",
+      "SourceCommit": "19d032d3fcd84e4e35ccd31ee422905fc7ce3aa6",
+      "Path": "evidence/worker-host-retention-green/retention-green/worker-owned-preparation-source-contract-unit-004.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease",
+      "Outcome": "Passed",
+      "SourceCommit": "510156d07dd9599bca12ef568a2fe05eb86d51ad",
+      "Path": "evidence/worker-host-admission-first-green/admission-green/worker-native-admission-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 0, capability: 1)",
+      "Outcome": "Passed",
+      "SourceCommit": "510156d07dd9599bca12ef568a2fe05eb86d51ad",
+      "Path": "evidence/worker-host-admission-first-green/admission-green/worker-native-admission-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 1, capability: 0)",
+      "Outcome": "Passed",
+      "SourceCommit": "510156d07dd9599bca12ef568a2fe05eb86d51ad",
+      "Path": "evidence/worker-host-admission-first-green/admission-green/worker-native-admission-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher(mode: 2, capability: 1)",
+      "Outcome": "Passed",
+      "SourceCommit": "510156d07dd9599bca12ef568a2fe05eb86d51ad",
+      "Path": "evidence/worker-host-admission-first-green/admission-green/worker-native-admission-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.IdentityRejection_ClosesUnadmittedTransferredDescriptor",
+      "Outcome": "Passed",
+      "SourceCommit": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+      "Path": "evidence/worker-host-bootstrap-output-green/bootstrap-output/worker-native-descriptor-transfer-unit-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.ReceivedRight_IsCloseOnExecAndHasOneDeterministicOwner",
+      "Outcome": "Passed",
+      "SourceCommit": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+      "Path": "evidence/worker-host-bootstrap-output-green/bootstrap-output/worker-native-descriptor-transfer-unit-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: \"control-truncated\")",
+      "Outcome": "Passed",
+      "SourceCommit": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+      "Path": "evidence/worker-host-bootstrap-output-green/bootstrap-output/worker-native-descriptor-transfer-unit-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: \"extra\")",
+      "Outcome": "Passed",
+      "SourceCommit": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+      "Path": "evidence/worker-host-bootstrap-output-green/bootstrap-output/worker-native-descriptor-transfer-unit-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: \"missing\")",
+      "Outcome": "Passed",
+      "SourceCommit": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+      "Path": "evidence/worker-host-bootstrap-output-green/bootstrap-output/worker-native-descriptor-transfer-unit-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: \"payload-truncated\")",
+      "Outcome": "Passed",
+      "SourceCommit": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+      "Path": "evidence/worker-host-bootstrap-output-green/bootstrap-output/worker-native-descriptor-transfer-unit-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor(mode: \"wrong-run\")",
+      "Outcome": "Passed",
+      "SourceCommit": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+      "Path": "evidence/worker-host-bootstrap-output-green/bootstrap-output/worker-native-descriptor-transfer-unit-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.SupervisorPidfd_CannotBecomeHostIdentity",
+      "Outcome": "Passed",
+      "SourceCommit": "66ca39bb5abdf06431cdfcd0320fb03b1f753989",
+      "Path": "evidence/worker-host-pidfd-rejection-green/pidfd-final/worker-native-pidfd-rejection-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeGuardianTests.IndependentGuardian_RetiresOwnedAdopteesAndLeavesForeignSentinel(mode: \"driver-loss\", emergency: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "0e78152a6e0e485cbb0e06c03699df9ed783d632",
+      "Path": "evidence/worker-host-guardian-package-green/guardian-package-green/worker-native-guardian-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeGuardianTests.IndependentGuardian_RetiresOwnedAdopteesAndLeavesForeignSentinel(mode: \"held-gate\", emergency: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "0e78152a6e0e485cbb0e06c03699df9ed783d632",
+      "Path": "evidence/worker-host-guardian-package-green/guardian-package-green/worker-native-guardian-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeGuardianTests.IndependentGuardian_RetiresOwnedAdopteesAndLeavesForeignSentinel(mode: \"helper-loss\", emergency: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "0e78152a6e0e485cbb0e06c03699df9ed783d632",
+      "Path": "evidence/worker-host-guardian-package-green/guardian-package-green/worker-native-guardian-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeGuardianTests.IndependentGuardian_RetiresOwnedAdopteesAndLeavesForeignSentinel(mode: \"normal\", emergency: False)",
+      "Outcome": "Passed",
+      "SourceCommit": "0e78152a6e0e485cbb0e06c03699df9ed783d632",
+      "Path": "evidence/worker-host-guardian-package-green/guardian-package-green/worker-native-guardian-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease",
+      "Outcome": "Passed",
+      "SourceCommit": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+      "Path": "evidence/worker-host-bootstrap-output-green/bootstrap-output/worker-native-transfer-consumers-unit-003.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation(mode: \"exec-failure\")",
+      "Outcome": "Passed",
+      "SourceCommit": "02cd9dc931dc08b7d2d740a7e5c206b8ee89eeca",
+      "Path": "evidence/worker-host-boundaries-green/host-boundaries/worker-native-host-boundaries-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation(mode: \"owner-eof\")",
+      "Outcome": "Passed",
+      "SourceCommit": "02cd9dc931dc08b7d2d740a7e5c206b8ee89eeca",
+      "Path": "evidence/worker-host-boundaries-green/host-boundaries/worker-native-host-boundaries-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation(mode: \"status-loss\")",
+      "Outcome": "Passed",
+      "SourceCommit": "02cd9dc931dc08b7d2d740a7e5c206b8ee89eeca",
+      "Path": "evidence/worker-host-boundaries-green/host-boundaries/worker-native-host-boundaries-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement",
+      "Outcome": "Passed",
+      "SourceCommit": "02cd9dc931dc08b7d2d740a7e5c206b8ee89eeca",
+      "Path": "evidence/worker-host-boundaries-green/host-boundaries/worker-native-host-boundaries-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ConstructorFailure_RollsBackPrivateBootstrapBeforeAnyProcessStart",
+      "Outcome": "Passed",
+      "SourceCommit": "19d032d3fcd84e4e35ccd31ee422905fc7ce3aa6",
+      "Path": "evidence/worker-host-retention-green/retention-green/worker-native-owner-retention-unit-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.GatedBootstrapLoss_RetiresWithoutExecutingRoot(mode: \"bootstrap-close\", reason: \"bootstrap-lost\")",
+      "Outcome": "Passed",
+      "SourceCommit": "66ca39bb5abdf06431cdfcd0320fb03b1f753989",
+      "Path": "evidence/worker-host-pidfd-rejection-green/pidfd-final/worker-native-pidfd-rejection-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.GatedBootstrapLoss_RetiresWithoutExecutingRoot(mode: \"bootstrap-wrong-ack\", reason: \"bootstrap-invalid\")",
+      "Outcome": "Passed",
+      "SourceCommit": "66ca39bb5abdf06431cdfcd0320fb03b1f753989",
+      "Path": "evidence/worker-host-pidfd-rejection-green/pidfd-final/worker-native-pidfd-rejection-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity",
+      "Outcome": "Passed",
+      "SourceCommit": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+      "Path": "evidence/worker-host-bootstrap-output-green/bootstrap-output/worker-native-transfer-consumers-unit-003.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec",
+      "Outcome": "Passed",
+      "SourceCommit": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+      "Path": "evidence/worker-host-bootstrap-output-green/bootstrap-output/worker-native-bootstrap-output-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.NativeIdentity_RejectsForeignNamedChannelBeforeLaunch(mode: \"foreign-control\")",
+      "Outcome": "Passed",
+      "SourceCommit": "02cd9dc931dc08b7d2d740a7e5c206b8ee89eeca",
+      "Path": "evidence/worker-host-boundaries-green/host-boundaries/worker-native-host-boundaries-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.NativeIdentity_RejectsForeignNamedChannelBeforeLaunch(mode: \"foreign-status\")",
+      "Outcome": "Passed",
+      "SourceCommit": "02cd9dc931dc08b7d2d740a7e5c206b8ee89eeca",
+      "Path": "evidence/worker-host-boundaries-green/host-boundaries/worker-native-host-boundaries-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand",
+      "Outcome": "Passed",
+      "SourceCommit": "02cd9dc931dc08b7d2d740a7e5c206b8ee89eeca",
+      "Path": "evidence/worker-host-boundaries-green/host-boundaries/worker-native-host-boundaries-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.PreCanceledPreparation_RejectsBeforeAllocatingNativeOwner",
+      "Outcome": "Passed",
+      "SourceCommit": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+      "Path": "evidence/worker-host-bootstrap-output-green/bootstrap-output/worker-native-bootstrap-output-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.PublishedRelocatedPackage_StartsRealNeutralHostWithEmptyPath",
+      "Outcome": "Passed",
+      "SourceCommit": "88e1c9c1edb495dac16d46ccadbd5ec7bef9a678",
+      "Path": "evidence/worker-host-package-runtime-green/package-runtime/worker-native-package-publish-unit-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePackageTests.Build_ProducesRelocatableManifestWithMeasuredElfAbi",
+      "Outcome": "Passed",
+      "SourceCommit": "0e78152a6e0e485cbb0e06c03699df9ed783d632",
+      "Path": "evidence/worker-host-guardian-package-green/guardian-package-green/worker-native-package-unit-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePackageTests.RuntimePreflight_RejectsIncompatibleActualPackage(mutation: \"duplicate\")",
+      "Outcome": "Passed",
+      "SourceCommit": "88e1c9c1edb495dac16d46ccadbd5ec7bef9a678",
+      "Path": "evidence/worker-host-package-runtime-green/package-runtime/worker-native-package-preflight-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePackageTests.RuntimePreflight_RejectsIncompatibleActualPackage(mutation: \"elf\")",
+      "Outcome": "Passed",
+      "SourceCommit": "88e1c9c1edb495dac16d46ccadbd5ec7bef9a678",
+      "Path": "evidence/worker-host-package-runtime-green/package-runtime/worker-native-package-preflight-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePackageTests.RuntimePreflight_RejectsIncompatibleActualPackage(mutation: \"guarantee\")",
+      "Outcome": "Passed",
+      "SourceCommit": "88e1c9c1edb495dac16d46ccadbd5ec7bef9a678",
+      "Path": "evidence/worker-host-package-runtime-green/package-runtime/worker-native-package-preflight-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePackageTests.RuntimePreflight_RejectsIncompatibleActualPackage(mutation: \"hash\")",
+      "Outcome": "Passed",
+      "SourceCommit": "88e1c9c1edb495dac16d46ccadbd5ec7bef9a678",
+      "Path": "evidence/worker-host-package-runtime-green/package-runtime/worker-native-package-preflight-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePackageTests.RuntimePreflight_RejectsIncompatibleActualPackage(mutation: \"libc\")",
+      "Outcome": "Passed",
+      "SourceCommit": "88e1c9c1edb495dac16d46ccadbd5ec7bef9a678",
+      "Path": "evidence/worker-host-package-runtime-green/package-runtime/worker-native-package-preflight-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePackageTests.RuntimePreflight_RejectsIncompatibleActualPackage(mutation: \"missing\")",
+      "Outcome": "Passed",
+      "SourceCommit": "88e1c9c1edb495dac16d46ccadbd5ec7bef9a678",
+      "Path": "evidence/worker-host-package-runtime-green/package-runtime/worker-native-package-preflight-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePackageTests.RuntimePreflight_RejectsIncompatibleActualPackage(mutation: \"protocol\")",
+      "Outcome": "Passed",
+      "SourceCommit": "88e1c9c1edb495dac16d46ccadbd5ec7bef9a678",
+      "Path": "evidence/worker-host-package-runtime-green/package-runtime/worker-native-package-preflight-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerNativePackageTests.RuntimePreflight_RejectsIncompatibleActualPackage(mutation: \"rid\")",
+      "Outcome": "Passed",
+      "SourceCommit": "88e1c9c1edb495dac16d46ccadbd5ec7bef9a678",
+      "Path": "evidence/worker-host-package-runtime-green/package-runtime/worker-native-package-preflight-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker",
+      "Outcome": "Passed",
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Path": "evidence/worker-host-affected-regressions-green/affected-regressions/worker-owned-original-ipc-regression-integration-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: False)",
+      "Outcome": "Passed",
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Path": "evidence/worker-host-affected-regressions-green/affected-regressions/worker-owned-original-ipc-regression-integration-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Path": "evidence/worker-host-affected-regressions-green/affected-regressions/worker-owned-original-ipc-regression-integration-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted",
+      "Outcome": "Passed",
+      "SourceCommit": "19d032d3fcd84e4e35ccd31ee422905fc7ce3aa6",
+      "Path": "evidence/worker-host-retention-green/retention-green/worker-owned-original-identity-integration-003.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost",
+      "Outcome": "Passed",
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Path": "evidence/worker-host-affected-regressions-green/affected-regressions/worker-owned-original-ipc-regression-integration-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost",
+      "Outcome": "Passed",
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Path": "evidence/worker-host-affected-regressions-green/affected-regressions/worker-owned-original-ipc-regression-integration-002.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LinuxFallbackBootstrapTests.RealRootBinding_StartStopAndActualReap",
+      "Outcome": "Passed",
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Path": "evidence/worker-host-affected-regressions-green/affected-regressions/worker-native-v1-transport-regression-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LinuxFallbackProcDiscoveryTests.FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry",
+      "Outcome": "Passed",
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Path": "evidence/worker-host-affected-regressions-green/affected-regressions/worker-native-v1-transport-regression-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd",
+      "Outcome": "Passed",
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Path": "evidence/worker-host-affected-regressions-green/affected-regressions/worker-native-v1-transport-regression-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit",
+      "Outcome": "Passed",
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Path": "evidence/worker-host-affected-regressions-green/affected-regressions/worker-native-v1-transport-regression-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess",
+      "Outcome": "Passed",
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Path": "evidence/worker-host-affected-regressions-green/affected-regressions/worker-native-v1-transport-regression-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup(launched: False)",
+      "Outcome": "Passed",
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Path": "evidence/worker-host-affected-regressions-green/affected-regressions/worker-native-v1-transport-regression-unit-001.trx"
+    },
+    {
+      "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup(launched: True)",
+      "Outcome": "Passed",
+      "SourceCommit": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+      "Path": "evidence/worker-host-affected-regressions-green/affected-regressions/worker-native-v1-transport-regression-unit-001.trx"
+    }
+  ],
+  "DistinctLatestPassedCases": 61,
+  "ArtifactCount": 469,
+  "ParsedTrxCount": 27,
+  "HistoricalFailureClassification": {
+    "BehavioralCausalFailures": 13,
+    "StaleSourceGuardFailures": 1,
+    "FixtureObservationFailures": 2,
+    "CommandPreparationIncidentsWithZeroTests": 2
+  },
+  "UnchangedBoundaries": [
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
+      "Sha256": "812c10afbef30f0117126e209dcb5b2926995a9afdec2d8d329b53a59eb0fa74",
+      "GitBlob": "4c99db4f3b8770a660018135f9edade0747567a1"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs",
+      "Sha256": "c1f32c968ca6f8ff8e9b0358a8721f813a8a54688e48dc87e6080480dec60507",
+      "GitBlob": "8919337e8bbe25fb7d6af799bfd10d8c2a9da78c"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs",
+      "Sha256": "412f1f3c5560ebd5f114aa160e6ba9cc4610ec873bfdf72d5b324a02ded927c9",
+      "GitBlob": "a46f14becab9acf68275e788d2b749dbb081896b"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs",
+      "Sha256": "f7f4ddba495caa6e897b7be41ede553a895882cf65c55d7c2631491d728d3f66",
+      "GitBlob": "a1e4741bbc1dd34bb2cd9abbde77ebf3224f1f9a"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalInboxService.cs",
+      "Sha256": "fc607a6bc8d2f7ed6aa6917b7869e05bd632a9da8f65cc8dfebb931644afe08b",
+      "GitBlob": "e14926aa606bb2482905a865843646a043014b69"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalOnlyDispatchService.cs",
+      "Sha256": "589aee37497a345981fda9f2a1421cbd99fd7be8caa163ea1173bda830e9c0be",
+      "GitBlob": "3704ef984187f06cfc6b20d88062dc7c07a3aebe"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Sha256": "112191361e8b753a7b7a3fe53b8b5418ecb4cd4936b8165c1ae1aab35423711d",
+      "GitBlob": "4287ea735798fc5a207286af443ac8e60039a0f1"
+    }
+  ],
+  "Limitations": [
+    "NeutralHost only; no worker Release or pool B acceptance",
+    "Linux x64/glibc only; Windows Job runtime unavailable here",
+    "systemd-user backend remains NotImplemented and unavailable for positive qualification in this environment",
+    "Ordinary tracked lineage in same PID namespace; no external services or work outside ancestry",
+    "Uncertain retains the original owner and evidence; authority may be lost, and it cannot accept a task result or release quarantine/slot",
+    "No main PTY, real CLI/GM, canonical writes, broad suite or unrelated passing cohorts",
+    "Restoration validates source bytes only, not another test execution"
+  ],
+  "DiscoveryAudit": {
+    "SourceCommit": "85b96e79a55002cd22402f06b72381a62ebe80c7",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+    "Categories": 269,
+    "MethodsFiles": 10784,
+    "Executed": 0,
+    "Unmapped": 0,
+    "Stale": 0,
+    "WallSeconds": 69.8934466,
+    "FreshBuilds": [
+      "unit",
+      "integration"
+    ],
+    "Path": "evidence/worker-host-catalog-final/catalog-final/summary.json"
+  },
+  "Cleanup": {
+    "GuardianMeaning": "Every real native fixture has an independently retained outer guardian and exclusive ECHILD. Expected helper-loss scenarios may require emergency cleanup; that never converts their Uncertain result to success.",
+    "BootstrapDirectoriesRemoved": 5,
+    "BootstrapDirectoriesRemaining": 0,
+    "MatchedFixtureCleanup": "evidence/worker-host-catalog-final/fixture-directory-cleanup.json",
+    "BuildServersShutdown": "evidence/worker-host-catalog-final/build-server-shutdown.log.gz",
+    "HistoricalOtherVmZombies": "Untouched and not claimed cleaned"
+  },
+  "GmDocumentationRationale": "A is an internal client-owned neutral host qualification with worker Release closed. No GM-authored fields, gameplay, canonical state or examples change; therefore Mortal World/afterlife prompts, examples and manifests remain unchanged.",
+  "RuntimeSourceCommit": "822387cb2a8cb4390f1ca3d8bf8a0a30987ef0f1",
+  "FinalFixtureSourceCommit": "66ca39bb5abdf06431cdfcd0320fb03b1f753989",
+  "CandidateRestoration": {
+    "Commit": "b45d6f32467ef9e099fb16f84b0617bea68c523b",
+    "TrackedFilesByteCompared": 6404,
+    "Tree": "76156200beabf82565ce06e244d41d0ca1fbc63b",
+    "Proof": "evidence/worker-host-review/candidate-restoration.json",
+    "Manifest": "evidence/worker-host-review/manifest.json",
+    "Clean": true,
+    "GitHubOnly": true,
+    "TestsExecuted": 0
+  },
+  "IndependentFinalReview": {
+    "Verdict": "PASS",
+    "ReviewedCommit": "b45d6f32467ef9e099fb16f84b0617bea68c523b",
+    "MetadataCommit": "7589c50b01587be1ff75db7104959fc499c77fb1",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "UnresolvedFindings": 0,
+    "Proof": "evidence/worker-host-review/review.json",
+    "MetadataCorrectionReviewed": true
+  },
+  "AdditionalReviewEvidence": {
+    "Manifest": "evidence/worker-host-review/manifest.json",
+    "Sha256": "d686f213ac3c0e898957fb1eb104ba8886b13fa830fd93dde30255b6b0d0e641",
+    "Artifacts": 2,
+    "TotalManifestsIncludingReview": 18,
+    "TotalArtifactsIncludingReview": 471
+  }
+}

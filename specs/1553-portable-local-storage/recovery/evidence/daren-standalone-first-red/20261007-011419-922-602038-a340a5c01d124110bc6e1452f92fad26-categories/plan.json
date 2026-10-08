@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "daren-standalone-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "00ce5557b743cb8779923c93ea120b006fa25d00",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 105.1546916,
+  "Descriptors": [
+    {
+      "Name": "daren-standalone-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "daren-standalone-linux",
+      "Categories": [
+        "daren-standalone-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

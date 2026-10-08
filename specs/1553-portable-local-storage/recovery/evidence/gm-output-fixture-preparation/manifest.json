@@ -1,0 +1,47 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "a0eb13b46f7f6a63beadf2a46c6b1933e4274fe5",
+  "SourceResultDirectory": "20261005-132433-691-28288-000a94998da84e3085636ee00df75a58-categories",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-bridge-output-stream -Parallelism 1 -NoBuild",
+  "Os": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Sdk": "10.0.401",
+  "Runtime": "8.0.31",
+  "PowerShell": "7.6.6",
+  "EffectiveUid": 1000,
+  "TMPDIR": "/workspace/ipc-tmp",
+  "DOTNET_PROCESSOR_COUNT": null,
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 1547790,
+      "OriginalSha256": "4a921a45c5c7895c4dbb362cdc45b8518ee2e217949aa9139df787db11642031",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 165181,
+      "StoredSha256": "72e7265d175bea480989c6e9797e554117ade475fa76d422f7f372ee2e166262"
+    },
+    {
+      "Path": "gm-bridge-output-stream-unit-001.trx",
+      "OriginalBytes": 202659,
+      "OriginalSha256": "023070019939c01d63b8f0d2b53b778359323c2b10463e5e51a37220f6fe3316",
+      "StoredPath": "gm-bridge-output-stream-unit-001.trx",
+      "StoredBytes": 202659,
+      "StoredSha256": "023070019939c01d63b8f0d2b53b778359323c2b10463e5e51a37220f6fe3316"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 5559,
+      "OriginalSha256": "d1c0b674244abaed4792ac293ef379d78ce54024d99f99b5c752eb0942b68152",
+      "StoredPath": "plan.json",
+      "StoredBytes": 5559,
+      "StoredSha256": "d1c0b674244abaed4792ac293ef379d78ce54024d99f99b5c752eb0942b68152"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1361,
+      "OriginalSha256": "c7d8ae184d734e5f645348a2e7aff40efa72ceaa0801a722f833622ff36b7c46",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1361,
+      "StoredSha256": "c7d8ae184d734e5f645348a2e7aff40efa72ceaa0801a722f833622ff36b7c46"
+    }
+  ]
+}

@@ -1,0 +1,837 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="2a2e5b4b-737c-4a3f-87f7-f2014bf09d41" name="@ff00c3d48a40 2026-10-01 21:36:33" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T21:36:33.8474221-04:00" queuing="2026-10-01T21:36:33.8474221-04:00" start="2026-10-01T21:36:32.0154111-04:00" finish="2026-10-01T21:36:34.0105952-04:00" />
+  <TestSettings name="default" id="9c990fdf-0e58-44dd-a16c-0b5368a6dde3">
+    <Deployment runDeploymentRoot="_ff00c3d48a40_2026-10-01_21_36_33" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="c0324fac-1b00-461d-b0d1-6b389036f72b" testId="652c8357-d6e1-191c-fed5-694126e7f696" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents(committed: True)" computerName="ff00c3d48a40" duration="00:00:00.0053618" startTime="2026-10-01T21:36:33.8812324-04:00" endTime="2026-10-01T21:36:33.8812325-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c0324fac-1b00-461d-b0d1-6b389036f72b">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : The publication journal is invalid; evidence retained.
+---- System.Text.Json.JsonReaderException : 'B' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 217
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 62
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3662
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3670
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3569
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents(Boolean committed) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 147
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)
+   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)
+   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+   at System.Text.Json.Utf8JsonReader.Read()
+   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonDocumentOptions options)
+   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](ReadOnlyMemory`1 utf8Json, JsonSerializerOptions options, String authorityName) in SOURCE_ROOT/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 30
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 214</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d04f662d-988c-4cea-bea0-23f370cb6766" testId="4ea67595-fe9c-2581-7319-2ccad781d498" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 2, committed: False)" computerName="ff00c3d48a40" duration="00:00:00.0074007" startTime="2026-10-01T21:36:33.7192412-04:00" endTime="2026-10-01T21:36:33.7192412-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d04f662d-988c-4cea-bea0-23f370cb6766">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 image publication scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishImagesWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs:line 10
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 74
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 83
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2733b6f7-f04d-4472-bc80-0344f994417a" testId="b9d13b05-64b9-002a-a5d3-a3fa2b1b09e6" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;trailing-region&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0049823" startTime="2026-10-01T21:36:33.8222415-04:00" endTime="2026-10-01T21:36:33.8222416-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2733b6f7-f04d-4472-bc80-0344f994417a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "v2"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1b25ea99-2bcd-402d-84da-2e1e52167ea6" testId="9bf13034-7fa1-e59e-2c1f-809502955452" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved" computerName="ff00c3d48a40" duration="00:00:00.0061199" startTime="2026-10-01T21:36:33.9500552-04:00" endTime="2026-10-01T21:36:33.9500553-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1b25ea99-2bcd-402d-84da-2e1e52167ea6">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 image publication scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishImagesWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs:line 10
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 44
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 55
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="140ea864-0d4c-4d0c-b272-ac01b72ff953" testId="715d430e-7805-b6f3-c211-c5130fbf233a" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition(committed: True)" computerName="ff00c3d48a40" duration="00:00:00.0060438" startTime="2026-10-01T21:36:33.8600129-04:00" endTime="2026-10-01T21:36:33.8600131-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="140ea864-0d4c-4d0c-b272-ac01b72ff953">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : The publication journal is invalid; evidence retained.
+---- System.Text.Json.JsonReaderException : 'B' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 217
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 62
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3662
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3670
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3569
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition(Boolean committed) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 92
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)
+   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)
+   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+   at System.Text.Json.Utf8JsonReader.Read()
+   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonDocumentOptions options)
+   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](ReadOnlyMemory`1 utf8Json, JsonSerializerOptions options, String authorityName) in SOURCE_ROOT/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 30
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 214</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="041e60fd-39b5-43c1-ad74-a2caed3968aa" testId="56a8bba0-f5e8-e992-c1c1-9b97effb6eb3" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;duplicate-property&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0050231" startTime="2026-10-01T21:36:33.7628185-04:00" endTime="2026-10-01T21:36:33.7628186-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="041e60fd-39b5-43c1-ad74-a2caed3968aa">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "v2"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="fb609102-99d9-43a5-8bd7-088975d74e18" testId="3ede67df-2c6e-7119-6032-8659ca387f82" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.UnknownLaterMemberPreventsEarlierRollbackAndRetainsV2Authority" computerName="ff00c3d48a40" duration="00:00:00.0070753" startTime="2026-10-01T21:36:33.8876471-04:00" endTime="2026-10-01T21:36:33.8876473-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fb609102-99d9-43a5-8bd7-088975d74e18">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "unknown bytes"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.UnknownLaterMemberPreventsEarlierRollbackAndRetainsV2Authority() in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 156
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="489209a0-1f9c-4bc0-b023-c82563287000" testId="2e05c69e-c5fa-92a4-215f-036e101b63f4" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents(committed: False)" computerName="ff00c3d48a40" duration="00:00:00.0066219" startTime="2026-10-01T21:36:33.8743174-04:00" endTime="2026-10-01T21:36:33.8743176-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="489209a0-1f9c-4bc0-b023-c82563287000">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : The publication journal is invalid; evidence retained.
+---- System.Text.Json.JsonReaderException : 'B' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 217
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 62
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3662
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3670
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3569
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents(Boolean committed) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 147
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)
+   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)
+   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+   at System.Text.Json.Utf8JsonReader.Read()
+   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonDocumentOptions options)
+   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](ReadOnlyMemory`1 utf8Json, JsonSerializerOptions options, String authorityName) in SOURCE_ROOT/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 30
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 214</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="abb13ead-ec25-45aa-a2b8-26e26c6a639a" testId="d324d27f-753f-ca76-cde6-108100a44ad9" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;huge-header&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0057714" startTime="2026-10-01T21:36:33.8284146-04:00" endTime="2026-10-01T21:36:33.8284147-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="abb13ead-ec25-45aa-a2b8-26e26c6a639a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "v2"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f64a8881-2a3d-4837-9a11-1ecc36629485" testId="c10a8257-54eb-5946-20bf-dda268a02426" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;negative-header&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0044980" startTime="2026-10-01T21:36:33.7676108-04:00" endTime="2026-10-01T21:36:33.7676109-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f64a8881-2a3d-4837-9a11-1ecc36629485">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "v2"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="bf253b30-5955-4941-ba26-639acc90120c" testId="5bb94517-7237-291f-44c9-71e6466a37bc" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(fresh: True)" computerName="ff00c3d48a40" duration="00:00:00.0046245" startTime="2026-10-01T21:36:33.9009114-04:00" endTime="2026-10-01T21:36:33.9009114-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bf253b30-5955-4941-ba26-639acc90120c">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 canonical image adapter scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.FileSystemManager.PublishLocalImageFilesAsync(CanonicalWriteLease lease, IReadOnlyList`1 changes, CancellationToken cancellationToken) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs:line 9
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(Boolean fresh) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 182
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(Boolean fresh) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 188
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="799c62e1-1fc6-46a8-b20d-b8564ebc28db" testId="7ceac709-40f3-2d70-91a6-be17fac54a69" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;unknown-format&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0047586" startTime="2026-10-01T21:36:33.8336453-04:00" endTime="2026-10-01T21:36:33.8336454-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="799c62e1-1fc6-46a8-b20d-b8564ebc28db">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "v2"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1bd90b3d-0435-421c-b74a-422f42cb2627" testId="e0afb79a-479b-6c02-f443-0de1488faace" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 5, committed: True)" computerName="ff00c3d48a40" duration="00:00:00.0045337" startTime="2026-10-01T21:36:33.7281926-04:00" endTime="2026-10-01T21:36:33.7281926-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1bd90b3d-0435-421c-b74a-422f42cb2627">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 image publication scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishImagesWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs:line 10
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 74
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 83
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3d720028-701e-4787-9f5f-c38cb6b6060b" testId="2468f061-c106-a4b1-e07b-ed0b78412d10" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.OriginalV1EvidenceKeepsItsOriginalPendingAndCommittedSemantics(committed: True)" computerName="ff00c3d48a40" duration="00:00:00.0323719" startTime="2026-10-01T21:36:33.9338785-04:00" endTime="2026-10-01T21:36:33.9338787-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3d720028-701e-4787-9f5f-c38cb6b6060b" />
+    <UnitTestResult executionId="704ed4e4-738d-4dea-92d9-04696dc48185" testId="e45b340c-40b5-4aea-508d-e3a876406642" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;truncated-header&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0054603" startTime="2026-10-01T21:36:33.8163902-04:00" endTime="2026-10-01T21:36:33.8163903-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="704ed4e4-738d-4dea-92d9-04696dc48185">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "v2"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f6c454db-f76b-4aa5-9400-30f9dc0dcdda" testId="79046c9f-ef65-a443-29ea-6720005b9c5b" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 0, committed: False)" computerName="ff00c3d48a40" duration="00:00:00.0051370" startTime="2026-10-01T21:36:33.7234171-04:00" endTime="2026-10-01T21:36:33.7234172-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f6c454db-f76b-4aa5-9400-30f9dc0dcdda">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 image publication scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishImagesWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs:line 10
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 74
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 83
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="96793d74-93ab-4c06-b35f-8d065b806cef" testId="b84bc422-b423-792c-a389-fcc21b203360" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;image-hash&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0231392" startTime="2026-10-01T21:36:33.7578146-04:00" endTime="2026-10-01T21:36:33.7578148-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="96793d74-93ab-4c06-b35f-8d065b806cef">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "v2"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c0571795-da12-4649-b16b-ccc90dc1b52a" testId="8207c114-89ac-05fe-de31-aa3cee751f7b" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;region-gap&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0052092" startTime="2026-10-01T21:36:33.8153734-04:00" endTime="2026-10-01T21:36:33.8153737-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c0571795-da12-4649-b16b-ccc90dc1b52a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "v2"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f34dd373-424c-4e92-9d8e-09933773002b" testId="75acdb0d-5f8e-607c-cb87-791e8152b975" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;region-overlap&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0090116" startTime="2026-10-01T21:36:33.8162713-04:00" endTime="2026-10-01T21:36:33.8162714-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f34dd373-424c-4e92-9d8e-09933773002b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "v2"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ac991a82-895e-4b73-a088-09e48cf78b40" testId="dacfa1f0-badb-467c-6056-34de3b5533cc" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.OriginalV1EvidenceKeepsItsOriginalPendingAndCommittedSemantics(committed: False)" computerName="ff00c3d48a40" duration="00:00:00.0090298" startTime="2026-10-01T21:36:33.9427242-04:00" endTime="2026-10-01T21:36:33.9427244-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ac991a82-895e-4b73-a088-09e48cf78b40" />
+    <UnitTestResult executionId="2653c08a-846c-4a64-9197-fbf33b9dffbf" testId="9351f824-4a28-a29c-33a3-c782bf1453e2" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 3, committed: False)" computerName="ff00c3d48a40" duration="00:00:00.0563106" startTime="2026-10-01T21:36:33.7155904-04:00" endTime="2026-10-01T21:36:33.7156144-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2653c08a-846c-4a64-9197-fbf33b9dffbf">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 image publication scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishImagesWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs:line 10
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 74
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 83
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="93c413ce-ff40-411b-8e69-8b4e1afc224c" testId="ad23fd95-9ef6-a0b7-b323-b3348528da19" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;region-overflow&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0057921" startTime="2026-10-01T21:36:33.8159684-04:00" endTime="2026-10-01T21:36:33.8159684-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="93c413ce-ff40-411b-8e69-8b4e1afc224c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "v2"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="278dc5f5-1cd6-45b5-98ab-c64d741234ca" testId="7276626a-8915-3e4a-aad3-c99f9b20ba9e" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;negative-length&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0060413" startTime="2026-10-01T21:36:33.8401110-04:00" endTime="2026-10-01T21:36:33.8401111-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="278dc5f5-1cd6-45b5-98ab-c64d741234ca">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "v2"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ebef83fc-0a2a-428c-a6b7-eec0672775f9" testId="60d96c2f-d932-e919-690d-86fbfc58844c" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;unknown-property&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0050202" startTime="2026-10-01T21:36:33.7728941-04:00" endTime="2026-10-01T21:36:33.7728942-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ebef83fc-0a2a-428c-a6b7-eec0672775f9">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "v2"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ee4c0308-fefe-409f-8c76-f46d7acadf04" testId="fe7f5f66-221b-2377-f3f1-13db1af60ac0" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 4, committed: False)" computerName="ff00c3d48a40" duration="00:00:00.0047647" startTime="2026-10-01T21:36:33.7333921-04:00" endTime="2026-10-01T21:36:33.7333922-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ee4c0308-fefe-409f-8c76-f46d7acadf04">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 image publication scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishImagesWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs:line 10
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 74
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 83
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ac290fd8-f82a-4276-bc17-5f47b6e7a546" testId="c116d6bc-0cd8-e0fa-e55f-700d378e88a8" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(fresh: False)" computerName="ff00c3d48a40" duration="00:00:00.0078230" startTime="2026-10-01T21:36:33.8960662-04:00" endTime="2026-10-01T21:36:33.8960664-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ac290fd8-f82a-4276-bc17-5f47b6e7a546">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NotImplementedException : T032-A1 canonical image adapter scaffold</Message>
+          <StackTrace>   at BookOfEternityClient.Core.FileSystemManager.PublishLocalImageFilesAsync(CanonicalWriteLease lease, IReadOnlyList`1 changes, CancellationToken cancellationToken) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs:line 9
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(Boolean fresh) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 182
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(Boolean fresh) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 188
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b1b0418f-3c58-4274-95ce-a60c2395b91d" testId="8ce66ff5-6a9b-a24e-6168-dedf51e3d5c0" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;duplicate-member&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0076905" startTime="2026-10-01T21:36:33.8170700-04:00" endTime="2026-10-01T21:36:33.8170700-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b1b0418f-3c58-4274-95ce-a60c2395b91d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "v2"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2dceda30-4d10-4eb2-a7e6-6c94961def36" testId="ec20d5c5-b3f0-05a2-dee9-06f529c0c3fb" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;truncated-region&quot;)" computerName="ff00c3d48a40" duration="00:00:00.0092216" startTime="2026-10-01T21:36:33.8165775-04:00" endTime="2026-10-01T21:36:33.8165775-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2dceda30-4d10-4eb2-a7e6-6c94961def36">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found
+String:    "The publication journal is invalid; evide"···
+Not found: "v2"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ad38353f-5ff7-43ce-977d-6516d27cb6b5" testId="4c0a57d9-a65b-bd04-1cfb-867d30669c1b" testName="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition(committed: False)" computerName="ff00c3d48a40" duration="00:00:00.0161781" startTime="2026-10-01T21:36:33.8667523-04:00" endTime="2026-10-01T21:36:33.8667525-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ad38353f-5ff7-43ce-977d-6516d27cb6b5">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.InvalidDataException : The publication journal is invalid; evidence retained.
+---- System.Text.Json.JsonReaderException : 'B' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 217
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 62
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3662
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3670
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3569
+   at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition(Boolean committed) in SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs:line 92
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)
+   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)
+   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+   at System.Text.Json.Utf8JsonReader.Read()
+   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonDocumentOptions options)
+   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](ReadOnlyMemory`1 utf8Json, JsonSerializerOptions options, String authorityName) in SOURCE_ROOT/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 30
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 214</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;image-hash&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b84bc422-b423-792c-a389-fcc21b203360">
+      <Execution id="96793d74-93ab-4c06-b35f-8d065b806cef" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;region-overflow&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ad23fd95-9ef6-a0b7-b323-b3348528da19">
+      <Execution id="93c413ce-ff40-411b-8e69-8b4e1afc224c" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;region-gap&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8207c114-89ac-05fe-de31-aa3cee751f7b">
+      <Execution id="c0571795-da12-4649-b16b-ccc90dc1b52a" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition(committed: True)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="715d430e-7805-b6f3-c211-c5130fbf233a">
+      <Execution id="140ea864-0d4c-4d0c-b272-ac01b72ff953" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;negative-length&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7276626a-8915-3e4a-aad3-c99f9b20ba9e">
+      <Execution id="278dc5f5-1cd6-45b5-98ab-c64d741234ca" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(fresh: True)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5bb94517-7237-291f-44c9-71e6466a37bc">
+      <Execution id="bf253b30-5955-4941-ba26-639acc90120c" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.OriginalV1EvidenceKeepsItsOriginalPendingAndCommittedSemantics(committed: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="dacfa1f0-badb-467c-6056-34de3b5533cc">
+      <Execution id="ac991a82-895e-4b73-a088-09e48cf78b40" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="OriginalV1EvidenceKeepsItsOriginalPendingAndCommittedSemantics" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 0, committed: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="79046c9f-ef65-a443-29ea-6720005b9c5b">
+      <Execution id="f6c454db-f76b-4aa5-9400-30f9dc0dcdda" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="WarmImageCutsPreserveTheCompleteDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;truncated-header&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e45b340c-40b5-4aea-508d-e3a876406642">
+      <Execution id="704ed4e4-738d-4dea-92d9-04696dc48185" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents(committed: True)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="652c8357-d6e1-191c-fed5-694126e7f696">
+      <Execution id="c0324fac-1b00-461d-b0d1-6b389036f72b" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;trailing-region&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b9d13b05-64b9-002a-a5d3-a3fa2b1b09e6">
+      <Execution id="2733b6f7-f04d-4472-bc80-0344f994417a" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;unknown-property&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="60d96c2f-d932-e919-690d-86fbfc58844c">
+      <Execution id="ebef83fc-0a2a-428c-a6b7-eec0672775f9" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.UnknownLaterMemberPreventsEarlierRollbackAndRetainsV2Authority" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3ede67df-2c6e-7119-6032-8659ca387f82">
+      <Execution id="fb609102-99d9-43a5-8bd7-088975d74e18" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="UnknownLaterMemberPreventsEarlierRollbackAndRetainsV2Authority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;truncated-region&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ec20d5c5-b3f0-05a2-dee9-06f529c0c3fb">
+      <Execution id="2dceda30-4d10-4eb2-a7e6-6c94961def36" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9bf13034-7fa1-e59e-2c1f-809502955452">
+      <Execution id="1b25ea99-2bcd-402d-84da-2e1e52167ea6" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(fresh: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c116d6bc-0cd8-e0fa-e55f-700d378e88a8">
+      <Execution id="ac290fd8-f82a-4276-bc17-5f47b6e7a546" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;duplicate-property&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="56a8bba0-f5e8-e992-c1c1-9b97effb6eb3">
+      <Execution id="041e60fd-39b5-43c1-ad74-a2caed3968aa" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 3, committed: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9351f824-4a28-a29c-33a3-c782bf1453e2">
+      <Execution id="2653c08a-846c-4a64-9197-fbf33b9dffbf" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="WarmImageCutsPreserveTheCompleteDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition(committed: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4c0a57d9-a65b-bd04-1cfb-867d30669c1b">
+      <Execution id="ad38353f-5ff7-43ce-977d-6516d27cb6b5" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 5, committed: True)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e0afb79a-479b-6c02-f443-0de1488faace">
+      <Execution id="1bd90b3d-0435-421c-b74a-422f42cb2627" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="WarmImageCutsPreserveTheCompleteDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents(committed: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2e05c69e-c5fa-92a4-215f-036e101b63f4">
+      <Execution id="489209a0-1f9c-4bc0-b023-c82563287000" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;huge-header&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d324d27f-753f-ca76-cde6-108100a44ad9">
+      <Execution id="abb13ead-ec25-45aa-a2b8-26e26c6a639a" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 4, committed: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fe7f5f66-221b-2377-f3f1-13db1af60ac0">
+      <Execution id="ee4c0308-fefe-409f-8c76-f46d7acadf04" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="WarmImageCutsPreserveTheCompleteDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 2, committed: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4ea67595-fe9c-2581-7319-2ccad781d498">
+      <Execution id="d04f662d-988c-4cea-bea0-23f370cb6766" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="WarmImageCutsPreserveTheCompleteDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;region-overlap&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="75acdb0d-5f8e-607c-cb87-791e8152b975">
+      <Execution id="f34dd373-424c-4e92-9d8e-09933773002b" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;unknown-format&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7ceac709-40f3-2d70-91a6-be17fac54a69">
+      <Execution id="799c62e1-1fc6-46a8-b20d-b8564ebc28db" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;negative-header&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c10a8257-54eb-5946-20bf-dda268a02426">
+      <Execution id="f64a8881-2a3d-4837-9a11-1ecc36629485" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: &quot;duplicate-member&quot;)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8ce66ff5-6a9b-a24e-6168-dedf51e3d5c0">
+      <Execution id="b1b0418f-3c58-4274-95ce-a60c2395b91d" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.OriginalV1EvidenceKeepsItsOriginalPendingAndCommittedSemantics(committed: True)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2468f061-c106-a4b1-e07b-ed0b78412d10">
+      <Execution id="3d720028-701e-4787-9f5f-c38cb6b6060b" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests" name="OriginalV1EvidenceKeepsItsOriginalPendingAndCommittedSemantics" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="652c8357-d6e1-191c-fed5-694126e7f696" executionId="c0324fac-1b00-461d-b0d1-6b389036f72b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4ea67595-fe9c-2581-7319-2ccad781d498" executionId="d04f662d-988c-4cea-bea0-23f370cb6766" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b9d13b05-64b9-002a-a5d3-a3fa2b1b09e6" executionId="2733b6f7-f04d-4472-bc80-0344f994417a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9bf13034-7fa1-e59e-2c1f-809502955452" executionId="1b25ea99-2bcd-402d-84da-2e1e52167ea6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="715d430e-7805-b6f3-c211-c5130fbf233a" executionId="140ea864-0d4c-4d0c-b272-ac01b72ff953" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="56a8bba0-f5e8-e992-c1c1-9b97effb6eb3" executionId="041e60fd-39b5-43c1-ad74-a2caed3968aa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3ede67df-2c6e-7119-6032-8659ca387f82" executionId="fb609102-99d9-43a5-8bd7-088975d74e18" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2e05c69e-c5fa-92a4-215f-036e101b63f4" executionId="489209a0-1f9c-4bc0-b023-c82563287000" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d324d27f-753f-ca76-cde6-108100a44ad9" executionId="abb13ead-ec25-45aa-a2b8-26e26c6a639a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c10a8257-54eb-5946-20bf-dda268a02426" executionId="f64a8881-2a3d-4837-9a11-1ecc36629485" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5bb94517-7237-291f-44c9-71e6466a37bc" executionId="bf253b30-5955-4941-ba26-639acc90120c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7ceac709-40f3-2d70-91a6-be17fac54a69" executionId="799c62e1-1fc6-46a8-b20d-b8564ebc28db" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e0afb79a-479b-6c02-f443-0de1488faace" executionId="1bd90b3d-0435-421c-b74a-422f42cb2627" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2468f061-c106-a4b1-e07b-ed0b78412d10" executionId="3d720028-701e-4787-9f5f-c38cb6b6060b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e45b340c-40b5-4aea-508d-e3a876406642" executionId="704ed4e4-738d-4dea-92d9-04696dc48185" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="79046c9f-ef65-a443-29ea-6720005b9c5b" executionId="f6c454db-f76b-4aa5-9400-30f9dc0dcdda" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b84bc422-b423-792c-a389-fcc21b203360" executionId="96793d74-93ab-4c06-b35f-8d065b806cef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8207c114-89ac-05fe-de31-aa3cee751f7b" executionId="c0571795-da12-4649-b16b-ccc90dc1b52a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="75acdb0d-5f8e-607c-cb87-791e8152b975" executionId="f34dd373-424c-4e92-9d8e-09933773002b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dacfa1f0-badb-467c-6056-34de3b5533cc" executionId="ac991a82-895e-4b73-a088-09e48cf78b40" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9351f824-4a28-a29c-33a3-c782bf1453e2" executionId="2653c08a-846c-4a64-9197-fbf33b9dffbf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ad23fd95-9ef6-a0b7-b323-b3348528da19" executionId="93c413ce-ff40-411b-8e69-8b4e1afc224c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7276626a-8915-3e4a-aad3-c99f9b20ba9e" executionId="278dc5f5-1cd6-45b5-98ab-c64d741234ca" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60d96c2f-d932-e919-690d-86fbfc58844c" executionId="ebef83fc-0a2a-428c-a6b7-eec0672775f9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fe7f5f66-221b-2377-f3f1-13db1af60ac0" executionId="ee4c0308-fefe-409f-8c76-f46d7acadf04" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c116d6bc-0cd8-e0fa-e55f-700d378e88a8" executionId="ac290fd8-f82a-4276-bc17-5f47b6e7a546" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8ce66ff5-6a9b-a24e-6168-dedf51e3d5c0" executionId="b1b0418f-3c58-4274-95ce-a60c2395b91d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ec20d5c5-b3f0-05a2-dee9-06f529c0c3fb" executionId="2dceda30-4d10-4eb2-a7e6-6c94961def36" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4c0a57d9-a65b-bd04-1cfb-867d30669c1b" executionId="ad38353f-5ff7-43ce-977d-6516d27cb6b5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="29" executed="29" passed="2" failed="27" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.14]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.09]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.11]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.25]       System.NotImplementedException : T032-A1 image publication scaffold
+[xUnit.net 00:00:01.26]       Stack Trace:
+[xUnit.net 00:00:01.26]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs(10,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishImagesWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:01.26]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(74,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed)
+[xUnit.net 00:00:01.26]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(83,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed)
+[xUnit.net 00:00:01.26]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.26]       System.NotImplementedException : T032-A1 image publication scaffold
+[xUnit.net 00:00:01.26]       Stack Trace:
+[xUnit.net 00:00:01.26]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs(10,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishImagesWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:01.26]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(74,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed)
+[xUnit.net 00:00:01.26]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(83,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed)
+[xUnit.net 00:00:01.26]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.26]       System.NotImplementedException : T032-A1 image publication scaffold
+[xUnit.net 00:00:01.26]       Stack Trace:
+[xUnit.net 00:00:01.26]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs(10,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishImagesWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:01.26]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(74,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed)
+[xUnit.net 00:00:01.26]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(83,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed)
+[xUnit.net 00:00:01.26]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.27]       System.NotImplementedException : T032-A1 image publication scaffold
+[xUnit.net 00:00:01.27]       Stack Trace:
+[xUnit.net 00:00:01.27]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs(10,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishImagesWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:01.27]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(74,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed)
+[xUnit.net 00:00:01.27]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(83,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed)
+[xUnit.net 00:00:01.27]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.27]       System.NotImplementedException : T032-A1 image publication scaffold
+[xUnit.net 00:00:01.27]       Stack Trace:
+[xUnit.net 00:00:01.27]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs(10,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishImagesWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:01.27]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(74,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed)
+[xUnit.net 00:00:01.27]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(83,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(Int32 phaseValue, Boolean committed)
+[xUnit.net 00:00:01.27]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.30]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.30]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.30]       Not found: "v2"
+[xUnit.net 00:00:01.30]       Stack Trace:
+[xUnit.net 00:00:01.30]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(135,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption)
+[xUnit.net 00:00:01.30]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.30]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.30]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.30]       Not found: "v2"
+[xUnit.net 00:00:01.30]       Stack Trace:
+[xUnit.net 00:00:01.30]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(135,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption)
+[xUnit.net 00:00:01.30]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.31]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.31]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.31]       Not found: "v2"
+[xUnit.net 00:00:01.31]       Stack Trace:
+[xUnit.net 00:00:01.31]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(135,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption)
+[xUnit.net 00:00:01.31]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.31]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.31]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.31]       Not found: "v2"
+[xUnit.net 00:00:01.31]       Stack Trace:
+[xUnit.net 00:00:01.31]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(135,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption)
+[xUnit.net 00:00:01.31]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.36]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.36]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.36]       Not found: "v2"
+[xUnit.net 00:00:01.36]       Stack Trace:
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(135,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption)
+[xUnit.net 00:00:01.36]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.36]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.36]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.36]       Not found: "v2"
+[xUnit.net 00:00:01.36]       Stack Trace:
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(135,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption)
+[xUnit.net 00:00:01.36]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.36]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.36]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.36]       Not found: "v2"
+[xUnit.net 00:00:01.36]       Stack Trace:
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(135,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption)
+[xUnit.net 00:00:01.36]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.36]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.36]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.36]       Not found: "v2"
+[xUnit.net 00:00:01.36]       Stack Trace:
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(135,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption)
+[xUnit.net 00:00:01.36]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.36]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.36]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.36]       Not found: "v2"
+[xUnit.net 00:00:01.36]       Stack Trace:
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(135,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption)
+[xUnit.net 00:00:01.36]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.36]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.36]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.36]       Not found: "v2"
+[xUnit.net 00:00:01.36]       Stack Trace:
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(135,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption)
+[xUnit.net 00:00:01.36]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.36]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.36]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.36]       Not found: "v2"
+[xUnit.net 00:00:01.36]       Stack Trace:
+[xUnit.net 00:00:01.36]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(135,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption)
+[xUnit.net 00:00:01.36]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.37]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.37]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.37]       Not found: "v2"
+[xUnit.net 00:00:01.37]       Stack Trace:
+[xUnit.net 00:00:01.37]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(135,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption)
+[xUnit.net 00:00:01.37]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.38]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.38]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.38]       Not found: "v2"
+[xUnit.net 00:00:01.38]       Stack Trace:
+[xUnit.net 00:00:01.38]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(135,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption)
+[xUnit.net 00:00:01.38]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.38]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.38]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.38]       Not found: "v2"
+[xUnit.net 00:00:01.38]       Stack Trace:
+[xUnit.net 00:00:01.38]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(135,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(String corruption)
+[xUnit.net 00:00:01.38]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.39]       System.IO.InvalidDataException : The publication journal is invalid; evidence retained.
+[xUnit.net 00:00:01.39]       ---- System.Text.Json.JsonReaderException : 'B' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.
+[xUnit.net 00:00:01.39]       Stack Trace:
+[xUnit.net 00:00:01.40]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(217,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.40]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(62,0): at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.40]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3662,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.40]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3670,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.40]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3569,0): at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.40]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(92,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition(Boolean committed)
+[xUnit.net 00:00:01.40]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.40]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.40]            at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+[xUnit.net 00:00:01.40]            at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)
+[xUnit.net 00:00:01.40]            at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)
+[xUnit.net 00:00:01.40]            at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+[xUnit.net 00:00:01.40]            at System.Text.Json.Utf8JsonReader.Read()
+[xUnit.net 00:00:01.40]            at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)
+[xUnit.net 00:00:01.40]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)
+[xUnit.net 00:00:01.40]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonDocumentOptions options)
+[xUnit.net 00:00:01.40]         SOURCE_ROOT/BookOfEternityClient/Core/StrictJsonAuthority.cs(30,0): at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](ReadOnlyMemory`1 utf8Json, JsonSerializerOptions options, String authorityName)
+[xUnit.net 00:00:01.40]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(214,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.41]       System.IO.InvalidDataException : The publication journal is invalid; evidence retained.
+[xUnit.net 00:00:01.41]       ---- System.Text.Json.JsonReaderException : 'B' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.
+[xUnit.net 00:00:01.41]       Stack Trace:
+[xUnit.net 00:00:01.41]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(217,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.41]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(62,0): at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.41]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3662,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.41]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3670,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.41]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3569,0): at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.41]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(92,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition(Boolean committed)
+[xUnit.net 00:00:01.41]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.41]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.41]            at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+[xUnit.net 00:00:01.41]            at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)
+[xUnit.net 00:00:01.41]            at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)
+[xUnit.net 00:00:01.41]            at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+[xUnit.net 00:00:01.41]            at System.Text.Json.Utf8JsonReader.Read()
+[xUnit.net 00:00:01.41]            at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)
+[xUnit.net 00:00:01.41]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)
+[xUnit.net 00:00:01.41]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonDocumentOptions options)
+[xUnit.net 00:00:01.41]         SOURCE_ROOT/BookOfEternityClient/Core/StrictJsonAuthority.cs(30,0): at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](ReadOnlyMemory`1 utf8Json, JsonSerializerOptions options, String authorityName)
+[xUnit.net 00:00:01.41]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(214,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.42]       System.IO.InvalidDataException : The publication journal is invalid; evidence retained.
+[xUnit.net 00:00:01.42]       ---- System.Text.Json.JsonReaderException : 'B' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.
+[xUnit.net 00:00:01.42]       Stack Trace:
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(217,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(62,0): at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3662,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3670,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3569,0): at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(147,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents(Boolean committed)
+[xUnit.net 00:00:01.42]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.42]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.42]            at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+[xUnit.net 00:00:01.42]            at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)
+[xUnit.net 00:00:01.42]            at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)
+[xUnit.net 00:00:01.42]            at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+[xUnit.net 00:00:01.42]            at System.Text.Json.Utf8JsonReader.Read()
+[xUnit.net 00:00:01.42]            at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)
+[xUnit.net 00:00:01.42]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)
+[xUnit.net 00:00:01.42]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonDocumentOptions options)
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient/Core/StrictJsonAuthority.cs(30,0): at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](ReadOnlyMemory`1 utf8Json, JsonSerializerOptions options, String authorityName)
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(214,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.42]       System.IO.InvalidDataException : The publication journal is invalid; evidence retained.
+[xUnit.net 00:00:01.42]       ---- System.Text.Json.JsonReaderException : 'B' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.
+[xUnit.net 00:00:01.42]       Stack Trace:
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(217,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(62,0): at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3662,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3670,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3569,0): at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(147,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents(Boolean committed)
+[xUnit.net 00:00:01.42]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.42]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.42]            at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)
+[xUnit.net 00:00:01.42]            at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)
+[xUnit.net 00:00:01.42]            at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)
+[xUnit.net 00:00:01.42]            at System.Text.Json.Utf8JsonReader.ReadSingleSegment()
+[xUnit.net 00:00:01.42]            at System.Text.Json.Utf8JsonReader.Read()
+[xUnit.net 00:00:01.42]            at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)
+[xUnit.net 00:00:01.42]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)
+[xUnit.net 00:00:01.42]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonDocumentOptions options)
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient/Core/StrictJsonAuthority.cs(30,0): at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](ReadOnlyMemory`1 utf8Json, JsonSerializerOptions options, String authorityName)
+[xUnit.net 00:00:01.42]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(214,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.43]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:01.43]       String:    "The publication journal is invalid; evide"···
+[xUnit.net 00:00:01.43]       Not found: "unknown bytes"
+[xUnit.net 00:00:01.43]       Stack Trace:
+[xUnit.net 00:00:01.43]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(156,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.UnknownLaterMemberPreventsEarlierRollbackAndRetainsV2Authority()
+[xUnit.net 00:00:01.43]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.44]       System.NotImplementedException : T032-A1 canonical image adapter scaffold
+[xUnit.net 00:00:01.44]       Stack Trace:
+[xUnit.net 00:00:01.44]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs(9,0): at BookOfEternityClient.Core.FileSystemManager.PublishLocalImageFilesAsync(CanonicalWriteLease lease, IReadOnlyList`1 changes, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.44]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(182,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(Boolean fresh)
+[xUnit.net 00:00:01.44]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(188,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(Boolean fresh)
+[xUnit.net 00:00:01.44]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.44]       System.NotImplementedException : T032-A1 canonical image adapter scaffold
+[xUnit.net 00:00:01.44]       Stack Trace:
+[xUnit.net 00:00:01.44]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs(9,0): at BookOfEternityClient.Core.FileSystemManager.PublishLocalImageFilesAsync(CanonicalWriteLease lease, IReadOnlyList`1 changes, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.44]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(182,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(Boolean fresh)
+[xUnit.net 00:00:01.44]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(188,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(Boolean fresh)
+[xUnit.net 00:00:01.44]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.49]       System.NotImplementedException : T032-A1 image publication scaffold
+[xUnit.net 00:00:01.49]       Stack Trace:
+[xUnit.net 00:00:01.49]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs(10,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishImagesWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:01.49]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(44,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved()
+[xUnit.net 00:00:01.49]         SOURCE_ROOT/BookOfEternityClient.Tests/TrustedLocalStreamPublicationTests.cs(55,0): at BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved()
+[xUnit.net 00:00:01.49]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.50]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.7130664-04:00">
+        <Text>[xUnit.net 00:00:01.25]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 3, committed: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.7193050-04:00">
+        <Text>[xUnit.net 00:00:01.26]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 2, committed: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.7235269-04:00">
+        <Text>[xUnit.net 00:00:01.26]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 0, committed: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.7282837-04:00">
+        <Text>[xUnit.net 00:00:01.27]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 5, committed: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.7333152-04:00">
+        <Text>[xUnit.net 00:00:01.27]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision(phaseValue: 4, committed: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.7581476-04:00">
+        <Text>[xUnit.net 00:00:01.30]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: "image-hash") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.7628926-04:00">
+        <Text>[xUnit.net 00:00:01.30]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: "duplicate-property") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.7676136-04:00">
+        <Text>[xUnit.net 00:00:01.31]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: "negative-header") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.7729925-04:00">
+        <Text>[xUnit.net 00:00:01.31]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: "unknown-property") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8531976-04:00">
+        <Text>[xUnit.net 00:00:01.36]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: "region-gap") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8532172-04:00">
+        <Text>[xUnit.net 00:00:01.36]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: "region-overflow") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8532644-04:00">
+        <Text>[xUnit.net 00:00:01.36]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: "region-overlap") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8532853-04:00">
+        <Text>[xUnit.net 00:00:01.36]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: "truncated-header") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8533066-04:00">
+        <Text>[xUnit.net 00:00:01.36]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: "truncated-region") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8533209-04:00">
+        <Text>[xUnit.net 00:00:01.36]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: "duplicate-member") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8533360-04:00">
+        <Text>[xUnit.net 00:00:01.36]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: "trailing-region") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8533503-04:00">
+        <Text>[xUnit.net 00:00:01.37]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: "huge-header") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8533690-04:00">
+        <Text>[xUnit.net 00:00:01.38]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: "unknown-format") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8538305-04:00">
+        <Text>[xUnit.net 00:00:01.38]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation(corruption: "negative-length") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8538463-04:00">
+        <Text>[xUnit.net 00:00:01.39]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition(committed: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8665800-04:00">
+        <Text>[xUnit.net 00:00:01.41]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition(committed: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8742666-04:00">
+        <Text>[xUnit.net 00:00:01.42]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents(committed: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8808213-04:00">
+        <Text>[xUnit.net 00:00:01.42]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents(committed: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8877884-04:00">
+        <Text>[xUnit.net 00:00:01.43]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.UnknownLaterMemberPreventsEarlierRollbackAndRetainsV2Authority [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.8963012-04:00">
+        <Text>[xUnit.net 00:00:01.44]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(fresh: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.9009560-04:00">
+        <Text>[xUnit.net 00:00:01.44]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration(fresh: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T21:36:33.9500651-04:00">
+        <Text>[xUnit.net 00:00:01.49]     BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

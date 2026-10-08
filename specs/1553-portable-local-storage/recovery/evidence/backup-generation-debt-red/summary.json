@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "portable-backup-generation-debt"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "0b2be663320a89e3be30ba1d57298c67f7d73cd4",
+    "WorkingTreeFingerprint": "BD6D9EC856EF86EA2FFC9BC5B6AEB0AFD3672FE18781713B3496201F37A9F151",
+    "ChangedFiles": 4
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-backup-generation-debt",
+      "Seconds": 2.9030843,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0543844,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0218049,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0150736,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 136.1873514,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:02:23.0037092",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

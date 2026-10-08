@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="397045e0-46c5-4db1-9674-dbd8775a3337" name="@95e438a3e5cb 2026-10-05 03:35:23" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T03:35:23.0338372-04:00" queuing="2026-10-05T03:35:23.0338373-04:00" start="2026-10-05T03:35:19.7008832-04:00" finish="2026-10-05T03:35:53.1887807-04:00" />
+  <TestSettings name="default" id="8d7053fc-5b32-4dc0-9118-5cce865030f1">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-05_03_35_23" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="f020ee54-76c9-43ab-b3de-3bf74d07f4af" testId="b9e19b3e-3bc5-9b26-0611-5535d0020bde" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(bytes: [255, 10])" computerName="95e438a3e5cb" duration="00:00:00.0009071" startTime="2026-10-05T03:35:23.0003592-04:00" endTime="2026-10-05T03:35:23.0003593-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f020ee54-76c9-43ab-b3de-3bf74d07f4af">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(Byte[] bytes) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 84
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a3723c6a-f27c-448c-9b77-797e5b574f54" testId="b3294ff3-2752-ef34-be5f-539b32a4f3e9" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_ReadyFrameMustNotCarryError" computerName="95e438a3e5cb" duration="00:00:00.0003339" startTime="2026-10-05T03:35:53.1034483-04:00" endTime="2026-10-05T03:35:53.1034484-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a3723c6a-f27c-448c-9b77-797e5b574f54" />
+    <UnitTestResult executionId="ff9b6211-a5a0-4eb6-9d3a-df0bdc87e284" testId="a02aedfb-58b3-b634-7b32-8e2fffcde2de" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ValidateLaunchNonce_MissingNonceProducesTypedProtocolFailure" computerName="95e438a3e5cb" duration="00:00:00.0004306" startTime="2026-10-05T03:35:53.1026172-04:00" endTime="2026-10-05T03:35:53.1026173-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ff9b6211-a5a0-4eb6-9d3a-df0bdc87e284" />
+    <UnitTestResult executionId="c091a5b7-9891-409c-9c15-48aa5dba5af9" testId="0a9ce3c3-d293-8215-55df-f0e5bf0174d2" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_UnpairedSurrogateWritesNothing" computerName="95e438a3e5cb" duration="00:00:00.0006754" startTime="2026-10-05T03:35:23.0162349-04:00" endTime="2026-10-05T03:35:23.0162349-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c091a5b7-9891-409c-9c15-48aa5dba5af9">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_InvalidTextWritesNothing(String value) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 103
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a04acaef-4a07-49e5-a854-135e73e6af06" testId="56c09fad-13b7-f60b-fdfd-fb2072136508" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_PreservesTwoFramesInOneRead" computerName="95e438a3e5cb" duration="00:00:00.0006965" startTime="2026-10-05T03:35:53.0342582-04:00" endTime="2026-10-05T03:35:53.0342583-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a04acaef-4a07-49e5-a854-135e73e6af06" />
+    <UnitTestResult executionId="6d811159-76b4-4b35-a103-bdde7e92ef1e" testId="227b6aad-9203-5363-1b39-9cca0225fec0" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_ReleaseFrameMissingRequiredPayloadFieldIsRejected" computerName="95e438a3e5cb" duration="00:00:00.0005203" startTime="2026-10-05T03:35:53.1025387-04:00" endTime="2026-10-05T03:35:53.1025388-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6d811159-76b4-4b35-a103-bdde7e92ef1e" />
+    <UnitTestResult executionId="689986d9-7a75-46d2-adf8-848a1857433c" testId="80a5df67-1037-6c9a-4c2b-2d2926248fa4" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;ready&quot;, missingProperty: &quot;exitCode&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0001271" startTime="2026-10-05T03:35:53.1025026-04:00" endTime="2026-10-05T03:35:53.1025026-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="689986d9-7a75-46d2-adf8-848a1857433c" />
+    <UnitTestResult executionId="0625d3a3-8ae7-4f11-bb6e-3b62b4c1b9d7" testId="b8dcd4b4-65e1-602f-0a08-2cef805cd844" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;outputDrained&quot;, missingProperty: &quot;exitCode&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0005074" startTime="2026-10-05T03:35:53.0919439-04:00" endTime="2026-10-05T03:35:53.0919440-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0625d3a3-8ae7-4f11-bb6e-3b62b4c1b9d7" />
+    <UnitTestResult executionId="8a94fbbe-eef6-4b81-a228-a9cde91c7019" testId="45fd5d1d-ba44-a612-84cf-782c3bf01509" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedDiagnosticNeverIncludesPeerText" computerName="95e438a3e5cb" duration="00:00:00.0007414" startTime="2026-10-05T03:35:53.1030078-04:00" endTime="2026-10-05T03:35:53.1030078-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8a94fbbe-eef6-4b81-a228-a9cde91c7019">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.DoesNotContain() Failure: Sub-string found
+                                ↓ (pos 62)
+String: ···"rocess host failed: SECRET_ENVIRONMENT_SE"···
+Found:  "SECRET_ENVIRONMENT_SENTINEL"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedDiagnosticNeverIncludesPeerText() in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 177
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="306cdb51-cdeb-4008-bf82-64ad1ee1938c" testId="aced28f5-0ca7-f246-ce76-530e344bcf02" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;outputDrained&quot;, missingProperty: &quot;error&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0001148" startTime="2026-10-05T03:35:53.1024696-04:00" endTime="2026-10-05T03:35:53.1024696-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="306cdb51-cdeb-4008-bf82-64ad1ee1938c" />
+    <UnitTestResult executionId="caed70d9-e2a8-41ae-94bf-76c6d51d5c22" testId="1681055f-5f31-170a-9aeb-f4745dd39eca" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingKindCannotBecomeReadyByEnumDefault" computerName="95e438a3e5cb" duration="00:00:00.0003788" startTime="2026-10-05T03:35:53.1025785-04:00" endTime="2026-10-05T03:35:53.1025788-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="caed70d9-e2a8-41ae-94bf-76c6d51d5c22" />
+    <UnitTestResult executionId="9f98c107-54f1-4192-b6c3-08acdff87311" testId="22b41e7b-9fff-cd7b-e54c-4a0c48a6f37a" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;ready&quot;, missingProperty: &quot;error&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0001290" startTime="2026-10-05T03:35:53.1024124-04:00" endTime="2026-10-05T03:35:53.1024126-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9f98c107-54f1-4192-b6c3-08acdff87311" />
+    <UnitTestResult executionId="6724f7f4-864a-4f1e-be2a-5b97547c9193" testId="c2bf6b0f-75ad-b022-dbb4-cc9344df89e9" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_CompletedFrameMustNotCarryError" computerName="95e438a3e5cb" duration="00:00:00.0005019" startTime="2026-10-05T03:35:53.1034098-04:00" endTime="2026-10-05T03:35:53.1034099-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6724f7f4-864a-4f1e-be2a-5b97547c9193" />
+    <UnitTestResult executionId="918217c1-070b-4332-aa4e-c9b76d7be5f3" testId="c9d07281-3de0-780e-39ac-32fff02dc11b" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_WrongLaunchNonceIsRejected" computerName="95e438a3e5cb" duration="00:00:00.0002906" startTime="2026-10-05T03:35:53.1026503-04:00" endTime="2026-10-05T03:35:53.1026504-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="918217c1-070b-4332-aa4e-c9b76d7be5f3" />
+    <UnitTestResult executionId="b641806f-78a6-4bab-9f23-ea8b5b9f7482" testId="ca8694f6-e7a7-132b-5257-d5b9cc639258" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: &quot;unknown&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0059215" startTime="2026-10-05T03:35:53.0735160-04:00" endTime="2026-10-05T03:35:53.0735163-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b641806f-78a6-4bab-9f23-ea8b5b9f7482">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.DoesNotContain() Failure: Sub-string found
+                                ↓ (pos 99)
+String: ···" The JSON property 'SECRET_PAYLOAD_SENTIN"···
+Found:  "SECRET_PAYLOAD_SENTINEL"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(String shape) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 166
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="07cb634c-b687-4c48-8dd4-a94825f0efbb" testId="5526ab85-5fe4-2df3-bc62-31dd201ecf08" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedFrameMustNotCarryExitCode" computerName="95e438a3e5cb" duration="00:00:00.0002369" startTime="2026-10-05T03:35:53.1034819-04:00" endTime="2026-10-05T03:35:53.1034820-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="07cb634c-b687-4c48-8dd4-a94825f0efbb" />
+    <UnitTestResult executionId="4e36ecfa-b00e-4a20-af5a-9d1b9cb2de35" testId="9c1ee164-cabd-4e22-4731-ae0551af99c4" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;completed&quot;, missingProperty: &quot;error&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0051651" startTime="2026-10-05T03:35:53.0913964-04:00" endTime="2026-10-05T03:35:53.0913966-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4e36ecfa-b00e-4a20-af5a-9d1b9cb2de35" />
+    <UnitTestResult executionId="eec6b095-b9de-4e9b-9de1-fb7cd8f4aa53" testId="7ca306ed-5d04-e151-984b-0f53b4c21e5b" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(bytes: [195, 40, 10])" computerName="95e438a3e5cb" duration="00:00:00.0004006" startTime="2026-10-05T03:35:23.0014887-04:00" endTime="2026-10-05T03:35:23.0014887-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eec6b095-b9de-4e9b-9de1-fb7cd8f4aa53">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(Byte[] bytes) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 84
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a7322312-6f1b-4a68-ba1f-c2d6e4f363bd" testId="3865eb77-b2ea-6e1c-247e-b962a47b90d6" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_CallerCancellationAwaitsUnderlyingRead" computerName="95e438a3e5cb" duration="00:00:00.0039610" startTime="2026-10-05T03:35:53.0333605-04:00" endTime="2026-10-05T03:35:53.0333607-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a7322312-6f1b-4a68-ba1f-c2d6e4f363bd" />
+    <UnitTestResult executionId="c43b9252-fad2-493b-8ade-1710e6417cf0" testId="46768128-fedb-617e-7d93-7b0ee027112a" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_CrCountsTowardEncodedLimit" computerName="95e438a3e5cb" duration="00:00:00.0005581" startTime="2026-10-05T03:35:23.0163550-04:00" endTime="2026-10-05T03:35:23.0163551-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c43b9252-fad2-493b-8ade-1710e6417cf0">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_CrCountsTowardEncodedLimit() in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 73
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c7cb09a6-e468-4053-9010-69997a1c9684" testId="ec36cd61-9bac-2c0f-352e-879ea802ee2a" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_OutputDrainedFrameMustNotCarryExitCode" computerName="95e438a3e5cb" duration="00:00:00.0002296" startTime="2026-10-05T03:35:53.1036253-04:00" endTime="2026-10-05T03:35:53.1036254-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c7cb09a6-e468-4053-9010-69997a1c9684" />
+    <UnitTestResult executionId="0e9b9746-37e2-4cd4-ad0b-cb800ee4f626" testId="061ad14c-6852-8100-21ce-905345a35b31" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_BlockedWriterDeadlineAwaitsUnderlyingWrite" computerName="95e438a3e5cb" duration="00:00:30.0044316" startTime="2026-10-05T03:35:53.0305494-04:00" endTime="2026-10-05T03:35:53.0305495-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0e9b9746-37e2-4cd4-ad0b-cb800ee4f626">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.TimeoutException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_BlockedWriterDeadlineAwaitsUnderlyingWrite() in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 143
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="51cada2c-19da-497e-8d7f-386ac1738815" testId="5feb58ad-402f-c71b-22ea-d6989188b4f4" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_UnknownPropertyIsRejected" computerName="95e438a3e5cb" duration="00:00:00.0003204" startTime="2026-10-05T03:35:53.1035140-04:00" endTime="2026-10-05T03:35:53.1035140-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="51cada2c-19da-497e-8d7f-386ac1738815" />
+    <UnitTestResult executionId="a2eaf482-fe3e-4551-ab72-f499bd7b97da" testId="3aee8a7e-399e-3197-6439-47a3d620c07f" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_SlowBytesDoNotRenewAbsoluteDeadline" computerName="95e438a3e5cb" duration="00:00:00.6710271" startTime="2026-10-05T03:35:22.4538564-04:00" endTime="2026-10-05T03:35:22.4538566-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a2eaf482-fe3e-4551-ab72-f499bd7b97da">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.TimeoutException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_SlowBytesDoNotRenewAbsoluteDeadline() in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 117
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d151e6f6-3a64-4f0e-a58c-14fb7c94eb45" testId="cb0f68c6-1727-5c2e-9904-2ea3e24a1dbf" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_CompletionWaitMayBeIdleButStartedFrameIsBounded" computerName="95e438a3e5cb" duration="00:00:00.5229720" startTime="2026-10-05T03:35:22.9817088-04:00" endTime="2026-10-05T03:35:22.9817089-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d151e6f6-3a64-4f0e-a58c-14fb7c94eb45">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.TimeoutException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_CompletionWaitMayBeIdleButStartedFrameIsBounded() in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 168
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="db59723b-cd8a-4c43-b447-1f445df4a3cc" testId="2373dd1b-be5f-ff62-b829-464cdb29ea87" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.WriteAndRead_ExactUtf8ByteBoundaryIsAccepted(limit: 65536)" computerName="95e438a3e5cb" duration="00:00:00.0059803" startTime="2026-10-05T03:35:22.9940220-04:00" endTime="2026-10-05T03:35:22.9940220-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="db59723b-cd8a-4c43-b447-1f445df4a3cc" />
+    <UnitTestResult executionId="52f6b697-caf2-466a-8580-b74465ba0799" testId="b3c80464-e9f3-ab2f-bb1c-50ee7c5197bc" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_CallerCancellationAwaitsUnderlyingWrite" computerName="95e438a3e5cb" duration="00:00:00.0080219" startTime="2026-10-05T03:35:22.9938861-04:00" endTime="2026-10-05T03:35:22.9938863-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="52f6b697-caf2-466a-8580-b74465ba0799" />
+    <UnitTestResult executionId="a24408fe-d2bf-4ba8-87d5-608919d21efc" testId="8bbcb6c6-ff15-18ee-d6d4-81af23c6ff17" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_TruncatedEofDoesNotReturnPartialFrame" computerName="95e438a3e5cb" duration="00:00:00.0062267" startTime="2026-10-05T03:35:21.7830535-04:00" endTime="2026-10-05T03:35:21.7830671-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a24408fe-d2bf-4ba8-87d5-608919d21efc">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_TruncatedEofDoesNotReturnPartialFrame() in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 93
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cb8bda58-d011-4867-ad77-d13e8a8e5b13" testId="657dc9d6-626e-e573-813b-da994c03a0b9" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(bytes: [195, 10])" computerName="95e438a3e5cb" duration="00:00:00.0001006" startTime="2026-10-05T03:35:23.0021800-04:00" endTime="2026-10-05T03:35:23.0021801-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cb8bda58-d011-4867-ad77-d13e8a8e5b13">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(Byte[] bytes) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 84
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ade333bf-da88-4e9d-8cb7-ea3f155827df" testId="23c2089c-5b17-dfac-a4b0-6b5c53352f21" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.WriteAndRead_ExactUtf8ByteBoundaryIsAccepted(limit: 1048576)" computerName="95e438a3e5cb" duration="00:00:00.0052819" startTime="2026-10-05T03:35:22.9986376-04:00" endTime="2026-10-05T03:35:22.9986376-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ade333bf-da88-4e9d-8cb7-ea3f155827df" />
+    <UnitTestResult executionId="e88221d4-96e8-4a46-8495-4c7b52c3e1dd" testId="eab372ec-9e9d-be6e-ab3a-8881a909dca7" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_OneByteOverLimitWritesNothing(limit: 1048576)" computerName="95e438a3e5cb" duration="00:00:00.0079896" startTime="2026-10-05T03:35:23.0165024-04:00" endTime="2026-10-05T03:35:23.0165024-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e88221d4-96e8-4a46-8495-4c7b52c3e1dd">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_OneByteOverLimitWritesNothing(Int32 limit) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 53
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3ed6a510-3156-401f-8eda-e4b09e2b0512" testId="d4561f3a-71a8-eca3-3d1d-c5d1fe6be5f1" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_OneByteOverLimitIsRejected(limit: 1048576)" computerName="95e438a3e5cb" duration="00:00:00.0029794" startTime="2026-10-05T03:35:23.0212052-04:00" endTime="2026-10-05T03:35:23.0212053-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3ed6a510-3156-401f-8eda-e4b09e2b0512">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_OneByteOverLimitIsRejected(Int32 limit) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 65
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="96669611-a7fa-4e8e-bb9e-15b620932892" testId="0ef111a1-d509-5c52-a7a5-76528d4660fb" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_PreservesBufferedNextFrameAndSplitUnicode" computerName="95e438a3e5cb" duration="00:00:00.0005906" startTime="2026-10-05T03:35:23.0160388-04:00" endTime="2026-10-05T03:35:23.0160389-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="96669611-a7fa-4e8e-bb9e-15b620932892" />
+    <UnitTestResult executionId="b2b8454e-d754-4729-9c26-255c741c14e0" testId="c1c07e53-dc38-cc42-70f7-808da447faf4" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_InvalidTextWritesNothing(value: &quot;line\rnext&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0002553" startTime="2026-10-05T03:35:23.0178567-04:00" endTime="2026-10-05T03:35:23.0178567-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b2b8454e-d754-4729-9c26-255c741c14e0">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_InvalidTextWritesNothing(String value) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 103
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="27eda961-78d8-4241-97ca-df08873b35f9" testId="56184d64-e1b8-0717-16ea-bf989a94d5b6" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_InvalidTextWritesNothing(value: &quot;line\nnext&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0000926" startTime="2026-10-05T03:35:23.0174333-04:00" endTime="2026-10-05T03:35:23.0174333-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="27eda961-78d8-4241-97ca-df08873b35f9">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_InvalidTextWritesNothing(String value) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 103
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="74d73360-7db0-46c5-8cbf-4d508fa4a4ba" testId="7589959b-d6f5-f8f3-3fa2-7473f0612e01" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_WrongLaunchNonceCannotReleaseWorker" computerName="95e438a3e5cb" duration="00:00:00.0002177" startTime="2026-10-05T03:35:53.1035779-04:00" endTime="2026-10-05T03:35:53.1035779-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="74d73360-7db0-46c5-8cbf-4d508fa4a4ba" />
+    <UnitTestResult executionId="03cf537d-f359-4113-8f77-b254fe7df946" testId="022feeb4-94fb-4ef2-d6be-cdeeda774bc1" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_MissingKindCannotReleaseWorkerByEnumDefault" computerName="95e438a3e5cb" duration="00:00:00.0003677" startTime="2026-10-05T03:35:53.1035457-04:00" endTime="2026-10-05T03:35:53.1035458-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="03cf537d-f359-4113-8f77-b254fe7df946" />
+    <UnitTestResult executionId="73ab26af-a3b9-48d4-beee-bfd232030a4a" testId="058fbeb3-a8b1-135d-a642-dd47d21cec30" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_ReleaseFrameMustNotCarryPayload" computerName="95e438a3e5cb" duration="00:00:00.0281943" startTime="2026-10-05T03:35:53.0666217-04:00" endTime="2026-10-05T03:35:53.0666219-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="73ab26af-a3b9-48d4-beee-bfd232030a4a" />
+    <UnitTestResult executionId="12680fa5-9d1a-4ff9-8de6-58b1d613217f" testId="0fc7c39a-10de-3db4-6ad8-68aa36a509a6" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_LaunchFrameRequiresPayload" computerName="95e438a3e5cb" duration="00:00:00.0002623" startTime="2026-10-05T03:35:53.1026829-04:00" endTime="2026-10-05T03:35:53.1026829-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="12680fa5-9d1a-4ff9-8de6-58b1d613217f" />
+    <UnitTestResult executionId="e5b53149-b417-4ad8-9c50-295a4f3ab208" testId="4463484d-ca1b-0c4a-3653-6ccb5ed7d035" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: &quot;duplicate&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0005004" startTime="2026-10-05T03:35:53.0758344-04:00" endTime="2026-10-05T03:35:53.0758346-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e5b53149-b417-4ad8-9c50-295a4f3ab208">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.DoesNotContain() Failure: Sub-string found
+                                ↓ (pos 95)
+String: ···"duplicate property 'SECRET_PAYLOAD_SENTIN"···
+Found:  "SECRET_PAYLOAD_SENTINEL"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(String shape) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 166
+   at InvokeStub_GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6f26aaf1-23e3-4946-b5d7-1a2f7fc9fe77" testId="fdab3658-340f-7b29-4a70-6389a1fcc508" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_OneByteOverLimitWritesNothing(limit: 65536)" computerName="95e438a3e5cb" duration="00:00:00.0004514" startTime="2026-10-05T03:35:23.0169964-04:00" endTime="2026-10-05T03:35:23.0169965-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6f26aaf1-23e3-4946-b5d7-1a2f7fc9fe77">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_OneByteOverLimitWritesNothing(Int32 limit) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 53
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="191c684b-f0bf-4735-b459-afacdbd6e913" testId="62c4e2b7-6c2b-4470-4304-41ad50ec4a3d" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_CompletedFrameWithoutExitCodeIsRejected" computerName="95e438a3e5cb" duration="00:00:00.0112631" startTime="2026-10-05T03:35:53.0861467-04:00" endTime="2026-10-05T03:35:53.0861472-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="191c684b-f0bf-4735-b459-afacdbd6e913" />
+    <UnitTestResult executionId="e5440a04-d137-4bb0-8360-18d32436baa7" testId="a2da4aa1-078f-a59c-98ac-2aef43c06adc" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: &quot;malformed&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0009173" startTime="2026-10-05T03:35:53.0755369-04:00" endTime="2026-10-05T03:35:53.0755370-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e5440a04-d137-4bb0-8360-18d32436baa7" />
+    <UnitTestResult executionId="2c3838ae-b6c8-4550-843c-31a0c923313c" testId="cf359d68-d10b-6a08-786c-71d0d7c2e540" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_DuplicatePropertyIsRejected" computerName="95e438a3e5cb" duration="00:00:00.0002108" startTime="2026-10-05T03:35:53.1036562-04:00" endTime="2026-10-05T03:35:53.1036562-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2c3838ae-b6c8-4550-843c-31a0c923313c" />
+    <UnitTestResult executionId="f2c465e3-723c-4ed1-954d-0998696f7863" testId="713dc244-1625-8347-3d73-3a2da3970c2d" testName="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_OneByteOverLimitIsRejected(limit: 65536)" computerName="95e438a3e5cb" duration="00:00:00.0004663" startTime="2026-10-05T03:35:23.0255591-04:00" endTime="2026-10-05T03:35:23.0255592-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f2c465e3-723c-4ed1-954d-0998696f7863">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.IO.InvalidDataException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_OneByteOverLimitIsRejected(Int32 limit) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs:line 65
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_PreservesBufferedNextFrameAndSplitUnicode" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="0ef111a1-d509-5c52-a7a5-76528d4660fb">
+      <Execution id="96669611-a7fa-4e8e-bb9e-15b620932892" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Read_PreservesBufferedNextFrameAndSplitUnicode" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_LaunchFrameRequiresPayload" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="0fc7c39a-10de-3db4-6ad8-68aa36a509a6">
+      <Execution id="12680fa5-9d1a-4ff9-8de6-58b1d613217f" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_LaunchFrameRequiresPayload" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(bytes: [195, 10])" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="657dc9d6-626e-e573-813b-da994c03a0b9">
+      <Execution id="cb8bda58-d011-4867-ad77-d13e8a8e5b13" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Read_InvalidUtf8IsRejectedWithoutReplacement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_OneByteOverLimitWritesNothing(limit: 1048576)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="eab372ec-9e9d-be6e-ab3a-8881a909dca7">
+      <Execution id="e88221d4-96e8-4a46-8495-4c7b52c3e1dd" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Write_OneByteOverLimitWritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_OneByteOverLimitIsRejected(limit: 65536)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="713dc244-1625-8347-3d73-3a2da3970c2d">
+      <Execution id="f2c465e3-723c-4ed1-954d-0998696f7863" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Read_OneByteOverLimitIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: &quot;malformed&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a2da4aa1-078f-a59c-98ac-2aef43c06adc">
+      <Execution id="e5440a04-d137-4bb0-8360-18d32436baa7" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_DiagnosticsNeverIncludePayloadExcerpts" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.WriteAndRead_ExactUtf8ByteBoundaryIsAccepted(limit: 65536)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2373dd1b-be5f-ff62-b829-464cdb29ea87">
+      <Execution id="db59723b-cd8a-4c43-b447-1f445df4a3cc" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="WriteAndRead_ExactUtf8ByteBoundaryIsAccepted" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: &quot;unknown&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ca8694f6-e7a7-132b-5257-d5b9cc639258">
+      <Execution id="b641806f-78a6-4bab-9f23-ea8b5b9f7482" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_DiagnosticsNeverIncludePayloadExcerpts" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_PreservesTwoFramesInOneRead" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="56c09fad-13b7-f60b-fdfd-fb2072136508">
+      <Execution id="a04acaef-4a07-49e5-a854-135e73e6af06" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Read_PreservesTwoFramesInOneRead" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_CompletedFrameMustNotCarryError" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c2bf6b0f-75ad-b022-dbb4-cc9344df89e9">
+      <Execution id="6724f7f4-864a-4f1e-be2a-5b97547c9193" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_CompletedFrameMustNotCarryError" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;outputDrained&quot;, missingProperty: &quot;error&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="aced28f5-0ca7-f246-ce76-530e344bcf02">
+      <Execution id="306cdb51-cdeb-4008-bf82-64ad1ee1938c" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_MissingRequiredNullableFieldIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedFrameMustNotCarryExitCode" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5526ab85-5fe4-2df3-bc62-31dd201ecf08">
+      <Execution id="07cb634c-b687-4c48-8dd4-a94825f0efbb" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_FailedFrameMustNotCarryExitCode" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingKindCannotBecomeReadyByEnumDefault" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1681055f-5f31-170a-9aeb-f4745dd39eca">
+      <Execution id="caed70d9-e2a8-41ae-94bf-76c6d51d5c22" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_MissingKindCannotBecomeReadyByEnumDefault" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_ReleaseFrameMissingRequiredPayloadFieldIsRejected" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="227b6aad-9203-5363-1b39-9cca0225fec0">
+      <Execution id="6d811159-76b4-4b35-a103-bdde7e92ef1e" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_ReleaseFrameMissingRequiredPayloadFieldIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_InvalidTextWritesNothing(value: &quot;line\rnext&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c1c07e53-dc38-cc42-70f7-808da447faf4">
+      <Execution id="b2b8454e-d754-4729-9c26-255c741c14e0" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Write_InvalidTextWritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_ReadyFrameMustNotCarryError" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b3294ff3-2752-ef34-be5f-539b32a4f3e9">
+      <Execution id="a3723c6a-f27c-448c-9b77-797e5b574f54" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_ReadyFrameMustNotCarryError" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_CompletionWaitMayBeIdleButStartedFrameIsBounded" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="cb0f68c6-1727-5c2e-9904-2ea3e24a1dbf">
+      <Execution id="d151e6f6-3a64-4f0e-a58c-14fb7c94eb45" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Read_CompletionWaitMayBeIdleButStartedFrameIsBounded" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_ReleaseFrameMustNotCarryPayload" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="058fbeb3-a8b1-135d-a642-dd47d21cec30">
+      <Execution id="73ab26af-a3b9-48d4-beee-bfd232030a4a" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_ReleaseFrameMustNotCarryPayload" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_WrongLaunchNonceIsRejected" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c9d07281-3de0-780e-39ac-32fff02dc11b">
+      <Execution id="918217c1-070b-4332-aa4e-c9b76d7be5f3" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_WrongLaunchNonceIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(bytes: [255, 10])" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b9e19b3e-3bc5-9b26-0611-5535d0020bde">
+      <Execution id="f020ee54-76c9-43ab-b3de-3bf74d07f4af" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Read_InvalidUtf8IsRejectedWithoutReplacement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_DuplicatePropertyIsRejected" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="cf359d68-d10b-6a08-786c-71d0d7c2e540">
+      <Execution id="2c3838ae-b6c8-4550-843c-31a0c923313c" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_DuplicatePropertyIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ValidateLaunchNonce_MissingNonceProducesTypedProtocolFailure" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a02aedfb-58b3-b634-7b32-8e2fffcde2de">
+      <Execution id="ff9b6211-a5a0-4eb6-9d3a-df0bdc87e284" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ValidateLaunchNonce_MissingNonceProducesTypedProtocolFailure" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_CrCountsTowardEncodedLimit" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="46768128-fedb-617e-7d93-7b0ee027112a">
+      <Execution id="c43b9252-fad2-493b-8ade-1710e6417cf0" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Read_CrCountsTowardEncodedLimit" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedDiagnosticNeverIncludesPeerText" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="45fd5d1d-ba44-a612-84cf-782c3bf01509">
+      <Execution id="8a94fbbe-eef6-4b81-a228-a9cde91c7019" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_FailedDiagnosticNeverIncludesPeerText" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;ready&quot;, missingProperty: &quot;error&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="22b41e7b-9fff-cd7b-e54c-4a0c48a6f37a">
+      <Execution id="9f98c107-54f1-4192-b6c3-08acdff87311" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_MissingRequiredNullableFieldIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(bytes: [195, 40, 10])" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7ca306ed-5d04-e151-984b-0f53b4c21e5b">
+      <Execution id="eec6b095-b9de-4e9b-9de1-fb7cd8f4aa53" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Read_InvalidUtf8IsRejectedWithoutReplacement" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_BlockedWriterDeadlineAwaitsUnderlyingWrite" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="061ad14c-6852-8100-21ce-905345a35b31">
+      <Execution id="0e9b9746-37e2-4cd4-ad0b-cb800ee4f626" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Write_BlockedWriterDeadlineAwaitsUnderlyingWrite" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_OneByteOverLimitIsRejected(limit: 1048576)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d4561f3a-71a8-eca3-3d1d-c5d1fe6be5f1">
+      <Execution id="3ed6a510-3156-401f-8eda-e4b09e2b0512" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Read_OneByteOverLimitIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: &quot;duplicate&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="4463484d-ca1b-0c4a-3653-6ccb5ed7d035">
+      <Execution id="e5b53149-b417-4ad8-9c50-295a4f3ab208" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_DiagnosticsNeverIncludePayloadExcerpts" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;ready&quot;, missingProperty: &quot;exitCode&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="80a5df67-1037-6c9a-4c2b-2d2926248fa4">
+      <Execution id="689986d9-7a75-46d2-adf8-848a1857433c" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_MissingRequiredNullableFieldIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;completed&quot;, missingProperty: &quot;error&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="9c1ee164-cabd-4e22-4731-ae0551af99c4">
+      <Execution id="4e36ecfa-b00e-4a20-af5a-9d1b9cb2de35" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_MissingRequiredNullableFieldIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_OutputDrainedFrameMustNotCarryExitCode" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ec36cd61-9bac-2c0f-352e-879ea802ee2a">
+      <Execution id="c7cb09a6-e468-4053-9010-69997a1c9684" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_OutputDrainedFrameMustNotCarryExitCode" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_MissingKindCannotReleaseWorkerByEnumDefault" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="022feeb4-94fb-4ef2-d6be-cdeeda774bc1">
+      <Execution id="03cf537d-f359-4113-8f77-b254fe7df946" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_MissingKindCannotReleaseWorkerByEnumDefault" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_UnpairedSurrogateWritesNothing" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="0a9ce3c3-d293-8215-55df-f0e5bf0174d2">
+      <Execution id="c091a5b7-9891-409c-9c15-48aa5dba5af9" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Write_UnpairedSurrogateWritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_OneByteOverLimitWritesNothing(limit: 65536)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="fdab3658-340f-7b29-4a70-6389a1fcc508">
+      <Execution id="6f26aaf1-23e3-4946-b5d7-1a2f7fc9fe77" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Write_OneByteOverLimitWritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.WriteAndRead_ExactUtf8ByteBoundaryIsAccepted(limit: 1048576)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="23c2089c-5b17-dfac-a4b0-6b5c53352f21">
+      <Execution id="ade333bf-da88-4e9d-8cb7-ea3f155827df" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="WriteAndRead_ExactUtf8ByteBoundaryIsAccepted" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_CompletedFrameWithoutExitCodeIsRejected" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="62c4e2b7-6c2b-4470-4304-41ad50ec4a3d">
+      <Execution id="191c684b-f0bf-4735-b459-afacdbd6e913" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_CompletedFrameWithoutExitCodeIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_CallerCancellationAwaitsUnderlyingRead" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3865eb77-b2ea-6e1c-247e-b962a47b90d6">
+      <Execution id="a7322312-6f1b-4a68-ba1f-c2d6e4f363bd" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Read_CallerCancellationAwaitsUnderlyingRead" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;outputDrained&quot;, missingProperty: &quot;exitCode&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b8dcd4b4-65e1-602f-0a08-2cef805cd844">
+      <Execution id="0625d3a3-8ae7-4f11-bb6e-3b62b4c1b9d7" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_MissingRequiredNullableFieldIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_SlowBytesDoNotRenewAbsoluteDeadline" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3aee8a7e-399e-3197-6439-47a3d620c07f">
+      <Execution id="a2eaf482-fe3e-4551-ab72-f499bd7b97da" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Read_SlowBytesDoNotRenewAbsoluteDeadline" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_UnknownPropertyIsRejected" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5feb58ad-402f-c71b-22ea-d6989188b4f4">
+      <Execution id="51cada2c-19da-497e-8d7f-386ac1738815" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_UnknownPropertyIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_TruncatedEofDoesNotReturnPartialFrame" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="8bbcb6c6-ff15-18ee-d6d4-81af23c6ff17">
+      <Execution id="a24408fe-d2bf-4ba8-87d5-608919d21efc" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Read_TruncatedEofDoesNotReturnPartialFrame" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_WrongLaunchNonceCannotReleaseWorker" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7589959b-d6f5-f8f3-3fa2-7473f0612e01">
+      <Execution id="74d73360-7db0-46c5-8cbf-4d508fa4a4ba" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_WrongLaunchNonceCannotReleaseWorker" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_CallerCancellationAwaitsUnderlyingWrite" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b3c80464-e9f3-ab2f-bb1c-50ee7c5197bc">
+      <Execution id="52f6b697-caf2-466a-8580-b74465ba0799" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Write_CallerCancellationAwaitsUnderlyingWrite" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_InvalidTextWritesNothing(value: &quot;line\nnext&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="56184d64-e1b8-0717-16ea-bf989a94d5b6">
+      <Execution id="27eda961-78d8-4241-97ca-df08873b35f9" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests" name="Write_InvalidTextWritesNothing" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="b9e19b3e-3bc5-9b26-0611-5535d0020bde" executionId="f020ee54-76c9-43ab-b3de-3bf74d07f4af" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b3294ff3-2752-ef34-be5f-539b32a4f3e9" executionId="a3723c6a-f27c-448c-9b77-797e5b574f54" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a02aedfb-58b3-b634-7b32-8e2fffcde2de" executionId="ff9b6211-a5a0-4eb6-9d3a-df0bdc87e284" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0a9ce3c3-d293-8215-55df-f0e5bf0174d2" executionId="c091a5b7-9891-409c-9c15-48aa5dba5af9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="56c09fad-13b7-f60b-fdfd-fb2072136508" executionId="a04acaef-4a07-49e5-a854-135e73e6af06" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="227b6aad-9203-5363-1b39-9cca0225fec0" executionId="6d811159-76b4-4b35-a103-bdde7e92ef1e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="80a5df67-1037-6c9a-4c2b-2d2926248fa4" executionId="689986d9-7a75-46d2-adf8-848a1857433c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b8dcd4b4-65e1-602f-0a08-2cef805cd844" executionId="0625d3a3-8ae7-4f11-bb6e-3b62b4c1b9d7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="45fd5d1d-ba44-a612-84cf-782c3bf01509" executionId="8a94fbbe-eef6-4b81-a228-a9cde91c7019" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aced28f5-0ca7-f246-ce76-530e344bcf02" executionId="306cdb51-cdeb-4008-bf82-64ad1ee1938c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1681055f-5f31-170a-9aeb-f4745dd39eca" executionId="caed70d9-e2a8-41ae-94bf-76c6d51d5c22" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="22b41e7b-9fff-cd7b-e54c-4a0c48a6f37a" executionId="9f98c107-54f1-4192-b6c3-08acdff87311" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c2bf6b0f-75ad-b022-dbb4-cc9344df89e9" executionId="6724f7f4-864a-4f1e-be2a-5b97547c9193" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c9d07281-3de0-780e-39ac-32fff02dc11b" executionId="918217c1-070b-4332-aa4e-c9b76d7be5f3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ca8694f6-e7a7-132b-5257-d5b9cc639258" executionId="b641806f-78a6-4bab-9f23-ea8b5b9f7482" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5526ab85-5fe4-2df3-bc62-31dd201ecf08" executionId="07cb634c-b687-4c48-8dd4-a94825f0efbb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9c1ee164-cabd-4e22-4731-ae0551af99c4" executionId="4e36ecfa-b00e-4a20-af5a-9d1b9cb2de35" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7ca306ed-5d04-e151-984b-0f53b4c21e5b" executionId="eec6b095-b9de-4e9b-9de1-fb7cd8f4aa53" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3865eb77-b2ea-6e1c-247e-b962a47b90d6" executionId="a7322312-6f1b-4a68-ba1f-c2d6e4f363bd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="46768128-fedb-617e-7d93-7b0ee027112a" executionId="c43b9252-fad2-493b-8ade-1710e6417cf0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ec36cd61-9bac-2c0f-352e-879ea802ee2a" executionId="c7cb09a6-e468-4053-9010-69997a1c9684" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="061ad14c-6852-8100-21ce-905345a35b31" executionId="0e9b9746-37e2-4cd4-ad0b-cb800ee4f626" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5feb58ad-402f-c71b-22ea-d6989188b4f4" executionId="51cada2c-19da-497e-8d7f-386ac1738815" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3aee8a7e-399e-3197-6439-47a3d620c07f" executionId="a2eaf482-fe3e-4551-ab72-f499bd7b97da" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cb0f68c6-1727-5c2e-9904-2ea3e24a1dbf" executionId="d151e6f6-3a64-4f0e-a58c-14fb7c94eb45" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2373dd1b-be5f-ff62-b829-464cdb29ea87" executionId="db59723b-cd8a-4c43-b447-1f445df4a3cc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b3c80464-e9f3-ab2f-bb1c-50ee7c5197bc" executionId="52f6b697-caf2-466a-8580-b74465ba0799" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8bbcb6c6-ff15-18ee-d6d4-81af23c6ff17" executionId="a24408fe-d2bf-4ba8-87d5-608919d21efc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="657dc9d6-626e-e573-813b-da994c03a0b9" executionId="cb8bda58-d011-4867-ad77-d13e8a8e5b13" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="23c2089c-5b17-dfac-a4b0-6b5c53352f21" executionId="ade333bf-da88-4e9d-8cb7-ea3f155827df" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="eab372ec-9e9d-be6e-ab3a-8881a909dca7" executionId="e88221d4-96e8-4a46-8495-4c7b52c3e1dd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d4561f3a-71a8-eca3-3d1d-c5d1fe6be5f1" executionId="3ed6a510-3156-401f-8eda-e4b09e2b0512" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0ef111a1-d509-5c52-a7a5-76528d4660fb" executionId="96669611-a7fa-4e8e-bb9e-15b620932892" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c1c07e53-dc38-cc42-70f7-808da447faf4" executionId="b2b8454e-d754-4729-9c26-255c741c14e0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="56184d64-e1b8-0717-16ea-bf989a94d5b6" executionId="27eda961-78d8-4241-97ca-df08873b35f9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7589959b-d6f5-f8f3-3fa2-7473f0612e01" executionId="74d73360-7db0-46c5-8cbf-4d508fa4a4ba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="022feeb4-94fb-4ef2-d6be-cdeeda774bc1" executionId="03cf537d-f359-4113-8f77-b254fe7df946" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="058fbeb3-a8b1-135d-a642-dd47d21cec30" executionId="73ab26af-a3b9-48d4-beee-bfd232030a4a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0fc7c39a-10de-3db4-6ad8-68aa36a509a6" executionId="12680fa5-9d1a-4ff9-8de6-58b1d613217f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4463484d-ca1b-0c4a-3653-6ccb5ed7d035" executionId="e5b53149-b417-4ad8-9c50-295a4f3ab208" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fdab3658-340f-7b29-4a70-6389a1fcc508" executionId="6f26aaf1-23e3-4946-b5d7-1a2f7fc9fe77" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="62c4e2b7-6c2b-4470-4304-41ad50ec4a3d" executionId="191c684b-f0bf-4735-b459-afacdbd6e913" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a2da4aa1-078f-a59c-98ac-2aef43c06adc" executionId="e5440a04-d137-4bb0-8360-18d32436baa7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cf359d68-d10b-6a08-786c-71d0d7c2e540" executionId="2c3838ae-b6c8-4550-843c-31a0c923313c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="713dc244-1625-8347-3d73-3a2da3970c2d" executionId="f2c465e3-723c-4ed1-954d-0998696f7863" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="45" executed="45" passed="27" failed="18" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.33]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.61]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.64]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.70]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:01.70]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.70]       Stack Trace:
+[xUnit.net 00:00:01.70]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(93,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_TruncatedEofDoesNotReturnPartialFrame()
+[xUnit.net 00:00:01.70]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.37]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:02.37]       Expected: typeof(System.TimeoutException)
+[xUnit.net 00:00:02.37]       Stack Trace:
+[xUnit.net 00:00:02.37]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(117,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_SlowBytesDoNotRenewAbsoluteDeadline()
+[xUnit.net 00:00:02.37]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.90]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:02.90]       Expected: typeof(System.TimeoutException)
+[xUnit.net 00:00:02.90]       Stack Trace:
+[xUnit.net 00:00:02.90]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(168,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_CompletionWaitMayBeIdleButStartedFrameIsBounded()
+[xUnit.net 00:00:02.90]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.92]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:02.92]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.92]       Stack Trace:
+[xUnit.net 00:00:02.92]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(84,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(Byte[] bytes)
+[xUnit.net 00:00:02.92]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.92]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:02.92]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.92]       Stack Trace:
+[xUnit.net 00:00:02.92]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(84,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(Byte[] bytes)
+[xUnit.net 00:00:02.92]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.92]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:02.92]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.92]       Stack Trace:
+[xUnit.net 00:00:02.92]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(84,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(Byte[] bytes)
+[xUnit.net 00:00:02.92]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.94]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:02.94]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.94]       Stack Trace:
+[xUnit.net 00:00:02.94]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(103,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_InvalidTextWritesNothing(String value)
+[xUnit.net 00:00:02.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.94]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:02.94]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.94]       Stack Trace:
+[xUnit.net 00:00:02.94]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(73,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_CrCountsTowardEncodedLimit()
+[xUnit.net 00:00:02.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.94]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:02.94]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.94]       Stack Trace:
+[xUnit.net 00:00:02.94]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(53,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_OneByteOverLimitWritesNothing(Int32 limit)
+[xUnit.net 00:00:02.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.94]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:02.94]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.94]       Stack Trace:
+[xUnit.net 00:00:02.94]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(53,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_OneByteOverLimitWritesNothing(Int32 limit)
+[xUnit.net 00:00:02.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.94]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:02.94]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.94]       Stack Trace:
+[xUnit.net 00:00:02.94]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(103,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_InvalidTextWritesNothing(String value)
+[xUnit.net 00:00:02.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.94]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:02.94]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.94]       Stack Trace:
+[xUnit.net 00:00:02.94]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(103,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_InvalidTextWritesNothing(String value)
+[xUnit.net 00:00:02.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.94]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:02.94]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.94]       Stack Trace:
+[xUnit.net 00:00:02.94]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(65,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_OneByteOverLimitIsRejected(Int32 limit)
+[xUnit.net 00:00:02.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.95]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:02.95]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:02.95]       Stack Trace:
+[xUnit.net 00:00:02.95]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(65,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_OneByteOverLimitIsRejected(Int32 limit)
+[xUnit.net 00:00:02.95]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:32.95]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:32.95]       Expected: typeof(System.TimeoutException)
+[xUnit.net 00:00:32.95]       Stack Trace:
+[xUnit.net 00:00:32.95]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs(143,0): at BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_BlockedWriterDeadlineAwaitsUnderlyingWrite()
+[xUnit.net 00:00:32.95]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:32.99]       Assert.DoesNotContain() Failure: Sub-string found
+[xUnit.net 00:00:32.99]                                       ↓ (pos 99)
+[xUnit.net 00:00:32.99]       String: ···" The JSON property 'SECRET_PAYLOAD_SENTIN"···
+[xUnit.net 00:00:32.99]       Found:  "SECRET_PAYLOAD_SENTINEL"
+[xUnit.net 00:00:32.99]       Stack Trace:
+[xUnit.net 00:00:32.99]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(166,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(String shape)
+[xUnit.net 00:00:32.99]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:32.99]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:33.00]       Assert.DoesNotContain() Failure: Sub-string found
+[xUnit.net 00:00:33.00]                                       ↓ (pos 95)
+[xUnit.net 00:00:33.00]       String: ···"duplicate property 'SECRET_PAYLOAD_SENTIN"···
+[xUnit.net 00:00:33.00]       Found:  "SECRET_PAYLOAD_SENTINEL"
+[xUnit.net 00:00:33.00]       Stack Trace:
+[xUnit.net 00:00:33.00]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(166,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(String shape)
+[xUnit.net 00:00:33.00]            at InvokeStub_GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(Object, Span`1)
+[xUnit.net 00:00:33.00]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:33.02]       Assert.DoesNotContain() Failure: Sub-string found
+[xUnit.net 00:00:33.02]                                       ↓ (pos 62)
+[xUnit.net 00:00:33.02]       String: ···"rocess host failed: SECRET_ENVIRONMENT_SE"···
+[xUnit.net 00:00:33.02]       Found:  "SECRET_ENVIRONMENT_SENTINEL"
+[xUnit.net 00:00:33.02]       Stack Trace:
+[xUnit.net 00:00:33.02]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(177,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedDiagnosticNeverIncludesPeerText()
+[xUnit.net 00:00:33.02]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:33.02]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:33.03]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:21.7856003-04:00">
+        <Text>[xUnit.net 00:00:01.70]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_TruncatedEofDoesNotReturnPartialFrame [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:22.4540849-04:00">
+        <Text>[xUnit.net 00:00:02.37]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_SlowBytesDoNotRenewAbsoluteDeadline [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:22.9820289-04:00">
+        <Text>[xUnit.net 00:00:02.90]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_CompletionWaitMayBeIdleButStartedFrameIsBounded [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:23.0006512-04:00">
+        <Text>[xUnit.net 00:00:02.92]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(bytes: [255, 10]) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:23.0014373-04:00">
+        <Text>[xUnit.net 00:00:02.92]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(bytes: [195, 40, 10]) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:23.0021932-04:00">
+        <Text>[xUnit.net 00:00:02.92]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_InvalidUtf8IsRejectedWithoutReplacement(bytes: [195, 10]) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:23.0407178-04:00">
+        <Text>[xUnit.net 00:00:02.94]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_UnpairedSurrogateWritesNothing [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:23.0407502-04:00">
+        <Text>[xUnit.net 00:00:02.94]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_CrCountsTowardEncodedLimit [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:23.0407758-04:00">
+        <Text>[xUnit.net 00:00:02.94]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_OneByteOverLimitWritesNothing(limit: 1048576) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:23.0408027-04:00">
+        <Text>[xUnit.net 00:00:02.94]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_OneByteOverLimitWritesNothing(limit: 65536) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:23.0408324-04:00">
+        <Text>[xUnit.net 00:00:02.94]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_InvalidTextWritesNothing(value: "line\nnext") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:23.0408570-04:00">
+        <Text>[xUnit.net 00:00:02.94]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_InvalidTextWritesNothing(value: "line\rnext") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:23.0408817-04:00">
+        <Text>[xUnit.net 00:00:02.94]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_OneByteOverLimitIsRejected(limit: 1048576) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:23.0409046-04:00">
+        <Text>[xUnit.net 00:00:02.95]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Read_OneByteOverLimitIsRejected(limit: 65536) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:53.0301527-04:00">
+        <Text>[xUnit.net 00:00:32.95]     BookOfEternityClient.Tests.GmWorkerProcessHostFrameTests.Write_BlockedWriterDeadlineAwaitsUnderlyingWrite [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:53.0735505-04:00">
+        <Text>[xUnit.net 00:00:32.99]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: "unknown") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:53.0758254-04:00">
+        <Text>[xUnit.net 00:00:33.00]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: "duplicate") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:35:53.1310639-04:00">
+        <Text>[xUnit.net 00:00:33.02]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedDiagnosticNeverIncludesPeerText [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

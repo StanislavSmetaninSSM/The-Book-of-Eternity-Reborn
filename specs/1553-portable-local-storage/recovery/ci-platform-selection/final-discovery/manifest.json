@@ -1,0 +1,30 @@
+{
+  "sourceHead": "3464cd2438b95e13146fbcf2f75ad5382902ebc2",
+  "command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild -TimeoutMinutes 5",
+  "exitCode": 0,
+  "cleanup": "complete",
+  "artifacts": [
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/final-discovery/summary.json.gz",
+      "originalSize": 1404,
+      "originalSha256": "9c71b8c4a0651b02ae8a5f5c8d497a752aa32b57dd6ad247186b5749d69eff0c",
+      "storedSha256": "413ef2e4ce8c5257f09d8ba4cb9b3beb10bf9277aa65a3848ca070c79e1af2ab"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/final-discovery/dotnet-test.log.gz",
+      "originalSize": 3142457,
+      "originalSha256": "e13dd087fdf5c21f0c9caf65d62383f9422df3561305ae4e2610b117d76ffcad",
+      "storedSha256": "251bc0601181d3c7f88758d360d059353f918184c1ce6bebb5eb58131efffc0d"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/final-discovery/catalog-audit.json.gz",
+      "originalSize": 103,
+      "originalSha256": "82cdeb7e995f46d74893d26b341a1b3e863aafcd81c40cd0517a2aaaea29daad",
+      "storedSha256": "3daa5f68a68e308f28a1bd9ddb9f9b616a2978efe335f89bd13bdb16c190108e"
+    }
+  ],
+  "categories": 434,
+  "identities": 11193,
+  "executed": 0,
+  "noBuildBasis": "Fresh successful discovery1 builds both unchanged C# projects; subsequent diff contains no C# or project source"
+}

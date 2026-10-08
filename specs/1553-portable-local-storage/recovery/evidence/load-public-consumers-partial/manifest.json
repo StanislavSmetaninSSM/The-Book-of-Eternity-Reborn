@@ -1,0 +1,65 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "d0a8be96bb788aa38e2b1e834fdac95ab5331d57",
+  "SourceResultDirectory": "20261003-221108-203-2-c2d27c0aa7b34efaac8db20c5d156336-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 2938684,
+      "OriginalSha256": "506ce768249d9a4d8e54d9bb15b907107812799ed129f844fb55aa0b61c7f20a",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 6526,
+      "OriginalSha256": "5b78f214ab95c85d34d7e60fc378b106abf12d76b545dad54fdecd0d72615fa0",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 6526,
+      "StoredSha256": "5b78f214ab95c85d34d7e60fc378b106abf12d76b545dad54fdecd0d72615fa0"
+    },
+    {
+      "Path": "portable-load-public-consumers-integration-001.trx",
+      "OriginalBytes": 7768,
+      "OriginalSha256": "4dd6bd3700a089367b5c2931d64aafcaa94fe6fec4e7f4029ab115c0f6abcb8c",
+      "Embedded": true,
+      "StoredPath": "portable-load-public-consumers-integration-001.trx",
+      "StoredBytes": 7478,
+      "StoredSha256": "35827cd643d2d0907d7db916b607ab6bdebd2c841cde9f0863fcd41c6e7b7c44"
+    },
+    {
+      "Path": "portable-load-public-consumers-unit-002.trx",
+      "OriginalBytes": 7375,
+      "OriginalSha256": "7127e452147cbe91491e50ce4a16ac1951cc672dcab89599c2a54801c2cbc9f2",
+      "Embedded": true,
+      "StoredPath": "portable-load-public-consumers-unit-002.trx",
+      "StoredBytes": 7085,
+      "StoredSha256": "2f57c153107005ee65d10c33625fc933197ef41dbbf3f82118d0485ca3bf597e"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 2575,
+      "OriginalSha256": "21853a75225d816f901629ccea730b3efd8af5ae04ec8c14c0666507d0f4116c",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 2575,
+      "StoredSha256": "21853a75225d816f901629ccea730b3efd8af5ae04ec8c14c0666507d0f4116c"
+    }
+  ],
+  "MeasuredChildren": 0
+}

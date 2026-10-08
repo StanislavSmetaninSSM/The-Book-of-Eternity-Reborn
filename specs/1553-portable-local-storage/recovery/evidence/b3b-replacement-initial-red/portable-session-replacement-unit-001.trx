@@ -1,0 +1,427 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="95249e6c-f93f-440b-838d-73a5fca41136" name="b3b-replacement-initial-red" runUser="$USER">
+  <ns0:Times creation="2026-10-01T05:22:24.9015087-04:00" queuing="2026-10-01T05:22:24.9015087-04:00" start="2026-10-01T05:22:22.7250249-04:00" finish="2026-10-01T05:22:24.9795609-04:00" />
+  <ns0:TestSettings name="default" id="a6f3d0b0-bdc5-4c4d-a3a9-b7d0b5d6d9b0">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="fc5ff800-c8fc-48bb-a1e9-57aaf1061593" testId="de88fbe1-52c6-932e-affb-3257bb8cfefa" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ManifestlessLegacyEvidenceRemainsBlockedAndIntact" computerName="$HOST" duration="00:00:00.0057516" startTime="2026-10-01T05:22:24.9048590-04:00" endTime="2026-10-01T05:22:24.9048592-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fc5ff800-c8fc-48bb-a1e9-57aaf1061593" />
+    <ns0:UnitTestResult executionId="995b9316-e35b-4519-b5dd-8112723a67b7" testId="6ff76703-13f9-490b-c045-11ae054319da" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 8)" computerName="$HOST" duration="00:00:00.0036178" startTime="2026-10-01T05:22:24.8572766-04:00" endTime="2026-10-01T05:22:24.8572767-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="995b9316-e35b-4519-b5dd-8112723a67b7">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Clear did not use the common publication decision.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue) in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 118
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="16f207b3-54c5-4256-a215-a28893f2e04b" testId="e65f11ef-65d7-7933-c9a2-7f1976e93d41" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 0)" computerName="$HOST" duration="00:00:00.0037063" startTime="2026-10-01T05:22:24.8533436-04:00" endTime="2026-10-01T05:22:24.8533437-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="16f207b3-54c5-4256-a215-a28893f2e04b">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Clear did not use the common publication decision.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue) in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 118
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="d5afc1ec-f063-4644-ba7d-fac0f0e5a4ad" testId="c5bc696c-0409-d03f-be03-005b45b3a115" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidRequiredDirectoryRejectsBeforeGenerationOrSelectedMutation" computerName="$HOST" duration="00:00:00.0040220" startTime="2026-10-01T05:22:24.8874175-04:00" endTime="2026-10-01T05:22:24.8874178-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d5afc1ec-f063-4644-ba7d-fac0f0e5a4ad">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Runtime authority overwrite requires a reversible opened-handle replacement backend.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidRequiredDirectoryRejectsBeforeGenerationOrSelectedMutation() in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 140
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 3815
+   at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeBytesAtomicCoreAsync(String path, Byte[] content, CancellationToken cancellationToken, String authorityName) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5402
+   at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeTextAtomic(String path, String content) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5187
+   at BookOfEternityClient.Core.FileSystemManager.WriteSessionGeneration(String generationId) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5542
+   at BookOfEternityClient.Core.FileSystemManager.RotateSessionGeneration(CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5529
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5746
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5748
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync() in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5739
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync() in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5739</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="6f1e7c2b-9185-402a-a112-4ce52a7ca3a0" testId="dc82c54a-f5e7-caca-72d6-8f564689ce32" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 9)" computerName="$HOST" duration="00:00:00.0040843" startTime="2026-10-01T05:22:24.8447608-04:00" endTime="2026-10-01T05:22:24.8447608-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6f1e7c2b-9185-402a-a112-4ce52a7ca3a0">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Clear did not use the common publication decision.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue) in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 118
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="6f353eb5-8960-468a-8f89-1480e6e34fc7" testId="25b5154a-d2b8-c41f-a6d1-0ee2850f7b99" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 2)" computerName="$HOST" duration="00:00:00.0043827" startTime="2026-10-01T05:22:24.8402800-04:00" endTime="2026-10-01T05:22:24.8402800-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6f353eb5-8960-468a-8f89-1480e6e34fc7">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Clear did not use the common publication decision.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue) in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 118
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="7f44cabe-a0c5-4674-80bf-a3c0685de167" testId="08287f9f-fd09-47a2-d7eb-5b84d9cbdbbc" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_DeletesCompleteSelectedSetAndPreservesExcludedBytes" computerName="$HOST" duration="00:00:00.0055241" startTime="2026-10-01T05:22:24.8946740-04:00" endTime="2026-10-01T05:22:24.8946742-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7f44cabe-a0c5-4674-80bf-a3c0685de167">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.PlatformNotSupportedException : Runtime authority overwrite requires a reversible opened-handle replacement backend.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 3815
+   at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeBytesAtomicCoreAsync(String path, Byte[] content, CancellationToken cancellationToken, String authorityName) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5402
+   at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeTextAtomic(String path, String content) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5187
+   at BookOfEternityClient.Core.FileSystemManager.WriteSessionGeneration(String generationId) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5542
+   at BookOfEternityClient.Core.FileSystemManager.RotateSessionGeneration(CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5529
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5746
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5748
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync() in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5739
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync() in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5739
+   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_DeletesCompleteSelectedSetAndPreservesExcludedBytes() in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 86
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="86ad3994-55b4-400f-9f09-b832ce0592ad" testId="41c96886-1d68-7ca1-19af-3dac4edf19fd" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackLinkIsPreservedWithoutFollowingIt" computerName="$HOST" duration="00:00:00.0463067" startTime="2026-10-01T05:22:24.8284044-04:00" endTime="2026-10-01T05:22:24.8284046-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="86ad3994-55b4-400f-9f09-b832ce0592ad">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.PlatformNotSupportedException : Runtime authority overwrite requires a reversible opened-handle replacement backend.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 3815
+   at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeBytesAtomicCoreAsync(String path, Byte[] content, CancellationToken cancellationToken, String authorityName) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5402
+   at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeTextAtomic(String path, String content) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5187
+   at BookOfEternityClient.Core.FileSystemManager.WriteSessionGeneration(String generationId) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5542
+   at BookOfEternityClient.Core.FileSystemManager.RotateSessionGeneration(CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5529
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5746
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5748
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync() in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5739
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync() in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5739
+   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackLinkIsPreservedWithoutFollowingIt() in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 168
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="1edc851f-1cdc-4281-a2f3-efebe7ebff65" testId="81029f37-75b8-8de8-79e6-af87604d6375" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 4)" computerName="$HOST" duration="00:00:00.0051566" startTime="2026-10-01T05:22:24.8740145-04:00" endTime="2026-10-01T05:22:24.8740147-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1edc851f-1cdc-4281-a2f3-efebe7ebff65">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Clear did not use the common publication decision.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue) in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 118
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="ba0fe53e-ac1f-4f0d-b568-d83c62325aa4" testId="1ba6ddf1-e715-e58f-c57a-5d457c916d10" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 1)" computerName="$HOST" duration="00:00:00.0041446" startTime="2026-10-01T05:22:24.8490598-04:00" endTime="2026-10-01T05:22:24.8490599-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ba0fe53e-ac1f-4f0d-b568-d83c62325aa4">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Clear did not use the common publication decision.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue) in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 118
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="7a470ef1-0c09-485f-a0d6-24cb25c75b2f" testId="dc829e6f-cb6a-015b-9a96-384aaa4aec60" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidLockLinkRetainsOutsideBytesAndAllSelectedMembers" computerName="$HOST" duration="00:00:00.0090361" startTime="2026-10-01T05:22:24.8779110-04:00" endTime="2026-10-01T05:22:24.8779111-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7a470ef1-0c09-485f-a0d6-24cb25c75b2f">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.PlatformNotSupportedException)
+---- System.PlatformNotSupportedException : Runtime authority overwrite requires a reversible opened-handle replacement backend.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidLockLinkRetainsOutsideBytesAndAllSelectedMembers() in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 153
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 3815
+   at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeBytesAtomicCoreAsync(String path, Byte[] content, CancellationToken cancellationToken, String authorityName) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5402
+   at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeTextAtomic(String path, String content) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5187
+   at BookOfEternityClient.Core.FileSystemManager.WriteSessionGeneration(String generationId) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5542
+   at BookOfEternityClient.Core.FileSystemManager.RotateSessionGeneration(CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5529
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5746
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5748
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync() in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5739
+   at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync() in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5739</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="d821fc0e-b166-4042-a986-2ea51f8f0c00" testId="26c2f35d-52e8-2495-3b2c-e46705adc8cf" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_IgnoresEmptySnapshotDescendantsButCountsZeroByteFiles" computerName="$HOST" duration="00:00:00.0287802" startTime="2026-10-01T05:22:24.7846435-04:00" endTime="2026-10-01T05:22:24.7849188-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d821fc0e-b166-4042-a986-2ea51f8f0c00">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.False() Failure
+Expected: False
+Actual:   True</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_IgnoresEmptySnapshotDescendantsButCountsZeroByteFiles() in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 191
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="cdc0d1c9-85ac-4f39-867d-9a55b273f7dc" testId="4b9449bb-5c19-de91-8fba-10894acd7857" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Rotate_WorkerCleanupAndGenerationRollbackTogether" computerName="$HOST" duration="00:00:00.0037507" startTime="2026-10-01T05:22:24.8986377-04:00" endTime="2026-10-01T05:22:24.8986379-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cdc0d1c9-85ac-4f39-867d-9a55b273f7dc">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Rotation did not journal generation with worker cleanup.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Rotate_WorkerCleanupAndGenerationRollbackTogether() in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 220
+   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Rotate_WorkerCleanupAndGenerationRollbackTogether() in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 222
+   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Rotate_WorkerCleanupAndGenerationRollbackTogether() in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 222
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="f2ccefcb-9bcb-4890-a110-e685c9aab38f" testId="8cd8020f-3fe8-d703-bc04-ab0101ba9576" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 3)" computerName="$HOST" duration="00:00:00.0031964" startTime="2026-10-01T05:22:24.8608433-04:00" endTime="2026-10-01T05:22:24.8608434-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f2ccefcb-9bcb-4890-a110-e685c9aab38f">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Clear did not use the common publication decision.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue) in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 118
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="afe4ee7c-15a9-4a25-826d-98dfe2ee52b3" testId="18532960-926e-2ce9-60df-e09712eaf5d4" testName="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 5)" computerName="$HOST" duration="00:00:00.0069580" startTime="2026-10-01T05:22:24.8355851-04:00" endTime="2026-10-01T05:22:24.8355853-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="afe4ee7c-15a9-4a25-826d-98dfe2ee52b3">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Clear did not use the common publication decision.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue) in $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs:line 118
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_IgnoresEmptySnapshotDescendantsButCountsZeroByteFiles" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="26c2f35d-52e8-2495-3b2c-e46705adc8cf">
+      <ns0:Execution id="d821fc0e-b166-4042-a986-2ea51f8f0c00" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="PendingInspector_IgnoresEmptySnapshotDescendantsButCountsZeroByteFiles" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 9)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="dc82c54a-f5e7-caca-72d6-8f564689ce32">
+      <ns0:Execution id="6f1e7c2b-9185-402a-a112-4ce52a7ca3a0" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidRequiredDirectoryRejectsBeforeGenerationOrSelectedMutation" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c5bc696c-0409-d03f-be03-005b45b3a115">
+      <ns0:Execution id="d5afc1ec-f063-4644-ba7d-fac0f0e5a4ad" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_InvalidRequiredDirectoryRejectsBeforeGenerationOrSelectedMutation" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidLockLinkRetainsOutsideBytesAndAllSelectedMembers" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="dc829e6f-cb6a-015b-9a96-384aaa4aec60">
+      <ns0:Execution id="7a470ef1-0c09-485f-a0d6-24cb25c75b2f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_InvalidLockLinkRetainsOutsideBytesAndAllSelectedMembers" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackLinkIsPreservedWithoutFollowingIt" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="41c96886-1d68-7ca1-19af-3dac4edf19fd">
+      <ns0:Execution id="86ad3994-55b4-400f-9f09-b832ce0592ad" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_OpaqueContextPackLinkIsPreservedWithoutFollowingIt" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 3)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8cd8020f-3fe8-d703-bc04-ab0101ba9576">
+      <ns0:Execution id="f2ccefcb-9bcb-4890-a110-e685c9aab38f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 2)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="25b5154a-d2b8-c41f-a6d1-0ee2850f7b99">
+      <ns0:Execution id="6f353eb5-8960-468a-8f89-1480e6e34fc7" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 0)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e65f11ef-65d7-7933-c9a2-7f1976e93d41">
+      <ns0:Execution id="16f207b3-54c5-4256-a215-a28893f2e04b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_DeletesCompleteSelectedSetAndPreservesExcludedBytes" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="08287f9f-fd09-47a2-d7eb-5b84d9cbdbbc">
+      <ns0:Execution id="7f44cabe-a0c5-4674-80bf-a3c0685de167" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_DeletesCompleteSelectedSetAndPreservesExcludedBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 5)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="18532960-926e-2ce9-60df-e09712eaf5d4">
+      <ns0:Execution id="afe4ee7c-15a9-4a25-826d-98dfe2ee52b3" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Rotate_WorkerCleanupAndGenerationRollbackTogether" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4b9449bb-5c19-de91-8fba-10894acd7857">
+      <ns0:Execution id="cdc0d1c9-85ac-4f39-867d-9a55b273f7dc" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Rotate_WorkerCleanupAndGenerationRollbackTogether" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 4)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="81029f37-75b8-8de8-79e6-af87604d6375">
+      <ns0:Execution id="1edc851f-1cdc-4281-a2f3-efebe7ebff65" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ManifestlessLegacyEvidenceRemainsBlockedAndIntact" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="de88fbe1-52c6-932e-affb-3257bb8cfefa">
+      <ns0:Execution id="fc5ff800-c8fc-48bb-a1e9-57aaf1061593" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_ManifestlessLegacyEvidenceRemainsBlockedAndIntact" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 1)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1ba6ddf1-e715-e58f-c57a-5d457c916d10">
+      <ns0:Execution id="ba0fe53e-ac1f-4f0d-b568-d83c62325aa4" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 8)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6ff76703-13f9-490b-c045-11ae054319da">
+      <ns0:Execution id="995b9316-e35b-4519-b5dd-8112723a67b7" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionReplacementTests" name="Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="de88fbe1-52c6-932e-affb-3257bb8cfefa" executionId="fc5ff800-c8fc-48bb-a1e9-57aaf1061593" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="6ff76703-13f9-490b-c045-11ae054319da" executionId="995b9316-e35b-4519-b5dd-8112723a67b7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e65f11ef-65d7-7933-c9a2-7f1976e93d41" executionId="16f207b3-54c5-4256-a215-a28893f2e04b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="c5bc696c-0409-d03f-be03-005b45b3a115" executionId="d5afc1ec-f063-4644-ba7d-fac0f0e5a4ad" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="dc82c54a-f5e7-caca-72d6-8f564689ce32" executionId="6f1e7c2b-9185-402a-a112-4ce52a7ca3a0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="25b5154a-d2b8-c41f-a6d1-0ee2850f7b99" executionId="6f353eb5-8960-468a-8f89-1480e6e34fc7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="08287f9f-fd09-47a2-d7eb-5b84d9cbdbbc" executionId="7f44cabe-a0c5-4674-80bf-a3c0685de167" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="41c96886-1d68-7ca1-19af-3dac4edf19fd" executionId="86ad3994-55b4-400f-9f09-b832ce0592ad" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="81029f37-75b8-8de8-79e6-af87604d6375" executionId="1edc851f-1cdc-4281-a2f3-efebe7ebff65" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="1ba6ddf1-e715-e58f-c57a-5d457c916d10" executionId="ba0fe53e-ac1f-4f0d-b568-d83c62325aa4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="dc829e6f-cb6a-015b-9a96-384aaa4aec60" executionId="7a470ef1-0c09-485f-a0d6-24cb25c75b2f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="26c2f35d-52e8-2495-3b2c-e46705adc8cf" executionId="d821fc0e-b166-4042-a986-2ea51f8f0c00" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="4b9449bb-5c19-de91-8fba-10894acd7857" executionId="cdc0d1c9-85ac-4f39-867d-9a55b273f7dc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="8cd8020f-3fe8-d703-bc04-ab0101ba9576" executionId="f2ccefcb-9bcb-4890-a110-e685c9aab38f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="18532960-926e-2ce9-60df-e09712eaf5d4" executionId="afe4ee7c-15a9-4a25-826d-98dfe2ee52b3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="15" executed="15" passed="1" failed="14" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.18]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.50]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.53]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.62]       Assert.False() Failure
+[xUnit.net 00:00:01.62]       Expected: False
+[xUnit.net 00:00:01.62]       Actual:   True
+[xUnit.net 00:00:01.62]       Stack Trace:
+[xUnit.net 00:00:01.62]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(191,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_IgnoresEmptySnapshotDescendantsButCountsZeroByteFiles()
+[xUnit.net 00:00:01.62]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.62]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.66]       System.PlatformNotSupportedException : Runtime authority overwrite requires a reversible opened-handle replacement backend.
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(3815,0): at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName)
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5402,0): at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeBytesAtomicCoreAsync(String path, Byte[] content, CancellationToken cancellationToken, String authorityName)
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5187,0): at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeTextAtomic(String path, String content)
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5542,0): at BookOfEternityClient.Core.FileSystemManager.WriteSessionGeneration(String generationId)
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5529,0): at BookOfEternityClient.Core.FileSystemManager.RotateSessionGeneration(CanonicalWriteLease writeLease)
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5746,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease)
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5748,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease)
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5739,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync()
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5739,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync()
+[xUnit.net 00:00:01.66]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(168,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackLinkIsPreservedWithoutFollowingIt()
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.67]       Clear did not use the common publication decision.
+[xUnit.net 00:00:01.67]       Stack Trace:
+[xUnit.net 00:00:01.67]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(118,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue)
+[xUnit.net 00:00:01.67]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.67]       Clear did not use the common publication decision.
+[xUnit.net 00:00:01.67]       Stack Trace:
+[xUnit.net 00:00:01.67]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(118,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue)
+[xUnit.net 00:00:01.67]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.68]       Clear did not use the common publication decision.
+[xUnit.net 00:00:01.68]       Stack Trace:
+[xUnit.net 00:00:01.68]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(118,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue)
+[xUnit.net 00:00:01.68]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.68]       Clear did not use the common publication decision.
+[xUnit.net 00:00:01.68]       Stack Trace:
+[xUnit.net 00:00:01.68]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(118,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue)
+[xUnit.net 00:00:01.68]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.69]       Clear did not use the common publication decision.
+[xUnit.net 00:00:01.69]       Stack Trace:
+[xUnit.net 00:00:01.69]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(118,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue)
+[xUnit.net 00:00:01.69]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.69]       Clear did not use the common publication decision.
+[xUnit.net 00:00:01.69]       Stack Trace:
+[xUnit.net 00:00:01.69]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(118,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue)
+[xUnit.net 00:00:01.69]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.69]       Clear did not use the common publication decision.
+[xUnit.net 00:00:01.69]       Stack Trace:
+[xUnit.net 00:00:01.69]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(118,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue)
+[xUnit.net 00:00:01.69]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.71]       Clear did not use the common publication decision.
+[xUnit.net 00:00:01.71]       Stack Trace:
+[xUnit.net 00:00:01.71]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(118,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(Int32 cutValue)
+[xUnit.net 00:00:01.71]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.71]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.71]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.71]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:01.71]       ---- System.PlatformNotSupportedException : Runtime authority overwrite requires a reversible opened-handle replacement backend.
+[xUnit.net 00:00:01.71]       Stack Trace:
+[xUnit.net 00:00:01.71]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(153,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidLockLinkRetainsOutsideBytesAndAllSelectedMembers()
+[xUnit.net 00:00:01.71]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.71]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.71]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(3815,0): at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName)
+[xUnit.net 00:00:01.71]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5402,0): at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeBytesAtomicCoreAsync(String path, Byte[] content, CancellationToken cancellationToken, String authorityName)
+[xUnit.net 00:00:01.71]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5187,0): at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeTextAtomic(String path, String content)
+[xUnit.net 00:00:01.71]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5542,0): at BookOfEternityClient.Core.FileSystemManager.WriteSessionGeneration(String generationId)
+[xUnit.net 00:00:01.71]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5529,0): at BookOfEternityClient.Core.FileSystemManager.RotateSessionGeneration(CanonicalWriteLease writeLease)
+[xUnit.net 00:00:01.71]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5746,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease)
+[xUnit.net 00:00:01.71]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5748,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease)
+[xUnit.net 00:00:01.71]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5739,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync()
+[xUnit.net 00:00:01.71]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5739,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync()
+[xUnit.net 00:00:01.72]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.72]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.72]       Actual:   typeof(System.PlatformNotSupportedException)
+[xUnit.net 00:00:01.72]       ---- System.PlatformNotSupportedException : Runtime authority overwrite requires a reversible opened-handle replacement backend.
+[xUnit.net 00:00:01.72]       Stack Trace:
+[xUnit.net 00:00:01.72]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(140,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidRequiredDirectoryRejectsBeforeGenerationOrSelectedMutation()
+[xUnit.net 00:00:01.72]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.72]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.72]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(3815,0): at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName)
+[xUnit.net 00:00:01.72]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5402,0): at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeBytesAtomicCoreAsync(String path, Byte[] content, CancellationToken cancellationToken, String authorityName)
+[xUnit.net 00:00:01.72]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5187,0): at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeTextAtomic(String path, String content)
+[xUnit.net 00:00:01.72]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5542,0): at BookOfEternityClient.Core.FileSystemManager.WriteSessionGeneration(String generationId)
+[xUnit.net 00:00:01.72]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5529,0): at BookOfEternityClient.Core.FileSystemManager.RotateSessionGeneration(CanonicalWriteLease writeLease)
+[xUnit.net 00:00:01.72]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5746,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease)
+[xUnit.net 00:00:01.72]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5748,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease)
+[xUnit.net 00:00:01.72]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5739,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync()
+[xUnit.net 00:00:01.72]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5739,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync()
+[xUnit.net 00:00:01.73]       System.PlatformNotSupportedException : Runtime authority overwrite requires a reversible opened-handle replacement backend.
+[xUnit.net 00:00:01.73]       Stack Trace:
+[xUnit.net 00:00:01.73]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(3815,0): at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName)
+[xUnit.net 00:00:01.73]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5402,0): at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeBytesAtomicCoreAsync(String path, Byte[] content, CancellationToken cancellationToken, String authorityName)
+[xUnit.net 00:00:01.73]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5187,0): at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeTextAtomic(String path, String content)
+[xUnit.net 00:00:01.73]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5542,0): at BookOfEternityClient.Core.FileSystemManager.WriteSessionGeneration(String generationId)
+[xUnit.net 00:00:01.73]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5529,0): at BookOfEternityClient.Core.FileSystemManager.RotateSessionGeneration(CanonicalWriteLease writeLease)
+[xUnit.net 00:00:01.73]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5746,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease)
+[xUnit.net 00:00:01.73]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5748,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync(SessionLifecycleLease lifecycleLease)
+[xUnit.net 00:00:01.73]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5739,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync()
+[xUnit.net 00:00:01.73]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(5739,0): at BookOfEternityClient.Core.FileSystemManager.ClearGameStateAsync()
+[xUnit.net 00:00:01.73]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(86,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_DeletesCompleteSelectedSetAndPreservesExcludedBytes()
+[xUnit.net 00:00:01.73]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.73]       Rotation did not journal generation with worker cleanup.
+[xUnit.net 00:00:01.73]       Stack Trace:
+[xUnit.net 00:00:01.73]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(220,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Rotate_WorkerCleanupAndGenerationRollbackTogether()
+[xUnit.net 00:00:01.73]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(222,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Rotate_WorkerCleanupAndGenerationRollbackTogether()
+[xUnit.net 00:00:01.73]         $REPO/BookOfEternityClient.Tests/PortableSessionReplacementTests.cs(222,0): at BookOfEternityClient.Tests.PortableSessionReplacementTests.Rotate_WorkerCleanupAndGenerationRollbackTogether()
+[xUnit.net 00:00:01.73]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.74]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:22:24.7820198-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.61]     BookOfEternityClient.Tests.PortableSessionReplacementTests.PendingInspector_IgnoresEmptySnapshotDescendantsButCountsZeroByteFiles [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:22:24.8291058-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_OpaqueContextPackLinkIsPreservedWithoutFollowingIt [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:22:24.8360249-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.67]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 5) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:22:24.8405630-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.67]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 2) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:22:24.8447629-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.68]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 9) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:22:24.8496850-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.68]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 1) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:22:24.8534619-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.69]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 0) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:22:24.8572243-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.69]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 8) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:22:24.8611479-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.69]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 3) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:22:24.9111299-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.71]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_PublicationCutKeepsWholeOldSetOrWholeCommittedSet(cutValue: 4) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:22:24.9111643-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.71]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidLockLinkRetainsOutsideBytesAndAllSelectedMembers [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:22:24.9112242-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.72]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_InvalidRequiredDirectoryRejectsBeforeGenerationOrSelectedMutation [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:22:24.9112918-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.73]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_DeletesCompleteSelectedSetAndPreservesExcludedBytes [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T05:22:24.9113472-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.73]     BookOfEternityClient.Tests.PortableSessionReplacementTests.Rotate_WorkerCleanupAndGenerationRollbackTogether [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

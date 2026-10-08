@@ -1,0 +1,24 @@
+{
+  "sourceCommit": "21ea235bda55d1c3b52389f93452fd10ef2ac32b",
+  "catalogBlobAfterPatch": "f6ff77dd67e3dc1ed5d0f5c00b52f61d8183ccf3",
+  "kind": "newly executed coordinated-helper-initial-green; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "95b6ab006a0e9e69090459aaf750a2afbe9bcdc2026a97f1841221968169b4dc",
+      "sanitizedSha256": "95b6ab006a0e9e69090459aaf750a2afbe9bcdc2026a97f1841221968169b4dc"
+    },
+    {
+      "path": "portable-coordinated-publication-unit-001.trx",
+      "originalSha256": "a286eb4279aca254c44f9870a96655868b9c9f69c9095cff8a6b6c15452cb17f",
+      "sanitizedSha256": "55b2bac6a0c32924a3204706d103001d47367d806556f834d146f2063c4c0c96"
+    }
+  ],
+  "sourceAppliedTree": "51d831ca3d7966dc8d1498ae59e25250d3c90292",
+  "packetSha256": "c6471f346a7c140efa9cbcc64ec8cc3d176ce9602a57b3a1ad3d3bc5f2f9d00b",
+  "command": "DOTNET_PROCESSOR_COUNT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-coordinated-publication -Parallelism 1",
+  "environment": "Linux x64; SDK10.0.401, runtime8.0.31, PowerShell7.6.6; existing isolated homes/cache/temp; no app/provider execution",
+  "result": "4/4 planned/executed/passed; 0 failed/skipped/unrun/duplicates; exit0; no timeout; 4:37.5336886 including fresh successful unit build; actual tests549ms; selection and owned/runtime cleanup complete",
+  "scope": "Intermediate initial helper adapter GREEN only. Admission/release precedence, guards/duplicates, actual consumer/QTE compensation, cold process and independent review pending."
+}

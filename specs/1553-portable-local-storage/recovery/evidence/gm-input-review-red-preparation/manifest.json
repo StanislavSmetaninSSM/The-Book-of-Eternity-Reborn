@@ -1,0 +1,38 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "review-red-preparation",
+  "Artifacts": [
+    {
+      "Path": "command-result.json",
+      "StoredPath": "command-result.json",
+      "StoredBytes": 428,
+      "StoredSha256": "95d76ab3ed6b8c55a99f22b0d76095996ff99ea951d7118470ea54e8c1db939d",
+      "OriginalBytes": 428,
+      "OriginalSha256": "95d76ab3ed6b8c55a99f22b0d76095996ff99ea951d7118470ea54e8c1db939d"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 1082,
+      "StoredSha256": "6e015dc94436e885560be001521ee7406607046f0f212a05eaf0dd0bbf5b33a5",
+      "OriginalBytes": 4308,
+      "OriginalSha256": "327d55526e06458e8a25801953d36201c545072d888f8204bbf750f8d4ba1df6"
+    },
+    {
+      "Path": "runner.log",
+      "StoredPath": "runner.log.gz",
+      "StoredBytes": 387,
+      "StoredSha256": "8978b5169f13f98071391e9bcbf540c5b74e96223365c9dc45414ad6741459b8",
+      "OriginalBytes": 697,
+      "OriginalSha256": "be0ffbebc18c750c8c92df72f2a286627564eeed3f19db56f757bf25bb270d05"
+    },
+    {
+      "Path": "summary.json",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1314,
+      "StoredSha256": "90e18fe796e2e8632231b041f1c553a2951a645e879f3afd6dce757e6b2ca0c7",
+      "OriginalBytes": 1314,
+      "OriginalSha256": "90e18fe796e2e8632231b041f1c553a2951a645e879f3afd6dce757e6b2ca0c7"
+    }
+  ]
+}

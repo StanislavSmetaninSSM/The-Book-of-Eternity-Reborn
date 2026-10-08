@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="f624b428-71e3-48a5-9fd7-82a487f01a4c" name="Eja@HOME-PC 2026-10-04 06:09:17" runUser="HOME-PC\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T06:09:17.3310516+10:00" queuing="2026-10-04T06:09:17.3310520+10:00" start="2026-10-04T06:04:27.2515607+10:00" finish="2026-10-04T06:09:17.3454357+10:00" />
+  <TestSettings name="default" id="12d3a2bf-5b2b-42b0-8a79-ee4e9e387f6d">
+    <Deployment runDeploymentRoot="Eja_HOME-PC_2026-10-04_06_09_17" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="272a9eba-9c5c-4fc0-952d-ed0870a17b57" testId="4ad8ac02-c6bb-0f2c-2f5a-68a81a03b77f" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope" computerName="HOME-PC" duration="00:04:46.7638430" startTime="2026-10-04T06:09:17.1755421+10:00" endTime="2026-10-04T06:09:17.1755678+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="272a9eba-9c5c-4fc0-952d-ed0870a17b57">
+      <Output>
+        <StdOut>Child={"Operation":"seed","Workload":"many","HeapBytes":805306368,"Completed":true,"Os":"Microsoft Windows 10.0.26200","BaselineEntryCount":13,"AdditionalIncomingCount":8179,"ArchiveEntries":8192,"ArchiveNameBytes":2096128,"ExpandedBytes":4297368,"ManifestBytes":3242911,"ArchiveBytes":6293208,"IncomingFileCount":8191,"RequestedBulkPayloadBytes":0,"OldAdditionalFileCount":9216,"OldAdditionalBytes":1179648,"PredictedPayloadFootprintBytes":89833120,"PhaseMilliseconds":101244.6438,"PhaseAllocatedBytes":1698762752,"ProcessPeakWorkingSetBytes":125571072,"Phase":"SeedCompleted"}; parent={"Operation":"seed","Workload":"many","ParentTerminated":false,"SampleCount":606,"SampledPeakWorkingSetBytes":124637184,"OwnedDiskPeakBytes":12902035,"PhaseSampleCount":604,"SampledPhasePeakWorkingSetBytes":124526592,"OwnedPhaseDiskPeakBytes":12901463,"ParentMilliseconds":102111.8278,"OwnedProcessExited":true,"Progress":[]}; stderr=&#xD;
+Partial={"Operation":"publication","Workload":"many","PhaseStarted":true,"PhaseStopped":false,"ParentMilliseconds":180058.7771,"SampledPeakWorkingSetBytes":154697728,"OwnedDiskPeakBytes":13956817,"Progress":[{"ParentMilliseconds":76600.2299,"Event":{"Phase":"OperationProgress","Operation":"publication","HeapBytes":805306368,"Boundary":"CanonicalLockOpened","Index":0}}],"Failure":"Owned load-resource guard stop: RSS=154697728; disk=13956817; elapsed=00:03:00.0578790."}</StdOut>
+        <ErrorInfo>
+          <Message>System.InvalidOperationException : Owned load-resource guard stop: RSS=154697728; disk=13956817; elapsed=00:03:00.0578790.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadResourceTests.SampleChild(Process process, Stopwatch timer, Int64&amp; rssPeak, Int64&amp; diskPeak, Boolean measuring, Int64&amp; phaseRssPeak, Int64&amp; phaseDiskPeak, Int32&amp; phaseSamples) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 491&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 356&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 445&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPublicationFitsDeclaredLoadResourceEnvelope(String workload) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 84&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="4ad8ac02-c6bb-0f2c-2f5a-68a81a03b77f">
+      <Execution id="272a9eba-9c5c-4fc0-952d-ed0870a17b57" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="4ad8ac02-c6bb-0f2c-2f5a-68a81a03b77f" executionId="272a9eba-9c5c-4fc0-952d-ed0870a17b57" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.29]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.33]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.35]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:04:49.19]       System.InvalidOperationException : Owned load-resource guard stop: RSS=154697728; disk=13956817; elapsed=00:03:00.0578790.&#xD;
+[xUnit.net 00:04:49.19]       Stack Trace:&#xD;
+[xUnit.net 00:04:49.19]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(491,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.SampleChild(Process process, Stopwatch timer, Int64&amp; rssPeak, Int64&amp; diskPeak, Boolean measuring, Int64&amp; phaseRssPeak, Int64&amp; phaseDiskPeak, Int32&amp; phaseSamples)&#xD;
+[xUnit.net 00:04:49.20]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(356,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut)&#xD;
+[xUnit.net 00:04:49.20]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(445,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut)&#xD;
+[xUnit.net 00:04:49.20]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(84,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPublicationFitsDeclaredLoadResourceEnvelope(String workload)&#xD;
+[xUnit.net 00:04:49.20]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:04:49.20]       Output:&#xD;
+[xUnit.net 00:04:49.20]         Child={"Operation":"seed","Workload":"many","HeapBytes":805306368,"Completed":true,"Os":"Microsoft Windows 10.0.26200","BaselineEntryCount":13,"AdditionalIncomingCount":8179,"ArchiveEntries":8192,"ArchiveNameBytes":2096128,"ExpandedBytes":4297368,"ManifestBytes":3242911,"ArchiveBytes":6293208,"IncomingFileCount":8191,"RequestedBulkPayloadBytes":0,"OldAdditionalFileCount":9216,"OldAdditionalBytes":1179648,"PredictedPayloadFootprintBytes":89833120,"PhaseMilliseconds":101244.6438,"PhaseAllocatedBytes":1698762752,"ProcessPeakWorkingSetBytes":125571072,"Phase":"SeedCompleted"}; parent={"Operation":"seed","Workload":"many","ParentTerminated":false,"SampleCount":606,"SampledPeakWorkingSetBytes":124637184,"OwnedDiskPeakBytes":12902035,"PhaseSampleCount":604,"SampledPhasePeakWorkingSetBytes":124526592,"OwnedPhaseDiskPeakBytes":12901463,"ParentMilliseconds":102111.8278,"OwnedProcessExited":true,"Progress":[]}; stderr=&#xD;
+[xUnit.net 00:04:49.20]         Partial={"Operation":"publication","Workload":"many","PhaseStarted":true,"PhaseStopped":false,"ParentMilliseconds":180058.7771,"SampledPeakWorkingSetBytes":154697728,"OwnedDiskPeakBytes":13956817,"Progress":[{"ParentMilliseconds":76600.2299,"Event":{"Phase":"OperationProgress","Operation":"publication","HeapBytes":805306368,"Boundary":"CanonicalLockOpened","Index":0}}],"Failure":"Owned load-resource guard stop: RSS=154697728; disk=13956817; elapsed=00:03:00.0578790."}&#xD;
+[xUnit.net 00:04:49.20]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="HOME-PC" outcome="Error" timestamp="2026-10-04T06:09:17.1699181+10:00">
+        <Text>[xUnit.net 00:04:49.19]     BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

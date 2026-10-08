@@ -1,0 +1,14 @@
+{
+  "ObservedUtc": "2026-10-05T12:15:56.827363+00:00",
+  "Commit": "39df05024cecefe7266f41cec1b772895155e576",
+  "Tree": "4154c8900fd7bc958b35f6c8327799e2829cb83a",
+  "Method": "Fresh GitHub-only clone into a new empty directory; no local source/object cache",
+  "RestorationDirectory": "/workspace/linux-1553-ownership-design-review-restore",
+  "RemoteShaBeforeAndAfterVerified": true,
+  "Clean": true,
+  "TrackedFiles": 5342,
+  "ChangedFilesBytesVerified": 16,
+  "QualificationInputHashesVerified": 11,
+  "ConnectivityFsck": "PASS",
+  "SourceOnlyNoBuildOrExecution": true
+}

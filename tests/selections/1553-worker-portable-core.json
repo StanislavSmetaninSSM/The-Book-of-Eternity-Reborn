@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-worker-transaction",
+      "reason": "Deferred B1 worker decision, generation/identity/nesting, actual cold and current envelope cases.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-worker-admission",
+      "reason": "Review-driven causal safe rejection, lost evidence, empty-parent guard and streamed envelope.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-worker-diagnostic",
+      "reason": "Preserve both initiating original-backend and private cleanup failures.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-load-worker-ordering",
+      "reason": "Real worker decision serializes public Load and preserves the original positive result assertions.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    }
+  ]
+}

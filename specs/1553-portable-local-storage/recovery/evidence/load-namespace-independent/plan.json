@@ -1,0 +1,50 @@
+{
+  "Categories": [
+    "portable-storage-namespace"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e343e19c1f5c8e366307a9996fe62b6c01ab7604",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 7.2239006,
+  "Descriptors": [
+    {
+      "Name": "portable-storage-namespace-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-namespace",
+      "Categories": [
+        "portable-storage-namespace"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.EveryV3FieldRejectsOmissionWrongTypeAndForbiddenNull|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.LateInvalidV3MetadataRetainsEveryEarlierMemberAndEvidence|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnknownLaterChildRetainsEveryEarlierAfterImage|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnsupportedNamespaceAuthorityRetainsExactEvidence",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 33,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.EveryV3FieldRejectsOmissionWrongTypeAndForbiddenNull",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.LateInvalidV3MetadataRetainsEveryEarlierMemberAndEvidence",
+          "Cases": 18
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnknownLaterChildRetainsEveryEarlierAfterImage",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnsupportedNamespaceAuthorityRetainsExactEvidence",
+          "Cases": 6
+        }
+      ]
+    }
+  ]
+}

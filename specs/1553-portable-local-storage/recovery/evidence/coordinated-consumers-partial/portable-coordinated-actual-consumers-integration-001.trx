@@ -1,0 +1,144 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="1ab1ac3a-15b8-4736-9ce7-2200094fd716" name="coordinated-consumers-partial" runUser="$USER">
+  <ns0:Times creation="2026-10-01T13:33:45.5279209-04:00" queuing="2026-10-01T13:33:45.5279210-04:00" start="2026-10-01T13:33:39.2246970-04:00" finish="2026-10-01T13:33:47.2189350-04:00" />
+  <ns0:TestSettings name="default" id="0bfe6c0b-edcd-471c-bf71-2dd706049b99">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="c1da2812-5731-4c2b-8afb-02b27b420ef0" testId="780954d8-bb30-cba3-e9a5-9fd9e924b3f4" testName="BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_TwoWavesSurviveRestartsAndPublishMechanicsOnlyAtFinalWave" computerName="$HOST" duration="00:00:03.8304804" startTime="2026-10-01T13:33:45.4711837-04:00" endTime="2026-10-01T13:33:45.4711972-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c1da2812-5731-4c2b-8afb-02b27b420ef0" />
+    <ns0:UnitTestResult executionId="e6a5dc69-1120-462f-b94e-e176ce060997" testId="4a2eec2e-04ea-4087-21c8-e41798dd39ba" testName="BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.BuyAsync_TemplateOnlyTradeOutput_SealsIndependentCanonicalItem" computerName="$HOST" duration="00:00:00.3606759" startTime="2026-10-01T13:33:46.1772973-04:00" endTime="2026-10-01T13:33:46.1772975-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e6a5dc69-1120-462f-b94e-e176ce060997" />
+    <ns0:UnitTestResult executionId="900b647c-2c16-41d2-a3d0-241d263a1f95" testId="2ca40c9e-1b9b-84d9-ac23-778e93b50443" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationRepairLifecycleTests_Privacy_AgentConsoleOuterFailureUsesPlayerSafeProjection" computerName="$HOST" duration="00:00:00.0286546" startTime="2026-10-01T13:33:46.7656298-04:00" endTime="2026-10-01T13:33:46.7656300-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="900b647c-2c16-41d2-a3d0-241d263a1f95" />
+    <ns0:UnitTestResult executionId="2ffa5a35-1634-4116-b29c-bfa816d8ed28" testId="037b474e-8805-b2f5-9c80-36ae71ce6862" testName="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.LocalAfterlifeOwnerResourceService_CommitsSpiritFocusAndLedgerAtomically" computerName="$HOST" duration="00:00:00.1427831" startTime="2026-10-01T13:33:46.7358959-04:00" endTime="2026-10-01T13:33:46.7358961-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2ffa5a35-1634-4116-b29c-bfa816d8ed28" />
+    <ns0:UnitTestResult executionId="ab81b6d9-2806-41ac-b3c5-cc7195f5d041" testId="dc2c19c3-c15e-d264-8c44-43b83c8e24b7" testName="BookOfEternityClient.Tests.TrainingServiceTests.EnsureTrainingAsync_MortalActorChangesAfterFinalRead_IsRejectedByVisibilityGuard" computerName="$HOST" duration="00:00:00.0855551" startTime="2026-10-01T13:33:46.2654238-04:00" endTime="2026-10-01T13:33:46.2654239-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ab81b6d9-2806-41ac-b3c5-cc7195f5d041" />
+    <ns0:UnitTestResult executionId="6c15e9c8-ae1c-4c57-a67e-1aac6dd02f2e" testId="eb3423f4-3b95-cede-7fb7-1a672d47e0bd" testName="BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_ConcurrentEvolutionRequestSurvivesFailedStateCommit" computerName="$HOST" duration="00:00:00.1239851" startTime="2026-10-01T13:33:46.3893760-04:00" endTime="2026-10-01T13:33:46.3893762-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6c15e9c8-ae1c-4c57-a67e-1aac6dd02f2e" />
+    <ns0:UnitTestResult executionId="bf49fb8e-5a6f-407b-b820-ce5e80cccf62" testId="1e79ce69-2d41-a87a-794c-1707000fb57a" testName="BookOfEternityClient.Tests.ShiningBlessingEffectStateTests.MaterializeForBootstrapAsync_WritesCanonicalBlessingStateAndAppliesResources" computerName="$HOST" duration="00:00:00.2017547" startTime="2026-10-01T13:33:46.5922232-04:00" endTime="2026-10-01T13:33:46.5922234-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bf49fb8e-5a6f-407b-b820-ce5e80cccf62" />
+    <ns0:UnitTestResult executionId="cfe0f4cf-80cc-46a3-a0ac-80ffd196cb4e" testId="da34cf35-5687-779b-6d8d-757a53e9e2a1" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim" computerName="$HOST" duration="00:00:00.3439235" startTime="2026-10-01T13:33:47.1351460-04:00" endTime="2026-10-01T13:33:47.1351462-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cfe0f4cf-80cc-46a3-a0ac-80ffd196cb4e">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.DllNotFoundException : Unable to load shared library 'kernel32.dll' or one of its dependencies. In order to help diagnose loading problems, consider using a tool like strace. If you're using glibc, consider setting the LD_DEBUG environment variable: 
+$TOOLCHAIN/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll.so: cannot open shared object file: No such file or directory
+$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/kernel32.dll.so: cannot open shared object file: No such file or directory
+$TOOLCHAIN/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll.so: cannot open shared object file: No such file or directory
+$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/libkernel32.dll.so: cannot open shared object file: No such file or directory
+$TOOLCHAIN/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll: cannot open shared object file: No such file or directory
+$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/kernel32.dll: cannot open shared object file: No such file or directory
+$TOOLCHAIN/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll: cannot open shared object file: No such file or directory
+$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/libkernel32.dll: cannot open shared object file: No such file or directory
+</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.PhysicalFileAuthority.CreateFile(String lpFileName, UInt32 dwDesiredAccess, UInt32 dwShareMode, IntPtr lpSecurityAttributes, UInt32 dwCreationDisposition, UInt32 dwFlagsAndAttributes, IntPtr hTemplateFile)
+   at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteEntry(StableDirectory parent, String expectedPath, String authorityName, Boolean requirePhysicalDirectory, Boolean requireSingleFileLinks, FileIdentity expectedIdentity) in $REPO/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1660
+   at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteDirectoryTree(StableDirectory parent, String expectedPath, String authorityName, Boolean requireSingleFileLinks) in $REPO/BookOfEternityClient/Core/PhysicalFileAuthority.cs:line 1440
+   at BookOfEternityClient.Core.FileSystemManager.DeleteDirectoryTree(CanonicalWriteLease writeLease, String relativePath) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 1627
+   at BookOfEternityClient.Services.LiveTurnPreparationService.CleanupPreparedTurnArtifacts(CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 392
+   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options) in $REPO/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 75
+   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options) in $REPO/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 201
+   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 187
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 102
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 141
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 44
+   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareAsync(LiveTurnPreparationOptions options) in $REPO/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 66
+   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateProcedureTreatmentPipelineContextAsync(AcceptedTreatmentPipelineFault fault, Boolean withRollbackAuthority, Boolean includeEnergyResource, HeldTreatmentItemScenario itemScenario, Boolean includeFateShield, Boolean composePublicationPlan) in $REPO/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.Procedure.cs:line 1065
+   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateProcedureTreatmentPipelineContextAsync(AcceptedTreatmentPipelineFault fault, Boolean withRollbackAuthority, Boolean includeEnergyResource, HeldTreatmentItemScenario itemScenario, Boolean includeFateShield, Boolean composePublicationPlan) in $REPO/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.Procedure.cs:line 1210
+   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim() in $REPO/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.Procedure.cs:line 189
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="3b5d0609-2869-48f4-958f-4890ea47f141" testId="7640a3f8-bdd4-8b1b-da27-72d2b6540ce3" testName="BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.TerminalSelection_ByteDifferentSealedRootFailsBeforeAnyWrite" computerName="$HOST" duration="00:00:00.3367482" startTime="2026-10-01T13:33:45.8098207-04:00" endTime="2026-10-01T13:33:45.8098209-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3b5d0609-2869-48f4-958f-4890ea47f141" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.TerminalSelection_ByteDifferentSealedRootFailsBeforeAnyWrite" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7640a3f8-bdd4-8b1b-da27-72d2b6540ce3">
+      <ns0:Execution id="3b5d0609-2869-48f4-958f-4890ea47f141" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests" name="TerminalSelection_ByteDifferentSealedRootFailsBeforeAnyWrite" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.BuyAsync_TemplateOnlyTradeOutput_SealsIndependentCanonicalItem" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="4a2eec2e-04ea-4087-21c8-e41798dd39ba">
+      <ns0:Execution id="e6a5dc69-1120-462f-b94e-e176ce060997" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests" name="BuyAsync_TemplateOnlyTradeOutput_SealsIndependentCanonicalItem" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.ShiningBlessingEffectStateTests.MaterializeForBootstrapAsync_WritesCanonicalBlessingStateAndAppliesResources" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1e79ce69-2d41-a87a-794c-1707000fb57a">
+      <ns0:Execution id="bf49fb8e-5a6f-407b-b820-ce5e80cccf62" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ShiningBlessingEffectStateTests" name="MaterializeForBootstrapAsync_WritesCanonicalBlessingStateAndAppliesResources" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.TrainingServiceTests.BuyTrainingAsync_ConcurrentEvolutionRequestSurvivesFailedStateCommit" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="eb3423f4-3b95-cede-7fb7-1a672d47e0bd">
+      <ns0:Execution id="6c15e9c8-ae1c-4c57-a67e-1aac6dd02f2e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrainingServiceTests" name="BuyTrainingAsync_ConcurrentEvolutionRequestSurvivesFailedStateCommit" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.LocalAfterlifeOwnerResourceService_CommitsSpiritFocusAndLedgerAtomically" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="037b474e-8805-b2f5-9c80-36ae71ce6862">
+      <ns0:Execution id="2ffa5a35-1634-4116-b29c-bfa816d8ed28" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AfterlifeResourceCutoverTests" name="LocalAfterlifeOwnerResourceService_CommitsSpiritFocusAndLedgerAtomically" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.TrainingServiceTests.EnsureTrainingAsync_MortalActorChangesAfterFinalRead_IsRejectedByVisibilityGuard" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="dc2c19c3-c15e-d264-8c44-43b83c8e24b7">
+      <ns0:Execution id="ab81b6d9-2806-41ac-b3c5-cc7195f5d041" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrainingServiceTests" name="EnsureTrainingAsync_MortalActorChangesAfterFinalRead_IsRejectedByVisibilityGuard" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_TwoWavesSurviveRestartsAndPublishMechanicsOnlyAtFinalWave" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="780954d8-bb30-cba3-e9a5-9fd9e924b3f4">
+      <ns0:Execution id="c1da2812-5731-4c2b-8afb-02b27b420ef0" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests" name="BoundedReceipt_TwoWavesSurviveRestartsAndPublishMechanicsOnlyAtFinalWave" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="da34cf35-5687-779b-6d8d-757a53e9e2a1">
+      <ns0:Execution id="cfe0f4cf-80cc-46a3-a0ac-80ffd196cb4e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationRepairLifecycleTests_Privacy_AgentConsoleOuterFailureUsesPlayerSafeProjection" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2ca40c9e-1b9b-84d9-ac23-778e93b50443">
+      <ns0:Execution id="900b647c-2c16-41d2-a3d0-241d263a1f95" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="EffectMaterializationRepairLifecycleTests_Privacy_AgentConsoleOuterFailureUsesPlayerSafeProjection" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="780954d8-bb30-cba3-e9a5-9fd9e924b3f4" executionId="c1da2812-5731-4c2b-8afb-02b27b420ef0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="4a2eec2e-04ea-4087-21c8-e41798dd39ba" executionId="e6a5dc69-1120-462f-b94e-e176ce060997" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="2ca40c9e-1b9b-84d9-ac23-778e93b50443" executionId="900b647c-2c16-41d2-a3d0-241d263a1f95" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="037b474e-8805-b2f5-9c80-36ae71ce6862" executionId="2ffa5a35-1634-4116-b29c-bfa816d8ed28" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="dc2c19c3-c15e-d264-8c44-43b83c8e24b7" executionId="ab81b6d9-2806-41ac-b3c5-cc7195f5d041" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="eb3423f4-3b95-cede-7fb7-1a672d47e0bd" executionId="6c15e9c8-ae1c-4c57-a67e-1aac6dd02f2e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="1e79ce69-2d41-a87a-794c-1707000fb57a" executionId="bf49fb8e-5a6f-407b-b820-ce5e80cccf62" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="da34cf35-5687-779b-6d8d-757a53e9e2a1" executionId="cfe0f4cf-80cc-46a3-a0ac-80ffd196cb4e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="7640a3f8-bdd4-8b1b-da27-72d2b6540ce3" executionId="3b5d0609-2869-48f4-958f-4890ea47f141" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="9" executed="9" passed="8" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.49]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.87]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.90]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:07.44]       System.DllNotFoundException : Unable to load shared library 'kernel32.dll' or one of its dependencies. In order to help diagnose loading problems, consider using a tool like strace. If you're using glibc, consider setting the LD_DEBUG environment variable: 
+[xUnit.net 00:00:07.44]       $TOOLCHAIN/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:07.45]       $REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/kernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:07.45]       $TOOLCHAIN/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:07.45]       $REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/libkernel32.dll.so: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:07.45]       $TOOLCHAIN/dotnet/shared/Microsoft.NETCore.App/8.0.31/kernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:07.45]       $REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/kernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:07.45]       $TOOLCHAIN/dotnet/shared/Microsoft.NETCore.App/8.0.31/libkernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:07.45]       $REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/libkernel32.dll: cannot open shared object file: No such file or directory
+[xUnit.net 00:00:07.45]       
+[xUnit.net 00:00:07.45]       Stack Trace:
+[xUnit.net 00:00:07.45]            at BookOfEternityClient.Core.PhysicalFileAuthority.CreateFile(String lpFileName, UInt32 dwDesiredAccess, UInt32 dwShareMode, IntPtr lpSecurityAttributes, UInt32 dwCreationDisposition, UInt32 dwFlagsAndAttributes, IntPtr hTemplateFile)
+[xUnit.net 00:00:07.45]         $REPO/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1660,0): at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteEntry(StableDirectory parent, String expectedPath, String authorityName, Boolean requirePhysicalDirectory, Boolean requireSingleFileLinks, FileIdentity expectedIdentity)
+[xUnit.net 00:00:07.45]         $REPO/BookOfEternityClient/Core/PhysicalFileAuthority.cs(1440,0): at BookOfEternityClient.Core.PhysicalFileAuthority.TryDeleteDirectoryTree(StableDirectory parent, String expectedPath, String authorityName, Boolean requireSingleFileLinks)
+[xUnit.net 00:00:07.45]         $REPO/BookOfEternityClient/Core/FileSystemManager.cs(1627,0): at BookOfEternityClient.Core.FileSystemManager.DeleteDirectoryTree(CanonicalWriteLease writeLease, String relativePath)
+[xUnit.net 00:00:07.45]         $REPO/BookOfEternityClient/Services/LiveTurnPreparationService.cs(392,0): at BookOfEternityClient.Services.LiveTurnPreparationService.CleanupPreparedTurnArtifacts(CanonicalWriteLease writeLease)
+[xUnit.net 00:00:07.45]         $REPO/BookOfEternityClient/Services/LiveTurnPreparationService.cs(75,0): at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options)
+[xUnit.net 00:00:07.45]         $REPO/BookOfEternityClient/Services/LiveTurnPreparationService.cs(201,0): at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareBoundAsync(LiveTurnPreparationOptions options)
+[xUnit.net 00:00:07.45]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(187,0): at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation)
+[xUnit.net 00:00:07.45]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(102,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:07.45]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(141,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:07.45]         $REPO/BookOfEternityClient/Core/SessionOperationContext.cs(44,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation)
+[xUnit.net 00:00:07.45]         $REPO/BookOfEternityClient/Services/LiveTurnPreparationService.cs(66,0): at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareAsync(LiveTurnPreparationOptions options)
+[xUnit.net 00:00:07.45]         $REPO/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.Procedure.cs(1065,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateProcedureTreatmentPipelineContextAsync(AcceptedTreatmentPipelineFault fault, Boolean withRollbackAuthority, Boolean includeEnergyResource, HeldTreatmentItemScenario itemScenario, Boolean includeFateShield, Boolean composePublicationPlan)
+[xUnit.net 00:00:07.45]         $REPO/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.Procedure.cs(1210,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateProcedureTreatmentPipelineContextAsync(AcceptedTreatmentPipelineFault fault, Boolean withRollbackAuthority, Boolean includeEnergyResource, HeldTreatmentItemScenario itemScenario, Boolean includeFateShield, Boolean composePublicationPlan)
+[xUnit.net 00:00:07.45]         $REPO/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.Procedure.cs(189,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim()
+[xUnit.net 00:00:07.45]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:07.45]   Finished:    BookOfEternityClient.IntegrationTests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T13:33:47.1318536-04:00">
+        <ns0:Text>[xUnit.net 00:00:07.44]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

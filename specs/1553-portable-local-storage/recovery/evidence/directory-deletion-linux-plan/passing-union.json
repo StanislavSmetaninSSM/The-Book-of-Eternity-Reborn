@@ -1,0 +1,758 @@
+{
+  "schemaVersion": 1,
+  "scope": "Exact union of separately saved passing Linux cases, not an aggregate run or native/full-gameplay acceptance. Source and artifact provenance retained for every case. Known failed quarantine prerequisite excluded by explicit separate catalog owner.",
+  "methods": 28,
+  "cases": 58,
+  "entries": [
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingSnapshotCleanup_AndLateRollback_MustNotTrustRawManifestArtifactPaths",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingSnapshotCleanup_AndLateRollback_MustNotTrustRawManifestArtifactPaths",
+          "provenance": [
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-unit-consumers-partial/portable-directory-consumers-continuation-unit-001.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
+          "provenance": [
+            {
+              "sourceCommit": "efc28137c92515a9d72f16637084e571e48806b1",
+              "artifact": "directory-deletion-consumers-partial/portable-directory-consumers-integration-001.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_TerminalError_CleansTurnRequestAndPendingSnapshot",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_TerminalError_CleansTurnRequestAndPendingSnapshot",
+          "provenance": [
+            {
+              "sourceCommit": "efc28137c92515a9d72f16637084e571e48806b1",
+              "artifact": "directory-deletion-consumers-partial/portable-directory-consumers-integration-001.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_RemovesStalePendingDiceStateSoTurnRequestIsOnlyCurrentDiceAuthority",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_RemovesStalePendingDiceStateSoTurnRequestIsOnlyCurrentDiceAuthority",
+          "provenance": [
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-unit-consumers-partial/portable-directory-consumers-continuation-unit-001.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+          "provenance": [
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-unit-consumers-partial/portable-directory-consumers-continuation-unit-001.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+          "provenance": [
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-unit-consumers-partial/portable-directory-consumers-continuation-unit-001.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup",
+          "provenance": [
+            {
+              "sourceCommit": "a0a35d57bde429befbf1b9b90e5b7410d4fb202a",
+              "artifact": "directory-deletion-uncertain-consumer-green/portable-directory-uncertain-consumer-unit-001.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+      "expectedCases": 9,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"CleanupComplete\", committed: True)",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-recovery-unit-003.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-recovery-boundary-unit-001.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"CleanupMember\", committed: True)",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-recovery-unit-003.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-recovery-boundary-unit-001.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"CommitStaged\", committed: False)",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-recovery-unit-003.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-recovery-boundary-unit-001.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"Committed\", committed: True)",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-recovery-unit-003.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-recovery-boundary-unit-001.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"IntentPublished\", committed: False)",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-recovery-unit-003.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-recovery-boundary-unit-001.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"IntentStaged\", committed: False)",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-recovery-unit-003.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-recovery-boundary-unit-001.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"cleanup-debt\", committed: True)",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-recovery-unit-003.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-recovery-boundary-unit-001.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"first-member\", committed: False)",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-recovery-unit-003.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-recovery-boundary-unit-001.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess(cut: \"last-member\", committed: False)",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-recovery-unit-003.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-recovery-boundary-unit-001.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup",
+      "expectedCases": 2,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup(cut: \"cleanup-debt\", committed: True)",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-recovery-unit-003.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup(cut: \"first-member\", committed: False)",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-recovery-unit-003.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdUnknownBytesOrGenerationPreserveThePartialSetAndJournal",
+      "expectedCases": 2,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdUnknownBytesOrGenerationPreserveThePartialSetAndJournal(generationConflict: False)",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-recovery-unit-003.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdUnknownBytesOrGenerationPreserveThePartialSetAndJournal(generationConflict: True)",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-recovery-unit-003.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.LinuxFifoIsRejectedBeforeAnyOpenOrMemberMutationInBoundedProcess",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.LinuxFifoIsRejectedBeforeAnyOpenOrMemberMutationInBoundedProcess",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-linux-special-unit-002.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.AbsentGenerationJoinsTheSameDeletionDecisionAndRollsBackAsAbsence",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.AbsentGenerationJoinsTheSameDeletionDecisionAndRollsBackAsAbsence",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.CommittedCleanupAndDiagnosticFailureNeverUndoOrDeleteUnknownBytes",
+      "expectedCases": 2,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.CommittedCleanupAndDiagnosticFailureNeverUndoOrDeleteUnknownBytes(cleanupDebt: False)",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.CommittedCleanupAndDiagnosticFailureNeverUndoOrDeleteUnknownBytes(cleanupDebt: True)",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration",
+      "expectedCases": 2,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(exists: False)",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-recovery-boundary-unit-001.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration(exists: True)",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-recovery-boundary-unit-001.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.HardLinkedMemberDeletionPreservesTheOutsideName",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.HardLinkedMemberDeletionPreservesTheOutsideName",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidGenerationRejectsEvenAnEmptyTree",
+      "expectedCases": 2,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidGenerationRejectsEvenAnEmptyTree(directory: False)",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidGenerationRejectsEvenAnEmptyTree(directory: True)",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidRelativeDirectoryDoesNotMutate",
+      "expectedCases": 3,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidRelativeDirectoryDoesNotMutate(relative: \"\")",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidRelativeDirectoryDoesNotMutate(relative: \".\")",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidRelativeDirectoryDoesNotMutate(relative: \"../outside\")",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes",
+      "expectedCases": 4,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: \"late-dangling-link\")",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-fixture-correction-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: \"late-link\")",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-fixture-correction-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: \"root-file\")",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-fixture-correction-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes(invalid: \"root-link\")",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-fixture-correction-unit-001.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.MutationHooksCannotIntroduceAnUnjournaledMember",
+      "expectedCases": 4,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.MutationHooksCannotIntroduceAnUnjournaledMember(boundary: \"member-after\")",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.MutationHooksCannotIntroduceAnUnjournaledMember(boundary: \"member-before\")",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.MutationHooksCannotIntroduceAnUnjournaledMember(boundary: \"root-after\")",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.MutationHooksCannotIntroduceAnUnjournaledMember(boundary: \"root-before\")",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            },
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-recovery-boundary-unit-001.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PlatformDistinctNamesRemainSeparateJournalMembers",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PlatformDistinctNamesRemainSeparateJournalMembers",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PublicationCutsKeepExactWholeBeforeOrCommittedAbsence",
+      "expectedCases": 7,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PublicationCutsKeepExactWholeBeforeOrCommittedAbsence(cut: \"CleanupComplete\", committed: True)",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PublicationCutsKeepExactWholeBeforeOrCommittedAbsence(cut: \"CleanupMember\", committed: True)",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PublicationCutsKeepExactWholeBeforeOrCommittedAbsence(cut: \"CommitStaged\", committed: False)",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PublicationCutsKeepExactWholeBeforeOrCommittedAbsence(cut: \"Committed\", committed: True)",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PublicationCutsKeepExactWholeBeforeOrCommittedAbsence(cut: \"IntentPublished\", committed: False)",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PublicationCutsKeepExactWholeBeforeOrCommittedAbsence(cut: \"IntentStaged\", committed: False)",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PublicationCutsKeepExactWholeBeforeOrCommittedAbsence(cut: \"MemberPublished\", committed: False)",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.ReadBoundaryLinkReplacementRejectsBeforeOpeningOrDeletingOtherMembers",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.ReadBoundaryLinkReplacementRejectsBeforeOpeningOrDeletingOtherMembers",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.RealNullForeignAndDisposedLeasesCannotDelete",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.RealNullForeignAndDisposedLeasesCannotDelete",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning",
+      "expectedCases": 4,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning(ancestor: False, conflict: False)",
+          "provenance": [
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-same-lease-recovery-unit-002.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning(ancestor: False, conflict: True)",
+          "provenance": [
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-same-lease-recovery-unit-002.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning(ancestor: True, conflict: False)",
+          "provenance": [
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-same-lease-recovery-unit-002.trx"
+            }
+          ]
+        },
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning(ancestor: True, conflict: True)",
+          "provenance": [
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-review-correction-green/portable-directory-same-lease-recovery-unit-002.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.StaleBoundGenerationRejectsBeforeDeletingAnyMember",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.StaleBoundGenerationRejectsBeforeDeletingAnyMember",
+          "provenance": [
+            {
+              "sourceCommit": "2daa5992eb9f43ed187b0d244f0ac23dcdd41277",
+              "artifact": "directory-deletion-continuation-green/portable-directory-fixture-correction-unit-001.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.UnknownLaterMemberPreservesPartialOutcomeAndRetainedEvidence",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.UnknownLaterMemberPreservesPartialOutcomeAndRetainedEvidence",
+          "provenance": [
+            {
+              "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+              "artifact": "directory-deletion-initial-green-partial/portable-directory-deletion-unit-001.sanitized-v2.trx"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback",
+      "expectedCases": 1,
+      "passedCases": [
+        {
+          "testName": "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback",
+          "provenance": [
+            {
+              "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+              "artifact": "directory-deletion-unit-consumers-partial/portable-directory-consumers-continuation-unit-001.trx"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

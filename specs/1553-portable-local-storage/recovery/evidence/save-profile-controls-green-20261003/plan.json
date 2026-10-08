@@ -1,0 +1,63 @@
+{
+  "Categories": [
+    "portable-save-original-profile-windows",
+    "portable-save-profile-consumers"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "36589e5b6935d197ddeb9441c750237d55610956",
+    "WorkingTreeFingerprint": "9CF00EFAD5D38F839610761046D9090737F8F5FED012143C9AD43D2E1143EEAF",
+    "ChangedFiles": 4
+  },
+  "PreparationSeconds": 39.8650203,
+  "Descriptors": [
+    {
+      "Name": "portable-save-original-profile-windows-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-original-profile-windows",
+      "Categories": [
+        "portable-save-original-profile-windows"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.OriginalSaveProfileRefreshTests.WindowsOriginalRecorderRefreshRetainsPhysicalPublicationReceipt",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.OriginalSaveProfileRefreshTests.WindowsOriginalRecorderRefreshRetainsPhysicalPublicationReceipt",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-save-profile-consumers-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-profile-consumers",
+      "Categories": [
+        "portable-save-profile-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.StateManagerTests.AfterlifeEntityProfileState_DoesNotExposeUnleasedCanonicalMirrorWrite|FullyQualifiedName=BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_PlayerSoulProfileAuthorityMirror_RepairsStaleAutoProgression|FullyQualifiedName=BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.StateManagerTests.AfterlifeEntityProfileState_DoesNotExposeUnleasedCanonicalMirrorWrite",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_PlayerSoulProfileAuthorityMirror_RepairsStaleAutoProgression",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

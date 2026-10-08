@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-storage-images"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "22b486bc5448375f09ba09d27f3bfcd0f236509f",
+    "WorkingTreeFingerprint": "D8FABB04B9C94A5C764906C6B87FC65D1EC5699ACB17E42BA38A3725B32F178A",
+    "ChangedFiles": 1
+  },
+  "PreparationSeconds": 149.3941274,
+  "Descriptors": [
+    {
+      "Name": "portable-storage-images-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-images",
+      "Categories": [
+        "portable-storage-images"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileImageTests.ByteImageOwnsAnIndependentSnapshotAndAbsenceDiffersFromEmpty|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 11,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileImageTests.ByteImageOwnsAnIndependentSnapshotAndAbsenceDiffersFromEmpty",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureFilePreservesEmptyOrBinaryContentWithoutMaterializingBytes",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileImageTests.CaptureRejectsUnapprovedMissingLinkedOrWrongTypeSource",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFileImageTests.FileCopyRejectsDriftAfterCapture",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

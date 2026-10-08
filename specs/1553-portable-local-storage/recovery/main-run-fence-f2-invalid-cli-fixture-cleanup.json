@@ -1,0 +1,36 @@
+{
+  "Reason": "unsupported --base-path did not select fixture; six synthetic neutral preparation artifacts removed from dotnet process directory; SDK files untouched",
+  "Files": [
+    {
+      "Path": "game_session/input/turn_request.json",
+      "Sha256": "9eaa0e64b5b33e73dca552f33943e3addc6d843e85826f17be716de294e1d97f",
+      "Bytes": 2754
+    },
+    {
+      "Path": "game_session/game_state/control/pending_turn_snapshot.json",
+      "Sha256": "5b4ca155a20392e81e795de43505e4635dcdfdea1cb3fe5a1db0a057535940a8",
+      "Bytes": 3754
+    },
+    {
+      "Path": "game_session/game_state/control/pending_turn_snapshot.authority.json",
+      "Sha256": "26ad1d6e91c87b2b48d3be4af7cef57f054112cc447d1fe4abb7d8a6c78c86a2",
+      "Bytes": 751
+    },
+    {
+      "Path": ".boe_runtime/locks/gm-main-owner.lock",
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Bytes": 0
+    },
+    {
+      "Path": ".boe_runtime/locks/canonical-write.lock",
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "Bytes": 0
+    },
+    {
+      "Path": ".boe_runtime/session-generation/current.json",
+      "Sha256": "2c3648c12039194b27a811a8f16f8bb7e0b2bc954e75cb1b8d878db59f5383df",
+      "Bytes": 69
+    }
+  ],
+  "Removed": true
+}

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="bf4b82eb-db17-48ae-bc7b-765c158e5890" name="Eja@[HOST] 2026-10-02 23:06:28" runUser="[HOST]\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-02T23:06:28.6166378+10:00" queuing="2026-10-02T23:06:28.6166381+10:00" start="2026-10-02T23:06:24.5076380+10:00" finish="2026-10-02T23:06:30.2011554+10:00" />
+  <TestSettings name="default" id="61cce7e9-9f41-4c42-a8ea-a55d82ee870b">
+    <Deployment runDeploymentRoot="Eja_[HOST]_2026-10-02_23_06_28" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="0b49fdf7-e224-4a2a-ab2f-6f68fe2818bb" testId="b19eb169-d8fe-ad1f-1e80-d07d087b9c0d" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure" computerName="[HOST]" duration="00:00:00.6717621" startTime="2026-10-02T23:06:27.7402706+10:00" endTime="2026-10-02T23:06:27.7403002+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0b49fdf7-e224-4a2a-ab2f-6f68fe2818bb">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.True() Failure&#xD;
+Expected: True&#xD;
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure() in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveOutcomeTests.cs:line 112&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0a482460-a543-4f90-811d-0769356ba724" testId="eef421cf-04ef-4349-ded2-e33600c75cb1" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;uncertain&quot;, autosave: True)" computerName="[HOST]" duration="00:00:00.3955078" startTime="2026-10-02T23:06:28.7399679+10:00" endTime="2026-10-02T23:06:28.7399682+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0a482460-a543-4f90-811d-0769356ba724">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown&#xD;
+Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(String fault, Boolean autosave) in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveOutcomeTests.cs:line 63&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3879d671-ce2d-4ea4-bea5-c124a5855ba9" testId="79b307d7-b7ba-d4e5-0a85-5305dbd69bb5" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;rollback&quot;, autosave: False)" computerName="[HOST]" duration="00:00:01.3026946" startTime="2026-10-02T23:06:30.0435715+10:00" endTime="2026-10-02T23:06:30.0435716+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3879d671-ce2d-4ea4-bea5-c124a5855ba9">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: False&#xD;
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(String fault, Boolean autosave) in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveOutcomeTests.cs:line 64&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d0c78b6c-032e-427d-a21b-ce600a23558b" testId="839f1521-0f16-71fb-e9d9-5df5b2344d22" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;uncertain&quot;, autosave: False)" computerName="[HOST]" duration="00:00:00.2630500" startTime="2026-10-02T23:06:28.0031442+10:00" endTime="2026-10-02T23:06:28.0031445+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d0c78b6c-032e-427d-a21b-ce600a23558b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown&#xD;
+Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(String fault, Boolean autosave) in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveOutcomeTests.cs:line 63&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c33cc70b-1c4b-4c1c-9ef8-7d3f86397e6b" testId="2beb007e-6877-fb7a-47bb-b5bb34b0d347" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;committed-cleanup&quot;, autosave: False)" computerName="[HOST]" duration="00:00:00.3387196" startTime="2026-10-02T23:06:28.3428671+10:00" endTime="2026-10-02T23:06:28.3428673+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c33cc70b-1c4b-4c1c-9ef8-7d3f86397e6b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 1&#xD;
+Actual:   0</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(String fault, Boolean autosave) in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveOutcomeTests.cs:line 66&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;uncertain&quot;, autosave: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="839f1521-0f16-71fb-e9d9-5df5b2344d22">
+      <Execution id="d0c78b6c-032e-427d-a21b-ce600a23558b" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="PublicSavePreservesPublicationOutcomeThroughImmediateCaller" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;committed-cleanup&quot;, autosave: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="2beb007e-6877-fb7a-47bb-b5bb34b0d347">
+      <Execution id="c33cc70b-1c4b-4c1c-9ef8-7d3f86397e6b" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="PublicSavePreservesPublicationOutcomeThroughImmediateCaller" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="b19eb169-d8fe-ad1f-1e80-d07d087b9c0d">
+      <Execution id="0b49fdf7-e224-4a2a-ab2f-6f68fe2818bb" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="ClosedArchiveAndCommittedResultSurviveLoggingFailure" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;uncertain&quot;, autosave: True)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="eef421cf-04ef-4349-ded2-e33600c75cb1">
+      <Execution id="0a482460-a543-4f90-811d-0769356ba724" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="PublicSavePreservesPublicationOutcomeThroughImmediateCaller" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: &quot;rollback&quot;, autosave: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="79b307d7-b7ba-d4e5-0a85-5305dbd69bb5">
+      <Execution id="3879d671-ce2d-4ea4-bea5-c124a5855ba9" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="PublicSavePreservesPublicationOutcomeThroughImmediateCaller" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="b19eb169-d8fe-ad1f-1e80-d07d087b9c0d" executionId="0b49fdf7-e224-4a2a-ab2f-6f68fe2818bb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="eef421cf-04ef-4349-ded2-e33600c75cb1" executionId="0a482460-a543-4f90-811d-0769356ba724" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="79b307d7-b7ba-d4e5-0a85-5305dbd69bb5" executionId="3879d671-ce2d-4ea4-bea5-c124a5855ba9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="839f1521-0f16-71fb-e9d9-5df5b2344d22" executionId="d0c78b6c-032e-427d-a21b-ce600a23558b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2beb007e-6877-fb7a-47bb-b5bb34b0d347" executionId="c33cc70b-1c4b-4c1c-9ef8-7d3f86397e6b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="5" executed="5" passed="0" failed="5" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.22]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.75]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.77]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.53]       Assert.True() Failure&#xD;
+[xUnit.net 00:00:02.53]       Expected: True&#xD;
+[xUnit.net 00:00:02.53]       Actual:   False&#xD;
+[xUnit.net 00:00:02.53]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.53]         [WORKTREE]\BookOfEternityClient.Tests\PortableSaveOutcomeTests.cs(112,0): at BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure()&#xD;
+[xUnit.net 00:00:02.53]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.79]       Assert.Throws() Failure: No exception was thrown&#xD;
+[xUnit.net 00:00:02.79]       Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)&#xD;
+[xUnit.net 00:00:02.79]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.79]         [WORKTREE]\BookOfEternityClient.Tests\PortableSaveOutcomeTests.cs(63,0): at BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(String fault, Boolean autosave)&#xD;
+[xUnit.net 00:00:02.79]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:03.13]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:03.13]       Expected: 1&#xD;
+[xUnit.net 00:00:03.13]       Actual:   0&#xD;
+[xUnit.net 00:00:03.13]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.13]         [WORKTREE]\BookOfEternityClient.Tests\PortableSaveOutcomeTests.cs(66,0): at BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(String fault, Boolean autosave)&#xD;
+[xUnit.net 00:00:03.13]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:03.53]       Assert.Throws() Failure: No exception was thrown&#xD;
+[xUnit.net 00:00:03.53]       Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)&#xD;
+[xUnit.net 00:00:03.53]       Stack Trace:&#xD;
+[xUnit.net 00:00:03.53]         [WORKTREE]\BookOfEternityClient.Tests\PortableSaveOutcomeTests.cs(63,0): at BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(String fault, Boolean autosave)&#xD;
+[xUnit.net 00:00:03.53]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:04.83]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:04.83]       Expected: False&#xD;
+[xUnit.net 00:00:04.83]       Actual:   True&#xD;
+[xUnit.net 00:00:04.83]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.83]         [WORKTREE]\BookOfEternityClient.Tests\PortableSaveOutcomeTests.cs(64,0): at BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(String fault, Boolean autosave)&#xD;
+[xUnit.net 00:00:04.83]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:04.85]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-02T23:06:27.7378583+10:00">
+        <Text>[xUnit.net 00:00:02.53]     BookOfEternityClient.Tests.PortableSaveOutcomeTests.ClosedArchiveAndCommittedResultSurviveLoggingFailure [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-02T23:06:28.0025132+10:00">
+        <Text>[xUnit.net 00:00:02.79]     BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: "uncertain", autosave: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-02T23:06:28.3427527+10:00">
+        <Text>[xUnit.net 00:00:03.13]     BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: "committed-cleanup", autosave: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-02T23:06:28.7395097+10:00">
+        <Text>[xUnit.net 00:00:03.53]     BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: "uncertain", autosave: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-02T23:06:30.0434257+10:00">
+        <Text>[xUnit.net 00:00:04.83]     BookOfEternityClient.Tests.PortableSaveOutcomeTests.PublicSavePreservesPublicationOutcomeThroughImmediateCaller(fault: "rollback", autosave: False) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "linux-fallback-spawn-boundary",
+    "linux-fallback-build-lifetime",
+    "linux-fallback-pidfd-identity"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0f7b3ef366d16e40b1295ef22c6a24df04a65c4f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.7157601,
+  "Descriptors": [
+    {
+      "Name": "linux-fallback-build-lifetime-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "linux-fallback-build-lifetime",
+      "Categories": [
+        "linux-fallback-build-lifetime"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackBuildLifetimeTests.PreparationTimeout_RetainsProcessAndOutputUntilActualExit",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 1,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackBuildLifetimeTests.PreparationTimeout_RetainsProcessAndOutputUntilActualExit",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "linux-fallback-pidfd-identity-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "linux-fallback-pidfd-identity",
+      "Categories": [
+        "linux-fallback-pidfd-identity"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.StalePidfdCannotSignalAnotherOwnedIncarnation",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 1,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.StalePidfdCannotSignalAnotherOwnedIncarnation",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "linux-fallback-spawn-boundary-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "linux-fallback-spawn-boundary",
+      "Categories": [
+        "linux-fallback-spawn-boundary"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSpawnBoundaryTests.StopAtWaitBoundary_StillCreatesAndRetiresDescendant",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 1,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSpawnBoundaryTests.StopAtWaitBoundary_StillCreatesAndRetiresDescendant",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

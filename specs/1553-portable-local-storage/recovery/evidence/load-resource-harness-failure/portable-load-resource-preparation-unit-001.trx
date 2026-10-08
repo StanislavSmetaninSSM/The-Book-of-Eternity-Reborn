@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="7f8721f7-8f2e-4190-b1a4-bca02589a160" name="Eja@HOME-PC 2026-10-04 05:27:29" runUser="HOME-PC\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T05:27:29.1210285+10:00" queuing="2026-10-04T05:27:29.1210287+10:00" start="2026-10-04T05:27:23.8662235+10:00" finish="2026-10-04T05:27:30.3609177+10:00" />
+  <TestSettings name="default" id="a15bcdea-0168-4171-a167-83cabc497580">
+    <Deployment runDeploymentRoot="Eja_HOME-PC_2026-10-04_05_27_29" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="e98c1d9a-6c2d-41a1-853e-909498eec5e4" testId="9c453af7-7f6a-0e28-fc94-e41496e264b1" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(workload: &quot;512&quot;)" computerName="HOME-PC" duration="00:00:00.3904181" startTime="2026-10-04T05:27:29.4771121+10:00" endTime="2026-10-04T05:27:29.4771124+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e98c1d9a-6c2d-41a1-853e-909498eec5e4">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.StartsWith() Failure: String start does not match&#xD;
+String:         "C:\\Temp\\boe-load-resource-6b1201098105449"···&#xD;
+Expected start: "C:\\Temp\\boe-load-resource-6b1201098105449"···</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadResourceTests.AssertOwnedPath(String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 556&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.IsExpectedDirectoryMutation(String path, FileSystemManager files) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 528&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 484&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.SampleChild(Process process, Stopwatch timer, Int64&amp; rssPeak, Int64&amp; diskPeak, Boolean measuring, Int64&amp; phaseRssPeak, Int64&amp; phaseDiskPeak, Int32&amp; phaseSamples) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 457&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 346&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 418&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(String workload) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 47&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1554588e-9c0a-4e67-abc6-a1faad29e68d" testId="d5f830ec-ab08-d230-ef37-97988dad0055" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(workload: &quot;128&quot;)" computerName="HOME-PC" duration="00:00:00.3738164" startTime="2026-10-04T05:27:29.8520044+10:00" endTime="2026-10-04T05:27:29.8520047+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1554588e-9c0a-4e67-abc6-a1faad29e68d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.StartsWith() Failure: String start does not match&#xD;
+String:         "C:\\Temp\\boe-load-resource-f1452fe7bb134bc"···&#xD;
+Expected start: "C:\\Temp\\boe-load-resource-f1452fe7bb134bc"···</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadResourceTests.AssertOwnedPath(String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 556&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.IsExpectedDirectoryMutation(String path, FileSystemManager files) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 528&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 484&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.SampleChild(Process process, Stopwatch timer, Int64&amp; rssPeak, Int64&amp; diskPeak, Boolean measuring, Int64&amp; phaseRssPeak, Int64&amp; phaseDiskPeak, Int32&amp; phaseSamples) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 457&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 346&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 418&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(String workload) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 47&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="aad0af48-6ce8-424f-b46e-59d1cc2f2b8c" testId="9e7eee2b-9a71-0501-b8c4-53a8823ca587" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(workload: &quot;64&quot;)" computerName="HOME-PC" duration="00:00:02.4887121" startTime="2026-10-04T05:27:29.0879896+10:00" endTime="2026-10-04T05:27:29.0880350+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aad0af48-6ce8-424f-b46e-59d1cc2f2b8c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.StartsWith() Failure: String start does not match&#xD;
+String:         "C:\\Temp\\boe-load-resource-e63ad6df9f8045c"···&#xD;
+Expected start: "C:\\Temp\\boe-load-resource-e63ad6df9f8045c"···</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadResourceTests.AssertOwnedPath(String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 556&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.IsExpectedDirectoryMutation(String path, FileSystemManager files) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 528&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 484&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.SampleChild(Process process, Stopwatch timer, Int64&amp; rssPeak, Int64&amp; diskPeak, Boolean measuring, Int64&amp; phaseRssPeak, Int64&amp; phaseDiskPeak, Int32&amp; phaseSamples) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 457&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 346&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 418&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(String workload) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 47&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f1157d62-b614-41b4-a929-7ad437172b46" testId="c4dc2ea0-dc9a-bfe8-d30a-7a2ab0c5750a" testName="BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(workload: &quot;many&quot;)" computerName="HOME-PC" duration="00:00:00.4065275" startTime="2026-10-04T05:27:30.2585125+10:00" endTime="2026-10-04T05:27:30.2585127+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f1157d62-b614-41b4-a929-7ad437172b46">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.StartsWith() Failure: String start does not match&#xD;
+String:         "C:\\Temp\\boe-load-resource-0edf05fd00c3455"···&#xD;
+Expected start: "C:\\Temp\\boe-load-resource-0edf05fd00c3455"···</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadResourceTests.AssertOwnedPath(String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 556&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.IsExpectedDirectoryMutation(String path, FileSystemManager files) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 528&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 484&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.SampleChild(Process process, Stopwatch timer, Int64&amp; rssPeak, Int64&amp; diskPeak, Boolean measuring, Int64&amp; phaseRssPeak, Int64&amp; phaseDiskPeak, Int32&amp; phaseSamples) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 457&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 346&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 418&#xD;
+   at BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(String workload) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs:line 47&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(workload: &quot;512&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="9c453af7-7f6a-0e28-fc94-e41496e264b1">
+      <Execution id="e98c1d9a-6c2d-41a1-853e-909498eec5e4" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="ActualPreparationFitsDeclaredLoadResourceEnvelope" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(workload: &quot;64&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="9e7eee2b-9a71-0501-b8c4-53a8823ca587">
+      <Execution id="aad0af48-6ce8-424f-b46e-59d1cc2f2b8c" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="ActualPreparationFitsDeclaredLoadResourceEnvelope" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(workload: &quot;128&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="d5f830ec-ab08-d230-ef37-97988dad0055">
+      <Execution id="1554588e-9c0a-4e67-abc6-a1faad29e68d" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="ActualPreparationFitsDeclaredLoadResourceEnvelope" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(workload: &quot;many&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="c4dc2ea0-dc9a-bfe8-d30a-7a2ab0c5750a">
+      <Execution id="f1157d62-b614-41b4-a929-7ad437172b46" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadResourceTests" name="ActualPreparationFitsDeclaredLoadResourceEnvelope" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="9c453af7-7f6a-0e28-fc94-e41496e264b1" executionId="e98c1d9a-6c2d-41a1-853e-909498eec5e4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d5f830ec-ab08-d230-ef37-97988dad0055" executionId="1554588e-9c0a-4e67-abc6-a1faad29e68d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9e7eee2b-9a71-0501-b8c4-53a8823ca587" executionId="aad0af48-6ce8-424f-b46e-59d1cc2f2b8c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c4dc2ea0-dc9a-bfe8-d30a-7a2ab0c5750a" executionId="f1157d62-b614-41b4-a929-7ad437172b46" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="4" executed="4" passed="0" failed="4" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.23]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.98]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.01]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:04.56]       Assert.StartsWith() Failure: String start does not match&#xD;
+[xUnit.net 00:00:04.56]       String:         "C:\\Temp\\boe-load-resource-e63ad6df9f8045c"···&#xD;
+[xUnit.net 00:00:04.56]       Expected start: "C:\\Temp\\boe-load-resource-e63ad6df9f8045c"···&#xD;
+[xUnit.net 00:00:04.56]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.56]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(556,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.AssertOwnedPath(String path)&#xD;
+[xUnit.net 00:00:04.56]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(528,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.IsExpectedDirectoryMutation(String path, FileSystemManager files)&#xD;
+[xUnit.net 00:00:04.56]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(484,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace)&#xD;
+[xUnit.net 00:00:04.56]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(457,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.SampleChild(Process process, Stopwatch timer, Int64&amp; rssPeak, Int64&amp; diskPeak, Boolean measuring, Int64&amp; phaseRssPeak, Int64&amp; phaseDiskPeak, Int32&amp; phaseSamples)&#xD;
+[xUnit.net 00:00:04.56]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(346,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut)&#xD;
+[xUnit.net 00:00:04.56]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(418,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut)&#xD;
+[xUnit.net 00:00:04.56]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(47,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(String workload)&#xD;
+[xUnit.net 00:00:04.56]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:04.95]       Assert.StartsWith() Failure: String start does not match&#xD;
+[xUnit.net 00:00:04.95]       String:         "C:\\Temp\\boe-load-resource-6b1201098105449"···&#xD;
+[xUnit.net 00:00:04.95]       Expected start: "C:\\Temp\\boe-load-resource-6b1201098105449"···&#xD;
+[xUnit.net 00:00:04.95]       Stack Trace:&#xD;
+[xUnit.net 00:00:04.95]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(556,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.AssertOwnedPath(String path)&#xD;
+[xUnit.net 00:00:04.95]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(528,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.IsExpectedDirectoryMutation(String path, FileSystemManager files)&#xD;
+[xUnit.net 00:00:04.95]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(484,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace)&#xD;
+[xUnit.net 00:00:04.95]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(457,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.SampleChild(Process process, Stopwatch timer, Int64&amp; rssPeak, Int64&amp; diskPeak, Boolean measuring, Int64&amp; phaseRssPeak, Int64&amp; phaseDiskPeak, Int32&amp; phaseSamples)&#xD;
+[xUnit.net 00:00:04.95]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(346,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut)&#xD;
+[xUnit.net 00:00:04.95]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(418,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut)&#xD;
+[xUnit.net 00:00:04.95]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(47,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(String workload)&#xD;
+[xUnit.net 00:00:04.95]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:05.33]       Assert.StartsWith() Failure: String start does not match&#xD;
+[xUnit.net 00:00:05.33]       String:         "C:\\Temp\\boe-load-resource-f1452fe7bb134bc"···&#xD;
+[xUnit.net 00:00:05.33]       Expected start: "C:\\Temp\\boe-load-resource-f1452fe7bb134bc"···&#xD;
+[xUnit.net 00:00:05.33]       Stack Trace:&#xD;
+[xUnit.net 00:00:05.33]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(556,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.AssertOwnedPath(String path)&#xD;
+[xUnit.net 00:00:05.33]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(528,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.IsExpectedDirectoryMutation(String path, FileSystemManager files)&#xD;
+[xUnit.net 00:00:05.33]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(484,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace)&#xD;
+[xUnit.net 00:00:05.33]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(457,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.SampleChild(Process process, Stopwatch timer, Int64&amp; rssPeak, Int64&amp; diskPeak, Boolean measuring, Int64&amp; phaseRssPeak, Int64&amp; phaseDiskPeak, Int32&amp; phaseSamples)&#xD;
+[xUnit.net 00:00:05.33]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(346,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut)&#xD;
+[xUnit.net 00:00:05.33]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(418,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut)&#xD;
+[xUnit.net 00:00:05.33]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(47,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(String workload)&#xD;
+[xUnit.net 00:00:05.33]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:05.73]       Assert.StartsWith() Failure: String start does not match&#xD;
+[xUnit.net 00:00:05.73]       String:         "C:\\Temp\\boe-load-resource-0edf05fd00c3455"···&#xD;
+[xUnit.net 00:00:05.73]       Expected start: "C:\\Temp\\boe-load-resource-0edf05fd00c3455"···&#xD;
+[xUnit.net 00:00:05.73]       Stack Trace:&#xD;
+[xUnit.net 00:00:05.73]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(556,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.AssertOwnedPath(String path)&#xD;
+[xUnit.net 00:00:05.73]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(528,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.IsExpectedDirectoryMutation(String path, FileSystemManager files)&#xD;
+[xUnit.net 00:00:05.73]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(484,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.MeasureOwnedDisk(Boolean allowPublicationRace)&#xD;
+[xUnit.net 00:00:05.73]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(457,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.SampleChild(Process process, Stopwatch timer, Int64&amp; rssPeak, Int64&amp; diskPeak, Boolean measuring, Int64&amp; phaseRssPeak, Int64&amp; phaseDiskPeak, Int32&amp; phaseSamples)&#xD;
+[xUnit.net 00:00:05.73]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(346,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut)&#xD;
+[xUnit.net 00:00:05.73]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(418,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.RunChildAsync(String operation, String workload, Boolean terminateAtCut)&#xD;
+[xUnit.net 00:00:05.73]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\PortableLoadResourceTests.cs(47,0): at BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(String workload)&#xD;
+[xUnit.net 00:00:05.73]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:05.74]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="HOME-PC" outcome="Error" timestamp="2026-10-04T05:27:29.0855164+10:00">
+        <Text>[xUnit.net 00:00:04.56]     BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(workload: "64") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="HOME-PC" outcome="Error" timestamp="2026-10-04T05:27:29.4757180+10:00">
+        <Text>[xUnit.net 00:00:04.95]     BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(workload: "512") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="HOME-PC" outcome="Error" timestamp="2026-10-04T05:27:29.8505050+10:00">
+        <Text>[xUnit.net 00:00:05.33]     BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(workload: "128") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="HOME-PC" outcome="Error" timestamp="2026-10-04T05:27:30.2581148+10:00">
+        <Text>[xUnit.net 00:00:05.73]     BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPreparationFitsDeclaredLoadResourceEnvelope(workload: "many") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

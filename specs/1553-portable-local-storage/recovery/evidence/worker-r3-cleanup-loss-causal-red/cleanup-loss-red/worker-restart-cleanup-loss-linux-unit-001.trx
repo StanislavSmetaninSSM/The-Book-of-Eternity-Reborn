@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="f30bbc5c-a9db-4905-b309-8d529b481cf2" name="@c7669543e9c7 2026-10-06 06:01:31" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T06:01:31.4890198+00:00" queuing="2026-10-06T06:01:31.4890199+00:00" start="2026-10-06T06:01:26.5510351+00:00" finish="2026-10-06T06:01:34.0518054+00:00" />
+  <TestSettings name="default" id="0261a6b1-a3c8-4589-bb30-43d2a22ee2e0">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_06_01_31" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="24687d2b-bab4-43f2-a392-fb22b948c91f" testId="1aa50ebd-88b6-ae34-0e4d-4e146b631395" testName="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(mode: &quot;cleanup-await&quot;)" computerName="c7669543e9c7" duration="00:00:02.5205447" startTime="2026-10-06T06:01:33.9767777+00:00" endTime="2026-10-06T06:01:33.9767781+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="24687d2b-bab4-43f2-a392-fb22b948c91f">
+      <Output>
+        <ErrorInfo>
+          <Message>{"mode":"cleanup-await","faults":1,"cleanupHooks":1,"heldDisk":"Published","heldLive":"Published","heldStop":"StoppedWithinScope","heldOutputs":true,"originalWorkspaceFiles":4,"workerStarts":1,"beforeRetry":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"uncertain":true,"workspaceExists":false,"workspaceBytesPreserved":false,"taskPreserved":true,"capacity":1,"entries":1,"active":1,"retired":0,"stop":"Uncertain","outputsSettled":false,"bundleExists":true,"inboxExists":true,"error":null},"afterRetry":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"uncertain":true,"workspaceExists":false,"workspaceBytesPreserved":false,"taskPreserved":true,"capacity":1,"entries":1,"active":1,"retired":0,"stop":"Uncertain","outputsSettled":false,"bundleExists":true,"inboxExists":true,"error":null}}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartFenceTests.CleanupLoss.cs:line 28
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9a8ca9a4-f31f-49b7-9ba5-1826fcd75241" testId="b86fe409-0b3c-c0d6-942f-f87807eac015" testName="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(mode: &quot;pending-ack&quot;)" computerName="c7669543e9c7" duration="00:00:02.5684370" startTime="2026-10-06T06:01:31.4530226+00:00" endTime="2026-10-06T06:01:31.4530396+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a8ca9a4-f31f-49b7-9ba5-1826fcd75241">
+      <Output>
+        <ErrorInfo>
+          <Message>{"mode":"pending-ack","faults":1,"cleanupHooks":0,"heldDisk":"Published","heldLive":"PublicationIntent","heldStop":"StoppedWithinScope","heldOutputs":true,"originalWorkspaceFiles":4,"workerStarts":1,"beforeRetry":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"uncertain":false,"workspaceExists":true,"workspaceBytesPreserved":true,"taskPreserved":true,"capacity":1,"entries":1,"active":1,"retired":0,"stop":"StoppedWithinScope","outputsSettled":true,"bundleExists":true,"inboxExists":false,"error":"Worker proposal bundle publication failed: Worker metadata transition did not receive its durable ACK."},"afterRetry":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"uncertain":false,"workspaceExists":true,"workspaceBytesPreserved":true,"taskPreserved":true,"capacity":1,"entries":1,"active":1,"retired":0,"stop":"StoppedWithinScope","outputsSettled":true,"bundleExists":true,"inboxExists":false,"error":"Worker proposal bundle publication failed: Worker metadata transition did not receive its durable ACK."}}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartFenceTests.CleanupLoss.cs:line 27
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(mode: &quot;pending-ack&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b86fe409-0b3c-c0d6-942f-f87807eac015">
+      <Execution id="9a8ca9a4-f31f-49b7-9ba5-1826fcd75241" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartFenceTests" name="CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(mode: &quot;cleanup-await&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1aa50ebd-88b6-ae34-0e4d-4e146b631395">
+      <Execution id="24687d2b-bab4-43f2-a392-fb22b948c91f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartFenceTests" name="CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="1aa50ebd-88b6-ae34-0e4d-4e146b631395" executionId="24687d2b-bab4-43f2-a392-fb22b948c91f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b86fe409-0b3c-c0d6-942f-f87807eac015" executionId="9a8ca9a4-f31f-49b7-9ba5-1826fcd75241" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="2" executed="2" passed="0" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.29]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.64]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.65]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:04.29]       {"mode":"pending-ack","faults":1,"cleanupHooks":0,"heldDisk":"Published","heldLive":"PublicationIntent","heldStop":"StoppedWithinScope","heldOutputs":true,"originalWorkspaceFiles":4,"workerStarts":1,"beforeRetry":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"uncertain":false,"workspaceExists":true,"workspaceBytesPreserved":true,"taskPreserved":true,"capacity":1,"entries":1,"active":1,"retired":0,"stop":"StoppedWithinScope","outputsSettled":true,"bundleExists":true,"inboxExists":false,"error":"Worker proposal bundle publication failed: Worker metadata transition did not receive its durable ACK."},"afterRetry":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"uncertain":false,"workspaceExists":true,"workspaceBytesPreserved":true,"taskPreserved":true,"capacity":1,"entries":1,"active":1,"retired":0,"stop":"StoppedWithinScope","outputsSettled":true,"bundleExists":true,"inboxExists":false,"error":"Worker proposal bundle publication failed: Worker metadata transition did not receive its durable ACK."}}
+[xUnit.net 00:00:04.29]       Stack Trace:
+[xUnit.net 00:00:04.29]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartFenceTests.CleanupLoss.cs(27,0): at BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(String mode)
+[xUnit.net 00:00:04.29]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.82]       {"mode":"cleanup-await","faults":1,"cleanupHooks":1,"heldDisk":"Published","heldLive":"Published","heldStop":"StoppedWithinScope","heldOutputs":true,"originalWorkspaceFiles":4,"workerStarts":1,"beforeRetry":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"uncertain":true,"workspaceExists":false,"workspaceBytesPreserved":false,"taskPreserved":true,"capacity":1,"entries":1,"active":1,"retired":0,"stop":"Uncertain","outputsSettled":false,"bundleExists":true,"inboxExists":true,"error":null},"afterRetry":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"uncertain":true,"workspaceExists":false,"workspaceBytesPreserved":false,"taskPreserved":true,"capacity":1,"entries":1,"active":1,"retired":0,"stop":"Uncertain","outputsSettled":false,"bundleExists":true,"inboxExists":true,"error":null}}
+[xUnit.net 00:00:06.82]       Stack Trace:
+[xUnit.net 00:00:06.82]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartFenceTests.CleanupLoss.cs(28,0): at BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(String mode)
+[xUnit.net 00:00:06.82]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.83]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T06:01:31.4589996+00:00">
+        <Text>[xUnit.net 00:00:04.29]     BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(mode: "pending-ack") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T06:01:33.9825504+00:00">
+        <Text>[xUnit.net 00:00:06.82]     BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(mode: "cleanup-await") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

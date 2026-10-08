@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "gm-daemon-prompt-delivery"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "df21035c079fbfa09efea6e3770f805b882b6fac",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.7380074,
+  "Descriptors": [
+    {
+      "Name": "gm-daemon-prompt-delivery-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-daemon-prompt-delivery",
+      "Categories": [
+        "gm-daemon-prompt-delivery"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

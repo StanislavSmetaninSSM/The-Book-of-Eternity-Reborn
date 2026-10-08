@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="70a2e31c-3ef0-4232-92fc-e8cb3d15e911" name="@c7669543e9c7 2026-10-06 06:03:44" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T06:03:44.1971504+00:00" queuing="2026-10-06T06:03:44.1971505+00:00" start="2026-10-06T06:03:39.7147461+00:00" finish="2026-10-06T06:03:46.7674837+00:00" />
+  <TestSettings name="default" id="5ccd1f12-2693-4b8a-bc8c-eec18816e50c">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_06_03_44" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="34c79c69-da7a-43a7-b096-1a2ce0986c65" testId="1aa50ebd-88b6-ae34-0e4d-4e146b631395" testName="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(mode: &quot;cleanup-await&quot;)" computerName="c7669543e9c7" duration="00:00:02.5393194" startTime="2026-10-06T06:03:46.7024643+00:00" endTime="2026-10-06T06:03:46.7024648+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="34c79c69-da7a-43a7-b096-1a2ce0986c65" />
+    <UnitTestResult executionId="2b6b6ca3-ffde-4c0d-a27a-9d6f752d08ad" testId="b86fe409-0b3c-c0d6-942f-f87807eac015" testName="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(mode: &quot;pending-ack&quot;)" computerName="c7669543e9c7" duration="00:00:02.7573118" startTime="2026-10-06T06:03:44.1624940+00:00" endTime="2026-10-06T06:03:44.1625096+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2b6b6ca3-ffde-4c0d-a27a-9d6f752d08ad" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(mode: &quot;pending-ack&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b86fe409-0b3c-c0d6-942f-f87807eac015">
+      <Execution id="2b6b6ca3-ffde-4c0d-a27a-9d6f752d08ad" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartFenceTests" name="CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty(mode: &quot;cleanup-await&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1aa50ebd-88b6-ae34-0e4d-4e146b631395">
+      <Execution id="34c79c69-da7a-43a7-b096-1a2ce0986c65" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartFenceTests" name="CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="1aa50ebd-88b6-ae34-0e4d-4e146b631395" executionId="34c79c69-da7a-43a7-b096-1a2ce0986c65" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b86fe409-0b3c-c0d6-942f-f87807eac015" executionId="2b6b6ca3-ffde-4c0d-a27a-9d6f752d08ad" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.19]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.21]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.23]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:06.59]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

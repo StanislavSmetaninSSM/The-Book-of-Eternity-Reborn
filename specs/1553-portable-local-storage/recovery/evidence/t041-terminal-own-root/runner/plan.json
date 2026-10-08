@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-owned-terminal-native-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "14fffaeb18ed380d70c3be30ccd21317516b66d3",
+    "WorkingTreeFingerprint": "C7396D45A013033944DE48709CF8AFCA0BF040761CF0100AA7D02744878F46E9",
+    "ChangedFiles": 7
+  },
+  "PreparationSeconds": 47.6669719,
+  "Descriptors": [
+    {
+      "Name": "gm-owned-terminal-native-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-owned-terminal-native-linux",
+      "Categories": [
+        "gm-owned-terminal-native-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.OwnedRoot_TwoUnicodeInputsResizeCanonicalEof_ExactScopedCleanup",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

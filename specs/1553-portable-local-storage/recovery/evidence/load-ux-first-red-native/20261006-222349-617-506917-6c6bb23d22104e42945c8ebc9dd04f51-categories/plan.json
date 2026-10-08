@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-load-session-lifecycle"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ed8aafb4e585affc0b9d06edd65f3ad2f0f3a5a5",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.2106142,
+  "Descriptors": [
+    {
+      "Name": "gm-load-session-lifecycle-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-session-lifecycle",
+      "Categories": [
+        "gm-load-session-lifecycle"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

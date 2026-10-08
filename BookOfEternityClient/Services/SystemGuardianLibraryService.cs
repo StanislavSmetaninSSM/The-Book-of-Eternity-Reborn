@@ -438,7 +438,7 @@ public sealed class SystemGuardianLibraryService
             {
                 ["archetype"] = "Freeform Guardian",
                 ["speechPattern"] = "тон и манера речи заданы свободным описанием игрока",
-                ["coreValues"] = new JsonArray("сопровождение души")
+                ["coreValues"] = new JsonArray("сопровождение души", "безопасное духовное наставничество", "доказуемые границы духовной власти")
             },
             ["mood"] = new JsonObject
             {
@@ -749,7 +749,7 @@ public sealed class SystemGuardianLibraryService
             {
                 ["archetype"] = "Freeform Guardian",
                 ["worldview"] = "Свободный образ не подменяет доказуемые границы духовной власти.",
-                ["coreValues"] = new JsonArray("сопровождение души")
+                ["coreValues"] = new JsonArray("сопровождение души", "безопасное духовное наставничество", "доказуемые границы духовной власти")
             },
             ["motivation"] = "Сопровождать душу в первых решениях, не приписывая себе власть из описательного текста.",
             ["realm"] = "Chaos Sea",

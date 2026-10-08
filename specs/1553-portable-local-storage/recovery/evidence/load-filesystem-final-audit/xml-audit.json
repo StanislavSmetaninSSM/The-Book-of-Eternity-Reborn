@@ -1,0 +1,67 @@
+{
+  "Source": "9a8f8cdf63cef845d7536ecb7d1c96c898988f4a",
+  "CSharpSourceClosure": "e593bcfa5e45502de9eb6d6b3949565f7c7881b2",
+  "FreshSelectedBuildSource": "88df401032163aebc5eb95c2eb50c13fc4407f85",
+  "ChangedCompileInputsSinceBuild": [],
+  "GenerateDocumentationFile": true,
+  "SuppressedWarningCodes": [
+    "CS1591"
+  ],
+  "ChangedCSharpFiles": 24,
+  "IntroducedXmlCommentLines": 2613,
+  "CompressedIntroducedXmlBlocks": 0,
+  "GeneratedXml": [
+    {
+      "File": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.xml",
+      "Assembly": "BookOfEternityClient",
+      "Members": 2421,
+      "Parsed": true
+    },
+    {
+      "File": "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+      "Assembly": "BookOfEternityClient.TestSupport",
+      "Members": 58,
+      "Parsed": true
+    },
+    {
+      "File": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.xml",
+      "Assembly": "BookOfEternityClient.Tests",
+      "Members": 748,
+      "Parsed": true
+    },
+    {
+      "File": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.xml",
+      "Assembly": "BookOfEternityClient.IntegrationTests",
+      "Members": 972,
+      "Parsed": true
+    },
+    {
+      "File": "BookOfEternityClient.Tests/bin/Debug/net8.0/PortableStorageCrashHost.xml",
+      "Assembly": "PortableStorageCrashHost",
+      "Members": 2,
+      "Parsed": true
+    }
+  ],
+  "CompilerXmlWarnings": [
+    {
+      "File": "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+      "Line": 1095,
+      "Code": "CS1587",
+      "ChangedFile": false
+    },
+    {
+      "File": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs",
+      "Line": 1637,
+      "Code": "CS1587",
+      "ChangedFile": false
+    },
+    {
+      "File": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs",
+      "Line": 756,
+      "Code": "CS1587",
+      "ChangedFile": false
+    }
+  ],
+  "ChangedFileXmlWarnings": 0,
+  "Scope": "Generated XML parses and fresh XML-enabled compiler diagnostics; diff formatting inspected. Existing unrelated CS1587 warnings are retained. This does not establish native Linux or behavioral acceptance."
+}

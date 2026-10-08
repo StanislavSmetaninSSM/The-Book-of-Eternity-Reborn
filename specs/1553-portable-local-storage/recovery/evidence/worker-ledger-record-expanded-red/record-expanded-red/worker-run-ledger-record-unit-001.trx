@@ -1,0 +1,1218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="d242f26e-7ad8-4c0b-9fd3-55c4edd7ab72" name="@c7669543e9c7 2026-10-06 00:10:09" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T00:10:09.6255067+00:00" queuing="2026-10-06T00:10:09.6255068+00:00" start="2026-10-06T00:10:07.3856944+00:00" finish="2026-10-06T00:10:09.7046907+00:00" />
+  <TestSettings name="default" id="9ef91017-a386-4487-85d4-99a18709c09d">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_00_10_09" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9b4fd9c6-2863-45c6-ba5a-15df8f515c74" testId="f47b4fac-9695-f021-3a46-fe987133d7b6" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;numeric-phase&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005584" startTime="2026-10-06T00:10:09.6166213+00:00" endTime="2026-10-06T00:10:09.6166214+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9b4fd9c6-2863-45c6-ba5a-15df8f515c74">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5f55c108-2966-46a8-9307-3960c2e2d044" testId="06be9a1e-c485-0161-6138-cff02f718e50" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;unknown-backend&quot;)" computerName="c7669543e9c7" duration="00:00:00.0006156" startTime="2026-10-06T00:10:09.6214518+00:00" endTime="2026-10-06T00:10:09.6214519+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5f55c108-2966-46a8-9307-3960c2e2d044">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="025c67ee-c4c9-455f-b120-f796b4bbf961" testId="ef65c96b-f5f6-23bb-44fd-3547d9658e15" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;mismatched-scope&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005653" startTime="2026-10-06T00:10:09.6355529+00:00" endTime="2026-10-06T00:10:09.6355529+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="025c67ee-c4c9-455f-b120-f796b4bbf961">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="89110cd5-678b-4a88-95f1-119d3b00edbe" testId="961cdf1a-2aa7-e336-6136-5895aa1451ac" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;oversize-task&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005509" startTime="2026-10-06T00:10:09.6234341+00:00" endTime="2026-10-06T00:10:09.6234342+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="89110cd5-678b-4a88-95f1-119d3b00edbe">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7cbc2e8b-a950-495d-bf25-6a92556f5f4a" testId="5dbde11e-258c-c60c-6763-0636ad27170c" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;zero-epoch&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005628" startTime="2026-10-06T00:10:09.6341441+00:00" endTime="2026-10-06T00:10:09.6341441+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7cbc2e8b-a950-495d-bf25-6a92556f5f4a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1476f3b0-f14c-445c-810c-d5a5d76130fe" testId="3a0e2135-14ec-727a-e5e6-b929e9353900" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;PublicationIntent&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004329" startTime="2026-10-06T00:10:09.5998956+00:00" endTime="2026-10-06T00:10:09.5998956+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1476f3b0-f14c-445c-810c-d5a5d76130fe">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="81ad8bc2-437e-4148-ac8d-356b1e7438d6" testId="469031cf-66f3-e481-df4a-7685864f7c1b" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;invalid-run&quot;)" computerName="c7669543e9c7" duration="00:00:00.0006767" startTime="2026-10-06T00:10:09.6292092+00:00" endTime="2026-10-06T00:10:09.6292093+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="81ad8bc2-437e-4148-ac8d-356b1e7438d6">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="43a8f831-dbd0-450a-b4a6-c0135f79bfcd" testId="126825e0-9bb2-a4bd-fa1c-13e35714cfd5" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;relative-workspace&quot;)" computerName="c7669543e9c7" duration="00:00:00.0006629" startTime="2026-10-06T00:10:09.6161416+00:00" endTime="2026-10-06T00:10:09.6161417+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="43a8f831-dbd0-450a-b4a6-c0135f79bfcd">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="680b6f37-17a4-4d9a-862d-a728d843cd0a" testId="889fe606-ecb6-9a94-8dc2-81a74f1a4b0c" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;overflow-epoch&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005431" startTime="2026-10-06T00:10:09.6347571+00:00" endTime="2026-10-06T00:10:09.6347571+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="680b6f37-17a4-4d9a-862d-a728d843cd0a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="14667c9c-4ea5-40e2-9127-ded667b08b80" testId="6bf4e714-2e3a-e089-4bd2-84db022af36d" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;relative-root&quot;)" computerName="c7669543e9c7" duration="00:00:00.0006112" startTime="2026-10-06T00:10:09.6285425+00:00" endTime="2026-10-06T00:10:09.6285425+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="14667c9c-4ea5-40e2-9127-ded667b08b80">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b65f9be1-2ac4-4649-aff1-71434452fe79" testId="4c333501-16b9-46fa-dbc9-4edabb2e77d0" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;empty-generation&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005767" startTime="2026-10-06T00:10:09.6203484+00:00" endTime="2026-10-06T00:10:09.6203485+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b65f9be1-2ac4-4649-aff1-71434452fe79">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="09fd0e8d-c537-4fe4-9c94-a4c54e7efd7b" testId="01921826-7e0c-b1af-2a38-93d7c0d21ecc" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;array&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005911" startTime="2026-10-06T00:10:09.6278891+00:00" endTime="2026-10-06T00:10:09.6278892+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="09fd0e8d-c537-4fe4-9c94-a4c54e7efd7b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1290231b-6655-4388-88f9-f156cb262ddf" testId="fc2200d9-aa87-4e35-32fb-5754b24022af" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;schema&quot;)" computerName="c7669543e9c7" duration="00:00:00.0007185" startTime="2026-10-06T00:10:09.6149618+00:00" endTime="2026-10-06T00:10:09.6149619+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1290231b-6655-4388-88f9-f156cb262ddf">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2784a3ee-6e31-46b2-b8e2-16c3cd643a5f" testId="3af65e45-be75-d50f-34f7-776dd7689f66" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;ReleaseIntent&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004004" startTime="2026-10-06T00:10:09.5992720+00:00" endTime="2026-10-06T00:10:09.5992721+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2784a3ee-6e31-46b2-b8e2-16c3cd643a5f">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="47620877-495c-45af-9fcf-a8b2c9580afe" testId="db1260e7-4c7e-ccb4-42bc-84831182144b" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;null&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004735" startTime="2026-10-06T00:10:09.6208691+00:00" endTime="2026-10-06T00:10:09.6208692+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="47620877-495c-45af-9fcf-a8b2c9580afe">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d50dba31-2665-42d0-a5ad-07430ab561ef" testId="8cac6c5d-f3ef-7521-2386-8d0dfa14de41" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;noncanonical-root&quot;)" computerName="c7669543e9c7" duration="00:00:00.0006010" startTime="2026-10-06T00:10:09.6144164+00:00" endTime="2026-10-06T00:10:09.6144165+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d50dba31-2665-42d0-a5ad-07430ab561ef">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="187e4bff-f7c5-4218-b0a3-910f75e48109" testId="348470c5-4252-7345-7ba3-98ade032453e" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;numeric-backend&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005682" startTime="2026-10-06T00:10:09.6227504+00:00" endTime="2026-10-06T00:10:09.6227504+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="187e4bff-f7c5-4218-b0a3-910f75e48109">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="670e2d07-266d-4c11-a536-6e4c658ecdae" testId="8414ee37-34b3-85f7-b243-2d1ecfd932c0" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;empty&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005823" startTime="2026-10-06T00:10:09.6351638+00:00" endTime="2026-10-06T00:10:09.6351638+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="670e2d07-266d-4c11-a536-6e4c658ecdae">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="69facad3-dd5f-4f27-816e-888596f6146b" testId="4ea3f73a-3837-1124-2683-c60e61ac4aa7" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;invalid-digest&quot;)" computerName="c7669543e9c7" duration="00:00:00.0009589" startTime="2026-10-06T00:10:09.6366191+00:00" endTime="2026-10-06T00:10:09.6366191+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="69facad3-dd5f-4f27-816e-888596f6146b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="96a79f88-a33d-418c-b3e6-16527c02dc96" testId="ad27afbc-c6d6-9a32-3589-c1b8842011d9" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;invalid-utf8&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005808" startTime="2026-10-06T00:10:09.6220006+00:00" endTime="2026-10-06T00:10:09.6220007+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="96a79f88-a33d-418c-b3e6-16527c02dc96">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ab5dc6e1-c334-4e00-ab23-519d2501eeca" testId="92d57016-e74a-6338-f587-8e3731095250" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Released&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003470" startTime="2026-10-06T00:10:09.5875108+00:00" endTime="2026-10-06T00:10:09.5875108+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ab5dc6e1-c334-4e00-ab23-519d2501eeca">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="54827b17-c117-4444-a244-72f5efdea110" testId="c714c121-b75a-5333-7041-af717ca59627" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;string-epoch&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005437" startTime="2026-10-06T00:10:09.6359104+00:00" endTime="2026-10-06T00:10:09.6359104+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="54827b17-c117-4444-a244-72f5efdea110">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="aa84f314-7e91-4239-a5e7-e59f5c9147ec" testId="c06b67df-0c07-63dc-13ee-1e56498b6484" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;unknown-identity-field&quot;)" computerName="c7669543e9c7" duration="00:00:00.0006385" startTime="2026-10-06T00:10:09.6264441+00:00" endTime="2026-10-06T00:10:09.6264441+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aa84f314-7e91-4239-a5e7-e59f5c9147ec">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a835574e-cc9d-471b-8501-a8ba6abcda2c" testId="755cc9e0-d13f-d10d-07e4-3c39075887ce" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;StopValidated&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004122" startTime="2026-10-06T00:10:09.6002464+00:00" endTime="2026-10-06T00:10:09.6002465+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a835574e-cc9d-471b-8501-a8ba6abcda2c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0f84d26b-cfa6-4a36-b07f-eadfbf4f0698" testId="c78de9db-bba3-411c-1536-e966bb3cb9c0" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;oversize-root&quot;)" computerName="c7669543e9c7" duration="00:00:00.0006344" startTime="2026-10-06T00:10:09.6307038+00:00" endTime="2026-10-06T00:10:09.6307039+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0f84d26b-cfa6-4a36-b07f-eadfbf4f0698">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="91b775be-063c-420e-be6f-f03b2d7ee2aa" testId="61839b54-0abc-e8d1-ee72-00b7bb1873c6" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;duplicate-identity&quot;)" computerName="c7669543e9c7" duration="00:00:00.0150268" startTime="2026-10-06T00:10:09.6132066+00:00" endTime="2026-10-06T00:10:09.6132067+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="91b775be-063c-420e-be6f-f03b2d7ee2aa">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="62325fad-9dfd-4c29-a1e6-eb347c7ae082" testId="e270f16c-5372-028a-f771-63cad2e5e021" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;invalid-host&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005927" startTime="2026-10-06T00:10:09.6324042+00:00" endTime="2026-10-06T00:10:09.6324043+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="62325fad-9dfd-4c29-a1e6-eb347c7ae082">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="daf725e4-4147-4a26-bb7f-57193f7f358a" testId="c8b1bb43-8a73-d264-8c20-eb9f47561906" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Published&quot;)" computerName="c7669543e9c7" duration="00:00:00.0523461" startTime="2026-10-06T00:10:09.5827839+00:00" endTime="2026-10-06T00:10:09.5827975+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="daf725e4-4147-4a26-bb7f-57193f7f358a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 26
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5180b3de-e1e8-425e-8659-f3b0407d2874" testId="130d0060-997a-77c3-5a23-b55ad12abdb0" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Uncertain&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004533" startTime="2026-10-06T00:10:09.6005728+00:00" endTime="2026-10-06T00:10:09.6005729+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5180b3de-e1e8-425e-8659-f3b0407d2874">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b287163e-1090-408b-81fa-5ba268134d46" testId="57f26a37-0da9-7ee6-4c38-8f21e3872f39" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;control-worker&quot;)" computerName="c7669543e9c7" duration="00:00:00.0006130" startTime="2026-10-06T00:10:09.6241789+00:00" endTime="2026-10-06T00:10:09.6241789+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b287163e-1090-408b-81fa-5ba268134d46">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="360cb994-5103-49f4-8639-18117ceda6b9" testId="79bedb22-fe1c-08c0-ad8d-2466742376ec" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;missing-phase&quot;)" computerName="c7669543e9c7" duration="00:00:00.0010884" startTime="2026-10-06T00:10:09.6138743+00:00" endTime="2026-10-06T00:10:09.6138744+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="360cb994-5103-49f4-8639-18117ceda6b9">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="00cfa941-2fa2-44a3-add8-c4f8290b8faa" testId="964c8c88-02fd-7162-3b82-526154319505" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;unknown&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005572" startTime="2026-10-06T00:10:09.6298695+00:00" endTime="2026-10-06T00:10:09.6298696+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="00cfa941-2fa2-44a3-add8-c4f8290b8faa">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="602ffdcb-3273-43d8-b858-63ff227e3054" testId="52c5fe66-8e87-1687-cc30-0e89e820a824" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;CleanupPending&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003136" startTime="2026-10-06T00:10:09.5996054+00:00" endTime="2026-10-06T00:10:09.5996055+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="602ffdcb-3273-43d8-b858-63ff227e3054">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="673f4143-bd09-40d7-8ae6-45c6b9ee6441" testId="ce04c2c1-3f4e-8122-3063-d6f44da01c36" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Prepared&quot;)" computerName="c7669543e9c7" duration="00:00:00.0028943" startTime="2026-10-06T00:10:09.5859739+00:00" endTime="2026-10-06T00:10:09.5859739+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="673f4143-bd09-40d7-8ae6-45c6b9ee6441">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ccc5a158-9f38-4071-988a-35426b9ee162" testId="ddad1bf0-6ec5-db1e-ce43-7615761672f9" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;LaunchIntent&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003958" startTime="2026-10-06T00:10:09.5870438+00:00" endTime="2026-10-06T00:10:09.5870439+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ccc5a158-9f38-4071-988a-35426b9ee162">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e19a5f18-1adb-42b8-bffa-50cb30c48bfa" testId="8978e003-e236-2645-d852-570f217ecd07" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;started-retirement-unavailable&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005944" startTime="2026-10-06T00:10:09.6155657+00:00" endTime="2026-10-06T00:10:09.6155658+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e19a5f18-1adb-42b8-bffa-50cb30c48bfa">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f62c9024-e988-48ea-9e84-2d4bb7549a4b" testId="5629847e-0b1f-2a4a-a6f4-94044b1c38e4" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;empty-task&quot;)" computerName="c7669543e9c7" duration="00:00:00.0006780" startTime="2026-10-06T00:10:09.6247433+00:00" endTime="2026-10-06T00:10:09.6247433+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f62c9024-e988-48ea-9e84-2d4bb7549a4b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7426f84e-827e-4cf8-a010-7e916f55557f" testId="b7f73363-0666-79ab-6cfd-41e24ed7dfe5" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;missing-identity-field&quot;)" computerName="c7669543e9c7" duration="00:00:00.0006535" startTime="2026-10-06T00:10:09.6362917+00:00" endTime="2026-10-06T00:10:09.6362918+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7426f84e-827e-4cf8-a010-7e916f55557f">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6f3b7949-9cae-45e3-b7c2-b2a96a463288" testId="a98b5aff-9da3-f0af-989f-d801a7032f9b" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;duplicate&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005770" startTime="2026-10-06T00:10:09.6197819+00:00" endTime="2026-10-06T00:10:09.6197820+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6f3b7949-9cae-45e3-b7c2-b2a96a463288">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8d6722ce-7af0-4641-aebd-4cec8c28d15a" testId="1d9c8427-a9a3-80ff-18f0-e8604f18ef98" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;negative-epoch&quot;)" computerName="c7669543e9c7" duration="00:00:00.0012456" startTime="2026-10-06T00:10:09.6272556+00:00" endTime="2026-10-06T00:10:09.6272556+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8d6722ce-7af0-4641-aebd-4cec8c28d15a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="43adc506-e283-4736-836a-973c48ad31c8" testId="1d21488d-94b7-a201-a363-facb71c57979" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;control-root&quot;)" computerName="c7669543e9c7" duration="00:00:00.0006244" startTime="2026-10-06T00:10:09.6314787+00:00" endTime="2026-10-06T00:10:09.6314788+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="43adc506-e283-4736-836a-973c48ad31c8">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="886ba296-b5f5-407e-bce8-2b3571b802cd" testId="27dccbb1-923f-4199-4712-dee999697f86" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;unknown-phase&quot;)" computerName="c7669543e9c7" duration="00:00:00.0015397" startTime="2026-10-06T00:10:09.6135667+00:00" endTime="2026-10-06T00:10:09.6135668+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="886ba296-b5f5-407e-bce8-2b3571b802cd">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c170ea20-5ad6-473b-bd9a-3326c3c700c5" testId="75deacd5-b610-d8fa-d179-fc2457114bcd" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.PrelaunchAbort_IsOnlyTerminalSyntaxAndRetainsExactIdentity" computerName="c7669543e9c7" duration="00:00:00.0008685" startTime="2026-10-06T00:10:09.6372517+00:00" endTime="2026-10-06T00:10:09.6372518+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c170ea20-5ad6-473b-bd9a-3326c3c700c5">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Quiescent
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.PrelaunchAbort_IsOnlyTerminalSyntaxAndRetainsExactIdentity() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 35
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b776c578-6485-4a43-a7f8-54f914570517" testId="5b76e310-de99-459f-32f0-47d31c0856bc" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;oversize&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005206" startTime="2026-10-06T00:10:09.6171254+00:00" endTime="2026-10-06T00:10:09.6171255+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b776c578-6485-4a43-a7f8-54f914570517">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Blocked
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 118
+   at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;overflow-epoch&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="889fe606-ecb6-9a94-8dc2-81a74f1a4b0c">
+      <Execution id="680b6f37-17a4-4d9a-862d-a728d843cd0a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;ReleaseIntent&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3af65e45-be75-d50f-34f7-776dd7689f66">
+      <Execution id="2784a3ee-6e31-46b2-b8e2-16c3cd643a5f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;PublicationIntent&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3a0e2135-14ec-727a-e5e6-b929e9353900">
+      <Execution id="1476f3b0-f14c-445c-810c-d5a5d76130fe" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;unknown-phase&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="27dccbb1-923f-4199-4712-dee999697f86">
+      <Execution id="886ba296-b5f5-407e-bce8-2b3571b802cd" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;StopValidated&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="755cc9e0-d13f-d10d-07e4-3c39075887ce">
+      <Execution id="a835574e-cc9d-471b-8501-a8ba6abcda2c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;duplicate-identity&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="61839b54-0abc-e8d1-ee72-00b7bb1873c6">
+      <Execution id="91b775be-063c-420e-be6f-f03b2d7ee2aa" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;mismatched-scope&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ef65c96b-f5f6-23bb-44fd-3547d9658e15">
+      <Execution id="025c67ee-c4c9-455f-b120-f796b4bbf961" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;invalid-digest&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4ea3f73a-3837-1124-2683-c60e61ac4aa7">
+      <Execution id="69facad3-dd5f-4f27-816e-888596f6146b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;started-retirement-unavailable&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8978e003-e236-2645-d852-570f217ecd07">
+      <Execution id="e19a5f18-1adb-42b8-bffa-50cb30c48bfa" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Prepared&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ce04c2c1-3f4e-8122-3063-d6f44da01c36">
+      <Execution id="673f4143-bd09-40d7-8ae6-45c6b9ee6441" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;numeric-phase&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f47b4fac-9695-f021-3a46-fe987133d7b6">
+      <Execution id="9b4fd9c6-2863-45c6-ba5a-15df8f515c74" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;empty-task&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5629847e-0b1f-2a4a-a6f4-94044b1c38e4">
+      <Execution id="f62c9024-e988-48ea-9e84-2d4bb7549a4b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;oversize-root&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c78de9db-bba3-411c-1536-e966bb3cb9c0">
+      <Execution id="0f84d26b-cfa6-4a36-b07f-eadfbf4f0698" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;relative-workspace&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="126825e0-9bb2-a4bd-fa1c-13e35714cfd5">
+      <Execution id="43a8f831-dbd0-450a-b4a6-c0135f79bfcd" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;missing-identity-field&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b7f73363-0666-79ab-6cfd-41e24ed7dfe5">
+      <Execution id="7426f84e-827e-4cf8-a010-7e916f55557f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;invalid-run&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="469031cf-66f3-e481-df4a-7685864f7c1b">
+      <Execution id="81ad8bc2-437e-4148-ac8d-356b1e7438d6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Uncertain&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="130d0060-997a-77c3-5a23-b55ad12abdb0">
+      <Execution id="5180b3de-e1e8-425e-8659-f3b0407d2874" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;unknown&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="964c8c88-02fd-7162-3b82-526154319505">
+      <Execution id="00cfa941-2fa2-44a3-add8-c4f8290b8faa" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;invalid-utf8&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ad27afbc-c6d6-9a32-3589-c1b8842011d9">
+      <Execution id="96a79f88-a33d-418c-b3e6-16527c02dc96" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;relative-root&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6bf4e714-2e3a-e089-4bd2-84db022af36d">
+      <Execution id="14667c9c-4ea5-40e2-9127-ded667b08b80" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;null&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="db1260e7-4c7e-ccb4-42bc-84831182144b">
+      <Execution id="47620877-495c-45af-9fcf-a8b2c9580afe" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;duplicate&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a98b5aff-9da3-f0af-989f-d801a7032f9b">
+      <Execution id="6f3b7949-9cae-45e3-b7c2-b2a96a463288" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;empty-generation&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4c333501-16b9-46fa-dbc9-4edabb2e77d0">
+      <Execution id="b65f9be1-2ac4-4649-aff1-71434452fe79" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;empty&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8414ee37-34b3-85f7-b243-2d1ecfd932c0">
+      <Execution id="670e2d07-266d-4c11-a536-6e4c658ecdae" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;unknown-identity-field&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c06b67df-0c07-63dc-13ee-1e56498b6484">
+      <Execution id="aa84f314-7e91-4239-a5e7-e59f5c9147ec" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;missing-phase&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="79bedb22-fe1c-08c0-ad8d-2466742376ec">
+      <Execution id="360cb994-5103-49f4-8639-18117ceda6b9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;negative-epoch&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1d9c8427-a9a3-80ff-18f0-e8604f18ef98">
+      <Execution id="8d6722ce-7af0-4641-aebd-4cec8c28d15a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;noncanonical-root&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8cac6c5d-f3ef-7521-2386-8d0dfa14de41">
+      <Execution id="d50dba31-2665-42d0-a5ad-07430ab561ef" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.PrelaunchAbort_IsOnlyTerminalSyntaxAndRetainsExactIdentity" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="75deacd5-b610-d8fa-d179-fc2457114bcd">
+      <Execution id="c170ea20-5ad6-473b-bd9a-3326c3c700c5" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="PrelaunchAbort_IsOnlyTerminalSyntaxAndRetainsExactIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;numeric-backend&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="348470c5-4252-7345-7ba3-98ade032453e">
+      <Execution id="187e4bff-f7c5-4218-b0a3-910f75e48109" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;control-root&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1d21488d-94b7-a201-a363-facb71c57979">
+      <Execution id="43adc506-e283-4736-836a-973c48ad31c8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;oversize-task&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="961cdf1a-2aa7-e336-6136-5895aa1451ac">
+      <Execution id="89110cd5-678b-4a88-95f1-119d3b00edbe" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;control-worker&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="57f26a37-0da9-7ee6-4c38-8f21e3872f39">
+      <Execution id="b287163e-1090-408b-81fa-5ba268134d46" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;oversize&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5b76e310-de99-459f-32f0-47d31c0856bc">
+      <Execution id="b776c578-6485-4a43-a7f8-54f914570517" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;string-epoch&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c714c121-b75a-5333-7041-af717ca59627">
+      <Execution id="54827b17-c117-4444-a244-72f5efdea110" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;CleanupPending&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="52c5fe66-8e87-1687-cc30-0e89e820a824">
+      <Execution id="602ffdcb-3273-43d8-b858-63ff227e3054" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;array&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="01921826-7e0c-b1af-2a38-93d7c0d21ecc">
+      <Execution id="09fd0e8d-c537-4fe4-9c94-a4c54e7efd7b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;unknown-backend&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="06be9a1e-c485-0161-6138-cff02f718e50">
+      <Execution id="5f55c108-2966-46a8-9307-3960c2e2d044" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;schema&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fc2200d9-aa87-4e35-32fb-5754b24022af">
+      <Execution id="1290231b-6655-4388-88f9-f156cb262ddf" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;zero-epoch&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5dbde11e-258c-c60c-6763-0636ad27170c">
+      <Execution id="7cbc2e8b-a950-495d-bf25-6a92556f5f4a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;LaunchIntent&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ddad1bf0-6ec5-db1e-ce43-7615761672f9">
+      <Execution id="ccc5a158-9f38-4071-988a-35426b9ee162" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Published&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c8b1bb43-8a73-d264-8c20-eb9f47561906">
+      <Execution id="daf725e4-4147-4a26-bb7f-57193f7f358a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Released&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="92d57016-e74a-6338-f587-8e3731095250">
+      <Execution id="ab5dc6e1-c334-4e00-ab23-519d2501eeca" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: &quot;invalid-host&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e270f16c-5372-028a-f771-63cad2e5e021">
+      <Execution id="62325fad-9dfd-4c29-a1e6-eb347c7ae082" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="f47b4fac-9695-f021-3a46-fe987133d7b6" executionId="9b4fd9c6-2863-45c6-ba5a-15df8f515c74" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="06be9a1e-c485-0161-6138-cff02f718e50" executionId="5f55c108-2966-46a8-9307-3960c2e2d044" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ef65c96b-f5f6-23bb-44fd-3547d9658e15" executionId="025c67ee-c4c9-455f-b120-f796b4bbf961" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="961cdf1a-2aa7-e336-6136-5895aa1451ac" executionId="89110cd5-678b-4a88-95f1-119d3b00edbe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5dbde11e-258c-c60c-6763-0636ad27170c" executionId="7cbc2e8b-a950-495d-bf25-6a92556f5f4a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3a0e2135-14ec-727a-e5e6-b929e9353900" executionId="1476f3b0-f14c-445c-810c-d5a5d76130fe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="469031cf-66f3-e481-df4a-7685864f7c1b" executionId="81ad8bc2-437e-4148-ac8d-356b1e7438d6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="126825e0-9bb2-a4bd-fa1c-13e35714cfd5" executionId="43a8f831-dbd0-450a-b4a6-c0135f79bfcd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="889fe606-ecb6-9a94-8dc2-81a74f1a4b0c" executionId="680b6f37-17a4-4d9a-862d-a728d843cd0a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6bf4e714-2e3a-e089-4bd2-84db022af36d" executionId="14667c9c-4ea5-40e2-9127-ded667b08b80" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4c333501-16b9-46fa-dbc9-4edabb2e77d0" executionId="b65f9be1-2ac4-4649-aff1-71434452fe79" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="01921826-7e0c-b1af-2a38-93d7c0d21ecc" executionId="09fd0e8d-c537-4fe4-9c94-a4c54e7efd7b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fc2200d9-aa87-4e35-32fb-5754b24022af" executionId="1290231b-6655-4388-88f9-f156cb262ddf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3af65e45-be75-d50f-34f7-776dd7689f66" executionId="2784a3ee-6e31-46b2-b8e2-16c3cd643a5f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="db1260e7-4c7e-ccb4-42bc-84831182144b" executionId="47620877-495c-45af-9fcf-a8b2c9580afe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8cac6c5d-f3ef-7521-2386-8d0dfa14de41" executionId="d50dba31-2665-42d0-a5ad-07430ab561ef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="348470c5-4252-7345-7ba3-98ade032453e" executionId="187e4bff-f7c5-4218-b0a3-910f75e48109" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8414ee37-34b3-85f7-b243-2d1ecfd932c0" executionId="670e2d07-266d-4c11-a536-6e4c658ecdae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4ea3f73a-3837-1124-2683-c60e61ac4aa7" executionId="69facad3-dd5f-4f27-816e-888596f6146b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ad27afbc-c6d6-9a32-3589-c1b8842011d9" executionId="96a79f88-a33d-418c-b3e6-16527c02dc96" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="92d57016-e74a-6338-f587-8e3731095250" executionId="ab5dc6e1-c334-4e00-ab23-519d2501eeca" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c714c121-b75a-5333-7041-af717ca59627" executionId="54827b17-c117-4444-a244-72f5efdea110" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c06b67df-0c07-63dc-13ee-1e56498b6484" executionId="aa84f314-7e91-4239-a5e7-e59f5c9147ec" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="755cc9e0-d13f-d10d-07e4-3c39075887ce" executionId="a835574e-cc9d-471b-8501-a8ba6abcda2c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c78de9db-bba3-411c-1536-e966bb3cb9c0" executionId="0f84d26b-cfa6-4a36-b07f-eadfbf4f0698" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="61839b54-0abc-e8d1-ee72-00b7bb1873c6" executionId="91b775be-063c-420e-be6f-f03b2d7ee2aa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e270f16c-5372-028a-f771-63cad2e5e021" executionId="62325fad-9dfd-4c29-a1e6-eb347c7ae082" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c8b1bb43-8a73-d264-8c20-eb9f47561906" executionId="daf725e4-4147-4a26-bb7f-57193f7f358a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="130d0060-997a-77c3-5a23-b55ad12abdb0" executionId="5180b3de-e1e8-425e-8659-f3b0407d2874" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="57f26a37-0da9-7ee6-4c38-8f21e3872f39" executionId="b287163e-1090-408b-81fa-5ba268134d46" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="79bedb22-fe1c-08c0-ad8d-2466742376ec" executionId="360cb994-5103-49f4-8639-18117ceda6b9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="964c8c88-02fd-7162-3b82-526154319505" executionId="00cfa941-2fa2-44a3-add8-c4f8290b8faa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="52c5fe66-8e87-1687-cc30-0e89e820a824" executionId="602ffdcb-3273-43d8-b858-63ff227e3054" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ce04c2c1-3f4e-8122-3063-d6f44da01c36" executionId="673f4143-bd09-40d7-8ae6-45c6b9ee6441" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ddad1bf0-6ec5-db1e-ce43-7615761672f9" executionId="ccc5a158-9f38-4071-988a-35426b9ee162" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8978e003-e236-2645-d852-570f217ecd07" executionId="e19a5f18-1adb-42b8-bffa-50cb30c48bfa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5629847e-0b1f-2a4a-a6f4-94044b1c38e4" executionId="f62c9024-e988-48ea-9e84-2d4bb7549a4b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b7f73363-0666-79ab-6cfd-41e24ed7dfe5" executionId="7426f84e-827e-4cf8-a010-7e916f55557f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a98b5aff-9da3-f0af-989f-d801a7032f9b" executionId="6f3b7949-9cae-45e3-b7c2-b2a96a463288" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1d9c8427-a9a3-80ff-18f0-e8604f18ef98" executionId="8d6722ce-7af0-4641-aebd-4cec8c28d15a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1d21488d-94b7-a201-a363-facb71c57979" executionId="43adc506-e283-4736-836a-973c48ad31c8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="27dccbb1-923f-4199-4712-dee999697f86" executionId="886ba296-b5f5-407e-bce8-2b3571b802cd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="75deacd5-b610-d8fa-d179-fc2457114bcd" executionId="c170ea20-5ad6-473b-bd9a-3326c3c700c5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5b76e310-de99-459f-32f0-47d31c0856bc" executionId="b776c578-6485-4a43-a7f8-54f914570517" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="44" executed="44" passed="0" failed="44" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.22]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.59]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.62]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.72]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.72]       Expected: Uncertain
+[xUnit.net 00:00:01.72]       Actual:   Missing
+[xUnit.net 00:00:01.72]       Stack Trace:
+[xUnit.net 00:00:01.72]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.72]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.72]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.73]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.73]       Expected: Uncertain
+[xUnit.net 00:00:01.73]       Actual:   Missing
+[xUnit.net 00:00:01.73]       Stack Trace:
+[xUnit.net 00:00:01.73]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.73]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.73]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.73]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.73]       Expected: Uncertain
+[xUnit.net 00:00:01.73]       Actual:   Missing
+[xUnit.net 00:00:01.73]       Stack Trace:
+[xUnit.net 00:00:01.73]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.73]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.73]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.73]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.73]       Expected: Uncertain
+[xUnit.net 00:00:01.73]       Actual:   Missing
+[xUnit.net 00:00:01.73]       Stack Trace:
+[xUnit.net 00:00:01.73]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.73]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.73]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.74]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.74]       Expected: Uncertain
+[xUnit.net 00:00:01.74]       Actual:   Missing
+[xUnit.net 00:00:01.74]       Stack Trace:
+[xUnit.net 00:00:01.74]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.74]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.74]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.74]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.74]       Expected: Uncertain
+[xUnit.net 00:00:01.74]       Actual:   Missing
+[xUnit.net 00:00:01.74]       Stack Trace:
+[xUnit.net 00:00:01.74]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.74]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.74]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.74]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.74]       Expected: Uncertain
+[xUnit.net 00:00:01.74]       Actual:   Missing
+[xUnit.net 00:00:01.74]       Stack Trace:
+[xUnit.net 00:00:01.74]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.74]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.74]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.74]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.74]       Expected: Uncertain
+[xUnit.net 00:00:01.74]       Actual:   Missing
+[xUnit.net 00:00:01.74]       Stack Trace:
+[xUnit.net 00:00:01.74]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.74]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.74]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.74]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.74]       Expected: Uncertain
+[xUnit.net 00:00:01.74]       Actual:   Missing
+[xUnit.net 00:00:01.74]       Stack Trace:
+[xUnit.net 00:00:01.74]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.74]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.74]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.75]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.75]       Expected: Blocked
+[xUnit.net 00:00:01.75]       Actual:   Missing
+[xUnit.net 00:00:01.75]       Stack Trace:
+[xUnit.net 00:00:01.75]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.75]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.75]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.75]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.75]       Expected: Blocked
+[xUnit.net 00:00:01.75]       Actual:   Missing
+[xUnit.net 00:00:01.75]       Stack Trace:
+[xUnit.net 00:00:01.75]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.75]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.75]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.75]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.75]       Expected: Blocked
+[xUnit.net 00:00:01.75]       Actual:   Missing
+[xUnit.net 00:00:01.75]       Stack Trace:
+[xUnit.net 00:00:01.75]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.75]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.75]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.75]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.75]       Expected: Blocked
+[xUnit.net 00:00:01.75]       Actual:   Missing
+[xUnit.net 00:00:01.75]       Stack Trace:
+[xUnit.net 00:00:01.75]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.75]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.75]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.76]       Expected: Blocked
+[xUnit.net 00:00:01.76]       Actual:   Missing
+[xUnit.net 00:00:01.76]       Stack Trace:
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.76]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.76]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.76]       Expected: Blocked
+[xUnit.net 00:00:01.76]       Actual:   Missing
+[xUnit.net 00:00:01.76]       Stack Trace:
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.76]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.76]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.76]       Expected: Blocked
+[xUnit.net 00:00:01.76]       Actual:   Missing
+[xUnit.net 00:00:01.76]       Stack Trace:
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.76]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.76]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.76]       Expected: Blocked
+[xUnit.net 00:00:01.76]       Actual:   Missing
+[xUnit.net 00:00:01.76]       Stack Trace:
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.76]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.76]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.76]       Expected: Blocked
+[xUnit.net 00:00:01.76]       Actual:   Missing
+[xUnit.net 00:00:01.76]       Stack Trace:
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.76]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.76]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.76]       Expected: Blocked
+[xUnit.net 00:00:01.76]       Actual:   Missing
+[xUnit.net 00:00:01.76]       Stack Trace:
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.76]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.76]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.76]       Expected: Blocked
+[xUnit.net 00:00:01.76]       Actual:   Missing
+[xUnit.net 00:00:01.76]       Stack Trace:
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.76]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.76]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.76]       Expected: Blocked
+[xUnit.net 00:00:01.76]       Actual:   Missing
+[xUnit.net 00:00:01.76]       Stack Trace:
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.76]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.76]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.76]       Expected: Blocked
+[xUnit.net 00:00:01.76]       Actual:   Missing
+[xUnit.net 00:00:01.76]       Stack Trace:
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.76]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.76]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.76]       Expected: Blocked
+[xUnit.net 00:00:01.76]       Actual:   Missing
+[xUnit.net 00:00:01.76]       Stack Trace:
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.76]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.76]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.76]       Expected: Blocked
+[xUnit.net 00:00:01.76]       Actual:   Missing
+[xUnit.net 00:00:01.76]       Stack Trace:
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.76]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.76]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.76]       Expected: Blocked
+[xUnit.net 00:00:01.76]       Actual:   Missing
+[xUnit.net 00:00:01.76]       Stack Trace:
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.76]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.76]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.76]       Expected: Blocked
+[xUnit.net 00:00:01.76]       Actual:   Missing
+[xUnit.net 00:00:01.76]       Stack Trace:
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.76]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.76]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.76]       Expected: Blocked
+[xUnit.net 00:00:01.76]       Actual:   Missing
+[xUnit.net 00:00:01.77]       Stack Trace:
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.77]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.77]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.77]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.77]       Expected: Blocked
+[xUnit.net 00:00:01.77]       Actual:   Missing
+[xUnit.net 00:00:01.77]       Stack Trace:
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.77]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.77]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.77]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.77]       Expected: Blocked
+[xUnit.net 00:00:01.77]       Actual:   Missing
+[xUnit.net 00:00:01.77]       Stack Trace:
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.77]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.77]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.77]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.77]       Expected: Blocked
+[xUnit.net 00:00:01.77]       Actual:   Missing
+[xUnit.net 00:00:01.77]       Stack Trace:
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.77]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.77]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.77]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.77]       Expected: Blocked
+[xUnit.net 00:00:01.77]       Actual:   Missing
+[xUnit.net 00:00:01.77]       Stack Trace:
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.77]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.77]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.77]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.77]       Expected: Blocked
+[xUnit.net 00:00:01.77]       Actual:   Missing
+[xUnit.net 00:00:01.77]       Stack Trace:
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.77]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.77]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.77]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.77]       Expected: Blocked
+[xUnit.net 00:00:01.77]       Actual:   Missing
+[xUnit.net 00:00:01.77]       Stack Trace:
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.77]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.77]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.77]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.77]       Expected: Blocked
+[xUnit.net 00:00:01.77]       Actual:   Missing
+[xUnit.net 00:00:01.77]       Stack Trace:
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.77]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.77]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.77]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.77]       Expected: Blocked
+[xUnit.net 00:00:01.77]       Actual:   Missing
+[xUnit.net 00:00:01.77]       Stack Trace:
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.77]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.77]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.77]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.77]       Expected: Blocked
+[xUnit.net 00:00:01.77]       Actual:   Missing
+[xUnit.net 00:00:01.77]       Stack Trace:
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.77]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.77]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.77]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.77]       Expected: Blocked
+[xUnit.net 00:00:01.77]       Actual:   Missing
+[xUnit.net 00:00:01.77]       Stack Trace:
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.77]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.77]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.77]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.78]       Expected: Blocked
+[xUnit.net 00:00:01.78]       Actual:   Missing
+[xUnit.net 00:00:01.78]       Stack Trace:
+[xUnit.net 00:00:01.78]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.78]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.78]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.78]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.78]       Expected: Blocked
+[xUnit.net 00:00:01.78]       Actual:   Missing
+[xUnit.net 00:00:01.78]       Stack Trace:
+[xUnit.net 00:00:01.78]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.78]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.78]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.78]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.78]       Expected: Blocked
+[xUnit.net 00:00:01.78]       Actual:   Missing
+[xUnit.net 00:00:01.78]       Stack Trace:
+[xUnit.net 00:00:01.78]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.78]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.78]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.78]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.78]       Expected: Blocked
+[xUnit.net 00:00:01.78]       Actual:   Missing
+[xUnit.net 00:00:01.78]       Stack Trace:
+[xUnit.net 00:00:01.78]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.78]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.78]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.78]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.78]       Expected: Blocked
+[xUnit.net 00:00:01.78]       Actual:   Missing
+[xUnit.net 00:00:01.78]       Stack Trace:
+[xUnit.net 00:00:01.78]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.78]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.78]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.78]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.78]       Expected: Blocked
+[xUnit.net 00:00:01.78]       Actual:   Missing
+[xUnit.net 00:00:01.78]       Stack Trace:
+[xUnit.net 00:00:01.78]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(118,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(String mutation)
+[xUnit.net 00:00:01.78]            at InvokeStub_GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(Object, Span`1)
+[xUnit.net 00:00:01.78]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.78]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.78]       Expected: Quiescent
+[xUnit.net 00:00:01.78]       Actual:   Missing
+[xUnit.net 00:00:01.78]       Stack Trace:
+[xUnit.net 00:00:01.78]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(35,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.PrelaunchAbort_IsOnlyTerminalSyntaxAndRetainsExactIdentity()
+[xUnit.net 00:00:01.78]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.78]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.78]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.5812546+00:00">
+        <Text>[xUnit.net 00:00:01.72]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "Published") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.5859670+00:00">
+        <Text>[xUnit.net 00:00:01.73]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "Prepared") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.5870139+00:00">
+        <Text>[xUnit.net 00:00:01.73]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "LaunchIntent") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.5874404+00:00">
+        <Text>[xUnit.net 00:00:01.73]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "Released") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.5993971+00:00">
+        <Text>[xUnit.net 00:00:01.74]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "ReleaseIntent") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6001212+00:00">
+        <Text>[xUnit.net 00:00:01.74]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "CleanupPending") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6001541+00:00">
+        <Text>[xUnit.net 00:00:01.74]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "PublicationIntent") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6001803+00:00">
+        <Text>[xUnit.net 00:00:01.74]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "StopValidated") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6004490+00:00">
+        <Text>[xUnit.net 00:00:01.74]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "Uncertain") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6332324+00:00">
+        <Text>[xUnit.net 00:00:01.75]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "duplicate-identity") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6332561+00:00">
+        <Text>[xUnit.net 00:00:01.75]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "unknown-phase") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6332692+00:00">
+        <Text>[xUnit.net 00:00:01.75]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "missing-phase") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6332826+00:00">
+        <Text>[xUnit.net 00:00:01.75]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "noncanonical-root") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6332978+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "schema") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6333168+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "started-retirement-unavailable") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6333302+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "relative-workspace") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6333437+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "numeric-phase") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6333584+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "oversize") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6338034+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "duplicate") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6338174+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "empty-generation") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6338309+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "null") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6338463+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "unknown-backend") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6338638+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "invalid-utf8") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6338779+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "numeric-backend") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6338920+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "oversize-task") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6339133+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "control-worker") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6339287+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "empty-task") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6354137+00:00">
+        <Text>[xUnit.net 00:00:01.77]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "unknown-identity-field") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6354296+00:00">
+        <Text>[xUnit.net 00:00:01.77]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "negative-epoch") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6354429+00:00">
+        <Text>[xUnit.net 00:00:01.77]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "array") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6354578+00:00">
+        <Text>[xUnit.net 00:00:01.77]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "relative-root") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6354815+00:00">
+        <Text>[xUnit.net 00:00:01.77]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "invalid-run") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6354960+00:00">
+        <Text>[xUnit.net 00:00:01.77]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "unknown") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6355109+00:00">
+        <Text>[xUnit.net 00:00:01.77]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "oversize-root") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6355243+00:00">
+        <Text>[xUnit.net 00:00:01.77]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "control-root") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6355457+00:00">
+        <Text>[xUnit.net 00:00:01.77]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "invalid-host") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6358689+00:00">
+        <Text>[xUnit.net 00:00:01.77]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "zero-epoch") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6358851+00:00">
+        <Text>[xUnit.net 00:00:01.77]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "overflow-epoch") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6358976+00:00">
+        <Text>[xUnit.net 00:00:01.78]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "empty") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6359094+00:00">
+        <Text>[xUnit.net 00:00:01.78]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "mismatched-scope") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6359291+00:00">
+        <Text>[xUnit.net 00:00:01.78]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "string-epoch") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6361972+00:00">
+        <Text>[xUnit.net 00:00:01.78]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "missing-identity-field") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6365798+00:00">
+        <Text>[xUnit.net 00:00:01.78]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic(mutation: "invalid-digest") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:10:09.6368652+00:00">
+        <Text>[xUnit.net 00:00:01.78]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.PrelaunchAbort_IsOnlyTerminalSyntaxAndRetainsExactIdentity [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

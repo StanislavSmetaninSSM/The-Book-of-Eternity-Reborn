@@ -1,0 +1,94 @@
+{
+  "Categories": [
+    "gm-bridge-output-stream"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a729f4142779041f4633298c2ab9cc749004d05b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.4444334,
+  "Descriptors": [
+    {
+      "Name": "gm-bridge-output-stream-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-bridge-output-stream",
+      "Categories": [
+        "gm-bridge-output-stream"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualConsumerAssemblyAndPortablePdbMatchCurrentProductionSource|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailRetainsCompletePairAtBoundary|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CanceledBlockedReadCompletesWithoutEofFlush|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EmptyEofDoesNotInventActivityOrText|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_IncompleteScalarAdvancesByteActivityBeforeTextExists|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_LongOutputStaysBoundedAfterEveryRead|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_OnlyRealEofFinalizesPendingTextWithoutInventingByteActivity|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_PendingMalformedPrefixPlusFullReadFitsDecoderBuffer|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_SeparateInvocationsNeverSharePendingDecoderState|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ProductionStartAndDiagnosticsConsumeTheTestedMethods",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 48,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualConsumerAssemblyAndPortablePdbMatchCurrentProductionSource",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailNeverStartsInsideSurrogatePair",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_BoundedTailRetainsCompletePairAtBoundary",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CanceledBlockedReadCompletesWithoutEofFlush",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_CancellationIsNotSuccessfulEof",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_ChunkingAcrossBufferBoundaryPreservesControlAndUnicode",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EmptyEofDoesNotInventActivityOrText",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_EveryUnicodeSplitPreservesTextAndRawBytes",
+          "Cases": 15
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_FaultPropagatesWithoutFinalizingPendingBytes",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_IncompleteScalarAdvancesByteActivityBeforeTextExists",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_LongOutputStaysBoundedAfterEveryRead",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_MalformedAndIncompleteInputKeepsWholeStreamReplacementPolicy",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_OnlyRealEofFinalizesPendingTextWithoutInventingByteActivity",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_PendingMalformedPrefixPlusFullReadFitsDecoderBuffer",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ActualPump_SeparateInvocationsNeverSharePendingDecoderState",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ProductionStartAndDiagnosticsConsumeTheTestedMethods",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

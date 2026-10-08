@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A1-WIN",
+  "sourceCommit": "ecf0a923915ecb42ea4554e8d8a8d616f17848d1",
+  "status": "GREEN: 14/14 cases, three completed categories, fresh build at clean source; native Windows only.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-storage-stream-cold-before",
+    "portable-storage-stream-cold-conflicts",
+    "portable-storage-stream-cold-phases"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:03:46.4376865",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 14,
+    "CompletedCases": 14,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 14,
+    "Executed": 14,
+    "Passed": 14,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "A4CFEF3B49AD1C7E061D4E08BF1388AF1E4321DD00D938FAFF22D32C8DF8C511",
+      "sha256": "EE3ED183D742C827D3C9C738B912347CEEEFB4A82F717FB813D1445FC1F5C1C3"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "03C389BB24B71F1B2ED2E0E631CF0FD3DF320B68451DE0B2268A4B1043DB36AC",
+      "sha256": "B70E729D2B9D287CE7AE78631B7926590217F73FC0E699CB5F49D2AC48AE00EC"
+    },
+    {
+      "path": "portable-storage-stream-cold-before-unit-001.trx",
+      "originalSha256": "159037E594D4A272C2AE6592E38EDFC5331478ACBAC65C3C194303640371EA91",
+      "sha256": "AFCDF102BFBE81CF75D5836503F2DEAB61DD1050C91DB2F3C07D3B70E35F5B31"
+    },
+    {
+      "path": "portable-storage-stream-cold-conflicts-unit-002.trx",
+      "originalSha256": "EEC5A4487F91584CB9339489149204F4A6F4AD0DBFEE4F0A58DCB04D936F2176",
+      "sha256": "A9EDB51749A017DB35E81630AED865E707F8750640389C5DAC24DB3B7E8D9999"
+    },
+    {
+      "path": "portable-storage-stream-cold-phases-unit-003.trx",
+      "originalSha256": "D49C4D4387E20C8FAA42716E608562BFDE101978E870CC730A211346854B696F",
+      "sha256": "91AAABBEE9C744747AAB493BD71FCC9DF715D7A832BA15E3C084420BA6CFEBC9"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "26DDA9C505D5146C88922BCFD20ADBCC7E5EB0B6E072F68C6C61BF7F2D778560",
+      "sha256": "66E773CFACF8F144334C49A999249BBF937EBA8F521FDD673386EA3CA6AF6830"
+    }
+  ]
+}

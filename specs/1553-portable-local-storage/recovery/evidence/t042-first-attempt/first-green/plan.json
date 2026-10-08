@@ -1,0 +1,95 @@
+{
+  "Categories": [
+    "gm-bridge-prompt-operation",
+    "gm-daemon-prompt-delivery"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "df21035c079fbfa09efea6e3770f805b882b6fac",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 93.154528,
+  "Descriptors": [
+    {
+      "Name": "gm-bridge-prompt-operation-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-bridge-prompt-operation",
+      "Categories": [
+        "gm-bridge-prompt-operation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateAndChangedBody_RetainOriginalWithoutRepaste|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.PasteNeedsFreshObservation_TimeoutRetainsDraftAndPause|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.TwoPromptsOneBinding_CustomSequences_OneSubmitEach|FullyQualifiedName=BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 16,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateAndChangedBody_RetainOriginalWithoutRepaste",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PasteNeedsFreshObservation_TimeoutRetainsDraftAndPause",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.TwoPromptsOneBinding_CustomSequences_OneSubmitEach",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "gm-daemon-prompt-delivery-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-daemon-prompt-delivery",
+      "Categories": [
+        "gm-daemon-prompt-delivery"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

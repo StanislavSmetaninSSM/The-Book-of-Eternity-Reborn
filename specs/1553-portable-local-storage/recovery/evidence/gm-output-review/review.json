@@ -1,0 +1,39 @@
+{
+  "Model": "gpt-6.1-sol",
+  "Effort": "xhigh",
+  "Agent": "/root/output_final_review",
+  "Result": "PASS",
+  "ReviewedEvidenceCarrier": "426b16807cd86efda3ed4d9b7e7acc77435cbc45",
+  "VerifiedTestSource": "ff7e5a2b08f8fde196151909487c1d94089ea91d",
+  "RuntimeImplementationSource": "a9472a35ebcc0e3fc0f09c168c49cef0a2629402",
+  "UnresolvedActionableFindings": [],
+  "ObservedUtc": "2026-10-05T13:38:32.168110+00:00",
+  "Verified": {
+    "CausalRedPassed": 19,
+    "CausalRedExecuted": 48,
+    "DistinctGreenPasses": 48,
+    "FreshActualConsumerBuild": true,
+    "CompleteCleanup": true,
+    "SkipsDuplicatesTimeouts": 0,
+    "CatalogCategories": 242,
+    "CatalogMethods": 10723,
+    "CatalogExecution": 0,
+    "Artifacts": 34,
+    "Manifests": 9,
+    "Inputs": 6,
+    "UnchangedFiles": 14,
+    "ClosureTrees": 3,
+    "GeneratedXmlParses": 11,
+    "RestoredTrackedFiles": 5427,
+    "RestoredChangedFileBytes": 53,
+    "RestoredQualificationInputs": 6,
+    "NonOutputProgramRegionsByteEquivalent": true
+  },
+  "ReviewExecution": "Read-only; no builds/tests/native probes rerun",
+  "Limits": [
+    "Native Windows",
+    "Terminal/CLI/GM",
+    "Readiness/autotrust/manual input",
+    "Ownership/stop/Release/lifecycle"
+  ]
+}

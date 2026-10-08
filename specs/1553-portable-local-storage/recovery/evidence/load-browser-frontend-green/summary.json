@@ -1,0 +1,177 @@
+{
+  "Categories": [
+    "portable-load-browser-handlers",
+    "portable-settings-notices",
+    "portable-browser-save-presentation",
+    "frontend-shell-types"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "fd9ff1af0464ae5886473045bc64c739d2fa7409",
+    "WorkingTreeFingerprint": "7B4C30261098049499A946F68F732CB1CA51BA0A961A855558AF98C639F68FC7",
+    "ChangedFiles": 11
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "frontend-shell-types",
+      "Seconds": 2.4774329,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-browser-save-presentation",
+      "Seconds": 1.966982,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-browser-handlers",
+      "Seconds": 1.5905836,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-settings-notices",
+      "Seconds": 1.898407,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [
+    {
+      "Descriptor": "frontend-shell-types-frontend-001",
+      "Adapter": "typecheck",
+      "VerificationKind": "compile-contracts",
+      "Results": 2,
+      "Seconds": 2.4669584
+    },
+    {
+      "Descriptor": "portable-browser-save-presentation-frontend-002",
+      "Adapter": "node",
+      "VerificationKind": "tests",
+      "Results": 1,
+      "Seconds": 0.6996506
+    },
+    {
+      "Descriptor": "portable-browser-save-presentation-frontend-003",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 8,
+      "Seconds": 1.266093
+    },
+    {
+      "Descriptor": "portable-load-browser-handlers-frontend-004",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 45,
+      "Seconds": 1.5897083
+    },
+    {
+      "Descriptor": "portable-settings-notices-frontend-005",
+      "Adapter": "node",
+      "VerificationKind": "tests",
+      "Results": 1,
+      "Seconds": 0.9304935
+    },
+    {
+      "Descriptor": "portable-settings-notices-frontend-006",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 5,
+      "Seconds": 0.9670289
+    }
+  ],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0454924,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0164675,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0111915,
+      "Completed": true
+    },
+    {
+      "Name": "Frontend-build",
+      "Seconds": 4.423444,
+      "Completed": true
+    },
+    {
+      "Name": "frontend-shell-types-frontend-001-compile",
+      "Seconds": 2.4370594,
+      "Completed": true
+    },
+    {
+      "Name": "portable-browser-save-presentation-frontend-002-compile",
+      "Seconds": 0.6269734,
+      "Completed": true
+    },
+    {
+      "Name": "portable-browser-save-presentation-frontend-002-savePersistenceNotice.test.js",
+      "Seconds": 0.0626566,
+      "Completed": true
+    },
+    {
+      "Name": "portable-browser-save-presentation-frontend-003",
+      "Seconds": 1.2521724,
+      "Completed": true
+    },
+    {
+      "Name": "portable-load-browser-handlers-frontend-004",
+      "Seconds": 1.5766087,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-005-compile",
+      "Seconds": 0.8645549,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-005-settingsPersistenceNotice.test.js",
+      "Seconds": 0.0608265,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-006",
+      "Seconds": 0.9627264,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0033823,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:00:12.7573999",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 6,
+    "CompletedDescriptors": 6,
+    "PlannedCases": 8,
+    "CompletedCases": 62,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 62,
+    "Executed": 62,
+    "Passed": 62,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

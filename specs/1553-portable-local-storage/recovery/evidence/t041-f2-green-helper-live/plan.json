@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-helper-live-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "acaf25579f085e2af13081410dcfed45e87a9f49",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.3786563,
+  "Descriptors": [
+    {
+      "Name": "gm-main-helper-live-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-helper-live-linux",
+      "Categories": [
+        "gm-main-helper-live-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_ControlledLiveBoundary",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "Run": "catalog",
+  "Source": {
+    "Head": "cf787a8f7873e83e7c02e96504ad8e7ff2d9870c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+  "TestsExecuted": 0,
+  "CatalogAudit": {
+    "Valid": true,
+    "Methods": 11088,
+    "Categories": 383,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "ExitCode": 0,
+  "EvidenceDirectory": "recovery/evidence/console-audio-linux-catalog"
+}

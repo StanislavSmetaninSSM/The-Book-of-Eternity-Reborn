@@ -1,0 +1,340 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="1e683045-141e-404b-a5da-62e82ea4650b" name="Eja@HOME-PC 2026-10-04 00:56:53" runUser="HOME-PC\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T00:56:53.3654792+10:00" queuing="2026-10-04T00:56:53.3654797+10:00" start="2026-10-04T00:56:48.2979827+10:00" finish="2026-10-04T00:57:08.5873395+10:00" />
+  <TestSettings name="default" id="b7a24d31-d83a-490e-9195-8990639d3324">
+    <Deployment runDeploymentRoot="Eja_HOME-PC_2026-10-04_00_56_53" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="3c0f2ba0-768a-429b-9fa7-f51e3ad29baa" testId="e98bac96-79e4-a049-f5e2-f6181507229f" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_definitions.json&quot;)" computerName="HOME-PC" duration="00:00:01.2271808" startTime="2026-10-04T00:56:54.5297639+10:00" endTime="2026-10-04T00:56:54.5297642+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3c0f2ba0-768a-429b-9fa7-f51e3ad29baa">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberPublished, 5),(MemberStaged, 6),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="79517f3a-eb5a-47c8-ad0b-88702ceb763a" testId="ef38a7c3-a933-c262-9712-2814f1813d35" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_history.json&quot;)" computerName="HOME-PC" duration="00:00:01.6768923" startTime="2026-10-04T00:56:53.3033633+10:00" endTime="2026-10-04T00:56:53.3034244+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="79517f3a-eb5a-47c8-ad0b-88702ceb763a">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberPublished, 5),(MemberStaged, 6),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="156564e7-9b37-4b5d-b911-7b18e91e3bd6" testId="75a0003d-fac7-1358-fdcf-21808e023351" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;config.json&quot;)" computerName="HOME-PC" duration="00:00:01.2495708" startTime="2026-10-04T00:56:56.9032489+10:00" endTime="2026-10-04T00:56:56.9032492+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="156564e7-9b37-4b5d-b911-7b18e91e3bd6">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6fc9c1b6-55f1-4fab-a685-7dfdc9254da2" testId="b42a6ee7-b53e-c5f7-0b78-8c5b343b5c74" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive" computerName="HOME-PC" duration="00:00:00.5508756" startTime="2026-10-04T00:57:07.8503690+10:00" endTime="2026-10-04T00:57:07.8503692+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6fc9c1b6-55f1-4fab-a685-7dfdc9254da2">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=&#xD;
+System.IO.InvalidDataException: Incoming payload collides with the selected archive or its topology.&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ValidateLoadSourceCollision(String destination, String source) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 325&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 246&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 313&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 115&#xD;
+System.IO.InvalidDataException: Incoming payload collides with the selected archive or its topology.&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.ValidateLoadSourceCollision(String destination, String source) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 325&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 246&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 313&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 115</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="581e9764-4e06-457c-90d9-fa7bf9bc58f4" testId="f9970e13-f7ea-7c97-26dc-8a906e43c045" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation" computerName="HOME-PC" duration="00:00:00.6097939" startTime="2026-10-04T00:57:08.4611043+10:00" endTime="2026-10-04T00:57:08.4611047+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="581e9764-4e06-457c-90d9-fa7bf9bc58f4">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=&#xD;
+System.IO.InvalidDataException: config.json must contain a settings object.&#xD;
+   at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 41&#xD;
+   at BookOfEternityClient.Core.StateManager.PrepareLocalLoadSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 31&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 295&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 313&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 115&#xD;
+System.IO.InvalidDataException: config.json must contain a settings object.&#xD;
+   at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 41&#xD;
+   at BookOfEternityClient.Core.StateManager.PrepareLocalLoadSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 31&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 295&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 313&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 115</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f3a73f2c-eec1-4818-8eda-1c353cb300c8" testId="328f2b40-4a22-c150-aa4d-562df1e00b1a" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot; game_state/control/pending_turn_snapshot.json&quot;)" computerName="HOME-PC" duration="00:00:01.2854155" startTime="2026-10-04T00:57:05.9268263+10:00" endTime="2026-10-04T00:57:05.9268266+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f3a73f2c-eec1-4818-8eda-1c353cb300c8">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: NotLoaded&#xD;
+Actual:   Committed</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs:line 245&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="758e9b9a-4e9c-4aa4-9fc3-de7527386058" testId="c2d3e10d-03d0-be3e-d252-644c5437f1cc" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot; saves/manual_saves/new.zip&quot;)" computerName="HOME-PC" duration="00:00:01.3711987" startTime="2026-10-04T00:57:07.2997798+10:00" endTime="2026-10-04T00:57:07.2997801+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="758e9b9a-4e9c-4aa4-9fc3-de7527386058">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: NotLoaded&#xD;
+Actual:   Committed</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs:line 245&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="bc31ee01-7a35-4c65-aad5-6a0432adcfd6" testId="88836c16-75cc-5dfc-74a3-d4992e0dfd0b" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/meta/soul_state.json&quot;)" computerName="HOME-PC" duration="00:00:01.1227647" startTime="2026-10-04T00:56:55.6530877+10:00" endTime="2026-10-04T00:56:55.6530880+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bc31ee01-7a35-4c65-aad5-6a0432adcfd6">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberPublished, 5),(MemberStaged, 6),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f0cc4827-7513-4204-9df6-c7c7afae270c" testId="d3e14e7a-2f4b-6946-0ad3-bfee5f25fa46" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/meta/shining_abode_state.json&quot;)" computerName="HOME-PC" duration="00:00:01.1397553" startTime="2026-10-04T00:57:02.8441103+10:00" endTime="2026-10-04T00:57:02.8441107+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f0cc4827-7513-4204-9df6-c7c7afae270c">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9b02d4da-df2a-4b08-a536-69f60c2a9632" testId="3f34d368-eec3-cefb-3f26-236fe9da2def" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/meta/afterlife_entity_profiles.json&quot;)" computerName="HOME-PC" duration="00:00:02.3323508" startTime="2026-10-04T00:57:01.7038450+10:00" endTime="2026-10-04T00:57:01.7038453+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9b02d4da-df2a-4b08-a536-69f60c2a9632">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="89b86c48-6c6a-4398-b112-600250f94e07" testId="47991eb5-e77e-4004-7799-7ab66da052d1" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_owner_authority.json&quot;)" computerName="HOME-PC" duration="00:00:01.2143934" startTime="2026-10-04T00:56:58.1181949+10:00" endTime="2026-10-04T00:56:58.1181951+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="89b86c48-6c6a-4398-b112-600250f94e07">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberPublished, 5),(MemberStaged, 6),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="730701c4-7ce7-47ea-99b5-0f3dee7435a1" testId="7feee987-e5d2-487a-8ba0-1a548ffaae0c" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot; config.json&quot;)" computerName="HOME-PC" duration="00:00:01.1787567" startTime="2026-10-04T00:57:04.0572817+10:00" endTime="2026-10-04T00:57:04.0572820+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="730701c4-7ce7-47ea-99b5-0f3dee7435a1">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: NotLoaded&#xD;
+Actual:   Committed</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs:line 245&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="280bfb9a-8951-4571-9b21-8afdd3baca19" testId="648fff16-de0f-68d8-fcfe-d13a380b2541" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_state.json&quot;)" computerName="HOME-PC" duration="00:00:01.2520995" startTime="2026-10-04T00:56:59.3708432+10:00" endTime="2026-10-04T00:56:59.3708435+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="280bfb9a-8951-4571-9b21-8afdd3baca19">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberPublished, 5),(MemberStaged, 6),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2a41a48b-5918-4429-8f8a-77ba912b5f85" testId="d4e3322b-6aef-d52c-a465-e09036866bbd" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot;config.json &quot;)" computerName="HOME-PC" duration="00:00:00.5945040" startTime="2026-10-04T00:57:04.6426173+10:00" endTime="2026-10-04T00:57:04.6426179+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2a41a48b-5918-4429-8f8a-77ba912b5f85">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=&#xD;
+System.IO.InvalidDataException: config.json is invalid; its existing bytes have been preserved.&#xD;
+ ---&gt; System.Text.Json.JsonReaderException: '*' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.&#xD;
+   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)&#xD;
+   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)&#xD;
+   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)&#xD;
+   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()&#xD;
+   at System.Text.Json.Utf8JsonReader.Read()&#xD;
+   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)&#xD;
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)&#xD;
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)&#xD;
+   at System.Text.Json.JsonDocument.Parse(String json, JsonDocumentOptions options)&#xD;
+   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StrictJsonAuthority.cs:line 12&#xD;
+   at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 41&#xD;
+   --- End of inner exception stack trace ---&#xD;
+   at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 46&#xD;
+   at BookOfEternityClient.Core.StateManager.PrepareLocalLoadSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 31&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 295&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 313&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 115&#xD;
+System.IO.InvalidDataException: config.json is invalid; its existing bytes have been preserved.&#xD;
+ ---&gt; System.Text.Json.JsonReaderException: '*' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.&#xD;
+   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)&#xD;
+   at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)&#xD;
+   at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)&#xD;
+   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()&#xD;
+   at System.Text.Json.Utf8JsonReader.Read()&#xD;
+   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)&#xD;
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)&#xD;
+   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)&#xD;
+   at System.Text.Json.JsonDocument.Parse(String json, JsonDocumentOptions options)&#xD;
+   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StrictJsonAuthority.cs:line 12&#xD;
+   at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 41&#xD;
+   --- End of inner exception stack trace ---&#xD;
+   at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 46&#xD;
+   at BookOfEternityClient.Core.StateManager.PrepareLocalLoadSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 31&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 295&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 313&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 115</StdOut>
+        <ErrorInfo>
+          <Message>Assert.Contains() Failure: Sub-string not found&#xD;
+String:    "config.json is invalid; its existing byte"···&#xD;
+Not found: "canonical spelling"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs:line 247&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot; config.json&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="7feee987-e5d2-487a-8ba0-1a548ffaae0c">
+      <Execution id="730701c4-7ce7-47ea-99b5-0f3dee7435a1" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_owner_authority.json&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="47991eb5-e77e-4004-7799-7ab66da052d1">
+      <Execution id="89b86c48-6c6a-4398-b112-600250f94e07" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_definitions.json&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="e98bac96-79e4-a049-f5e2-f6181507229f">
+      <Execution id="3c0f2ba0-768a-429b-9fa7-f51e3ad29baa" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="f9970e13-f7ea-7c97-26dc-8a906e43c045">
+      <Execution id="581e9764-4e06-457c-90d9-fa7bf9bc58f4" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/meta/afterlife_entity_profiles.json&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="3f34d368-eec3-cefb-3f26-236fe9da2def">
+      <Execution id="9b02d4da-df2a-4b08-a536-69f60c2a9632" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/meta/shining_abode_state.json&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="d3e14e7a-2f4b-6946-0ad3-bfee5f25fa46">
+      <Execution id="f0cc4827-7513-4204-9df6-c7c7afae270c" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="b42a6ee7-b53e-c5f7-0b78-8c5b343b5c74">
+      <Execution id="6fc9c1b6-55f1-4fab-a685-7dfdc9254da2" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CanonicalizedAuthorityCannotReplaceTheSelectedArchive" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot; game_state/control/pending_turn_snapshot.json&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="328f2b40-4a22-c150-aa4d-562df1e00b1a">
+      <Execution id="f3a73f2c-eec1-4818-8eda-1c353cb300c8" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot;config.json &quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="d4e3322b-6aef-d52c-a465-e09036866bbd">
+      <Execution id="2a41a48b-5918-4429-8f8a-77ba912b5f85" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_state.json&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="648fff16-de0f-68d8-fcfe-d13a380b2541">
+      <Execution id="280bfb9a-8951-4571-9b21-8afdd3baca19" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;config.json&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="75a0003d-fac7-1358-fdcf-21808e023351">
+      <Execution id="156564e7-9b37-4b5d-b911-7b18e91e3bd6" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/meta/soul_state.json&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="88836c16-75cc-5dfc-74a3-d4992e0dfd0b">
+      <Execution id="bc31ee01-7a35-4c65-aad5-6a0432adcfd6" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState(canonical: &quot;game_state/resources/resource_history.json&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="ef38a7c3-a933-c262-9712-2814f1813d35">
+      <Execution id="79517f3a-eb5a-47c8-ad0b-88702ceb763a" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: &quot; saves/manual_saves/new.zip&quot;)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="c2d3e10d-03d0-be3e-d252-644c5437f1cc">
+      <Execution id="758e9b9a-4e9c-4aa4-9fc3-de7527386058" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="e98bac96-79e4-a049-f5e2-f6181507229f" executionId="3c0f2ba0-768a-429b-9fa7-f51e3ad29baa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ef38a7c3-a933-c262-9712-2814f1813d35" executionId="79517f3a-eb5a-47c8-ad0b-88702ceb763a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="75a0003d-fac7-1358-fdcf-21808e023351" executionId="156564e7-9b37-4b5d-b911-7b18e91e3bd6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b42a6ee7-b53e-c5f7-0b78-8c5b343b5c74" executionId="6fc9c1b6-55f1-4fab-a685-7dfdc9254da2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f9970e13-f7ea-7c97-26dc-8a906e43c045" executionId="581e9764-4e06-457c-90d9-fa7bf9bc58f4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="328f2b40-4a22-c150-aa4d-562df1e00b1a" executionId="f3a73f2c-eec1-4818-8eda-1c353cb300c8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c2d3e10d-03d0-be3e-d252-644c5437f1cc" executionId="758e9b9a-4e9c-4aa4-9fc3-de7527386058" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="88836c16-75cc-5dfc-74a3-d4992e0dfd0b" executionId="bc31ee01-7a35-4c65-aad5-6a0432adcfd6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d3e14e7a-2f4b-6946-0ad3-bfee5f25fa46" executionId="f0cc4827-7513-4204-9df6-c7c7afae270c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3f34d368-eec3-cefb-3f26-236fe9da2def" executionId="9b02d4da-df2a-4b08-a536-69f60c2a9632" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="47991eb5-e77e-4004-7799-7ab66da052d1" executionId="89b86c48-6c6a-4398-b112-600250f94e07" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7feee987-e5d2-487a-8ba0-1a548ffaae0c" executionId="730701c4-7ce7-47ea-99b5-0f3dee7435a1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="648fff16-de0f-68d8-fcfe-d13a380b2541" executionId="280bfb9a-8951-4571-9b21-8afdd3baca19" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d4e3322b-6aef-d52c-a465-e09036866bbd" executionId="2a41a48b-5918-4429-8f8a-77ba912b5f85" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="14" executed="14" passed="10" failed="4" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.55]   Discovering: BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:02.54]   Discovered:  BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:02.56]   Starting:    BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:15.06]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:15.06]       Expected: NotLoaded&#xD;
+[xUnit.net 00:00:15.06]       Actual:   Committed&#xD;
+[xUnit.net 00:00:15.06]       Stack Trace:&#xD;
+[xUnit.net 00:00:15.06]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs(245,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath)&#xD;
+[xUnit.net 00:00:15.06]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:15.06]       Output:&#xD;
+[xUnit.net 00:00:15.07]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)&#xD;
+[xUnit.net 00:00:15.65]       Assert.Contains() Failure: Sub-string not found&#xD;
+[xUnit.net 00:00:15.65]       String:    "config.json is invalid; its existing byte"···&#xD;
+[xUnit.net 00:00:15.65]       Not found: "canonical spelling"&#xD;
+[xUnit.net 00:00:15.65]       Stack Trace:&#xD;
+[xUnit.net 00:00:15.65]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs(247,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath)&#xD;
+[xUnit.net 00:00:15.65]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:15.65]       Output:&#xD;
+[xUnit.net 00:00:15.65]         Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=&#xD;
+[xUnit.net 00:00:15.65]         System.IO.InvalidDataException: config.json is invalid; its existing bytes have been preserved.&#xD;
+[xUnit.net 00:00:15.65]          ---&gt; System.Text.Json.JsonReaderException: '*' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.Utf8JsonReader.ReadSingleSegment()&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.Utf8JsonReader.Read()&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.JsonDocument.Parse(String json, JsonDocumentOptions options)&#xD;
+[xUnit.net 00:00:15.65]            at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StrictJsonAuthority.cs:line 12&#xD;
+[xUnit.net 00:00:15.65]            at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 41&#xD;
+[xUnit.net 00:00:15.65]            --- End of inner exception stack trace ---&#xD;
+[xUnit.net 00:00:15.65]            at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 46&#xD;
+[xUnit.net 00:00:15.65]            at BookOfEternityClient.Core.StateManager.PrepareLocalLoadSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 31&#xD;
+[xUnit.net 00:00:15.65]            at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 295&#xD;
+[xUnit.net 00:00:15.65]            at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 313&#xD;
+[xUnit.net 00:00:15.65]            at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 115&#xD;
+[xUnit.net 00:00:15.65]         System.IO.InvalidDataException: config.json is invalid; its existing bytes have been preserved.&#xD;
+[xUnit.net 00:00:15.65]          ---&gt; System.Text.Json.JsonReaderException: '*' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader&amp; json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.Utf8JsonReader.ConsumeValue(Byte marker)&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.Utf8JsonReader.ReadFirstToken(Byte first)&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.Utf8JsonReader.ReadSingleSegment()&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.Utf8JsonReader.Read()&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb&amp; database, StackRowStack&amp; stack)&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)&#xD;
+[xUnit.net 00:00:15.65]            at System.Text.Json.JsonDocument.Parse(String json, JsonDocumentOptions options)&#xD;
+[xUnit.net 00:00:15.65]            at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StrictJsonAuthority.cs:line 12&#xD;
+[xUnit.net 00:00:15.65]            at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 41&#xD;
+[xUnit.net 00:00:15.65]            --- End of inner exception stack trace ---&#xD;
+[xUnit.net 00:00:15.65]            at BookOfEternityClient.Core.StateManager.DecodeLocalSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 46&#xD;
+[xUnit.net 00:00:15.65]            at BookOfEternityClient.Core.StateManager.PrepareLocalLoadSettings(Byte[] bytes) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\StateManager.LocalSettings.cs:line 31&#xD;
+[xUnit.net 00:00:15.65]            at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 295&#xD;
+[xUnit.net 00:00:15.65]            at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 313&#xD;
+[xUnit.net 00:00:15.65]            at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 115&#xD;
+[xUnit.net 00:00:16.93]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:16.94]       Expected: NotLoaded&#xD;
+[xUnit.net 00:00:16.94]       Actual:   Committed&#xD;
+[xUnit.net 00:00:16.94]       Stack Trace:&#xD;
+[xUnit.net 00:00:16.94]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs(245,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath)&#xD;
+[xUnit.net 00:00:16.94]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:16.94]       Output:&#xD;
+[xUnit.net 00:00:16.94]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)&#xD;
+[xUnit.net 00:00:18.31]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:18.31]       Expected: NotLoaded&#xD;
+[xUnit.net 00:00:18.31]       Actual:   Committed&#xD;
+[xUnit.net 00:00:18.31]       Stack Trace:&#xD;
+[xUnit.net 00:00:18.31]         C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs(245,0): at BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(String incomingPath)&#xD;
+[xUnit.net 00:00:18.31]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:18.31]       Output:&#xD;
+[xUnit.net 00:00:18.31]         Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberStaged, 5),(MemberPublished, 5),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(MemberStaged, 10),(MemberPublished, 10),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupMember, 10),(CleanupComplete, -1)&#xD;
+[xUnit.net 00:00:19.48]   Finished:    BookOfEternityClient.IntegrationTests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="HOME-PC" outcome="Error" timestamp="2026-10-04T00:57:04.0507752+10:00">
+        <Text>[xUnit.net 00:00:15.06]     BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: " config.json") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="HOME-PC" outcome="Error" timestamp="2026-10-04T00:57:04.6395912+10:00">
+        <Text>[xUnit.net 00:00:15.65]     BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: "config.json ") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="HOME-PC" outcome="Error" timestamp="2026-10-04T00:57:05.9264142+10:00">
+        <Text>[xUnit.net 00:00:16.93]     BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: " game_state/control/pending_turn_snapshot.json") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="HOME-PC" outcome="Error" timestamp="2026-10-04T00:57:07.2992712+10:00">
+        <Text>[xUnit.net 00:00:18.31]     BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation(incomingPath: " saves/manual_saves/new.zip") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

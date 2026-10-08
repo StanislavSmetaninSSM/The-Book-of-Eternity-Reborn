@@ -1,0 +1,196 @@
+{
+  "phase": "plan",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly -TimeoutMinutes 10",
+  "revision": "0be9c9799ecdf05b9ae82ec6ddae8af0a359c60d",
+  "summary": {
+    "Categories": [
+      "gm-main-linux-guide",
+      "gm-main-linux-launcher",
+      "gm-load-installed-profile",
+      "gm-load-ordinary-schema",
+      "gm-main-affected-managed"
+    ],
+    "Reasons": [
+      {
+        "category": "gm-main-linux-guide",
+        "reason": "Documented installed Linux profile consumed by original inert launcher data functions; preserve arbitrary command/model/cwd/profile and disabled inventory",
+        "contracts": [
+          "#1553",
+          "T052-FINAL-READINESS"
+        ]
+      },
+      {
+        "category": "gm-main-linux-launcher",
+        "reason": "Installed Linux foreground route after auxiliary launcher, early-exit and presentation changes since accepted M1",
+        "contracts": [
+          "#1553",
+          "T052-FINAL-READINESS"
+        ]
+      },
+      {
+        "category": "gm-load-installed-profile",
+        "reason": "Original stop/Load/fresh launch retains archive CLI/model/arguments/cwd/input profile",
+        "contracts": [
+          "#1553",
+          "T052-FINAL-READINESS"
+        ]
+      },
+      {
+        "category": "gm-load-ordinary-schema",
+        "reason": "Actual console and HTTP canonical schema1 generation plus full refresh bundle after current-session/storage changes",
+        "contracts": [
+          "#1553",
+          "T052-FINAL-READINESS"
+        ]
+      },
+      {
+        "category": "gm-main-affected-managed",
+        "reason": "Exact participating/finalizer/ambiguity/no-replay consumers after bootstrap, cancellation and artifact-detection edits",
+        "contracts": [
+          "#1553",
+          "T052-FINAL-READINESS"
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "0be9c9799ecdf05b9ae82ec6ddae8af0a359c60d",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0895061,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0629055,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1317319,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 107.3306038,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 18.0530833,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0056511,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:02:15.9553912",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 5,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 28,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "gm-load-installed-profile-unit-001",
+        "gm-load-ordinary-schema-integration-002",
+        "gm-main-affected-managed-unit-003",
+        "gm-main-linux-guide-powershell-004",
+        "gm-main-linux-launcher-unit-005"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "sourcePins": [
+    {
+      "path": "README.md",
+      "size": 7769,
+      "sha256": "12882faa49e037e963b20eab56577119f3230747b560ebd9578e842533247832"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+      "size": 13657,
+      "sha256": "edd73ec994fb2eae95bbc441f50846b0655063cf2ece34e71d6300c8cf651edf"
+    },
+    {
+      "path": "scripts/tests/linux-main-guide.tests.ps1",
+      "size": 4747,
+      "sha256": "f54141319363ae46c39a72cdf90ab908aa07cda2eef1a3afd80cdafbb5570e2f"
+    },
+    {
+      "path": "tests/categories.json",
+      "size": 1194521,
+      "sha256": "46a1ea0725d7b6ac2583393d8ce1c0568e6cbbe118d7566f3ded067decaa8e7b"
+    },
+    {
+      "path": "tests/selection.json",
+      "size": 1404,
+      "sha256": "7654450596fab684974ca5f8491e461c5952642cd8560abf2e5d5d37b4f84ec6"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "recovery/final-readiness/plan-Build-integration.log.gz",
+      "size": 1517,
+      "sha256": "962ec1e23be6970138efe37670a412e9f3dc571afeec784ad6bc54247d706abc",
+      "rawPath": "Build-integration.log",
+      "rawSize": 16422,
+      "rawSha256": "2052b6b1ce910afaa1bf61551fdbe5d929f5ea1b29e083b6c459abf69e5b1250"
+    },
+    {
+      "path": "recovery/final-readiness/plan-Build-unit.log.gz",
+      "size": 1470,
+      "sha256": "39b9d81acd582e6aa7bc87a17f13b4d83c9ee50241ee7cd413306994ae0ad88f",
+      "rawPath": "Build-unit.log",
+      "rawSize": 19988,
+      "rawSha256": "0df2dfa5939b0a3e56872d80e1beaad1ed3c1255f381ba191735ec3361dbd03f"
+    },
+    {
+      "path": "recovery/final-readiness/plan-dotnet-test.log.gz",
+      "size": 354067,
+      "sha256": "4038acfa2df4749361d942afee43b3eb497e43984312c77effa373f4d6197a22",
+      "rawPath": "dotnet-test.log",
+      "rawSize": 3179549,
+      "rawSha256": "a9efe03f45c0be157ffec2fd8ecc8593d310f0320e86866301228d2caa9219a7"
+    },
+    {
+      "path": "recovery/final-readiness/plan-plan.json.gz",
+      "size": 1941,
+      "sha256": "b55241a615a31c4fa74f1d6fbcd578b158707e4e8df824405361bda45fe99684",
+      "rawPath": "plan.json",
+      "rawSize": 10003,
+      "rawSha256": "79979847b5b31967252975cf6124d8fe1fa363a56cf390deb985fea257308d92"
+    },
+    {
+      "path": "recovery/final-readiness/plan-summary.json.gz",
+      "size": 1141,
+      "sha256": "6e183d4ebc7f549122fcbb60c714349f6cc2dcfdab365fc4a1ba0dfb5811a354",
+      "rawPath": "summary.json",
+      "rawSize": 3219,
+      "rawSha256": "b0474570f345b66c1edecc0070899b38266e8d3360725c24260de8e7578527de"
+    }
+  ]
+}

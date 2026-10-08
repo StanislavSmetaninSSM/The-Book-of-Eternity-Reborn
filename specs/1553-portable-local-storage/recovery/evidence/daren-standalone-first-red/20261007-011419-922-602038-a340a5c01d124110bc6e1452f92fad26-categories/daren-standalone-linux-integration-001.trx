@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="c0a2c92d-ee60-43fc-9e1f-bcfce88be35b" name="@c7669543e9c7 2026-10-07 01:16:09" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-07T01:16:09.9233424+00:00" queuing="2026-10-07T01:16:09.9233425+00:00" start="2026-10-07T01:16:06.5171816+00:00" finish="2026-10-07T01:16:09.9310309+00:00" />
+  <TestSettings name="default" id="9470c056-d4b6-4faf-9a8e-d99c56339550">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-07_01_16_09" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="e0bbdba7-ac11-4ed3-94a2-60e60eb55762" testId="3c1079c0-45f0-a08d-8935-d7edcc93b435" testName="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant" computerName="c7669543e9c7" duration="00:00:00.1946706" startTime="2026-10-07T01:16:09.8305247+00:00" endTime="2026-10-07T01:16:09.8305471+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e0bbdba7-ac11-4ed3-94a2-60e60eb55762">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-daren-standalone-linux-86cb10fe55154f778238e8a7014304f1 rootRemoved=True</StdOut>
+        <ErrorInfo>
+          <Message>System.PlatformNotSupportedException : Daren reward profile create-only publication requires a descriptor-bound relative publication backend.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.FileSystemManager.EnsureDescriptorBoundCreateOnlyPublicationSupported(String authorityName) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.cs:line 4023
+   at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.cs:line 3995
+   at BookOfEternityClient.Services.DarenRewardProfileFileStore.WriteExactBytesAtomicAsync(CanonicalWriteLease writeLease, Byte[] content, CancellationToken cancellationToken) in /workspace/native-1553/BookOfEternityClient/Services/DarenRewardProfileFileStore.cs:line 113
+   at BookOfEternityClient.Services.DarenRewardProfileFileStore.WriteTextAtomicAsync(CanonicalWriteLease writeLease, String content, CancellationToken cancellationToken) in /workspace/native-1553/BookOfEternityClient/Services/DarenRewardProfileFileStore.cs:line 88
+   at BookOfEternityClient.Services.DarenQteRewardProfileService.RecordCompletionBoundAsync(CanonicalWriteLease writeLease, DarenEndingResult ending, DateTime completedAtUtc) in /workspace/native-1553/BookOfEternityClient/Services/DarenQteRewardProfileService.cs:line 211
+   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in /workspace/native-1553/BookOfEternityClient/Core/SessionOperationContext.cs:line 356
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/native-1553/BookOfEternityClient/Core/SessionOperationContext.cs:line 211
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/native-1553/BookOfEternityClient/Core/SessionOperationContext.cs:line 288
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/native-1553/BookOfEternityClient/Core/SessionOperationContext.cs:line 99
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/native-1553/BookOfEternityClient/Core/SessionOperationContext.cs:line 106
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/native-1553/BookOfEternityClient/Core/SessionOperationContext.cs:line 107
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, CanonicalWriteLease writeLease, Func`1 operation, Func`1 establishedOutcome) in /workspace/native-1553/BookOfEternityClient/Core/SessionOperationContext.cs:line 63
+   at BookOfEternityClient.Services.DarenQteRewardProfileService.RunCanonicalAsync[T](Func`2 operation) in /workspace/native-1553/BookOfEternityClient/Services/DarenQteRewardProfileService.cs:line 303
+   at BookOfEternityClient.Services.DarenQteRewardProfileService.RunCanonicalAsync[T](Func`2 operation) in /workspace/native-1553/BookOfEternityClient/Services/DarenQteRewardProfileService.cs:line 303
+   at BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant() in /workspace/native-1553/BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxTests.cs:line 19
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3c1079c0-45f0-a08d-8935-d7edcc93b435">
+      <Execution id="e0bbdba7-ac11-4ed3-94a2-60e60eb55762" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.DarenStandaloneLinuxTests" name="RealProfileService_CreateUpgradeFreshReadAndOriginalGrant" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="3c1079c0-45f0-a08d-8935-d7edcc93b435" executionId="e0bbdba7-ac11-4ed3-94a2-60e60eb55762" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.39]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.43]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.47]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.74]       System.PlatformNotSupportedException : Daren reward profile create-only publication requires a descriptor-bound relative publication backend.
+[xUnit.net 00:00:02.74]       Stack Trace:
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.cs(4023,0): at BookOfEternityClient.Core.FileSystemManager.EnsureDescriptorBoundCreateOnlyPublicationSupported(String authorityName)
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.cs(3995,0): at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName)
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient/Services/DarenRewardProfileFileStore.cs(113,0): at BookOfEternityClient.Services.DarenRewardProfileFileStore.WriteExactBytesAtomicAsync(CanonicalWriteLease writeLease, Byte[] content, CancellationToken cancellationToken)
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient/Services/DarenRewardProfileFileStore.cs(88,0): at BookOfEternityClient.Services.DarenRewardProfileFileStore.WriteTextAtomicAsync(CanonicalWriteLease writeLease, String content, CancellationToken cancellationToken)
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient/Services/DarenQteRewardProfileService.cs(211,0): at BookOfEternityClient.Services.DarenQteRewardProfileService.RecordCompletionBoundAsync(CanonicalWriteLease writeLease, DarenEndingResult ending, DateTime completedAtUtc)
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient/Core/SessionOperationContext.cs(356,0): at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation)
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient/Core/SessionOperationContext.cs(211,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome)
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient/Core/SessionOperationContext.cs(288,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome)
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient/Core/SessionOperationContext.cs(99,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome)
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient/Core/SessionOperationContext.cs(106,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome)
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient/Core/SessionOperationContext.cs(107,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome)
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient/Core/SessionOperationContext.cs(63,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, CanonicalWriteLease writeLease, Func`1 operation, Func`1 establishedOutcome)
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient/Services/DarenQteRewardProfileService.cs(303,0): at BookOfEternityClient.Services.DarenQteRewardProfileService.RunCanonicalAsync[T](Func`2 operation)
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient/Services/DarenQteRewardProfileService.cs(303,0): at BookOfEternityClient.Services.DarenQteRewardProfileService.RunCanonicalAsync[T](Func`2 operation)
+[xUnit.net 00:00:02.74]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxTests.cs(19,0): at BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant()
+[xUnit.net 00:00:02.74]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.74]       Output:
+[xUnit.net 00:00:02.74]         FixtureCleanup root=/tmp/boe-daren-standalone-linux-86cb10fe55154f778238e8a7014304f1 rootRemoved=True
+[xUnit.net 00:00:02.75]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T01:16:09.8255000+00:00">
+        <Text>[xUnit.net 00:00:02.74]     BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

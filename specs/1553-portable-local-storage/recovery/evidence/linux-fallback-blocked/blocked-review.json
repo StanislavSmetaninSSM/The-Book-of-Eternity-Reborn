@@ -1,0 +1,11 @@
+{
+  "Model": "gpt-6.1-sol",
+  "Effort": "xhigh",
+  "Agent": "/root/fallback_design_review",
+  "Source": "690a975593e3696530a355057c761480f3d43e70",
+  "Verdict": "BLOCKED; P1 guardian correction required",
+  "Finding": "Post-fork proc-open/wait error returns and fatal helpers abandon reap authority",
+  "Disposition": "Preflight beforefork; retainpidfd and exclusivelyreap toECHILD aftererrors; no positive nativequalification",
+  "Environment": "Own proc-children missing ENOENT; no substitute enumeration within reviewedalgorithm",
+  "RuntimeByReviewer": false
+}

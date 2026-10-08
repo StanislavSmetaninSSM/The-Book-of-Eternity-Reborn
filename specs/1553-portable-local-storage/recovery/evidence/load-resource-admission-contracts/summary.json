@@ -1,0 +1,95 @@
+{
+  "Categories": [
+    "portable-storage-batch-admission",
+    "portable-storage-paths"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-storage-batch-admission",
+      "reason": "The measured pre-mutation cost motivates fresh-call parent deduplication; qualify every new batch grant/leaf/type/native parent replacement contract before the unchanged many-member performance row.",
+      "contracts": [
+        "LOAD-FS-005/007/008"
+      ]
+    },
+    {
+      "category": "portable-storage-paths",
+      "reason": "The shared scope constructor and scalar leaf helper changed; preserve native path spelling, exact grants, absent/type/link refusal and non-following cleanup consumers.",
+      "contracts": [
+        "LOAD-FS-001/006/008"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "405f7fdd3d26c3400563ee61f56e0c17150393e1",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-storage-batch-admission",
+      "Seconds": 7.1805387,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-paths",
+      "Seconds": 7.5431238,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.3973934,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.9550829,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.2451261,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 157.8571773,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0047194,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:03:05.7651096",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 46,
+    "CompletedCases": 46,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 46,
+    "Executed": 46,
+    "Passed": 46,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

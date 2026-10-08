@@ -1,0 +1,513 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="2b6517b4-7c4a-48a6-8881-4a00f5702681" name="@c7669543e9c7 2026-10-06 02:12:44" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T02:12:44.5168693+00:00" queuing="2026-10-06T02:12:44.5168693+00:00" start="2026-10-06T02:12:42.4198903+00:00" finish="2026-10-06T02:12:44.5854342+00:00" />
+  <TestSettings name="default" id="9ce9edff-7291-4c3a-9f3c-f5ec7574a6b4">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_02_12_44" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="7bf93926-6a4b-459e-ba96-beb01b985ea8" testId="c94940f0-9494-4d53-0ae3-4391a12560dd" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;PublicationIntent&quot;)" computerName="c7669543e9c7" duration="00:00:00.0002981" startTime="2026-10-06T02:12:44.5257229+00:00" endTime="2026-10-06T02:12:44.5257229+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7bf93926-6a4b-459e-ba96-beb01b985ea8">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8044a204-44a6-4f88-88ce-fb4ad7cd3dc4" testId="d3fa623b-95ae-d951-dfd3-0e55e0352f3d" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;numeric-committed&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004961" startTime="2026-10-06T02:12:44.5065303+00:00" endTime="2026-10-06T02:12:44.5065304+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8044a204-44a6-4f88-88ce-fb4ad7cd3dc4" />
+    <UnitTestResult executionId="f68b7e1c-3afd-48d6-95d5-bf6fb5013d10" testId="9bc43844-11ef-704c-77f4-3d77cc0cb953" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;Released&quot;)" computerName="c7669543e9c7" duration="00:00:00.0002890" startTime="2026-10-06T02:12:44.5254536+00:00" endTime="2026-10-06T02:12:44.5254536+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f68b7e1c-3afd-48d6-95d5-bf6fb5013d10">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9aa5d088-9888-46aa-9e3a-83ff1f0b73ab" testId="c766754f-7051-8ac8-8996-1afb43feafdf" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;published-uncommitted&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004147" startTime="2026-10-06T02:12:44.5030200+00:00" endTime="2026-10-06T02:12:44.5030200+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9aa5d088-9888-46aa-9e3a-83ff1f0b73ab" />
+    <UnitTestResult executionId="761a4cdb-45ef-483c-adea-3d676df7b3cd" testId="d98b6723-d420-7d8e-8ffc-573aa50acefe" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(phase: &quot;Retired&quot;, auditRequired: False)" computerName="c7669543e9c7" duration="00:00:00.0003478" startTime="2026-10-06T02:12:44.5233972+00:00" endTime="2026-10-06T02:12:44.5233972+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="761a4cdb-45ef-483c-adea-3d676df7b3cd">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Quiescent
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(String phase, Boolean auditRequired) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs:line 43
+   at InvokeStub_GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="50a6fe1f-cbb5-414a-9c5e-df1f5ec4e9dc" testId="ff0625f6-2eb1-b05f-c5e3-8ee5eb2070a7" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;unknown-publication&quot;)" computerName="c7669543e9c7" duration="00:00:00.0464401" startTime="2026-10-06T02:12:44.4886079+00:00" endTime="2026-10-06T02:12:44.4886220+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="50a6fe1f-cbb5-414a-9c5e-df1f5ec4e9dc" />
+    <UnitTestResult executionId="168f202c-3d2d-418b-8de8-b4f5ebcd0269" testId="b9908f7f-a0bd-690b-23b0-10bc20b51129" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;early-cleanup&quot;)" computerName="c7669543e9c7" duration="00:00:00.0026310" startTime="2026-10-06T02:12:44.4913752+00:00" endTime="2026-10-06T02:12:44.4913753+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="168f202c-3d2d-418b-8de8-b4f5ebcd0269" />
+    <UnitTestResult executionId="d5e5467f-855b-41d9-bfe5-f20499db52eb" testId="9c5bdb5f-6f72-9fe1-8849-ff1477b3ca2c" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;old-schema&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004389" startTime="2026-10-06T02:12:44.5031913+00:00" endTime="2026-10-06T02:12:44.5031913+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d5e5467f-855b-41d9-bfe5-f20499db52eb" />
+    <UnitTestResult executionId="00b6e1de-f4a5-4b12-b80b-20fbbbbfcbbc" testId="ead8138e-9af0-c522-3259-1ae56f5ba7c3" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;LaunchIntent&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005065" startTime="2026-10-06T02:12:44.5260149+00:00" endTime="2026-10-06T02:12:44.5260150+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="00b6e1de-f4a5-4b12-b80b-20fbbbbfcbbc">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4a11dae1-eac5-4b17-9976-bc2244e3df8e" testId="c547ae4a-7f05-0ab8-907e-5a1d87ae335d" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;retired-uncommitted&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004278" startTime="2026-10-06T02:12:44.5030755+00:00" endTime="2026-10-06T02:12:44.5030755+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4a11dae1-eac5-4b17-9976-bc2244e3df8e" />
+    <UnitTestResult executionId="8d6273de-340e-4182-a7b6-0301432f5f0e" testId="8e7e17ed-9fb4-dab2-dedc-c309dd4e9e6f" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;intent-committed&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004017" startTime="2026-10-06T02:12:44.5030499+00:00" endTime="2026-10-06T02:12:44.5030500+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8d6273de-340e-4182-a7b6-0301432f5f0e" />
+    <UnitTestResult executionId="7377f342-8236-47a3-ae4d-e4b8e5eafd59" testId="ad1c6c84-7ad9-190d-6437-68e02cbaf061" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;ReleaseIntent&quot;)" computerName="c7669543e9c7" duration="00:00:00.0002933" startTime="2026-10-06T02:12:44.5258588+00:00" endTime="2026-10-06T02:12:44.5258588+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7377f342-8236-47a3-ae4d-e4b8e5eafd59">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3f33d48e-ea5f-4782-83fa-79d74dbfb864" testId="72149c39-cd7b-3056-bb2b-4d1181a2c155" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;StopValidated&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004191" startTime="2026-10-06T02:12:44.5255874+00:00" endTime="2026-10-06T02:12:44.5255874+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3f33d48e-ea5f-4782-83fa-79d74dbfb864">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c6c40f7f-e1de-4ee0-9cf0-559ec567b4a6" testId="33e5f9ce-0926-7f0a-f0e7-68faf1165049" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;unrequired-audit-has-id&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004098" startTime="2026-10-06T02:12:44.4936861+00:00" endTime="2026-10-06T02:12:44.4936861+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c6c40f7f-e1de-4ee0-9cf0-559ec567b4a6" />
+    <UnitTestResult executionId="8a752258-a003-4e58-ab46-006af76bb8d2" testId="fc055151-228c-cb40-ddce-e228f92820c5" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;required-audit-missing-id&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003851" startTime="2026-10-06T02:12:44.4931957+00:00" endTime="2026-10-06T02:12:44.4931957+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8a752258-a003-4e58-ab46-006af76bb8d2" />
+    <UnitTestResult executionId="556c7b1f-50db-4243-a1a0-d98fd0147a5e" testId="ac03965a-f350-d026-5716-276f09bcba95" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(phase: &quot;AbortedBeforeLaunch&quot;, auditRequired: True)" computerName="c7669543e9c7" duration="00:00:00.0046104" startTime="2026-10-06T02:12:44.5224482+00:00" endTime="2026-10-06T02:12:44.5224486+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="556c7b1f-50db-4243-a1a0-d98fd0147a5e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Quiescent
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(String phase, Boolean auditRequired) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs:line 43
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="13dd3ae4-7ee4-4f9f-a1a3-3e078bb89377" testId="aa0f7dac-9d30-a110-8265-a39532cd3542" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;Uncertain&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003562" startTime="2026-10-06T02:12:44.5250731+00:00" endTime="2026-10-06T02:12:44.5250731+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="13dd3ae4-7ee4-4f9f-a1a3-3e078bb89377">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="89f0db99-4f69-4410-8074-799d18c1daf6" testId="9e98d9ea-8921-9ad0-e1a7-045359b37f56" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;unknown-progress&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003468" startTime="2026-10-06T02:12:44.4942022+00:00" endTime="2026-10-06T02:12:44.4942023+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="89f0db99-4f69-4410-8074-799d18c1daf6" />
+    <UnitTestResult executionId="dc7efa96-0ad5-4c7e-b58e-c174adcfdb6d" testId="2c67f986-d002-2279-6934-2076d3ad9958" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;unrequired-audit-has-digest&quot;)" computerName="c7669543e9c7" duration="00:00:00.0006833" startTime="2026-10-06T02:12:44.5029973+00:00" endTime="2026-10-06T02:12:44.5029974+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dc7efa96-0ad5-4c7e-b58e-c174adcfdb6d" />
+    <UnitTestResult executionId="f3c78f53-7914-4550-865a-60cbb2549b20" testId="4e07dd5d-55c0-778a-a7f9-ec5b7af45503" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;published-no-publication&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003375" startTime="2026-10-06T02:12:44.5032602+00:00" endTime="2026-10-06T02:12:44.5032602+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f3c78f53-7914-4550-865a-60cbb2549b20" />
+    <UnitTestResult executionId="fff60cdc-d9bf-4529-a766-2e376552df94" testId="476daf32-338e-aa3c-f7b9-10b43c2190d2" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;duplicate-progress&quot;)" computerName="c7669543e9c7" duration="00:00:00.0006735" startTime="2026-10-06T02:12:44.4916746+00:00" endTime="2026-10-06T02:12:44.4916747+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fff60cdc-d9bf-4529-a766-2e376552df94" />
+    <UnitTestResult executionId="a90e6bad-b074-4bac-b5cb-82076360b128" testId="40d3fdb3-3915-b12c-7ec9-63b7c937070f" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;unknown-cleanup&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004533" startTime="2026-10-06T02:12:44.5032385+00:00" endTime="2026-10-06T02:12:44.5032386+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a90e6bad-b074-4bac-b5cb-82076360b128" />
+    <UnitTestResult executionId="3c34ee1f-3235-47ac-9af5-4728610a1e0c" testId="6d2eb64c-aa8b-88c0-4e15-08afa41426de" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;retired-no-cleanup&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003632" startTime="2026-10-06T02:12:44.4917338+00:00" endTime="2026-10-06T02:12:44.4917339+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3c34ee1f-3235-47ac-9af5-4728610a1e0c" />
+    <UnitTestResult executionId="5e357fad-1a3c-4842-80e7-82282f932f92" testId="4f8e25f7-02fc-d70e-2f25-9da4e39b94ce" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;prepared-has-publication&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003561" startTime="2026-10-06T02:12:44.4927172+00:00" endTime="2026-10-06T02:12:44.4927172+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5e357fad-1a3c-4842-80e7-82282f932f92" />
+    <UnitTestResult executionId="52121fb3-ceb7-49dd-bf99-cd3bbf7cd4c2" testId="1c32056b-7a4c-8e07-ad6b-066783d2981c" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;wrong-proposal-digest&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003674" startTime="2026-10-06T02:12:44.5065905+00:00" endTime="2026-10-06T02:12:44.5065905+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="52121fb3-ceb7-49dd-bf99-cd3bbf7cd4c2" />
+    <UnitTestResult executionId="82efad14-179f-4537-9060-cd54cd44211a" testId="637d1e21-7bcb-7cfc-1ea4-cbee779c47c2" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(phase: &quot;Retired&quot;, auditRequired: True)" computerName="c7669543e9c7" duration="00:00:00.0004343" startTime="2026-10-06T02:12:44.5236383+00:00" endTime="2026-10-06T02:12:44.5236384+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="82efad14-179f-4537-9060-cd54cd44211a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Quiescent
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(String phase, Boolean auditRequired) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs:line 43
+   at InvokeStub_GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="68225c4b-93c5-4e62-a8eb-c23918030b8c" testId="3abe3dd3-a058-e423-5a1a-76ddc16a77f6" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;Published&quot;)" computerName="c7669543e9c7" duration="00:00:00.0008212" startTime="2026-10-06T02:12:44.5238701+00:00" endTime="2026-10-06T02:12:44.5238701+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="68225c4b-93c5-4e62-a8eb-c23918030b8c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs:line 26
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ef24d625-036c-46f4-98e3-3aa910aa719f" testId="5d8b0f52-5603-7ee8-f2d2-62663c27701e" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;Prepared&quot;)" computerName="c7669543e9c7" duration="00:00:00.0007305" startTime="2026-10-06T02:12:44.5248778+00:00" endTime="2026-10-06T02:12:44.5248779+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ef24d625-036c-46f4-98e3-3aa910aa719f">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3d0a3eca-adf6-4043-b908-8ebcc5ae7f66" testId="289f44aa-241f-311d-c82f-28bc7cb9479f" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(phase: &quot;AbortedBeforeLaunch&quot;, auditRequired: False)" computerName="c7669543e9c7" duration="00:00:00.0008707" startTime="2026-10-06T02:12:44.5230890+00:00" endTime="2026-10-06T02:12:44.5230892+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3d0a3eca-adf6-4043-b908-8ebcc5ae7f66">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Quiescent
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(String phase, Boolean auditRequired) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs:line 43
+   at InvokeStub_GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="76eff93e-a66a-491a-8c42-4514236d2f54" testId="336fd0e2-c9f0-6d11-672a-3882238d8d6b" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;wrong-content-digest&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004481" startTime="2026-10-06T02:12:44.4922229+00:00" endTime="2026-10-06T02:12:44.4922229+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="76eff93e-a66a-491a-8c42-4514236d2f54" />
+    <UnitTestResult executionId="f845b992-2d59-4d6d-b8bb-f036429e76e4" testId="865e7bc3-63b8-4998-0e53-facd1cd79287" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;CleanupPending&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003730" startTime="2026-10-06T02:12:44.5253045+00:00" endTime="2026-10-06T02:12:44.5253045+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f845b992-2d59-4d6d-b8bb-f036429e76e4">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs:line 26
+   at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="aaf190ba-3ad4-4f08-bc05-fcb063cb1aa2" testId="d78641fc-e944-748a-8d6f-66beba7c6a88" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;empty-proposal&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003907" startTime="2026-10-06T02:12:44.5066153+00:00" endTime="2026-10-06T02:12:44.5066153+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aaf190ba-3ad4-4f08-bc05-fcb063cb1aa2" />
+    <UnitTestResult executionId="fe9b68c6-9eca-4c79-9fda-aa00cec8e156" testId="7849fdd2-27e3-5a75-f4eb-d471b2b24183" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;required-audit-missing-digest&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003382" startTime="2026-10-06T02:12:44.5066559+00:00" endTime="2026-10-06T02:12:44.5066559+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fe9b68c6-9eca-4c79-9fda-aa00cec8e156" />
+    <UnitTestResult executionId="65fa95a4-0759-42ac-ac96-a1569afc93d2" testId="9475333a-b2b8-ef18-f5ae-9457b20515d9" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;abort-has-publication&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003325" startTime="2026-10-06T02:12:44.5032151+00:00" endTime="2026-10-06T02:12:44.5032151+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="65fa95a4-0759-42ac-ac96-a1569afc93d2" />
+    <UnitTestResult executionId="1b77fdfc-daff-49e5-95b6-10d7ef957907" testId="985a7127-4416-e685-711e-390eb3dc821f" testName="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;missing-progress&quot;)" computerName="c7669543e9c7" duration="00:00:00.0034161" startTime="2026-10-06T02:12:44.5029575+00:00" endTime="2026-10-06T02:12:44.5029579+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1b77fdfc-daff-49e5-95b6-10d7ef957907" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;unknown-cleanup&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="40d3fdb3-3915-b12c-7ec9-63b7c937070f">
+      <Execution id="a90e6bad-b074-4bac-b5cb-82076360b128" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;unknown-publication&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ff0625f6-2eb1-b05f-c5e3-8ee5eb2070a7">
+      <Execution id="50a6fe1f-cbb5-414a-9c5e-df1f5ec4e9dc" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;LaunchIntent&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ead8138e-9af0-c522-3259-1ae56f5ba7c3">
+      <Execution id="00b6e1de-f4a5-4b12-b80b-20fbbbbfcbbc" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="CurrentProgress_ColdObservationCannotRestoreLiveAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;missing-progress&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="985a7127-4416-e685-711e-390eb3dc821f">
+      <Execution id="1b77fdfc-daff-49e5-95b6-10d7ef957907" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;intent-committed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8e7e17ed-9fb4-dab2-dedc-c309dd4e9e6f">
+      <Execution id="8d6273de-340e-4182-a7b6-0301432f5f0e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;empty-proposal&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d78641fc-e944-748a-8d6f-66beba7c6a88">
+      <Execution id="aaf190ba-3ad4-4f08-bc05-fcb063cb1aa2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;retired-uncommitted&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c547ae4a-7f05-0ab8-907e-5a1d87ae335d">
+      <Execution id="4a11dae1-eac5-4b17-9976-bc2244e3df8e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;duplicate-progress&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="476daf32-338e-aa3c-f7b9-10b43c2190d2">
+      <Execution id="fff60cdc-d9bf-4529-a766-2e376552df94" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;Prepared&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5d8b0f52-5603-7ee8-f2d2-62663c27701e">
+      <Execution id="ef24d625-036c-46f4-98e3-3aa910aa719f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="CurrentProgress_ColdObservationCannotRestoreLiveAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;required-audit-missing-digest&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7849fdd2-27e3-5a75-f4eb-d471b2b24183">
+      <Execution id="fe9b68c6-9eca-4c79-9fda-aa00cec8e156" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;unrequired-audit-has-id&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="33e5f9ce-0926-7f0a-f0e7-68faf1165049">
+      <Execution id="c6c40f7f-e1de-4ee0-9cf0-559ec567b4a6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;unknown-progress&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9e98d9ea-8921-9ad0-e1a7-045359b37f56">
+      <Execution id="89f0db99-4f69-4410-8074-799d18c1daf6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;published-uncommitted&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c766754f-7051-8ac8-8996-1afb43feafdf">
+      <Execution id="9aa5d088-9888-46aa-9e3a-83ff1f0b73ab" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;published-no-publication&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4e07dd5d-55c0-778a-a7f9-ec5b7af45503">
+      <Execution id="f3c78f53-7914-4550-865a-60cbb2549b20" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(phase: &quot;Retired&quot;, auditRequired: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d98b6723-d420-7d8e-8ffc-573aa50acefe">
+      <Execution id="761a4cdb-45ef-483c-adea-3d676df7b3cd" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;unrequired-audit-has-digest&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2c67f986-d002-2279-6934-2076d3ad9958">
+      <Execution id="dc7efa96-0ad5-4c7e-b58e-c174adcfdb6d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(phase: &quot;AbortedBeforeLaunch&quot;, auditRequired: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="289f44aa-241f-311d-c82f-28bc7cb9479f">
+      <Execution id="3d0a3eca-adf6-4043-b908-8ebcc5ae7f66" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;CleanupPending&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="865e7bc3-63b8-4998-0e53-facd1cd79287">
+      <Execution id="f845b992-2d59-4d6d-b8bb-f036429e76e4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="CurrentProgress_ColdObservationCannotRestoreLiveAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;early-cleanup&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b9908f7f-a0bd-690b-23b0-10bc20b51129">
+      <Execution id="168f202c-3d2d-418b-8de8-b4f5ebcd0269" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;prepared-has-publication&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4f8e25f7-02fc-d70e-2f25-9da4e39b94ce">
+      <Execution id="5e357fad-1a3c-4842-80e7-82282f932f92" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(phase: &quot;AbortedBeforeLaunch&quot;, auditRequired: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ac03965a-f350-d026-5716-276f09bcba95">
+      <Execution id="556c7b1f-50db-4243-a1a0-d98fd0147a5e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;PublicationIntent&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c94940f0-9494-4d53-0ae3-4391a12560dd">
+      <Execution id="7bf93926-6a4b-459e-ba96-beb01b985ea8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="CurrentProgress_ColdObservationCannotRestoreLiveAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;wrong-proposal-digest&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1c32056b-7a4c-8e07-ad6b-066783d2981c">
+      <Execution id="52121fb3-ceb7-49dd-bf99-cd3bbf7cd4c2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;retired-no-cleanup&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6d2eb64c-aa8b-88c0-4e15-08afa41426de">
+      <Execution id="3c34ee1f-3235-47ac-9af5-4728610a1e0c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;wrong-content-digest&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="336fd0e2-c9f0-6d11-672a-3882238d8d6b">
+      <Execution id="76eff93e-a66a-491a-8c42-4514236d2f54" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;ReleaseIntent&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ad1c6c84-7ad9-190d-6437-68e02cbaf061">
+      <Execution id="7377f342-8236-47a3-ae4d-e4b8e5eafd59" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="CurrentProgress_ColdObservationCannotRestoreLiveAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;required-audit-missing-id&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fc055151-228c-cb40-ddce-e228f92820c5">
+      <Execution id="8a752258-a003-4e58-ab46-006af76bb8d2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;Uncertain&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="aa0f7dac-9d30-a110-8265-a39532cd3542">
+      <Execution id="13dd3ae4-7ee4-4f9f-a1a3-3e078bb89377" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="CurrentProgress_ColdObservationCannotRestoreLiveAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;old-schema&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9c5bdb5f-6f72-9fe1-8849-ff1477b3ca2c">
+      <Execution id="d5e5467f-855b-41d9-bfe5-f20499db52eb" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;numeric-committed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d3fa623b-95ae-d951-dfd3-0e55e0352f3d">
+      <Execution id="8044a204-44a6-4f88-88ce-fb4ad7cd3dc4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked(mutation: &quot;abort-has-publication&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9475333a-b2b8-ef18-f5ae-9457b20515d9">
+      <Execution id="65fa95a4-0759-42ac-ac96-a1569afc93d2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="InconsistentProgress_IsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(phase: &quot;Retired&quot;, auditRequired: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="637d1e21-7bcb-7cfc-1ea4-cbee779c47c2">
+      <Execution id="82efad14-179f-4537-9060-cd54cd44211a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;Released&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9bc43844-11ef-704c-77f4-3d77cc0cb953">
+      <Execution id="f68b7e1c-3afd-48d6-95d5-bf6fb5013d10" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="CurrentProgress_ColdObservationCannotRestoreLiveAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;StopValidated&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="72149c39-cd7b-3056-bb2b-4d1181a2c155">
+      <Execution id="3f33d48e-ea5f-4782-83fa-79d74dbfb864" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="CurrentProgress_ColdObservationCannotRestoreLiveAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: &quot;Published&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3abe3dd3-a058-e423-5a1a-76ddc16a77f6">
+      <Execution id="68225c4b-93c5-4e62-a8eb-c23918030b8c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartRecordTests" name="CurrentProgress_ColdObservationCannotRestoreLiveAuthority" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c94940f0-9494-4d53-0ae3-4391a12560dd" executionId="7bf93926-6a4b-459e-ba96-beb01b985ea8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d3fa623b-95ae-d951-dfd3-0e55e0352f3d" executionId="8044a204-44a6-4f88-88ce-fb4ad7cd3dc4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9bc43844-11ef-704c-77f4-3d77cc0cb953" executionId="f68b7e1c-3afd-48d6-95d5-bf6fb5013d10" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c766754f-7051-8ac8-8996-1afb43feafdf" executionId="9aa5d088-9888-46aa-9e3a-83ff1f0b73ab" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d98b6723-d420-7d8e-8ffc-573aa50acefe" executionId="761a4cdb-45ef-483c-adea-3d676df7b3cd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ff0625f6-2eb1-b05f-c5e3-8ee5eb2070a7" executionId="50a6fe1f-cbb5-414a-9c5e-df1f5ec4e9dc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b9908f7f-a0bd-690b-23b0-10bc20b51129" executionId="168f202c-3d2d-418b-8de8-b4f5ebcd0269" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9c5bdb5f-6f72-9fe1-8849-ff1477b3ca2c" executionId="d5e5467f-855b-41d9-bfe5-f20499db52eb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ead8138e-9af0-c522-3259-1ae56f5ba7c3" executionId="00b6e1de-f4a5-4b12-b80b-20fbbbbfcbbc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c547ae4a-7f05-0ab8-907e-5a1d87ae335d" executionId="4a11dae1-eac5-4b17-9976-bc2244e3df8e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8e7e17ed-9fb4-dab2-dedc-c309dd4e9e6f" executionId="8d6273de-340e-4182-a7b6-0301432f5f0e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ad1c6c84-7ad9-190d-6437-68e02cbaf061" executionId="7377f342-8236-47a3-ae4d-e4b8e5eafd59" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="72149c39-cd7b-3056-bb2b-4d1181a2c155" executionId="3f33d48e-ea5f-4782-83fa-79d74dbfb864" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="33e5f9ce-0926-7f0a-f0e7-68faf1165049" executionId="c6c40f7f-e1de-4ee0-9cf0-559ec567b4a6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fc055151-228c-cb40-ddce-e228f92820c5" executionId="8a752258-a003-4e58-ab46-006af76bb8d2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ac03965a-f350-d026-5716-276f09bcba95" executionId="556c7b1f-50db-4243-a1a0-d98fd0147a5e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aa0f7dac-9d30-a110-8265-a39532cd3542" executionId="13dd3ae4-7ee4-4f9f-a1a3-3e078bb89377" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9e98d9ea-8921-9ad0-e1a7-045359b37f56" executionId="89f0db99-4f69-4410-8074-799d18c1daf6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2c67f986-d002-2279-6934-2076d3ad9958" executionId="dc7efa96-0ad5-4c7e-b58e-c174adcfdb6d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4e07dd5d-55c0-778a-a7f9-ec5b7af45503" executionId="f3c78f53-7914-4550-865a-60cbb2549b20" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="476daf32-338e-aa3c-f7b9-10b43c2190d2" executionId="fff60cdc-d9bf-4529-a766-2e376552df94" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="40d3fdb3-3915-b12c-7ec9-63b7c937070f" executionId="a90e6bad-b074-4bac-b5cb-82076360b128" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6d2eb64c-aa8b-88c0-4e15-08afa41426de" executionId="3c34ee1f-3235-47ac-9af5-4728610a1e0c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4f8e25f7-02fc-d70e-2f25-9da4e39b94ce" executionId="5e357fad-1a3c-4842-80e7-82282f932f92" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1c32056b-7a4c-8e07-ad6b-066783d2981c" executionId="52121fb3-ceb7-49dd-bf99-cd3bbf7cd4c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="637d1e21-7bcb-7cfc-1ea4-cbee779c47c2" executionId="82efad14-179f-4537-9060-cd54cd44211a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3abe3dd3-a058-e423-5a1a-76ddc16a77f6" executionId="68225c4b-93c5-4e62-a8eb-c23918030b8c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5d8b0f52-5603-7ee8-f2d2-62663c27701e" executionId="ef24d625-036c-46f4-98e3-3aa910aa719f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="289f44aa-241f-311d-c82f-28bc7cb9479f" executionId="3d0a3eca-adf6-4043-b908-8ebcc5ae7f66" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="336fd0e2-c9f0-6d11-672a-3882238d8d6b" executionId="76eff93e-a66a-491a-8c42-4514236d2f54" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="865e7bc3-63b8-4998-0e53-facd1cd79287" executionId="f845b992-2d59-4d6d-b8bb-f036429e76e4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d78641fc-e944-748a-8d6f-66beba7c6a88" executionId="aaf190ba-3ad4-4f08-bc05-fcb063cb1aa2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7849fdd2-27e3-5a75-f4eb-d471b2b24183" executionId="fe9b68c6-9eca-4c79-9fda-aa00cec8e156" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9475333a-b2b8-ef18-f5ae-9457b20515d9" executionId="65fa95a4-0759-42ac-ac96-a1569afc93d2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="985a7127-4416-e685-711e-390eb3dc821f" executionId="1b77fdfc-daff-49e5-95b6-10d7ef957907" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="35" executed="35" passed="22" failed="13" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.24]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.47]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.50]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.62]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.62]       Expected: Quiescent
+[xUnit.net 00:00:01.62]       Actual:   Blocked
+[xUnit.net 00:00:01.62]       Stack Trace:
+[xUnit.net 00:00:01.62]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs(43,0): at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(String phase, Boolean auditRequired)
+[xUnit.net 00:00:01.62]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.62]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.62]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.62]       Expected: Quiescent
+[xUnit.net 00:00:01.62]       Actual:   Blocked
+[xUnit.net 00:00:01.62]       Stack Trace:
+[xUnit.net 00:00:01.62]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs(43,0): at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(String phase, Boolean auditRequired)
+[xUnit.net 00:00:01.62]            at InvokeStub_GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(Object, Span`1)
+[xUnit.net 00:00:01.62]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.62]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.62]       Expected: Quiescent
+[xUnit.net 00:00:01.62]       Actual:   Blocked
+[xUnit.net 00:00:01.62]       Stack Trace:
+[xUnit.net 00:00:01.62]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs(43,0): at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(String phase, Boolean auditRequired)
+[xUnit.net 00:00:01.63]            at InvokeStub_GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(Object, Span`1)
+[xUnit.net 00:00:01.63]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.63]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.63]       Expected: Quiescent
+[xUnit.net 00:00:01.63]       Actual:   Blocked
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs(43,0): at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(String phase, Boolean auditRequired)
+[xUnit.net 00:00:01.63]            at InvokeStub_GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(Object, Span`1)
+[xUnit.net 00:00:01.63]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.63]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.63]       Expected: Uncertain
+[xUnit.net 00:00:01.63]       Actual:   Blocked
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase)
+[xUnit.net 00:00:01.63]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.63]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.63]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.63]       Expected: Uncertain
+[xUnit.net 00:00:01.63]       Actual:   Blocked
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase)
+[xUnit.net 00:00:01.63]            at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+[xUnit.net 00:00:01.63]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.63]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.63]       Expected: Uncertain
+[xUnit.net 00:00:01.63]       Actual:   Blocked
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase)
+[xUnit.net 00:00:01.63]            at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+[xUnit.net 00:00:01.63]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.63]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.63]       Expected: Uncertain
+[xUnit.net 00:00:01.63]       Actual:   Blocked
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase)
+[xUnit.net 00:00:01.63]            at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+[xUnit.net 00:00:01.63]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.63]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.63]       Expected: Uncertain
+[xUnit.net 00:00:01.63]       Actual:   Blocked
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase)
+[xUnit.net 00:00:01.63]            at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+[xUnit.net 00:00:01.63]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.63]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.63]       Expected: Uncertain
+[xUnit.net 00:00:01.63]       Actual:   Blocked
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase)
+[xUnit.net 00:00:01.63]            at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+[xUnit.net 00:00:01.63]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.63]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.63]       Expected: Uncertain
+[xUnit.net 00:00:01.63]       Actual:   Blocked
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase)
+[xUnit.net 00:00:01.63]            at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+[xUnit.net 00:00:01.63]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.63]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.63]       Expected: Uncertain
+[xUnit.net 00:00:01.63]       Actual:   Blocked
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase)
+[xUnit.net 00:00:01.63]            at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+[xUnit.net 00:00:01.63]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.63]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.63]       Expected: Uncertain
+[xUnit.net 00:00:01.63]       Actual:   Blocked
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartRecordTests.cs(26,0): at BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(String phase)
+[xUnit.net 00:00:01.63]            at InvokeStub_GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(Object, Span`1)
+[xUnit.net 00:00:01.63]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.63]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:12:44.5237774+00:00">
+        <Text>[xUnit.net 00:00:01.62]     BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(phase: "AbortedBeforeLaunch", auditRequired: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:12:44.5240268+00:00">
+        <Text>[xUnit.net 00:00:01.62]     BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(phase: "AbortedBeforeLaunch", auditRequired: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:12:44.5241363+00:00">
+        <Text>[xUnit.net 00:00:01.62]     BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(phase: "Retired", auditRequired: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:12:44.5241714+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution(phase: "Retired", auditRequired: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:12:44.5242287+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: "Published") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:12:44.5277682+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: "Prepared") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:12:44.5278245+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: "Uncertain") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:12:44.5278738+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: "CleanupPending") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:12:44.5278908+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: "Released") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:12:44.5279097+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: "StopValidated") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:12:44.5279279+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: "PublicationIntent") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:12:44.5279758+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: "ReleaseIntent") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T02:12:44.5279938+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority(phase: "LaunchIntent") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

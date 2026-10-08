@@ -1,0 +1,85 @@
+{
+  "Categories": [
+    "portable-client-bootstrap",
+    "portable-storage-consumers"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "6435920da57471ab852f028e394374097f78a9c9",
+    "WorkingTreeFingerprint": "888C239C6B382162822BDDCDF9A9E958A68E84832CAA4C70B1C0A2ED2E1CD613",
+    "ChangedFiles": 1
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-client-bootstrap",
+      "Seconds": 5.1293975,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-consumers",
+      "Seconds": 4.2969023,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0605006,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0108766,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0176224,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 182.0400197,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 41.4981476,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0039461,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 13,
+  "WallTime": "00:04:01.0302600",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 51,
+    "CompletedCases": 51,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 51,
+    "Executed": 51,
+    "Passed": 51,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

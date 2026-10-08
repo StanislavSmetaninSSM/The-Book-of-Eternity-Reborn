@@ -308,6 +308,25 @@ public sealed class GmWorkerBridgeDocumentationTests
                 ' ',
                 source.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
 
+            Assert.Contains("Launch is limited to 1 MiB", normalized, StringComparison.Ordinal);
+            Assert.Contains("Release are limited to 64 KiB of encoded bytes", normalized, StringComparison.Ordinal);
+            Assert.Contains("Slow bytes do not renew a frame deadline", normalized, StringComparison.Ordinal);
+            Assert.Contains("Diagnostics never include payload, environment or parser excerpts", normalized, StringComparison.Ordinal);
+            Assert.Contains("Windows uses GetNamedPipeClientProcessId", normalized, StringComparison.Ordinal);
+            Assert.Contains("Linux uses SO_PEERCRED for the expected host PID and the owner’s effective UID on both channels", normalized, StringComparison.Ordinal);
+            Assert.Contains("before any Launch byte", normalized, StringComparison.Ordinal);
+            Assert.Contains("does not enable Linux worker execution", normalized, StringComparison.Ordinal);
+            Assert.Contains("Environment names are case-sensitive on Linux and case-insensitive on Windows", normalized, StringComparison.Ordinal);
+            Assert.Contains("HTTP_PROXY and http_proxy keep distinct values on Linux", normalized, StringComparison.Ordinal);
+            Assert.Contains("No environment names are filtered or normalized", normalized, StringComparison.Ordinal);
+            Assert.Contains("Linux process-tree and detached-workspace gates remain closed", normalized, StringComparison.Ordinal);
+            Assert.Contains("bounded artifact reads without launching any process", normalized, StringComparison.Ordinal);
+            Assert.Contains("Linux ordinary hardlinks may be read and unlinked only", normalized, StringComparison.Ordinal);
+            Assert.Contains("native Windows qualification remains separate", normalized, StringComparison.Ordinal);
+            Assert.Contains("matching original run/backend/scope stop evidence", normalized, StringComparison.Ordinal);
+            Assert.Contains("Native Uncertain is permanent for that execution", normalized, StringComparison.Ordinal);
+            Assert.Contains("original execution publication permit", normalized, StringComparison.Ordinal);
+            Assert.Contains("ordinary public Linux WorkerRelease remains closed", normalized, StringComparison.Ordinal);
             Assert.Contains(
                 "parent creates private current-user named control/status pipe servers",
                 normalized,
@@ -411,17 +430,28 @@ public sealed class GmWorkerBridgeDocumentationTests
         var executionWorkspace = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs");
         var auditLog = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs");
         var fileSystemManager = ReadRepoFile("BookOfEternityClient/Core/FileSystemManager.cs");
+        var backupLifecycle = ReadRepoFile("BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs");
         var stateManager = ReadRepoFile("BookOfEternityClient/Core/StateManager.cs");
         var processHost = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs");
+        var peerIdentity = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs");
         var processTree = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs");
         var quarantineReaper = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs");
         var repairDelegator = ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerValidationRepairDelegator.cs");
         var saveLoadService = ReadRepoFile("BookOfEternityClient/Services/SaveLoadService.cs");
+        var saveCreation = ReadRepoFile("BookOfEternityClient/Services/SaveLoadService.Creation.cs");
+        var loadOperation = ReadRepoFile("BookOfEternityClient/Services/SaveLoadService.Loading.cs");
 
         foreach (var source in new[] { guide, contract, repair, runner })
         {
             Assert.Contains("detached execution snapshot", source, StringComparison.OrdinalIgnoreCase);
             Assert.Contains("canonical write lease", source, StringComparison.OrdinalIgnoreCase);
+        }
+
+        foreach (var source in new[] { guide, mainGmPrompt, afterlifeMatrix })
+        {
+            Assert.Contains("Linux portable quarantine audit receipt", source, StringComparison.Ordinal);
+            Assert.Contains("Same-content retry preserves the original receipt", source, StringComparison.Ordinal);
+            Assert.Contains("does not enable Linux worker execution or prove process-tree death", source, StringComparison.Ordinal);
         }
 
         foreach (var source in new[] { guide, contract, repair })
@@ -475,6 +505,16 @@ public sealed class GmWorkerBridgeDocumentationTests
             Assert.Contains("ValidationService", normalizedSource, StringComparison.Ordinal);
             Assert.Contains("applyable proposal", normalizedSource, StringComparison.OrdinalIgnoreCase);
         }
+
+        foreach (var source in new[] { guide, contract, repair, afterlifeMatrix })
+        {
+            var portable = string.Join(' ', source.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+            Assert.Contains("one deferred worker decision", portable, StringComparison.Ordinal);
+            Assert.Contains(".boe_runtime/trusted-local-publication-v1", portable, StringComparison.Ordinal);
+            Assert.Contains("it is never reinterpreted as a B1 journal", portable, StringComparison.Ordinal);
+        }
+        foreach (var source in new[] { mainGmPrompt, mainGmPromptGenerator })
+            Assert.Contains("one deferred B1 decision", source, StringComparison.Ordinal);
 
         var normalizedAfterlifeMatrix = string.Join(
             ' ',
@@ -548,7 +588,8 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("Worker task id already exists and cannot overwrite", bridgePool, StringComparison.Ordinal);
         Assert.Contains("Worker proposal id already exists and cannot be overwritten", proposalStore, StringComparison.Ordinal);
         Assert.Contains("TimedOut = true", bridgePool, StringComparison.Ordinal);
-        Assert.Contains("workspace-cleanup-failed", bridgePool, StringComparison.Ordinal);
+        AssertOrdered(bridgePool, "cleanup.RetainForRetry()", "quarantineReservation.Transfer(cleanup)",
+            "RecordTerminalEventAsync(\"process-tree-cleanup-unconfirmed\"", "RecordTerminalEventAsync(\"workspace-cleanup-deferred\"");
         Assert.Contains("WorkerConcurrencyGates", bridgePool, StringComparison.Ordinal);
         Assert.Contains("TryReserveTaskAsync", bridgePool, StringComparison.Ordinal);
         Assert.Contains("ReferenceCount", bridgePool, StringComparison.Ordinal);
@@ -568,11 +609,30 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("outside canonical afterlife state", contractValidator, StringComparison.Ordinal);
         Assert.Contains("identity collision repair is main GM only", contractValidator, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Guid.NewGuid():N", repairDelegator, StringComparison.Ordinal);
-        Assert.True(
-            saveLoadService.Split("AcquireCanonicalWriteLeaseAsync", StringSplitOptions.None).Length - 1 >= 2,
-            "Expected save and load to acquire the canonical write lease.");
-        Assert.Contains("BeginLoadTransaction", saveLoadService, StringComparison.Ordinal);
-        Assert.Contains("RecoverInterruptedLoadTransaction", saveLoadService, StringComparison.Ordinal);
+        AssertOrdered(saveCreation,
+            "lease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+            "result = await CreateSaveAsync(lease, saveName, description, saveDir, turnNumber);",
+            "candidate = await PrepareSaveArchiveAsync(lease, saveName, description, saveDir, turnNumber);",
+            "result = await PublishPreparedSaveAsync(lease, candidate);");
+        Assert.Contains("(await LoadGameWithOutcomeAsync(saveFilePath)).Disposition == LoadReplacementDisposition.Committed", saveLoadService, StringComparison.Ordinal);
+        Assert.DoesNotContain("BeginLoadTransaction", saveLoadService, StringComparison.Ordinal);
+        AssertOrdered(loadOperation,
+            "lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();",
+            "writeLease = await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease, cancellationToken);",
+            "_fs.ResolveBackupPublicationRecovery(writeLease);",
+            "_fs.CaptureLoadReplacementNamespace(writeLease, candidate.SourcePath)",
+            "_fs.PublishLoadReplacementNamespaceAsync(writeLease, generation, namespacePlan, replacement,");
+
+        static void AssertOrdered(string source, params string[] operations)
+        {
+            var prior = -1;
+            foreach (var operation in operations)
+            {
+                var position = source.IndexOf(operation, prior + 1, StringComparison.Ordinal);
+                Assert.True(position > prior, $"Missing or out-of-order authority operation: {operation}");
+                prior = position;
+            }
+        }
         Assert.Contains(".boe_runtime", fileSystemManager, StringComparison.Ordinal);
         Assert.Contains("load-transactions", fileSystemManager, StringComparison.Ordinal);
         Assert.Contains("RecoverInterruptedLoadTransaction", fileSystemManager, StringComparison.Ordinal);
@@ -580,7 +640,19 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("RotateSessionGeneration", fileSystemManager, StringComparison.Ordinal);
         Assert.Contains("await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync()", stateManager, StringComparison.Ordinal);
         Assert.Contains("GmWorkerProcessHostLaunch.Create", bridgePool, StringComparison.Ordinal);
-        Assert.Contains("WaitUntilReadyAsync", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("PrepareOwnedAsync", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("GmWorkerRequiredCapability.WorkerRelease", bridgePool, StringComparison.Ordinal);
+        var windowsOwner = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot,
+            "BookOfEternityClient", "Services", "GmWorkers", "GmWorkerWindowsOwnedLaunch.cs"));
+        AssertOrdered(windowsOwner, "owner.Start()", "beforeAttach().WaitAsync", "owner.Attach(factory)");
+        Assert.Contains("host.WaitUntilReadyAsync(_process, token)", windowsOwner, StringComparison.Ordinal);
+        Assert.DoesNotContain("TransferToWindowsPool", bridgePool, StringComparison.Ordinal);
+        Assert.Contains("new GmWorkerExecutionAuthority(owner.Identity, task, taskBytes)", bridgePool, StringComparison.Ordinal);
+        AssertOrdered(bridgePool, "executionAuthority!.ObserveCompletion", "executionAuthority.StopForCleanupAsync(ownedLaunch)",
+            "executionAuthority.SettleOutputsAsync(ownedLaunch)", "executionAuthority.RequirePublication()", "await ReadAndStoreProposalAsync(");
+        Assert.Contains("HasValidatedExecutionFor", repairDelegator, StringComparison.Ordinal);
+        Assert.Contains("_tree is WindowsJobProcessTree { HasRetainedAuthority: true }", windowsOwner, StringComparison.Ordinal);
+        Assert.Contains("if (!owner.RetainsAssignedWindowsJob)", ReadRepoFile("BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionAuthority.cs"), StringComparison.Ordinal);
         Assert.Contains("processHostLaunch.ReleaseAsync", bridgePool, StringComparison.Ordinal);
         Assert.Contains("WaitForWorkerCompletionAsync", bridgePool, StringComparison.Ordinal);
         Assert.Contains("workerSlot.TransferOwnership()", bridgePool, StringComparison.Ordinal);
@@ -597,7 +669,17 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.Contains("NamedPipeServerStream", processHost, StringComparison.Ordinal);
         Assert.Contains("NamedPipeClientStream", processHost, StringComparison.Ordinal);
         Assert.Contains("PipeOptions.CurrentUserOnly", processHost, StringComparison.Ordinal);
-        Assert.Contains("GetNamedPipeClientProcessId", processHost, StringComparison.Ordinal);
+        Assert.Contains("GetNamedPipeClientProcessId", peerIdentity, StringComparison.Ordinal);
+        Assert.Contains("EntryPoint = \"getsockopt\"", peerIdentity, StringComparison.Ordinal);
+        Assert.Contains("EntryPoint = \"geteuid\"", peerIdentity, StringComparison.Ordinal);
+        Assert.Contains("SafeHandle pipe", peerIdentity, StringComparison.Ordinal);
+        AssertOrdered(processHost,
+            "GmWorkerProcessHostPeerIdentity.Validate(_controlPipe.SafePipeHandle",
+            "GmWorkerProcessHostPeerIdentity.Validate(_statusPipe.SafePipeHandle",
+            "Volatile.Write(ref _connected, 1)");
+        AssertOrdered(processHost,
+            "await ConnectAndAuthenticateAsync(hostProcess, readiness.Token);",
+            "await SendLaunchAsync(hostProcess, readiness.Token);");
         Assert.Contains("CryptographicOperations.FixedTimeEquals", processHost, StringComparison.Ordinal);
         Assert.Contains("HandleInheritability.None", processHost, StringComparison.Ordinal);
         Assert.Contains("GmWorkerProcessHostStatusKind.OutputDrained", processHost, StringComparison.Ordinal);
@@ -625,23 +707,22 @@ public sealed class GmWorkerBridgeDocumentationTests
         Assert.DoesNotContain("File.Delete(", executionWorkspace, StringComparison.Ordinal);
         Assert.DoesNotContain("SearchOption.AllDirectories", executionWorkspace, StringComparison.Ordinal);
         Assert.DoesNotContain("Directory.Delete(workspaceRoot, recursive: true)", executionWorkspace, StringComparison.Ordinal);
-        foreach (var methodName in new[]
-                 {
-                     "CreateBackupAsync",
-                     "RestoreBackupAsync",
-                     "ClearCurrentWorldLoreAsync"
-                 })
-        {
-            var methodOffset = fileSystemManager.IndexOf(methodName, StringComparison.Ordinal);
-            Assert.True(methodOffset >= 0, $"Expected FileSystemManager method {methodName}.");
-            var leaseOffset = fileSystemManager.IndexOf(
-                "AcquireCanonicalWriteLeaseAsync",
-                methodOffset,
-                StringComparison.Ordinal);
-            Assert.True(
-                leaseOffset >= 0 && leaseOffset - methodOffset < 300,
-                $"Expected {methodName} to acquire the canonical write lease before mutating state.");
-        }
+        AssertOrdered(fileSystemManager,
+            "public async Task<string?> CreateBackupAsync(string relativePath)",
+            "return await WithOwnedBackupLeaseAsync(lease => CreateBackupWithLeaseAsync(lease, relativePath));");
+        AssertOrdered(fileSystemManager,
+            "public async Task RestoreBackupAsync(string backupFullPath, string originalRelativePath)",
+            "await WithOwnedBackupLeaseAsync(async lease =>",
+            "await RestoreBackupWithLeaseAsync(lease, backupFullPath, originalRelativePath);");
+        AssertOrdered(backupLifecycle,
+            "private async Task<T> WithOwnedBackupLeaseAsync<T>(Func<CanonicalWriteLease, Task<T>> operation)",
+            "lease = await AcquireCanonicalWriteLeaseAsync();",
+            "var result = await operation(lease);",
+            "await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(this, lease, completed, failure);");
+        AssertOrdered(fileSystemManager,
+            "public async Task ClearCurrentWorldLoreAsync()",
+            "await using var writeLock = await AcquireCanonicalWriteLeaseAsync();",
+            "ClearCurrentWorldLoreCore();");
         var clearWrapperOffset = fileSystemManager.IndexOf(
             "public async Task ClearGameStateAsync()",
             StringComparison.Ordinal);

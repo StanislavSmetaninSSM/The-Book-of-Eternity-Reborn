@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "worker-restart-witness-linux",
+    "worker-restart-control-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a50d1dd714b8acc525633bd90699bfe271a46063",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 38.9056881,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-control-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-control-linux",
+      "Categories": [
+        "worker-restart-control-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartControlTests.OriginalRelease_OneSendAndNoLateSuccessAfterAckLossOrCancellation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartControlTests.OriginalRelease_OneSendAndNoLateSuccessAfterAckLossOrCancellation",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-witness-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-witness-linux",
+      "Categories": [
+        "worker-restart-witness-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartWitnessTests.TerminalCleanup_RequiresOriginalRetainedCompletedInstance",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartWitnessTests.TerminalCleanup_RequiresOriginalRetainedCompletedInstance",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

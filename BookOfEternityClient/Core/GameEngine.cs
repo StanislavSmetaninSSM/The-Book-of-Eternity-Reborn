@@ -51,6 +51,7 @@ public partial class GameEngine
     private readonly LocalizationManager _loc;
     private readonly SaveLoadService _saveLoad;
     private readonly ImageService _imageService;
+    private readonly DesktopPathOpener _desktopPathOpener;
     private readonly ValidationService _validator;
     private readonly CharacteristicsService _charService;
     private readonly StoryService _storyService;
@@ -83,6 +84,7 @@ public partial class GameEngine
     private int _lastKnownLevel = 1;
     private bool _pendingMemoryLegacyAwaitingConsumption;
     private string? _mainMenuSessionWarning;
+    private LoadReplacementResult? _blockedLoadContinuation;
 
     private const string PendingTurnSnapshotManifestPath = "game_state/control/pending_turn_snapshot.json";
     private const string PendingTurnSnapshotDirectory = "game_state/control/pending_turn_snapshot";
@@ -121,7 +123,8 @@ public partial class GameEngine
         QteSceneService qteSceneService,
         IClipboardService clipboardService,
         ILogger<GameEngine> logger,
-        IConsoleInputSource? inputSource = null)
+        IConsoleInputSource? inputSource = null,
+        DesktopPathOpener? desktopPathOpener = null)
     {
         _fs = fs;
         _stateManager = stateManager;
@@ -133,6 +136,7 @@ public partial class GameEngine
         _loc = loc;
         _saveLoad = saveLoad;
         _imageService = imageService;
+        _desktopPathOpener = desktopPathOpener ?? new();
         _validator = validator;
         _charService = charService;
         _storyService = storyService;
@@ -181,6 +185,8 @@ public partial class GameEngine
 
     public async Task RunAsync()
     {
+        try
+        {
         _isRunning = true;
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         if (OperatingSystem.IsWindows() && !Console.IsInputRedirected)
@@ -188,14 +194,11 @@ public partial class GameEngine
         else
             Console.InputEncoding = System.Text.Encoding.UTF8;
 
-        _fs.EnsureDirectoryStructure();
-
-        await _stateManager.LoadSettingsAsync();
-        await _stateManager.EnsureSettingsFileExistsAsync();
+        await _stateManager.BootstrapLocalStorageAsync();
         _loc.CurrentLanguage = _stateManager.Settings.Language;
         _consoleAppearance.ApplyConfiguredFontSize();
         await _audioService.ApplySettingsAsync();
-        await EnsureClientOwnedSystemFilesHealthyAsync();
+        await EnsureClientOwnedSystemFilesHealthyAsync(ordinaryEntry: true);
 
         while (_isRunning)
         {
@@ -222,6 +225,10 @@ public partial class GameEngine
             }
         }
 
-        await _audioService.StopAllAsync();
+        }
+        finally
+        {
+            await _audioService.StopAllAsync();
+        }
     }
 }

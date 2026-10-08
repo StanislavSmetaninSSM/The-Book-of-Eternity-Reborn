@@ -1,0 +1,86 @@
+# Current closed S2A source continuation
+
+Concrete pinned read-only cgroup source now implemented at runtimeb97b50a9,
+with native self-namespace/regular-file FD and controlled original Bridge coverage.
+[Handoff](systemd-main-s2a-handoff.md) records42unique cases; source reviewPASS2ad77e29.
+This closes only the independent source sub-slice. Native manager/FD delivery,
+real scope mapping/pruning/stop-margin S2 and ordinary selection S3 remain open;
+SupportsPidfdScopes=false, Pruned refusal and public activation remain closed.
+
+# Current S1 implementation checkpoint
+
+The accepted design below is historical; its "stop before S1" language describes
+0868b805. Authorized S1 is now implemented at runtime
+`b764117fbb15cc999100d42cee37400e0c65f245`, source/controlled only.
+[Handoff](systemd-main-s1-handoff.md) and [qualification](recovery/systemd-main-s1-qualification.json)
+record42 distinct PASS and independent source/selection/evidence reviews.
+No real user manager/cgroup call or public activation has been qualified.
+Concrete pinned read-only cgroup source, native sd-bus/FD ABI, reliable pruning
+witness and stop observation margin remain S2 acceptance gates;
+`SupportsPidfdScopes=false` and `Pruned` refusal deliberately remain closed.
+S3 is the later ordinary selector/consumer slice. Only S1 closes here.
+
+# T041-SYSTEMD-MAIN — resumed source/design checkpoint
+
+Source [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), FR-009/012/013/014/015. Resumes deferred63e99009 against accepted bounded relay `dc1724afe66a9c0f07942e23e33c2af07aed8293`. **Design only; backend remains unimplemented/unqualified.** No systemd/bus/cgroup/device/CLI probes, builds, tests, settings or runtime changes in this step. Independent Sol6.1/xhigh design **PASS** at `bae009e2617f15679a7fb05ec74676c39181fe93`, no blocking findings. This document replaces the deferred questions with the next bounded plan;63e99009 preserves the original draft.
+
+**Goal:** add the mandatory primary existing-manager systemd-user main owner to the current production route, retaining one original PTY session, schema1 main fence and unchanged worker/storage/generation conjunction.
+**Method for later authorized implementation:** sole writer, Superpowers executing-plans/TDD; Spec Kit artifacts remain in this feature. Review each causal slice, ordinary checkpoint/push/readback. No new launcher/journal or whole-suite verification.
+
+## Current source map and delta
+
+| Boundary | Current source | Consequence for this plan |
+| --- | --- | --- |
+| Backend selection | `Services/GmWorkers/GmWorkerBackendSelector.cs:3–55`; `Services/GmRuntime/ProductionMainLaunch.cs:10–30` | Explicit SystemdUser is NotImplemented; production main admits explicit NativeLineage only. Reuse request vocabulary, add main-specific capability selection; worker permits never authorize main or worker execution. |
+| Original held terminal | `OwnedTerminalSessionFactory.cs:16–37`; `NativeLineageOwner.cs:124–191`; `native/linux/boe-lineage-supervisor.c:278–325` | PreparedTerminal currently couples release to concrete native owner; original B1 transfers checked root pidfd and PTY master before A1. Replace only factory release seam and expose a lifetime-bound duplicate/borrow of the original held pidfd, not a PID-based constructor. |
+| Terminal/I-O | `IOwnedTerminalSession.cs:11–19`; `LinuxOwnedTerminalSession.cs:17–84`; `BookOfEternityGMBridge/Program.cs:540–588,610–739` | Systemd session implements the same terminal interface, delegates PTY/resize/root-reap/I-O to retained native session and adds original scope authority. Same BridgeHost/InputLifetime/output/status loops and T042 dispatch/retirement consumers. |
+| Durable admission | `GmSessionRunCoordinator.cs:149–188,212–271`; `GmSessionRunRecord.cs:5–18`; `FileSystemManager.MainRunFence.cs` | Prepared before child creation; Running before one release; Stopping closes ordinary writes; actual original stop, disposal, pin drain and ACK precede reuse. Schema1 LinuxSupervisor is a platform family, not a systemd guarantee. |
+| Recent changes | Same coordinator:125–138; `ProductionMainLaunch.cs:10,31`; `BridgeHost.StatusPublication.cs`; `BridgeHost.DraftObservation.cs`; `SynchronizedTerminalScreen.cs`; native helper:435–440 | Preserve original-root-exit refusal vs metadata fault, ordered Stopping, configured child environment, current input writer/mini witness and actual status-loop settlement. These boundaries changed since63e99009; no repeated unchanged F1–F3/worker audit. |
+
+Paths in the first two columns are under `BookOfEternityClient/Services/GmRuntime/` or `Services/GmWorkers/` unless fully qualified. [Exact current source hashes and reference inventory](recovery/systemd-main-design-checkpoint.json). Accepted Load lifecycle uses the same terminal stop/refresh/fresh-generation contract. Current-screen artifact detection and relay/BOM driver corrections remain unchanged; bounded relay proof does not qualify systemd.
+
+## Selected minimal integration
+
+Use an **externally created held PTY child in one transient user `.scope`**. A scope manages existing processes and leaves exit reaping to their original parent ([official scope semantics](https://github.com/systemd/systemd/blob/v257/man/systemd.scope.xml)). Keep the prebuilt native supervisor as PTY creator, original exclusive reaper and emergency ordinary-lineage cleanup authority **outside** the scope; attach only its held root pidfd before exec. The outward backend/guarantee is `systemd-user` / `owned-unit-cgroup`; native cleanup alone cannot prove that larger boundary.
+
+Choose a narrow managed sd-bus binding over the already-installed optional `libsystemd.so.0`, loaded only for this backend; a new independent `sd_bus_open_user` connection, not a shared default/system bus. This avoids another service/process launcher and a new managed D-Bus package. Library/API/FD-passing absence is a typed capability refusal, never an installation request or global mandatory player dependency. .NET8/PowerShell7/prebuilt helper prerequisites remain. No native compiler at player startup. First positive environment must match the pinned v257 APIs; this design imposes no new general numeric manager-version floor or claim for unqualified versions.
+
+Use non-activating, non-interactive calls addressed to the retained unique owner of `org.freedesktop.systemd1`; subscribe before sending mutations. Record current bus instance/unique owner, UID/boot, unique run-derived scope name, unit object path, InvocationID and ControlGroup. Create once with `StartTransientUnit(mode=fail)`, original `PIDFDs` (`ah`, actual Unix FD transfer), `AddRef=true`, `KillMode=control-group`, `SendSIGKILL=true`, bounded TimeoutStopUSec. No Controller, delegation, custom slice/resource policy, persistent unit file or systemd-run/systemctl oracle. Preserve original command/model/arguments/cwd/environment. Unit name collision or any uncertain creation must not signal an unbound unit.
+
+Before Running/release, verify successful creation/attachment on the same manager connection, retained unit/invocation, pidfd-to-unit membership, own root cgroup mapping and live held identity. Pin the actual cgroup-v2 directory and `cgroup.events` using read-only descriptors, filesystem/mount/device/inode identity and validated own namespace mapping. Inaccessible/mismatched hierarchy blocks release; never guess `/sys` paths or write cgroup files. All attachment work fits the existing five-second held budget; expiry is Uncertain, not a reason to enlarge timeouts or switch backend.
+
+`PreparedTerminal` retains a private release callback and the original terminal object, rather than demanding NativeLineageOwner. Systemd wrapper owns scope binding plus the original native object; `ReleaseAsync` checks both authorities and consumes the same A1 once. No decoded status/record/PID/unit name can construct this owner. Before any side effects, read-only capability selection chooses one qualified backend; after child creation or a possibly sent StartTransientUnit, selection is irrevocable.
+
+### Empty-boundary evidence and stopping
+
+Do not equate JobRemoved/done, inactive/dead or Result=success with emptiness: upstream `unit_kill_context` can ignore some kill errors ([source](https://github.com/systemd/systemd/blob/v257/src/core/unit.c#L4414)), and scope stop timeout is sticky failure ([source](https://github.com/systemd/systemd/blob/v257/src/core/scope.c#L598)). A manager status snapshot alone is insufficient.
+
+Require kernel evidence for the **original pinned cgroup**, after input/operation admission has closed: either fresh `cgroup.events populated=0` with the original boundary still bound, or independently proven removal of that original pinned directory. Kernel cgroup destruction refuses populated/live-child groups and prohibits subsequent migration ([source](https://github.com/torvalds/linux/blob/v6.12/kernel/cgroup/cgroup.c#L5605)). Proposed removal witness is the original O_PATH descriptor's deleted dentry, not ENOENT of a pathname, an events read error, st_nlink or a new same-name cgroup. Verify the exact descriptor/deleted-dentry mechanism against kernel/kernfs and in positive qualification; until proven, keep that branch closed and return Uncertain if zero was missed. It is a technical acceptance gate, not a new product decision. Read permission/parse/identity/poll errors retain Uncertain. [Recursive populated semantics](https://github.com/torvalds/linux/blob/v6.12/Documentation/admin-guide/cgroup-v2.rst#L375).
+
+Order: coordinator BeginStop closes pins and durably publishes Stopping, drains existing operations with the existing no-recovery closing rules; then bounded StopUnit for the retained scope and native scoped retirement; require same-manager/unit binding, authoritative kernel emptiness, actual native exclusive wait/reap and original I/O settlement/disposal. Only then existing ConfirmSettledStop can publish same-identity Stopped/ACK and release the original guard/inventory. No filesystem metadata/canonical lock spans D-Bus/stop/pin-drain; the established lifecycle-lease order remains. Cache one wrapper-owned typed proof for the coordinator's reference check. Native success plus missing systemd proof remains Uncertain.
+
+Hold original bus/unit/cgroup/native authority through unresolved scope retirement. After positively sealed emptiness and actual adapter disposal, expected connection/ref closure does not itself manufacture AuthorityLost; original coordinator proof/guard retain metadata ACK debt just as today. Unexpected loss before sealed retirement, changed manager/invocation, release/stop ambiguity or timeout is sticky Uncertain; physical emergency cleanup does not repair it. Cold decoding of Prepared/Running/Stopping/Uncertain never recreates authority or grants release/restart; no reboot salvage or command replay. Main Stopped never clears independent workers or storage debt.
+
+## Small implementation sequence — no implementation authorized here
+
+| Slice | Deliverable and exact areas | Causal verification / completion boundary |
+| --- | --- | --- |
+| **S1 — original scope adapter under controlled transport (next)** | Factory release seam + original held-pidfd borrowing in `OwnedTerminalSessionFactory.cs`/`NativeLineageOwner.cs`; new `SystemdUserScopeOwner.cs`, `SystemdUserBus.cs`, `SystemdOwnedTerminalSession.cs` and `SystemdCgroupObservation.cs` in GmRuntime; consume same IOwnedTerminalSession/coordinator. Public SystemdUser/Auto activation stays closed. | New narrow `gm-main-systemd-contract` / `gm-main-systemd-controlled-terminal` proposed categories. RED then GREEN: real held native neutral child + injected bus/cgroup observations prove attach-before-Running-before-single-A1, wrong unit/FD/nameowner refusal, signal-before-reply ordering, cancelled/lost start/release/stop, kernel-empty conjunction, native cleanup not manager proof, I-O/debt retention. Pure unavailable/library/unsupported cases create no child. Fake transport is never native systemd qualification. |
+| **S2 — actual systemd neutral qualification** | Same optional transport/session, already-running user manager; fixed neutral CLI and disposable roots via the existing BridgeHost/coordinator. No manager setup or arbitrary GM. | Actual pidfd attachment/unit/cgroup identity, two inputs/Unicode/resize/EOF, root-first/descendant/setsid/ignoredTERM/concurrent spawn stop, owner loss and original stop/I-O/ACK. Include manager-prunes-before-events-read and same-path-replacement cases to establish reliable pinned removal evidence or retain typed refusal. Guardian/ECHILD separate; no foreign-unit/global signals. Cannot close with mocks or skipped cases. |
+| **S3 — ordinary main selection/consumers** | `ProductionMainConfiguration.Resolve`, main-specific selector, ordinary Bridge/launcher/status/health, existing console/daemon/QTE/repair/Load consumers. Enabled workers still refused independently; inventory retained. | Configured persistent neutral CLI through ordinary installed production route, explicitSystemdUser/no fallback, unavailable Auto/prelaunch declared NativeLineage, ambiguous-start/no backend switch, original pins/Stopping/Load-refresh/generation conjunction. Only affected source/consumer tests; no model request or r3 replay. Auto activation follows qualified capabilities, not merely manager presence. |
+
+For each later slice: add exact catalog selectors and tests/selection reasons, PlanOnly, causal RED→GREEN through `scripts/test-csharp.ps1 -Category <selected>`, ValidateCatalog discovery-only, independent review and normal checkpoint/readback. Do not run the existing cohorts en masse. Select only exact shared-held-release/native-stop, main fence, original-root-exit and changed production/Load consumer regressions after inspecting the actual delta. Windows ConPTY/Job route stays unchanged; Windows execution remains a separate environment obligation. No GM-authored schema/command/mechanic changes or GM prompt/example updates are needed for this client-owned backend adapter; operational backend/capability docs belong with S3.
+
+## Dependencies, policy and acceptance limits
+
+Current cloud environment has no usable user manager per retained evidence; **no fresh environment probe was made**. S1 source/controlled tests are implementable here in a later authorized block; S2 and positive S3 need Linux with an **already-running accessible user manager**, existing user bus, optional sd-bus library/FD support, observable cgroup-v2 hierarchy and normal authority to create/stop the caller's own transient scope. No root, delegation grant, service installation, login, security/network change or cgroup setup. Capability refusal is evidence about that environment, not all Linux.
+
+Auto is already settled in [approved ownership](linux-ownership-design.md#approved-two-backend-linux-ownership--2026-10-05-1512-utc): prefer qualified available systemd-user; otherwise declare qualified native fallback **before any launch**. Explicit SystemdUser never downgrades. GameSettings defaults to Auto, but M1 currently closes it intentionally; S3 must implement the approved declared-fallback policy before that default becomes usable. No new product question is required. Worker primary backend qualification remains separate from this main owner; no public worker activation follows S1–S3.
+
+Design-only consistency: constitution trusted-local-player, main/worker/generation conjunction, current schema1 and FR-009/012/013/014/015 all preserved. Full SC-004/all-platform completion is not claimed from relay or this design. Next action after review/checkpoint is owner authorization for S1 only; stop before implementation.
+
+## Independent verdict and handoff
+
+Read-only `/root/systemd_main_design_review`, actual **gpt-6.1-sol/xhigh**, reviewed clean `bae009e2617f15679a7fb05ec74676c39181fe93`: **PASS — design only**, 18 current source pins and deferred draft hash verified; no blocking findings. Original scope/kernel + native reap + actual I/O/disposal/ACK proof and S1/S2/S3 dependencies are coherent. Pinned deletion observation remains unqualified until the stated source/positive-environment gate; no implementation or positive systemd acceptance follows this verdict. Reviewer edits/tests/builds/runtime/environment/model calls: **0**.
+
+The WIP was normally pushed with exact remote SHA and five changed-file byte readbacks. The verdict carrier will be independently checked, normally published/read back, then restored into a fresh empty directory directly from GitHub; exact final carrier/restoration belong to the final handoff. Source restore proves metadata/source preservation, not build or backend qualification. **Stop before S1.**

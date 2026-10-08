@@ -1,0 +1,105 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="5132040a-8aeb-4a92-897e-e1a13124887a" name="b3b-proposal-consumers-green" runUser="$USER">
+  <ns0:Times creation="2026-10-01T06:29:52.0796420-04:00" queuing="2026-10-01T06:29:52.0796422-04:00" start="2026-10-01T06:29:49.2217956-04:00" finish="2026-10-01T06:29:53.1843616-04:00" />
+  <ns0:TestSettings name="default" id="0c6145e2-7308-4b0a-9b29-51fcfc055742">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="b8a3e662-9db6-43d5-86b2-7e7751a4dcf7" testId="31b49060-cf98-54d5-f9d1-c93e5d28f4ed" testName="BookOfEternityClient.Tests.FileSystemManagerTests.TryAcquireSessionLifecycleLeaseAsync_StaleGenerationReturnsNull" computerName="$HOST" duration="00:00:00.0150565" startTime="2026-10-01T06:29:51.9712242-04:00" endTime="2026-10-01T06:29:51.9712245-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b8a3e662-9db6-43d5-86b2-7e7751a4dcf7" />
+    <ns0:UnitTestResult executionId="3561a002-7919-4e8f-936e-e59d326a5d98" testId="3d2aab3d-b947-9139-9555-d7f930b7ae84" testName="BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority" computerName="$HOST" duration="00:00:00.0435019" startTime="2026-10-01T06:29:51.7743457-04:00" endTime="2026-10-01T06:29:51.7743667-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3561a002-7919-4e8f-936e-e59d326a5d98" />
+    <ns0:UnitTestResult executionId="7ceb3f2e-e303-488b-b9ee-955a5481eb21" testId="ad3d1ced-35be-77c9-7bef-bffc18c1e52e" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDirectoryJunctionAndPreservesOutsideData" computerName="$HOST" duration="00:00:00.0033300" startTime="2026-10-01T06:29:52.0598562-04:00" endTime="2026-10-01T06:29:52.0598564-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7ceb3f2e-e303-488b-b9ee-955a5481eb21" />
+    <ns0:UnitTestResult executionId="b63d760b-31f1-4303-b422-927c55a3f0f1" testId="5cdbc5af-0a34-8bab-adc3-90d6b627862a" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsManifestlessBrowserRollbackEvidence" computerName="$HOST" duration="00:00:00.0165693" startTime="2026-10-01T06:29:52.9807177-04:00" endTime="2026-10-01T06:29:52.9807179-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b63d760b-31f1-4303-b422-927c55a3f0f1" />
+    <ns0:UnitTestResult executionId="63fbe986-cdc9-4baf-8c2d-d282b7116127" testId="13237e4e-95be-4983-6984-96bd13359be0" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockDirectoryAndPreservesEvidence" computerName="$HOST" duration="00:00:00.0236398" startTime="2026-10-01T06:29:52.9634768-04:00" endTime="2026-10-01T06:29:52.9634770-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="63fbe986-cdc9-4baf-8c2d-d282b7116127" />
+    <ns0:UnitTestResult executionId="a6a4c835-ccdf-4707-bffe-c85d22088b7e" testId="3abb2b28-1867-a3cc-4801-9ca597751559" testName="BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive" computerName="$HOST" duration="00:00:00.0279424" startTime="2026-10-01T06:29:51.9559436-04:00" endTime="2026-10-01T06:29:51.9559438-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a6a4c835-ccdf-4707-bffe-c85d22088b7e" />
+    <ns0:UnitTestResult executionId="d1598157-e8d4-4415-bc3e-30428d00a7ab" testId="84f55427-fb0b-d06d-23b7-afc0413f4202" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_PreservesGmBridgeRuntimeStatus" computerName="$HOST" duration="00:00:00.0316356" startTime="2026-10-01T06:29:51.9160502-04:00" endTime="2026-10-01T06:29:51.9160504-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d1598157-e8d4-4415-bc3e-30428d00a7ab" />
+    <ns0:UnitTestResult executionId="635d8aee-f572-44ef-b91c-e8cc0ba970aa" testId="5b398e68-bde0-216d-3ff0-1a5bb27d6d14" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_PreservesGmContextPackJsonArtifacts" computerName="$HOST" duration="00:00:00.1067843" startTime="2026-10-01T06:29:51.8809601-04:00" endTime="2026-10-01T06:29:51.8809604-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="635d8aee-f572-44ef-b91c-e8cc0ba970aa" />
+    <ns0:UnitTestResult executionId="801e2055-7903-4082-968f-710f3c5e09e1" testId="963dc99e-2982-b8b0-e273-762e335e92aa" testName="BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration" computerName="$HOST" duration="00:00:00.0068606" startTime="2026-10-01T06:29:52.0495762-04:00" endTime="2026-10-01T06:29:52.0495765-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="801e2055-7903-4082-968f-710f3c5e09e1" />
+    <ns0:UnitTestResult executionId="cf12af65-bb3d-4fb2-9658-f3dd3f53897d" testId="213e287c-973b-22fc-7706-4eafbd8df5ab" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockJunctionWithoutTraversingTarget" computerName="$HOST" duration="00:00:00.0039690" startTime="2026-10-01T06:29:51.9278167-04:00" endTime="2026-10-01T06:29:51.9278168-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cf12af65-bb3d-4fb2-9658-f3dd3f53897d" />
+    <ns0:UnitTestResult executionId="b79fb897-a6b6-4b86-9a7b-46436134ed73" testId="e1f36e04-8c5c-5e38-9eb1-5f49cf9ee49c" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDanglingLocalUiLockNode" computerName="$HOST" duration="00:00:00.0056342" startTime="2026-10-01T06:29:51.9231948-04:00" endTime="2026-10-01T06:29:51.9231949-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b79fb897-a6b6-4b86-9a7b-46436134ed73" />
+    <ns0:UnitTestResult executionId="6dd684b2-fa32-44d7-b1e7-ab149198347a" testId="59707700-cf68-3818-ad30-4662e4ee6ff3" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_WaitsForCanonicalWriteLease" computerName="$HOST" duration="00:00:00.8854303" startTime="2026-10-01T06:29:52.9391265-04:00" endTime="2026-10-01T06:29:52.9391267-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6dd684b2-fa32-44d7-b1e7-ab149198347a" />
+    <ns0:UnitTestResult executionId="b553ab95-ece9-4ffe-9c2d-7b5145e87ab5" testId="1fc22da2-dad0-03e4-8078-3a71042fde00" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_WaitsForActiveSessionLifecycleLease" computerName="$HOST" duration="00:00:00.0705530" startTime="2026-10-01T06:29:52.0424653-04:00" endTime="2026-10-01T06:29:52.0424655-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b553ab95-ece9-4ffe-9c2d-7b5145e87ab5" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDirectoryJunctionAndPreservesOutsideData" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ad3d1ced-35be-77c9-7bef-bffc18c1e52e">
+      <ns0:Execution id="7ceb3f2e-e303-488b-b9ee-955a5481eb21" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ClearGameStateAsync_RejectsDirectoryJunctionAndPreservesOutsideData" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3abb2b28-1867-a3cc-4801-9ca597751559">
+      <ns0:Execution id="a6a4c835-ccdf-4707-bffe-c85d22088b7e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_WaitsForCanonicalWriteLease" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="59707700-cf68-3818-ad30-4662e4ee6ff3">
+      <ns0:Execution id="6dd684b2-fa32-44d7-b1e7-ab149198347a" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ClearGameState_WaitsForCanonicalWriteLease" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_WaitsForActiveSessionLifecycleLease" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1fc22da2-dad0-03e4-8078-3a71042fde00">
+      <ns0:Execution id="b553ab95-ece9-4ffe-9c2d-7b5145e87ab5" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ClearGameStateAsync_WaitsForActiveSessionLifecycleLease" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsManifestlessBrowserRollbackEvidence" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5cdbc5af-0a34-8bab-adc3-90d6b627862a">
+      <ns0:Execution id="b63d760b-31f1-4303-b422-927c55a3f0f1" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ClearGameStateAsync_RejectsManifestlessBrowserRollbackEvidence" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockDirectoryAndPreservesEvidence" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="13237e4e-95be-4983-6984-96bd13359be0">
+      <ns0:Execution id="63fbe986-cdc9-4baf-8c2d-d282b7116127" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ClearGameStateAsync_RejectsLocalUiLockDirectoryAndPreservesEvidence" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="963dc99e-2982-b8b0-e273-762e335e92aa">
+      <ns0:Execution id="801e2055-7903-4082-968f-710f3c5e09e1" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="SessionMutationLease_CannotRotateSessionGeneration" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDanglingLocalUiLockNode" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e1f36e04-8c5c-5e38-9eb1-5f49cf9ee49c">
+      <ns0:Execution id="b79fb897-a6b6-4b86-9a7b-46436134ed73" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ClearGameStateAsync_RejectsDanglingLocalUiLockNode" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_PreservesGmContextPackJsonArtifacts" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5b398e68-bde0-216d-3ff0-1a5bb27d6d14">
+      <ns0:Execution id="635d8aee-f572-44ef-b91c-e8cc0ba970aa" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ClearGameState_PreservesGmContextPackJsonArtifacts" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.TryAcquireSessionLifecycleLeaseAsync_StaleGenerationReturnsNull" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="31b49060-cf98-54d5-f9d1-c93e5d28f4ed">
+      <ns0:Execution id="b8a3e662-9db6-43d5-86b2-7e7751a4dcf7" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="TryAcquireSessionLifecycleLeaseAsync_StaleGenerationReturnsNull" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3d2aab3d-b947-9139-9555-d7f930b7ae84">
+      <ns0:Execution id="3561a002-7919-4e8f-936e-e59d326a5d98" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="SessionReplacementLease_RequiresActiveLifecycleAuthority" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockJunctionWithoutTraversingTarget" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="213e287c-973b-22fc-7706-4eafbd8df5ab">
+      <ns0:Execution id="cf12af65-bb3d-4fb2-9658-f3dd3f53897d" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ClearGameStateAsync_RejectsLocalUiLockJunctionWithoutTraversingTarget" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameState_PreservesGmBridgeRuntimeStatus" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="84f55427-fb0b-d06d-23b7-afc0413f4202">
+      <ns0:Execution id="d1598157-e8d4-4415-bc3e-30428d00a7ab" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ClearGameState_PreservesGmBridgeRuntimeStatus" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="31b49060-cf98-54d5-f9d1-c93e5d28f4ed" executionId="b8a3e662-9db6-43d5-86b2-7e7751a4dcf7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3d2aab3d-b947-9139-9555-d7f930b7ae84" executionId="3561a002-7919-4e8f-936e-e59d326a5d98" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ad3d1ced-35be-77c9-7bef-bffc18c1e52e" executionId="7ceb3f2e-e303-488b-b9ee-955a5481eb21" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="5cdbc5af-0a34-8bab-adc3-90d6b627862a" executionId="b63d760b-31f1-4303-b422-927c55a3f0f1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="13237e4e-95be-4983-6984-96bd13359be0" executionId="63fbe986-cdc9-4baf-8c2d-d282b7116127" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3abb2b28-1867-a3cc-4801-9ca597751559" executionId="a6a4c835-ccdf-4707-bffe-c85d22088b7e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="84f55427-fb0b-d06d-23b7-afc0413f4202" executionId="d1598157-e8d4-4415-bc3e-30428d00a7ab" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="5b398e68-bde0-216d-3ff0-1a5bb27d6d14" executionId="635d8aee-f572-44ef-b91c-e8cc0ba970aa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="963dc99e-2982-b8b0-e273-762e335e92aa" executionId="801e2055-7903-4082-968f-710f3c5e09e1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="213e287c-973b-22fc-7706-4eafbd8df5ab" executionId="cf12af65-bb3d-4fb2-9658-f3dd3f53897d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e1f36e04-8c5c-5e38-9eb1-5f49cf9ee49c" executionId="b79fb897-a6b6-4b86-9a7b-46436134ed73" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="59707700-cf68-3818-ad30-4662e4ee6ff3" executionId="6dd684b2-fa32-44d7-b1e7-ab149198347a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="1fc22da2-dad0-03e4-8078-3a71042fde00" executionId="b553ab95-ece9-4ffe-9c2d-7b5145e87ab5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="13" executed="13" passed="13" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.48]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.97]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.99]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:03.29]   Finished:    BookOfEternityClient.IntegrationTests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>

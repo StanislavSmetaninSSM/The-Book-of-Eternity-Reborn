@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="38bc1005-4986-425a-a54d-cef2e1ac0e76" name="@c7669543e9c7 2026-10-06 17:59:27" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T17:59:27.4686282+00:00" queuing="2026-10-06T17:59:27.4686283+00:00" start="2026-10-06T17:59:22.7303981+00:00" finish="2026-10-06T17:59:37.2573689+00:00" />
+  <TestSettings name="default" id="5b11a3cb-b1f1-4386-a4cb-6e609ed66c81">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_17_59_27" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="493b2358-2489-4458-94dd-ae78d0889c1d" testId="67d2f64e-759f-7e2a-372c-87c6d9ddb2d6" testName="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;prepared&quot;)" computerName="c7669543e9c7" duration="00:00:02.6501956" startTime="2026-10-06T17:59:37.1515396+00:00" endTime="2026-10-06T17:59:37.1515400+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="493b2358-2489-4458-94dd-ae78d0889c1d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs:line 61
+   at BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunCrashLinuxTests.cs:line 12
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6fe260b7-eb3d-4b8b-b7ad-25485c412324" testId="3f101bb7-7d9c-9e9c-b761-0f4c4252afe9" testName="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;namespace&quot;)" computerName="c7669543e9c7" duration="00:00:02.2318800" startTime="2026-10-06T17:59:32.1267719+00:00" endTime="2026-10-06T17:59:32.1267721+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6fe260b7-eb3d-4b8b-b7ad-25485c412324">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs:line 61
+   at BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunCrashLinuxTests.cs:line 12
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6706669f-271c-45f1-bb32-d67d67f74a7e" testId="a524f537-ed09-3134-474a-88c4ec01158b" testName="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;held&quot;)" computerName="c7669543e9c7" duration="00:00:02.4669827" startTime="2026-10-06T17:59:29.8953786+00:00" endTime="2026-10-06T17:59:29.8953791+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6706669f-271c-45f1-bb32-d67d67f74a7e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs:line 61
+   at BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunCrashLinuxTests.cs:line 12
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="919b1f43-c667-4d50-8738-d70508fde9e9" testId="4087dda4-927b-7ffc-0035-ba1405276346" testName="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;released&quot;)" computerName="c7669543e9c7" duration="00:00:02.3629519" startTime="2026-10-06T17:59:34.4911406+00:00" endTime="2026-10-06T17:59:34.4911411+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="919b1f43-c667-4d50-8738-d70508fde9e9">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs:line 61
+   at BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunCrashLinuxTests.cs:line 12
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1b9fd8e7-161e-454e-a1bb-d095ae9b3816" testId="00a8c448-48d5-f50a-fc5b-1085261df9d4" testName="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;running&quot;)" computerName="c7669543e9c7" duration="00:00:02.3904378" startTime="2026-10-06T17:59:27.4316107+00:00" endTime="2026-10-06T17:59:27.4316342+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1b9fd8e7-161e-454e-a1bb-d095ae9b3816">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs:line 61
+   at BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunCrashLinuxTests.cs:line 12
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;running&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="00a8c448-48d5-f50a-fc5b-1085261df9d4">
+      <Execution id="1b9fd8e7-161e-454e-a1bb-d095ae9b3816" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests" name="LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;released&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4087dda4-927b-7ffc-0035-ba1405276346">
+      <Execution id="919b1f43-c667-4d50-8738-d70508fde9e9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests" name="LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;prepared&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="67d2f64e-759f-7e2a-372c-87c6d9ddb2d6">
+      <Execution id="493b2358-2489-4458-94dd-ae78d0889c1d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests" name="LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;held&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a524f537-ed09-3134-474a-88c4ec01158b">
+      <Execution id="6706669f-271c-45f1-bb32-d67d67f74a7e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests" name="LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;namespace&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3f101bb7-7d9c-9e9c-b761-0f4c4252afe9">
+      <Execution id="6fe260b7-eb3d-4b8b-b7ad-25485c412324" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests" name="LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="67d2f64e-759f-7e2a-372c-87c6d9ddb2d6" executionId="493b2358-2489-4458-94dd-ae78d0889c1d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3f101bb7-7d9c-9e9c-b761-0f4c4252afe9" executionId="6fe260b7-eb3d-4b8b-b7ad-25485c412324" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a524f537-ed09-3134-474a-88c4ec01158b" executionId="6706669f-271c-45f1-bb32-d67d67f74a7e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4087dda4-927b-7ffc-0035-ba1405276346" executionId="919b1f43-c667-4d50-8738-d70508fde9e9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="00a8c448-48d5-f50a-fc5b-1085261df9d4" executionId="1b9fd8e7-161e-454e-a1bb-d095ae9b3816" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="5" executed="5" passed="0" failed="5" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.22]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.68]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.70]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:04.18]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:04.18]       Expected: 0
+[xUnit.net 00:00:04.18]       Actual:   1
+[xUnit.net 00:00:04.18]       Stack Trace:
+[xUnit.net 00:00:04.18]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs(61,0): at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode)
+[xUnit.net 00:00:04.18]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunCrashLinuxTests.cs(12,0): at BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(String cut)
+[xUnit.net 00:00:04.18]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.65]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:06.65]       Expected: 0
+[xUnit.net 00:00:06.65]       Actual:   1
+[xUnit.net 00:00:06.65]       Stack Trace:
+[xUnit.net 00:00:06.65]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs(61,0): at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode)
+[xUnit.net 00:00:06.65]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunCrashLinuxTests.cs(12,0): at BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(String cut)
+[xUnit.net 00:00:06.65]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:08.88]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:08.88]       Expected: 0
+[xUnit.net 00:00:08.88]       Actual:   1
+[xUnit.net 00:00:08.88]       Stack Trace:
+[xUnit.net 00:00:08.88]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs(61,0): at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode)
+[xUnit.net 00:00:08.88]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunCrashLinuxTests.cs(12,0): at BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(String cut)
+[xUnit.net 00:00:08.88]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:11.24]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:11.24]       Expected: 0
+[xUnit.net 00:00:11.24]       Actual:   1
+[xUnit.net 00:00:11.24]       Stack Trace:
+[xUnit.net 00:00:11.24]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs(61,0): at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode)
+[xUnit.net 00:00:11.24]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunCrashLinuxTests.cs(12,0): at BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(String cut)
+[xUnit.net 00:00:11.24]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:13.90]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:13.90]       Expected: 0
+[xUnit.net 00:00:13.90]       Actual:   1
+[xUnit.net 00:00:13.90]       Stack Trace:
+[xUnit.net 00:00:13.90]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs(61,0): at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode)
+[xUnit.net 00:00:13.90]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainRunCrashLinuxTests.cs(12,0): at BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(String cut)
+[xUnit.net 00:00:13.90]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:13.91]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T17:59:27.4266061+00:00">
+        <Text>[xUnit.net 00:00:04.18]     BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: "running") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T17:59:29.8996349+00:00">
+        <Text>[xUnit.net 00:00:06.64]     BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: "held") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T17:59:32.1303753+00:00">
+        <Text>[xUnit.net 00:00:08.88]     BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: "namespace") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T17:59:34.4912987+00:00">
+        <Text>[xUnit.net 00:00:11.24]     BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: "released") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T17:59:37.1584941+00:00">
+        <Text>[xUnit.net 00:00:13.90]     BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: "prepared") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

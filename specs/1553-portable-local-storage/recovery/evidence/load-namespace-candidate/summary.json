@@ -1,0 +1,91 @@
+{
+  "Categories": [
+    "portable-load-topology",
+    "portable-storage-namespace"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-load-topology",
+      "reason": "T032-B2 connects complete namespace replacement to actual ordinary load: conversion directions, retained empty directories and structural/file/commit-stage rollback.",
+      "contracts": [
+        "#1553 LOAD-FS-001/002/003/004/006"
+      ]
+    },
+    {
+      "category": "portable-storage-namespace",
+      "reason": "New v3 evidence must admit independent pending/committed decisions, reject strict late damage and unknown children/authority grants before any earlier restoration.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/005/006"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "e343e19c1f5c8e366307a9996fe62b6c01ab7604",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-load-topology",
+      "Seconds": 42.469825,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.6213287,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.1985908,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.2399576,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 168.6331208,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 59.7635515,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:04:51.2733180",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 45,
+    "CompletedCases": 12,
+    "UnderfilledDescriptors": [
+      "portable-storage-namespace-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 12,
+    "Executed": 12,
+    "Passed": 4,
+    "Failed": 8
+  },
+  "DuplicateTests": []
+}

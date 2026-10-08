@@ -1,0 +1,50 @@
+{
+  "Categories": [
+    "gm-main-linux-launcher"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a4da9d3da5011ae8f4316cb4289f76ec93ce047c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 47.6398401,
+  "Descriptors": [
+    {
+      "Name": "gm-main-linux-launcher-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-linux-launcher",
+      "Categories": [
+        "gm-main-linux-launcher"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualBootstrap_ConfigAndGenerationUseOneAtomicPublication|FullyQualifiedName=BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop|FullyQualifiedName=BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects|FullyQualifiedName=BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli|FullyQualifiedName=BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ShippedPublicationContainsRealLauncherAndParticipatingHelper",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualBootstrap_ConfigAndGenerationUseOneAtomicPublication",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ShippedPublicationContainsRealLauncherAndParticipatingHelper",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

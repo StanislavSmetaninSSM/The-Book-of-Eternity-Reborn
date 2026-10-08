@@ -1,138 +1,235 @@
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging;
-using NAudio.Wave;
 using System.Collections.Concurrent;
 
 namespace BookOfEternityClient.Services;
 
-public enum AudioCue
-{
-    MenuSelect,
-    TurnReady,
-    QteStart,
-    QteSuccess,
-    QteFail
-}
+public enum AudioCue { MenuSelect, TurnReady, QteStart, QteSuccess, QteFail }
+public enum MusicPlaylist { None, MainMenu, InGame }
 
-public enum MusicPlaylist
-{
-    None,
-    MainMenu,
-    InGame
-}
-
-public sealed class AudioService
+public sealed partial class AudioService : IAsyncDisposable
 {
     private const string MainTheme = "Main Theme.mp3";
     private const string MainThemeAlt = "Main Theme (alt).mp3";
-
     private readonly FileSystemManager _fs;
     private readonly GameSettings _settings;
     private readonly ILogger<AudioService> _logger;
     private readonly object _sync = new();
+    private readonly SemaphoreSlim _transitions = new(1, 1);
     private readonly Random _random = new();
     private readonly ConcurrentDictionary<AudioCue, long> _lastCueTicks = new();
-
-    private CancellationTokenSource? _musicCts;
-    private Task? _musicLoopTask;
-    private WaveOutEvent? _musicOutput;
-    private AudioFileReader? _musicReader;
-    private MusicPlaylist _currentPlaylist = MusicPlaylist.None;
+    private readonly HashSet<Operation> _operations = [];
+    private readonly IAudioPlaybackBackend? _backend;
+    private readonly bool _browserManaged;
+    private Operation? _music;
+    private MusicPlaylist _currentPlaylist;
     private string? _lastTrackPath;
+    private bool _closing, _disposed;
+    private AudioOutcome _outcome = AudioOutcome.NotRequested;
+    private static readonly TimeSpan SettlementBound = TimeSpan.FromSeconds(2);
 
-    public AudioService(
-        FileSystemManager fs,
-        GameSettings settings,
-        ILogger<AudioService> logger)
+    public AudioService(FileSystemManager fs, GameSettings settings, ILogger<AudioService> logger)
+        : this(fs, settings, logger, AudioBackendFactory.Create()) { }
+
+    internal AudioService(FileSystemManager fs, GameSettings settings, ILogger<AudioService> logger,
+        IAudioPlaybackBackend? backend, bool browserManaged = false)
+    { _fs = fs; _settings = settings; _logger = logger; _backend = backend; _browserManaged = browserManaged; }
+
+    internal static AudioService CreateBrowserManaged(FileSystemManager fs, GameSettings settings, ILogger<AudioService> logger)
+        => new(fs, settings, logger, null, browserManaged: true);
+
+    /// <summary>Reports capability/debt without performing any device query.</summary>
+    public AudioStatus Status
     {
-        _fs = fs;
-        _settings = settings;
-        _logger = logger;
+        get
+        {
+            lock (_sync)
+            {
+                RetireSettled();
+                return new(HasDebt() ? AudioOutcome.CleanupUncertain : _disposed ? AudioOutcome.Disposed :
+                    _browserManaged ? AudioOutcome.BrowserManaged : _outcome,
+                    _browserManaged ? AudioBackendKind.Browser : _backend!.Kind);
+            }
+        }
     }
 
     public Task PlayMainMenuMusicAsync() => SetPlaylistAsync(MusicPlaylist.MainMenu);
-
     public Task PlayInGameMusicAsync() => SetPlaylistAsync(MusicPlaylist.InGame);
-
-    public async Task StopMusicAsync()
-    {
-        Task? loopTask;
-        CancellationTokenSource? cts;
-        lock (_sync)
-        {
-            _currentPlaylist = MusicPlaylist.None;
-            loopTask = _musicLoopTask;
-            _musicLoopTask = null;
-            cts = _musicCts;
-            _musicCts = null;
-        }
-
-        cts?.Cancel();
-        StopCurrentMusicPlayback();
-        if (loopTask != null)
-        {
-            try
-            {
-                await loopTask;
-            }
-            catch (OperationCanceledException)
-            {
-            }
-        }
-    }
-
-    public async Task StopAllAsync()
-    {
-        await StopMusicAsync();
-    }
+    public Task StopMusicAsync() => StopAsync(all: false, dispose: false);
+    public Task StopAllAsync() => StopAsync(all: true, dispose: false);
+    public ValueTask DisposeAsync() => new(StopAsync(all: true, dispose: true));
 
     public async Task ApplySettingsAsync()
     {
-        if (!_settings.MusicEnabled || _settings.MusicVolume <= 0)
+        await _transitions.WaitAsync();
+        try
         {
-            await StopMusicAsync();
-            return;
+            Operation[] stops;
+            lock (_sync)
+            {
+                RetireSettled();
+                if (_browserManaged || _disposed) return;
+                _closing = true;
+                stops = _operations.Where(o => o.IsMusic
+                    ? !CurrentSettings.MusicEnabled || CurrentSettings.MusicVolume <= 0
+                    : !CurrentSettings.SoundEnabled || CurrentSettings.SoundVolume <= 0).ToArray();
+                foreach (var op in stops) op.Cancellation.Cancel();
+            }
+            await SettleAsync(stops);
+            lock (_sync) { RetireSettled(); _closing = false; }
+            // Live volume is read by original sessions; preview/source changes require no reopen.
         }
-
-        lock (_sync)
-        {
-            if (_musicReader != null)
-                _musicReader.Volume = NormalizeVolume(_settings.MusicVolume);
-        }
+        finally { _transitions.Release(); }
     }
 
     public void PlayCue(AudioCue cue)
     {
-        if (!_settings.SoundEnabled || _settings.SoundVolume <= 0)
-            return;
-        if (!CanPlayCueNow(cue))
-            return;
-
-        _ = Task.Run(async () =>
+        lock (_sync)
         {
-            try
-            {
-                var path = ResolveCuePath(cue);
-                if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
-                    return;
+            RetireSettled();
+            if (!CanAdmit()) return;
+            if (!CurrentSettings.SoundEnabled || CurrentSettings.SoundVolume <= 0) { _outcome = AudioOutcome.Muted; return; }
+            if (!CanPlayCueNow(cue)) return;
+            var path = ResolveCuePath(cue);
+            if (path == null) { _outcome = AudioOutcome.NoAssets; return; }
+            Publish(false, MusicPlaylist.None, path);
+        }
+    }
 
-                using var reader = new AudioFileReader(path)
-                {
-                    Volume = NormalizeVolume(_settings.SoundVolume)
-                };
-                using var output = new WaveOutEvent();
-                var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-                output.PlaybackStopped += (_, _) => tcs.TrySetResult();
-                output.Init(reader);
-                output.Play();
-                await tcs.Task;
-            }
-            catch (Exception ex)
+    private bool CanAdmit() => !_browserManaged && !_disposed && !_closing && !HasDebt();
+    private bool HasDebt() => _operations.Any(o => (o.WaitTimedOut && !o.Task.IsCompleted) ||
+        (o.Task.IsCompleted && !o.CleanupConfirmed));
+
+    private async Task SetPlaylistAsync(MusicPlaylist playlist)
+    {
+        await _transitions.WaitAsync();
+        try
+        {
+            Operation? previous;
+            lock (_sync)
             {
-                _logger.LogDebug(ex, "Не удалось воспроизвести sound cue {Cue}", cue);
+                RetireSettled();
+                if (!CanAdmit()) return;
+                if (CurrentSettings.MusicEnabled && CurrentSettings.MusicVolume > 0 && _currentPlaylist == playlist && _music != null) return;
+                _closing = true; previous = _music; previous?.Cancellation.Cancel();
             }
-        });
+            await SettleAsync(previous == null ? [] : [previous]);
+            Operation? next = null;
+            lock (_sync)
+            {
+                RetireSettled(); _closing = false;
+                if (!CanAdmit()) return;
+                if (!CurrentSettings.MusicEnabled || CurrentSettings.MusicVolume <= 0) { _outcome = AudioOutcome.Muted; return; }
+                var tracks = ResolvePlaylistTracks(playlist).ToArray();
+                if (tracks.Length == 0) { _outcome = AudioOutcome.NoAssets; return; }
+                _currentPlaylist = playlist; next = _music = Publish(true, playlist, null);
+            }
+            try { await next.Ready.Task.WaitAsync(SettlementBound); }
+            catch (TimeoutException)
+            { lock (_sync) { next.WaitTimedOut = true; next.Cancellation.Cancel(); } }
+        }
+        finally { _transitions.Release(); }
+    }
+
+    private Operation Publish(bool music, MusicPlaylist playlist, string? cuePath)
+    {
+        var op = new Operation(music);
+        _operations.Add(op); // Original owner is published before asynchronous work can complete.
+        op.Task = Task.Run(() => RunOperationAsync(op, playlist, cuePath));
+        return op;
+    }
+
+    private async Task RunOperationAsync(Operation op, MusicPlaylist playlist, string? cuePath)
+    {
+        var outcome = AudioOutcome.Canceled;
+        try
+        {
+            do
+            {
+                op.Cancellation.Token.ThrowIfCancellationRequested();
+                var path = op.IsMusic ? PickNextTrack(ResolvePlaylistTracks(playlist).ToArray()) : cuePath;
+                if (path == null) { outcome = AudioOutcome.NoAssets; break; }
+                op.Session = _backend!.Create(path, () => NormalizeVolume(op.IsMusic ? CurrentSettings.MusicVolume : CurrentSettings.SoundVolume));
+                try
+                {
+                    await op.Session.RunAsync(() =>
+                    {
+                        lock (_sync) { if (!op.Cancellation.IsCancellationRequested) _outcome = AudioOutcome.Playing; }
+                        op.Ready.TrySetResult();
+                    }, op.Cancellation.Token);
+                    outcome = AudioOutcome.Stopped;
+                }
+                finally
+                {
+                    await op.Session.DisposeAsync();
+                    op.Session = null;
+                }
+                if (op.IsMusic) _lastTrackPath = path;
+            } while (op.IsMusic);
+        }
+        catch (OperationCanceledException) when (op.Cancellation.IsCancellationRequested) { outcome = AudioOutcome.Canceled; }
+        catch (AudioCapabilityException ex) { outcome = ex.Outcome; }
+        catch (Exception ex)
+        { outcome = AudioOutcome.Error; _logger.LogDebug(ex, "Owned audio operation failed."); }
+        finally
+        {
+            lock (_sync)
+            {
+                op.CleanupConfirmed = op.Session == null;
+                _outcome = op.CleanupConfirmed ? outcome : AudioOutcome.CleanupUncertain;
+            }
+            op.Ready.TrySetResult();
+        }
+    }
+
+    private async Task StopAsync(bool all, bool dispose)
+    {
+        await _transitions.WaitAsync();
+        try
+        {
+            Operation[] stops;
+            lock (_sync)
+            {
+                RetireSettled(); _closing = true; _disposed |= dispose;
+                stops = _operations.Where(o => all || o.IsMusic).ToArray();
+                foreach (var op in stops) op.Cancellation.Cancel();
+            }
+            await SettleAsync(stops);
+            lock (_sync)
+            {
+                RetireSettled(); _closing = false;
+                if (!HasDebt() && !_browserManaged) _outcome = AudioOutcome.Stopped;
+            }
+        }
+        finally { _transitions.Release(); }
+    }
+
+    private async Task SettleAsync(Operation[] operations)
+    {
+        if (operations.Length == 0) return;
+        try { await Task.WhenAll(operations.Select(o => o.Task)).WaitAsync(SettlementBound); }
+        catch (TimeoutException)
+        { lock (_sync) foreach (var op in operations.Where(o => !o.Task.IsCompleted)) op.WaitTimedOut = true; }
+    }
+
+    // Called under _sync only; completed original Task + disposal, never cancellation alone.
+    private void RetireSettled()
+    {
+        foreach (var op in _operations.Where(o => o.Task.IsCompleted && o.CleanupConfirmed).ToArray())
+        {
+            _operations.Remove(op); op.Cancellation.Dispose();
+            if (ReferenceEquals(_music, op)) { _music = null; _currentPlaylist = MusicPlaylist.None; }
+        }
+    }
+    private sealed class Operation(bool music)
+    {
+        internal bool IsMusic { get; } = music;
+        internal readonly CancellationTokenSource Cancellation = new();
+        internal readonly TaskCompletionSource Ready = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        internal Task Task = Task.CompletedTask;
+        internal IAudioPlaybackSession? Session;
+        internal bool CleanupConfirmed, WaitTimedOut;
     }
 
     private bool CanPlayCueNow(AudioCue cue)
@@ -157,138 +254,6 @@ public sealed class AudioService
                 return false;
             if (_lastCueTicks.TryUpdate(cue, now, previous))
                 return true;
-        }
-    }
-
-    private async Task SetPlaylistAsync(MusicPlaylist playlist)
-    {
-        if (!_settings.MusicEnabled || _settings.MusicVolume <= 0)
-        {
-            await StopMusicAsync();
-            return;
-        }
-
-        lock (_sync)
-        {
-            if (_currentPlaylist == playlist && _musicLoopTask != null && !_musicLoopTask.IsCompleted)
-                return;
-        }
-
-        await StopMusicAsync();
-
-        var candidates = ResolvePlaylistTracks(playlist).ToList();
-        if (candidates.Count == 0)
-        {
-            _logger.LogDebug("Для плейлиста {Playlist} не найдено аудиофайлов", playlist);
-            return;
-        }
-
-        var cts = new CancellationTokenSource();
-        var loopTask = Task.Run(() => MusicLoopAsync(playlist, cts.Token), cts.Token);
-
-        lock (_sync)
-        {
-            _currentPlaylist = playlist;
-            _musicCts = cts;
-            _musicLoopTask = loopTask;
-        }
-    }
-
-    private async Task MusicLoopAsync(MusicPlaylist playlist, CancellationToken cancellationToken)
-    {
-        while (!cancellationToken.IsCancellationRequested)
-        {
-            var candidates = ResolvePlaylistTracks(playlist).ToList();
-            if (candidates.Count == 0)
-                return;
-
-            var trackPath = PickNextTrack(candidates);
-            if (string.IsNullOrWhiteSpace(trackPath))
-                return;
-
-            try
-            {
-                await PlayTrackAsync(trackPath, cancellationToken);
-                _lastTrackPath = trackPath;
-            }
-            catch (OperationCanceledException)
-            {
-                return;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "Не удалось воспроизвести музыкальный трек {Track}", trackPath);
-                await Task.Delay(500, cancellationToken);
-            }
-        }
-    }
-
-    private async Task PlayTrackAsync(string trackPath, CancellationToken cancellationToken)
-    {
-        var reader = new AudioFileReader(trackPath)
-        {
-            Volume = NormalizeVolume(_settings.MusicVolume)
-        };
-        var output = new WaveOutEvent();
-        var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-        output.PlaybackStopped += (_, _) => tcs.TrySetResult();
-        output.Init(reader);
-
-        lock (_sync)
-        {
-            _musicReader = reader;
-            _musicOutput = output;
-        }
-
-        using var registration = cancellationToken.Register(() =>
-        {
-            try
-            {
-                output.Stop();
-            }
-            catch
-            {
-            }
-        });
-
-        output.Play();
-        await tcs.Task.WaitAsync(cancellationToken);
-
-        lock (_sync)
-        {
-            if (ReferenceEquals(_musicReader, reader))
-                _musicReader = null;
-            if (ReferenceEquals(_musicOutput, output))
-                _musicOutput = null;
-        }
-
-        output.Dispose();
-        reader.Dispose();
-    }
-
-    private void StopCurrentMusicPlayback()
-    {
-        WaveOutEvent? output;
-        AudioFileReader? reader;
-        lock (_sync)
-        {
-            output = _musicOutput;
-            reader = _musicReader;
-            _musicOutput = null;
-            _musicReader = null;
-        }
-
-        try
-        {
-            output?.Stop();
-        }
-        catch
-        {
-        }
-        finally
-        {
-            output?.Dispose();
-            reader?.Dispose();
         }
     }
 

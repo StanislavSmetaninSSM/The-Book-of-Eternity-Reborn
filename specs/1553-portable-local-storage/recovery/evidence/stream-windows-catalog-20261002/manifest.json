@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A1-WIN",
+  "sourceCommit": "23d94fb711b262eb024dfa6a028e190fbaa4ec17",
+  "status": "Discovery only: 182 categories,10471 methods/files; zero tests executed. Source/catalog23d94fb7, untracked evidence only; required discovery builds succeeded. Exit0, completeownedcleanup; Linux FIFO has exact owner but remains unexecuted.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    null
+  ],
+  "discoveryOnly": true,
+  "wallTime": "00:01:54.5266051",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 0,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 0,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "8FC0F383D66317D4418117FCEBF4050DDD7CCC368DC30043E962A2BA3029F6A4",
+      "sha256": "DEB6E5A14909D335EB71A67C85415F1BC99CC07E32A5C6E3359E58CD154992C8"
+    },
+    {
+      "path": "catalog-audit.json",
+      "originalSha256": "1234C51FDB3167202EAFF59318BDD5089FC5FF4B288F421810839ED0E41CAF94",
+      "sha256": "7FB388BC3106B0BC8D2C3553B2C8A4EA8A18C042AF42251D5AD21C29EA1302F0"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "24CB9433DDF54C55415F144131E1E0B2DA750C4A230C8683F046700B451A3D83",
+      "sha256": "B084911FFD78EC040385B96C121E0B4994CD9F7AD3CAC00316D156EC829A1DFF"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "include": [
+    "/repo/BookOfEternityClient.WebFrontend/test/savePersistenceNotice.test.ts"
+  ],
+  "extends": "/repo/BookOfEternityClient.WebFrontend/tsconfig.player-facing-tests.json",
+  "exclude": [],
+  "compilerOptions": {
+    "outDir": "/repo/TestResults/test-categories/20261002-144417-950-32-13ab01c4fbe0466ba445cce1ccb37866-categories/portable-browser-save-presentation-frontend-002-compiled",
+    "noEmit": false,
+    "rootDir": "/repo/BookOfEternityClient.WebFrontend"
+  }
+}

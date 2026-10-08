@@ -1,0 +1,102 @@
+{
+  "Categories": [
+    "worker-run-ledger-record",
+    "worker-run-ledger-storage-linux",
+    "worker-run-ledger-failures-linux",
+    "worker-run-ledger-process-linux"
+  ],
+  "Reasons": [
+    {
+      "category": "worker-run-ledger-record",
+      "reason": "R1 new strict worker record; no existing main or pool behavior changes.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R1",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-run-ledger-storage-linux",
+      "reason": "R1 Linux persistence; actual new ledger mutation contracts only, no worker launch.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R1",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-run-ledger-failures-linux",
+      "reason": "R1 exact pending commit and refusal boundaries, actual isolated disk state.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R1",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-run-ledger-process-linux",
+      "reason": "R1 fresh process/cross-process ownership/crash cuts, independent guardian required.",
+      "contracts": [
+        "#1553 T041-WORKER-RESTART-R1",
+        "FR-012/014/015"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "c7e801f10444960e6e34543a6c8870c3c6162ffa",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0775447,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0204352,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0307732,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0081663,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 16,
+  "WallTime": "00:00:05.4082251",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 174,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "worker-run-ledger-failures-linux-unit-001",
+      "worker-run-ledger-process-linux-unit-002",
+      "worker-run-ledger-record-unit-003",
+      "worker-run-ledger-storage-linux-unit-004"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

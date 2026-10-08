@@ -1,0 +1,23 @@
+{
+  "Success": true,
+  "Mode": "daemon",
+  "CompilerAbsentAtPlayerStartup": true,
+  "Argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "/workspace/native-1553/TestResults/production-main/86816f3bf03e4ddd9cbce5e4f8094d9d/ship/BookOfEternityClient/game_master_daemon.ps1",
+    "-GameSessionPath",
+    "/workspace/native-1553/TestResults/production-main/86816f3bf03e4ddd9cbce5e4f8094d9d/root/game_session",
+    "-PollingInterval",
+    "50",
+    "-LogFile",
+    "/workspace/native-1553/TestResults/production-main/86816f3bf03e4ddd9cbce5e4f8094d9d/daemon.log"
+  ],
+  "PortableDaemonStartup": true,
+  "ActualDaemonContextDocs": 14,
+  "ExitSignal": "SIGINT original daemon pidfd",
+  "EntrypointExitCode": 0,
+  "ElapsedSeconds": 4.230436962010572
+}

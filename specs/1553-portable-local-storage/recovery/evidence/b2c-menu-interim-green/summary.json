@@ -1,0 +1,118 @@
+{
+  "Categories": [
+    "portable-console-settings-session",
+    "portable-console-settings",
+    "portable-console-settings-client"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-console-settings-session",
+      "reason": "Ordinary-entry read-only full-set comparison and complete scoped language/font/audio preview unwind APIs, plus their established controller consumers.",
+      "contracts": [
+        "ordinary settings entry",
+        "detached preview unwind"
+      ]
+    },
+    {
+      "category": "portable-console-settings",
+      "reason": "An unchanged effective config must preserve original BOM/encoding/whitespace, avoiding manufactured entrypoint publication.",
+      "contracts": [
+        "exact unchanged config preservation",
+        "three-member preparation"
+      ]
+    },
+    {
+      "category": "portable-console-settings-client",
+      "reason": "Immediate QTE save must remain complete before interrupted-menu restart; explicit discard and blocked-save discard restore accepted locale. Exact existing menu consumers moved here, without the broad console category.",
+      "contracts": [
+        "console settings save triggers",
+        "real process settings restart",
+        "discard and owner-block UI"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "fcdfcb0f472fe7aad110659be533b1a95b854a73",
+    "WorkingTreeFingerprint": "75077134DCA00B07D2A56636122B7395BB8FD900EF51B8BB9F6CB3C3EF27FA0C",
+    "ChangedFiles": 11
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-console-settings",
+      "Seconds": 3.092644,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-console-settings-client",
+      "Seconds": 19.4726268,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-console-settings-session",
+      "Seconds": 5.0499719,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0830243,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0244144,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0184955,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 189.1614534,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 34.4922953,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0036197,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 18,
+  "WallTime": "00:04:19.3329520",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 42,
+    "CompletedCases": 42,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 42,
+    "Executed": 42,
+    "Passed": 42,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

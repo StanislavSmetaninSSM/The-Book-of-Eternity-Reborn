@@ -1,0 +1,49 @@
+{
+  "sourceCommit": "f9ea61919f3e55b6df74acfb42d241139016b6c9",
+  "sourceAppliedTree": "f3ee2adda514c41efcde2acff20d4a977cf0e8dc",
+  "packetSha256": "8fd6b5397d3a993b038d6810ed0f46a10f25c4689f518ef7ec5aed1183234603",
+  "kind": "coordinated-lease-red; exact completed selected-run evidence",
+  "sanitization": "Repository/toolchain/isolated environment paths and TRX run user/computer/deployment identifiers replaced; original and sanitized hashes retained.",
+  "command": "DOTNET_PROCESSOR_COUNT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-coordinated-lease -Parallelism 1",
+  "environment": "Linux x64; SDK10.0.401, .NET8.0.31, PowerShell7.6.6; existing isolated homes/temp/cache; no app/provider execution",
+  "tests": {
+    "Total": 10,
+    "Executed": 10,
+    "Passed": 3,
+    "Failed": 7
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 10,
+    "CompletedCases": 10,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "exitCode": 1,
+  "wallTime": "00:04:16.4736542",
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "f17cf8ea31fed213352a03fb287aa2435dbc033b9924a88e5be05f5cbab4a4cb",
+      "sanitizedSha256": "f17cf8ea31fed213352a03fb287aa2435dbc033b9924a88e5be05f5cbab4a4cb"
+    },
+    {
+      "path": "portable-coordinated-lease-unit-001.trx",
+      "originalSha256": "23b16eb00b5939b93ecf2002fb852a10a4e8d3e8fff313ede3ab521950468b47",
+      "sanitizedSha256": "b14fc5da23cfe23319c556fbab84b046fe4616da1e7c341ecf3b5d9931ae7ace"
+    }
+  ],
+  "intendedFailures": [
+    "Four foreign/disposed lease combinations incorrectly returned true on empty/all-unguarded-guard arrays.",
+    "Two context disposal failures replaced the original exception, including primary publication uncertainty.",
+    "The real canonical lock could not be reacquired after external-context disposal threw; deadline cancellation proved it remained held. The test closed the retained owned stream in finally."
+  ],
+  "passingControls": [
+    "Two valid no-op cases create neither generation nor journal.",
+    "Completed disposition survives context release failure."
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "Categories": [
+    "portable-directory-deletion",
+    "portable-directory-recovery",
+    "portable-directory-linux-special"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "52edf8596812294243e415bb332863eabc5a9c08",
+    "WorkingTreeFingerprint": "95CF2CC2875E7427B1D1BB8F549447C18235785AF35A2BE8933AAAE9DDE3BD65",
+    "ChangedFiles": 5
+  },
+  "PreparationSeconds": 135.1649034,
+  "Descriptors": [
+    {
+      "Name": "portable-directory-deletion-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-directory-deletion",
+      "Categories": [
+        "portable-directory-deletion"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.AbsentGenerationJoinsTheSameDeletionDecisionAndRollsBackAsAbsence|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.CommittedCleanupAndDiagnosticFailureNeverUndoOrDeleteUnknownBytes|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.HardLinkedMemberDeletionPreservesTheOutsideName|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidGenerationRejectsEvenAnEmptyTree|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidRelativeDirectoryDoesNotMutate|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.MutationHooksCannotIntroduceAnUnjournaledMember|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PlatformDistinctNamesRemainSeparateJournalMembers|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PublicationCutsKeepExactWholeBeforeOrCommittedAbsence|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.ReadBoundaryLinkReplacementRejectsBeforeOpeningOrDeletingOtherMembers|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.RealNullForeignAndDisposedLeasesCannotDelete|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.StaleBoundGenerationRejectsBeforeDeletingAnyMember|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.UnknownLaterMemberPreservesPartialOutcomeAndRetainedEvidence",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 32,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.AbsentGenerationJoinsTheSameDeletionDecisionAndRollsBackAsAbsence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.CommittedCleanupAndDiagnosticFailureNeverUndoOrDeleteUnknownBytes",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.HardLinkedMemberDeletionPreservesTheOutsideName",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidGenerationRejectsEvenAnEmptyTree",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidRelativeDirectoryDoesNotMutate",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.MutationHooksCannotIntroduceAnUnjournaledMember",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PlatformDistinctNamesRemainSeparateJournalMembers",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PublicationCutsKeepExactWholeBeforeOrCommittedAbsence",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.ReadBoundaryLinkReplacementRejectsBeforeOpeningOrDeletingOtherMembers",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.RealNullForeignAndDisposedLeasesCannotDelete",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.StaleBoundGenerationRejectsBeforeDeletingAnyMember",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.UnknownLaterMemberPreservesPartialOutcomeAndRetainedEvidence",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-directory-linux-special-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-directory-linux-special",
+      "Categories": [
+        "portable-directory-linux-special"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.LinuxFifoIsRejectedBeforeAnyOpenOrMemberMutationInBoundedProcess",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.LinuxFifoIsRejectedBeforeAnyOpenOrMemberMutationInBoundedProcess",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-directory-recovery-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-directory-recovery",
+      "Categories": [
+        "portable-directory-recovery"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdUnknownBytesOrGenerationPreserveThePartialSetAndJournal",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdUnknownBytesOrGenerationPreserveThePartialSetAndJournal",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

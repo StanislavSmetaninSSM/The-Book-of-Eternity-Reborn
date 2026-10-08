@@ -1,0 +1,83 @@
+{
+  "DriverCandidate": "1823aa50e1b756d3547c9cd5b68f2d2c49a91b7f",
+  "Runtime": "9340ff081c3a60a8c6b0d6ae0d07d95c555a3664",
+  "Verdict": "Actual standard external-editor full-draft read-only witness and original stop qualified; automatic profile/readiness/Q2 not qualified",
+  "ActualDraftBytes": 4919,
+  "ActualDraftSHA256": "8a3a0eef3c668758916adf30fd0c874738669fa7cadb9e59461395b6d7215bc2",
+  "DraftMatched": true,
+  "CliRemovedEditorFile": true,
+  "EditorInvocations": 1,
+  "ElapsedSeconds": 15.401,
+  "RawBytes": 7843,
+  "ManualRpcInputBytes": 4933,
+  "KeyboardBytes": 0,
+  "ModelRequests": 0,
+  "SubmitBytes": 0,
+  "QueriesOrGateAnswers": 0,
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 1,
+    "failures": 0,
+    "deadline": false
+  },
+  "OriginalLogicalStopAndAck": true,
+  "ForegroundEOF": true,
+  "TermiosRestored": true,
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-observed/preparation.json.gz",
+      "Bytes": 1103,
+      "SHA256": "51e6e2631839070ef23b07f61b6f5fa33880b7c20b253ac61d3a26daf18454f8",
+      "StoredSHA256": "14ab1d7b959c27afc65a7fe347e76f42e04ec0039ce058f6de87ce8a0869079a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-observed/guardian.json.gz",
+      "Bytes": 97,
+      "SHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "StoredSHA256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-observed/guardian.log.gz",
+      "Bytes": 119,
+      "SHA256": "b5aa5d2c01dea30121bb630b6aa660fe6d2960ea1a1db19d420399223dce2c86",
+      "StoredSHA256": "607abfe62fed60be2ff36b15a26ab8b726493bffa6bfa9b8571c41819e0162ac"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-observed/probe-result.json.gz",
+      "Bytes": 25260,
+      "SHA256": "5bee7c39c69380281ee58cf65ec85c941b87e473be85707dc5ab72dcc0f0a2e6",
+      "StoredSHA256": "324fad92c20caae7d828c09a760e4b8ebcfd472714f5850ffd76d1a70374017d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-observed/rpc-journal.json.gz",
+      "Bytes": 45505,
+      "SHA256": "5a13d56dfb967f0d6da8d2698222cf93de2e72382f80fd56b7edccdad5c5d05e",
+      "StoredSHA256": "39e597d436cba377d405c9917d8d62459e21da7fc3ee8970cefb8e9f9a0a1c93"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-observed/startup.raw.gz",
+      "Bytes": 7843,
+      "SHA256": "848228834c6e2d49053762879001441ce844709cff7fc0738d52865f3a5854fd",
+      "StoredSHA256": "174b4ab12928b7b571c8c00acf08661c7736fb9fc3e756f89643957d2b9bf6d3"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-observed/startup-readable.txt.gz",
+      "Bytes": 9363,
+      "SHA256": "d5df295e7999e7751627b3519a3aa709ec965bffbbc95c8618b7fe0268e79594",
+      "StoredSHA256": "0673d6e11619407146c516deb68c4bc85045fbd0e8a7890db3a8083f819389c8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-observed/draft-observer.json.gz",
+      "Bytes": 6954,
+      "SHA256": "c172de0912340cf833539d630a442723ef755f33b042e2a09d0a8ff64d80265f",
+      "StoredSHA256": "154181baba33b6ca288b5ca10d37b640ac443b76e1cd37cdce32e2acbcbae9fb"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-observed/durable-main.json",
+      "Bytes": 777,
+      "SHA256": "a29e783a0d81c936ede36d8881cc57d25e740f8c4756f2b8ad8055d861a9d40b"
+    }
+  ]
+}

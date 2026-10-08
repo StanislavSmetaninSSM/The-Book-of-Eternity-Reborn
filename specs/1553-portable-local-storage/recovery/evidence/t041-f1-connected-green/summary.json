@@ -1,0 +1,95 @@
+{
+  "Categories": [
+    "gm-main-run-fence",
+    "gm-main-run-owner-linux"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-main-run-fence",
+      "reason": "F1 new portable admission plus exact changed common lease/generation/publication/browser/terminal methods. Windows CI verifies source/portable behavior only; Linux native qualification is in explicit separate selection.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F1 FR-009/012/013/014/015; T042 original input lifetime"
+      ]
+    },
+    {
+      "category": "gm-main-run-owner-linux",
+      "reason": "Actual Linux-x64 fixed neutral original owner, one schema1 persistence, frozen metadata debt, real output/input/stop, in-generation held settlement, independent guardian; exactly affected native primitive only.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F1 FR-009/012/013/014/015; T042 original input lifetime"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "a874fb5d3c82bdaf2c605db38a6bde103acd0a1f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-main-run-fence",
+      "Seconds": 12.7290877,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-main-run-owner-linux",
+      "Seconds": 128.9683966,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1186004,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.1085389,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.100177,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 64.0193903,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0150611,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:03:34.2912522",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 82,
+    "CompletedCases": 82,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 82,
+    "Executed": 82,
+    "Passed": 82,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -44,6 +44,11 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
             });
         var writerFs = CreateFileSystem(new FileSystemManagerHooks
         {
+            MainOwnerLockContendedAsync = () =>
+            {
+                writerContended.TrySetResult(true);
+                return Task.CompletedTask;
+            },
             CanonicalWriteLockContendedAsync = () =>
             {
                 writerContended.TrySetResult(true);
@@ -52,7 +57,9 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
         });
 
         var distributionTask = distributor.DistributeAsync(CreateWeatherResponse());
-        await backupsCaptured.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        var backupBoundary = await Task.WhenAny(distributionTask, backupsCaptured.Task).WaitAsync(TimeSpan.FromSeconds(5));
+        if (backupBoundary == distributionTask) await distributionTask;
+        Assert.Same(backupsCaptured.Task, backupBoundary);
         var writerTask = writerFs.WriteFileAtomicAsync(
             WeatherPath,
             "{\"marker\":\"accepted-concurrent-writer\"}");
@@ -92,6 +99,11 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
             });
         var writerFs = CreateFileSystem(new FileSystemManagerHooks
         {
+            MainOwnerLockContendedAsync = () =>
+            {
+                writerContended.TrySetResult(true);
+                return Task.CompletedTask;
+            },
             CanonicalWriteLockContendedAsync = () =>
             {
                 writerContended.TrySetResult(true);
@@ -100,7 +112,9 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
         });
 
         var distributionTask = distributor.DistributeAsync(CreateWeatherResponse());
-        await mutationApplied.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        var mutationBoundary = await Task.WhenAny(distributionTask, mutationApplied.Task).WaitAsync(TimeSpan.FromSeconds(5));
+        if (mutationBoundary == distributionTask) await distributionTask;
+        Assert.Same(mutationApplied.Task, mutationBoundary);
         var writerTask = writerFs.WriteFileAtomicAsync(
             WeatherPath,
             "{\"marker\":\"accepted-concurrent-writer\"}");

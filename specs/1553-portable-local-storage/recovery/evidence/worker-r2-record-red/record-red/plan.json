@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "worker-restart-record"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "fab6c7d988b387ab810426ecbe9ed0b107710929",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 47.9239564,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-record-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-record",
+      "Categories": [
+        "worker-restart-record"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 35,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartRecordTests.CurrentProgress_ColdObservationCannotRestoreLiveAuthority",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartRecordTests.InconsistentProgress_IsBlocked",
+          "Cases": 22
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartRecordTests.TerminalSyntax_RetainsFrozenCleanupFactsWithoutCreatingExecution",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "Categories": [
+    "browser-rollback-linux",
+    "browser-rollback-linux-boundaries"
+  ],
+  "Reasons": [
+    {
+      "category": "browser-rollback-linux",
+      "reason": "T031 first causal RED against actual existing consumer, bootstrapped isolated Linux root. New positive oracles reach staging and record callback execution; no unrelated cohort.",
+      "contracts": [
+        "#1553 T031 trusted-local browser original main/worker/generation/UI lease rollback"
+      ]
+    },
+    {
+      "category": "browser-rollback-linux-boundaries",
+      "reason": "T031 next bounded actual recovery/closing/directory consumer gaps after first three causal RED→GREEN; no old cohort reruns.",
+      "contracts": [
+        "#1553 T031 original browser record byte intent + scoped recovery + exact outcome retention"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "fb9c679ef9bdfa9bfb959fd29115641c7669f23b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "browser-rollback-linux",
+      "Seconds": 5.7843439,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "browser-rollback-linux-boundaries",
+      "Seconds": 7.2117839,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0787974,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0998072,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1676439,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 53.0595653,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0086266,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:01:13.0182609",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 15,
+    "CompletedCases": 15,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 15,
+    "Executed": 15,
+    "Passed": 15,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

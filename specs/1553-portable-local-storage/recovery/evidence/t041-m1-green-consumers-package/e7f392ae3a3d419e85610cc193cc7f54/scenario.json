@@ -1,0 +1,24 @@
+{
+  "Success": true,
+  "Mode": "daemon-launcher",
+  "CompilerAbsentAtPlayerStartup": true,
+  "Argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "/workspace/native-1553/TestResults/production-main/e7f392ae3a3d419e85610cc193cc7f54/ship/BookOfEternityClient/Launcher/bookofeternity.ps1",
+    "start-daemon",
+    "visible",
+    "--no-autopaste",
+    "--log",
+    "/workspace/native-1553/TestResults/production-main/e7f392ae3a3d419e85610cc193cc7f54/daemon.log",
+    "-SessionPath",
+    "/workspace/native-1553/TestResults/production-main/e7f392ae3a3d419e85610cc193cc7f54/root/game_session"
+  ],
+  "PortableDaemonStartup": true,
+  "ActualDaemonContextDocs": 14,
+  "ExitSignal": "Ctrl+C in original owned foreground terminal",
+  "EntrypointExitCode": 0,
+  "ElapsedSeconds": 4.272004198996001
+}

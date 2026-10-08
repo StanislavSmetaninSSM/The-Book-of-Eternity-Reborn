@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "portable-directory-same-lease-recovery"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "3c66f2125eb0b2f7b69a7c22188f08ba89f4f302",
+    "WorkingTreeFingerprint": "90C72774541F2A89A56DE92AFF516F64042EF6253052E3DE5E65C6963C9CCC83",
+    "ChangedFiles": 5
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-directory-same-lease-recovery",
+      "Seconds": 3.9234675,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0630145,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.014786,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0223426,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 142.8885648,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:02:30.6613744",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 4,
+    "CompletedCases": 4,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 0,
+    "Failed": 4
+  },
+  "DuplicateTests": []
+}

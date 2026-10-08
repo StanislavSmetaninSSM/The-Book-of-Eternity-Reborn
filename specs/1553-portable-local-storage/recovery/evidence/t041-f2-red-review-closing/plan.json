@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-review-closing-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d0bf79f047d5c4bf76070df022d774ebf840dd63",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 101.4503066,
+  "Descriptors": [
+    {
+      "Name": "gm-main-review-closing-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-review-closing-linux",
+      "Categories": [
+        "gm-main-review-closing-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ReviewClosingBoundary",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ReviewClosingBoundary",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

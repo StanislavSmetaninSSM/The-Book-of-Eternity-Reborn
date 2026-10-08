@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "linux-fallback-proc-discovery"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "3e1b11c220ea3286002ea78c90e4eb4498e887dd",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 96.5923004,
+  "Descriptors": [
+    {
+      "Name": "linux-fallback-proc-discovery-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "linux-fallback-proc-discovery",
+      "Categories": [
+        "linux-fallback-proc-discovery"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackProcDiscoveryTests.FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 1,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackProcDiscoveryTests.FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

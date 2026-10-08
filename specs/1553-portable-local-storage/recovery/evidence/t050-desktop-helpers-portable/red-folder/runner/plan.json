@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "desktop-folder-consumers"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "bd17aa1f5d3e6b55dca4a2abbc0f74552d400a49",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.5370565,
+  "Descriptors": [
+    {
+      "Name": "desktop-folder-consumers-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "desktop-folder-consumers",
+      "Categories": [
+        "desktop-folder-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt|FullyQualifiedName=BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainMenuFolderCreationFailureIsHandledBeforeAssociation|FullyQualifiedName=BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualSettingsModsMenuShowsFailureAndKeepsItsOriginalAcknowledgement",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualExplorerModsKeepsOutcomeAndManualPathAtNextPrompt",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualMainMenuFolderCreationFailureIsHandledBeforeAssociation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DesktopFolderConsumerTests.ActualSettingsModsMenuShowsFailureAndKeepsItsOriginalAcknowledgement",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

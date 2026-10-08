@@ -1,0 +1,77 @@
+{
+  "Categories": [
+    "portable-console-settings-session"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-console-settings-session",
+      "reason": "Actual immediate-save recovery screen must be reached before any further canonical mod read; last accepted effects can be restored without discarding or certifying the retained draft, and a later explicit preview may rearm.",
+      "contracts": [
+        "console recovery control flow",
+        "last accepted preview effect restoration"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "a98eb0e7e7966460dfbf09837990f636039da174",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-console-settings-session",
+      "Seconds": 6.0496492,
+      "BudgetMinutes": 4,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1372859,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0408337,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0170303,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 138.0753326,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 9,
+  "WallTime": "00:02:28.1084691",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 26,
+    "CompletedCases": 26,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 26,
+    "Executed": 26,
+    "Passed": 24,
+    "Failed": 2
+  },
+  "DuplicateTests": []
+}

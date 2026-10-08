@@ -1,0 +1,59 @@
+{
+  "Categories": [
+    "clipboard-linux-adapter",
+    "clipboard-console-consumers"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "16871c3ea2737ed9f2844656823a49349eb03f90",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.9693078,
+  "Descriptors": [
+    {
+      "Name": "clipboard-console-consumers-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "clipboard-console-consumers",
+      "Categories": [
+        "clipboard-console-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_FailureShowsEscapedMessageAndRetainsDefaultUntilManualAcceptance|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealGetPlayerInput_LiteralShortcutIsOneReadAndRequiresManualAcceptance",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_FailureShowsEscapedMessageAndRetainsDefaultUntilManualAcceptance",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealGetPlayerInput_LiteralShortcutIsOneReadAndRequiresManualAcceptance",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "clipboard-linux-adapter-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "clipboard-linux-adapter",
+      "Categories": [
+        "clipboard-linux-adapter"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_ReadsSyntheticUnicodeAndParagraphs",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_ReadsSyntheticUnicodeAndParagraphs",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

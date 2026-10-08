@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "linux-fallback-bootstrap"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4b6a19a2ae86d101318c79d0941f6c6939d15a8c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 126.2265871,
+  "Descriptors": [
+    {
+      "Name": "linux-fallback-bootstrap-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "linux-fallback-bootstrap",
+      "Categories": [
+        "linux-fallback-bootstrap"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackBootstrapTests.GuardianAfterHelperLoss_IndependentlyReapsExpiringOwnedRoot|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackBootstrapTests.RealRootBinding_StartStopAndActualReap",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 1,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackBootstrapTests.GuardianAfterHelperLoss_IndependentlyReapsExpiringOwnedRoot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackBootstrapTests.RealRootBinding_StartStopAndActualReap",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-OWNED-MAIN-TERMINAL-NEUTRAL",
+  "Issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
+  "AcceptedDesign": "3b21dba7410284cb4b471e7b3c3e4be970139c27",
+  "Status": "Bounded neutral source/evidence and metadata PASS; final carrier SHA/remote/fresh-restoration proof in handoff",
+  "Method": "Spec Kit existing feature, Superpowers executing-plans/TDD, bridge; sole writer and separate Sol6.1/xhigh review",
+  "Preflight": "Existing isolated linked worktree, exact remote base and clean tree. One shared session feeds original input/output/dispatch; original native reaper remains the sole ownership engine. No interface conflict found.",
+  "Ledger": [
+    "Authorization checkpoint before code/tests. Accepted design remains historical; current execution authorization is recorded in spec/plan/tasks.",
+    "Preparation missing type/entry/DLL/unavailable factory is not causal RED. Compile-ready consumed seam preserves original StopShell disposal order before actual retirement assertion.",
+    "Runtime/tests executed in this implementation so far: 0.",
+    "Compile-ready IOwnedTerminalSession consumed by original _pty/input/output. ConPTY facade retains legacy Dispose; actualStop controlled fixture written first. gm-owned-terminal-session owns the one new assertion. Causal RED not run yet.",
+    "Preparation failure at8ef8d646: catalog.related requires {id,when}, supplied strings. Runner rejected before build/test;0executions, no causal RED. Corrected structurally at source after comparing parser/working catalog entries.",
+    "Preparation at80cbc62a: C# adapter passed int dimensions to existing short ConPTY Resize (CS1503 x2). Fresh build failed before discovery/test,0executions/runnercleanupcomplete. Checked narrowing added; no retirement fix yet. Pre-existing CS1587 warnings in three unrelated game/UI files remain.",
+    "Causal RED96791f71: actual BridgeHost StopShell1/1 executed FAIL, Assert.Same expected original HeldTerminal but _pty null before scoped/output completion. Fixture finally settled original tasks; runner owned cleanup complete. Changed StopShell to retained once-owned stop/dispose tasks, matching scoped proof plus actual drain before clearing; timeout/error absorbs Uncertain.",
+    "Fresh c2040e1e GREEN1/1 executed after complete matching rebuild; same actualStop assertion, no timeout, original controlled tasks settled/runner owned cleanup complete. Do not count this as native PTY/Job qualification.",
+    "Next native case written first: fixed own-root fixture / real isolated TestSupport driver beneath unchanged guardian. Factory compile-ready stub refuses transport; this baseline is availability/preparation (no worker/root launch), never native causal RED. Accepted portable retirement RED remains causal. Native own-root GREEN must precede expansion.",
+    "2cf1a0b2 affected selection preparation failed CS0120 ConPTY instance root observer invoked from static Start without original owner.0 tests executed; archived final-build-preparation. Minimal owner-qualified call corrected; actual launcher binary path follows net8.0 retarget and new inert actual Start-Bridge consumer check (compiled path plus project fallback). New native partial-start/stopTerminal and final affected selection remain unrun.",
+    "fbdc406b affected selection freshly built:157 planned,33 executed31PASS2FAIL; runner stops after first input category. Two source wiring guards still named old concrete pty/shellToken call sites, updated to consumed AttachOwnedTerminal/session actual calls (output CancellationToken.None and peer listener retention). No runtime fault hidden; remaining categories not executed. Review added Windows zero-length EOF and immediate completed-root input/view/resize closure negatives before runtime fix.",
+    "0ac1b522 review causal REDs: actual ConPTY FaultStream13exec12PASS1FAIL empty read certifies EOF; native11exec10PASS1FAIL completed root still admits manual input while descendant holds PTY. All11 native guardians ECHILD/emergency0/failures0/deadlinefalse; partial-start original retention and actual stopTerminal pass. Correct zero buffer and close-only matched root notification plus synchronous view/writer/resize checks. No scoped proof inferred from root. Add accepted foreground actual Program/Console.ReadKey smoke under own outer PTY/unchanged guardian and unrelated finite own sentinel. CI Windows default retains4 portable category owners; explicit Linux manifest contains affected9 selection (no workflow change). Final GREEN unrun.",
+    "Review Windows partial stream acquisition now guarded by original resource owner created before kernel PTY; raw handles and progressive SafeFileHandle/stream bindings stay in same typed exception owner. Zero app code release before Job unchanged. Mutable CreateProcessW command-line buffer follows official Microsoft API in/out contract: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw (checked2026-10-06). Source guard now checks owned view Revision freshness instead of obsolete raw outputVersion condition. Foreground Python is test-only outer UI PTY orchestration, no second reaper; existing C guardian retains cleanup, no Python player/runtime dependency.",
+    "c3ef9693 fresh affected selection160planned128exec127PASS1FAIL, stops native category; input33/output47/prompt36PASS, native11/12PASS includes actual partial-start and closed root-exit admission. Foreground actual Program manual2/Unicode/samebinding passed, outer UI resize observation failed because fixture only allocated isatty slave without controlling/foreground session (SIGWINCH delivery unavailable). Fixed isolated guardian child ownsetsid/TIOCSCTTY(0)/tcsetpgrp, no runtime/configuration/privilege change. All12 guardians ECHILD/emergency0/failures0/deadlinefalse. Portable/worker descriptors not executed duefail-fast.",
+    "Independent actualgpt-6.1-sol/xhigh Bounded PASS at595436cf: source/protocol/selection/scope consistency and all24manifests/1769inputinstances/1097artifacts/283gzip plus160distinctPASS independently verified; no confirmed blockers. Fresh GitHub-only candidate restore14277files exactSHA/tree/parent/history/bytes/fsck/clean/remote. Only metadata completion remains; runtime/tests frozen."
+  ],
+  "Cohorts": [
+    {
+      "Kind": "preparation/schema",
+      "Source": "8ef8d6462ef2f0f1dd4330a5a59a2df066ddc877",
+      "Executed": 0,
+      "Manifest": "recovery/evidence/t041-terminal-catalog-preparation/manifest.json"
+    },
+    {
+      "Kind": "preparation/build",
+      "Source": "80cbc62a98aa31cc69b8a1ea3ce1b2784bd576b9",
+      "Executed": 0,
+      "Manifest": "recovery/evidence/t041-terminal-build-preparation/manifest.json"
+    },
+    {
+      "Kind": "causal RED",
+      "Source": "96791f713c5572579abfda613598d3155c151529",
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1,
+      "Manifest": "recovery/evidence/t041-terminal-retirement-red/manifest.json",
+      "Cleanup": "complete, controlled tasks settled"
+    },
+    {
+      "Kind": "causal GREEN",
+      "Source": "c2040e1ebb458de79a3dde66d2aa3efc7e84a236",
+      "Executed": 1,
+      "Passed": 1,
+      "Failed": 0,
+      "Manifest": "recovery/evidence/t041-terminal-retirement-green/manifest.json",
+      "Cleanup": "complete"
+    }
+  ],
+  "ProductionMainReleaseEnabled": false,
+  "NativeWindowsQualified": false,
+  "SystemdQualified": false,
+  "ArbitraryTuiQualified": false,
+  "ColdGuarantees": false,
+  "Review": {
+    "Verdict": "Bounded PASS",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Source": "595436cf31a9c184faa5a3a021441222b6e6ea51",
+    "Evidence": "owned-main-terminal-neutral-review.json",
+    "UnresolvedConfirmedBlockers": 0,
+    "Metadata": "owned-main-terminal-neutral-review.json; d9757fae narrow metadata review, only restoration attribution wording corrected."
+  },
+  "NativePreparation": {
+    "Source": "9348f8d5c79e86c08b31a19326c266214a2c5261",
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1,
+    "NativeRootLaunched": 0,
+    "Classification": "preparation compiler failure, not causal RED",
+    "Evidence": "evidence/t041-terminal-native-build-preparation/manifest.json",
+    "Correction": "newline single-character literal"
+  },
+  "NativeOwnRoot": {
+    "Source": "978e9f9a2599adaeab1162c153feebedebb9bad8",
+    "Executed": 1,
+    "Passed": 1,
+    "Guardian": "ECHILD, emergencySignals=0, failures=0, deadline=false",
+    "Evidence": "evidence/t041-terminal-own-root/manifest.json",
+    "Scope": "terminal adapter own root; actual BridgeHost integration pending"
+  },
+  "NativeBridgeViewRed": {
+    "Source": "c7a6adc060ebd2c971f7d30621a1df844ae965ca",
+    "Executed": 2,
+    "Passed": 1,
+    "Failed": 1,
+    "Cause": "actual pipe setReady refuses original Linux PTY output because old Win32 reader has no coherent view",
+    "Guardian": "both ECHILD, emergencySignals=0, failures=0, deadline=false; original StopShell scoped retirement before driver exit",
+    "Evidence": "evidence/t041-terminal-bridge-view-red/manifest.json"
+  },
+  "CommandPreparation": {
+    "Error": "Unsupported TestFilter argument rejected before build/tests",
+    "Executed": 0,
+    "Correction": "explicit category wrapper only"
+  },
+  "NativeBridgeViewGreen": {
+    "Source": "a67c95c9673b56eeca2a8d10bbd1fef1ab3e5fab",
+    "Executed": 2,
+    "Passed": 2,
+    "Evidence": "evidence/t041-terminal-bridge-view-green/manifest.json",
+    "Scope": "actual native BridgeHost initial reliable idle view; prompt sequences and Windows still pending"
+  },
+  "NativeReviewRed": {
+    "Source": "fa73c4b7af8433805e29e12a1eb5fd458a377200",
+    "Executed": 8,
+    "Passed": 5,
+    "Failed": 3,
+    "Evidence": "evidence/t041-terminal-native-review-red/manifest.json",
+    "Causes": [
+      "actual EOF retirement",
+      "late I/O uncertainty overrides cached stop",
+      "gated stdio descriptors"
+    ]
+  },
+  "NativeAuthorityRed": {
+    "Source": "31268a4d9d278037a9c0fc5c74e005046e11ab29",
+    "Executed": 9,
+    "Passed": 7,
+    "Failed": 2,
+    "Evidence": "evidence/t041-terminal-live-authority-red/manifest.json",
+    "Causes": [
+      "actual closed status reader with live root permits old readiness",
+      "manual stale idle observation"
+    ]
+  },
+  "NativeConnectedGreen": {
+    "Source": "340889ce460a189dfeee7d113d140292df446d1b",
+    "Executed": 9,
+    "Passed": 9,
+    "Evidence": "evidence/t041-terminal-connected-native-green/manifest.json",
+    "Guardian": "all9 ECHILD, emergency0, failures0, deadlinefalse",
+    "Scope": "bounded linux-x64/glibc neutral fixture, actual bridge/T042 view/input/pipe; no production main/systemd/Windows"
+  },
+  "FinalBuildPreparation": {
+    "Source": "2cf1a0b2715e721d1561328114cf3f2cad6aa266",
+    "Executed": 0,
+    "Evidence": "evidence/t041-terminal-final-build-preparation/manifest.json"
+  },
+  "AffectedWiringRed": {
+    "Source": "fbdc406b7626598289bedf0c356cce2810dda393",
+    "Planned": 157,
+    "Executed": 33,
+    "Passed": 31,
+    "Failed": 2,
+    "Complete": false,
+    "Evidence": "evidence/t041-terminal-affected-wiring-red/manifest.json"
+  },
+  "ReviewClosureReds": [
+    {
+      "Source": "0ac1b522fcdce8a356695d8c36442ae196b7b703",
+      "Executed": 13,
+      "Passed": 12,
+      "Failed": 1,
+      "Evidence": "evidence/t041-terminal-empty-read-red/manifest.json"
+    },
+    {
+      "Source": "0ac1b522fcdce8a356695d8c36442ae196b7b703",
+      "Executed": 11,
+      "Passed": 10,
+      "Failed": 1,
+      "Evidence": "evidence/t041-terminal-root-exit-red/manifest.json"
+    }
+  ],
+  "ForegroundPreparation": {
+    "Source": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+    "Planned": 160,
+    "Executed": 128,
+    "Passed": 127,
+    "Failed": 1,
+    "Complete": false,
+    "Evidence": "evidence/t041-terminal-foreground-preparation/manifest.json",
+    "Classification": "outer UI fixture controlling-terminal/resize-signal preparation; not native ownership failure"
+  },
+  "LedgerSemantics": "Append-only execution history; old WIP/zero/pending statements below describe their recorded earlier checkpoint. FinalVerification and Status are current.",
+  "FinalVerification": {
+    "RuntimeSource": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+    "ForegroundFixtureSource": "6061df633091ce25cfa41183aa3d1b5938764a33",
+    "DistinctPassed": 160,
+    "DuplicateTestIds": 0,
+    "ManagedReused": {
+      "Source": "c3ef969364d55af0dc52e7d769d3fc182229a7f8",
+      "Passed": 116,
+      "Categories": [
+        "gm-bridge-input-lifetime",
+        "gm-bridge-output-stream",
+        "gm-bridge-prompt-operation"
+      ],
+      "Manifest": "evidence/t041-terminal-foreground-preparation/manifest.json",
+      "Note": "These three completed descriptors pass; full9 run stopped after foreground preparation failure. Source delta to606 changes no C#/C/PowerShell/project/catalog/selection input.116 not repeated."
+    },
+    "RemainingFresh": {
+      "Source": "6061df633091ce25cfa41183aa3d1b5938764a33",
+      "Planned": 44,
+      "Executed": 44,
+      "Passed": 44,
+      "Failed": 0,
+      "Complete": true,
+      "NativeTerminal": 12,
+      "PortableSession": 13,
+      "AffectedWorkerRegression": 19,
+      "Manifest": "evidence/t041-terminal-native-final-green/manifest.json",
+      "Aggregate": "evidence/t041-terminal-native-final-green/aggregate-green.json",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile /workspace/qualification-1553-terminal/remaining-linux.json -Parallelism 1",
+      "SelectionArtifact": "evidence/t041-terminal-native-final-green/requested-selection.json"
+    },
+    "Cleanup": {
+      "TerminalGuardians": 12,
+      "TerminalEchild": 12,
+      "TerminalEmergencySignals": 0,
+      "HostGuardians": 12,
+      "HostEchild": 12,
+      "HostEmergencySignals": 1,
+      "HostEmergencyReason": "Existing deliberate helper-loss-closed-output owner-retention negative permits independent guardian exact cleanup; never runtime positive scoped proof.",
+      "V1Guardians": 7,
+      "V1Echild": 7,
+      "V1EmergencyLineageActions": 0,
+      "V1EmergencyAlarmReaps": 0,
+      "AllFailureOrDeadline": 0,
+      "Scope": "own fixtures only; no claim about pre-existing PID1 zombies"
+    },
+    "Discovery": {
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+      "Categories": 321,
+      "MethodsOrFiles": 10932,
+      "Executed": 0,
+      "Manifest": "evidence/t041-terminal-catalog-discovery/manifest.json"
+    },
+    "Plan": {
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-owned-terminal-linux.json -PlanOnly -NoBuild",
+      "Descriptors": 9,
+      "Planned": 160,
+      "Executed": 0,
+      "Manifest": "evidence/t041-terminal-selection-plan/manifest.json"
+    }
+  },
+  "NativeNeutralQualified": true,
+  "CurrentNext": "Handoff after final carrier non-force push, exact remote SHA/byte readback and fresh GitHub-only restore. Stop before production/main fence/systemd/live/next stage; no implementation or repeated tests authorized by this checkpoint.",
+  "NotQualified": [
+    "native Windows ConPTY/Job execution",
+    "existing-user-manager systemd terminal adapter",
+    "arbitrary configured live CLI/provider/TUI/final queue/profile/manual-resume UX",
+    "ordinary production Linux GM/worker launch and durable main run/write fence",
+    "real saves and cold/reboot/power-loss/delivery exactly-once"
+  ],
+  "QualificationScope": "Fixed neutral CLI only; Linux-x64/glibc in this VM, original native ordinary same-PID-namespace lineage. Not public arbitrary GM/TUI/production main qualification.",
+  "CandidateRestore": "owned-main-terminal-neutral-restore.json",
+  "EvidenceAudit": "owned-main-terminal-neutral-evidence-audit.json"
+}

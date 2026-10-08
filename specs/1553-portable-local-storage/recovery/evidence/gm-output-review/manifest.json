@@ -1,0 +1,30 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "Independent final source/evidence review and clean GitHub-only source restoration",
+  "Artifacts": [
+    {
+      "Path": "publication.json",
+      "StoredPath": "publication.json",
+      "StoredBytes": 230,
+      "OriginalBytes": 230,
+      "StoredSha256": "40b67f96b73250550e47003ac5bb6345fd989c2d59cc096b4af96fe9a9051bd9",
+      "OriginalSha256": "40b67f96b73250550e47003ac5bb6345fd989c2d59cc096b4af96fe9a9051bd9"
+    },
+    {
+      "Path": "review-restore.json",
+      "StoredPath": "review-restore.json",
+      "StoredBytes": 565,
+      "OriginalBytes": 565,
+      "StoredSha256": "1c08c3ced88e60e89a345f76c3be3c72032e5835e3cfe8c5a7f417a83dc2bdb6",
+      "OriginalSha256": "1c08c3ced88e60e89a345f76c3be3c72032e5835e3cfe8c5a7f417a83dc2bdb6"
+    },
+    {
+      "Path": "review.json",
+      "StoredPath": "review.json",
+      "StoredBytes": 1223,
+      "OriginalBytes": 1223,
+      "StoredSha256": "86fc23afa17d08ab9b5c5322b2e91425ec6299bb66f39a841fa6eb47280f8ea3",
+      "OriginalSha256": "86fc23afa17d08ab9b5c5322b2e91425ec6299bb66f39a841fa6eb47280f8ea3"
+    }
+  ]
+}

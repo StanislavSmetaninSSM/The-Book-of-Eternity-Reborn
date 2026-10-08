@@ -1,0 +1,425 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-PRODUCTION-MAIN-M1",
+  "State": "Bounded M1 independent source/evidence/metadata/selection PASS; final writer carrier publication/restoration closure",
+  "AcceptedDesign": "cdc3b10ca5cbff5b4d9cbc935609cdff29a95e68",
+  "LatestRuntimeAndTestSource": "6d111cccf9ad740a12cd466fe9be32a11957a65f",
+  "Latest": {
+    "DistinctCases": 35,
+    "Passed": 35,
+    "Failed": 0,
+    "Skipped": 0,
+    "M1NewCases": 19,
+    "SelectedAffectedOldCases": 16,
+    "Interpretation": "12 latest admission +7 installed launcher +16 affected old cases at exact listed sources; not a full suite or 35-case final-HEAD rerun"
+  },
+  "LatestCohorts": [
+    {
+      "Label": "inventory-ref-green",
+      "SourceCommit": "6d111cccf9ad740a12cd466fe9be32a11957a65f",
+      "Manifest": "evidence/t041-m1-inventory-ref-green/manifest.json",
+      "CaseCount": 12,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-storage\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RealConsoleHealthAndInertDaemonConsumers_BorrowOriginalLiveProductionPins",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-worker\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-command\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_PipeDraftTakeoverCancelScopedStop",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-package\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-auto\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RejectedMainAttempt_ReleasesOnlyItsBorrowedOriginalInventoryClient",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-cwd\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-systemd\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        }
+      ]
+    },
+    {
+      "Label": "green-installed-cwd",
+      "SourceCommit": "f3c570a4ef883116be84eece97d6546b29651eff",
+      "Manifest": "evidence/t041-m1-green-installed-cwd/manifest.json",
+      "CaseCount": 7,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryDaemonLauncher_ForegroundSeparateStdinInstalledContext",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ShippedPublicationContainsRealLauncherAndParticipatingHelper",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects(link: True)",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects(link: False)",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualBootstrap_ConfigAndGenerationUseOneAtomicPublication",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        }
+      ]
+    },
+    {
+      "Label": "green-atomic-admission",
+      "SourceCommit": "ee5d62b15a4c2f5e82fbe89fb129cbf639a5b38b",
+      "Manifest": "evidence/t041-m1-green-atomic-admission/manifest.json",
+      "CaseCount": 16,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"{\\\"language\\\":\\\"en\\\",\\\"language\\\":\\\"ru\\\"}\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"foreign\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_RepeatedAndNewManagerLoadsExistingValuesWithoutRewritingExactConfigOrGeneration",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"uncertain\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"{broken\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"retained\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: \"file-publication-transactions\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"incomplete\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_CreatesConfigAndGenerationUnderOneLeaseAndInvalidatesGenerationRevision",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: \"worker-apply-transactions\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"null\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: \"load-transactions\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"[]\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        }
+      ]
+    }
+  ],
+  "Historical": {
+    "Executed": 145,
+    "Passed": 120,
+    "Failed": 25,
+    "CausalRuntimeOrBehaviorFailures": 15,
+    "FixturePreparationOrOracleFailures": 10,
+    "BuildPreparationRunsWithZeroTests": 3,
+    "Interpretation": "All145 executions preserved;25 failures are historical, not passing acceptance. Initial failed selections disclose fail-fast underfill. Three build failures executed0."
+  },
+  "EvidenceAudit": "production-main-m1-evidence-audit.json",
+  "GuardianEvidence": {
+    "DistinctReports": 90,
+    "AllEchild": true,
+    "EmergencySignals": 0,
+    "Failures": 0,
+    "Deadlines": 0,
+    "Interpretation": "Guardian physical cleanup never converts logical Uncertain into successful stop/admission. Historical driver failures stay recorded."
+  },
+  "OldTestInputSupplement": [
+    {
+      "Path": "BookOfEternityClient.Tests/PortableClientStorageTests.cs",
+      "SourceCommit": "ee5d62b15a4c2f5e82fbe89fb129cbf639a5b38b",
+      "GitBlob": "8bbd969308d14cf2a1782369a37da6a731a65675",
+      "Bytes": 23010,
+      "Sha256": "5904a4fb5f8acbcc718bc3f38268d849726a67dbd7c23c300bbf5313d7cf3a4b",
+      "UnchangedAtLatestRuntime": true
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainRunFenceTests.cs",
+      "SourceCommit": "ee5d62b15a4c2f5e82fbe89fb129cbf639a5b38b",
+      "GitBlob": "d925ad80b566b4cb21419b55faa7af2c4f5bc641",
+      "Bytes": 7850,
+      "Sha256": "d13434775f875de39120d1adf9ed72d39c1821b916781096b12329ada8c18903",
+      "UnchangedAtLatestRuntime": true
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs",
+      "SourceCommit": "ee5d62b15a4c2f5e82fbe89fb129cbf639a5b38b",
+      "GitBlob": "8f7671b1dfdb9e979021600e14c6201cac58ff01",
+      "Bytes": 11726,
+      "Sha256": "6ceecee5fbe93cb9f45636a7ce222f9144e27f951c37e7a1950c06d65bbd5de0",
+      "UnchangedAtLatestRuntime": true
+    }
+  ],
+  "ExistingOperationalAssetPins": [
+    {
+      "Path": "CLI_Agent_Daemon_Specification.md",
+      "GitBlob": "379dfbe1d4d14b57b37a0022f4563eb80734795d",
+      "Bytes": 156000,
+      "Sha256": "da76f9fe46eb3f4348b34db622e9a42215666f6ae74f0ddc396c13dbe73ff015",
+      "UnchangedFromAcceptedDesign": true
+    },
+    {
+      "Path": "TaskGuides/CLI_Step_Main.txt",
+      "GitBlob": "9dc10f32e5cb033d46a850bd7e0e9d2a35b10b74",
+      "Bytes": 184019,
+      "Sha256": "a54d2d43cae01cb5b4695e6aeae491749288e25ba34109263cfaadf0213d540b",
+      "UnchangedFromAcceptedDesign": true
+    },
+    {
+      "Path": "Examples/E_CLI_Step_Main.txt",
+      "GitBlob": "b288657527824237385d4cc559f731ce8b9b9064",
+      "Bytes": 107616,
+      "Sha256": "0958f8d5f92a04cc37441d0ec198da88593411ecddd377dcdc0f78e260092aaa",
+      "UnchangedFromAcceptedDesign": true
+    },
+    {
+      "Path": "Examples/E_CLI_Mortal_Item_Materialization.txt",
+      "GitBlob": "7afd58d004c20349a4cd2e566d5e086e2b4b69a5",
+      "Bytes": 15891,
+      "Sha256": "51e40b4a454e9083a3ba3522219460bb5cb086c6ef68918c63e4d3a4fac700a0",
+      "UnchangedFromAcceptedDesign": true
+    },
+    {
+      "Path": "Examples/E_CLI_Mortal_Resources.txt",
+      "GitBlob": "a054c8c8c751a49d2f1adfb541ad1ecd46cdc023",
+      "Bytes": 11040,
+      "Sha256": "7829586a7da1cc8470655bf53298e7c14f4c58f9d290698ab43f0f9eb6de8398",
+      "UnchangedFromAcceptedDesign": true
+    },
+    {
+      "Path": "OtherGuides/Effect_Materialization_Contract.md",
+      "GitBlob": "47b8ffcdd3d8bb4d651743c0548dd7f9c2d2b66c",
+      "Bytes": 29759,
+      "Sha256": "10b1fa6c1126f5e06dcd1d45d93dc54675d5e0b836f507680b931d0f58527751",
+      "UnchangedFromAcceptedDesign": true
+    },
+    {
+      "Path": "Examples/E_CLI_Effect_Materialization.txt",
+      "GitBlob": "91c44744be5656483c26a691f57f0ae2311752a1",
+      "Bytes": 51418,
+      "Sha256": "9a116e46193499223220acbac17e797fd9b7957c30903df4aaa2fc3306afa554",
+      "UnchangedFromAcceptedDesign": true
+    },
+    {
+      "Path": "OtherGuides/Wound_Materialization_Contract.md",
+      "GitBlob": "7d04c1f84d6f430c026d5902ce4c23e528977759",
+      "Bytes": 86487,
+      "Sha256": "c1f554dca7e04f6e08692356a52b609f6a7d1a9637c1eed103643030598f8cb6",
+      "UnchangedFromAcceptedDesign": true
+    },
+    {
+      "Path": "Examples/E_CLI_Wound_Materialization.txt",
+      "GitBlob": "404fd32063c587c5eb51c3555fda2d2f2dfd983e",
+      "Bytes": 71550,
+      "Sha256": "9335cb8f6ab7d8e832e147202caa280768326c576636905add3a945581b9ded0",
+      "UnchangedFromAcceptedDesign": true
+    },
+    {
+      "Path": "Examples/E_CLI_Afterlife_Turns.txt",
+      "GitBlob": "07921bcf509afe9689b239cd1a806982686ee8c2",
+      "Bytes": 691287,
+      "Sha256": "2af4001dcba578de69659e0c8380ebb2d5b1afff364648fc62d3e0d6583d04b8",
+      "UnchangedFromAcceptedDesign": true
+    },
+    {
+      "Path": "Examples/E_CLI_Training_Showcases.txt",
+      "GitBlob": "9b2dca8f98c2b441e1e9858c7cd4be4aa08e236b",
+      "Bytes": 28358,
+      "Sha256": "f40e7104f9e5301fbb5b37b7fe155f0bc10c233c787c3a73b9d1a59cb0f2922c",
+      "UnchangedFromAcceptedDesign": true
+    },
+    {
+      "Path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "GitBlob": "48d2509b1c5859d14ad1600aa17c73e79233e7fa",
+      "Bytes": 251822,
+      "Sha256": "cdf74a2394c560c6ebda7ceddc613071247fd4e6d1f62128db04ac98279e85dc",
+      "UnchangedFromAcceptedDesign": true
+    },
+    {
+      "Path": "OtherGuides/Afterlife_Combat_Terminology_Glossary.md",
+      "GitBlob": "ba21a386d06640c5b3c4b756985b51ead8339725",
+      "Bytes": 52024,
+      "Sha256": "d662e03aae1680d7271b5de2749cd9ba39e1cc01072ad96d5cb442ae04a8edaa",
+      "UnchangedFromAcceptedDesign": true
+    },
+    {
+      "Path": "Examples/E_CLI_Ink_Feather_Actions.txt",
+      "GitBlob": "778c4e96d4dc67bc9e32f715f755af463d387b4d",
+      "Bytes": 14826,
+      "Sha256": "1accc6cc64616667c00e38b355de25765399d328a0d1468f29842270534357f2",
+      "UnchangedFromAcceptedDesign": true
+    }
+  ],
+  "SourceReuse": "After ee5d62b1 core owner/fence/bootstrap changes, old16 passed. Later runtime changes are installed-resource resolution and failure-only OpenAsync Attach balancing; independent review checks preserved successful launch/pin/stop/bootstrap and Windows paths. Native helper, worker owner/ledger, T042 dispatcher and terminal renderer were not changed; accepted prior R1-R3/F1-F3/T041/T042 evidence reused, no broad rerun. Later fixture changes are publisher cwd and explicit original metadata-settlement observation. Old selected test source bytes unchanged as pinned above.",
+  "Boundaries": [
+    "Ordinary Linux --host and existing foreground launcher consume original production admission before Prepared; explicit NativeLineage only, no neutralPackage",
+    "Existing worker inventory is retained despite disabled helpers; independent worker/storage refusal occurs before creation/canonical effects",
+    "Published client/bridge/helper/manifest/launcher/participating helper/unchanged daemon context docs; isolated player PATH lacks compiler and child cwd is ship; fixed CLI executable compiled by publisher only",
+    "Arbitrary configured command/model/arguments/cwd preserved, two manual inputs incl Unicode in one persistent process, resize/EOF, Running and exact scoped Stopped before fresh epoch",
+    "Actual BridgeHost/InputLifetime/output/T042 pipe dispatch, draft preservation, takeover/cancel, original scope stop; ambiguous inert launcher result keeps identity and pauses without automatic replay",
+    "Actual installed console bootstrap/ordinary health closes two original remote pins; exact daemon bootstrap/status and absent-request turn/QTE/repair cores close five distinct original helper receipts",
+    "Original failure closes logical admission immediately; exact original cleanup settles Stopping to durable Uncertain without releasing original terminal/inventory; physically clean fresh process still refuses cold launch",
+    "Inert owned worker Prepared causes main refusal without generation/config/main publication; refusal releases only attempted Attach after original abort/client release"
+  ],
+  "QualificationLimits": [
+    "Linux x64 configured neutral CLI in isolated roots, Debug publication. No Release gameplay/runtime qualification or actual game-writing GM/provider/model request/real saves.",
+    "Controlled daemon turn/QTE/repair cores return on absent requests; this proves actual acquisition/release/bootstrap/transport boundaries, not end-to-end game mechanics.",
+    "Supported VT subset only. No Codex Q1/Q2 probe, TERM override/confirmation, arbitrary TUI/CLI readiness qualification.",
+    "Explicit NativeLineage ordinary same-PID-namespace lineage; no external service/out-of-lineage guarantee. Auto/SystemdUser refuse here.",
+    "Windows ConPTY/Job source preserved; no Windows execution. Primary systemd-user remains mandatory separate unqualified backend; no manager setup.",
+    "T031-BROWSER-ROLLBACK-LINUX remains real Linux consumer debt; exact four historical unavailable F2 IDs/cause remain in main-run-fence-f3-handoff.md.",
+    "Load UX pending; low-level live-main mutation refusal retained, no automatic stop/load/fresh-start.",
+    "Production workers disabled/unqualified; enabled unqualified requests refuse. No cold exactly-once, replay/salvage, reboot/power-loss promise."
+  ],
+  "Environment": {
+    "Sdk": "10.0.401",
+    "Runtimes": "Microsoft.AspNetCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.AspNetCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.NETCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]\nMicrosoft.NETCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]",
+    "PowerShell": "7.5.4",
+    "Compiler": "cc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    "Libc": "glibc 2.41",
+    "Git": "git version 2.52.0"
+  },
+  "ProductDecisions": "No additional UX/game-model/save-protection requirement. bounded input queue/profile settings remain technical controlled-slice choices, not final live-client UX. Executor/reviewer Sol model does not choose game GM model.",
+  "IndependentReview": {
+    "Report": "production-main-m1-review.json",
+    "Agent": "/root/m1_source_review",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Verdict": "BOUNDED M1 PASS",
+    "CandidateCommit": "d498d608aef20e61e9ee60007bdfd2025cb01395",
+    "RemainingMaterialFindings": 0,
+    "ReadOnly": true
+  },
+  "Restoration": {
+    "CandidateProof": "production-main-m1-restoration.json",
+    "CandidateCommit": "d498d608aef20e61e9ee60007bdfd2025cb01395",
+    "TrackedFilesByteCompared": 19718,
+    "FreshGithubOnly": true,
+    "TestsExecuted": 0,
+    "FinalCarrier": "Separate ordinary non-force push, remote SHA/byte readback and fresh GitHub-only restore are required for the final carrier; exact final SHA/result is supplied after completion in the writer handoff without self-reference."
+  },
+  "DiscoveryOnly": {
+    "Catalog": {
+      "Valid": true,
+      "Categories": 352,
+      "MethodsOrFiles": 10980,
+      "Executed": 0,
+      "Manifest": "evidence/t041-m1-catalog-audit/manifest.json"
+    },
+    "Selection": {
+      "Descriptors": 2,
+      "Cases": 19,
+      "Executed": 0,
+      "SharedConsumerDeduplicated": true,
+      "Manifest": "evidence/t041-m1-selection-plan/manifest.json"
+    }
+  }
+}

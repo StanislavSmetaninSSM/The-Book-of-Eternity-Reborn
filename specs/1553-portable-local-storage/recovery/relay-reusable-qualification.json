@@ -1,0 +1,137 @@
+{
+  "task": "T043-RELAY-REUSABLE-CONTRACT",
+  "issue": 1553,
+  "branch": "codex/1553-load-filesystem",
+  "base": "41ecc2c54b538f400bdc180984c29416bec1508f",
+  "runtimeSource": "1350a16c732bc9d8e90db25112d47a40d7d6c6bb",
+  "scope": "Maintained shared local developer relay; controlled synthetic transport/helper qualification",
+  "executed": {
+    "final": 32,
+    "passed": 32,
+    "distinct": 32,
+    "failed": 0,
+    "skipped": 0,
+    "selection": {
+      "gm-relay-reusable-contract": 17,
+      "gm-relay-reusable-main": 3,
+      "gm-relay-transport": 9,
+      "gm-relay-repair": 3
+    },
+    "modelRequests": 0,
+    "ownedScenarioGuardians": 14,
+    "allECHILD": true,
+    "emergencySignals": 0,
+    "failures": 0,
+    "deadline": false
+  },
+  "discovery": {
+    "source": "70e50948aba8dd87b21c16c4588522c916254283",
+    "PlanOnlyCases": 32,
+    "PlanOnlyDescriptors": 4,
+    "CatalogCategories": 429,
+    "CatalogMethodsFiles": 11178,
+    "TestsExecuted": 0
+  },
+  "reviews": {
+    "design": {
+      "model": "gpt-6.1-sol",
+      "effort": "xhigh",
+      "agent": "relay_reusable_design_review",
+      "source": "3a79b0405d2892c43e6d2c6f88bf23cde3458b71",
+      "verdict": "PASS"
+    },
+    "source": {
+      "model": "gpt-6.1-sol",
+      "effort": "xhigh",
+      "agent": "relay_reusable_source_review",
+      "source": "1350a16c732bc9d8e90db25112d47a40d7d6c6bb",
+      "verdict": "PASS",
+      "resolved": [
+        "P1 close before execution snapshot",
+        "P2 post-start metadata false nonexecution"
+      ]
+    },
+    "evidence": {
+      "model": "gpt-6.1-sol",
+      "effort": "xhigh",
+      "agent": "relay_reusable_evidence_review",
+      "verdict": "PASS",
+      "source": "eb96b9ce2df1da3396a206af25c900476a2b15a5",
+      "artifactsVerified": 595,
+      "sourcePinsVerified": 27,
+      "uniquePASS": 32,
+      "discoveryExecuted": 0
+    },
+    "metadata": {
+      "model": "gpt-6.1-sol",
+      "effort": "xhigh",
+      "verdict": "PASS",
+      "agent": "relay_reusable_metadata_review",
+      "source": "15a5ccae174a1520b8c063f51f30e6355dece9a0"
+    }
+  },
+  "packets": {
+    "red": "evidence/relay-reusable/red/manifest.json",
+    "first-green": "evidence/relay-reusable/first-green/manifest.json",
+    "close-red": "evidence/relay-reusable/close-red/manifest.json",
+    "final": "evidence/relay-reusable/final/manifest.json",
+    "discovery": "evidence/relay-reusable/discovery/manifest.json"
+  },
+  "artifactCount": 595,
+  "runtimeSourcePins": {
+    "tools/gm-relay/relay_contract.py": "b2829ef96eb17e6b3171e89d9eeb79d513aeadaf216a469aaf142814134fede4",
+    "tools/gm-relay/relay_cli.py": "9cf8473170548691a35b35c800de4e046b6b097212575e9e0cec50ad69fa8454",
+    "tools/gm-relay/input-profile.json": "b639df2a9bf75f786fedf8978a0098d6079492a1a8233ddc14e18d613c12afb7",
+    "tools/gm-relay/relay_worker.py": "49c8f465292788a1dc4ac16e6c962ca6c8f468f7971fc81799c454c8da5ad077",
+    "tools/gm-relay/.gitignore": "32dae3052f331ee34d628ef535709b301259a45df7c7522c4d35dcf49873f00b",
+    "tools/gm-relay/relay-apply-response.ps1": "a478ca9b5ff24613ec4f2c2792f35674fa086708c0fb5053281648eba65d2ca6",
+    "tools/gm-relay/README.md": "71224095b72c4ca08bdb6ff4adc36daa9520295139c966ea1888bb97d1b34559",
+    "BookOfEternityClient.Tests/GmRelayReusableTests.cs": "593d17474d3b56d1ffe21bf4d02850ba5997df4a20e9561f3dd1d9d53df3b8b9",
+    "BookOfEternityClient.Tests/GmRelayTransportTests.cs": "cb23d753f6386f0ee4d4fd976ac3fd319e73c248a16ecf6e47b79cce4dac821e",
+    "BookOfEternityClient.Tests/GmRelayRepairTests.cs": "eec9dff7e313249350d382d524bbad6fd0e900efb15c071e805665b95804d76e",
+    "BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs": "169f5c21cdca33d80670acfd328b54bf498e843bb3878190e1f36c60a369fec5",
+    "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs": "b3bad0946187bf227e996ea454f5623fa8ea600a05bdf065acda0dc541349ce2",
+    "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.Relay.cs": "f23be2bd721853a1f53fcb77ba941585c72aafc93c2886d233a0de82894ce3bd",
+    "tests/fixtures/ProductionMain/codex-gm-relay.py": "4e976ec833ea94e1d31c92b1b24b7a972fa399561ddf7e1f9e4063cb0ee8ca9a",
+    "tests/fixtures/ProductionMain/relay-apply-response.ps1": "1fe960625a0d6bf5198441217fc976ec66aeab1e2da309d149716c42b55aeff8",
+    "tests/fixtures/ProductionMain/relay-reusable-checks.py": "e6e115e98c3848741c1ba1c6cb0572605d007d8f4cad684effd82af233ce09e6",
+    "tests/fixtures/ProductionMain/relay-transport-checks.py": "e357f27b384d7a5318e49307efbdcffe2a9ee06bb153bf71e76d8de371ab6410",
+    "tests/fixtures/ProductionMain/relay-repair-checks.py": "f04b747c99a0c0d2557395697528e8be275a90453f3b0934901fd877ce6aaa8d",
+    "tests/fixtures/ProductionMain/live-game-one-turn.py": "c42d6f98bfdc6a822f91212c183524d64d5767c8ee2ce0445cb10636c2225f62",
+    "tests/fixtures/LinuxHost/host-guardian.c": "1b6802637dc6ae2fc30df6f8fe82e0b1467c63f1ea3cf533e690a8ca691440e3",
+    "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1": "f24a483eb936b50f13faa8b7ab16aadefeba66a93b609dfdb04605ecccec5f1c",
+    "BookOfEternityGMBridge/TerminalScreen.cs": "437973f7adbe3ac6f1e0b5fa57d3d3091731dda2331d7aa51b3cebb03324527c",
+    "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs": "92982796e3573122cbd2b8045835b6090b5564010ebd59043a1fb075a109f55e",
+    "scripts/test-csharp.ps1": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+    "scripts/build-linux-supervisor.ps1": "ed7f9ed701801e95562afc76ead02c4e4887aee054c873d162bc0f81f3c15914",
+    "tests/categories.json": "8b7936c78d6f8014a614297a0eafacad01f5379805f7b3c55578b5463d30c8c9",
+    "tests/selection.json": "06ba2ce8baf956766c22f357cda50386e71474c301300ff3037f2a9c6e76e7d0"
+  },
+  "preservation": {
+    "AcceptedLiveR3": "dc1724afe66a9c0f07942e23e33c2af07aed8293",
+    "ArtifactsUnchanged": 37,
+    "DriverProfileUnchanged": true,
+    "HistoricalUncertainUnchanged": true,
+    "NewLiveRequests": 0
+  },
+  "handoff": "../relay-reusable-handoff.md",
+  "delivery": {
+    "normalPushRequired": true,
+    "exactRemoteAndByteReadbackRequired": true,
+    "freshGitHubOnlyRestoreRequired": true,
+    "pendingAtCarrier": true,
+    "confirmationLocation": "Writer final delivery: exact carrier SHA and external fresh GitHub-only clean/tree/file-byte/fsck proof."
+  },
+  "remaining": [
+    "Systemd S2/S3 unavailable/unqualified/backend off; positive already-running manager environment required",
+    "Enabled production workers closed pending separate qualification",
+    "Native Windows planned after completion and merge via parent-existing HOME-PC task; not premerge PASS gate",
+    "Applicable physical desktop/device/provider qualifications separate",
+    "Future provider adapters need separate design/authorization; no new integrations/grants/proxy"
+  ],
+  "noMerge": true,
+  "closedTasks": [
+    "T043-RELAY-REUSABLE-DESIGN",
+    "T043-RELAY-REUSABLE-CONTRACT"
+  ]
+}

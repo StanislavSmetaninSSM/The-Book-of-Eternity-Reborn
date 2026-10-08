@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "worker-execution-scoped-evidence"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ac7cbdb67ca5b1df9784189b00f21b0b92765c6c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.1873045,
+  "Descriptors": [
+    {
+      "Name": "worker-execution-scoped-evidence-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-execution-scoped-evidence",
+      "Categories": [
+        "worker-execution-scoped-evidence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

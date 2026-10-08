@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-load-resource-publication"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ce20e028a01a3ad0c9a7478ee8efb078840ff6d6",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 2.8099473,
+  "Descriptors": [
+    {
+      "Name": "portable-load-resource-publication-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-load-resource-publication",
+      "Categories": [
+        "portable-load-resource-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPublicationFitsDeclaredLoadResourceEnvelope",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 10,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualPublicationFitsDeclaredLoadResourceEnvelope",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

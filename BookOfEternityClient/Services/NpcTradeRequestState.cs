@@ -457,6 +457,7 @@ internal static class NpcTradeRequestState
             if (string.IsNullOrWhiteSpace(npcJson))
                 return;
 
+            string? nextJson;
             try
             {
                 if (JsonNode.Parse(npcJson) is not JsonObject npcRoot)
@@ -494,19 +495,20 @@ internal static class NpcTradeRequestState
                 var remaining = requests
                     .Where(request => !requestsToRemove.Contains(request))
                     .ToList();
-                var nextJson = remaining.Count == 0 ? null : SerializeRequests(remaining);
-                await CoordinatedStateWriteHelper.TryCommitAsync(
-                    fs,
-                    new CoordinatedStateWriteHelper.PlannedWrite(
-                        PendingRequestPath,
-                        previousJson,
-                        nextJson,
-                        RequireCurrentBaseline: true));
+                nextJson = remaining.Count == 0 ? null : SerializeRequests(remaining);
             }
             catch
             {
                 // keep pending requests until canonical npc state is readable again
+                return;
             }
+            await CoordinatedStateWriteHelper.TryCommitAsync(
+                fs,
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    PendingRequestPath,
+                    previousJson,
+                    nextJson,
+                    RequireCurrentBaseline: true));
         }
         finally
         {
@@ -545,6 +547,7 @@ internal static class NpcTradeRequestState
         if (string.IsNullOrWhiteSpace(npcJson))
             return;
 
+        string? nextJson;
         try
         {
             if (JsonNode.Parse(npcJson) is not JsonObject npcRoot)
@@ -582,20 +585,21 @@ internal static class NpcTradeRequestState
             var remaining = requests
                 .Where(request => !requestsToRemove.Contains(request))
                 .ToList();
-            var nextJson = remaining.Count == 0 ? null : SerializeRequests(remaining);
-            await CoordinatedStateWriteHelper.TryCommitAsync(
-                fs,
-                writeLease,
-                new CoordinatedStateWriteHelper.PlannedWrite(
-                    PendingRequestPath,
-                    previousJson,
-                    nextJson,
-                    RequireCurrentBaseline: true));
+            nextJson = remaining.Count == 0 ? null : SerializeRequests(remaining);
         }
         catch
         {
             // Keep pending requests until canonical NPC state is readable again.
+            return;
         }
+        await CoordinatedStateWriteHelper.TryCommitAsync(
+            fs,
+            writeLease,
+            new CoordinatedStateWriteHelper.PlannedWrite(
+                PendingRequestPath,
+                previousJson,
+                nextJson,
+                RequireCurrentBaseline: true));
     }
 
     public static async Task<string?> BuildSystemReminderFragmentAsync(FileSystemManager fs, string? currentRealm)

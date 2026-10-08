@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A1-WIN",
+  "sourceCommit": "ecf0a923915ecb42ea4554e8d8a8d616f17848d1",
+  "status": "Immutable-v1 2/2 after restoring exact Git bytes; shared stream format 22/29, 7 failures from mixed Windows separators in hand-written journal fixtures. NoBuild uses unchanged ecf0a923 binaries; attributes/fixture byte correction was uncommitted, other source additions unbuilt.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-storage-original-v1-fixtures",
+    "portable-storage-stream-publication"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:28.5008549",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 31,
+    "CompletedCases": 31,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 31,
+    "Executed": 31,
+    "Passed": 24,
+    "Failed": 7
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "AE1F0B7BA768788CDE2B0DA8985D0F369A5B66D27F0436AF7E27780026D1B0D2",
+      "sha256": "EEF9461F90943244785060DC6B15BE6816FD6617DAC9B619301D1AE5C6A6C76B"
+    },
+    {
+      "path": "portable-storage-original-v1-fixtures-unit-001.trx",
+      "originalSha256": "FF3BF3A39A4766E43879B6BC907152070F27DE5A0EF0799204A577BA2854D5D5",
+      "sha256": "D4DC29495509EC8BD81BB759ADB2AC2E3CDA8F8E4CAAFECAA0BCFDA8CFDC3012"
+    },
+    {
+      "path": "portable-storage-stream-publication-unit-002.trx",
+      "originalSha256": "38CF01871AE003A614FBFA8B52264B02CC2E85932DE855953BB556E532DF53E3",
+      "sha256": "7A81103A5E3E5997E5947EA5B3D00CD98C0969C63194C86A42AC4BB195113E74"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "4DB69853F504215D8EAA9D24D48711AA69C1970EC9B359131CD82B9FBF8EF77A",
+      "sha256": "A3329FAB0D9C123D736FC209142E5B0F04720FE7398F5360353056DB63F727B6"
+    }
+  ]
+}

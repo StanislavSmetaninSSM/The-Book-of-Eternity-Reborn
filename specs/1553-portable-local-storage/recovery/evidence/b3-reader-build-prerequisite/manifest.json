@@ -1,0 +1,19 @@
+{
+  "sourceCommit": "f0e46b09c30df97e58197c14efceb8d69c3d93eb",
+  "catalogBlobAfterPatch": "e69c166820095b9b42140ab9ce78b3f848cd076d",
+  "kind": "Compile prerequisite failure; zero tests; not behavioral RED",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "2b83d1adfeed1e766944a3672e84b981483a1fd447c1fe539a5ac4c94d5559a2",
+      "sanitizedSha256": "2b83d1adfeed1e766944a3672e84b981483a1fd447c1fe539a5ac4c94d5559a2"
+    },
+    {
+      "path": "dotnet-test.log",
+      "originalSha256": "156c9c9f65265d38b92cd4e1351079e5cb416bdbbd1f43f02c397d34b7e6a524",
+      "sanitizedSha256": "fc537ba1ee0dc970190fadaeae243bad4782f1c553080e8b3ad16c96f4fb3576"
+    }
+  ],
+  "sanitization": "Repository/run/toolchain paths replaced; line endings LF; trailing line whitespace stripped; build diagnostics/counts/timings retained.",
+  "normalizedEquivalentCommit": "1a3462be1dfaf9aadd16a76e23f3c22a7fae59b5"
+}

@@ -1,0 +1,254 @@
+{
+  "Categories": [
+    "portable-load-alias-admission",
+    "portable-load-outcomes",
+    "portable-load-entry",
+    "portable-load-lease-consumers",
+    "portable-load-original-admission"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-load-alias-admission",
+      "reason": "Original manifest/hash admission precedes Trim rejection and immutable whole-file mapping from explicit runtime registries. Select 24 alias/prepared-inventory cases, preserving arbitrary mixed-case lore names; native Linux remains a separate acceptance gate.",
+      "contracts": [
+        "#1553 LOAD-FS-001/002/004/008"
+      ]
+    },
+    {
+      "category": "portable-load-outcomes",
+      "reason": "Recovery acquisition, failed private preparation cleanup, post-generation uncertainty and confirmed-commit refresh retain truthful typed outcomes. Four actual cuts; Windows baseline reproduced three RED plus one GREEN control.",
+      "contracts": [
+        "#1553 LOAD-FS-003/008"
+      ]
+    },
+    {
+      "category": "portable-load-entry",
+      "reason": "Changed orchestration retains nine actual current-producer complete replacement/rollback/library/source/settings/binding controls. No public-client cutover or save-only sweep.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/004/008"
+      ]
+    },
+    {
+      "category": "portable-load-lease-consumers",
+      "reason": "Nine exact affected lifecycle/replacement/mutation/ordinary recovery cases verify that replacement-specific uncertainty does not change other writer/recovery contracts. No general storage/bootstrap sweep.",
+      "contracts": [
+        "#1553 LOAD-FS-003/008"
+      ]
+    },
+    {
+      "category": "portable-load-original-admission",
+      "reason": "Preserve original validator boundaries: three real typed corrupt ZIP/missing-root/unknown-owner refusals and four unchanged raw budget/stream-position controls. Existing public physical Load refusal is not used as portable admission proof.",
+      "contracts": [
+        "#1553 LOAD-FS-001/004/008"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "e73f1d60c4f9be6d82d43bfc47d127b937eac92c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 257.178614,
+  "Descriptors": [
+    {
+      "Name": "portable-load-alias-admission-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-alias-admission",
+      "Categories": [
+        "portable-load-alias-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalManifestHashRejectsBeforeCanonicalizedLoadPreparation|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PreparedInventoryUsesDeclaredFixedNamesAndPreservesArbitraryNames",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 24,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState",
+          "Cases": 12
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalManifestHashRejectsBeforeCanonicalizedLoadPreparation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PreparedInventoryUsesDeclaredFixedNamesAndPreservesArbitraryNames",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-entry-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-entry",
+      "Categories": [
+        "portable-load-entry"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.BothConfigsAbsentUsesFreshDefaultsWithoutPersistingConfiguration|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadPublishesOneReplacementAndPreservesSelectedRootArchive|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.BothConfigsAbsentUsesFreshDefaultsWithoutPersistingConfiguration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadPublishesOneReplacementAndPreservesSelectedRootArchive",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.IncomingPayloadCannotOverwriteSelectedArchiveOrItsTopology",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.LaterMemberFailureRestoresCompleteSessionSourceLibraryAndGeneration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PresentSettingsNormalizeOnFreshReceiverAndPreserveExactSourceBytes",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-lease-consumers-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-lease-consumers",
+      "Categories": [
+        "portable-load-lease-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-lease-consumers-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-load-lease-consumers",
+      "Categories": [
+        "portable-load-lease-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-original-admission-integration-005",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-original-admission",
+      "Categories": [
+        "portable-load-original-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchiveBudgets_AcceptExactLimitsAndRejectOverByOne|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_AcceptsBoundedArchiveAndRestoresStreamPosition|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_RejectsCentralDirectoryMetadataBeforeZipArchiveMaterialization",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.OriginalArchiveAndResourceAdmissionRejectsBeforePortableDecision",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchiveBudgets_AcceptExactLimitsAndRejectOverByOne",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_AcceptsBoundedArchiveAndRestoresStreamPosition",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.TrustedArchivePreflight_RejectsCentralDirectoryMetadataBeforeZipArchiveMaterialization",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-load-outcomes-integration-006",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-outcomes",
+      "Categories": [
+        "portable-load-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.ConfirmedCommitRetainsIdentityWhenRequiredRefreshFails|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.ConflictAfterGenerationPublicationDoesNotClaimAnEstablishedGeneration|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PreparationAndCleanupFailureRetainsKnownPrivateDebt|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PriorJournalConflictDuringAcquisitionIsUncertainAndBlocksContinuation",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.ConfirmedCommitRetainsIdentityWhenRequiredRefreshFails",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.ConflictAfterGenerationPublicationDoesNotClaimAnEstablishedGeneration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PreparationAndCleanupFailureRetainsKnownPrivateDebt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PriorJournalConflictDuringAcquisitionIsUncertainAndBlocksContinuation",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

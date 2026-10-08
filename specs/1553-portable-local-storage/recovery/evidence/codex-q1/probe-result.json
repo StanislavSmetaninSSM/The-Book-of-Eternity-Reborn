@@ -1,0 +1,361 @@
+{
+  "Success": true,
+  "InheritedTERM": "dumb",
+  "Dimensions": [
+    100,
+    25
+  ],
+  "InputJournal": [],
+  "KeyboardBytes": 0,
+  "ModelPromptsSent": 0,
+  "ProfileIsSupported": false,
+  "ConfiguredCommand": "& '/opt/codex/bin/codex' '--no-daemon' '-C' '/workspace/qualification-1553-codex-q1/empty-codex-scratch'",
+  "NoNeutralPackage": true,
+  "Scope": "ordinary-same-namespace-lineage",
+  "Argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "/workspace/qualification-1553-codex-q1/ship/BookOfEternityClient/Launcher/bookofeternity.ps1",
+    "start-bridge",
+    "visible",
+    "-SessionPath",
+    "/workspace/qualification-1553-codex-q1/fixture-root/game_session"
+  ],
+  "OriginalLauncherPid": 680728,
+  "ObservationEndedAtSeconds": 1.469,
+  "Gate": "TERM confirmation",
+  "RunningRecord": {
+    "SchemaVersion": 1,
+    "Identity": {
+      "RootKey": "/workspace/qualification-1553-codex-q1/fixture-root",
+      "RunId": "030793ae2a5a4437a8dc92cd0fe0232f",
+      "GenerationId": "d6255da3c8834fdfaace8d4b1efe58e5",
+      "Epoch": 1,
+      "Backend": "LinuxSupervisor",
+      "HostInstanceId": "8daaf11ad77340cd9c54bfd3e41bbc4d",
+      "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+    },
+    "Disposition": "Running",
+    "StopEvidence": null
+  },
+  "StartupStatus": {
+    "ok": true,
+    "status": {
+      "terminalRunId": "030793ae2a5a4437a8dc92cd0fe0232f",
+      "terminalGuarantee": "ordinary-same-namespace-lineage",
+      "terminalUncertain": false,
+      "terminalOwnerRetained": true,
+      "inputBindingId": "6e0c1b979e094c5ca164d2fc5d1ae7ec",
+      "backend": "native-lineage",
+      "state": "OperatorNotReady",
+      "ready": false,
+      "helperPid": 680749,
+      "sessionPath": "/workspace/qualification-1553-codex-q1/fixture-root/game_session",
+      "shellPid": 680768,
+      "pipeName": "q1-7c8b51e1c513497ab309dbd35faeb793",
+      "cliLaunchCommand": "& '/opt/codex/bin/codex' '--no-daemon' '-C' '/workspace/qualification-1553-codex-q1/empty-codex-scratch'",
+      "shellWorkingDirectory": "/workspace/qualification-1553-codex-q1/empty-codex-scratch",
+      "lastPromptDispatchState": "None",
+      "startedAtUtc": "2026-10-07T05:33:08.6238791+00:00",
+      "updatedAtUtc": "2026-10-07T05:33:09.4059202+00:00",
+      "workerStatuses": [
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "validation_repair_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "narrative_draft_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "analysis_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "guardian_abode_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "soul_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "inventory_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "skill_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "npc_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        }
+      ]
+    }
+  },
+  "StartupDiagnostics": {
+    "ok": true,
+    "status": {
+      "terminalRunId": "030793ae2a5a4437a8dc92cd0fe0232f",
+      "terminalGuarantee": "ordinary-same-namespace-lineage",
+      "terminalUncertain": false,
+      "terminalOwnerRetained": true,
+      "inputBindingId": "6e0c1b979e094c5ca164d2fc5d1ae7ec",
+      "backend": "native-lineage",
+      "state": "OperatorNotReady",
+      "ready": false,
+      "helperPid": 680749,
+      "sessionPath": "/workspace/qualification-1553-codex-q1/fixture-root/game_session",
+      "shellPid": 680768,
+      "pipeName": "q1-7c8b51e1c513497ab309dbd35faeb793",
+      "cliLaunchCommand": "& '/opt/codex/bin/codex' '--no-daemon' '-C' '/workspace/qualification-1553-codex-q1/empty-codex-scratch'",
+      "shellWorkingDirectory": "/workspace/qualification-1553-codex-q1/empty-codex-scratch",
+      "lastPromptDispatchState": "None",
+      "startedAtUtc": "2026-10-07T05:33:08.6238791+00:00",
+      "updatedAtUtc": "2026-10-07T05:33:09.4517852+00:00",
+      "workerStatuses": [
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "validation_repair_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "narrative_draft_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "analysis_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "guardian_abode_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "soul_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "inventory_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "skill_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "npc_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        }
+      ]
+    },
+    "diagnostics": {
+      "outputVersion": 2,
+      "recentOutputTail": "WARNING: proceeding, even though we could not create PATH aliases: Read-only file system (os error 30)\r\nWARNING: TERM is set to \"dumb\". Codex's interactive TUI may not work in this terminal.\r\nContinue anyway? [y/N]: \r\n",
+      "visibleScreenText": "",
+      "workerProposalInbox": []
+    }
+  },
+  "ShutdownRequestAtSeconds": 1.541,
+  "ShutdownReceipt": {
+    "ok": true,
+    "status": {
+      "terminalRunId": "030793ae2a5a4437a8dc92cd0fe0232f",
+      "terminalGuarantee": "ordinary-same-namespace-lineage",
+      "terminalUncertain": false,
+      "terminalStop": {
+        "identity": {
+          "runId": "030793ae2a5a4437a8dc92cd0fe0232f",
+          "backend": "native-lineage",
+          "guarantee": "ordinary-same-namespace-lineage",
+          "rootPid": 680768
+        },
+        "state": "stopped-within-scope",
+        "reason": "stop-requested",
+        "cleanupComplete": true,
+        "authorityRetained": false
+      },
+      "terminalOwnerRetained": false,
+      "inputBindingId": "6e0c1b979e094c5ca164d2fc5d1ae7ec",
+      "backend": "native-lineage",
+      "state": "ShuttingDown",
+      "ready": false,
+      "helperPid": 680749,
+      "sessionPath": "/workspace/qualification-1553-codex-q1/fixture-root/game_session",
+      "pipeName": "q1-7c8b51e1c513497ab309dbd35faeb793",
+      "cliLaunchCommand": "& '/opt/codex/bin/codex' '--no-daemon' '-C' '/workspace/qualification-1553-codex-q1/empty-codex-scratch'",
+      "shellWorkingDirectory": "/workspace/qualification-1553-codex-q1/empty-codex-scratch",
+      "lastPromptDispatchState": "None",
+      "startedAtUtc": "2026-10-07T05:33:08.6238791+00:00",
+      "updatedAtUtc": "2026-10-07T05:33:09.5842576+00:00",
+      "workerStatuses": [
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "validation_repair_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "narrative_draft_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "analysis_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "guardian_abode_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "soul_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "inventory_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "skill_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "npc_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-07T05:33:09.0775792+00:00"
+        }
+      ]
+    }
+  },
+  "StoppedRecord": {
+    "SchemaVersion": 1,
+    "Identity": {
+      "RootKey": "/workspace/qualification-1553-codex-q1/fixture-root",
+      "RunId": "030793ae2a5a4437a8dc92cd0fe0232f",
+      "GenerationId": "d6255da3c8834fdfaace8d4b1efe58e5",
+      "Epoch": 1,
+      "Backend": "LinuxSupervisor",
+      "HostInstanceId": "8daaf11ad77340cd9c54bfd3e41bbc4d",
+      "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+    },
+    "Disposition": "Stopped",
+    "StopEvidence": {
+      "Identity": {
+        "RootKey": "/workspace/qualification-1553-codex-q1/fixture-root",
+        "RunId": "030793ae2a5a4437a8dc92cd0fe0232f",
+        "GenerationId": "d6255da3c8834fdfaace8d4b1efe58e5",
+        "Epoch": 1,
+        "Backend": "LinuxSupervisor",
+        "HostInstanceId": "8daaf11ad77340cd9c54bfd3e41bbc4d",
+        "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+      },
+      "Kind": "OwnedScopeEmpty",
+      "ObservedBootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+    }
+  },
+  "OriginalScopedStopReceiptObserved": true,
+  "LifecycleVerified": true,
+  "LauncherExitCode": 0,
+  "ForegroundPtyEOF": true,
+  "ForegroundTermiosRestored": true,
+  "ForegroundDescriptorsClosed": true,
+  "CleanupErrors": [],
+  "ScratchFilesAfter": [],
+  "ElapsedSeconds": 1.73,
+  "CapturedBytes": 746
+}

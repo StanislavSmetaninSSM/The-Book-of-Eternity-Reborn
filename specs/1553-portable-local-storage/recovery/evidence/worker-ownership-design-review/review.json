@@ -1,0 +1,30 @@
+{
+  "ReviewedCommit": "39df05024cecefe7266f41cec1b772895155e576",
+  "ReviewerAgent": "/root/ownership_design_review",
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "Verdict": "PASS for bounded design and evidence only",
+  "ActionableFindings": [],
+  "ReviewedDesignCorrection": "Subreaper-only ECHILD rejected due namespace-level reparenting; prefer fresh per-run PID namespace with terminal init reap as candidate proof",
+  "ConfirmedClarification": "Current Attach cannot transplant existing neutral host into PID namespace; Linux monitor/fresh init/managed host must be created before Ready; Windows Attach preserved",
+  "Verified": [
+    "remote ref",
+    "clean fresh GitHub-only restore, tree and fsck",
+    "16 changed file bytes",
+    "11 unchanged input hashes",
+    "10 packet artifact hashes",
+    "probe log/result rows and source hashes",
+    "source lifecycle seams and requirements consistency",
+    "scope and no prior C# cohort repeats"
+  ],
+  "RuntimeExecutionByReviewer": false,
+  "OpenGates": [
+    "mapped UID/GID and proc compatibility",
+    "native bootstrap and identity protocol",
+    "actual complete-tree stop qualification",
+    "cold restart authenticated durable proof",
+    "external broker ownership",
+    "production Release/PTy/real GM/native Windows"
+  ],
+  "ObservedUtc": "2026-10-05T12:18:12.684530+00:00"
+}

@@ -1,0 +1,145 @@
+{
+  "Source": "325b32fdad7fb29ed7a98672211432ebc3e36930",
+  "SourcePins": [
+    {
+      "Path": "tests/fixtures/ProductionMain/live-game-one-turn.py",
+      "Bytes": 18248,
+      "SHA256": "a1f66b79c5a612ab297653b72ef843e996cb87634241edc6c683f922802b3ce0"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Bytes": 9528,
+      "SHA256": "758aa4515184fd69b8469ed37e5d67c80519f41d7dac56e835beef157ef88796"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "Bytes": 165629,
+      "SHA256": "a421d0e0d8862ae25da1a24e271b4e30f0c9c3158488feae81e50fab6a715768"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "Bytes": 260894,
+      "SHA256": "12b2e79a9f59a6c1078b187a949d816066a641e0f56ebe7b846c410f43357334"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/StandardTextComposerConsole.cs",
+      "Bytes": 825,
+      "SHA256": "2d7ced14bb70abc4f7daaba30f3a154ef5fd277129e6985669a51d2744440b04"
+    },
+    {
+      "Path": "BookOfEternityClient/UI/SpectreConsoleSafe.cs",
+      "Bytes": 407,
+      "SHA256": "5cf7499f8822d23c4b37a09eb963ce550ffab72fce2a08941fd4b74c8540f194"
+    },
+    {
+      "Path": "BookOfEternityClient/game_master_daemon.ps1",
+      "Bytes": 391949,
+      "SHA256": "8b6c57e4768ba8cdbee60dd2378b7d01f5c339bb43973c85dcaa60128c0c661a"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "Bytes": 20668,
+      "SHA256": "92982796e3573122cbd2b8045835b6090b5564010ebd59043a1fb075a109f55e"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.DraftObservation.cs",
+      "Bytes": 8337,
+      "SHA256": "e0ac9791df84c6ad58cf9a18c1133ba421415b821a2f25f16733a6def4bf8bf1"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+      "Bytes": 5868,
+      "SHA256": "1843769691e42ed5d201b993223b8a19f1d81b991606f0f50f3db3e197540e81"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+      "Bytes": 10650,
+      "SHA256": "4129fffc3d2d5f28354ecfea2c2d544ac205480deb4a8ae2eea7833a24d7bd00"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/DraftObservation.cs",
+      "Bytes": 8385,
+      "SHA256": "3ca0e90475c150efb5e5d92aaf8c5955def8683b3eba9d3d9a4ba4fcc6eaffc1"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/foreground-client-pending/publish-bridge.log.gz",
+      "Bytes": 94,
+      "SHA256": "5a4c2efe8759f1f7929ae0b4359998d91933e8bbb9f835c4c677cd7bf74a295a",
+      "StoredSHA256": "95010182c095d27ab851a7ade5a21b02d3b5de85b276af4c8d482da32e13487b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/foreground-client-pending/guardian.json.gz",
+      "Bytes": 97,
+      "SHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "StoredSHA256": "4a3b0059fa67390b10d972bcdc68fb8a39a3a11f5a922f20018e3c4660692a35"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/foreground-client-pending/package-manifest.json.gz",
+      "Bytes": 143613,
+      "SHA256": "1a56af5a8852b711c8d58d54d1b57dc1f3fa2710bbba35fac5a305f60664b729",
+      "StoredSHA256": "270ba0d11f22fec86f15a9e7302eefa030f26ce2afd5365b0a9a32c3765e2ad5"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/foreground-client-pending/probe-result.json.gz",
+      "Bytes": 773,
+      "SHA256": "046d1408ae22a279c6a4890c588f748304557c717ba6eb264aead05e0aafeb45",
+      "StoredSHA256": "03065e1dfe7dd4dc1d3179d70f6ad69213f9a9672b246d20af8b6eef077de6ea"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/foreground-client-pending/helper-build.log.gz",
+      "Bytes": 44,
+      "SHA256": "112c35add815a5c6f4e177f9b2235e66f09b79cd5f4a50a43454b56c5395be3f",
+      "StoredSHA256": "21c86c285ac6acdc4a267f39862ad1720808a283c82bec4f1011a0ee221c58f7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/foreground-client-pending/rpc-journal.json.gz",
+      "Bytes": 401,
+      "SHA256": "55ef62ed6f324162537c3972f28c61537901c35a4ab9471fcc0d58e143f528d3",
+      "StoredSHA256": "40ccb41b959b6a06c5909427e12c7a562e5f7b997cf449affd0d8d7a797775d0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/foreground-client-pending/guardian.log.gz",
+      "Bytes": 219,
+      "SHA256": "978488e11586b0591dd1006ff6e868608b8a7e48611913bfbef00b4693b6b02a",
+      "StoredSHA256": "7a656fde9bbf5fd83021bac2c23ce7b4a97a076d09aaf26522a16fb367639781"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/foreground-client-pending/publish-client.log.gz",
+      "Bytes": 90,
+      "SHA256": "dd377df00cb3b1536e2201d1cc3f935d4cf540381ad02b3ee1ac2e7b76d05953",
+      "StoredSHA256": "9bf9beb757f56463de76f775f0534175c29f2125181a566507c164c09c904999"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/foreground-client-pending/client.raw.gz",
+      "Bytes": 899,
+      "SHA256": "f935e81b65896f58baf05dbbc11962127f7d8e0ce2760565bc029b2149286926",
+      "StoredSHA256": "7f6c1b2c4255694ce78fde011f663df79ea636c3cbc3557e920987955d11c93f"
+    }
+  ],
+  "Result": {
+    "AcceptedGameTurns": 0,
+    "GenuineActionsSent": 0,
+    "GateAnswers": 0,
+    "QueryAnswers": 0,
+    "ConfiguredModel": "opencode/ling-3.1-flash-free",
+    "ConfiguredCommand": "& '/workspace/qualification-1553-opencode-install/package/node_modules/opencode-linux-x64-baseline/bin/opencode' --mini --pure --no-replay -m opencode/ling-3.1-flash-free",
+    "ConfiguredCwd": "/workspace/og1/play/game_session",
+    "NoReadyOverride": true,
+    "OrdinaryNewGame": false,
+    "LogicalLifecycleVerified": false,
+    "Failure": "TimeoutError: client: Тренировка QTE",
+    "ShutdownAttempts": 0,
+    "Terminals": {
+      "client": {
+        "ExitCode": -2,
+        "EOF": true,
+        "TermiosRestored": true,
+        "CapturedBytes": 899
+      }
+    },
+    "ElapsedSeconds": 12.042,
+    "Success": false
+  }
+}

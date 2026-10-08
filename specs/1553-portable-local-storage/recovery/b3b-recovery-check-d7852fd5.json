@@ -1,0 +1,26 @@
+{
+  "checkpoint": "d7852fd51a6512804bdbeab390a781cfc9e44460",
+  "remoteTree": "bbf2a381fa6b5410ffbc1bb0a63284c6559dc2aa",
+  "recovery": "Fresh GitHub clone, initially clean; documented exact patches applied to the index and working tree",
+  "trackedFiles": 3630,
+  "connectivityFsckExitCode": 0,
+  "patches": [
+    {
+      "path": "session-replacement-source.pending.patch",
+      "bytes": 13461,
+      "sha256": "e1920703795aacd0cf7da2f3c6ac6a3a224aa821542b7244e220035beb4d08a5",
+      "afterBlobsVerified": true
+    },
+    {
+      "path": "categories-pending.patch",
+      "bytes": 23618,
+      "sha256": "2bc7fb509696194cc7f750ad9aaa26e360f44ef77274b83447d403dd5e4d8ea8",
+      "afterBlobsVerified": true
+    }
+  ],
+  "appliedTree": "0924b962647a4d836906af79637dafdd73943c03",
+  "diffCheckExitCode": 0,
+  "greenEvidenceHashesVerified": 4,
+  "runtimeTestsExecutedByRecovery": 0,
+  "limits": "Root-key scaffold remains unrun. Four source/catalog files still require the documented recovery patches. Earlier 30-case Linux GREEN includes three Windows-gated early returns; it is preserved evidence, not a rerun."
+}

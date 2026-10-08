@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="6a628557-a07f-4577-ba62-785761beeace" name="@c7669543e9c7 2026-10-07 00:29:00" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-07T00:29:00.1873295+00:00" queuing="2026-10-07T00:29:00.1873295+00:00" start="2026-10-07T00:28:56.0183849+00:00" finish="2026-10-07T00:29:00.9991910+00:00" />
+  <TestSettings name="default" id="376f2e7f-e283-4caa-9098-1d477c95a76b">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-07_00_29_00" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="ccd08131-2c19-4360-b6ce-d1b789b79b4b" testId="90f1ab0e-551f-d5ee-86c9-f33cbc57db80" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.FreshOriginalLeases_RetainPendingBackupAndBlockSecondPull" computerName="c7669543e9c7" duration="00:00:00.4263518" startTime="2026-10-07T00:29:00.3264435+00:00" endTime="2026-10-07T00:29:00.3264440+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ccd08131-2c19-4360-b6ce-d1b789b79b4b">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-direct-gacha-linux-da672beed6a442ab9b9c378f9836b1b2 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ac097317-5ddd-49db-a6da-32bcae01343e" testId="d441d4de-d311-0860-19f0-c9df12611f46" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_OriginalCaptureValidatedRollbackAndCleanup" computerName="c7669543e9c7" duration="00:00:00.5595321" startTime="2026-10-07T00:29:00.8912675+00:00" endTime="2026-10-07T00:29:00.8912677+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ac097317-5ddd-49db-a6da-32bcae01343e">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-d116abde02234c359601188aac14a87e rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7f1c3e46-e36b-4565-8c1c-276433caf717" testId="f41af748-80db-f816-3ab4-d0227ff3dd24" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn" computerName="c7669543e9c7" duration="00:00:01.2401127" startTime="2026-10-07T00:28:59.9035631+00:00" endTime="2026-10-07T00:28:59.9035762+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7f1c3e46-e36b-4565-8c1c-276433caf717">
+      <Output>
+        <StdOut>Браузер списал Чернильные Перья и поставил ход ГМ в очередь: результатом должна стать ровно одна материализованная Реликвия Души без локального выбора имени.
+FixtureCleanup root=/tmp/boe-direct-gacha-linux-7bafc2bc9ce94040957a71ed3549ffc6 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.FreshOriginalLeases_RetainPendingBackupAndBlockSecondPull" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="90f1ab0e-551f-d5ee-86c9-f33cbc57db80">
+      <Execution id="ccd08131-2c19-4360-b6ce-d1b789b79b4b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests" name="FreshOriginalLeases_RetainPendingBackupAndBlockSecondPull" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f41af748-80db-f816-3ab4-d0227ff3dd24">
+      <Execution id="7f1c3e46-e36b-4565-8c1c-276433caf717" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests" name="RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_OriginalCaptureValidatedRollbackAndCleanup" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d441d4de-d311-0860-19f0-c9df12611f46">
+      <Execution id="ac097317-5ddd-49db-a6da-32bcae01343e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_TurnLifetime_OriginalCaptureValidatedRollbackAndCleanup" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="90f1ab0e-551f-d5ee-86c9-f33cbc57db80" executionId="ccd08131-2c19-4360-b6ce-d1b789b79b4b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d441d4de-d311-0860-19f0-c9df12611f46" executionId="ac097317-5ddd-49db-a6da-32bcae01343e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f41af748-80db-f816-3ab4-d0227ff3dd24" executionId="7f1c3e46-e36b-4565-8c1c-276433caf717" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="3" executed="3" passed="3" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.53]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.05]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.08]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:04.37]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

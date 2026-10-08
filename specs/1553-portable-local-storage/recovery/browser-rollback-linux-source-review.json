@@ -1,0 +1,29 @@
+{
+  "Reviewer": "actual independent /root/t031_source_review gpt-6.1-sol xhigh",
+  "ReadOnly": true,
+  "TestsProbesMutationsNetworkActions": 0,
+  "InitialCandidate": "c22fd6f58f4f3064e682688de5de846cfa1875a7",
+  "InitialVerdict": "CHANGES REQUIRED",
+  "InitialFindings": [
+    "Absent registered Daren parent blocks fresh read/staging/admission.",
+    "Post-publication generation revocation bypasses Uncertain capture; outer main close must retain original decision."
+  ],
+  "ReviewedCommit": "b08159ee8ea818c4339fc0554f24388a441c261d",
+  "Verdict": "SOURCE AND SELECTION PASS",
+  "Resolved": [
+    "Registered profile read validates ordinary BasePath namespace without creating its absent parent; mutation still requires original declared browser scope.",
+    "Authority-loss catch captures Uncertain and retains evidence before bound verification rethrows; explicit original callback outcome retains precedence at owning main close.",
+    "Actual fixture grade success matches existing QTE contract; no gameplay changes."
+  ],
+  "ExpectedCases": 71,
+  "NewCases": 41,
+  "ExactAffectedCases": 30,
+  "RemainingSourceBlockers": [],
+  "TestEvidenceVerdict": "not claimed by source reviewer; separate final evidence review required",
+  "AdjacentDebts": [
+    "T031-BROWSER-DIRECT-GACHA-LINUX",
+    "T031-DAREN-STANDALONE-LINUX"
+  ],
+  "HistoricalFourF2IdsExecuted": 0,
+  "NativeWindowsQualified": false
+}

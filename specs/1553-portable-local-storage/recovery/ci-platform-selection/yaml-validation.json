@@ -1,0 +1,12 @@
+{
+  "parser": "preinstalled PyYAML 6.0.3 BaseLoader",
+  "sourceSha256": "9c7705dfccec01ea9dee6e8f262f804ca8ace1dd0f7a65bfd2af9ba1be8bcbd7",
+  "result": "PASS",
+  "hostedActionsExecuted": false,
+  "checks": [
+    "workflow YAML parses",
+    "original triggers and permissions retained",
+    "non-cancelling exact matrix",
+    "original final check name with all prerequisites"
+  ]
+}

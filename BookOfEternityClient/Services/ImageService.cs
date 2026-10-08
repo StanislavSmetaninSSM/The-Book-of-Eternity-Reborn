@@ -63,6 +63,7 @@ public class ImageService
     private const string VersionSeparator = "__img_";
 
     private readonly ILogger<ImageService> _logger;
+    private readonly DesktopPathOpener _desktopPathOpener;
     private readonly Configuration.GameSettings _settings;
     private readonly LocalizationManager _loc;
     private static readonly HttpClient _httpClient = new() { Timeout = TimeSpan.FromSeconds(120) };
@@ -91,12 +92,13 @@ public class ImageService
 
     public bool GenerateWithoutDisplay => _settings.GenerateImagesWithoutDisplay;
 
-    public ImageService(Core.FileSystemManager fs, Configuration.GameSettings settings, LocalizationManager loc, ILogger<ImageService> logger)
+    public ImageService(Core.FileSystemManager fs, Configuration.GameSettings settings, LocalizationManager loc, ILogger<ImageService> logger, DesktopPathOpener? desktopPathOpener = null)
     {
         _fs = fs;
         _settings = settings;
         _loc = loc;
         _logger = logger;
+        _desktopPathOpener = desktopPathOpener ?? new();
         _imageBaseDir = _fs.ResolvePath("images");
         Directory.CreateDirectory(_imageBaseDir);
     }
@@ -639,46 +641,32 @@ public class ImageService
         AnsiConsole.WriteLine();
     }
 
-    public void OpenImageInViewer(string imagePath, bool forceDisplay = false)
+    public DesktopOpenResult OpenImageInViewer(string imagePath, bool forceDisplay = false)
     {
-        if (!File.Exists(imagePath)) return;
-
         if (_settings.GenerateImagesWithoutDisplay && !forceDisplay)
-            return;
+            return new(DesktopOpenStatus.Suppressed, imagePath);
 
-        try
-        {
-            var psi = new ProcessStartInfo
-            {
-                FileName = imagePath,
-                UseShellExecute = true
-            };
-            Process.Start(psi);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "Failed to open image in viewer");
-        }
+        var result = !File.Exists(imagePath) ? new DesktopOpenResult(DesktopOpenStatus.Missing, imagePath)
+            : !IsImageFile(imagePath) ? new DesktopOpenResult(DesktopOpenStatus.Unsupported, imagePath)
+            : _desktopPathOpener.OpenFile(imagePath);
+        ReportDesktopOpen(result);
+        return result;
     }
 
-    /// <summary>
-    /// Open the entity images folder in file explorer.
-    /// </summary>
-    public void OpenImagesFolder(string? entityType = null)
+    /// <summary>Request the existing desktop association for a gallery directory, without display claims.</summary>
+    public DesktopOpenResult OpenImagesFolder(string? entityType = null)
     {
-        if (entityType != null && !IsSupportedEntityType(entityType))
-            return;
+        var result = entityType != null && !IsSupportedEntityType(entityType)
+            ? new DesktopOpenResult(DesktopOpenStatus.Unsupported, _imageBaseDir)
+            : _desktopPathOpener.OpenFolder(entityType != null ? GetEntityDir(entityType) : _imageBaseDir);
+        ReportDesktopOpen(result);
+        return result;
+    }
 
-        var dir = entityType != null ? GetEntityDir(entityType) : _imageBaseDir;
-        Directory.CreateDirectory(dir);
-        try
-        {
-            Process.Start(new ProcessStartInfo { FileName = dir, UseShellExecute = true });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "Failed to open images folder");
-        }
+    private void ReportDesktopOpen(DesktopOpenResult result)
+    {
+        if (result.Error is not null) _logger.LogWarning(result.Error, "Desktop open request failed: {Path}", result.Path);
+        AnsiConsole.MarkupLine(result.ToMarkup());
     }
 
     private IEnumerable<string> EnumerateEntityImageCandidates(string dir, string safeKey)

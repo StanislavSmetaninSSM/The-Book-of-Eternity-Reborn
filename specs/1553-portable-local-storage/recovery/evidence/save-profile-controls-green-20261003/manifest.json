@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "36589e5b6935d197ddeb9441c750237d55610956",
+  "status": "Fresh36589e5b: direct real Windows original receipt1 plus existing profile consumers3 all4 passed; exact original bytes/digest/identity and no B1 publication verified. Native Linux original physical receipt is excluded, no skip counted.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-original-profile-windows",
+    "portable-save-profile-consumers"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:59.1515523",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 4,
+    "CompletedCases": 4,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 4,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "C9A5031D7A27381FA30A5EDACB93E62B0F2FE19D75BB88C0DDEF95C6D0277F8E",
+      "sha256": "EAE051707260686E79F0DD2EBF230C74EE9AC7C0010315CEC735FF9D0CC3D581"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "76640ADA55364B7528813C067A547034525F12F1C2E821C9835BEC4FEE16B290",
+      "sha256": "C90182AC531F4DABBA223C354CD1053B1C14CAEB22934B06C928999EE0E63207"
+    },
+    {
+      "path": "portable-save-original-profile-windows-unit-001.trx",
+      "originalSha256": "A9E930F3C1706718EC28F1EC6515F331F55CD9610E0BF88F2EC544178B95E152",
+      "sha256": "4E2C764C6A3A2A08892EEE17F506176045A1F25BB8AA0302CF3E0ABB1E262249"
+    },
+    {
+      "path": "portable-save-profile-consumers-unit-002.trx",
+      "originalSha256": "25393B2C0143D10AF1BA4C6BCC6F06D4BCA016E8C39BBF10BB29C9F894B90262",
+      "sha256": "1D50B02D6ABD93D427C8BA818A3AEAF48315EA75340D9C6404902B426D343852"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "953933B819854C11ECB2804DAF1E29E0B6FA10C54FE68DE81CADB9ADAF42D13F",
+      "sha256": "CEF5F5FD5D1E31BFBA81B81E57CC18BEDAF073A8D70273223ECCE1036207EFD5"
+    }
+  ]
+}

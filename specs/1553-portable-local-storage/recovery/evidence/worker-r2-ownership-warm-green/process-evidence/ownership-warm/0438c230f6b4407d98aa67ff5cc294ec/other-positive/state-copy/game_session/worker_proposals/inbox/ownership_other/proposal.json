@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "proposalId": "worker_proposal_native_pool_happy",
+  "taskId": "ownership_other",
+  "workerId": "validation_repair_codex",
+  "status": "completed",
+  "summary": "Synthetic isolated pool analysis.",
+  "changedFiles": [
+    {
+      "path": "game_state/world/weather.json",
+      "changeKind": "replace",
+      "beforeSha256": "cc03341805bafb3e5c93574b7f869171eedb69ea80deaed51c920b3f55ea2543",
+      "afterSha256": "18f44d20340d4d308c44ae8c3b0a8cd65d0576eea7a8cb005f5beea6dec65f22",
+      "contentRef": "worker_proposals/worker_proposal_native_pool_happy/game_state/world/weather.json"
+    }
+  ],
+  "findings": [
+    {
+      "kind": "analysis",
+      "message": "Private fixture context only."
+    }
+  ],
+  "selfCheck": {
+    "scopeReviewed": true,
+    "validationExpectedToPass": true,
+    "notes": []
+  },
+  "createdAtUtc": "2026-10-05T00:00:00Z"
+}

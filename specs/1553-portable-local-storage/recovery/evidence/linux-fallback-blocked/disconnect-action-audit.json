@@ -1,0 +1,133 @@
+{
+  "ObservedUtc": "2026-10-05T15:55:40.206897+00:00",
+  "Source": "04fd23f5dec35cfd447b05787129faab88d535bd",
+  "Question": "Could agent actions contribute to15:41 execution disconnect?",
+  "Conclusion": "No direct network reconfiguration/service stop/broad signal identified in performed commands or reviewed helper/fixture/runner source; causal link unknown, resource load cannot be ruled out.",
+  "Timeline": [
+    {
+      "StartedUtc": "2026-10-05T15:40:14.479695+00:00",
+      "EndedUtc": "2026-10-05T15:42:32.969733+00:00",
+      "Source": "8d9a3304d4f27fe60e9e2e0aaa6da4ae4aab59a4",
+      "Command": [
+        "pwsh",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-Category",
+        "linux-fallback-supervisor",
+        "-Parallelism",
+        "1",
+        "-PlanOnly"
+      ],
+      "ExitCode": 0,
+      "DurationSeconds": 138.49010654800077,
+      "Log": "red-plan.log"
+    },
+    {
+      "StartedUtc": "2026-10-05T15:40:25.434785+00:00",
+      "EndedUtc": "2026-10-05T15:40:26.303060+00:00",
+      "Source": "8d9a3304d4f27fe60e9e2e0aaa6da4ae4aab59a4",
+      "Command": [
+        "pwsh",
+        "-NoProfile",
+        "-File",
+        "scripts/build-linux-supervisor.ps1",
+        "-OutputDirectory",
+        "/workspace/linux-1553-fallback-artifacts/preparation",
+        "-IncludeFixture"
+      ],
+      "ExitCode": 1,
+      "DurationSeconds": 0.868307705000916,
+      "Log": "native-preparation.log"
+    },
+    {
+      "StartedUtc": "2026-10-05T15:41:52.898882+00:00",
+      "EndedUtc": "2026-10-05T15:41:53.923690+00:00",
+      "Source": "690a975593e3696530a355057c761480f3d43e70",
+      "Command": [
+        "pwsh",
+        "-NoProfile",
+        "-File",
+        "scripts/build-linux-supervisor.ps1",
+        "-OutputDirectory",
+        "/workspace/linux-1553-fallback-artifacts/preparation-2",
+        "-IncludeFixture"
+      ],
+      "ExitCode": 0,
+      "DurationSeconds": 1.0248335469987069,
+      "Log": "native-preparation-2.log"
+    },
+    {
+      "StartedUtc": "2026-10-05T15:42:47.064595+00:00",
+      "EndedUtc": "2026-10-05T15:43:11.971506+00:00",
+      "Source": "690a975593e3696530a355057c761480f3d43e70",
+      "Command": [
+        "pwsh",
+        "-NoProfile",
+        "-File",
+        "scripts/test-csharp.ps1",
+        "-Category",
+        "linux-fallback-supervisor",
+        "-Parallelism",
+        "1",
+        "-NoBuild"
+      ],
+      "ExitCode": 1,
+      "DurationSeconds": 24.90695905299799,
+      "Log": "causal-red.log"
+    }
+  ],
+  "ActionsAroundDisconnect": [
+    "Canonical selected .NET build15:40:14-15:42:32; 0tests executed",
+    "Native compiler preparation15:40:25 failed beforecompilation; corrected ccbuild15:41:52-15:41:53 (build only)",
+    "Ordinary Git checkpoint publication and readback; noforce",
+    "First native fixture execution15:42:47-15:43:11, afternotificationtime"
+  ],
+  "SourceAudit": {
+    "Files": [
+      "native/linux/boe-lineage-supervisor.c",
+      "tests/fixtures/LinuxLineage/lineage-fixture.c",
+      "scripts/build-linux-supervisor.ps1",
+      "scripts/test-csharp.ps1",
+      "specs/1553-portable-local-storage/recovery/evidence/worker-ownership-design/capability-probe.c",
+      "specs/1553-portable-local-storage/recovery/evidence/worker-ownership-design/namespace-capability-probe.c"
+    ],
+    "NoNetworkNamespace": true,
+    "HistoricalNamespaceProbe": "Earlier single unshare(CLONE_NEWUSER|CLONE_NEWPID), zerochild; noCLONE_NEWNET; not repeatednow",
+    "NoInterfaceRouteDnsProxyFirewallMutation": true,
+    "NoForeignOrRuntimeServiceStop": true,
+    "NoBroadProcessGroupSignalsInNativeCode": true,
+    "NativeSignalsActuallyReachable": [
+      "18helper preflight signal0 toself thenprocENOENT; no workerlaunch or rootTERMKILL",
+      "Staleprimitive: SIGKILL heldstalepidfd returnedESRCH3; signal0+SIGKILL heldpidfd ofown sentinel; exactnumericPIDs notlogged",
+      "Separate outside-scopefixture sentinelPID41846 selfalarm7s; guardian exitedbeforepidfdsignals onprocENOENT"
+    ],
+    "RunnerCleanup": "Existing Linux Process.Kill(true) applies only started ownedrun handle ifstillactive; buildexit0/timeoutfalse and no cleanup-error/timeout evidence. No syscalltrace exists; exactsignalhistory cannotbe reconstructed."
+  },
+  "ResourceSnapshotNowNotHistorical": {
+    "/proc/loadavg": {
+      "value": "0.13 0.73 0.84 1/380 43065"
+    },
+    "/proc/pressure/cpu": {
+      "unavailableErrno": 2
+    },
+    "/proc/pressure/memory": {
+      "unavailableErrno": 2
+    },
+    "/sys/fs/cgroup/memory.events": {
+      "value": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0"
+    },
+    "/sys/fs/cgroup/memory.peak": {
+      "value": "12880871424"
+    },
+    "/sys/fs/cgroup/memory.current": {
+      "value": "10455846912"
+    },
+    "/sys/fs/cgroup/memory.max": {
+      "value": "17179869184"
+    }
+  },
+  "SecretsOrEnvironmentValuesRead": false,
+  "NewNetworkOrRuntimeProbesForAudit": false,
+  "CurrentExecution": "working; no active test session at audit boundary; latestWIP04fd23f5 published/readback confirmed"
+}

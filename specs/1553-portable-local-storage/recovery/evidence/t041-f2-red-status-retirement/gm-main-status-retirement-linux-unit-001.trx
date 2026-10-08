@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="ca643334-e19a-4684-9ccb-6c3f1a43f34a" name="@c7669543e9c7 2026-10-06 15:42:40" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T15:42:40.1997932+00:00" queuing="2026-10-06T15:42:40.1997932+00:00" start="2026-10-06T15:42:32.4687834+00:00" finish="2026-10-06T15:42:42.7344761+00:00" />
+  <TestSettings name="default" id="dd057861-4fc8-44c8-b229-2ac242f7911e">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_15_42_40" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="e66c5a8c-9c8c-4922-a6bf-e7eee90f24b6" testId="5c96aa32-e277-4581-2cb9-71f3248fd19d" testName="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(mode: &quot;terminal-main-operation-status-stall&quot;)" computerName="c7669543e9c7" duration="00:00:03.8070864" startTime="2026-10-06T15:42:40.1583818+00:00" endTime="2026-10-06T15:42:40.1583975+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e66c5a8c-9c8c-4922-a6bf-e7eee90f24b6">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs:line 61
+   at BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainOperationLinuxTests.cs:line 10
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ab5e0b98-4184-4969-8491-15745d5805c6" testId="4980ca08-ae85-048c-7a63-1f7d08c8e983" testName="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(mode: &quot;terminal-main-operation-status-fault&quot;)" computerName="c7669543e9c7" duration="00:00:02.4693638" startTime="2026-10-06T15:42:42.6242573+00:00" endTime="2026-10-06T15:42:42.6242576+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ab5e0b98-4184-4969-8491-15745d5805c6">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs:line 61
+   at BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainOperationLinuxTests.cs:line 10
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(mode: &quot;terminal-main-operation-status-fault&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4980ca08-ae85-048c-7a63-1f7d08c8e983">
+      <Execution id="ab5e0b98-4184-4969-8491-15745d5805c6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainOperationLinuxTests" name="OriginalOwner_StatusRetirementFaultBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(mode: &quot;terminal-main-operation-status-stall&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5c96aa32-e277-4581-2cb9-71f3248fd19d">
+      <Execution id="e66c5a8c-9c8c-4922-a6bf-e7eee90f24b6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainOperationLinuxTests" name="OriginalOwner_StatusRetirementFaultBoundary" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="5c96aa32-e277-4581-2cb9-71f3248fd19d" executionId="e66c5a8c-9c8c-4922-a6bf-e7eee90f24b6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4980ca08-ae85-048c-7a63-1f7d08c8e983" executionId="ab5e0b98-4184-4969-8491-15745d5805c6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="2" executed="2" passed="0" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.33]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:03.05]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:03.09]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:06.98]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:06.98]       Expected: 0
+[xUnit.net 00:00:06.98]       Actual:   1
+[xUnit.net 00:00:06.98]       Stack Trace:
+[xUnit.net 00:00:06.98]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs(61,0): at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode)
+[xUnit.net 00:00:06.98]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainOperationLinuxTests.cs(10,0): at BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(String mode)
+[xUnit.net 00:00:06.98]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:09.45]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:09.45]       Expected: 0
+[xUnit.net 00:00:09.45]       Actual:   1
+[xUnit.net 00:00:09.45]       Stack Trace:
+[xUnit.net 00:00:09.45]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs(61,0): at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode)
+[xUnit.net 00:00:09.45]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainOperationLinuxTests.cs(10,0): at BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(String mode)
+[xUnit.net 00:00:09.45]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:09.46]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T15:42:40.1606336+00:00">
+        <Text>[xUnit.net 00:00:06.98]     BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(mode: "terminal-main-operation-status-stall") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T15:42:42.6255790+00:00">
+        <Text>[xUnit.net 00:00:09.45]     BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary(mode: "terminal-main-operation-status-fault") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

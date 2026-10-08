@@ -1,0 +1,250 @@
+{
+  "SchemaVersion": 1,
+  "VerifiedAtCommit": "447d14f55846bcba942c50aea8c2495b032c8830",
+  "Manifests": [
+    {
+      "Label": "admission-green",
+      "SourceCommit": "9542eb31402e542e0f2498dd36ac6c06756bb248",
+      "Inputs": 64,
+      "Artifacts": 5
+    },
+    {
+      "Label": "admission-red",
+      "SourceCommit": "5638fe2a842fea05e9d750c7fd7f708845207b16",
+      "Inputs": 64,
+      "Artifacts": 5
+    },
+    {
+      "Label": "catalog-audit",
+      "SourceCommit": "447d14f55846bcba942c50aea8c2495b032c8830",
+      "Inputs": 82,
+      "Artifacts": 3
+    },
+    {
+      "Label": "cold-boundary-d-pass",
+      "SourceCommit": "7f53a1de2d933af627ccf8c00797ff2ef7bdd117",
+      "Inputs": 82,
+      "Artifacts": 52
+    },
+    {
+      "Label": "conjunction-d-fixture-failure",
+      "SourceCommit": "e791d11c68a80fd8e162e66001f8776d6947f47f",
+      "Inputs": 82,
+      "Artifacts": 66
+    },
+    {
+      "Label": "conjunction-d-pass",
+      "SourceCommit": "2fb042eee6e6cce2c793ddd9446e5e2c37423cde",
+      "Inputs": 82,
+      "Artifacts": 69
+    },
+    {
+      "Label": "launch-a-fixture-failure",
+      "SourceCommit": "09d786d9199f0d9c63e966c5c0904e815024c9a4",
+      "Inputs": 67,
+      "Artifacts": 103
+    },
+    {
+      "Label": "launch-a-output-supplement",
+      "SourceCommit": "cf123da871381c6b08786062eab18575a2b2ad50",
+      "Inputs": 67,
+      "Artifacts": 123
+    },
+    {
+      "Label": "launch-a-pass",
+      "SourceCommit": "cf123da871381c6b08786062eab18575a2b2ad50",
+      "Inputs": 67,
+      "Artifacts": 118
+    },
+    {
+      "Label": "pins-b-pass",
+      "SourceCommit": "d26f676132a2264ccac42a8ee524020de0016693",
+      "Inputs": 68,
+      "Artifacts": 97
+    },
+    {
+      "Label": "replacement-d-fixture-failure",
+      "SourceCommit": "175f5ffbace39474e0b5dd59ee5b01191f15b748",
+      "Inputs": 70,
+      "Artifacts": 100
+    },
+    {
+      "Label": "replacement-d-namespace-oracle",
+      "SourceCommit": "b5f0d67987b4c8ecc0ed9c4a52de72bc46241124",
+      "Inputs": 81,
+      "Artifacts": 102
+    },
+    {
+      "Label": "replacement-d-oracle-failure",
+      "SourceCommit": "7a392bc15605b99aab80b3dd25df7f7aa70e90ce",
+      "Inputs": 70,
+      "Artifacts": 102
+    },
+    {
+      "Label": "replacement-d-pass",
+      "SourceCommit": "3199d127b2676705f32b2024ec395c657ddee7b7",
+      "Inputs": 82,
+      "Artifacts": 106
+    },
+    {
+      "Label": "selection-plan",
+      "SourceCommit": "447d14f55846bcba942c50aea8c2495b032c8830",
+      "Inputs": 82,
+      "Artifacts": 3
+    },
+    {
+      "Label": "stop-c-pass",
+      "SourceCommit": "082ba6f1036a666b935f31ab26357b13f6d55be4",
+      "Inputs": 69,
+      "Artifacts": 159
+    }
+  ],
+  "ManifestCount": 16,
+  "ManifestedInputEntries": 1179,
+  "ManifestedArtifacts": 1213,
+  "AllTrackedAndByteExact": true,
+  "InputsMatchSourceCommitAndGitBlob": true,
+  "GzipDecompressedHashesMatch": true,
+  "AllManifestDirectoriesHaveExactInventory": true,
+  "Latest": {
+    "UniqueCases": 23,
+    "Passed": 23,
+    "Failed": 0,
+    "Skipped": 0,
+    "PortableAdmissionCases": 2,
+    "NativeCases": 21,
+    "NativeGuardians": 21
+  },
+  "Historical": {
+    "Executed": 41,
+    "Passed": 27,
+    "Failed": 14,
+    "DistinctNativeGuardians": 37,
+    "CausalAdmissionRedFailures": 2,
+    "FixtureOrOracleFailures": 12
+  },
+  "GuardianEvidence": {
+    "AllEchild": true,
+    "EmergencySignals": 0,
+    "Failures": 0,
+    "Deadlines": 0
+  },
+  "Interpretation": "Latest source-backed union across frozen carriers, not rerun of all cases at final HEAD; physical fixture cleanup never retires logical Uncertain",
+  "LatestCaseIdentities": [
+    {
+      "Label": "admission-green",
+      "Name": "BookOfEternityClient.Tests.GmMainCrashFixtureAdmissionTests.FixtureAdmission_RejectsOutsideRootAndNonFixedPackageBeforeEffects",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "admission-green",
+      "Name": "BookOfEternityClient.Tests.GmMainCrashFixtureAdmissionTests.FreshFixtureAdmission_IsSingleUseAndDoesNotDecodeOldRecord",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "cold-boundary-d-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.ColdBoundary_ConfirmedStopAllowsClearOrFreshEpochWithoutOriginalInputReplay(boundary: \"clear\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "cold-boundary-d-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.ColdBoundary_ConfirmedStopAllowsClearOrFreshEpochWithoutOriginalInputReplay(boundary: \"input\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "conjunction-d-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation(kind: \"storage\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "conjunction-d-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation(kind: \"worker\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "launch-a-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: \"held\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "launch-a-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: \"running\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "launch-a-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: \"released\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "launch-a-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: \"namespace\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "launch-a-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: \"prepared\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "pins-b-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.ClientDeath_OriginalReceiptBoundaryControlsColdContinuation(cut: \"receipt\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "pins-b-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.ClientDeath_OriginalReceiptBoundaryControlsColdContinuation(cut: \"before\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "pins-b-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.ClientDeath_OriginalReceiptBoundaryControlsColdContinuation(cut: \"reply\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "replacement-d-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.Replacement_FreshProcessRetainsExactTypedDecisionAndConjunction(decision: \"uncertain\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "replacement-d-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.Replacement_FreshProcessRetainsExactTypedDecisionAndConjunction(decision: \"rollback\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "replacement-d-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.Replacement_FreshProcessRetainsExactTypedDecisionAndConjunction(decision: \"committed\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "stop-c-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.StopDeath_ActualSettlementAndDurableAckControlNewEpoch(cut: \"readback\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "stop-c-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.StopDeath_ActualSettlementAndDurableAckControlNewEpoch(cut: \"io\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "stop-c-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.StopDeath_ActualSettlementAndDurableAckControlNewEpoch(cut: \"ack\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "stop-c-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.StopDeath_ActualSettlementAndDurableAckControlNewEpoch(cut: \"staged\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "stop-c-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.StopDeath_ActualSettlementAndDurableAckControlNewEpoch(cut: \"stopping\")",
+      "Outcome": "Passed"
+    },
+    {
+      "Label": "stop-c-pass",
+      "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.StopDeath_ActualSettlementAndDurableAckControlNewEpoch(cut: \"fault\")",
+      "Outcome": "Passed"
+    }
+  ]
+}

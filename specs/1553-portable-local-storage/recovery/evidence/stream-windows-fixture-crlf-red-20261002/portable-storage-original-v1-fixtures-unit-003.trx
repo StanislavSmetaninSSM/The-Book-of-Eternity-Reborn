@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a57e9e08-d83b-4cad-b762-f54311492e1a" name="Eja@[HOST] 2026-10-02 22:11:49" runUser="[HOST]\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-02T22:11:49.8115808+10:00" queuing="2026-10-02T22:11:49.8115816+10:00" start="2026-10-02T22:11:46.9188557+10:00" finish="2026-10-02T22:11:49.8274301+10:00" />
+  <TestSettings name="default" id="24ced266-d1b2-4c1a-bc03-cf07ecbb1ede">
+    <Deployment runDeploymentRoot="Eja_[HOST]_2026-10-02_22_11_49" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="c559910d-5270-45c1-b9d3-299e6861021b" testId="e1ea57c9-cf17-211a-6ad0-5f7aba0b587e" testName="BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(committed: True, fixtureName: &quot;committed.json&quot;, fixtureLength: 2065, fixtureSha256: &quot;da0c9fd29ed3d23d8903d42b88691d4d83bc156c1142061595&quot;···)" computerName="[HOST]" duration="00:00:00.0138220" startTime="2026-10-02T22:11:49.6841634+10:00" endTime="2026-10-02T22:11:49.6841925+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c559910d-5270-45c1-b9d3-299e6861021b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 2065&#xD;
+Actual:   2132</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(Boolean committed, String fixtureName, Int32 fixtureLength, String fixtureSha256) in [WORKTREE]\BookOfEternityClient.Tests\TrustedLocalOriginalV1FixtureTests.cs:line 41&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="097f5684-139e-4658-9b7c-3b12242fb1e0" testId="785f10a4-c38f-3c1c-ded1-6271a4a0ccfa" testName="BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(committed: False, fixtureName: &quot;pending.json&quot;, fixtureLength: 2066, fixtureSha256: &quot;13fb4c68e26b87107501478a4f302a17e16fa5f25019de3bca&quot;···)" computerName="[HOST]" duration="00:00:00.0007805" startTime="2026-10-02T22:11:49.6880527+10:00" endTime="2026-10-02T22:11:49.6880528+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="097f5684-139e-4658-9b7c-3b12242fb1e0">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ&#xD;
+Expected: 2066&#xD;
+Actual:   2133</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(Boolean committed, String fixtureName, Int32 fixtureLength, String fixtureSha256) in [WORKTREE]\BookOfEternityClient.Tests\TrustedLocalOriginalV1FixtureTests.cs:line 41&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(committed: True, fixtureName: &quot;committed.json&quot;, fixtureLength: 2065, fixtureSha256: &quot;da0c9fd29ed3d23d8903d42b88691d4d83bc156c1142061595&quot;···)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="e1ea57c9-cf17-211a-6ad0-5f7aba0b587e">
+      <Execution id="c559910d-5270-45c1-b9d3-299e6861021b" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests" name="NormalLeaseRecoversIndependentOriginalV1Decision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(committed: False, fixtureName: &quot;pending.json&quot;, fixtureLength: 2066, fixtureSha256: &quot;13fb4c68e26b87107501478a4f302a17e16fa5f25019de3bca&quot;···)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="785f10a4-c38f-3c1c-ded1-6271a4a0ccfa">
+      <Execution id="097f5684-139e-4658-9b7c-3b12242fb1e0" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests" name="NormalLeaseRecoversIndependentOriginalV1Decision" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="e1ea57c9-cf17-211a-6ad0-5f7aba0b587e" executionId="c559910d-5270-45c1-b9d3-299e6861021b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="785f10a4-c38f-3c1c-ded1-6271a4a0ccfa" executionId="097f5684-139e-4658-9b7c-3b12242fb1e0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="2" executed="2" passed="0" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.25]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.91]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.94]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.01]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:02.02]       Expected: 2065&#xD;
+[xUnit.net 00:00:02.02]       Actual:   2132&#xD;
+[xUnit.net 00:00:02.02]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.02]         [WORKTREE]\BookOfEternityClient.Tests\TrustedLocalOriginalV1FixtureTests.cs(41,0): at BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(Boolean committed, String fixtureName, Int32 fixtureLength, String fixtureSha256)&#xD;
+[xUnit.net 00:00:02.02]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.02]       Assert.Equal() Failure: Values differ&#xD;
+[xUnit.net 00:00:02.02]       Expected: 2066&#xD;
+[xUnit.net 00:00:02.02]       Actual:   2133&#xD;
+[xUnit.net 00:00:02.02]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.02]         [WORKTREE]\BookOfEternityClient.Tests\TrustedLocalOriginalV1FixtureTests.cs(41,0): at BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(Boolean committed, String fixtureName, Int32 fixtureLength, String fixtureSha256)&#xD;
+[xUnit.net 00:00:02.02]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.02]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-02T22:11:49.6818707+10:00">
+        <Text>[xUnit.net 00:00:02.01]     BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(committed: True, fixtureName: "committed.json", fixtureLength: 2065, fixtureSha256: "da0c9fd29ed3d23d8903d42b88691d4d83bc156c1142061595"···) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-02T22:11:49.6877533+10:00">
+        <Text>[xUnit.net 00:00:02.02]     BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision(committed: False, fixtureName: "pending.json", fixtureLength: 2066, fixtureSha256: "13fb4c68e26b87107501478a4f302a17e16fa5f25019de3bca"···) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

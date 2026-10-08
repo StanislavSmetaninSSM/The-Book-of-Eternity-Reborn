@@ -1,0 +1,584 @@
+{
+  "Scope": "T042-INPUT-TRANSACTION only; historical repeated executions are not distinct coverage",
+  "Manifests": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-catalog-preparation/manifest.json",
+      "Source": "5bc1fb9f69666db8261c298f3b6b19165326e822",
+      "Inputs": 21,
+      "Artifacts": 2
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-clean-verification/manifest.json",
+      "Source": "1a3d936d8e8be1ad14eb342e489c96c247bb4247",
+      "Inputs": 21,
+      "Artifacts": 13
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-core-green/manifest.json",
+      "Source": "773f5e9ee510a9bb49e15a91e5cb50076240f400",
+      "Inputs": 21,
+      "Artifacts": 10
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-first-attempt/manifest.json",
+      "Source": "df21035c079fbfa09efea6e3770f805b882b6fac",
+      "Inputs": 21,
+      "Artifacts": 12
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-initial-red/manifest.json",
+      "Source": "aac26e3ad10c37992debb559e32a58e318699e9c",
+      "Inputs": 19,
+      "Artifacts": 12
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-peer-deadline-red/manifest.json",
+      "Source": "56162ecc8e196cfdd46ec710937c67996ebd23b6",
+      "Inputs": 21,
+      "Artifacts": 7
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-preliminary-discovery/manifest.json",
+      "Source": "db5864c2b2fcecb6958ff7842fc1cf885f688772",
+      "Inputs": 21,
+      "Artifacts": 9
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-residual-causal-red/manifest.json",
+      "Source": "4cae3eed048b5507a3d2df599bc0f970d4c30e81",
+      "Inputs": 21,
+      "Artifacts": 14
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-review-causal-red/manifest.json",
+      "Source": "e7c98a442855d49bb9cbd8ca219b6073456c32ed",
+      "Inputs": 21,
+      "Artifacts": 14
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-review-fixes-attempt/manifest.json",
+      "Source": "ad82815c0bad33fe67a4ab52c8ee805cab1c522d",
+      "Inputs": 21,
+      "Artifacts": 10
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-review-red/manifest.json",
+      "Source": "e164dade80d9be09a3bb219d9998817349f95664",
+      "Inputs": 21,
+      "Artifacts": 14
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-terminal-consumption-red/manifest.json",
+      "Source": "e1cad8ec69a0e198d6c44aa61efea95ce645a51c",
+      "Inputs": 21,
+      "Artifacts": 9
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-terminal-final-green/manifest.json",
+      "Source": "db5864c2b2fcecb6958ff7842fc1cf885f688772",
+      "Inputs": 21,
+      "Artifacts": 7
+    }
+  ],
+  "Inputs": 271,
+  "Artifacts": 133,
+  "Gzip": 54,
+  "Summaries": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-clean-verification/clean-catalog/summary.json",
+      "Source": "1a3d936d8e8be1ad14eb342e489c96c247bb4247",
+      "ExitCode": 0,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-clean-verification/clean-plan/summary.json",
+      "Source": "1a3d936d8e8be1ad14eb342e489c96c247bb4247",
+      "ExitCode": 0,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 83,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "gm-bridge-prompt-operation-unit-001",
+          "gm-daemon-prompt-delivery-integration-002",
+          "gm-daemon-prompt-delivery-unit-003"
+        ],
+        "Complete": false
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-core-green/final-green/summary.json",
+      "Source": "773f5e9ee510a9bb49e15a91e5cb50076240f400",
+      "ExitCode": 0,
+      "Tests": {
+        "Total": 79,
+        "Executed": 79,
+        "Passed": 79,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 3,
+        "PlannedCases": 79,
+        "CompletedCases": 79,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-first-attempt/daemon-first-green/summary.json",
+      "Source": "df21035c079fbfa09efea6e3770f805b882b6fac",
+      "ExitCode": 0,
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-first-attempt/first-green/summary.json",
+      "Source": "df21035c079fbfa09efea6e3770f805b882b6fac",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 16,
+        "Executed": 16,
+        "Passed": 15,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 18,
+        "CompletedCases": 16,
+        "UnderfilledDescriptors": [
+          "gm-daemon-prompt-delivery-unit-002"
+        ],
+        "Complete": false
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-initial-red/daemon-red/summary.json",
+      "Source": "aac26e3ad10c37992debb559e32a58e318699e9c",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 0,
+        "Failed": 2
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-initial-red/initial-red/summary.json",
+      "Source": "aac26e3ad10c37992debb559e32a58e318699e9c",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 0,
+        "Failed": 2
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 4,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [
+          "gm-daemon-prompt-delivery-unit-002"
+        ],
+        "Complete": false
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-peer-deadline-red/peer-deadline-red/summary.json",
+      "Source": "56162ecc8e196cfdd46ec710937c67996ebd23b6",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 41,
+        "Executed": 41,
+        "Passed": 37,
+        "Failed": 4
+      },
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 41,
+        "CompletedCases": 41,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-preliminary-discovery/final-catalog/summary.json",
+      "Source": "db5864c2b2fcecb6958ff7842fc1cf885f688772",
+      "ExitCode": 0,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-preliminary-discovery/final-plan/summary.json",
+      "Source": "db5864c2b2fcecb6958ff7842fc1cf885f688772",
+      "ExitCode": 0,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 83,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "gm-bridge-prompt-operation-unit-001",
+          "gm-daemon-prompt-delivery-integration-002",
+          "gm-daemon-prompt-delivery-unit-003"
+        ],
+        "Complete": false
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-residual-causal-red/residual-red-bridge/summary.json",
+      "Source": "4cae3eed048b5507a3d2df599bc0f970d4c30e81",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 46,
+        "Executed": 46,
+        "Passed": 44,
+        "Failed": 2
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 79,
+        "CompletedCases": 46,
+        "UnderfilledDescriptors": [
+          "gm-daemon-prompt-delivery-integration-002",
+          "gm-daemon-prompt-delivery-unit-003"
+        ],
+        "Complete": false
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-residual-causal-red/residual-red-daemon/summary.json",
+      "Source": "4cae3eed048b5507a3d2df599bc0f970d4c30e81",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 33,
+        "Executed": 33,
+        "Passed": 26,
+        "Failed": 7
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 33,
+        "CompletedCases": 33,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-review-causal-red/reviewer-corrected-fixture-red/summary.json",
+      "Source": "e7c98a442855d49bb9cbd8ca219b6073456c32ed",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 40,
+        "Executed": 40,
+        "Passed": 37,
+        "Failed": 3
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 58,
+        "CompletedCases": 40,
+        "UnderfilledDescriptors": [
+          "gm-daemon-prompt-delivery-integration-002",
+          "gm-daemon-prompt-delivery-unit-003"
+        ],
+        "Complete": false
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-review-causal-red/reviewer-daemon-corrected-red/summary.json",
+      "Source": "e7c98a442855d49bb9cbd8ca219b6073456c32ed",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 18,
+        "Executed": 18,
+        "Passed": 15,
+        "Failed": 3
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 18,
+        "CompletedCases": 18,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-review-fixes-attempt/review-fixes-green/summary.json",
+      "Source": "ad82815c0bad33fe67a4ab52c8ee805cab1c522d",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 65,
+        "Executed": 65,
+        "Passed": 64,
+        "Failed": 1
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 3,
+        "PlannedCases": 65,
+        "CompletedCases": 65,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-review-red/reviewer-daemon-red/summary.json",
+      "Source": "e164dade80d9be09a3bb219d9998817349f95664",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 18,
+        "Executed": 18,
+        "Passed": 11,
+        "Failed": 7
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 18,
+        "CompletedCases": 18,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-review-red/reviewer-red/summary.json",
+      "Source": "e164dade80d9be09a3bb219d9998817349f95664",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 39,
+        "Executed": 39,
+        "Passed": 37,
+        "Failed": 2
+      },
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 57,
+        "CompletedCases": 39,
+        "UnderfilledDescriptors": [
+          "gm-daemon-prompt-delivery-integration-002",
+          "gm-daemon-prompt-delivery-unit-003"
+        ],
+        "Complete": false
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-terminal-consumption-red/terminal-control-red/summary.json",
+      "Source": "e1cad8ec69a0e198d6c44aa61efea95ce645a51c",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 37,
+        "Executed": 37,
+        "Passed": 35,
+        "Failed": 2
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 37,
+        "CompletedCases": 37,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedCleanup": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t042-terminal-final-green/terminal-final-green/summary.json",
+      "Source": "db5864c2b2fcecb6958ff7842fc1cf885f688772",
+      "ExitCode": 0,
+      "Tests": {
+        "Total": 37,
+        "Executed": 37,
+        "Passed": 37,
+        "Failed": 0
+      },
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 2,
+        "PlannedCases": 37,
+        "CompletedCases": 37,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "OwnedCleanup": true
+    }
+  ],
+  "LatestDistinctCoverage": {
+    "Bridge": 46,
+    "DaemonAndExactIntegration": 37,
+    "Total": 83,
+    "Names": [
+      "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ActiveOperationCannotBeMarkedReady",
+      "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_AutoReadyRequiresSupportedEmptyIdleView",
+      "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchRequiresFreshPasteAndSubmissionEvidence",
+      "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchUsesPositiveProfileAndEmptyComposer",
+      "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAcceptTrustPrompt",
+      "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAnswerUpdatePrompt",
+      "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_IdleObservationCannotClearUncertainDelivery",
+      "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualReadyCannotClearUncertainDelivery",
+      "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualTakeoverPrecedesCompetingWrite",
+      "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_PreservesPendingCliDraftBeforeAutomaticDispatch",
+      "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_StatusAndCancelReachRealPromptOperation",
+      "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.DaemonBridgeDispatch_UsesTypedOperationWithoutReadinessBypass",
+      "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualAssemblyAndPortablePdbMatchProductionSource",
+      "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys",
+      "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\\0', key: C, control: True, expected: \"\\x03\")",
+      "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\\0', key: UpArrow, control: False, expected: \"\\x1b[A\")",
+      "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\\r', key: Enter, control: False, expected: \"\\r\")",
+      "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: 'a', key: A, control: False, expected: \"a\")",
+      "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops",
+      "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding",
+      "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion",
+      "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit(afterSubmit: False, expected: \"draft-uncertain\")",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit(afterSubmit: True, expected: \"unknown-outcome\")",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_NonReadingPeersCannotRetainUnboundedErrorWrites(handlerThrows: False)",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_NonReadingPeersCannotRetainUnboundedErrorWrites(handlerThrows: True)",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualStop_JoinsWholeOperationBeforeReplacement",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ChangedBodyQuery_CannotBorrowOriginalSuccess",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateAndChangedBody_RetainOriginalWithoutRepaste",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateFlood_HeldInputCannotOccupyControlService",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ManualTakeover_BlocksAutomaticShellBootstrap",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(submit: False, expected: \"draft-uncertain\")",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(submit: True, expected: \"unknown-outcome\")",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.PasteNeedsFreshObservation_TimeoutRetainsDraftAndPause",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ProfileMutation_DoesNotChangeFrozenSubmitSequence",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.ProvenZeroWrite_ReadmittingRequestAwaitsItsOwnTransaction",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.RealKeyboard_TakesOverQueuedOperationBeforeAnyPaste",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.TwoPromptsOneBinding_CustomSequences_OneSubmitEach",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: \"\")",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: \"CONTROLLED CLI\\nAUTH\\n\u203a \")",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: \"CONTROLLED CLI\\nTRUST\\n\u203a \")",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: \"CONTROLLED CLI\\nUPDATE\\n\u203a \")",
+      "BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: \"unknown\")",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.FirstAutostart_CapturesOnlyActualStartedBinding",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.LauncherLostResponse_OnlyQueriesSameOperation",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ProvenBusy_RetriesIdenticalFrozenOperation",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.QteIdle_QueriesOriginalWithoutRepaste",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: \"qte\")",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: \"repair\")",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: \"terminal\")",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal(kind: \"turn\")",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealLauncherTimeout_HeldInputReturnsUnknownWithoutReplay",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealRepairConsumers_DistinctRevisionsKeepDistinctIdentities",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: \"artifact\", allowedStops: 0)",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: \"idle\", allowedStops: 0)",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: \"payload\", allowedStops: 0)",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: \"stop-artifact\", allowedStops: 1)",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: \"stop-payload\", allowedStops: 1)",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: \"stop-timeout\", allowedStops: 1)",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal(boundary: \"wait\", allowedStops: 0)",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_OriginalTerminalRetainsCompletionAndTimeoutBehavior(scenario: \"consumed-after-dispatch\", dispatches: 1, stops: 0, validation: \"accepted\", pending: False)",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_OriginalTerminalRetainsCompletionAndTimeoutBehavior(scenario: \"consumed-preexisting\", dispatches: 0, stops: 0, validation: \"accepted\", pending: False)",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_OriginalTerminalRetainsCompletionAndTimeoutBehavior(scenario: \"normal-complete\", dispatches: 1, stops: 0, validation: \"accepted\", pending: True)",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_OriginalTerminalRetainsCompletionAndTimeoutBehavior(scenario: \"normal-timeout\", dispatches: 1, stops: 1, validation: \"rejected\", pending: True)",
+      "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ReplacedAfterProvenZeroWrite_CancelsWithoutReplaying",
+      "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_RetriesWhenGmBridgeIsBusy",
+      "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_TimesOutAndPublishesStallReportWhenBridgeNeverAcceptsPrompt",
+      "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTerminalProtocolDispatch_RetriesWhenGmBridgeIsBusy",
+      "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnDispatch_EmitsTerminalErrorWhenBridgePipeNeverAcceptsDispatch",
+      "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnTimeout_ShutsDownBridgeBeforeWritingTimeoutTerminalError",
+      "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_EmitsEarlyTerminalErrorWhenBridgeStallsWhilePreparingArtifacts",
+      "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_EmitsEarlyTerminalErrorWhenGmWritesPayloadWithoutTerminalSignal",
+      "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_EmitsTerminalErrorWhenBridgeReturnsIdleWithoutTerminalSignal",
+      "BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_StopsWhenClientClosedPendingSnapshotContext"
+    ],
+    "Evidence": "core bridge TRX at773f5e9e + final daemon TRX atdb5864c2; unchanged bridge source reused"
+  },
+  "HistoricalExecuted": 475,
+  "HistoricalPassed": 439,
+  "HistoricalFailed": 36,
+  "Valid": true
+}

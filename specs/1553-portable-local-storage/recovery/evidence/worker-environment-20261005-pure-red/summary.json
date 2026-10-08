@@ -1,0 +1,65 @@
+{
+  "Categories": [
+    "worker-host-environment"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "8704aa04c8337d74f58bca06966e405db878bd2d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "worker-host-environment",
+      "Seconds": 3.8600069,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0755148,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0155378,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0152262,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:00:12.5727586",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 16,
+    "CompletedCases": 15,
+    "UnderfilledDescriptors": [
+      "worker-host-environment-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 15,
+    "Executed": 15,
+    "Passed": 10,
+    "Failed": 5
+  },
+  "DuplicateTests": []
+}

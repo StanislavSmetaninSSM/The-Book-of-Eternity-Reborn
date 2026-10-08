@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "portable-load-metadata-transport",
+    "portable-load-metadata"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "3b3e9a7c6671406f1416182a5c9fcf84a773e30e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-load-metadata",
+      "Seconds": 70.4392207,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-metadata-transport",
+      "Seconds": 10.3952127,
+      "BudgetMinutes": 2,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.6574015,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.1405489,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.3035607,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 153.8239418,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0047981,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:04:07.4257987",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 39,
+    "CompletedCases": 39,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 39,
+    "Executed": 39,
+    "Passed": 39,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

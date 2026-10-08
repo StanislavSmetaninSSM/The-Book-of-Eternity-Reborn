@@ -1,0 +1,68 @@
+{
+  "Scope": "This worker continuation; technical/tool incidents are distinct from retained test failures. No general cybersecurity flag observed or probed.",
+  "Incidents": [
+    {
+      "Utc": "2026-10-04T18:06:45Z",
+      "Tool": "github_fetch_commit",
+      "Target": "codex/1553-load-filesystem",
+      "Error": "INVALID_PARAMETERS: missing repo_full_name/commit_sha",
+      "Status": "Read-only schema mistake; corrected required names succeeded; no repository write"
+    },
+    {
+      "Utc": "2026-10-04T18:12:31Z",
+      "Tool": "github_create_blob",
+      "Target": "tests/categories.json, 98c912c3ebf0728ff3a8a1da164f775363e8ff70",
+      "Error": null,
+      "Status": "Existing call waited for approval; returned exact success at2026-10-05T02:13:26Z without duplicate or alternate route"
+    },
+    {
+      "Utc": "2026-10-05T02:21:01Z",
+      "Tool": "exec_command / test-csharp.ps1",
+      "Target": "-Category portable-worker-diagnostic,portable-load-worker-ordering via shell -File",
+      "Error": "Unknown category containing the comma-joined string; no workload started",
+      "Status": "Corrected to the tracked selection file; exact failed ordering and later2/2 diagnostics retained"
+    },
+    {
+      "Utc": "2026-10-05T02:53:21Z",
+      "Tool": "github_update_ref",
+      "Target": "codex/1553-load-filesystem ->9120aed5b61c7529e0d5ee84b72e094a91f67751, force:false",
+      "Error": "user cancelled MCP tool call; isError:true",
+      "Status": "Stopped; readback branch remainedb3a0598d. Exact user-authorized retry succeeded02:56:56; readback9120aed5 verified"
+    },
+    {
+      "Utc": "2026-10-05T02:58:10Z",
+      "Tool": "write_stdin",
+      "Target": "existing exec session5806, fetch/reset to9120aed5 and portable-worker-admission",
+      "Error": "Unified exec process failed: automatic approval review was cancelled",
+      "Status": "No shell output, no new runner directory and local HEAD remainedb3a0598d. Exact authorized same-permission retry ran at02:59:34;0/5 causal RED with complete cleanup"
+    },
+    {
+      "Utc": "2026-10-05T03:03:22Z",
+      "Tool": "exec_command / Python bounded edit",
+      "Target": "worker correction and launcher operational documentation",
+      "Error": "AssertionError on exact launcher prose anchor after prior listed file edits",
+      "Status": "Inspected diff; launcher wraps that phrase differently. Finished same intended docs with verified existing anchor; no workload or permission change"
+    },
+    {
+      "Utc": "2026-10-05T03:09:18Z",
+      "Tool": "github_create_tree",
+      "Target": "base e11e26de05a2a29f8b696105b29bb753aa89c503;23 corrected worker candidate entries",
+      "Error": "user cancelled MCP tool call; isError:true; no tree SHA",
+      "Status": "Stopped without commit/ref attempt;23 exact blobs retained. Parent supplied renewed user authorization. One exact retry succeeded03:10:51 with b97e141f778fcb942025a23ecdccd21dc5f30501; commit/ref ce0d39f3 subsequently verified; no alternate route"
+    },
+    {
+      "Utc": "2026-10-05T03:31:59Z",
+      "Tool": "write_stdin",
+      "Target": "session21139; fetch/reset bea1cf65 then portable-worker-docs",
+      "Error": "Unified exec process failed: automatic approval review was cancelled",
+      "Status": "Read-only check confirmed local HEADd1c82071 and no new runner directory/output. One exact authorized retry ran03:33:13; docs4/4 complete. No alternative executor/publication route."
+    },
+    {
+      "Utc": "2026-10-05T03:58:02Z",
+      "Tool": "exec_command / test-csharp.ps1",
+      "Target": "portable-worker-validator-exceptions PlanOnly preparation",
+      "Error": "Initial invocation result was displayed without its session ID; a command-local process listing was incorrectly treated as host-wide, causing one redundant PlanOnly launch.",
+      "Status": "Both runs reached terminal exit0 summaries with zero tests executed and complete owned/runtime cleanup (134.794849s and122.5060742s). Their evidence is retained as worker-validator-plan-first and worker-validator-plan-duplicate. Only after both completed was the review-found test message expectation corrected, followed by one actual two-case execution. Process-list absence is not used as cross-session termination evidence."
+    }
+  ]
+}

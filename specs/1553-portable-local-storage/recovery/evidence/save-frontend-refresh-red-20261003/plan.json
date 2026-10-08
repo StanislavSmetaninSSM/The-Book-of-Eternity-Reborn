@@ -1,0 +1,54 @@
+{
+  "Categories": [
+    "portable-browser-save-presentation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "64ff93c0faf4afca96ce839533714139178b1506",
+    "WorkingTreeFingerprint": "FB9F1BB1DFE092CEE753658765C10C6E5EEF17CFEB40D5F6E9D789A95B1BD6C2",
+    "ChangedFiles": 11
+  },
+  "PreparationSeconds": 0.249193,
+  "Descriptors": [
+    {
+      "Name": "portable-browser-save-presentation-frontend-001",
+      "Project": "frontend",
+      "Category": "portable-browser-save-presentation",
+      "Categories": [
+        "portable-browser-save-presentation"
+      ],
+      "Filter": null,
+      "Adapter": "node",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/savePersistenceNotice.test.ts",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-browser-save-presentation-frontend-002",
+      "Project": "frontend",
+      "Category": "portable-browser-save-presentation",
+      "Categories": [
+        "portable-browser-save-presentation"
+      ],
+      "Filter": null,
+      "Adapter": "vitest",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/browserSaveContinuation.test.ts",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

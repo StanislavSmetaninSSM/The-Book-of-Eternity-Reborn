@@ -1,0 +1,63 @@
+{
+  "Categories": [
+    "portable-storage-images"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "52967dc2367d449e640e6d8e3f74cda933c06fe1",
+    "WorkingTreeFingerprint": "D8FABB04B9C94A5C764906C6B87FC65D1EC5699ACB17E42BA38A3725B32F178A",
+    "ChangedFiles": 1
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-storage-images",
+      "Seconds": 2.9030272,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0761483,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0143852,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0204641,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:00:07.2094515",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 11,
+    "CompletedCases": 11,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 11,
+    "Executed": 11,
+    "Passed": 0,
+    "Failed": 11
+  },
+  "DuplicateTests": []
+}

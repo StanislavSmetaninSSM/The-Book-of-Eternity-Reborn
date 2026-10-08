@@ -1,0 +1,61 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "fb3ce1e389d959ca8ef02bacd02d10c1ac5614bf",
+  "SourceResultDirectory": "20261004-235802-369-2-6c500fbc422640babc75054ba69f905c-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "Build-unit.log",
+      "OriginalBytes": 10676,
+      "OriginalSha256": "5f6d597366564bd1124095b40ec56f0b50eee663b40ecc434c99d08e7410ff55",
+      "Embedded": true,
+      "StoredPath": "Build-unit.log",
+      "StoredBytes": 8659,
+      "StoredSha256": "d9d2ed6c91705b15f402f376f68bc290ee6213e28bd3c8c17a5ab4204e1cc2eb"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 1476053,
+      "OriginalSha256": "9e90daf5e0cdf9b84f342c721042ad2200986c685d59e47bb9cc751587257877",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 1440,
+      "OriginalSha256": "f37eedeab6373e895a56e7d8ac34ab17489553c30f8e7118fb5814cf29944659",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 1440,
+      "StoredSha256": "f37eedeab6373e895a56e7d8ac34ab17489553c30f8e7118fb5814cf29944659"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1482,
+      "OriginalSha256": "9b2b4f69536e26263d3bce342008ae23133db8ace67fdd347f55709a0217af3c",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 1482,
+      "StoredSha256": "9b2b4f69536e26263d3bce342008ae23133db8ace67fdd347f55709a0217af3c"
+    }
+  ],
+  "MeasuredChildren": 0,
+  "SourceQualification": {
+    "BaseCommit": "fb3ce1e389d959ca8ef02bacd02d10c1ac5614bf",
+    "WorkingTreeClean": false,
+    "Meaning": "Preparation only: zero executed tests. A review-found exception-message expectation was corrected before the actual execution; no runtime RED is claimed. Both preparation runs reached terminal summaries before that correction and execution."
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "Model": "gpt-6.1-sol",
+  "Effort": "xhigh",
+  "Agent": "/root/output_design_review",
+  "Commit": "9b0efe286600647cfc9f623a20657e5d0e220a5f",
+  "Verdict": "PASS",
+  "Findings": [],
+  "ImplementationNote": "Use GetMaxCharCount(4096), cover pending malformed prefix then full ASCII chunk; prove actual consumer build before causal RED."
+}

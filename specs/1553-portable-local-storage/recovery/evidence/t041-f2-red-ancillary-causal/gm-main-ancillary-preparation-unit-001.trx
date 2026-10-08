@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="6d574403-1de2-4c26-be67-4ba9137bcde6" name="@c7669543e9c7 2026-10-06 16:26:14" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T16:26:14.8738831+00:00" queuing="2026-10-06T16:26:14.8738832+00:00" start="2026-10-06T16:26:09.1150410+00:00" finish="2026-10-06T16:26:16.1946145+00:00" />
+  <TestSettings name="default" id="0c66a925-c43e-4628-94bf-a324204d8e7c">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_16_26_14" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="34be039e-dc43-4ce1-a735-abbc87a9b504" testId="791df00d-8bc3-8957-4b5e-74d8c5fd03b1" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: &quot;generate-session&quot;)" computerName="c7669543e9c7" duration="00:00:00.7376929" startTime="2026-10-06T16:26:15.4445814+00:00" endTime="2026-10-06T16:26:15.4445819+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="34be039e-dc43-4ce1-a735-abbc87a9b504">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(String scenario) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs:line 38
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a4df1874-5f47-4ecf-bb36-5e5e4c88dd6d" testId="986a007b-0c08-e297-6375-288476101b6d" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: &quot;register-window&quot;)" computerName="c7669543e9c7" duration="00:00:00.5978099" startTime="2026-10-06T16:26:16.0427819+00:00" endTime="2026-10-06T16:26:16.0427824+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a4df1874-5f47-4ecf-bb36-5e5e4c88dd6d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(String scenario) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs:line 38
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cdd3ab8f-f0d0-402d-a789-4b3d34ca57a7" testId="0a6efa1c-fa01-f693-3dd9-6e43d73eb86c" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: &quot;start-daemon&quot;)" computerName="c7669543e9c7" duration="00:00:01.4513729" startTime="2026-10-06T16:26:14.7081723+00:00" endTime="2026-10-06T16:26:14.7081880+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cdd3ab8f-f0d0-402d-a789-4b3d34ca57a7">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(String scenario) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs:line 38
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: &quot;register-window&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="986a007b-0c08-e297-6375-288476101b6d">
+      <Execution id="a4df1874-5f47-4ecf-bb36-5e5e4c88dd6d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealAncillary_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: &quot;generate-session&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="791df00d-8bc3-8957-4b5e-74d8c5fd03b1">
+      <Execution id="34be039e-dc43-4ce1-a735-abbc87a9b504" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealAncillary_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: &quot;start-daemon&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0a6efa1c-fa01-f693-3dd9-6e43d73eb86c">
+      <Execution id="cdd3ab8f-f0d0-402d-a789-4b3d34ca57a7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealAncillary_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="791df00d-8bc3-8957-4b5e-74d8c5fd03b1" executionId="34be039e-dc43-4ce1-a735-abbc87a9b504" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="986a007b-0c08-e297-6375-288476101b6d" executionId="a4df1874-5f47-4ecf-bb36-5e5e4c88dd6d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0a6efa1c-fa01-f693-3dd9-6e43d73eb86c" executionId="cdd3ab8f-f0d0-402d-a789-4b3d34ca57a7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="3" executed="3" passed="0" failed="3" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.29]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:02.91]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:02.97]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:04.98]       Assert.False() Failure
+[xUnit.net 00:00:04.98]       Expected: False
+[xUnit.net 00:00:04.98]       Actual:   True
+[xUnit.net 00:00:04.98]       Stack Trace:
+[xUnit.net 00:00:04.98]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs(38,0): at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(String scenario)
+[xUnit.net 00:00:04.98]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.72]       Assert.False() Failure
+[xUnit.net 00:00:05.72]       Expected: False
+[xUnit.net 00:00:05.72]       Actual:   True
+[xUnit.net 00:00:05.72]       Stack Trace:
+[xUnit.net 00:00:05.72]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs(38,0): at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(String scenario)
+[xUnit.net 00:00:05.72]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.32]       Assert.False() Failure
+[xUnit.net 00:00:06.32]       Expected: False
+[xUnit.net 00:00:06.32]       Actual:   True
+[xUnit.net 00:00:06.32]       Stack Trace:
+[xUnit.net 00:00:06.32]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs(38,0): at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(String scenario)
+[xUnit.net 00:00:06.32]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.34]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T16:26:14.7031679+00:00">
+        <Text>[xUnit.net 00:00:04.97]     BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: "start-daemon") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T16:26:15.4482375+00:00">
+        <Text>[xUnit.net 00:00:05.72]     BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: "generate-session") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T16:26:16.0479923+00:00">
+        <Text>[xUnit.net 00:00:06.32]     BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealAncillary_StoppingHasNoCanonicalEffect(scenario: "register-window") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

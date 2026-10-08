@@ -1,0 +1,151 @@
+{
+  "Source": "421d01c649a37ba4fff16b23a0c846fe84ab3433",
+  "DiagnosticOnly": true,
+  "ActualStandaloneBridge": true,
+  "ActualAppContext": "/workspace/bt1/play/game_session/_runtime/BookOfEternityGMBridge",
+  "PackageFileCount": 677,
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-trace/bootstrap.strace.gz",
+      "Bytes": 853874,
+      "SHA256": "f92b26d5bbf9c4ea819f4a3399a548314d1670608f936f7743378e4e664db99b",
+      "StoredSHA256": "3ac4b814cc5ea5e1debb98aaf57d7a360081a47e66e0af0386cba103da8c20f8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-trace/bridge.raw.gz",
+      "Bytes": 624,
+      "SHA256": "f4eb93d701e90be75a0579c9822358baa830c47f6230de32b55a36292e36ebcc",
+      "StoredSHA256": "ad7fd6cad30c36b6a258348985eeded68e45bacda57cd7e83fe378606ec69f65"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-trace/client.raw.gz",
+      "Bytes": 3934,
+      "SHA256": "a1afd142d33d05c2d8928fa7181651cde87cc05ea28955c2233a6adabc58d89e",
+      "StoredSHA256": "355bcb942bb89aa7b7c7215310ce0d60746509061ce95adeb92004e243054e03"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-trace/client-echo.raw.gz",
+      "Bytes": 2,
+      "SHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "StoredSHA256": "3827170a82238309b60bbe54f61f44a944267563d05ea7b34f44afe350742c00"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-trace/probe-result.json.gz",
+      "Bytes": 70189,
+      "SHA256": "645fc8356e5d0ab8812d633def3fea1224592e6ff36ebf6c0d1d9374b6ce2a76",
+      "StoredSHA256": "ca7c36ed14393fc03e270525fae856c8c6c5f4d0ee242e169e7c94b3ab48e12a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-trace/rpc-journal.json.gz",
+      "Bytes": 12655,
+      "SHA256": "adf14b34beab85ec288e0253904765b74e5c1df91f22dd8658333c1b828630a7",
+      "StoredSHA256": "3282d86ab687276e19daa6386454993f31091f20c444f178e66d1705ad344a1a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-trace/guardian.json.gz",
+      "Bytes": 97,
+      "SHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "StoredSHA256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-trace/guardian.log.gz",
+      "Bytes": 134,
+      "SHA256": "9b965f6e866ddb006aa6795f9df82729245e4c5eaff198cc4ed64b21895ecb7b",
+      "StoredSHA256": "e90b86d24c6a24a8e1810d22d8568f04b92b3f9dcd63fcd63a619f0bf551e00b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-trace/package-manifest.json.gz",
+      "Bytes": 143476,
+      "SHA256": "9d2324d3e5015852ff37f7afc7c9e3d1612c5657a67bb10a240c138b1732aefa",
+      "StoredSHA256": "01c794d794db5447fffb629511697da6292138b1a3c231472d64804be4982e71"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-trace/build-retry.log.gz",
+      "Bytes": 6108,
+      "SHA256": "ebb23a64400fd531b3bee0cfd8fcd390cc9978159c405877c63c75d52f1ddbd7",
+      "StoredSHA256": "05f12eda19c6e51bb5851d2d9dd2d010af4a46977c8bf78580f61efc5d644d12"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-trace/publish.log.gz",
+      "Bytes": 94,
+      "SHA256": "532d40b2212d0ae7003cd5190d8475d3a35f10bef292648b0321ba8e7dd0294a",
+      "StoredSHA256": "5a14e275347b8c1ca6a6e76c04f0efa775bd1d7bb5a22c0d168b9e6de5bbb28b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-trace/play/.boe_runtime/gm-runs/main.json.gz",
+      "Bytes": 693,
+      "SHA256": "d478f989899c7c919fe7b5c4f143cb725e678317decdc04035eaca84a370faf2",
+      "StoredSHA256": "6ecc48868f176aa95a8815122e41ae0518e514aff35834def9e603d26160a751"
+    }
+  ],
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 89544,
+      "SHA256": "07e48f97ec9e0bed022857c8347f535e6af36d2c960f8f5d858316a68aaada5b"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "Bytes": 22709,
+      "SHA256": "718f1948f7a35630a8a8245862bf7179de67e37922c3a8171483fd6baa37ca57"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeDescriptors.cs",
+      "Bytes": 5729,
+      "SHA256": "59540c43658b8a079ae842eb252196ad3878c3912a3726a4a6b2c1a1f8a62160"
+    },
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Bytes": 24566,
+      "SHA256": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/standalone-bootstrap-trace.py",
+      "Bytes": 16122,
+      "SHA256": "d34548f7beadb821e6e98ab1948758cd0a5f5ccf8dcb7e01c7352ac04e27b978"
+    }
+  ],
+  "A1SendReturnedBytes": 35,
+  "A1SendTimestamp": 1791379111.360604,
+  "ManagedCloseTimestamp": 1791379111.360935,
+  "A1NativeReceiveTimestamp": 1791379111.366256,
+  "A1ReceiveReturnedBytes": 35,
+  "ShutdownSyscallObserved": false,
+  "FullExceptionOccurred": false,
+  "CauseProven": false,
+  "Verdict": "Healthy traced A1/close/receive and original scoped stop; no reproduction and no historical-cause proof",
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 1,
+    "failures": 0,
+    "deadline": false
+  },
+  "ProviderRequests": 0,
+  "AcceptedGameTurns": 0,
+  "OriginalIdentity": {
+    "RootKey": "/workspace/bt1/play",
+    "RunId": "58c1b462f4fb43c28257ad02eed0c31f",
+    "GenerationId": "1dbc624c25274c68bfee8e35c4790a64",
+    "Epoch": 1,
+    "Backend": "LinuxSupervisor",
+    "HostInstanceId": "c4226d43a4a341eab0904e4e98974f7a",
+    "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+  },
+  "PrepareFailures": [
+    "First plain build did not produce build output; owned build cancelled; not qualified. Retry --disable-build-servers fresh succeeded11.77s/11warnings/0errors. Python cache caused earlier clean-readback prep refusal and was removed; no runtime execution then."
+  ],
+  "Toolchain": {
+    "SDK": "10.0.401",
+    "Runtime": "8.0.31",
+    "PowerShell": "7.5.4",
+    "Compiler": "Debian14.2.0-19",
+    "Strace": "6.13"
+  },
+  "EvidenceLimitations": [
+    "ptrace perturbs scheduling",
+    "Configured CLI only replaced by existing fixed neutral fixture because question is pre-exec",
+    "Tracer exit distinct from actual helper identity and original stop evidence"
+  ]
+}

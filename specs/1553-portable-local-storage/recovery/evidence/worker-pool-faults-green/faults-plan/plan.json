@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "worker-native-pool-uncertainty",
+    "worker-native-pool-owner-loss",
+    "worker-native-pool-completion-boundaries"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e044a1ae2afb2193126dba7dd615bfd0a38e8927",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 38.0851842,
+  "Descriptors": [
+    {
+      "Name": "worker-native-pool-completion-boundaries-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-completion-boundaries",
+      "Categories": [
+        "worker-native-pool-completion-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries",
+          "Cases": 6
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-owner-loss-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-owner-loss",
+      "Categories": [
+        "worker-native-pool-owner-loss"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_AuthorityLossAfterCompletedRetainsOriginalExecution",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_AuthorityLossAfterCompletedRetainsOriginalExecution",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-uncertainty-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-uncertainty",
+      "Categories": [
+        "worker-native-pool-uncertainty"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup",
+          "Cases": 6
+        }
+      ]
+    }
+  ]
+}

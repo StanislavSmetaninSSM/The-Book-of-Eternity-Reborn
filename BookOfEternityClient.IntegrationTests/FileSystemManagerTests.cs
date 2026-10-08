@@ -36,8 +36,10 @@ public sealed class FileSystemManagerTests : IDisposable
         await Task.Delay(100);
         await lockStream.DisposeAsync();
 
-        var content = await readTask;
-
+        string? content = null;
+        var failure = await Record.ExceptionAsync(async () => content = await readTask);
+        Assert.True(failure == null,
+            $"The transient read failed with HResult 0x{failure?.HResult:X8}: {failure}");
         Assert.Equal("stable content", content);
     }
 
@@ -69,10 +71,15 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task ClearGameStateAsync_DoesNotTraverseDirectoryJunction()
+    public async Task ClearGameStateAsync_RejectsDirectoryJunctionAndPreservesOutsideData()
     {
         if (!OperatingSystem.IsWindows())
             return;
+
+        const string sentinel = "input/clear-sentinel.json";
+        byte[] sentinelBytes = [0xFF, 0, 0xFE];
+        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
+        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
 
         var outsideRoot = Path.Combine(
             Path.GetTempPath(),
@@ -85,7 +92,9 @@ public sealed class FileSystemManagerTests : IDisposable
         {
             CreateDirectoryJunction(junctionPath, outsideRoot);
 
-            await _fs.ClearGameStateAsync();
+            await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
+            Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
+            Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
 
             Assert.True(File.Exists(outsideFile));
             Assert.Equal("{\"mustRemain\":true}", await File.ReadAllTextAsync(outsideFile));
@@ -100,25 +109,37 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task ClearGameStateAsync_RemovesLocalUiLockNamespaceDirectory()
+    public async Task ClearGameStateAsync_RejectsLocalUiLockDirectoryAndPreservesEvidence()
     {
+        const string sentinel = "input/clear-sentinel.json";
+        byte[] sentinelBytes = [0xFF, 0, 0xFE];
+        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
+        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
         var lockNode = _fs.ResolvePath(LocalUiSessionLockService.LockPath);
         Directory.CreateDirectory(Path.Combine(lockNode, "nested"));
         await File.WriteAllTextAsync(
             Path.Combine(lockNode, "nested", "lock.json"),
             "{\"crafted\":true}");
 
-        await _fs.ClearGameStateAsync();
+        await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
+        Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
+        Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
 
-        Assert.False(File.Exists(lockNode));
-        Assert.False(Directory.Exists(lockNode));
+        Assert.True(Directory.Exists(lockNode));
+        Assert.Equal("{\"crafted\":true}",
+            await File.ReadAllTextAsync(Path.Combine(lockNode, "nested", "lock.json")));
     }
 
     [Fact]
-    public async Task ClearGameStateAsync_RemovesLocalUiLockJunctionWithoutTraversingTarget()
+    public async Task ClearGameStateAsync_RejectsLocalUiLockJunctionWithoutTraversingTarget()
     {
         if (!OperatingSystem.IsWindows())
             return;
+
+        const string sentinel = "input/clear-sentinel.json";
+        byte[] sentinelBytes = [0xFF, 0, 0xFE];
+        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
+        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
 
         var outsideRoot = Path.Combine(
             Path.GetTempPath(),
@@ -131,9 +152,11 @@ public sealed class FileSystemManagerTests : IDisposable
         {
             CreateDirectoryJunction(lockNode, outsideRoot);
 
-            await _fs.ClearGameStateAsync();
+            await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
+            Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
+            Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
 
-            Assert.False(Directory.Exists(lockNode));
+            Assert.True(Directory.Exists(lockNode));
             Assert.True(File.Exists(outsideFile));
             Assert.Equal(
                 "{\"mustRemain\":true}",
@@ -149,29 +172,33 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task ClearGameStateAsync_RemovesDanglingLocalUiLockNode()
+    public async Task ClearGameStateAsync_RejectsDanglingLocalUiLockNode()
     {
         if (!OperatingSystem.IsWindows())
             return;
+
+        const string sentinel = "input/clear-sentinel.json";
+        byte[] sentinelBytes = [0xFF, 0, 0xFE];
+        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
+        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
 
         var lockNode = _fs.ResolvePath(LocalUiSessionLockService.LockPath);
         var missingTarget = Path.Combine(
             _rootPath,
             "missing-local-ui-lock-target");
         Directory.CreateDirectory(missingTarget);
-        if (!TryCreateDirectoryLink(lockNode, missingTarget))
-        {
-            Directory.Delete(missingTarget);
-            return;
-        }
+        Assert.True(TryCreateDirectoryLink(lockNode, missingTarget),
+            "The Windows directory-link fixture could not be created; its assertions were not exercised.");
         Directory.Delete(missingTarget);
         Assert.True(
             File.GetAttributes(lockNode).HasFlag(FileAttributes.ReparsePoint));
 
-        await _fs.ClearGameStateAsync();
+        await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
+        Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
+        Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
 
-        Assert.Throws<FileNotFoundException>(
-            () => File.GetAttributes(lockNode));
+        Assert.True(File.GetAttributes(lockNode).HasFlag(FileAttributes.ReparsePoint));
+        Assert.False(Directory.Exists(missingTarget));
     }
 
     [Fact]
@@ -1583,7 +1610,7 @@ public sealed class FileSystemManagerTests : IDisposable
         await using (var lease =
                      await _fs.AcquireCanonicalWriteLeaseAsync())
         {
-            transaction = await _fs.BeginWorkerApplyTransactionAsync(
+            transaction = await _fs.BeginOriginalWorkerApplyTransactionAsync(
                 lease,
                 [new CanonicalWorkerApplyChange(
                     trackedPath,
@@ -1621,7 +1648,7 @@ public sealed class FileSystemManagerTests : IDisposable
         CanonicalWorkerApplyTransaction transaction;
         await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync())
         {
-            transaction = await fs.BeginWorkerApplyTransactionAsync(
+            transaction = await fs.BeginOriginalWorkerApplyTransactionAsync(
                 lease,
                 [new CanonicalWorkerApplyChange(path, baseline, applied)]);
             Assert.Equal(
@@ -1662,7 +1689,7 @@ public sealed class FileSystemManagerTests : IDisposable
         IReadOnlyList<string> rollbackErrors;
         await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync())
         {
-            transaction = await fs.BeginWorkerApplyTransactionAsync(
+            transaction = await fs.BeginOriginalWorkerApplyTransactionAsync(
                 lease,
                 [new CanonicalWorkerApplyChange(path, baseline, applied)]);
             Assert.Equal(
@@ -1808,18 +1835,26 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task ClearGameStateAsync_RemovesManifestlessBrowserRollbackRoot()
+    public async Task ClearGameStateAsync_RejectsManifestlessBrowserRollbackEvidence()
     {
+        const string sentinel = "input/clear-sentinel.json";
+        byte[] sentinelBytes = [0xFF, 0, 0xFE];
+        await _fs.WriteFileAtomicBytesAsync(sentinel, sentinelBytes);
+        var generationBefore = await File.ReadAllBytesAsync(_fs.SessionGenerationPath);
         var orphanPath =
             $"{ExplorerLocalTurnRollbackArtifacts.Root}/orphan/evidence.bin";
-        await _fs.WriteFileAtomicBytesAsync(orphanPath, [1, 2, 3, 4]);
+        var evidencePath = _fs.ResolvePath(orphanPath);
+        Directory.CreateDirectory(Path.GetDirectoryName(evidencePath)!);
+        await File.WriteAllBytesAsync(evidencePath, [1, 2, 3, 4]);
 
-        await _fs.ClearGameStateAsync();
+        await Assert.ThrowsAsync<InvalidDataException>(() => _fs.ClearGameStateAsync());
+        Assert.Equal(sentinelBytes, await File.ReadAllBytesAsync(_fs.ResolvePath(sentinel)));
+        Assert.Equal(generationBefore, await File.ReadAllBytesAsync(_fs.SessionGenerationPath));
 
         var rollbackRoot = _fs.ResolvePath(
             ExplorerLocalTurnRollbackArtifacts.Root);
-        Assert.False(File.Exists(rollbackRoot));
-        Assert.False(Directory.Exists(rollbackRoot));
+        Assert.True(Directory.Exists(rollbackRoot));
+        Assert.Equal(new byte[] { 1, 2, 3, 4 }, await File.ReadAllBytesAsync(evidencePath));
     }
 
     [Fact]
@@ -2089,7 +2124,7 @@ public sealed class FileSystemManagerTests : IDisposable
                 async () =>
                 {
                     await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-                    await _fs.BeginWorkerApplyTransactionAsync(
+                    await _fs.BeginOriginalWorkerApplyTransactionAsync(
                         writeLease,
                         [
                             new CanonicalWorkerApplyChange(
@@ -2161,7 +2196,7 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task SessionGeneration_RejectsHardLinkedAuthorityFile()
+    public async Task LegacyLoadBegin_RejectsHardLinkedGenerationAuthorityFile()
     {
         if (!OperatingSystem.IsWindows())
             return;
@@ -2180,9 +2215,12 @@ public sealed class FileSystemManagerTests : IDisposable
         File.Delete(_fs.SessionGenerationPath);
         CreateHardLink(_fs.SessionGenerationPath, externalPath);
 
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        // Only the original load journal retains this Windows physical-reader contract.
+        await using var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();
+        await using var writeLease = await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
         Assert.Throws<InvalidDataException>(
-            () => _fs.IsCurrentSessionGeneration(writeLease, externalGeneration));
+            () => _fs.BeginLoadTransaction(writeLease, Guid.NewGuid().ToString("N")));
+        Assert.False(File.Exists(_fs.ActiveLoadTransactionJournalPath));
         Assert.Equal(externalBytes, await File.ReadAllBytesAsync(externalPath));
     }
 
@@ -2214,7 +2252,7 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task SessionGeneration_LinkAddedAfterInitialValidationFailsClosed()
+    public async Task LegacyLoadBegin_GenerationLinkAddedAfterInitialValidationFailsClosed()
     {
         if (!OperatingSystem.IsWindows())
             return;
@@ -2250,12 +2288,14 @@ public sealed class FileSystemManagerTests : IDisposable
             PhysicalLoadTransactionOperations.Instance,
             hooks);
 
-        await using var writeLease =
-            await raceFs.AcquireCanonicalWriteLeaseAsync();
+        // Ordinary generation reads no longer use these legacy physical hooks.
+        await using var lifecycleLease = await raceFs.AcquireSessionLifecycleLeaseAsync();
+        await using var writeLease = await raceFs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
         armed = true;
 
         Assert.Throws<InvalidDataException>(
-            () => raceFs.IsCurrentSessionGeneration(writeLease, generation));
+            () => raceFs.BeginLoadTransaction(writeLease, Guid.NewGuid().ToString("N")));
+        Assert.False(File.Exists(raceFs.ActiveLoadTransactionJournalPath));
         Assert.True(linked);
     }
 
@@ -2553,7 +2593,7 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task ReadFileAsync_RejectsHardLinkedCanonicalState()
+    public async Task ReadFileAsync_LegacyRecoveryRejectsHardLinkedCanonicalState()
     {
         if (!OperatingSystem.IsWindows())
             return;
@@ -2565,8 +2605,9 @@ public sealed class FileSystemManagerTests : IDisposable
         await File.WriteAllBytesAsync(externalPath, externalBytes);
         CreateHardLink(canonicalPath, externalPath);
 
-        await Assert.ThrowsAsync<InvalidDataException>(
-            () => _fs.ReadFileAsync(relativePath));
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        await Assert.ThrowsAsync<InvalidDataException>(() => _fs.RunLegacyStorageRecoveryAsync(
+            lease, async () => { await _fs.ReadFileAsync(lease, relativePath); }));
 
         Assert.Equal(externalBytes, await File.ReadAllBytesAsync(externalPath));
     }
@@ -3985,6 +4026,7 @@ public sealed class FileSystemManagerTests : IDisposable
         var allowWriterCommit = NewBarrier();
         var readerObservedAbsence = NewBarrier();
         var writerCompleted = NewBarrier();
+        var physicalHookCount = 0;
         var hooks = new FileSystemManagerHooks();
         FileSystemManagerHookTestHelper.SetPathHook(
             hooks,
@@ -4007,6 +4049,8 @@ public sealed class FileSystemManagerTests : IDisposable
                         destinationPath,
                         StringComparison.OrdinalIgnoreCase))
                     return;
+                Interlocked.Increment(ref physicalHookCount);
+                Assert.False(File.Exists(destinationPath));
                 writerAtQuarantine.TrySetResult();
                 await allowWriterCommit.Task.WaitAsync(
                     TimeSpan.FromSeconds(10));
@@ -4030,11 +4074,16 @@ public sealed class FileSystemManagerTests : IDisposable
             PhysicalLoadTransactionOperations.Instance,
             hooks);
 
+        async Task PublishWithOriginalHandlerAsync()
+        {
+            await using var writeLease = await raceFs.AcquireCanonicalWriteLeaseAsync();
+            await raceFs.RunLegacyStorageRecoveryAsync(writeLease,
+                () => raceFs.WriteFileAtomicBytesAsync(writeLease, relativePath, publishedBytes));
+        }
+
         var readTask = raceFs.ReadFileBytesAsync(relativePath);
         await readerAtOpen.Task.WaitAsync(TimeSpan.FromSeconds(10));
-        var writeTask = raceFs.WriteFileAtomicBytesAsync(
-            relativePath,
-            publishedBytes);
+        var writeTask = PublishWithOriginalHandlerAsync();
         await writerAtQuarantine.Task.WaitAsync(TimeSpan.FromSeconds(10));
         allowReaderOpen.TrySetResult();
         await readerObservedAbsence.Task.WaitAsync(TimeSpan.FromSeconds(10));
@@ -4052,6 +4101,7 @@ public sealed class FileSystemManagerTests : IDisposable
 
         var recovered = await readTask;
 
+        Assert.Equal(1, Volatile.Read(ref physicalHookCount));
         Assert.Equal(publishedBytes, recovered);
         Assert.Empty(Directory.EnumerateFileSystemEntries(
             raceFs.PhysicalPublicationTransactionsRootPath));
@@ -4301,6 +4351,7 @@ public sealed class FileSystemManagerTests : IDisposable
         await _fs.WriteFileAtomicBytesAsync(probePath, [0x20]);
         var destinationPath = _fs.ResolvePath(publicationPath);
         var lockOpenCount = 0;
+        var physicalHookCount = 0;
         FileSystemManager? raceFs = null;
         var hooks = new FileSystemManagerHooks
         {
@@ -4320,6 +4371,7 @@ public sealed class FileSystemManagerTests : IDisposable
                         destinationPath,
                         StringComparison.OrdinalIgnoreCase))
                 {
+                    Interlocked.Increment(ref physicalHookCount);
                     Assert.NotNull(raceFs);
                     Assert.True(raceFs.FileExists(probePath));
                 }
@@ -4333,8 +4385,13 @@ public sealed class FileSystemManagerTests : IDisposable
             PhysicalLoadTransactionOperations.Instance,
             hooks);
 
-        await raceFs.WriteFileAtomicBytesAsync(publicationPath, [0x30]);
+        await using (var writeLease = await raceFs.AcquireCanonicalWriteLeaseAsync())
+        {
+            await raceFs.RunLegacyStorageRecoveryAsync(writeLease,
+                () => raceFs.WriteFileAtomicBytesAsync(writeLease, publicationPath, [0x30]));
+        }
 
+        Assert.Equal(1, Volatile.Read(ref physicalHookCount));
         Assert.Equal(1, Volatile.Read(ref lockOpenCount));
         Assert.Equal([0x30], await raceFs.ReadFileBytesAsync(publicationPath));
     }
@@ -5016,7 +5073,7 @@ public sealed class FileSystemManagerTests : IDisposable
     }
 
     [Fact]
-    public async Task SessionGeneration_SwapBackReadCannotAuthorizeExternalGeneration()
+    public async Task LegacyLoadBegin_SwapBackReadCannotAuthorizeExternalGeneration()
     {
         if (!OperatingSystem.IsWindows())
             return;
@@ -5105,13 +5162,14 @@ public sealed class FileSystemManagerTests : IDisposable
 
         try
         {
-            await using var writeLease = await raceFs.AcquireCanonicalWriteLeaseAsync();
+            // Exercise the original load handler, not the common logical reader.
+            await using var lifecycleLease = await raceFs.AcquireSessionLifecycleLeaseAsync();
+            await using var writeLease = await raceFs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
             armed = true;
 
             Assert.Throws<InvalidDataException>(
-                () => raceFs.IsCurrentSessionGeneration(
-                    writeLease,
-                    externalGeneration));
+                () => raceFs.BeginLoadTransaction(writeLease, Guid.NewGuid().ToString("N")));
+            Assert.False(File.Exists(raceFs.ActiveLoadTransactionJournalPath));
 
             Assert.True(swapped);
             Assert.True(restored);
@@ -5960,8 +6018,9 @@ public sealed class FileSystemManagerTests : IDisposable
         var outsideRoot = Path.Combine(_rootPath, "opened-lock-outside");
         var probeLink = Path.Combine(_rootPath, "opened-lock-probe");
         Directory.CreateDirectory(outsideRoot);
-        if (!TryCreateDirectoryLink(probeLink, outsideRoot))
-            return;
+        Assert.True(
+            TryCreateDirectoryLink(probeLink, outsideRoot),
+            "The opened-lock path-swap scenario requires a working directory-link fixture.");
         Directory.Delete(probeLink);
 
         var swappedToOutside = false;

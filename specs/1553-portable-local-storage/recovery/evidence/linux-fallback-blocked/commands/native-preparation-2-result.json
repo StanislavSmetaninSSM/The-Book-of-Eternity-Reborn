@@ -1,0 +1,17 @@
+{
+  "StartedUtc": "2026-10-05T15:41:52.898882+00:00",
+  "EndedUtc": "2026-10-05T15:41:53.923690+00:00",
+  "Source": "690a975593e3696530a355057c761480f3d43e70",
+  "Command": [
+    "pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/build-linux-supervisor.ps1",
+    "-OutputDirectory",
+    "/workspace/linux-1553-fallback-artifacts/preparation-2",
+    "-IncludeFixture"
+  ],
+  "ExitCode": 0,
+  "DurationSeconds": 1.0248335469987069,
+  "Log": "native-preparation-2.log"
+}

@@ -1,0 +1,98 @@
+{
+  "Categories": [
+    "console-audio-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "29681bdf4c78686b02c57cca62649e63cbd62453",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 41.5954329,
+  "Descriptors": [
+    {
+      "Name": "console-audio-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "console-audio-linux",
+      "Categories": [
+        "console-audio-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ActualEngineRefreshAndExceptionExit_PreviewRestoresVolumeAndFinallyStopsAll|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ActualMainMenuLayoutsAndSettings_ShowSafeCapabilityMessage|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.AllRealCues_StopAllMuteThrottleAndDisposeOwnEverySession|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ConcurrentPlaylistStopSettingsAndDispose_DoNotOverlapOriginalMusic|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ExplicitNativeDummyOnly_RealWavAndPositiveMp3DecodeQueueDrainAndClose|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.MissingAssetsAndMutedRequests_NeverCreateOutput|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.OriginalMusic_NonrepeatContextVolumeAndMuteDoNotReopenCurrentTrack|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.OwnedFixtureParentTimeout_StopsAndReapsOnlyOriginalHost|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.PlaybackAndCleanupFailures_NoRetryAndNoReplacementWithCleanupDebt|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.PublicService_SelectsLinuxAndReportsUnavailableWithoutWindowsOrDeviceCalls|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlQueueBackend_StreamsPcmAndChangesGainWithoutReopen|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.SoundSettingsDisableAndZeroVolume_StopAlreadyActiveCues|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.StopTimeout_RetainsOriginalAuthorityAndBlocksReplacementUntilActualCompletion|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleSettingsSessionTests.LastAcceptedEffectsCanBeRestoredWithoutDiscardingOrCertifyingTheDraft|FullyQualifiedName=BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 22,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ActualEngineRefreshAndExceptionExit_PreviewRestoresVolumeAndFinallyStopsAll",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ActualMainMenuLayoutsAndSettings_ShowSafeCapabilityMessage",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.AllRealCues_StopAllMuteThrottleAndDisposeOwnEverySession",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ConcurrentPlaylistStopSettingsAndDispose_DoNotOverlapOriginalMusic",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.ExplicitNativeDummyOnly_RealWavAndPositiveMp3DecodeQueueDrainAndClose",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.MissingAssetsAndMutedRequests_NeverCreateOutput",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.OriginalMusic_NonrepeatContextVolumeAndMuteDoNotReopenCurrentTrack",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.OwnedFixtureParentTimeout_StopsAndReapsOnlyOriginalHost",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.PlaybackAndCleanupFailures_NoRetryAndNoReplacementWithCleanupDebt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.PublicService_SelectsLinuxAndReportsUnavailableWithoutWindowsOrDeviceCalls",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlBackend_CapabilityAndPartialFailuresHaveExactCleanup",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.RealSdlQueueBackend_StreamsPcmAndChangesGainWithoutReopen",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.SoundSettingsDisableAndZeroVolume_StopAlreadyActiveCues",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.StopTimeout_RetainsOriginalAuthorityAndBlocksReplacementUntilActualCompletion",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleSettingsSessionTests.AudioPreviewUsesDraftThenRestoresAcceptedSettingsWhenDisposed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleSettingsSessionTests.LastAcceptedEffectsCanBeRestoredWithoutDiscardingOrCertifyingTheDraft",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleSettingsSessionTests.PreviewUnwindRestoresLanguageFontAndAudioAfterExceptionOrRejectedReload",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

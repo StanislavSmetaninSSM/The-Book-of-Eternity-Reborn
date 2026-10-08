@@ -1,0 +1,95 @@
+{
+  "SchemaVersion": 1,
+  "Artifacts": [
+    {
+      "Path": "descendant-red/dotnet-test.log.gz",
+      "Bytes": 164345,
+      "Sha256": "59a6a23ff20c6c68a93fd524ddff48b9ffa0daa0e687b5fa4645fcba29d1e2f5"
+    },
+    {
+      "Path": "descendant-red/linux-fallback-proc-discovery-unit-001.trx",
+      "Bytes": 5221,
+      "Sha256": "93a2c9580303608748fad0b2c1b7284268c60817b335b37c5e884ec2d743b6f5"
+    },
+    {
+      "Path": "descendant-red/plan.json",
+      "Bytes": 1114,
+      "Sha256": "e51b033d77d72f1d8df99dd1ba5d00306e8b2666a9f8a4d26b9ef3daf5674723"
+    },
+    {
+      "Path": "descendant-red/summary.json",
+      "Bytes": 1369,
+      "Sha256": "d58c25471fb5001501b9dc9598dd587fd87c64ad56e35b8f60ce7e13993c27b6"
+    },
+    {
+      "Path": "descendant-red-plan/Build-unit.log.gz",
+      "Bytes": 1040,
+      "Sha256": "40ca71dfbb69add854c6fd341eb525c1d36ca471734ab3f063f0ddac983c7faa"
+    },
+    {
+      "Path": "descendant-red-plan/dotnet-test.log.gz",
+      "Bytes": 164760,
+      "Sha256": "0fb4f6b730accc579c869c18d2827b52f397f2b3378324ff4690503e4b421bfe"
+    },
+    {
+      "Path": "descendant-red-plan/plan.json",
+      "Bytes": 1117,
+      "Sha256": "bd67671267b2e9565312cb39681bafa2c70762a09ac642ea904b0b7f4c506df6"
+    },
+    {
+      "Path": "descendant-red-plan/summary.json",
+      "Bytes": 1467,
+      "Sha256": "64b10557c04faca8bb0bdb60142a46a3c39b5b68819f043fc30a0eae66d42b84"
+    },
+    {
+      "Path": "descendant-red-plan-result.json",
+      "Bytes": 447,
+      "Sha256": "d87d8c77b11c0ce1a784526ce415f73ce9ba0a7b61214d6d1f31442c400ad46b"
+    },
+    {
+      "Path": "descendant-red-plan.log.gz",
+      "Bytes": 592,
+      "Sha256": "4f1a4437b393356cfba1f0fe230850f833cf3e65ca41539ff41044c4fab9194c"
+    },
+    {
+      "Path": "descendant-red-result.json",
+      "Bytes": 441,
+      "Sha256": "6976ed2e2a007424127190c41a34baac99900489588460a032798e78901fa086"
+    },
+    {
+      "Path": "descendant-red.log.gz",
+      "Bytes": 1003,
+      "Sha256": "dbd882540fdd29d5c554487698b161a399f2c700200cae14ceca0a77b960f371"
+    },
+    {
+      "Path": "native/e8b612cd64124443b0758d67a1020a9c/build-provenance.json",
+      "Bytes": 1160,
+      "Sha256": "2081f6fca56fd3fb0248ac42bf5836c8ee26bc686ef2047dca0c6d2f3e701b2d"
+    },
+    {
+      "Path": "native/e8b612cd64124443b0758d67a1020a9c/build.log.gz",
+      "Bytes": 123,
+      "Sha256": "5f4cdbd5bebe66f819fc2c45be26fe750c12eecf4de28b5dba1791f2eb112a0e"
+    },
+    {
+      "Path": "native/e8b612cd64124443b0758d67a1020a9c/events.jsonl",
+      "Bytes": 133,
+      "Sha256": "8d3baaaef9e7372c80efec4b98dcd0d58e0421b0fd45af5de4e4250de58b3dce"
+    },
+    {
+      "Path": "native/e8b612cd64124443b0758d67a1020a9c/guardian.json",
+      "Bytes": 176,
+      "Sha256": "c01802ef78de8d6ef4b3bda3c3047fbbb2df815cc3058b97c80be9c77e4056c1"
+    },
+    {
+      "Path": "native/e8b612cd64124443b0758d67a1020a9c/status.jsonl",
+      "Bytes": 1315,
+      "Sha256": "017dea4375b85657da08e93deb8914d05fb030c8b258d263b2229a59bf11861a"
+    },
+    {
+      "Path": "native/e8b612cd64124443b0758d67a1020a9c/stderr.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    }
+  ]
+}

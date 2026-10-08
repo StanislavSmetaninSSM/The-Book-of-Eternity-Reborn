@@ -1,0 +1,23 @@
+{
+  "Platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Architecture": "x86_64",
+  "DotnetPath": "/workspace/.onboarding/tools/dotnet/dotnet",
+  "Sdk": "10.0.401",
+  "Runtimes": [
+    "Microsoft.AspNetCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]",
+    "Microsoft.AspNetCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]",
+    "Microsoft.NETCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]",
+    "Microsoft.NETCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]"
+  ],
+  "PowerShellPath": "/workspace/.onboarding/tools/pwsh/pwsh",
+  "PowerShell": "7.5.4",
+  "NativeCompilerPath": "/usr/bin/cc",
+  "NativeCompilerResolved": "/usr/bin/x86_64-linux-gnu-gcc-14",
+  "NativeCompilerVersion": "cc (Debian 14.2.0-19) 14.2.0",
+  "NativeCompilerPackage": "gcc-14-x86-64-linux-gnu: /usr/bin/x86_64-linux-gnu-gcc-14",
+  "NativeCompilerUsage": "No new native compiler probes or builds in T031; shared source and prebuilt helper preserved from accepted M1. Managed category builds only.",
+  "EnvironmentChanges": false,
+  "ProviderRequests": 0,
+  "NativeWindowsExecutions": 0,
+  "SystemdQualification": false
+}

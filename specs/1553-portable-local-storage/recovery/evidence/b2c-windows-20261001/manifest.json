@@ -1,0 +1,110 @@
+{
+  "kind": "Windows B2c exact-source selected-category evidence",
+  "sourceSha": "88a02f36fc072e66633055265b3f6a3aee7ce02e",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-console-settings-client -Parallelism 1",
+  "category": "portable-console-settings-client",
+  "os": "Microsoft Windows 10.0.26200",
+  "architecture": "X64",
+  "powershell": "7.6.6",
+  "dotnetSdk": "10.0.401",
+  "startUtc": "2026-10-01T07:30:01.4200862Z",
+  "endUtc": "2026-10-01T07:33:39.5608809Z",
+  "wallTime": "00:03:37.1480884",
+  "result": {
+    "plannedDescriptors": 1,
+    "passed": 5,
+    "executed": 5,
+    "exitCode": 0,
+    "timedOut": false,
+    "completedDescriptors": 1,
+    "selectionComplete": true,
+    "failed": 0,
+    "total": 5,
+    "skipped": 0
+  },
+  "cleanup": {
+    "ownedRuntimeDirectoryRemainders": 0,
+    "ownedTreeComplete": true,
+    "runtimeComplete": true,
+    "launcherProcessRemainders": 0
+  },
+  "sourceWorkingTreeClean": true,
+  "limits": [
+    "Windows scripted console processes only",
+    "No interactive PTY/browser test",
+    "No full suite",
+    "No live GM/API/audio/image acceptance"
+  ],
+  "sanitization": "Only generated run artifacts read; private source/run/home/tool paths and host/user labels replaced by consistent brace placeholders. JSON/TRX reparsed; absolute drive paths, private labels and token-like strings checked absent. Original artifacts retained locally; separate hashes preserve provenance.",
+  "tests": [
+    {
+      "duration": "00:00:06.4307250",
+      "name": "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_MainMenuExitScript_UsesSandboxAndEmitsObservationArtifacts",
+      "outcome": "Passed"
+    },
+    {
+      "duration": "00:00:09.6833618",
+      "name": "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_OptionsMenuScript_UsesScriptedInputAndEmitsMenuObservations",
+      "outcome": "Passed"
+    },
+    {
+      "duration": "00:00:10.8511357",
+      "name": "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave(otherOwner: True)",
+      "outcome": "Passed"
+    },
+    {
+      "duration": "00:00:26.7027323",
+      "name": "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_ImmediateQteSaveSurvivesInterruptedMenuAndProcessRestart",
+      "outcome": "Passed"
+    },
+    {
+      "duration": "00:00:10.2780584",
+      "name": "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave(otherOwner: False)",
+      "outcome": "Passed"
+    }
+  ],
+  "files": [
+    {
+      "file": "summary.sanitized.json",
+      "originalSha256": "8e436e0779445676ba4947b612bdaa975daab7744d4af45828ab434a68c766ec",
+      "sanitizedSha256": "8e436e0779445676ba4947b612bdaa975daab7744d4af45828ab434a68c766ec",
+      "bytes": 1648
+    },
+    {
+      "file": "plan.sanitized.json",
+      "originalSha256": "625f4aafacac00fc920399c35ad6f9ea91f30342039e4399a7113e1f72515da0",
+      "sanitizedSha256": "625f4aafacac00fc920399c35ad6f9ea91f30342039e4399a7113e1f72515da0",
+      "bytes": 2178
+    },
+    {
+      "file": "portable-console-settings-client.sanitized.trx",
+      "originalSha256": "a1ff44e84cd3323caf049ba0ac22f49ae477f62c7ed79b5151b9b07037487a56",
+      "sanitizedSha256": "df75f771d0024eb2e3adf2c1fb2b0190badc37b9969024488f6143501e99ecfe",
+      "bytes": 9122
+    },
+    {
+      "file": "build-integration.sanitized.log",
+      "originalSha256": "886abc314fbce3ec04234c55cf9df56ae24b5cda202089f2eb703eed484b64be",
+      "sanitizedSha256": "6b51a2dbabb075eeaba0b244dd6c8a2bc5fdacb5432f0e43cff8162a88776e22",
+      "bytes": 4186
+    },
+    {
+      "file": "dotnet-test.sanitized.log",
+      "originalSha256": "b4e63002dbf4e890014d22d3b4b9abe7b47dee3ec63b5f0b82cc4688679cc463",
+      "sanitizedSha256": "876e93b0b2d7aee3c468aa2b77fac8baacf6802333402fff3ae857973f42c2dc",
+      "bytes": 1524727
+    },
+    {
+      "file": "run-metadata.sanitized.json",
+      "originalSha256": "35a2537508166dfce5a39b0efb4b34aefbef84782decf034759ee692b5befb6a",
+      "sanitizedSha256": "35a2537508166dfce5a39b0efb4b34aefbef84782decf034759ee692b5befb6a",
+      "bytes": 863
+    },
+    {
+      "file": "launcher-exit.sanitized.json",
+      "originalSha256": "6c0b4b150342c2a6a2835c033e94cca3c2f3a06a6728e5428800b3561419a9c9",
+      "sanitizedSha256": "6c0b4b150342c2a6a2835c033e94cca3c2f3a06a6728e5428800b3561419a9c9",
+      "bytes": 68
+    }
+  ]
+}

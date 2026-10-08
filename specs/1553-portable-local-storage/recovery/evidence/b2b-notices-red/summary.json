@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "portable-settings-notices"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "ab2163c6b16c638497683e3301b98ea58d770ff7",
+    "WorkingTreeFingerprint": "CA6966CD6021B86F91544D631173481BC1CDDAF0A0CECE307891BFA9C2885748",
+    "ChangedFiles": 1
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-settings-notices",
+      "Seconds": 1.0668807,
+      "BudgetMinutes": 4,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0681605,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0179215,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0161179,
+      "Completed": true
+    },
+    {
+      "Name": "Frontend-build",
+      "Seconds": 6.6566154,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-001-compile",
+      "Seconds": 0.9132571,
+      "Completed": true
+    },
+    {
+      "Name": "portable-settings-notices-frontend-001-settingsPersistenceNotice.test.js",
+      "Seconds": 0.0971473,
+      "Completed": false
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 9,
+  "WallTime": "00:00:08.1554323",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 1,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-settings-notices-frontend-001"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

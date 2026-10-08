@@ -1,0 +1,47 @@
+{
+  "Outcome": "GREEN pending independent review",
+  "Executed": 6,
+  "Passed": 6,
+  "Failed": 0,
+  "Cleanup": "complete",
+  "ModelCalls": 0,
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 1610657,
+      "SHA256": "76908524f395cbef127bb8365302f18fd2994faed6c8162cebbeeaca6be369d4",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 178737,
+      "StoredSHA256": "6b4037bf3758f58be6e969dfb8ef42e96435b479708a2a5dde53b2369b0b25c3"
+    },
+    {
+      "Path": "gm-relay-driver-acceptance-unit-001.trx",
+      "Bytes": 10170,
+      "SHA256": "0ce421a727c98fd1eba911bfda532ac24b7ddd0558caf9aeb8431aa42406f321",
+      "StoredPath": "gm-relay-driver-acceptance-unit-001.trx.gz",
+      "StoredBytes": 1837,
+      "StoredSHA256": "1a7faaa32a43b9c1d94671c251405bbbc9c9aceee63aaba8dc9b122a314745e4"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 1060,
+      "SHA256": "a8000623fc0c1c88e950ba63e8ce2ae66632431bd6625ccc1f8fdeba8d80a714",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 495,
+      "StoredSHA256": "a95d94f430addef26c5a1bf039df3f9657a15660e7123da007f8ce9be528bdcf"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1459,
+      "SHA256": "42b96f8b5ed53b266f53db869d24324d30a71102282438a46ac9c0332a7a5b35",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 606,
+      "StoredSHA256": "fecbcdffc6893f5687813bdeb905caddb7d471e5df3fb439c8e5445ec2359ab4"
+    }
+  ],
+  "SourcePins": {
+    "tests/fixtures/ProductionMain/live-game-one-turn.py": "c42d6f98bfdc6a822f91212c183524d64d5767c8ee2ce0445cb10636c2225f62",
+    "tests/fixtures/ProductionMain/relay-acceptance-checks.py": "3d55c4fb9d88e2ed00cdd203c18e7025ddb72af2177ec0bfb5fb599dd7db8bf6",
+    "BookOfEternityClient.Tests/GmRelayAcceptanceTests.cs": "15d1c2fd949bf0279fc746f224bd2c32b3fcfd448ce7fd76e149c01e5c512b41"
+  }
+}

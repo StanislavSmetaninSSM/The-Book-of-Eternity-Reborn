@@ -1,0 +1,431 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="27772e01-83aa-4b6d-a343-49abd7dfaad4" name="@ff00c3d48a40 2026-10-01 18:31:29" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T18:31:29.4547326-04:00" queuing="2026-10-01T18:31:29.4547327-04:00" start="2026-10-01T18:31:26.6508337-04:00" finish="2026-10-01T18:31:29.4619431-04:00" />
+  <TestSettings name="default" id="9da88a0d-7d7e-4323-b228-9eecb9175fbb">
+    <Deployment runDeploymentRoot="_ff00c3d48a40_2026-10-01_18_31_29" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="49d70474-e198-472b-a044-d0faefd49fca" testId="651347b7-04a2-7c1f-6d28-c98f509306fc" testName="BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure(unknown: True)" computerName="ff00c3d48a40" duration="00:00:00.5462126" startTime="2026-10-01T18:31:29.3057976-04:00" endTime="2026-10-01T18:31:29.3057988-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="49d70474-e198-472b-a044-d0faefd49fca">
+      <Output>
+        <ErrorInfo>
+          <Message>System.InvalidOperationException : Diagnostic failure must not reverse accepted distribution.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBackupConsumerTests.FailingDistributorLogger.Log[TState](LogLevel level, EventId id, TState state, Exception exception, Func`3 formatter) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs:line 118
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogWarning(ILogger logger, Exception exception, String message, Object[] args)
+   at BookOfEternityClient.IO.StateDistributor.CleanupCommittedBackupsAsync(CanonicalWriteLease writeLease, IEnumerable`1 mutations) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 691
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 185
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 54
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 54
+   at BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure(Boolean unknown) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs:line 94
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b3854d20-0ff5-4297-ac40-660d32c5d3f6" testId="228c9f65-4f31-41f5-e50f-4ab353a144dd" testName="BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt(committedDebt: False)" computerName="ff00c3d48a40" duration="00:00:00.0213932" startTime="2026-10-01T18:31:28.7603285-04:00" endTime="2026-10-01T18:31:28.7603289-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b3854d20-0ff5-4297-ac40-660d32c5d3f6">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)
+Actual:   typeof(System.AggregateException)
+---- System.AggregateException : State distribution failed and one or more rollback operations also failed. (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.) (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.)
+-------- BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.
+------------ System.AggregateException : One or more errors occurred. (Exception of type 'BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure' was thrown.) (A publication member contains unknown bytes; evidence retained.)
+---------------- BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure : Exception of type 'BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure' was thrown.
+---------------- System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.
+-------- BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.
+------------ System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt(Boolean committedDebt) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs:line 43
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 157
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 54
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 54
+----- Inner Stack Trace #1 (BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException) -----
+   at BookOfEternityClient.Core.FileSystemManager.PublishBackupMembersAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot generation, List`1 members, TrustedLocalFileChange sourceGuard) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 126
+   at BookOfEternityClient.Core.FileSystemManager.CreateBackupWithLeaseAsync(CanonicalWriteLease lease, String relativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 61
+   at BookOfEternityClient.Core.FileSystemManager.CreateBackup(CanonicalWriteLease writeLease, String relativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5644
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 108
+----- Inner Stack Trace -----
+
+----- Inner Stack Trace #1 (BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure) -----
+   at BookOfEternityClient.Tests.PortableBackupConsumerTests.&lt;&gt;c__DisplayClass5_0.&lt;ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt&gt;b__2(TrustedLocalPublicationPhase phase, Int32 _) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs:line 37
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 390
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 180
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 83
+----- Inner Stack Trace #2 (System.IO.InvalidDataException) -----
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 256
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 219
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 94
+----- Inner Stack Trace #2 (BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException) -----
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 37
+   at BookOfEternityClient.Core.FileSystemManager.CleanupBackupWithLeaseAsync(CanonicalWriteLease lease, String backupFullPath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 94
+   at BookOfEternityClient.Core.FileSystemManager.CleanupBackup(CanonicalWriteLease writeLease, String backupFullPath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5713
+   at BookOfEternityClient.IO.StateDistributor.RollbackMutations(CanonicalWriteLease writeLease, IEnumerable`1 mutations) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 650
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 256
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 219
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 62
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 36</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="02775eb0-ad60-4c78-b8dd-94ca29ea3e47" testId="b8de935a-2e0e-2e44-2511-6b43486e1f58" testName="BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt(committedDebt: True)" computerName="ff00c3d48a40" duration="00:00:00.0376816" startTime="2026-10-01T18:31:28.7363661-04:00" endTime="2026-10-01T18:31:28.7363663-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="02775eb0-ad60-4c78-b8dd-94ca29ea3e47">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)
+Actual:   typeof(System.AggregateException)
+---- System.AggregateException : State distribution failed and one or more rollback operations also failed. (Local publication outcome is uncertain; retained evidence must be resolved before continuing.) (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.) (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.)
+-------- System.IO.InvalidDataException : Local publication outcome is uncertain; retained evidence must be resolved before continuing.
+------------ System.AggregateException : One or more errors occurred. (A publication member contains unknown bytes; evidence retained.) (A publication member contains unknown bytes; evidence retained.)
+---------------- System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.
+---------------- System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.
+-------- BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.
+------------ System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.
+-------- BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.
+------------ System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt(Boolean committedDebt) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs:line 43
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 157
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 54
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 54
+----- Inner Stack Trace #1 (System.IO.InvalidDataException) -----
+   at BookOfEternityClient.Core.FileSystemManager.RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 175
+   at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 227
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 801
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicAsync(CanonicalWriteLease writeLease, String relativePath, String content) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 722
+   at BookOfEternityClient.IO.StateDistributor.MergeFieldsIntoFile(CanonicalWriteLease writeLease, String relativePath, Dictionary`2 fields) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 522
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 116
+----- Inner Stack Trace -----
+
+----- Inner Stack Trace #1 (System.IO.InvalidDataException) -----
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 256
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 219
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 123
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 83
+----- Inner Stack Trace #2 (System.IO.InvalidDataException) -----
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 256
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 219
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 94
+----- Inner Stack Trace #2 (BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException) -----
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 37
+   at BookOfEternityClient.Core.FileSystemManager.CleanupBackupWithLeaseAsync(CanonicalWriteLease lease, String backupFullPath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 94
+   at BookOfEternityClient.Core.FileSystemManager.CleanupBackup(CanonicalWriteLease writeLease, String backupFullPath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5713
+   at BookOfEternityClient.IO.StateDistributor.RollbackMutations(CanonicalWriteLease writeLease, IEnumerable`1 mutations) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 650
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 256
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 219
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 62
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 36
+----- Inner Stack Trace #3 (BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException) -----
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 37
+   at BookOfEternityClient.Core.FileSystemManager.CleanupBackupWithLeaseAsync(CanonicalWriteLease lease, String backupFullPath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 94
+   at BookOfEternityClient.Core.FileSystemManager.CleanupBackup(CanonicalWriteLease writeLease, String backupFullPath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5713
+   at BookOfEternityClient.IO.StateDistributor.RollbackMutations(CanonicalWriteLease writeLease, IEnumerable`1 mutations) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 650
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 256
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 219
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 62
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 36</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="211d1abb-7817-4df7-baf2-e765b591c383" testId="33eab10b-3afa-a710-6032-0bfc5982270e" testName="BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved" computerName="ff00c3d48a40" duration="00:00:00.2561704" startTime="2026-10-01T18:31:28.7065818-04:00" endTime="2026-10-01T18:31:28.7065964-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="211d1abb-7817-4df7-baf2-e765b591c383">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)
+Actual:   typeof(System.AggregateException)
+---- System.AggregateException : State distribution failed and one or more rollback operations also failed. (Exception of type 'BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure' was thrown.) (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.) (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.)
+-------- BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure : Exception of type 'BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure' was thrown.
+-------- BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.
+------------ System.AggregateException : One or more errors occurred. (Exception of type 'BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure' was thrown.) (A publication member contains unknown bytes; evidence retained.)
+---------------- BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure : Exception of type 'BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure' was thrown.
+---------------- System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.
+-------- BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.
+------------ System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved() in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs:line 69
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 157
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 54
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 54
+----- Inner Stack Trace #1 (BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure) -----
+   at BookOfEternityClient.Tests.PortableBackupConsumerTests.&lt;&gt;c.&lt;ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved&gt;b__6_2(String _) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs:line 66
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 120
+----- Inner Stack Trace #2 (BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException) -----
+   at BookOfEternityClient.Core.FileSystemManager.PublishBackupMembersAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot generation, List`1 members, TrustedLocalFileChange sourceGuard) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 126
+   at BookOfEternityClient.Core.FileSystemManager.RestoreBackupWithLeaseAsync(CanonicalWriteLease lease, String backupFullPath, String originalRelativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 85
+   at BookOfEternityClient.Core.FileSystemManager.RestoreBackup(CanonicalWriteLease writeLease, String backupFullPath, String originalRelativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5679
+   at BookOfEternityClient.IO.StateDistributor.RollbackMutations(CanonicalWriteLease writeLease, IEnumerable`1 mutations) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 629
+----- Inner Stack Trace -----
+
+----- Inner Stack Trace #1 (BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure) -----
+   at BookOfEternityClient.Tests.PortableBackupConsumerTests.&lt;&gt;c__DisplayClass6_0.&lt;ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved&gt;b__1(TrustedLocalPublicationPhase phase, Int32 index) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs:line 60
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 390
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 180
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 83
+----- Inner Stack Trace #2 (System.IO.InvalidDataException) -----
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 256
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 219
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 94
+----- Inner Stack Trace #3 (BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException) -----
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 37
+   at BookOfEternityClient.Core.FileSystemManager.CleanupBackupWithLeaseAsync(CanonicalWriteLease lease, String backupFullPath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 94
+   at BookOfEternityClient.Core.FileSystemManager.CleanupBackup(CanonicalWriteLease writeLease, String backupFullPath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5713
+   at BookOfEternityClient.IO.StateDistributor.RollbackMutations(CanonicalWriteLease writeLease, IEnumerable`1 mutations) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 650
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 256
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 219
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 62
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 36</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="bd0aaf91-fafc-40f0-b552-63c2fbe9ec7d" testId="23f673a0-e8c1-4526-7e2d-003ab004de66" testName="BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure(unknown: False)" computerName="ff00c3d48a40" duration="00:00:00.0356364" startTime="2026-10-01T18:31:29.3425262-04:00" endTime="2026-10-01T18:31:29.3425264-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bd0aaf91-fafc-40f0-b552-63c2fbe9ec7d">
+      <Output>
+        <ErrorInfo>
+          <Message>System.InvalidOperationException : Diagnostic failure must not reverse accepted distribution.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBackupConsumerTests.FailingDistributorLogger.Log[TState](LogLevel level, EventId id, TState state, Exception exception, Func`3 formatter) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs:line 118
+   at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+   at Microsoft.Extensions.Logging.LoggerExtensions.LogInformation(ILogger logger, String message, Object[] args)
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 186
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 54
+   at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response) in SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs:line 54
+   at BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure(Boolean unknown) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs:line 94
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure(unknown: True)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="651347b7-04a2-7c1f-6d28-c98f509306fc">
+      <Execution id="49d70474-e198-472b-a044-d0faefd49fca" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupConsumerTests" name="AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="33eab10b-3afa-a710-6032-0bfc5982270e">
+      <Execution id="211d1abb-7817-4df7-baf2-e765b591c383" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupConsumerTests" name="ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt(committedDebt: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="228c9f65-4f31-41f5-e50f-4ab353a144dd">
+      <Execution id="b3854d20-0ff5-4297-ac40-660d32c5d3f6" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupConsumerTests" name="ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure(unknown: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="23f673a0-e8c1-4526-7e2d-003ab004de66">
+      <Execution id="bd0aaf91-fafc-40f0-b552-63c2fbe9ec7d" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupConsumerTests" name="AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt(committedDebt: True)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b8de935a-2e0e-2e44-2511-6b43486e1f58">
+      <Execution id="02775eb0-ad60-4c78-b8dd-94ca29ea3e47" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupConsumerTests" name="ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="651347b7-04a2-7c1f-6d28-c98f509306fc" executionId="49d70474-e198-472b-a044-d0faefd49fca" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="228c9f65-4f31-41f5-e50f-4ab353a144dd" executionId="b3854d20-0ff5-4297-ac40-660d32c5d3f6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b8de935a-2e0e-2e44-2511-6b43486e1f58" executionId="02775eb0-ad60-4c78-b8dd-94ca29ea3e47" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="33eab10b-3afa-a710-6032-0bfc5982270e" executionId="211d1abb-7817-4df7-baf2-e765b591c383" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="23f673a0-e8c1-4526-7e2d-003ab004de66" executionId="bd0aaf91-fafc-40f0-b552-63c2fbe9ec7d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="5" executed="5" passed="0" failed="5" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.22]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.24]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.27]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.60]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.60]       Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)
+[xUnit.net 00:00:01.60]       Actual:   typeof(System.AggregateException)
+[xUnit.net 00:00:01.60]       ---- System.AggregateException : State distribution failed and one or more rollback operations also failed. (Exception of type 'BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure' was thrown.) (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.) (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.)
+[xUnit.net 00:00:01.60]       -------- BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure : Exception of type 'BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure' was thrown.
+[xUnit.net 00:00:01.60]       -------- BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.
+[xUnit.net 00:00:01.60]       ------------ System.AggregateException : One or more errors occurred. (Exception of type 'BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure' was thrown.) (A publication member contains unknown bytes; evidence retained.)
+[xUnit.net 00:00:01.60]       ---------------- BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure : Exception of type 'BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure' was thrown.
+[xUnit.net 00:00:01.60]       ---------------- System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.
+[xUnit.net 00:00:01.60]       -------- BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.
+[xUnit.net 00:00:01.60]       ------------ System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.
+[xUnit.net 00:00:01.60]       Stack Trace:
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs(69,0): at BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved()
+[xUnit.net 00:00:01.60]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.60]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(157,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(54,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(54,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response)
+[xUnit.net 00:00:01.60]         ----- Inner Stack Trace #1 (BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure) -----
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs(66,0): at BookOfEternityClient.Tests.PortableBackupConsumerTests.&lt;&gt;c.&lt;ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved&gt;b__6_2(String _)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(120,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput)
+[xUnit.net 00:00:01.60]         ----- Inner Stack Trace #2 (BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException) -----
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(126,0): at BookOfEternityClient.Core.FileSystemManager.PublishBackupMembersAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot generation, List`1 members, TrustedLocalFileChange sourceGuard)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(85,0): at BookOfEternityClient.Core.FileSystemManager.RestoreBackupWithLeaseAsync(CanonicalWriteLease lease, String backupFullPath, String originalRelativePath)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5679,0): at BookOfEternityClient.Core.FileSystemManager.RestoreBackup(CanonicalWriteLease writeLease, String backupFullPath, String originalRelativePath)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(629,0): at BookOfEternityClient.IO.StateDistributor.RollbackMutations(CanonicalWriteLease writeLease, IEnumerable`1 mutations)
+[xUnit.net 00:00:01.60]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.60]         
+[xUnit.net 00:00:01.60]         ----- Inner Stack Trace #1 (BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure) -----
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs(60,0): at BookOfEternityClient.Tests.PortableBackupConsumerTests.&lt;&gt;c__DisplayClass6_0.&lt;ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved&gt;b__1(TrustedLocalPublicationPhase phase, Int32 index)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(390,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(180,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(83,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:01.60]         ----- Inner Stack Trace #2 (System.IO.InvalidDataException) -----
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(256,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(219,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(94,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:01.60]         ----- Inner Stack Trace #3 (BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException) -----
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(37,0): at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(94,0): at BookOfEternityClient.Core.FileSystemManager.CleanupBackupWithLeaseAsync(CanonicalWriteLease lease, String backupFullPath)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5713,0): at BookOfEternityClient.Core.FileSystemManager.CleanupBackup(CanonicalWriteLease writeLease, String backupFullPath)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(650,0): at BookOfEternityClient.IO.StateDistributor.RollbackMutations(CanonicalWriteLease writeLease, IEnumerable`1 mutations)
+[xUnit.net 00:00:01.60]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(256,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(219,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(62,0): at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.60]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(36,0): at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.63]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.63]       Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)
+[xUnit.net 00:00:01.63]       Actual:   typeof(System.AggregateException)
+[xUnit.net 00:00:01.63]       ---- System.AggregateException : State distribution failed and one or more rollback operations also failed. (Local publication outcome is uncertain; retained evidence must be resolved before continuing.) (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.) (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.)
+[xUnit.net 00:00:01.63]       -------- System.IO.InvalidDataException : Local publication outcome is uncertain; retained evidence must be resolved before continuing.
+[xUnit.net 00:00:01.63]       ------------ System.AggregateException : One or more errors occurred. (A publication member contains unknown bytes; evidence retained.) (A publication member contains unknown bytes; evidence retained.)
+[xUnit.net 00:00:01.63]       ---------------- System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.
+[xUnit.net 00:00:01.63]       ---------------- System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.
+[xUnit.net 00:00:01.63]       -------- BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.
+[xUnit.net 00:00:01.63]       ------------ System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.
+[xUnit.net 00:00:01.63]       -------- BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.
+[xUnit.net 00:00:01.63]       ------------ System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs(43,0): at BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt(Boolean committedDebt)
+[xUnit.net 00:00:01.63]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.63]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(157,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(54,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(54,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response)
+[xUnit.net 00:00:01.63]         ----- Inner Stack Trace #1 (System.IO.InvalidDataException) -----
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(175,0): at BookOfEternityClient.Core.FileSystemManager.RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(227,0): at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(801,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(722,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicAsync(CanonicalWriteLease writeLease, String relativePath, String content)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(522,0): at BookOfEternityClient.IO.StateDistributor.MergeFieldsIntoFile(CanonicalWriteLease writeLease, String relativePath, Dictionary`2 fields)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(116,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput)
+[xUnit.net 00:00:01.63]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.63]         
+[xUnit.net 00:00:01.63]         ----- Inner Stack Trace #1 (System.IO.InvalidDataException) -----
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(256,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(219,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(123,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(83,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:01.63]         ----- Inner Stack Trace #2 (System.IO.InvalidDataException) -----
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(256,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(219,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(94,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:01.63]         ----- Inner Stack Trace #2 (BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException) -----
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(37,0): at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(94,0): at BookOfEternityClient.Core.FileSystemManager.CleanupBackupWithLeaseAsync(CanonicalWriteLease lease, String backupFullPath)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5713,0): at BookOfEternityClient.Core.FileSystemManager.CleanupBackup(CanonicalWriteLease writeLease, String backupFullPath)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(650,0): at BookOfEternityClient.IO.StateDistributor.RollbackMutations(CanonicalWriteLease writeLease, IEnumerable`1 mutations)
+[xUnit.net 00:00:01.63]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(256,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(219,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(62,0): at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(36,0): at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.63]         ----- Inner Stack Trace #3 (BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException) -----
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(37,0): at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(94,0): at BookOfEternityClient.Core.FileSystemManager.CleanupBackupWithLeaseAsync(CanonicalWriteLease lease, String backupFullPath)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5713,0): at BookOfEternityClient.Core.FileSystemManager.CleanupBackup(CanonicalWriteLease writeLease, String backupFullPath)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(650,0): at BookOfEternityClient.IO.StateDistributor.RollbackMutations(CanonicalWriteLease writeLease, IEnumerable`1 mutations)
+[xUnit.net 00:00:01.63]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(256,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(219,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(62,0): at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.63]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(36,0): at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.65]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.65]       Expected: typeof(BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException)
+[xUnit.net 00:00:01.65]       Actual:   typeof(System.AggregateException)
+[xUnit.net 00:00:01.65]       ---- System.AggregateException : State distribution failed and one or more rollback operations also failed. (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.) (Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.)
+[xUnit.net 00:00:01.65]       -------- BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.
+[xUnit.net 00:00:01.65]       ------------ System.AggregateException : One or more errors occurred. (Exception of type 'BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure' was thrown.) (A publication member contains unknown bytes; evidence retained.)
+[xUnit.net 00:00:01.65]       ---------------- BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure : Exception of type 'BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure' was thrown.
+[xUnit.net 00:00:01.65]       ---------------- System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.
+[xUnit.net 00:00:01.65]       -------- BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.
+[xUnit.net 00:00:01.65]       ------------ System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs(43,0): at BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt(Boolean committedDebt)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(157,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(54,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(54,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response)
+[xUnit.net 00:00:01.66]         ----- Inner Stack Trace #1 (BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException) -----
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(126,0): at BookOfEternityClient.Core.FileSystemManager.PublishBackupMembersAsync(CanonicalWriteLease lease, LocalSessionGenerationSnapshot generation, List`1 members, TrustedLocalFileChange sourceGuard)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(61,0): at BookOfEternityClient.Core.FileSystemManager.CreateBackupWithLeaseAsync(CanonicalWriteLease lease, String relativePath)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5644,0): at BookOfEternityClient.Core.FileSystemManager.CreateBackup(CanonicalWriteLease writeLease, String relativePath)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(108,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput)
+[xUnit.net 00:00:01.66]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.66]         
+[xUnit.net 00:00:01.66]         ----- Inner Stack Trace #1 (BookOfEternityClient.Tests.PortableBackupConsumerTests+CutFailure) -----
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs(37,0): at BookOfEternityClient.Tests.PortableBackupConsumerTests.&lt;&gt;c__DisplayClass5_0.&lt;ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt&gt;b__2(TrustedLocalPublicationPhase phase, Int32 _)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(390,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(180,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(83,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:01.66]         ----- Inner Stack Trace #2 (System.IO.InvalidDataException) -----
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(256,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(219,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(94,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer)
+[xUnit.net 00:00:01.66]         ----- Inner Stack Trace #2 (BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException) -----
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(37,0): at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(94,0): at BookOfEternityClient.Core.FileSystemManager.CleanupBackupWithLeaseAsync(CanonicalWriteLease lease, String backupFullPath)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5713,0): at BookOfEternityClient.Core.FileSystemManager.CleanupBackup(CanonicalWriteLease writeLease, String backupFullPath)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(650,0): at BookOfEternityClient.IO.StateDistributor.RollbackMutations(CanonicalWriteLease writeLease, IEnumerable`1 mutations)
+[xUnit.net 00:00:01.66]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(256,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(219,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(62,0): at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.66]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs(36,0): at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease)
+[xUnit.net 00:00:02.20]       System.InvalidOperationException : Diagnostic failure must not reverse accepted distribution.
+[xUnit.net 00:00:02.20]       Stack Trace:
+[xUnit.net 00:00:02.20]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs(118,0): at BookOfEternityClient.Tests.PortableBackupConsumerTests.FailingDistributorLogger.Log[TState](LogLevel level, EventId id, TState state, Exception exception, Func`3 formatter)
+[xUnit.net 00:00:02.20]            at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+[xUnit.net 00:00:02.20]            at Microsoft.Extensions.Logging.LoggerExtensions.LogWarning(ILogger logger, Exception exception, String message, Object[] args)
+[xUnit.net 00:00:02.20]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(691,0): at BookOfEternityClient.IO.StateDistributor.CleanupCommittedBackupsAsync(CanonicalWriteLease writeLease, IEnumerable`1 mutations)
+[xUnit.net 00:00:02.20]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(185,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput)
+[xUnit.net 00:00:02.20]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(54,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response)
+[xUnit.net 00:00:02.20]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(54,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response)
+[xUnit.net 00:00:02.20]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs(94,0): at BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure(Boolean unknown)
+[xUnit.net 00:00:02.20]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.24]       System.InvalidOperationException : Diagnostic failure must not reverse accepted distribution.
+[xUnit.net 00:00:02.24]       Stack Trace:
+[xUnit.net 00:00:02.24]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs(118,0): at BookOfEternityClient.Tests.PortableBackupConsumerTests.FailingDistributorLogger.Log[TState](LogLevel level, EventId id, TState state, Exception exception, Func`3 formatter)
+[xUnit.net 00:00:02.24]            at Microsoft.Extensions.Logging.LoggerExtensions.Log(ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, String message, Object[] args)
+[xUnit.net 00:00:02.24]            at Microsoft.Extensions.Logging.LoggerExtensions.LogInformation(ILogger logger, String message, Object[] args)
+[xUnit.net 00:00:02.24]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(186,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(CanonicalWriteLease writeLease, GameResponse response, WoundResponseInputCompositionResult acceptedWoundInput)
+[xUnit.net 00:00:02.24]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(54,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response)
+[xUnit.net 00:00:02.24]         SOURCE_ROOT/BookOfEternityClient/IO/StateDistributor.cs(54,0): at BookOfEternityClient.IO.StateDistributor.DistributeAsync(GameResponse response)
+[xUnit.net 00:00:02.24]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupConsumerTests.cs(94,0): at BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure(Boolean unknown)
+[xUnit.net 00:00:02.24]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.25]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T18:31:28.6932997-04:00">
+        <Text>[xUnit.net 00:00:01.59]     BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T18:31:28.7354145-04:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt(committedDebt: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T18:31:28.7576240-04:00">
+        <Text>[xUnit.net 00:00:01.65]     BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt(committedDebt: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T18:31:29.3058581-04:00">
+        <Text>[xUnit.net 00:00:02.20]     BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure(unknown: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T18:31:29.3428131-04:00">
+        <Text>[xUnit.net 00:00:02.24]     BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure(unknown: False) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,1 @@
+{"mode":"worker-apply","refused":true,"error":"InvalidOperationException","message":"Original worker purpose cannot perform this canonical mutation.","appendedTwice":false,"exactOnce":false,"preserved":true,"retained":true}

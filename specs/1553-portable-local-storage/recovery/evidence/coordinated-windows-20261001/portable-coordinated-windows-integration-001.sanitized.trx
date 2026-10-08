@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="4f1da2f1-a35b-4ae4-9ec2-154ee36c7634" name="{USER}@{HOST} 2026-10-02 04:50:25" runUser="{HOST}\{USER}" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-02T04:50:25.8533823+10:00" queuing="2026-10-02T04:50:25.8533827+10:00" start="2026-10-02T04:50:18.8283140+10:00" finish="2026-10-02T04:51:39.4796716+10:00" />
+  <TestSettings name="default" id="12c870ea-1bbb-4495-989c-f40f7ae41735">
+    <Deployment runDeploymentRoot="{USER}_{HOST}_2026-10-02_04_50_25" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="cc517cda-4885-46a9-9103-07a4f69cb9a5" testId="48a16a49-1efc-2895-991b-984c60a32c05" testName="BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime(decision: &quot;decline&quot;)" computerName="{HOST}" duration="00:00:01.1988892" startTime="2026-10-02T04:50:26.9967075+10:00" endTime="2026-10-02T04:50:26.9967081+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cc517cda-4885-46a9-9103-07a4f69cb9a5" />
+    <UnitTestResult executionId="af97ccda-686c-4438-bf8d-88e297e51c98" testId="da34cf35-5687-779b-6d8d-757a53e9e2a1" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim" computerName="{HOST}" duration="00:01:12.3492681" startTime="2026-10-02T04:51:39.3531347+10:00" endTime="2026-10-02T04:51:39.3531350+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="af97ccda-686c-4438-bf8d-88e297e51c98" />
+    <UnitTestResult executionId="a131bfbf-48eb-4e05-8cb8-47d11c47f55a" testId="5cb28516-41e2-9c26-3e63-71c055c0e985" testName="BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime(decision: &quot;accept&quot;)" computerName="{HOST}" duration="00:00:03.9187571" startTime="2026-10-02T04:50:25.7981270+10:00" endTime="2026-10-02T04:50:25.7982135+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a131bfbf-48eb-4e05-8cb8-47d11c47f55a" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime(decision: &quot;decline&quot;)" storage="{SOURCE_ROOT}\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="48a16a49-1efc-2895-991b-984c60a32c05">
+      <Execution id="cc517cda-4885-46a9-9103-07a4f69cb9a5" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests" name="ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim" storage="{SOURCE_ROOT}\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="da34cf35-5687-779b-6d8d-757a53e9e2a1">
+      <Execution id="af97ccda-686c-4438-bf8d-88e297e51c98" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime(decision: &quot;accept&quot;)" storage="{SOURCE_ROOT}\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="5cb28516-41e2-9c26-3e63-71c055c0e985">
+      <Execution id="a131bfbf-48eb-4e05-8cb8-47d11c47f55a" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests" name="ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="48a16a49-1efc-2895-991b-984c60a32c05" executionId="cc517cda-4885-46a9-9103-07a4f69cb9a5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="da34cf35-5687-779b-6d8d-757a53e9e2a1" executionId="af97ccda-686c-4438-bf8d-88e297e51c98" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5cb28516-41e2-9c26-3e63-71c055c0e985" executionId="a131bfbf-48eb-4e05-8cb8-47d11c47f55a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="3" executed="3" passed="3" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.53]   Discovering: BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:02.34]   Discovered:  BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:02.38]   Starting:    BookOfEternityClient.IntegrationTests&#xD;
+? ��� ��� �� ��⮢ �த������ 室... (0�) (Escape = ��������)&#xD;
+? ��������� ��� �� �뫨 �ਭ���; ���ﭨ� �� 室� �㤥� ����⠭������.&#xD;
+procedure rollback oracle&#xD;
+[xUnit.net 00:01:19.92]   Finished:    BookOfEternityClient.IntegrationTests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

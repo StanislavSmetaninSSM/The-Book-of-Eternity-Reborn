@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "portable-coordinated-windows"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-coordinated-windows",
+      "reason": "Frozen native-only qualification: 16 planned cases. Cloud performs discovery/planning only; parent coordinates HOME-PC normal delivery and actual execution. Do not repeat completed Linux cohorts. File.CreateSymbolicLink setup capability is unestablished and must fail/report honestly without elevation or silent pass.",
+      "contracts": [
+        "actual Windows case/separator and link policy",
+        "real lease cleanup and primary outcome",
+        "cold hard-link preservation",
+        "original browser accept/decline callbacks",
+        "real wound quarantine after native preparation"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "733c40fe862908616e2db3c4ea2b8d03bd273034",
+    "WorkingTreeFingerprint": "9035B29521E94B1D8D892F14E3BF662B1444D3DA1D739EA6EC64B4CC38B0C1E5",
+    "ChangedFiles": 9
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.2587498,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0176908,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0162572,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0079829,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:09.3324940",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 16,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-coordinated-windows-integration-001",
+      "portable-coordinated-windows-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -690,17 +690,20 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
-                BeforeCanonicalMutationBoundaryAsync = path =>
+                LocalPublicationObserver = (phase, index) =>
                 {
+                    if (phase != TrustedLocalPublicationPhase.MemberPublished) return;
+                    using var journal = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(
+                        _fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
+                    var path = journal.RootElement.GetProperty("Members")[index].GetProperty("Path").GetString();
                     if (!injected && string.Equals(
                             path,
-                            "game_state/core/player_status.json",
+                            _fs.ResolvePath("game_state/core/player_status.json"),
                             StringComparison.OrdinalIgnoreCase))
                     {
                         injected = true;
-                        throw new IOException("injected trade settlement write failure");
+                        throw new InvalidOperationException("injected trade settlement write failure");
                     }
-                    return Task.CompletedTask;
                 }
             });
         var service = new NpcTradeService(faultingFs, NullLogger<NpcTradeService>.Instance);

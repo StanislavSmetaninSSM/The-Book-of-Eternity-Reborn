@@ -130,17 +130,20 @@ public sealed partial class MortalItemIdentityTransitionTests
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
-                BeforeCanonicalMutationBoundaryAsync = path =>
+                LocalPublicationObserver = (phase, index) =>
                 {
+                    if (phase != TrustedLocalPublicationPhase.MemberPublished) return;
+                    using var journal = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(
+                        context.FileSystem.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
+                    var path = journal.RootElement.GetProperty("Members")[index].GetProperty("Path").GetString();
                     if (!injected && string.Equals(
                             path,
-                            MortalItemIdentityState.StatePath,
+                            context.FileSystem.ResolvePath(MortalItemIdentityState.StatePath),
                             StringComparison.OrdinalIgnoreCase))
                     {
                         injected = true;
-                        throw new IOException("injected split index write failure");
+                        throw new InvalidOperationException("injected split index write failure");
                     }
-                    return Task.CompletedTask;
                 }
             });
 

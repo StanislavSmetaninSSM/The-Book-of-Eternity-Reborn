@@ -1,0 +1,90 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "Minimal native capability evidence and read-only metadata, not application test qualification",
+  "SourceBase": "31de2e33a6f44001fee9c0c3b6c4e61c8d3aab0e",
+  "CollectedAtHead": "e6f92ea83d873677fd3ffdf93cf7c4bd4f17822c",
+  "CollectedUtc": "2026-10-05T12:14:06.666344+00:00",
+  "Permissions": "normal; no escalation, settings changes, alternate flags retry or writes to UID/GID maps",
+  "Artifacts": [
+    {
+      "Path": "capability-probe.c",
+      "OriginalBytes": 3131,
+      "OriginalSha256": "b0ec1455198d73c86eb995881162703d61e3fecdeb2a8430f417d7533e0f7978",
+      "StoredPath": "capability-probe.c",
+      "StoredBytes": 3131,
+      "StoredSha256": "b0ec1455198d73c86eb995881162703d61e3fecdeb2a8430f417d7533e0f7978"
+    },
+    {
+      "Path": "probe-build.log",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredPath": "probe-build.log.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "probe.log",
+      "OriginalBytes": 586,
+      "OriginalSha256": "0cbf14b672d3209a7410c9bc7b1cbed90ea05ca00d3e0ad3646bdcb64826f37b",
+      "StoredPath": "probe.log.gz",
+      "StoredBytes": 230,
+      "StoredSha256": "abdcf252592e60060f8f288ed3db19ceb76c9e25e936f0190d1a8ec2599047f3"
+    },
+    {
+      "Path": "probe-result.json",
+      "OriginalBytes": 1822,
+      "OriginalSha256": "47c3b1cdbeb9866ca682c41764e8bcbd3a4a2677d48af85c5eb06023b503a957",
+      "StoredPath": "probe-result.json",
+      "StoredBytes": 1822,
+      "StoredSha256": "47c3b1cdbeb9866ca682c41764e8bcbd3a4a2677d48af85c5eb06023b503a957"
+    },
+    {
+      "Path": "namespace-capability-probe.c",
+      "OriginalBytes": 547,
+      "OriginalSha256": "3d2dee28377b6b459b735da880d5f121791afc3eeaec399783014ed7135e2d99",
+      "StoredPath": "namespace-capability-probe.c",
+      "StoredBytes": 547,
+      "StoredSha256": "3d2dee28377b6b459b735da880d5f121791afc3eeaec399783014ed7135e2d99"
+    },
+    {
+      "Path": "namespace-probe-build.log",
+      "OriginalBytes": 0,
+      "OriginalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredPath": "namespace-probe-build.log.gz",
+      "StoredBytes": 20,
+      "StoredSha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "namespace-probe.log",
+      "OriginalBytes": 102,
+      "OriginalSha256": "5c3f34855a3b337b79cde9d4be90c89f5002e8b121a0df2c1b233e25b7ac122f",
+      "StoredPath": "namespace-probe.log.gz",
+      "StoredBytes": 105,
+      "StoredSha256": "0b5e3259bb051aa0731fdd7970a2f45b13092252a229f3bc34d4fd6421997d1f"
+    },
+    {
+      "Path": "namespace-probe-result.json",
+      "OriginalBytes": 950,
+      "OriginalSha256": "379487ef06de951fe080718e420b39689e1fd66701c6478b7d1ed2a3298132cf",
+      "StoredPath": "namespace-probe-result.json",
+      "StoredBytes": 950,
+      "StoredSha256": "379487ef06de951fe080718e420b39689e1fd66701c6478b7d1ed2a3298132cf"
+    },
+    {
+      "Path": "environment.json",
+      "OriginalBytes": 3548,
+      "OriginalSha256": "b8b64b8656e6a38d6bf5637a99719fa723370fe6a67b343e843bb4e7ed6d02d4",
+      "StoredPath": "environment.json",
+      "StoredBytes": 3548,
+      "StoredSha256": "b8b64b8656e6a38d6bf5637a99719fa723370fe6a67b343e843bb4e7ed6d02d4"
+    },
+    {
+      "Path": "prerequisites.log",
+      "OriginalBytes": 159,
+      "OriginalSha256": "89e20855f3015d4d08cf0e17587396f4ff959392d98a78b24ae05d80eec53200",
+      "StoredPath": "prerequisites.log.gz",
+      "StoredBytes": 157,
+      "StoredSha256": "f6cec88561c6bc9bdffbd0391476dcad1194f9a0431be429888e03ac4a5145b0"
+    }
+  ]
+}

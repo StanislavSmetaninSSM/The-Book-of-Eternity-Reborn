@@ -1,0 +1,90 @@
+{
+  "Categories": [
+    "portable-directory-windows-boundaries",
+    "portable-directory-original-windows",
+    "portable-directory-backup-prerequisite"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-directory-windows-boundaries",
+      "reason": "Actual native links/hard links, case paths, repeated same-lease debt and cold whole-set recovery; no Linux early-return qualification.",
+      "contracts": [
+        "T030-F native ordinary tree deletion and original browser cleanup boundaries"
+      ]
+    },
+    {
+      "category": "portable-directory-original-windows",
+      "reason": "Actual extended-root deletion plus warm recorder-cleared and cold original browser cleanup with wrong-type negatives.",
+      "contracts": [
+        "T030-F native ordinary tree deletion and original browser cleanup boundaries"
+      ]
+    },
+    {
+      "category": "portable-directory-backup-prerequisite",
+      "reason": "Qualify the unchanged real quarantine body on this source; retain its distinct Linux backup failure and prior T031-A evidence.",
+      "contracts": [
+        "T030-F native ordinary tree deletion and original browser cleanup boundaries"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "29348885d890a9930914ca5a0dbc565f14fbf0fc",
+    "WorkingTreeFingerprint": "E554088E16DA53A941AAC99A95A88E8DFB85C34A3321C387B511A74B298F092E",
+    "ChangedFiles": 5
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0687899,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0169845,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0127085,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0131163,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:00:07.9827260",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 30,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-directory-backup-prerequisite-integration-001",
+      "portable-directory-original-windows-integration-002",
+      "portable-directory-original-windows-unit-003",
+      "portable-directory-windows-boundaries-unit-004"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "linux-fallback-fixture-admission"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "8ce890fa36af6cd6f183379131fc1251bc1a276e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 46.6988818,
+  "Descriptors": [
+    {
+      "Name": "linux-fallback-fixture-admission-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "linux-fallback-fixture-admission",
+      "Categories": [
+        "linux-fallback-fixture-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackFixtureAdmissionTests.MissingRequiredProcInterface_FailsBeforeAnyFixtureChild",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 1,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackFixtureAdmissionTests.MissingRequiredProcInterface_FailsBeforeAnyFixtureChild",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

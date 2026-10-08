@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "worker-run-ledger-record"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "8c7c5e5b4cf39968b2f3ca0f35e41db058ea6b9c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 46.2358635,
+  "Descriptors": [
+    {
+      "Name": "worker-run-ledger-record-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-run-ledger-record",
+      "Categories": [
+        "worker-run-ledger-record"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunRecordTests.PrelaunchAbort_IsOnlyTerminalSyntaxAndRetainsExactIdentity",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 44,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunRecordTests.InvalidRecord_IsBlockedWithoutMissingOrPayloadDiagnostic",
+          "Cases": 34
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunRecordTests.PrelaunchAbort_IsOnlyTerminalSyntaxAndRetainsExactIdentity",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

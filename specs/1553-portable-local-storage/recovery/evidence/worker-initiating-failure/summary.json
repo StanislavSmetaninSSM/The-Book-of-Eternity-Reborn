@@ -1,0 +1,86 @@
+{
+  "Categories": [
+    "portable-worker-diagnostic",
+    "portable-load-worker-ordering"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-worker-diagnostic",
+      "reason": "T031 worker primary/cleanup causal diagnosis",
+      "contracts": [
+        "#1553 FR-005/007 T031-WORKER-PORTABLE"
+      ]
+    },
+    {
+      "category": "portable-load-worker-ordering",
+      "reason": "Retained real worker decision versus public Load ordering",
+      "contracts": [
+        "#1553 FR-006 T031-WORKER-PORTABLE"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "24b16d557bd5cc2cff5e3d1f11fe8c65e681f7a6",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-load-worker-ordering",
+      "Seconds": 3.0659596,
+      "BudgetMinutes": 2,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0593355,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0113031,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0137495,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 122.8238352,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 9,
+  "WallTime": "00:02:08.8461981",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 3,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [
+      "portable-worker-diagnostic-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

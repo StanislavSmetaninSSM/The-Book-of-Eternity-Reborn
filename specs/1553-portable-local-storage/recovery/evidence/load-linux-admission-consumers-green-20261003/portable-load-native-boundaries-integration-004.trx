@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="723d96cd-3456-4df6-9965-c7967e6d11d7" name="@95e438a3e5cb 2026-10-03 19:51:29" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T19:51:29.4904217-04:00" queuing="2026-10-03T19:51:29.4904217-04:00" start="2026-10-03T19:51:27.0164517-04:00" finish="2026-10-03T19:51:29.4948727-04:00" />
+  <TestSettings name="default" id="4c6ad26c-97ae-493e-9dc3-1fbdea19e715">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-03_19_51_29" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="0c5f3780-a4db-421d-901d-6b8afdb07032" testId="a3dfeed0-3b20-4110-1113-7a73731b96bf" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeHardLinkedMarkerReplacementPreservesOutsideSessionAlias" computerName="95e438a3e5cb" duration="00:00:00.1240643" startTime="2026-10-03T19:51:29.3198247-04:00" endTime="2026-10-03T19:51:29.3198249-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0c5f3780-a4db-421d-901d-6b8afdb07032">
+      <Output>
+        <StdOut>Actual native hard link created: OS=Linux; alias=[checkout]-run-20261003/temp/boe-portable-load-f8778562100a4c42993b8b4c4e120c16/native-boundaries/hard-link/outside/marker-alias.bin; original=[checkout]-run-20261003/temp/boe-portable-load-f8778562100a4c42993b8b4c4e120c16/game_session/lore/load-marker.bin
+Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberPublished, 21),(MemberStaged, 10),(MemberPublished, 10),(MemberStaged, 16),(MemberPublished, 16),(MemberStaged, 17),(MemberPublished, 17),(MemberStaged, 18),(MemberPublished, 18),(MemberStaged, 19),(MemberPublished, 19),(MemberStaged, 22),(MemberPublished, 22),(MemberStaged, 28),(MemberPublished, 28),(MemberStaged, 33),(MemberPublished, 33),(MemberStaged, 36),(MemberPublished, 36),(CommitStaged, -1),(Committed, -1),(CleanupMember, 10),(CleanupMember, 16),(CleanupMember, 17),(CleanupMember, 18),(CleanupMember, 19),(CleanupMember, 21),(CleanupMember, 22),(CleanupMember, 28),(CleanupMember, 33),(CleanupMember, 36),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6ba3d717-38f9-4adb-b3ba-9edc13710c6f" testId="3799d56c-2fb2-46bb-83f8-0e98ec72e8a7" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication(position: &quot;target&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0357443" startTime="2026-10-03T19:51:29.1408655-04:00" endTime="2026-10-03T19:51:29.1408657-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6ba3d717-38f9-4adb-b3ba-9edc13710c6f">
+      <Output>
+        <StdOut>Actual native directory link created: OS=Linux/symlink; name=[checkout]-run-20261003/temp/boe-portable-load-ab604c5a8249479da8ecba0532134474/game_session/lore/load-marker.bin; ownedTarget=[checkout]-run-20261003/temp/boe-portable-load-ab604c5a8249479da8ecba0532134474/native-boundaries/target/outside
+Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.IO.InvalidDataException: Canonical game-session path traverses reparse point '[checkout]-run-20261003/temp/boe-portable-load-ab604c5a8249479da8ecba0532134474/game_session/lore/load-marker.bin'.
+   at BookOfEternityClient.Core.FileSystemManager.EnsureNoExistingReparsePoint(String authorityRoot, String fullPath, String authorityName) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 713
+   at BookOfEternityClient.Core.FileSystemManager.ResolvePath(String relativePath) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 651
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 318
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 389
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 172
+System.IO.InvalidDataException: Canonical game-session path traverses reparse point '[checkout]-run-20261003/temp/boe-portable-load-ab604c5a8249479da8ecba0532134474/game_session/lore/load-marker.bin'.
+   at BookOfEternityClient.Core.FileSystemManager.EnsureNoExistingReparsePoint(String authorityRoot, String fullPath, String authorityName) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 713
+   at BookOfEternityClient.Core.FileSystemManager.ResolvePath(String relativePath) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 651
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 318
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 389
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 172</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3a58cfd4-e74a-4752-9cb0-70bb15a8a436" testId="c7b0c4ba-671c-aa3a-cde3-39badd0c7cf0" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication(position: &quot;library&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0525970" startTime="2026-10-03T19:51:29.1939896-04:00" endTime="2026-10-03T19:51:29.1939899-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3a58cfd4-e74a-4752-9cb0-70bb15a8a436">
+      <Output>
+        <StdOut>Actual native directory link created: OS=Linux/symlink; name=[checkout]-run-20261003/temp/boe-portable-load-6a5da3b4a24f4a7a93627b970a19ed7b/game_session/saves; ownedTarget=[checkout]-run-20261003/temp/boe-portable-load-6a5da3b4a24f4a7a93627b970a19ed7b/native-boundaries/library/outside
+Disposition=NotLoaded; preparation=1; lifecycle opens=1; B1 phases=
+System.IO.InvalidDataException: A namespace entry is linked or not ordinary: [checkout]-run-20261003/temp/boe-portable-load-6a5da3b4a24f4a7a93627b970a19ed7b/game_session/saves
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ObserveNamespace(String path) in [checkout]/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 278
+   at BookOfEternityClient.Core.FileSystemManager.CaptureLoadReplacementNamespace(CanonicalWriteLease lease, String selectedSource) in [checkout]/BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs:line 67
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 188
+System.IO.InvalidDataException: A namespace entry is linked or not ordinary: [checkout]-run-20261003/temp/boe-portable-load-6a5da3b4a24f4a7a93627b970a19ed7b/game_session/saves
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ObserveNamespace(String path) in [checkout]/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 278
+   at BookOfEternityClient.Core.FileSystemManager.CaptureLoadReplacementNamespace(CanonicalWriteLease lease, String selectedSource) in [checkout]/BookOfEternityClient/Core/FileSystemManager.LoadNamespace.cs:line 67
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 188</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="67fc7db6-f443-4240-9180-7fc0203cc92a" testId="98d0fa96-2ef1-d3fb-f626-ddd2fc9bc579" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication(position: &quot;source&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0444071" startTime="2026-10-03T19:51:29.1045282-04:00" endTime="2026-10-03T19:51:29.1045284-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="67fc7db6-f443-4240-9180-7fc0203cc92a">
+      <Output>
+        <StdOut>Actual native directory link created: OS=Linux/symlink; name=[checkout]-run-20261003/temp/boe-portable-load-bb9539a18cd04282b130c331db2126bc/game_session/imports; ownedTarget=[checkout]-run-20261003/temp/boe-portable-load-bb9539a18cd04282b130c331db2126bc/native-boundaries/source/outside
+Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.IO.InvalidDataException: A local storage ancestor is missing, linked or not a directory: [checkout]-run-20261003/temp/boe-portable-load-bb9539a18cd04282b130c331db2126bc/game_session/imports
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateDirectories(String path, Boolean allowMissing) in [checkout]/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 316
+   at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles) in [checkout]/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 118
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 288
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 172
+System.IO.InvalidDataException: A local storage ancestor is missing, linked or not a directory: [checkout]-run-20261003/temp/boe-portable-load-bb9539a18cd04282b130c331db2126bc/game_session/imports
+   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateDirectories(String path, Boolean allowMissing) in [checkout]/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 316
+   at BookOfEternityClient.Core.TrustedLocalFileScope..ctor(IEnumerable`1 roots, IEnumerable`1 exactFiles) in [checkout]/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 118
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 288
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 172</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="349f0d51-6277-43a0-b7cf-a48c72ba4d9c" testId="fe259f2a-f99c-5967-ee1d-9288c23527c1" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication(position: &quot;ancestor&quot;)" computerName="95e438a3e5cb" duration="00:00:00.3297793" startTime="2026-10-03T19:51:29.0595276-04:00" endTime="2026-10-03T19:51:29.0595415-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="349f0d51-6277-43a0-b7cf-a48c72ba4d9c">
+      <Output>
+        <StdOut>Actual native directory link created: OS=Linux/symlink; name=[checkout]-run-20261003/temp/boe-portable-load-877312aeceda44a6b71ef707c8dbed46/game_session/lore; ownedTarget=[checkout]-run-20261003/temp/boe-portable-load-877312aeceda44a6b71ef707c8dbed46/native-boundaries/ancestor/outside
+Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.IO.InvalidDataException: Canonical game-session path traverses reparse point '[checkout]-run-20261003/temp/boe-portable-load-877312aeceda44a6b71ef707c8dbed46/game_session/lore'.
+   at BookOfEternityClient.Core.FileSystemManager.EnsureNoExistingReparsePoint(String authorityRoot, String fullPath, String authorityName) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 713
+   at BookOfEternityClient.Core.FileSystemManager.ResolvePath(String relativePath) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 651
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 318
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 389
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 172
+System.IO.InvalidDataException: Canonical game-session path traverses reparse point '[checkout]-run-20261003/temp/boe-portable-load-877312aeceda44a6b71ef707c8dbed46/game_session/lore'.
+   at BookOfEternityClient.Core.FileSystemManager.EnsureNoExistingReparsePoint(String authorityRoot, String fullPath, String authorityName) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 713
+   at BookOfEternityClient.Core.FileSystemManager.ResolvePath(String relativePath) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 651
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 318
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 389
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 172</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="64eae5c2-cfa7-4f58-b9bc-a3ef7164886d" testId="23a0c51c-20be-3ef7-3955-c15b7e0f7f0b" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.LibrarySelectedSourceCommitsWithoutChangingOpaqueLibrary" computerName="95e438a3e5cb" duration="00:00:00.0968102" startTime="2026-10-03T19:51:29.4174070-04:00" endTime="2026-10-03T19:51:29.4174072-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="64eae5c2-cfa7-4f58-b9bc-a3ef7164886d">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberPublished, 21),(MemberStaged, 10),(MemberPublished, 10),(MemberStaged, 16),(MemberPublished, 16),(MemberStaged, 17),(MemberPublished, 17),(MemberStaged, 18),(MemberPublished, 18),(MemberStaged, 19),(MemberPublished, 19),(MemberStaged, 22),(MemberPublished, 22),(MemberStaged, 28),(MemberPublished, 28),(MemberStaged, 33),(MemberPublished, 33),(MemberStaged, 36),(MemberPublished, 36),(CommitStaged, -1),(Committed, -1),(CleanupMember, 10),(CleanupMember, 16),(CleanupMember, 17),(CleanupMember, 18),(CleanupMember, 19),(CleanupMember, 21),(CleanupMember, 22),(CleanupMember, 28),(CleanupMember, 33),(CleanupMember, 36),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.LibrarySelectedSourceCommitsWithoutChangingOpaqueLibrary" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="23a0c51c-20be-3ef7-3955-c15b7e0f7f0b">
+      <Execution id="64eae5c2-cfa7-4f58-b9bc-a3ef7164886d" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="LibrarySelectedSourceCommitsWithoutChangingOpaqueLibrary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication(position: &quot;ancestor&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="fe259f2a-f99c-5967-ee1d-9288c23527c1">
+      <Execution id="349f0d51-6277-43a0-b7cf-a48c72ba4d9c" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication(position: &quot;source&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="98d0fa96-2ef1-d3fb-f626-ddd2fc9bc579">
+      <Execution id="67fc7db6-f443-4240-9180-7fc0203cc92a" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication(position: &quot;target&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3799d56c-2fb2-46bb-83f8-0e98ec72e8a7">
+      <Execution id="6ba3d717-38f9-4adb-b3ba-9edc13710c6f" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication(position: &quot;library&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c7b0c4ba-671c-aa3a-cde3-39badd0c7cf0">
+      <Execution id="3a58cfd4-e74a-4752-9cb0-70bb15a8a436" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeHardLinkedMarkerReplacementPreservesOutsideSessionAlias" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a3dfeed0-3b20-4110-1113-7a73731b96bf">
+      <Execution id="0c5f3780-a4db-421d-901d-6b8afdb07032" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="NativeHardLinkedMarkerReplacementPreservesOutsideSessionAlias" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="a3dfeed0-3b20-4110-1113-7a73731b96bf" executionId="0c5f3780-a4db-421d-901d-6b8afdb07032" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3799d56c-2fb2-46bb-83f8-0e98ec72e8a7" executionId="6ba3d717-38f9-4adb-b3ba-9edc13710c6f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c7b0c4ba-671c-aa3a-cde3-39badd0c7cf0" executionId="3a58cfd4-e74a-4752-9cb0-70bb15a8a436" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="98d0fa96-2ef1-d3fb-f626-ddd2fc9bc579" executionId="67fc7db6-f443-4240-9180-7fc0203cc92a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fe259f2a-f99c-5967-ee1d-9288c23527c1" executionId="349f0d51-6277-43a0-b7cf-a48c72ba4d9c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="23a0c51c-20be-3ef7-3955-c15b7e0f7f0b" executionId="64eae5c2-cfa7-4f58-b9bc-a3ef7164886d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="6" executed="6" passed="6" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.29]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.29]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.32]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.05]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

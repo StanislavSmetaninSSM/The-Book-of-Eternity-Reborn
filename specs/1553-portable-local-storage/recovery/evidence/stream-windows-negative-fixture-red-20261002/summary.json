@@ -1,0 +1,95 @@
+{
+  "Categories": [
+    "portable-storage-stream-cold-conflicts",
+    "portable-storage-stream-publication",
+    "portable-storage-stream-resource"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-storage-stream-cold-conflicts",
+      "contracts": [
+        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+      ],
+      "reason": "T032-A1 native continuation: changed conflict/format fixtures and new full-archive resource proof; unchanged passing cohorts retained at their exact prior sources."
+    },
+    {
+      "category": "portable-storage-stream-publication",
+      "contracts": [
+        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+      ],
+      "reason": "T032-A1 native continuation: changed conflict/format fixtures and new full-archive resource proof; unchanged passing cohorts retained at their exact prior sources."
+    },
+    {
+      "category": "portable-storage-stream-resource",
+      "contracts": [
+        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+      ],
+      "reason": "T032-A1 native continuation: changed conflict/format fixtures and new full-archive resource proof; unchanged passing cohorts retained at their exact prior sources."
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "ec5e5ccf05cccb4c611c0ebe8be5e78cc628509c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-storage-stream-cold-conflicts",
+      "Seconds": 10.6675552,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.6541434,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.1163376,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.2424703,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 141.8092476,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 19,
+  "WallTime": "00:02:46.9854062",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 37,
+    "CompletedCases": 5,
+    "UnderfilledDescriptors": [
+      "portable-storage-stream-publication-unit-002",
+      "portable-storage-stream-resource-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 5,
+    "Executed": 5,
+    "Passed": 4,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

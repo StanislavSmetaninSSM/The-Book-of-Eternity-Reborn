@@ -18,6 +18,7 @@ using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging.Abstractions;
 using Spectre.Console;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
@@ -61,9 +62,11 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     private readonly FileSystemManager _fs;
     private string? _armedCanonicalWriteFailurePath;
     private int _remainingCanonicalWriteFailureMatches;
+    private readonly ITestOutputHelper? _directGachaOutput;
 
-    public GameEngineTurnLifecycleTests()
+    public GameEngineTurnLifecycleTests(ITestOutputHelper? output = null)
     {
+        _directGachaOutput = output;
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-gameengine-turnlifecycle-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
         _fs = new FileSystemManager(
@@ -1082,10 +1085,11 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.NotNull(method);
 
-        var loaded = await Assert.IsAssignableFrom<Task<bool>>(
-            method!.Invoke(engine, [savePath]));
+        var loaded = Assert.IsType<LoadReplacementResult>(
+            await InvokeConsoleLoadResultAsync(engine, savePath));
 
-        Assert.True(loaded);
+        Assert.Equal(LoadReplacementDisposition.Committed, loaded.Disposition);
+        Assert.False(loaded.ContinuationBlocked);
         Assert.Equal("loaded-session", gameLoop.SessionId);
         Assert.Equal(7, gameLoop.TurnNumber);
     }
@@ -10946,6 +10950,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     /// <param name="logger">
     /// Engine diagnostics sink, or <see langword="null"/> to retain the default null logger.
     /// </param>
+    /// <param name="loadHooks">Optional cuts in the real save loader.</param>
     /// <returns>
     /// An engine using real lifecycle services and the supplied test overrides.
     /// </returns>
@@ -10954,7 +10959,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         Action<GameSettings>? configureSettings = null,
         GameEngineSessionFinalizationHooks? finalizationHooks = null,
         FileSystemManager? fileSystem = null,
-        Microsoft.Extensions.Logging.ILogger<GameEngine>? logger = null)
+        Microsoft.Extensions.Logging.ILogger<GameEngine>? logger = null,
+        SaveLoadServiceHooks? loadHooks = null)
     {
         var fs = fileSystem ?? _fs;
         var settings = new GameSettings();
@@ -10967,7 +10973,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         var gameInterface = new GameInterface(localization, settings);
         var clipboardService = new TestClipboardService();
         var explorer = new ExplorerMode(stateManager, fs, localization, clipboardService: clipboardService, console: new TestExplorerConsole());
-        var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance);
+        var saveLoad = new SaveLoadService(fs, stateManager, NullLogger<SaveLoadService>.Instance, loadHooks);
         var imageService = new ImageService(fs, settings, localization, NullLogger<ImageService>.Instance);
         var validator = new ValidationService(fs, NullLogger<ValidationService>.Instance);
         var characteristicsService = new CharacteristicsService(fs, stateManager, NullLogger<CharacteristicsService>.Instance);

@@ -1,0 +1,10 @@
+{
+  "HistoricalReceipt": "boe-audio-4716b07f95454d9ca8dd3946f8f73aa0-cleanup.json",
+  "HistoricalParentCleanupConfirmed": false,
+  "OriginalReceiptPreserved": true,
+  "OwningRunnerSummary": "TestResults/test-categories/20261007-033621-925-644418-d04eecd4c480412cb288c365318417b9-categories/summary.json",
+  "OwningRunnerOwnedTreeCleanupSucceeded": true,
+  "OwningRunnerRuntimeCleanupSucceeded": true,
+  "RootRemovedAfterOwningRunnerSettlement": true,
+  "SignalsByFollowup": 0
+}

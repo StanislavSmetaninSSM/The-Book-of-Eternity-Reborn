@@ -1,0 +1,26 @@
+{
+  "Pins": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-terminal-native-final-green/native/native-host/9b992ff6e2a14bff83f6da1bc159043e/boe-lineage-supervisor",
+      "Bytes": 82008,
+      "SHA256": "127c14010ae5dd1b055b3dfc1654dd1fefd4a365fb597e5375f189223b02c4d3"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-terminal-native-final-green/native/native-host/9b992ff6e2a14bff83f6da1bc159043e/host-guardian",
+      "Bytes": 42656,
+      "SHA256": "c4d1bc6bbc178b207f54695d7355316fcf4b611d0e18581c79d1d77cc66d857e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-terminal-native-final-green/native/native-host/9b992ff6e2a14bff83f6da1bc159043e/package-manifest.json",
+      "Bytes": 968,
+      "SHA256": "20d3bbd427e5fd76bff429815987e31ef611d71ec262cdb0005d7033430a881e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-terminal-native-final-green/native/native-host/9b992ff6e2a14bff83f6da1bc159043e/build-provenance.json",
+      "Bytes": 1153,
+      "SHA256": "de9bc3bcf67c70f2e73243c2c8e8fb5f19ca06d21dc3a88180877b10e4e7a4a8"
+    }
+  ],
+  "ExecutableModeRestoredOnlyOnOwnCopies": true,
+  "NativeCompilations": 0
+}

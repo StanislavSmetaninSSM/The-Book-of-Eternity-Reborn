@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "portable-save-original-load"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "7c52a5e6bc2165a0a1cc1179f89f43e6749dac56",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 44.5356636,
+  "Descriptors": [
+    {
+      "Name": "portable-save-original-load-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-save-original-load",
+      "Categories": [
+        "portable-save-original-load"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_ProfileRepairRequiresExactPublishedFileAuthority|FullyQualifiedName=BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_ProfileRepairRequiresExactPublishedFileAuthority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "Categories": [
+    "portable-load-browser-handlers",
+    "portable-browser-save-presentation",
+    "portable-settings-consumers",
+    "frontend-shell-types"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "0491944c3a2873984decfedb1d063bf6515cd830",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "frontend-shell-types",
+      "Seconds": 2.6878231,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-browser-save-presentation",
+      "Seconds": 1.9862116,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-browser-handlers",
+      "Seconds": 1.3612403,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [
+    {
+      "Descriptor": "frontend-shell-types-frontend-001",
+      "Adapter": "typecheck",
+      "VerificationKind": "compile-contracts",
+      "Results": 2,
+      "Seconds": 2.6800149
+    },
+    {
+      "Descriptor": "portable-browser-save-presentation-frontend-002",
+      "Adapter": "node",
+      "VerificationKind": "tests",
+      "Results": 1,
+      "Seconds": 0.7499101
+    },
+    {
+      "Descriptor": "portable-browser-save-presentation-frontend-003",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 8,
+      "Seconds": 1.2350216
+    }
+  ],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0471269,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0168094,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0129035,
+      "Completed": true
+    },
+    {
+      "Name": "frontend-shell-types-frontend-001-compile",
+      "Seconds": 2.6424047,
+      "Completed": true
+    },
+    {
+      "Name": "portable-browser-save-presentation-frontend-002-compile",
+      "Seconds": 0.6754796,
+      "Completed": true
+    },
+    {
+      "Name": "portable-browser-save-presentation-frontend-002-savePersistenceNotice.test.js",
+      "Seconds": 0.0647565,
+      "Completed": true
+    },
+    {
+      "Name": "portable-browser-save-presentation-frontend-003",
+      "Seconds": 1.2214406,
+      "Completed": true
+    },
+    {
+      "Name": "portable-load-browser-handlers-frontend-004",
+      "Seconds": 1.3594015,
+      "Completed": false
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:00:06.3977559",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 6,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 10,
+    "CompletedCases": 11,
+    "UnderfilledDescriptors": [
+      "portable-load-browser-handlers-frontend-004",
+      "portable-settings-consumers-frontend-005",
+      "portable-settings-consumers-frontend-006"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 11,
+    "Executed": 11,
+    "Passed": 11,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -16,7 +16,7 @@ public sealed class AfterlifeLocalActionGuardTests
             var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             fs.EnsureDirectoryStructure();
 
-            Directory.CreateDirectory(fs.ResolvePath("game_state/control/pending_turn_snapshot"));
+            Directory.CreateDirectory(fs.ResolvePath("game_state/control/pending_turn_snapshot/game_state/meta"));
 
             Assert.Null(AfterlifeLocalActionGuard.TryDescribeActiveGmTurnLifecycleBlocker(
                 fs,

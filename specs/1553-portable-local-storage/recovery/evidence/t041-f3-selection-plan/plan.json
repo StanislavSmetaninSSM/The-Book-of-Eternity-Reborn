@@ -1,0 +1,214 @@
+{
+  "Categories": [
+    "gm-main-crash-fixture-admission",
+    "gm-main-crash-launch-linux",
+    "gm-main-crash-pins-linux",
+    "gm-main-crash-stop-linux",
+    "gm-main-crash-replacement-linux",
+    "gm-main-crash-conjunction-linux",
+    "gm-main-crash-cold-boundary-linux"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-main-crash-fixture-admission",
+      "reason": "F3 newly authorized internal same-root fixed neutral fixture seam; causal RED before implementation",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F3 original isolated root, single-use new admission, no mint from record"
+      ]
+    },
+    {
+      "category": "gm-main-crash-launch-linux",
+      "reason": "F3 missing actual process-death and new-process cold admission boundaries; reuse existing F1 fault/terminal evidence",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F3 Prepared/held/Running/single release, original root identity, exact nonmutating cold refusal"
+      ]
+    },
+    {
+      "category": "gm-main-crash-pins-linux",
+      "reason": "F3 unproved actual participating process death at original receipt/reply cuts; accepted F2 wire/warm permutations reused",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F3 actual original typed connection/receipt; logical Uncertain despite physical cleanup; fresh epoch only stopped"
+      ]
+    },
+    {
+      "category": "gm-main-crash-stop-linux",
+      "reason": "F3 unproved process death around actual output/disposal/sealed stop and ACK; real pre-seal producer fault ensures absorbing Uncertain",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F3 scopedstop+actual I/O/disposal/ACK, original guard, cold nonterminal refusal and new epoch only sealed stop"
+      ]
+    },
+    {
+      "category": "gm-main-crash-replacement-linux",
+      "reason": "F3 D missing new-process exact replacement decisions on actual connected original stopped root",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F3 actual typed Load and exact namespace/generation; retained storage remains independent"
+      ]
+    },
+    {
+      "category": "gm-main-crash-conjunction-linux",
+      "reason": "F3 D missing original main stopped plus new-process independent worker/storage admission refusal",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F3 independent inventory/recovery retained decision; no native creation or worker requalification"
+      ]
+    },
+    {
+      "category": "gm-main-crash-cold-boundary-linux",
+      "reason": "F3 specific missing cold Clear and actually queued original T042 input after process death; accepted warm T042 reused",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F3 actual stopped new generation, original binding revocation/settlement, no queued old replay"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "447d14f55846bcba942c50aea8c2495b032c8830",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.2725579,
+  "Descriptors": [
+    {
+      "Name": "gm-main-crash-cold-boundary-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-crash-cold-boundary-linux",
+      "Categories": [
+        "gm-main-crash-cold-boundary-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.ColdBoundary_ConfirmedStopAllowsClearOrFreshEpochWithoutOriginalInputReplay",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.ColdBoundary_ConfirmedStopAllowsClearOrFreshEpochWithoutOriginalInputReplay",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-crash-conjunction-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-crash-conjunction-linux",
+      "Categories": [
+        "gm-main-crash-conjunction-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.IndependentDebt_AfterStoppedAndSeedDeathRefusesBeforeNewCreation",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-crash-fixture-admission-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-crash-fixture-admission",
+      "Categories": [
+        "gm-main-crash-fixture-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainCrashFixtureAdmissionTests.FixtureAdmission_RejectsOutsideRootAndNonFixedPackageBeforeEffects|FullyQualifiedName=BookOfEternityClient.Tests.GmMainCrashFixtureAdmissionTests.FreshFixtureAdmission_IsSingleUseAndDoesNotDecodeOldRecord",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 1,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainCrashFixtureAdmissionTests.FixtureAdmission_RejectsOutsideRootAndNonFixedPackageBeforeEffects",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainCrashFixtureAdmissionTests.FreshFixtureAdmission_IsSingleUseAndDoesNotDecodeOldRecord",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-crash-launch-linux-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-crash-launch-linux",
+      "Categories": [
+        "gm-main-crash-launch-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-crash-pins-linux-unit-005",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-crash-pins-linux",
+      "Categories": [
+        "gm-main-crash-pins-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.ClientDeath_OriginalReceiptBoundaryControlsColdContinuation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.ClientDeath_OriginalReceiptBoundaryControlsColdContinuation",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-crash-replacement-linux-unit-006",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-crash-replacement-linux",
+      "Categories": [
+        "gm-main-crash-replacement-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.Replacement_FreshProcessRetainsExactTypedDecisionAndConjunction",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.Replacement_FreshProcessRetainsExactTypedDecisionAndConjunction",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-crash-stop-linux-unit-007",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-crash-stop-linux",
+      "Categories": [
+        "gm-main-crash-stop-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.StopDeath_ActualSettlementAndDurableAckControlNewEpoch",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.StopDeath_ActualSettlementAndDurableAckControlNewEpoch",
+          "Cases": 6
+        }
+      ]
+    }
+  ]
+}

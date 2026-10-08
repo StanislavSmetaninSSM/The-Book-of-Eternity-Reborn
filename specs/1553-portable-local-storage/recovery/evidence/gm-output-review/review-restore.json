@@ -1,0 +1,14 @@
+{
+  "ObservedUtc": "2026-10-05T13:35:33.688593+00:00",
+  "Commit": "426b16807cd86efda3ed4d9b7e7acc77435cbc45",
+  "Tree": "2fee13c0cf0df1773a09186b1f99bc11e07b1792",
+  "Method": "Fresh GitHub-only clone into a new empty directory; no local source/object cache",
+  "RestorationDirectory": "/workspace/linux-1553-output-review-restore",
+  "RemoteShaBeforeAndAfterVerified": true,
+  "Clean": true,
+  "TrackedFiles": 5427,
+  "ChangedFilesBytesVerified": 53,
+  "QualificationInputHashesVerified": 6,
+  "ConnectivityFsck": "PASS",
+  "SourceOnlyNoBuildOrExecution": true
+}

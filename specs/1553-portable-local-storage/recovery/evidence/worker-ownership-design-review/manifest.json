@@ -1,0 +1,39 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "Independent design review and source-only GitHub restoration",
+  "ReviewedCommit": "39df05024cecefe7266f41cec1b772895155e576",
+  "Artifacts": [
+    {
+      "Path": "review.json",
+      "OriginalBytes": 1357,
+      "OriginalSha256": "d8401bd3891279a41add50337bede93d47af9a1008ee02d2dda197801fc25c46",
+      "StoredPath": "review.json",
+      "StoredBytes": 1357,
+      "StoredSha256": "d8401bd3891279a41add50337bede93d47af9a1008ee02d2dda197801fc25c46"
+    },
+    {
+      "Path": "review-restore.json",
+      "OriginalBytes": 576,
+      "OriginalSha256": "a96ab07c2873e83c1e6f9ec10ddda7fe5c13a329daa1b61313197937f04a13e5",
+      "StoredPath": "review-restore.json",
+      "StoredBytes": 576,
+      "StoredSha256": "a96ab07c2873e83c1e6f9ec10ddda7fe5c13a329daa1b61313197937f04a13e5"
+    },
+    {
+      "Path": "validation.json",
+      "OriginalBytes": 776,
+      "OriginalSha256": "6d0b8a428eb6b9e25dbf58c8b3f6642942448986d42b3b3a1d9ba7eee190e9d0",
+      "StoredPath": "validation.json",
+      "StoredBytes": 776,
+      "StoredSha256": "6d0b8a428eb6b9e25dbf58c8b3f6642942448986d42b3b3a1d9ba7eee190e9d0"
+    },
+    {
+      "Path": "publication.json",
+      "OriginalBytes": 230,
+      "OriginalSha256": "28b3c38bae11a53fdb8bc655ff54795ffed9f12ca131b69ee7aa6e78c93bd996",
+      "StoredPath": "publication.json",
+      "StoredBytes": 230,
+      "StoredSha256": "28b3c38bae11a53fdb8bc655ff54795ffed9f12ca131b69ee7aa6e78c93bd996"
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "Categories": [
+    "gm-owned-terminal-session",
+    "gm-owned-terminal-native-linux",
+    "gm-bridge-input-lifetime",
+    "gm-bridge-output-stream",
+    "gm-bridge-prompt-operation",
+    "worker-pool-regression-host",
+    "worker-native-bootstrap-output",
+    "worker-native-owner-retention",
+    "worker-native-v1-transport-regression"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-owned-terminal-session",
+      "reason": "actual original session/view/keyboard/proof/timeout plus Windows source guard",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "gm-owned-terminal-native-linux",
+      "reason": "real fixed native PTY, actual bridge/T042 pipe, descendants/loss/partial startup/guardian",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "gm-bridge-input-lifetime",
+      "reason": "changed original attach/retire/keyboard call sites, actual source/PDB and concurrency",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "gm-bridge-output-stream",
+      "reason": "changed original output pump commits coherent owned view and EOF while preserving raw UTF8/tail semantics",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "gm-bridge-prompt-operation",
+      "reason": "changed original revision/readiness/control loop; preserve frozen T042 operations and no ambiguous replay",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-host",
+      "reason": "shared NativeLineageOwner extraction must preserve existing host-v2 typed owner and retire boundary",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-native-bootstrap-output",
+      "reason": "shared C descriptor-bootstrap branch and held child transports",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-native-owner-retention",
+      "reason": "shared original owner constructor/pidfd/disposal after loss",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-native-v1-transport-regression",
+      "reason": "shared helper branch/version/argv/bootstrap must preserve legacy v1 discovery/stop",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "6061df633091ce25cfa41183aa3d1b5938764a33",
+    "WorkingTreeFingerprint": "9A573B67E3EA86C750969BD278FCB605BDF6F89AC20C6B3D1C4D863DB6FABF8A",
+    "ChangedFiles": 303
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1323378,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0507444,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0670901,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0045212,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 29,
+  "WallTime": "00:00:06.2440118",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 9,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 160,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "gm-bridge-input-lifetime-unit-001",
+      "gm-bridge-output-stream-unit-002",
+      "gm-bridge-prompt-operation-unit-003",
+      "gm-owned-terminal-native-linux-unit-004",
+      "gm-owned-terminal-session-unit-005",
+      "worker-native-bootstrap-output-unit-006",
+      "worker-native-owner-retention-unit-007",
+      "worker-native-v1-transport-regression-unit-008",
+      "worker-pool-regression-host-unit-009"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

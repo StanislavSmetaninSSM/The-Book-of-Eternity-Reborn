@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="4d9a60eb-70a2-4d21-92a3-bd6adab30461" name="@c7669543e9c7 2026-10-06 18:01:49" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T18:01:49.8652290+00:00" queuing="2026-10-06T18:01:49.8652291+00:00" start="2026-10-06T18:01:44.1312435+00:00" finish="2026-10-06T18:02:02.0270296+00:00" />
+  <TestSettings name="default" id="27938bab-ff7a-44f4-918a-132a8c49ea8a">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_18_01_49" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="037615fb-b5de-4321-a891-f6698984ba15" testId="a524f537-ed09-3134-474a-88c4ec01158b" testName="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;held&quot;)" computerName="c7669543e9c7" duration="00:00:03.1194202" startTime="2026-10-06T18:01:52.9510339+00:00" endTime="2026-10-06T18:01:52.9510344+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="037615fb-b5de-4321-a891-f6698984ba15" />
+    <UnitTestResult executionId="547efe5d-4297-45ed-a199-dd1f4faa6237" testId="00a8c448-48d5-f50a-fc5b-1085261df9d4" testName="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;running&quot;)" computerName="c7669543e9c7" duration="00:00:03.2674927" startTime="2026-10-06T18:01:49.8325358+00:00" endTime="2026-10-06T18:01:49.8325536+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="547efe5d-4297-45ed-a199-dd1f4faa6237" />
+    <UnitTestResult executionId="cc2cd1b3-f4a0-43f2-b6af-0c40a32b8bd2" testId="4087dda4-927b-7ffc-0035-ba1405276346" testName="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;released&quot;)" computerName="c7669543e9c7" duration="00:00:03.2088142" startTime="2026-10-06T18:01:59.0507494+00:00" endTime="2026-10-06T18:01:59.0507498+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cc2cd1b3-f4a0-43f2-b6af-0c40a32b8bd2" />
+    <UnitTestResult executionId="905718f4-d9f0-4be4-a592-75afc0ba5a4c" testId="3f101bb7-7d9c-9e9c-b761-0f4c4252afe9" testName="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;namespace&quot;)" computerName="c7669543e9c7" duration="00:00:02.8859058" startTime="2026-10-06T18:01:55.8380197+00:00" endTime="2026-10-06T18:01:55.8380202+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="905718f4-d9f0-4be4-a592-75afc0ba5a4c" />
+    <UnitTestResult executionId="70c03228-e278-4d09-b64b-ef544d1ab6bb" testId="67d2f64e-759f-7e2a-372c-87c6d9ddb2d6" testName="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;prepared&quot;)" computerName="c7669543e9c7" duration="00:00:02.8817844" startTime="2026-10-06T18:02:01.9328457+00:00" endTime="2026-10-06T18:02:01.9328460+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="70c03228-e278-4d09-b64b-ef544d1ab6bb" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;running&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="00a8c448-48d5-f50a-fc5b-1085261df9d4">
+      <Execution id="547efe5d-4297-45ed-a199-dd1f4faa6237" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests" name="LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;released&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4087dda4-927b-7ffc-0035-ba1405276346">
+      <Execution id="cc2cd1b3-f4a0-43f2-b6af-0c40a32b8bd2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests" name="LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;prepared&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="67d2f64e-759f-7e2a-372c-87c6d9ddb2d6">
+      <Execution id="70c03228-e278-4d09-b64b-ef544d1ab6bb" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests" name="LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;held&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a524f537-ed09-3134-474a-88c4ec01158b">
+      <Execution id="037615fb-b5de-4321-a891-f6698984ba15" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests" name="LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects(cut: &quot;namespace&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3f101bb7-7d9c-9e9c-b761-0f4c4252afe9">
+      <Execution id="905718f4-d9f0-4be4-a592-75afc0ba5a4c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunCrashLinuxTests" name="LaunchDeath_FreshProcessRefusesWithoutReplayOrCanonicalEffects" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="a524f537-ed09-3134-474a-88c4ec01158b" executionId="037615fb-b5de-4321-a891-f6698984ba15" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="00a8c448-48d5-f50a-fc5b-1085261df9d4" executionId="547efe5d-4297-45ed-a199-dd1f4faa6237" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4087dda4-927b-7ffc-0035-ba1405276346" executionId="cc2cd1b3-f4a0-43f2-b6af-0c40a32b8bd2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3f101bb7-7d9c-9e9c-b761-0f4c4252afe9" executionId="905718f4-d9f0-4be4-a592-75afc0ba5a4c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="67d2f64e-759f-7e2a-372c-87c6d9ddb2d6" executionId="70c03228-e278-4d09-b64b-ef544d1ab6bb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="5" executed="5" passed="5" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.28]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.76]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.79]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:17.25]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

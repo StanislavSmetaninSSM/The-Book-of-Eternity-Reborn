@@ -1,0 +1,54 @@
+{
+  "Categories": [
+    "portable-load-alias-admission"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-load-alias-admission",
+      "reason": "Fourteen newly qualified archive naming cases: Trim aliases refuse before mutation; valid finite authority case variants materialize canonically; invalid aliased config and post-mapping selected-source collision refuse. Current Windows producer preserves some on-disk casing, so blanket case rejection was corrected before runtime execution. Four outcome cases already have distinct causal evidence and are not repeated for this RED.",
+      "contracts": [
+        "#1553 FR-002/004/006/008/015; current-produced archive support, canonical settings/resource/soul authority, protected library/source and ephemeral omission"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "39a3e9245ee2de4f9d12e645eed94bb830b7959f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.2478512,
+  "Descriptors": [
+    {
+      "Name": "portable-load-alias-admission-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-alias-admission",
+      "Categories": [
+        "portable-load-alias-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 14,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CanonicalizedAuthorityCannotReplaceTheSelectedArchive",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.FixedAuthorityCaseAliasesMaterializeCanonicalNamesAndState",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.InvalidCaseAliasedConfigRejectsBeforeLifecycleMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PayloadAliasesRejectBeforeSettingsLibraryOrEphemeralMutation",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "DriverCandidate": "fcef74fcec400d407b3097492cf498f7957cc240",
+  "Runtime": "9340ff081c3a60a8c6b0d6ae0d07d95c555a3664",
+  "Verdict": "Observation refused intermediate empty startup frame before any manual input; original stop qualified; no full-draft/Ready/Q2 claim",
+  "ObservationFailure": "AssertionError: Current mini startup frame changed; never paste",
+  "ElapsedSeconds": 6.412,
+  "RawBytes": 1368,
+  "ManualRpcInputBytes": 0,
+  "ModelRequests": 0,
+  "EditorInvocations": 0,
+  "SubmitBytes": 0,
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 1,
+    "emergencySignals": 0,
+    "reaped": 1,
+    "failures": 0,
+    "deadline": false
+  },
+  "OriginalLogicalStopAndAck": true,
+  "ForegroundEOF": true,
+  "TermiosRestored": true,
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-pending/preparation.json.gz",
+      "Bytes": 1002,
+      "SHA256": "c6281585a075fd05308c27bb58a1db1bcf7440311bc4ab3329d698753e1c2484",
+      "StoredSHA256": "09a48b58da99f12a00bde1ab1dd7e67e5c44bcbbced955810b45ef4feb409456"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-pending/guardian.json.gz",
+      "Bytes": 97,
+      "SHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "StoredSHA256": "4a3b0059fa67390b10d972bcdc68fb8a39a3a11f5a922f20018e3c4660692a35"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-pending/guardian.log.gz",
+      "Bytes": 180,
+      "SHA256": "677f4351d06f9f040d61c561fc5d7f3232d42a98c88cd904ec1cddb39180b758",
+      "StoredSHA256": "ffb094f96881648617875ddaa7b28161b253b03142020e7d54db15030d14783a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-pending/probe-result.json.gz",
+      "Bytes": 9109,
+      "SHA256": "d01c0ead045a036943bebfdfb399b5c5c1149b05818acc68b982b7fc5a9d5201",
+      "StoredSHA256": "5695e9ef3a7f19799ec64e64a9d964314898efcd6556001fb26a996cbb8d5830"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-pending/rpc-journal.json.gz",
+      "Bytes": 11205,
+      "SHA256": "ce8891402078fd4e6031fbca54ff9b71f7af7d143b61b73381ecf0039664735b",
+      "StoredSHA256": "4efb59cf778616b0f3cf44af32b1111d8dc7a1681b7d44340003a4ed0b6efb24"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-pending/startup.raw.gz",
+      "Bytes": 1368,
+      "SHA256": "24768a627bc486784b5a364982886ab58a840e2c89031944b1d79ca412b0dec7",
+      "StoredSHA256": "06123a4560fa8c46523fa0bef4e19c17269589b2e4c65bc067dbf19e2a468ba6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-pending/startup-readable.txt.gz",
+      "Bytes": 1572,
+      "SHA256": "884aae40bfad6234191cd6f37f8afad5450b9cb2175ac49b95118fdeb6eb41dc",
+      "StoredSHA256": "3cc75b51c7cd5ce61801d6a08df8deb12f41f395ed48d5531564764c5cb70e01"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-q1/draft-pending/durable-main.json",
+      "Bytes": 775,
+      "SHA256": "f8911814bfd3f3ab7f81653ed1ccce0e5b772e71cabe1c55ed45983ae6b9648f"
+    }
+  ]
+}

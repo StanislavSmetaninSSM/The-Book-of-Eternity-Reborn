@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-operation-followup-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ed5767eaad616bdc5056397ace65f501565ae859",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 57.0959275,
+  "Descriptors": [
+    {
+      "Name": "gm-main-operation-followup-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-operation-followup-linux",
+      "Categories": [
+        "gm-main-operation-followup-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ContinuationBoundary",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_ContinuationBoundary",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

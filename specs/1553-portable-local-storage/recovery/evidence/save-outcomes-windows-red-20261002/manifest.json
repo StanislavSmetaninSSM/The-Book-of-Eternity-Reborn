@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "7499f91f01e1c3a4db3182c80fe51440c2d41ce2",
+  "status": "Intended RED: 5 executed and failed at unchanged save route or open archive. Frozen 7499f91f fresh binaries -NoBuild; source helper edits were not executed. T032-A2/A3; native Linux unexecuted.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-outcomes"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:20.8374830",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 5,
+    "CompletedCases": 5,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 5,
+    "Executed": 5,
+    "Passed": 0,
+    "Failed": 5
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "EC95BC2AE70B89FCD53DCCB9FC419724E4A2635683211607BAB0C7CC58728A21",
+      "sha256": "8BCC37FB317ADD3392D5255D6C539A73D6EE437093F2CCCCBA357E045AC31BA8"
+    },
+    {
+      "path": "portable-save-outcomes-unit-001.trx",
+      "originalSha256": "2F20B6B1A7D54E6E138B27D8E4C4EA48B5883B94A918BF88F06EAFA093F99D8B",
+      "sha256": "8FC450BB81B208528818219CF5C699B8A408AD7479E4544FD5D284F0DD76D131"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "A5ED9CA6BB044B0C02286F6D51653F6580923D9D30900FCDB6AAF04E675D29B5",
+      "sha256": "D48858CCB4D5A130FC2AA24FC11626F2FA45FC8FD09F7AEA84AF272A0C997FF0"
+    }
+  ]
+}

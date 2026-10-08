@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "gm-main-explicit-outcome-linux",
+    "gm-main-affected-input-fixture",
+    "gm-main-preparation-boundaries"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "6202426f0db8197d12b72f2ce111dd4a0c8f490f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 47.8122908,
+  "Descriptors": [
+    {
+      "Name": "gm-main-affected-input-fixture-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-affected-input-fixture",
+      "Categories": [
+        "gm-main-affected-input-fixture"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealLauncherTimeout_HeldInputReturnsUnknownWithoutReplay",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealLauncherTimeout_HeldInputReturnsUnknownWithoutReplay",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-explicit-outcome-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-explicit-outcome-linux",
+      "Categories": [
+        "gm-main-explicit-outcome-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualAdapter_ExplicitOutcomeSurvivesFinalization",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualAdapter_ExplicitOutcomeSurvivesFinalization",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-preparation-boundaries-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-preparation-boundaries",
+      "Categories": [
+        "gm-main-preparation-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.ParticipatingHelperCli_AbsentRootHasNoEffects",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.ParticipatingHelperCli_AbsentRootHasNoEffects",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

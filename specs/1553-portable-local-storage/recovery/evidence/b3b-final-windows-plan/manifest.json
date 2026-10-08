@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "bcecdd3aa7b1e8f53b7fdd43441724c65cf658a1",
+  "catalogBlobAfterPatch": "f8dd72a355a4639ca7b95ccce7eee5cd23c43038",
+  "kind": "newly executed b3b-final-windows-plan; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "8f72eeb269833d4aece030602f8a68f230f3e157b5e31d48c3a10fbaf5bb484c",
+      "sanitizedSha256": "8f72eeb269833d4aece030602f8a68f230f3e157b5e31d48c3a10fbaf5bb484c"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "fe2ac5f182b28f266c35b8887d5b5fb1bb2061728b6bf93c7f027c79e0497ba2",
+      "sanitizedSha256": "fe2ac5f182b28f266c35b8887d5b5fb1bb2061728b6bf93c7f027c79e0497ba2"
+    }
+  ],
+  "sourceAppliedTree": "418c8a56440631e7e989d5fff50a689c4ebe4421",
+  "selectionBlob": "3ef6dd248116c38d2a8286116afe31f0ae74fc81",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-storage-windows-paths -PlanOnly -NoBuild -Parallelism 1",
+  "platform": "Linux x64",
+  "result": "Two descriptors / exactly six Windows-only bodies planned; zero tests executed on Linux. Uses both fresh successful builds from b3b-final-audit; actual Windows execution remains pending."
+}

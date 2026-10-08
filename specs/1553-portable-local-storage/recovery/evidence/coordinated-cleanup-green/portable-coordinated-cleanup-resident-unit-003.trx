@@ -1,0 +1,39 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="6d0217fc-2a2d-4226-b2e7-f54be91c0cd0" name="coordinated-cleanup-green" runUser="$USER">
+  <ns0:Times creation="2026-10-01T13:08:02.9362015-04:00" queuing="2026-10-01T13:08:02.9362015-04:00" start="2026-10-01T13:08:00.2470419-04:00" finish="2026-10-01T13:08:02.9499550-04:00" />
+  <ns0:TestSettings name="default" id="9a637c8c-5daf-4624-ad6a-84382c142aa1">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="eabaf97e-f6c6-4aad-bbf7-86e2e58e0055" testId="d39c8069-a05c-cfd9-8a88-ed1c3587f11b" testName="BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests.EnsureHealthyAsync_MaterializedCompanion_PrunesUnsafeSameRelicAddAndMarksRelicResolved" computerName="$HOST" duration="00:00:00.1880467" startTime="2026-10-01T13:08:02.8107354-04:00" endTime="2026-10-01T13:08:02.8107356-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eabaf97e-f6c6-4aad-bbf7-86e2e58e0055" />
+    <ns0:UnitTestResult executionId="a713f1dc-cd45-4705-9951-1717be3381c2" testId="faaf2a8a-c67e-4f9e-9b37-bd09899f0806" testName="BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests.EnsureHealthyAsync_MalformedCurrentSoulRelics_KeepsManifestationRequestRetryable" computerName="$HOST" duration="00:00:00.2299341" startTime="2026-10-01T13:08:02.6218731-04:00" endTime="2026-10-01T13:08:02.6218959-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a713f1dc-cd45-4705-9951-1717be3381c2" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests.EnsureHealthyAsync_MalformedCurrentSoulRelics_KeepsManifestationRequestRetryable" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="faaf2a8a-c67e-4f9e-9b37-bd09899f0806">
+      <ns0:Execution id="a713f1dc-cd45-4705-9951-1717be3381c2" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests" name="EnsureHealthyAsync_MalformedCurrentSoulRelics_KeepsManifestationRequestRetryable" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests.EnsureHealthyAsync_MaterializedCompanion_PrunesUnsafeSameRelicAddAndMarksRelicResolved" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d39c8069-a05c-cfd9-8a88-ed1c3587f11b">
+      <ns0:Execution id="eabaf97e-f6c6-4aad-bbf7-86e2e58e0055" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests" name="EnsureHealthyAsync_MaterializedCompanion_PrunesUnsafeSameRelicAddAndMarksRelicResolved" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="d39c8069-a05c-cfd9-8a88-ed1c3587f11b" executionId="eabaf97e-f6c6-4aad-bbf7-86e2e58e0055" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="faaf2a8a-c67e-4f9e-9b37-bd09899f0806" executionId="a713f1dc-cd45-4705-9951-1717be3381c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.18]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.32]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.37]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.95]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>

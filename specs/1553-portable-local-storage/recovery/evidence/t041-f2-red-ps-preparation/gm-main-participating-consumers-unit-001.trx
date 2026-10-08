@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="cf7f085b-7a29-4c80-a9bd-d6fd4ef05f85" name="@c7669543e9c7 2026-10-06 15:24:27" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T15:24:27.1663743+00:00" queuing="2026-10-06T15:24:27.1663744+00:00" start="2026-10-06T15:24:17.2461365+00:00" finish="2026-10-06T15:24:40.6822386+00:00" />
+  <TestSettings name="default" id="879264f2-1fa1-458f-bbc8-710edf278126">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_15_24_27" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="21b9c2ba-da34-4c0b-a2ae-a213616577a9" testId="b28bc208-84f7-66bd-d3a5-ced86229526f" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;context-copy&quot;, preexisting: False)" computerName="c7669543e9c7" duration="00:00:01.9514136" startTime="2026-10-06T15:24:34.1502543+00:00" endTime="2026-10-06T15:24:34.1502547+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="21b9c2ba-da34-4c0b-a2ae-a213616577a9">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(String scenario, Boolean preexisting) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs:line 35
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6c004d2c-4da7-419a-bd07-d3b0f473e53c" testId="e5fec112-02da-73fb-078c-5d0283d99338" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;daemon-status&quot;, preexisting: False)" computerName="c7669543e9c7" duration="00:00:01.0315196" startTime="2026-10-06T15:24:32.1900872+00:00" endTime="2026-10-06T15:24:32.1900875+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6c004d2c-4da7-419a-bd07-d3b0f473e53c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(String scenario, Boolean preexisting) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs:line 35
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5a4e375f-0edd-40b8-a70a-1abad5667bee" testId="a15df3a5-e563-ba75-c94f-d7b5c1e71765" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;launcher-delete&quot;, preexisting: True)" computerName="c7669543e9c7" duration="00:00:08.7784696" startTime="2026-10-06T15:24:31.1555467+00:00" endTime="2026-10-06T15:24:31.1555469+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5a4e375f-0edd-40b8-a70a-1abad5667bee">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: True
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(String scenario, Boolean preexisting) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs:line 35
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d797c806-4f1a-4b37-abef-66af61369860" testId="b1421ab2-ba1a-6e8d-3825-886ad083b9af" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;launcher-stale&quot;, preexisting: True)" computerName="c7669543e9c7" duration="00:00:01.0984353" startTime="2026-10-06T15:24:22.3808038+00:00" endTime="2026-10-06T15:24:22.3808270+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d797c806-4f1a-4b37-abef-66af61369860">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: True
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(String scenario, Boolean preexisting) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs:line 35
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="edb7f41c-6828-46b3-ab33-4017a0d0f865" testId="6be7f35f-ba17-325f-7b59-e38e06b95f01" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;daemon-stale&quot;, preexisting: True)" computerName="c7669543e9c7" duration="00:00:03.7586975" startTime="2026-10-06T15:24:37.9378316+00:00" endTime="2026-10-06T15:24:37.9378319+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="edb7f41c-6828-46b3-ab33-4017a0d0f865">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: True
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(String scenario, Boolean preexisting) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs:line 35
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="98ce6e76-aa68-461b-9012-26500f9f62c0" testId="3b1b5aa9-94a8-e26d-447c-d5c4c43973bb" testName="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;bootstrap&quot;, preexisting: False)" computerName="c7669543e9c7" duration="00:00:02.6236583" startTime="2026-10-06T15:24:40.5583626+00:00" endTime="2026-10-06T15:24:40.5583629+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="98ce6e76-aa68-461b-9012-26500f9f62c0">
+      <Output>
+        <ErrorInfo>
+          <Message>Test-Path: /workspace/native-1553/tests/fixtures/GmMainOperation/consumers.ps1:32
+Line |
+  32 |  [ordered]@{exists=(Test-Path $target);failed=$failed;contextDirectory …
+     |                     ~~~~~~~~~~~~~~~~~
+     | Value cannot be null. (Parameter 'The provided Path argument was null or
+     | an empty collection.')
+</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(String scenario, Boolean preexisting) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs:line 34
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;launcher-stale&quot;, preexisting: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b1421ab2-ba1a-6e8d-3825-886ad083b9af">
+      <Execution id="d797c806-4f1a-4b37-abef-66af61369860" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealPowerShell_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;launcher-delete&quot;, preexisting: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a15df3a5-e563-ba75-c94f-d7b5c1e71765">
+      <Execution id="5a4e375f-0edd-40b8-a70a-1abad5667bee" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealPowerShell_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;daemon-stale&quot;, preexisting: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6be7f35f-ba17-325f-7b59-e38e06b95f01">
+      <Execution id="edb7f41c-6828-46b3-ab33-4017a0d0f865" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealPowerShell_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;bootstrap&quot;, preexisting: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3b1b5aa9-94a8-e26d-447c-d5c4c43973bb">
+      <Execution id="98ce6e76-aa68-461b-9012-26500f9f62c0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealPowerShell_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;daemon-status&quot;, preexisting: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e5fec112-02da-73fb-078c-5d0283d99338">
+      <Execution id="6c004d2c-4da7-419a-bd07-d3b0f473e53c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealPowerShell_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: &quot;context-copy&quot;, preexisting: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b28bc208-84f7-66bd-d3a5-ced86229526f">
+      <Execution id="21b9c2ba-da34-4c0b-a2ae-a213616577a9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainParticipatingConsumerTests" name="RealPowerShell_StoppingHasNoCanonicalEffect" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="b28bc208-84f7-66bd-d3a5-ced86229526f" executionId="21b9c2ba-da34-4c0b-a2ae-a213616577a9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e5fec112-02da-73fb-078c-5d0283d99338" executionId="6c004d2c-4da7-419a-bd07-d3b0f473e53c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a15df3a5-e563-ba75-c94f-d7b5c1e71765" executionId="5a4e375f-0edd-40b8-a70a-1abad5667bee" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b1421ab2-ba1a-6e8d-3825-886ad083b9af" executionId="d797c806-4f1a-4b37-abef-66af61369860" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6be7f35f-ba17-325f-7b59-e38e06b95f01" executionId="edb7f41c-6828-46b3-ab33-4017a0d0f865" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b1b5aa9-94a8-e26d-447c-d5c4c43973bb" executionId="98ce6e76-aa68-461b-9012-26500f9f62c0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="6" executed="6" passed="0" failed="6" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.41]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:03.27]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:03.30]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:04.50]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:04.50]       Expected: True
+[xUnit.net 00:00:04.50]       Actual:   False
+[xUnit.net 00:00:04.50]       Stack Trace:
+[xUnit.net 00:00:04.50]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs(35,0): at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(String scenario, Boolean preexisting)
+[xUnit.net 00:00:04.50]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:13.28]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:13.28]       Expected: True
+[xUnit.net 00:00:13.28]       Actual:   False
+[xUnit.net 00:00:13.28]       Stack Trace:
+[xUnit.net 00:00:13.28]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs(35,0): at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(String scenario, Boolean preexisting)
+[xUnit.net 00:00:13.28]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:14.31]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:14.31]       Expected: False
+[xUnit.net 00:00:14.31]       Actual:   True
+[xUnit.net 00:00:14.31]       Stack Trace:
+[xUnit.net 00:00:14.31]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs(35,0): at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(String scenario, Boolean preexisting)
+[xUnit.net 00:00:14.31]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:16.27]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:16.27]       Expected: False
+[xUnit.net 00:00:16.27]       Actual:   True
+[xUnit.net 00:00:16.27]       Stack Trace:
+[xUnit.net 00:00:16.27]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs(35,0): at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(String scenario, Boolean preexisting)
+[xUnit.net 00:00:16.27]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:20.06]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:20.06]       Expected: True
+[xUnit.net 00:00:20.06]       Actual:   False
+[xUnit.net 00:00:20.06]       Stack Trace:
+[xUnit.net 00:00:20.06]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs(35,0): at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(String scenario, Boolean preexisting)
+[xUnit.net 00:00:20.06]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:22.68]       Test-Path: /workspace/native-1553/tests/fixtures/GmMainOperation/consumers.ps1:32
+[xUnit.net 00:00:22.68]       Line |
+[xUnit.net 00:00:22.68]         32 |  [ordered]@{exists=(Test-Path $target);failed=$failed;contextDirectory …
+[xUnit.net 00:00:22.68]            |                     ~~~~~~~~~~~~~~~~~
+[xUnit.net 00:00:22.68]            | Value cannot be null. (Parameter 'The provided Path argument was null or
+[xUnit.net 00:00:22.68]            | an empty collection.')
+[xUnit.net 00:00:22.68]       
+[xUnit.net 00:00:22.68]       Stack Trace:
+[xUnit.net 00:00:22.68]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainParticipatingConsumerTests.cs(34,0): at BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(String scenario, Boolean preexisting)
+[xUnit.net 00:00:22.68]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:22.70]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T15:24:22.3744859+00:00">
+        <Text>[xUnit.net 00:00:04.50]     BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: "launcher-stale", preexisting: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T15:24:31.1548170+00:00">
+        <Text>[xUnit.net 00:00:13.28]     BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: "launcher-delete", preexisting: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T15:24:32.1931588+00:00">
+        <Text>[xUnit.net 00:00:14.31]     BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: "daemon-status", preexisting: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T15:24:34.1525705+00:00">
+        <Text>[xUnit.net 00:00:16.27]     BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: "context-copy", preexisting: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T15:24:37.9397338+00:00">
+        <Text>[xUnit.net 00:00:20.06]     BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: "daemon-stale", preexisting: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T15:24:40.5618280+00:00">
+        <Text>[xUnit.net 00:00:22.68]     BookOfEternityClient.Tests.GmMainParticipatingConsumerTests.RealPowerShell_StoppingHasNoCanonicalEffect(scenario: "bootstrap", preexisting: False) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

@@ -11,7 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class GmWorkerApplyGateTests
+public sealed partial class GmWorkerApplyGateTests
 {
     [Fact]
     public void PublicConstruction_RequiresProductionValidationService()
@@ -192,6 +192,46 @@ public sealed class GmWorkerApplyGateTests
     }
 
     [Fact]
+    public async Task ApplyAsync_PreparationBaselineConflictReturnsRejectedWithoutDecisionEvidence()
+    {
+        var root = CreateTempRoot();
+        try
+        {
+            const string path = "game_state/world/weather.json";
+            _ = CreateFileSystem(root);
+            var armed = false;
+            var observed = false;
+            var foreign = Encoding.UTF8.GetBytes("{\"foreign\":true}");
+            FileSystemManager? fs = null;
+            fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+                {
+                    BeforeCanonicalMutationBoundaryAsync = changed =>
+                    {
+                        if (armed && changed == path)
+                        {
+                            armed = false; observed = true;
+                            File.WriteAllBytes(fs!.ResolvePath(path), foreign);
+                        }
+                        return Task.CompletedTask;
+                    }
+                });
+            var (profile, task, proposal) = await PrepareAllowedRepairAsync(fs);
+            await ReserveTaskAsync(fs, task);
+            armed = true;
+            var gate = new GmWorkerApplyGate(fs, () => Task.FromResult<IReadOnlyList<ValidationIssue>>([]));
+            var decision = await gate.ApplyReservedAsync(proposal, profile, task.SessionGeneration);
+            Assert.True(observed);
+            Assert.Equal(ApplyGateResult.Rejected, decision.Result);
+            Assert.Contains(decision.RejectionReasons, reason => reason.Contains(path, StringComparison.Ordinal));
+            Assert.Equal(foreign, File.ReadAllBytes(fs.ResolvePath(path)));
+            Assert.False(File.Exists(Path.Combine(fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
+            Assert.False(File.Exists(fs.ActiveWorkerApplyTransactionJournalPath));
+        }
+        finally { CleanupTempRoot(root); }
+    }
+
+    [Fact]
     public async Task ApplyAsync_AcceptsAllowedProposalAndWritesCanonicalFile()
     {
         var root = CreateTempRoot();
@@ -273,7 +313,8 @@ public sealed class GmWorkerApplyGateTests
                 fs,
                 () =>
                 {
-                    durableJournalObserved = File.Exists(fs.ActiveWorkerApplyTransactionJournalPath);
+                    durableJournalObserved = File.Exists(Path.Combine(fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json"));
+                    Assert.False(File.Exists(fs.ActiveWorkerApplyTransactionJournalPath));
                     return Task.FromResult<IReadOnlyList<ValidationIssue>>([validationIssue]);
                 });
 
@@ -362,21 +403,29 @@ public sealed class GmWorkerApplyGateTests
                 proposal,
                 profile,
                 task.SessionGeneration);
+            var firstBoundary = await Task.WhenAny(validationEntered.Task, applyTask)
+                .WaitAsync(TimeSpan.FromSeconds(5));
+            if (ReferenceEquals(firstBoundary, applyTask))
+            {
+                var earlyDecision = await applyTask;
+                Assert.Fail($"Worker ended before validation/load dispatch: {earlyDecision.Result}; " +
+                    string.Join("; ", earlyDecision.RejectionReasons));
+            }
             await validationEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            Assert.False(fs.FileExists("game_state/control/gm_worker_apply.lock"));
+            Assert.False(File.Exists(fs.ResolvePath("game_state/control/gm_worker_apply.lock")));
             var loadTask = saveLoad.LoadGameAsync(savePath);
             await loadLeaseHookEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             await canonicalContentionObserved.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
             Assert.False(loadTask.IsCompleted);
-            Assert.Equal("{\"after\":true}", await fs.ReadFileAsync("game_state/world/weather.json"));
+            Assert.Equal("{\"after\":true}", await File.ReadAllTextAsync(fs.ResolvePath("game_state/world/weather.json")));
             releaseValidation.SetResult();
 
             var decision = await applyTask;
             Assert.Equal(ApplyGateResult.Accepted, decision.Result);
             Assert.True(await loadTask);
             Assert.Equal("{\"saved\":true}", await fs.ReadFileAsync("game_state/world/weather.json"));
-            Assert.False(fs.FileExists("game_state/control/gm_worker_apply.lock"));
+            Assert.False(File.Exists(fs.ResolvePath("game_state/control/gm_worker_apply.lock")));
         }
         finally
         {
@@ -656,7 +705,11 @@ public sealed class GmWorkerApplyGateTests
             var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.ValidationFailed, decision.Result);
-            Assert.Equal(concurrentMutation, await fs.ReadFileAsync(path));
+            var retained = Path.Combine(fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+            var evidence = File.ReadAllBytes(retained);
+            await Assert.ThrowsAnyAsync<InvalidDataException>(() => fs.ReadFileBytesAsync(path));
+            Assert.Equal(evidence, File.ReadAllBytes(retained));
+            Assert.Equal(concurrentMutation, await File.ReadAllTextAsync(fs.ResolvePath(path)));
         }
         finally
         {
@@ -731,7 +784,11 @@ public sealed class GmWorkerApplyGateTests
             var decision = await ApplyReservedTaskAsync(fs, gate, proposal, task, profile);
 
             Assert.Equal(ApplyGateResult.ValidationFailed, decision.Result);
-            Assert.Equal(concurrentBytes, await fs.ReadFileBytesAsync(path));
+            var retained = Path.Combine(fs.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+            var evidence = File.ReadAllBytes(retained);
+            await Assert.ThrowsAnyAsync<InvalidDataException>(() => fs.ReadFileBytesAsync(path));
+            Assert.Equal(evidence, File.ReadAllBytes(retained));
+            Assert.Equal(concurrentBytes, await File.ReadAllBytesAsync(fs.ResolvePath(path)));
             Assert.Contains(decision.RejectionReasons, reason =>
                 reason.Contains("rollback conflict", StringComparison.OrdinalIgnoreCase));
         }

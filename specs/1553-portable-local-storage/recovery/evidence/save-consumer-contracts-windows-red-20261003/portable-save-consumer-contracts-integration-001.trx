@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="d2e628ae-7f97-44e4-8b72-7543be7f4858" name="Eja@[HOST] 2026-10-03 00:29:26" runUser="[HOST]\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T00:29:26.1775885+10:00" queuing="2026-10-03T00:29:26.1775897+10:00" start="2026-10-03T00:29:21.3976128+10:00" finish="2026-10-03T00:29:51.4786832+10:00" />
+  <TestSettings name="default" id="48b39b10-69d3-4784-99b5-b01c18037eb6">
+    <Deployment runDeploymentRoot="Eja_[HOST]_2026-10-03_00_29_26" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="24627cee-5288-4749-a5fa-95ff2a0f7373" testId="6d6300ba-0cc4-ee2b-328d-1d0608ee2052" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_InvalidSoulStateRootDoesNotPublishArchive" computerName="[HOST]" duration="00:00:00.9606836" startTime="2026-10-03T00:29:49.7114765+10:00" endTime="2026-10-03T00:29:49.7114767+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="24627cee-5288-4749-a5fa-95ff2a0f7373" />
+    <UnitTestResult executionId="df24a8ad-e0b2-42ce-9a2c-ade5ead0619b" testId="7f833cf7-c7ed-2281-fec2-608abbda2f4b" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesLocalUiLockNamespaceDescendants" computerName="[HOST]" duration="00:00:01.5279335" startTime="2026-10-03T00:29:31.3827867+10:00" endTime="2026-10-03T00:29:31.3827871+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="df24a8ad-e0b2-42ce-9a2c-ade5ead0619b" />
+    <UnitTestResult executionId="e9d77f8d-f978-4900-a161-04aae4ba9577" testId="0226722e-cf21-0043-7dbb-3a05d2a47934" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.AutosaveAsync_DirectoryReplacedAfterEnumerationCannotDeleteOutsideFile" computerName="[HOST]" duration="00:00:01.0633976" startTime="2026-10-03T00:29:28.9026532+10:00" endTime="2026-10-03T00:29:28.9026533+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e9d77f8d-f978-4900-a161-04aae4ba9577" />
+    <UnitTestResult executionId="2df289c6-db22-4f5d-a44e-f7568e6845cf" testId="bf3078f1-172d-d580-e61e-2ae9719772ef" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_OrdinaryMetadataAcceptsHardLinkWithoutRetry" computerName="[HOST]" duration="00:00:01.0790678" startTime="2026-10-03T00:29:38.0109802+10:00" endTime="2026-10-03T00:29:38.0109804+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2df289c6-db22-4f5d-a44e-f7568e6845cf" />
+    <UnitTestResult executionId="6177297a-1fa6-46d5-819d-72290b805e3d" testId="e12bc5ac-c0db-b912-a5ce-925808087ee6" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ParentReplacedByJunctionBeforeReadFailsClosed" computerName="[HOST]" duration="00:00:01.2700008" startTime="2026-10-03T00:29:26.0882485+10:00" endTime="2026-10-03T00:29:26.0882487+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6177297a-1fa6-46d5-819d-72290b805e3d" />
+    <UnitTestResult executionId="23eaf431-5d86-40d6-a57c-efb6fd961812" testId="ef35c65e-bbbc-d2f5-38ec-c0efddebf080" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_WritesIntegrityManifestCoveringEveryPayloadEntry" computerName="[HOST]" duration="00:00:01.0279147" startTime="2026-10-03T00:29:45.6483870+10:00" endTime="2026-10-03T00:29:45.6483873+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="23eaf431-5d86-40d6-a57c-efb6fd961812" />
+    <UnitTestResult executionId="54053dad-5bf4-4278-8cb6-3afaec0ffe82" testId="8a64aea2-121d-2c38-0fde-f47d7560d258" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RuntimeStagingParentSwapCannotCreateExternalArchive" computerName="[HOST]" duration="00:00:00.8676130" startTime="2026-10-03T00:29:34.9162265+10:00" endTime="2026-10-03T00:29:34.9162267+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="54053dad-5bf4-4278-8cb6-3afaec0ffe82" />
+    <UnitTestResult executionId="0a3c59ba-5491-49cd-90b7-2cf76900de24" testId="38313e38-31a8-bfd3-7c79-21327dd445fa" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_MissingMandatoryGameStateRootFailsClosed" computerName="[HOST]" duration="00:00:00.7001964" startTime="2026-10-03T00:29:36.9313409+10:00" endTime="2026-10-03T00:29:36.9313411+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0a3c59ba-5491-49cd-90b7-2cf76900de24" />
+    <UnitTestResult executionId="decda6fa-6ccb-4ee9-9170-e860ff196625" testId="882441f5-ca16-cc12-74dc-b41f0f6d142b" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RetriesWhenSaveMetadataIsTemporarilyLocked" computerName="[HOST]" duration="00:00:01.9989570" startTime="2026-10-03T00:29:43.7976143+10:00" endTime="2026-10-03T00:29:43.7976150+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="decda6fa-6ccb-4ee9-9170-e860ff196625" />
+    <UnitTestResult executionId="269b188d-317d-4a29-8623-52008b28da1f" testId="24bcbb14-b9e9-7e9b-4d41-ccccb0a016d6" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RejectsOversizedMetadataThroughTrustedBudget" computerName="[HOST]" duration="00:00:00.8122133" startTime="2026-10-03T00:29:32.1955462+10:00" endTime="2026-10-03T00:29:32.1955464+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="269b188d-317d-4a29-8623-52008b28da1f" />
+    <UnitTestResult executionId="2cdd0ecd-6621-4ba8-8174-a60a942bf5c0" testId="c9f7147f-ebe7-a972-4702-7b8cb60d79f0" testName="BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption" computerName="[HOST]" duration="00:00:00.1222830" startTime="2026-10-03T00:29:24.7434195+10:00" endTime="2026-10-03T00:29:24.7434482+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2cdd0ecd-6621-4ba8-8174-a60a942bf5c0" />
+    <UnitTestResult executionId="e1fabe0b-10b5-41c8-abc2-b891321982f6" testId="f27fb366-c9fc-e764-1d1e-4a0c3852ba7c" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_FailureBeforeCommitLeavesNoPartialSaveOrTemporaryFile" computerName="[HOST]" duration="00:00:01.0304621" startTime="2026-10-03T00:29:48.7502797+10:00" endTime="2026-10-03T00:29:48.7502802+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e1fabe0b-10b5-41c8-abc2-b891321982f6" />
+    <UnitTestResult executionId="d0c126c3-5ebc-4088-9e0d-5e4c5097d54c" testId="8e2e9a7a-999e-b955-edb2-77bfa73ab33b" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ReparsePointAtMandatoryGameStateRootFailsClosed" computerName="[HOST]" duration="00:00:00.8195241" startTime="2026-10-03T00:29:44.6221248+10:00" endTime="2026-10-03T00:29:44.6221252+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d0c126c3-5ebc-4088-9e0d-5e4c5097d54c">
+      <Output>
+        <ErrorInfo>
+          <Message>BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.&#xD;
+---- System.IO.InvalidDataException : Canonical game-session path traverses reparse point 'C:\Temp\boe-save-load-tests-7a6731527d5a43afb966c9a2e37cac87\game_session\game_state'.</Message>
+          <StackTrace>   at BookOfEternityClient.Services.SaveCreationResult.ToBoolean() in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 65&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.SaveGameAsync(String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 203&#xD;
+   at BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ReparsePointAtMandatoryGameStateRootFailsClosed() in [WORKTREE]\BookOfEternityClient.IntegrationTests\SaveLoadServiceTests.cs:line 829&#xD;
+--- End of stack trace from previous location ---&#xD;
+----- Inner Stack Trace -----&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.EnsureNoExistingReparsePoint(String authorityRoot, String fullPath, String authorityName) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 708&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.ResolvePath(String relativePath) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 646&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.get_LegacyStorageRoots() in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs:line 24&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.EnsureNoLegacyStorageEvidence() in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs:line 42&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3666&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3675&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3574&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 255</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d1daaa16-8d7b-428d-b149-476a7a1029d7" testId="cdb92669-5e0e-7269-3f48-9d22d4f02c1c" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.AutosaveAsync_CleanupWaitsForCanonicalWriteLeaseAfterSavePublication" computerName="[HOST]" duration="00:00:01.3139946" startTime="2026-10-03T00:29:36.2308510+10:00" endTime="2026-10-03T00:29:36.2308512+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d1daaa16-8d7b-428d-b149-476a7a1029d7" />
+    <UnitTestResult executionId="462a0f5a-3e56-4a44-8b2a-91175174bcca" testId="f324db44-2ef1-18dc-16f7-91159741824b" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_EmptyMandatoryGameStateRootFailsClosed" computerName="[HOST]" duration="00:00:00.6472488" startTime="2026-10-03T00:29:27.8388086+10:00" endTime="2026-10-03T00:29:27.8388088+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="462a0f5a-3e56-4a44-8b2a-91175174bcca" />
+    <UnitTestResult executionId="ffd8376e-1c91-4803-8cfa-1529f5c4e300" testId="4598a9f8-cfa2-0ec8-57d3-30d89024c8a2" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease" computerName="[HOST]" duration="00:00:01.0895378" startTime="2026-10-03T00:29:27.1961052+10:00" endTime="2026-10-03T00:29:27.1961054+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ffd8376e-1c91-4803-8cfa-1529f5c4e300">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.True() Failure&#xD;
+Expected: True&#xD;
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease() in [WORKTREE]\BookOfEternityClient.IntegrationTests\SaveLoadServiceTests.cs:line 2389&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3c7b2358-4e97-4d4f-a695-dc8d1d9bba8d" testId="b889037a-8b53-9351-356d-f5b0f172ff3a" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesBrowserRollbackTransactions" computerName="[HOST]" duration="00:00:01.1312615" startTime="2026-10-03T00:29:34.0493956+10:00" endTime="2026-10-03T00:29:34.0493958+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3c7b2358-4e97-4d4f-a695-dc8d1d9bba8d">
+      <Output>
+        <ErrorInfo>
+          <Message>BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.&#xD;
+---- System.IO.InvalidDataException : Unresolved legacy storage evidence requires its original supported recovery handler: C:\Temp\boe-save-load-tests-7fd07311b0bc47a6b71fc6a1d4c73f9c\game_session\game_state\control\explorer_local_turn_rollback</Message>
+          <StackTrace>   at BookOfEternityClient.Services.SaveCreationResult.ToBoolean() in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 65&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.SaveGameAsync(String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 203&#xD;
+   at BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesBrowserRollbackTransactions() in [WORKTREE]\BookOfEternityClient.IntegrationTests\SaveLoadServiceTests.cs:line 591&#xD;
+--- End of stack trace from previous location ---&#xD;
+----- Inner Stack Trace -----&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.EnsureNoLegacyStorageEvidence() in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs:line 44&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3666&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3675&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3574&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 255</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4cbae66f-8c7a-4fe5-88f0-7f22129ad775" testId="a5cd89a8-7dcc-26ca-2fc0-a23dd6d40f82" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_InvalidUtf8CanonicalResourceInputFailsClosed" computerName="[HOST]" duration="00:00:02.0697378" startTime="2026-10-03T00:29:47.7192099+10:00" endTime="2026-10-03T00:29:47.7192107+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4cbae66f-8c7a-4fe5-88f0-7f22129ad775" />
+    <UnitTestResult executionId="bcff09f3-8ecd-4c35-9e4a-57594ea2feba" testId="ff410360-207a-5416-27f7-2e1d92e77492" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_SelfConsistentUnknownResourceOwnerIsRejected" computerName="[HOST]" duration="00:00:01.1460269" startTime="2026-10-03T00:29:41.7981052+10:00" endTime="2026-10-03T00:29:41.7981055+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bcff09f3-8ecd-4c35-9e4a-57594ea2feba" />
+    <UnitTestResult executionId="da2d23af-b264-43ca-b789-2d3001c28e01" testId="e4ae1e6a-0183-0878-6279-04f9f4f5dd1c" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_WaitsForCanonicalWriteLeaseBeforeReadingSessionSnapshot" computerName="[HOST]" duration="00:00:02.6399477" startTime="2026-10-03T00:29:40.6514750+10:00" endTime="2026-10-03T00:29:40.6514751+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="da2d23af-b264-43ca-b789-2d3001c28e01" />
+    <UnitTestResult executionId="ced2539d-e8fe-45aa-b1f8-58698a609229" testId="2ffb8665-9418-6247-4d0b-9c3885a4ec7a" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_SaveDirectoryReplacedAtCommitCannotPublishOutsideSession" computerName="[HOST]" duration="00:00:00.9509956" startTime="2026-10-03T00:29:29.8541598+10:00" endTime="2026-10-03T00:29:29.8541600+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ced2539d-e8fe-45aa-b1f8-58698a609229" />
+    <UnitTestResult executionId="63d40350-8ca6-4dcb-a4a1-a68747589ee6" testId="c0fdbaed-fc65-2091-c0bf-c52c92370c38" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RegularFileAtMandatoryGameStateRootFailsClosed" computerName="[HOST]" duration="00:00:00.7145306" startTime="2026-10-03T00:29:32.9174945+10:00" endTime="2026-10-03T00:29:32.9174949+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="63d40350-8ca6-4dcb-a4a1-a68747589ee6">
+      <Output>
+        <ErrorInfo>
+          <Message>BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.&#xD;
+---- System.IO.InvalidDataException : Storage evidence root parent is not a physical directory.</Message>
+          <StackTrace>   at BookOfEternityClient.Services.SaveCreationResult.ToBoolean() in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 65&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.SaveGameAsync(String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 203&#xD;
+   at BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RegularFileAtMandatoryGameStateRootFailsClosed() in [WORKTREE]\BookOfEternityClient.IntegrationTests\SaveLoadServiceTests.cs:line 798&#xD;
+--- End of stack trace from previous location ---&#xD;
+----- Inner Stack Trace -----&#xD;
+   at BookOfEternityClient.Core.PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(String rootPath, String expectedPath, String authorityName) in [WORKTREE]\BookOfEternityClient\Core\PhysicalFileAuthority.cs:line 239&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.HasStorageEvidence(String root) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs:line 33&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.EnsureNoLegacyStorageEvidence() in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs:line 43&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3666&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3675&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs:line 3574&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(String saveName, String description, String saveDir, Int32 turnNumber) in [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs:line 255</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="230c7bca-e867-4bb1-8ddc-8b99f0a4cb23" testId="fb44484e-b5e1-3a03-9533-c9d4a0360033" testName="BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive" computerName="[HOST]" duration="00:00:00.0686840" startTime="2026-10-03T00:29:24.8138020+10:00" endTime="2026-10-03T00:29:24.8138023+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="230c7bca-e867-4bb1-8ddc-8b99f0a4cb23" />
+    <UnitTestResult executionId="1a022304-99ba-4f55-8f78-c066ff2e454b" testId="242bb6ff-1a3d-9f47-75b3-85b952401b8f" testName="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_DoesNotArchiveDirectoryJunctionTarget" computerName="[HOST]" duration="00:00:01.6702677" startTime="2026-10-03T00:29:51.3825281+10:00" endTime="2026-10-03T00:29:51.3825283+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1a022304-99ba-4f55-8f78-c066ff2e454b" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_OrdinaryMetadataAcceptsHardLinkWithoutRetry" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="bf3078f1-172d-d580-e61e-2ae9719772ef">
+      <Execution id="2df289c6-db22-4f5d-a44e-f7568e6845cf" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="GetAvailableSavesAsync_OrdinaryMetadataAcceptsHardLinkWithoutRetry" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesLocalUiLockNamespaceDescendants" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="7f833cf7-c7ed-2281-fec2-608abbda2f4b">
+      <Execution id="df24a8ad-e0b2-42ce-9a2c-ade5ead0619b" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_ExcludesLocalUiLockNamespaceDescendants" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_EmptyMandatoryGameStateRootFailsClosed" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="f324db44-2ef1-18dc-16f7-91159741824b">
+      <Execution id="462a0f5a-3e56-4a44-8b2a-91175174bcca" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_EmptyMandatoryGameStateRootFailsClosed" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ParentReplacedByJunctionBeforeReadFailsClosed" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="e12bc5ac-c0db-b912-a5ce-925808087ee6">
+      <Execution id="6177297a-1fa6-46d5-819d-72290b805e3d" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_ParentReplacedByJunctionBeforeReadFailsClosed" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RetriesWhenSaveMetadataIsTemporarilyLocked" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="882441f5-ca16-cc12-74dc-b41f0f6d142b">
+      <Execution id="decda6fa-6ccb-4ee9-9170-e860ff196625" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="GetAvailableSavesAsync_RetriesWhenSaveMetadataIsTemporarilyLocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.AutosaveAsync_DirectoryReplacedAfterEnumerationCannotDeleteOutsideFile" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="0226722e-cf21-0043-7dbb-3a05d2a47934">
+      <Execution id="e9d77f8d-f978-4900-a161-04aae4ba9577" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="AutosaveAsync_DirectoryReplacedAfterEnumerationCannotDeleteOutsideFile" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_FailureBeforeCommitLeavesNoPartialSaveOrTemporaryFile" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="f27fb366-c9fc-e764-1d1e-4a0c3852ba7c">
+      <Execution id="e1fabe0b-10b5-41c8-abc2-b891321982f6" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_FailureBeforeCommitLeavesNoPartialSaveOrTemporaryFile" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RuntimeStagingParentSwapCannotCreateExternalArchive" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="8a64aea2-121d-2c38-0fde-f47d7560d258">
+      <Execution id="54053dad-5bf4-4278-8cb6-3afaec0ffe82" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_RuntimeStagingParentSwapCannotCreateExternalArchive" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_SaveDirectoryReplacedAtCommitCannotPublishOutsideSession" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="2ffb8665-9418-6247-4d0b-9c3885a4ec7a">
+      <Execution id="ced2539d-e8fe-45aa-b1f8-58698a609229" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_SaveDirectoryReplacedAtCommitCannotPublishOutsideSession" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ReparsePointAtMandatoryGameStateRootFailsClosed" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="8e2e9a7a-999e-b955-edb2-77bfa73ab33b">
+      <Execution id="d0c126c3-5ebc-4088-9e0d-5e4c5097d54c" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_ReparsePointAtMandatoryGameStateRootFailsClosed" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RegularFileAtMandatoryGameStateRootFailsClosed" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="c0fdbaed-fc65-2091-c0bf-c52c92370c38">
+      <Execution id="63d40350-8ca6-4dcb-a4a1-a68747589ee6" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_RegularFileAtMandatoryGameStateRootFailsClosed" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_InvalidSoulStateRootDoesNotPublishArchive" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="6d6300ba-0cc4-ee2b-328d-1d0608ee2052">
+      <Execution id="24627cee-5288-4749-a5fa-95ff2a0f7373" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_InvalidSoulStateRootDoesNotPublishArchive" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.GetAvailableSavesAsync_RejectsOversizedMetadataThroughTrustedBudget" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="24bcbb14-b9e9-7e9b-4d41-ccccb0a016d6">
+      <Execution id="269b188d-317d-4a29-8623-52008b28da1f" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="GetAvailableSavesAsync_RejectsOversizedMetadataThroughTrustedBudget" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_DoesNotArchiveDirectoryJunctionTarget" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="242bb6ff-1a3d-9f47-75b3-85b952401b8f">
+      <Execution id="1a022304-99ba-4f55-8f78-c066ff2e454b" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_DoesNotArchiveDirectoryJunctionTarget" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_SelfConsistentUnknownResourceOwnerIsRejected" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="ff410360-207a-5416-27f7-2e1d92e77492">
+      <Execution id="bcff09f3-8ecd-4c35-9e4a-57594ea2feba" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_SelfConsistentUnknownResourceOwnerIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_WaitsForCanonicalWriteLeaseBeforeReadingSessionSnapshot" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="e4ae1e6a-0183-0878-6279-04f9f4f5dd1c">
+      <Execution id="da2d23af-b264-43ca-b789-2d3001c28e01" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_WaitsForCanonicalWriteLeaseBeforeReadingSessionSnapshot" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="4598a9f8-cfa2-0ec8-57d3-30d89024c8a2">
+      <Execution id="ffd8376e-1c91-4803-8cfa-1529f5c4e300" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_InvalidUtf8CanonicalResourceInputFailsClosed" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="a5cd89a8-7dcc-26ca-2fc0-a23dd6d40f82">
+      <Execution id="4cbae66f-8c7a-4fe5-88f0-7f22129ad775" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_InvalidUtf8CanonicalResourceInputFailsClosed" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.AutosaveAsync_CleanupWaitsForCanonicalWriteLeaseAfterSavePublication" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="cdb92669-5e0e-7269-3f48-9d22d4f02c1c">
+      <Execution id="d1daaa16-8d7b-428d-b149-476a7a1029d7" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="AutosaveAsync_CleanupWaitsForCanonicalWriteLeaseAfterSavePublication" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_MissingMandatoryGameStateRootFailsClosed" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="38313e38-31a8-bfd3-7c79-21327dd445fa">
+      <Execution id="0a3c59ba-5491-49cd-90b7-2cf76900de24" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_MissingMandatoryGameStateRootFailsClosed" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesBrowserRollbackTransactions" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="b889037a-8b53-9351-356d-f5b0f172ff3a">
+      <Execution id="3c7b2358-4e97-4d4f-a695-dc8d1d9bba8d" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_ExcludesBrowserRollbackTransactions" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="c9f7147f-ebe7-a972-4702-7b8cb60d79f0">
+      <Execution id="2cdd0ecd-6621-4ba8-8174-a60a942bf5c0" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="OpenExactPhysicalReadFile_CompletionRejectsLinkAddedAfterConsumption" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_WritesIntegrityManifestCoveringEveryPayloadEntry" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="ef35c65e-bbbc-d2f5-38ec-c0efddebf080">
+      <Execution id="23eaf431-5d86-40d6-a57c-efb6fd961812" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SaveLoadServiceTests" name="SaveGameAsync_WritesIntegrityManifestCoveringEveryPayloadEntry" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="fb44484e-b5e1-3a03-9533-c9d4a0360033">
+      <Execution id="230c7bca-e867-4bb1-8ddc-8b99f0a4cb23" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="OpenExactPhysicalReadFile_RejectsHardLinkedSaveArchive" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="6d6300ba-0cc4-ee2b-328d-1d0608ee2052" executionId="24627cee-5288-4749-a5fa-95ff2a0f7373" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7f833cf7-c7ed-2281-fec2-608abbda2f4b" executionId="df24a8ad-e0b2-42ce-9a2c-ade5ead0619b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0226722e-cf21-0043-7dbb-3a05d2a47934" executionId="e9d77f8d-f978-4900-a161-04aae4ba9577" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bf3078f1-172d-d580-e61e-2ae9719772ef" executionId="2df289c6-db22-4f5d-a44e-f7568e6845cf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e12bc5ac-c0db-b912-a5ce-925808087ee6" executionId="6177297a-1fa6-46d5-819d-72290b805e3d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ef35c65e-bbbc-d2f5-38ec-c0efddebf080" executionId="23eaf431-5d86-40d6-a57c-efb6fd961812" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8a64aea2-121d-2c38-0fde-f47d7560d258" executionId="54053dad-5bf4-4278-8cb6-3afaec0ffe82" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="38313e38-31a8-bfd3-7c79-21327dd445fa" executionId="0a3c59ba-5491-49cd-90b7-2cf76900de24" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="882441f5-ca16-cc12-74dc-b41f0f6d142b" executionId="decda6fa-6ccb-4ee9-9170-e860ff196625" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="24bcbb14-b9e9-7e9b-4d41-ccccb0a016d6" executionId="269b188d-317d-4a29-8623-52008b28da1f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c9f7147f-ebe7-a972-4702-7b8cb60d79f0" executionId="2cdd0ecd-6621-4ba8-8174-a60a942bf5c0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f27fb366-c9fc-e764-1d1e-4a0c3852ba7c" executionId="e1fabe0b-10b5-41c8-abc2-b891321982f6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8e2e9a7a-999e-b955-edb2-77bfa73ab33b" executionId="d0c126c3-5ebc-4088-9e0d-5e4c5097d54c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cdb92669-5e0e-7269-3f48-9d22d4f02c1c" executionId="d1daaa16-8d7b-428d-b149-476a7a1029d7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f324db44-2ef1-18dc-16f7-91159741824b" executionId="462a0f5a-3e56-4a44-8b2a-91175174bcca" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4598a9f8-cfa2-0ec8-57d3-30d89024c8a2" executionId="ffd8376e-1c91-4803-8cfa-1529f5c4e300" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b889037a-8b53-9351-356d-f5b0f172ff3a" executionId="3c7b2358-4e97-4d4f-a695-dc8d1d9bba8d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a5cd89a8-7dcc-26ca-2fc0-a23dd6d40f82" executionId="4cbae66f-8c7a-4fe5-88f0-7f22129ad775" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ff410360-207a-5416-27f7-2e1d92e77492" executionId="bcff09f3-8ecd-4c35-9e4a-57594ea2feba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e4ae1e6a-0183-0878-6279-04f9f4f5dd1c" executionId="da2d23af-b264-43ca-b789-2d3001c28e01" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ffb8665-9418-6247-4d0b-9c3885a4ec7a" executionId="ced2539d-e8fe-45aa-b1f8-58698a609229" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c0fdbaed-fc65-2091-c0bf-c52c92370c38" executionId="63d40350-8ca6-4dcb-a4a1-a68747589ee6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fb44484e-b5e1-3a03-9533-c9d4a0360033" executionId="230c7bca-e867-4bb1-8ddc-8b99f0a4cb23" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="242bb6ff-1a3d-9f47-75b3-85b952401b8f" executionId="1a022304-99ba-4f55-8f78-c066ff2e454b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="24" executed="24" passed="20" failed="4" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.53]   Discovering: BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:02.49]   Discovered:  BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:02.52]   Starting:    BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:05.15]       Assert.True() Failure&#xD;
+[xUnit.net 00:00:05.15]       Expected: True&#xD;
+[xUnit.net 00:00:05.15]       Actual:   False&#xD;
+[xUnit.net 00:00:05.15]       Stack Trace:&#xD;
+[xUnit.net 00:00:05.15]         [WORKTREE]\BookOfEternityClient.IntegrationTests\SaveLoadServiceTests.cs(2389,0): at BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease()&#xD;
+[xUnit.net 00:00:05.15]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:10.87]       BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.&#xD;
+[xUnit.net 00:00:10.87]       ---- System.IO.InvalidDataException : Storage evidence root parent is not a physical directory.&#xD;
+[xUnit.net 00:00:10.87]       Stack Trace:&#xD;
+[xUnit.net 00:00:10.87]         [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs(65,0): at BookOfEternityClient.Services.SaveCreationResult.ToBoolean()&#xD;
+[xUnit.net 00:00:10.87]         [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs(203,0): at BookOfEternityClient.Services.SaveLoadService.SaveGameAsync(String saveName, String description, String saveDir, Int32 turnNumber)&#xD;
+[xUnit.net 00:00:10.87]         [WORKTREE]\BookOfEternityClient.IntegrationTests\SaveLoadServiceTests.cs(798,0): at BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RegularFileAtMandatoryGameStateRootFailsClosed()&#xD;
+[xUnit.net 00:00:10.87]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:10.87]         ----- Inner Stack Trace -----&#xD;
+[xUnit.net 00:00:10.87]         [WORKTREE]\BookOfEternityClient\Core\PhysicalFileAuthority.cs(239,0): at BookOfEternityClient.Core.PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(String rootPath, String expectedPath, String authorityName)&#xD;
+[xUnit.net 00:00:10.87]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs(33,0): at BookOfEternityClient.Core.FileSystemManager.HasStorageEvidence(String root)&#xD;
+[xUnit.net 00:00:10.87]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs(43,0): at BookOfEternityClient.Core.FileSystemManager.EnsureNoLegacyStorageEvidence()&#xD;
+[xUnit.net 00:00:10.87]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs(3666,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)&#xD;
+[xUnit.net 00:00:10.87]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs(3675,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)&#xD;
+[xUnit.net 00:00:10.87]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs(3574,0): at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken)&#xD;
+[xUnit.net 00:00:10.87]         [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs(255,0): at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(String saveName, String description, String saveDir, Int32 turnNumber)&#xD;
+[xUnit.net 00:00:12.00]       BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.&#xD;
+[xUnit.net 00:00:12.00]       ---- System.IO.InvalidDataException : Unresolved legacy storage evidence requires its original supported recovery handler: C:\Temp\boe-save-load-tests-7fd07311b0bc47a6b71fc6a1d4c73f9c\game_session\game_state\control\explorer_local_turn_rollback&#xD;
+[xUnit.net 00:00:12.00]       Stack Trace:&#xD;
+[xUnit.net 00:00:12.00]         [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs(65,0): at BookOfEternityClient.Services.SaveCreationResult.ToBoolean()&#xD;
+[xUnit.net 00:00:12.00]         [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs(203,0): at BookOfEternityClient.Services.SaveLoadService.SaveGameAsync(String saveName, String description, String saveDir, Int32 turnNumber)&#xD;
+[xUnit.net 00:00:12.00]         [WORKTREE]\BookOfEternityClient.IntegrationTests\SaveLoadServiceTests.cs(591,0): at BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesBrowserRollbackTransactions()&#xD;
+[xUnit.net 00:00:12.00]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:12.00]         ----- Inner Stack Trace -----&#xD;
+[xUnit.net 00:00:12.00]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs(44,0): at BookOfEternityClient.Core.FileSystemManager.EnsureNoLegacyStorageEvidence()&#xD;
+[xUnit.net 00:00:12.00]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs(3666,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)&#xD;
+[xUnit.net 00:00:12.00]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs(3675,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)&#xD;
+[xUnit.net 00:00:12.00]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs(3574,0): at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken)&#xD;
+[xUnit.net 00:00:12.00]         [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs(255,0): at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(String saveName, String description, String saveDir, Int32 turnNumber)&#xD;
+[xUnit.net 00:00:22.57]       BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException : Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.&#xD;
+[xUnit.net 00:00:22.57]       ---- System.IO.InvalidDataException : Canonical game-session path traverses reparse point 'C:\Temp\boe-save-load-tests-7a6731527d5a43afb966c9a2e37cac87\game_session\game_state'.&#xD;
+[xUnit.net 00:00:22.57]       Stack Trace:&#xD;
+[xUnit.net 00:00:22.57]         [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs(65,0): at BookOfEternityClient.Services.SaveCreationResult.ToBoolean()&#xD;
+[xUnit.net 00:00:22.57]         [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs(203,0): at BookOfEternityClient.Services.SaveLoadService.SaveGameAsync(String saveName, String description, String saveDir, Int32 turnNumber)&#xD;
+[xUnit.net 00:00:22.57]         [WORKTREE]\BookOfEternityClient.IntegrationTests\SaveLoadServiceTests.cs(829,0): at BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ReparsePointAtMandatoryGameStateRootFailsClosed()&#xD;
+[xUnit.net 00:00:22.57]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:22.57]         ----- Inner Stack Trace -----&#xD;
+[xUnit.net 00:00:22.57]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs(708,0): at BookOfEternityClient.Core.FileSystemManager.EnsureNoExistingReparsePoint(String authorityRoot, String fullPath, String authorityName)&#xD;
+[xUnit.net 00:00:22.57]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs(646,0): at BookOfEternityClient.Core.FileSystemManager.ResolvePath(String relativePath)&#xD;
+[xUnit.net 00:00:22.57]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs(24,0): at BookOfEternityClient.Core.FileSystemManager.get_LegacyStorageRoots()&#xD;
+[xUnit.net 00:00:22.57]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs(42,0): at BookOfEternityClient.Core.FileSystemManager.EnsureNoLegacyStorageEvidence()&#xD;
+[xUnit.net 00:00:22.57]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs(3666,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)&#xD;
+[xUnit.net 00:00:22.57]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs(3675,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)&#xD;
+[xUnit.net 00:00:22.57]         [WORKTREE]\BookOfEternityClient\Core\FileSystemManager.cs(3574,0): at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken)&#xD;
+[xUnit.net 00:00:22.57]         [WORKTREE]\BookOfEternityClient\Services\SaveLoadService.Creation.cs(255,0): at BookOfEternityClient.Services.SaveLoadService.CreateSaveAsync(String saveName, String description, String saveDir, Int32 turnNumber)&#xD;
+[xUnit.net 00:00:29.34]   Finished:    BookOfEternityClient.IntegrationTests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-03T00:29:27.1943577+10:00">
+        <Text>[xUnit.net 00:00:05.15]     BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RepairsClientOwnedProfileMirrorWithoutReacquiringCanonicalLease [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-03T00:29:32.9155244+10:00">
+        <Text>[xUnit.net 00:00:10.87]     BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_RegularFileAtMandatoryGameStateRootFailsClosed [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-03T00:29:34.0488521+10:00">
+        <Text>[xUnit.net 00:00:12.00]     BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ExcludesBrowserRollbackTransactions [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-03T00:29:44.6204711+10:00">
+        <Text>[xUnit.net 00:00:22.57]     BookOfEternityClient.Tests.SaveLoadServiceTests.SaveGameAsync_ReparsePointAtMandatoryGameStateRootFailsClosed [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

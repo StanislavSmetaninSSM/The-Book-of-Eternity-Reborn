@@ -1,3 +1,7 @@
+using System.Runtime.ExceptionServices;
+using BookOfEternityClient.Services;
+using BookOfEternityClient.Services.GmRuntime;
+
 namespace BookOfEternityClient.Core;
 
 internal class SessionReplacedException : Exception
@@ -52,21 +56,123 @@ internal static class SessionOperationContext
         FileSystemManager fileSystem,
         string expectedGeneration,
         FileSystemManager.CanonicalWriteLease writeLease,
-        Func<Task<T>> operation)
+        Func<Task<T>> operation,
+        Func<MainOperationOutcome>? establishedOutcome = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         return await RunBoundCoreAsync(
             fileSystem,
             expectedGeneration,
             operation,
-            writeLease);
+            writeLease,
+            establishedOutcome);
     }
 
-    private static async Task<T> RunBoundCoreAsync<T>(
+    /// <summary>
+    /// Runs an operation within its generation binding and closes that binding while preserving typed storage outcomes.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The operation's result type.
+    /// </typeparam>
+    /// <param name="fileSystem">
+    /// The manager whose canonical root and finalization lease establish the binding.
+    /// </param>
+    /// <param name="expectedGeneration">
+    /// The nonempty generation that must remain current throughout the operation.
+    /// </param>
+    /// <param name="operation">
+    /// The action to execute within the active binding.
+    /// </param>
+    /// <param name="writeLease">
+    /// An existing caller-owned lease, or null to acquire a separate finalization lease before closing.
+    /// </param>
+    /// <returns>
+    /// The completed operation result. Established session replacement takes precedence over a storage failure;
+    /// ordinary closing failures retain the original typed storage outcome and a separate diagnostic.
+    /// </returns>
+    private static async Task<T> RunBoundCoreAsync<T>(FileSystemManager fileSystem,string expectedGeneration,Func<Task<T>> operation,FileSystemManager.CanonicalWriteLease? writeLease,Func<MainOperationOutcome>? capturedOutcome=null)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);ArgumentNullException.ThrowIfNull(operation);
+        if(string.IsNullOrWhiteSpace(expectedGeneration))throw new ArgumentException("A session operation requires a generation.",nameof(expectedGeneration));
+        await using var main=fileSystem.BeginParticipatingMainAdmission();await main.AcquireAsync();
+        Exception? failure=null;T? result=default;
+        try {result=await RunBoundBodyAsync(fileSystem,expectedGeneration,operation,writeLease,capturedOutcome);}
+        catch(Exception e){failure=e;throw;}
+        finally {
+            var outcome=failure==null?(capturedOutcome?.Invoke()??MainOperationOutcome.Completed):OutcomeFor(failure,capturedOutcome?.Invoke());
+            try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}
+            catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
+            catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}
+        }
+        return result!;
+    }
+
+    internal static async Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null)
+    {
+        ArgumentNullException.ThrowIfNull(files);ArgumentNullException.ThrowIfNull(operation);
+        await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync();
+        Exception? failure=null;T? result=default;MainOperationOutcome outcome=MainOperationOutcome.Completed;
+        try {
+            string generation;
+            if(!TryGetExpectedGeneration(files.BasePath,out generation)) {
+                await using var lease=await files.AcquireCanonicalWriteLeaseAsync();generation=files.GetOrCreateSessionGeneration(lease);
+            }
+            result=await RunBoundCoreAsync(files,generation,async()=> {
+                var value=await operation();
+                // Freeze the callback's established decision once, before any
+                // actual finalization or close can fail. Later reads use this value.
+                outcome=establishedOutcome?.Invoke()??MainOperationOutcome.Completed;
+                return value;
+            },null,()=>outcome);
+        } catch(Exception e){failure=e;outcome=establishedOutcome?.Invoke()??outcome;throw;}
+        finally {
+            outcome=failure==null?outcome:OutcomeFor(failure,outcome);
+            try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}
+            catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
+            catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}
+        }
+        return result!;
+    }
+
+    // Bootstrap itself admits existing config and atomically publishes config +
+    // generation. Acquiring its original main pin must not invent generation first.
+    internal static async Task<string> RunParticipatingBootstrapAsync(FileSystemManager files,Func<Task<string>> bootstrap)
+    {
+        ArgumentNullException.ThrowIfNull(files);ArgumentNullException.ThrowIfNull(bootstrap);
+        await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync();
+        Exception? failure=null;string? result=null;
+        try {
+            result=await bootstrap();
+            result=await RunBoundCoreAsync(files,result,()=>Task.FromResult(result!),null);
+        } catch(Exception e){failure=e;throw;}
+        finally {
+            var outcome=OutcomeFor(failure);
+            try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}
+            catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
+            catch(Exception close){throw new MainOperationContinuationException<string>(result!,outcome,main.DescribeClose(outcome,false),close);}
+        }
+        return result!;
+    }
+
+    // A supplied decision is captured by the original callback, never inferred
+    // from an exception, status/PID or storage JSON. Later authority loss cannot
+    // relabel an already established browser decision when closing its main pin.
+    private static MainOperationOutcome OutcomeFor(Exception? failure, MainOperationOutcome? captured=null)=>
+        failure is IMainOperationContinuationFailure known?known.EstablishedOutcome:
+        captured is { } decision && decision!=MainOperationOutcome.Completed?decision:
+        failure is OperationCanceledException?MainOperationOutcome.Cancelled:
+        failure!=null?MainOperationOutcome.Failed:MainOperationOutcome.Completed;
+    private static bool HasClosingFailure(Exception? failure)=>failure?.Data.Contains("SessionFinalizationFailure")==true;
+
+    internal static Task RunParticipatingCurrentSessionAsync(FileSystemManager files,Func<Task> operation)=>
+        RunParticipatingCurrentSessionAsync<object?>(files,async()=>{await operation();return null;});
+
+    private static async Task<T> RunBoundBodyAsync<T>(
         FileSystemManager fileSystem,
         string expectedGeneration,
         Func<Task<T>> operation,
-        FileSystemManager.CanonicalWriteLease? writeLease)
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        Func<MainOperationOutcome>? capturedOutcome)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(operation);
@@ -97,14 +203,25 @@ internal static class SessionOperationContext
         var state = new BindingState(normalizedRoot, expectedGeneration);
         var previous = CurrentFrame.Value;
         CurrentFrame.Value = new Frame(state, previous);
+        Exception? operationFailure = null;
+        T? establishedResult=default;
+        bool established=false;
         try
         {
-            return await RunWithinBindingAsync(
+            establishedResult=await RunWithinBindingAsync(
                 state,
                 fileSystem,
                 operation,
                 writeLease,
                 verifyAfterOperation: writeLease != null);
+            established=true;
+            return establishedResult;
+        }
+        catch (Exception failure)
+        {
+            // RunWithinBindingAsync has already applied replacement precedence.
+            operationFailure = failure;
+            throw;
         }
         finally
         {
@@ -115,6 +232,7 @@ internal static class SessionOperationContext
             }
             else
             {
+                fileSystem.BeginMainOperationClosing();
                 state.BeginClosing();
                 try
                 {
@@ -132,6 +250,35 @@ internal static class SessionOperationContext
 
                     state.Close();
                 }
+                catch (Exception closingFailure) when (operationFailure != null)
+                {
+                    // The finalization lease still acquires, recovers, checks
+                    // generation and disposes normally. Retain replacement even
+                    // if disposal masked the exception raised by its check.
+                    var replacement = closingFailure as SessionReplacedException ??
+                        operationFailure as SessionReplacedException ??
+                        state.GetEstablishedReplacement(operationFailure);
+                    var retained = (Exception?)replacement ?? operationFailure;
+                    if (replacement != null && FindStorageDecisionFailure(operationFailure) is { } storageFailure)
+                        replacement.Data["SessionOperationFailure"] = storageFailure;
+                    if (!ReferenceEquals(retained, closingFailure))
+                        retained.Data["SessionFinalizationFailure"] = closingFailure;
+                    ExceptionDispatchInfo.Capture(retained).Throw();
+                    throw;
+                }
+                catch (Exception closingFailure)
+                {
+                    closingFailure.Data["SessionFinalizationFailure"] = true;
+                    if(established && closingFailure is not SessionReplacedException) {
+                        var outcome=capturedOutcome?.Invoke()??MainOperationOutcome.Completed;
+                        var retained=new MainOperationContinuationException<T>(establishedResult!,outcome,
+                            fileSystem.DescribeMainOperationClose(outcome,true),closingFailure);
+                        retained.Data["SessionFinalizationFailure"]=closingFailure;
+                        throw retained;
+                    }
+                    if(established)closingFailure.Data["EstablishedOperationResult"]=establishedResult;
+                    throw;
+                }
                 finally
                 {
                     state.Close();
@@ -139,6 +286,28 @@ internal static class SessionOperationContext
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Locates a typed storage decision retained directly or within a session-replacement diagnostic chain.
+    /// </summary>
+    /// <param name="failure">
+    /// The operation failure to inspect, or null when the operation did not fail.
+    /// </param>
+    /// <returns>
+    /// The original uncertain or committed-save failure, or null when the chain contains no such decision.
+    /// </returns>
+    private static Exception? FindStorageDecisionFailure(Exception? failure)
+    {
+        for (var current = failure; current != null; current = current.InnerException)
+        {
+            if (current is CoordinatedStatePublicationUncertainException or CommittedSaveContinuationException)
+                return current;
+            if (current.Data["SessionOperationFailure"] is Exception recorded &&
+                recorded is CoordinatedStatePublicationUncertainException or CommittedSaveContinuationException)
+                return recorded;
+        }
+        return null;
     }
 
     internal static bool TryGetExpectedGeneration(
@@ -219,7 +388,8 @@ internal static class SessionOperationContext
         if (string.IsNullOrWhiteSpace(root))
             throw new ArgumentException("Canonical root is required.", nameof(root));
 
-        return Path.TrimEndingDirectorySeparator(Path.GetFullPath(root));
+        return CanonicalRootIdentityInterner.NormalizeRootKey(
+            Path.GetFullPath(root), OperatingSystem.IsWindows());
     }
 
     private static bool RootsEqual(string left, string right) =>
@@ -272,6 +442,21 @@ internal static class SessionOperationContext
 
                 throw BuildException(innerException);
             }
+        }
+
+        /// <summary>
+        /// Returns only an established replacement, independently of the binding's normal closing or closed state.
+        /// </summary>
+        /// <param name="innerException">
+        /// The earlier operation failure to retain as the replacement cause, or null when no cause is available.
+        /// </param>
+        /// <returns>
+        /// A replacement failure when generation replacement was recorded, or null otherwise.
+        /// </returns>
+        internal SessionReplacedException? GetEstablishedReplacement(Exception? innerException)
+        {
+            lock (_sync)
+                return _replaced ? BuildException(innerException) : null;
         }
 
         internal void BeginClosing()

@@ -1,0 +1,236 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="4d1ba36b-032e-429f-9c77-056a65c6819a" name="b2b-coordinator-red" runUser="$USER">
+  <ns0:Times creation="2026-09-30T20:27:38.2270121-04:00" queuing="2026-09-30T20:27:38.2270121-04:00" start="2026-09-30T20:27:36.1505085-04:00" finish="2026-09-30T20:27:38.2367065-04:00" />
+  <ns0:TestSettings name="default" id="b04edf59-111a-492b-99d8-3aa094acc701">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="29043bca-943c-4bff-a33a-89df675313ca" testId="7a04f7d7-8141-d2bd-f48e-7b5e8f7e3195" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(blocker: &quot;owner&quot;)" computerName="$HOST" duration="00:00:00.0202797" startTime="2026-09-30T20:27:38.1330384-04:00" endTime="2026-09-30T20:27:38.1330384-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="29043bca-943c-4bff-a33a-89df675313ca">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs:line 17
+   at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(String blocker) in $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs:line 81
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="20001f66-e3d0-4591-8bc1-03c121c4062b" testId="ecc0dfe2-99b6-25ad-3aef-a382bbc77179" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(blocker: &quot;pending&quot;)" computerName="$HOST" duration="00:00:00.0106619" startTime="2026-09-30T20:27:38.1124193-04:00" endTime="2026-09-30T20:27:38.1124194-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="20001f66-e3d0-4591-8bc1-03c121c4062b">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs:line 17
+   at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(String blocker) in $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs:line 81
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="80a48699-5140-408c-9f24-d7ea8339a1e8" testId="ee3c022a-e6a8-14d5-d687-453e984ee313" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;rollback&quot;)" computerName="$HOST" duration="00:00:00.0091170" startTime="2026-09-30T20:27:38.0675950-04:00" endTime="2026-09-30T20:27:38.0675951-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="80a48699-5140-408c-9f24-d7ea8339a1e8">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs:line 17
+   at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(String cut) in $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs:line 104
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="e8f04c0c-bc77-4ac8-a9d2-20fff1a119c6" testId="32acc2a0-b4b8-520b-2bc3-61a06f884e10" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(failure: &quot;runtime&quot;)" computerName="$HOST" duration="00:00:00.0065473" startTime="2026-09-30T20:27:38.0955896-04:00" endTime="2026-09-30T20:27:38.0955897-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e8f04c0c-bc77-4ac8-a9d2-20fff1a119c6">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs:line 17
+   at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(String failure) in $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs:line 140
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="01d3bfe7-aa97-418c-83c9-0627f2896df4" testId="85913866-a2ce-c4f0-76f2-e093dd2c76de" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings" computerName="$HOST" duration="00:00:00.0061576" startTime="2026-09-30T20:27:38.0885583-04:00" endTime="2026-09-30T20:27:38.0885583-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="01d3bfe7-aa97-418c-83c9-0627f2896df4">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs:line 17
+   at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings() in $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs:line 161
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="48071e6d-187e-4617-b2ee-4816232c0afa" testId="000046b5-ade0-45fa-34e3-15cfbc826e84" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(failure: &quot;owner-cleanup&quot;)" computerName="$HOST" duration="00:00:00.0052731" startTime="2026-09-30T20:27:38.1011453-04:00" endTime="2026-09-30T20:27:38.1011454-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="48071e6d-187e-4617-b2ee-4816232c0afa">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs:line 17
+   at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(String failure) in $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs:line 140
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="7107e1c8-6a08-4a59-bb76-cd68cf1001f6" testId="ac3447c0-acb7-6a46-35bf-37d87880ec70" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;committed-cleanup&quot;)" computerName="$HOST" duration="00:00:00.0046304" startTime="2026-09-30T20:27:38.0723337-04:00" endTime="2026-09-30T20:27:38.0723338-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7107e1c8-6a08-4a59-bb76-cd68cf1001f6">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs:line 17
+   at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(String cut) in $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs:line 104
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="4fdf3eba-97e7-41fe-9833-9d69940f9302" testId="25def16d-1ec7-a01a-566d-34d9eb59d2ed" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;unknown&quot;)" computerName="$HOST" duration="00:00:00.0090951" startTime="2026-09-30T20:27:38.0818425-04:00" endTime="2026-09-30T20:27:38.0818427-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4fdf3eba-97e7-41fe-9833-9d69940f9302">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs:line 17
+   at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(String cut) in $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs:line 104
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="704d8337-7bc2-456c-b2a4-876d5269a4ff" testId="e58ae7d1-2533-a3d9-34cf-8843275a164a" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup" computerName="$HOST" duration="00:00:00.2181444" startTime="2026-09-30T20:27:38.0627637-04:00" endTime="2026-09-30T20:27:38.0627892-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="704d8337-7bc2-456c-b2a4-876d5269a4ff">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare) in $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs:line 17
+   at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup() in $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs:line 60
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;rollback&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ee3c022a-e6a8-14d5-d687-453e984ee313">
+      <ns0:Execution id="80a48699-5140-408c-9f24-d7ea8339a1e8" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;committed-cleanup&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ac3447c0-acb7-6a46-35bf-37d87880ec70">
+      <ns0:Execution id="7107e1c8-6a08-4a59-bb76-cd68cf1001f6" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(blocker: &quot;owner&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7a04f7d7-8141-d2bd-f48e-7b5e8f7e3195">
+      <ns0:Execution id="29043bca-943c-4bff-a33a-89df675313ca" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e58ae7d1-2533-a3d9-34cf-8843275a164a">
+      <ns0:Execution id="704d8337-7bc2-456c-b2a4-876d5269a4ff" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(blocker: &quot;pending&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ecc0dfe2-99b6-25ad-3aef-a382bbc77179">
+      <ns0:Execution id="20001f66-e3d0-4591-8bc1-03c121c4062b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(failure: &quot;runtime&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="32acc2a0-b4b8-520b-2bc3-61a06f884e10">
+      <ns0:Execution id="e8f04c0c-bc77-4ac8-a9d2-20fff1a119c6" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="85913866-a2ce-c4f0-76f2-e093dd2c76de">
+      <ns0:Execution id="01d3bfe7-aa97-418c-83c9-0627f2896df4" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(failure: &quot;owner-cleanup&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="000046b5-ade0-45fa-34e3-15cfbc826e84">
+      <ns0:Execution id="48071e6d-187e-4617-b2ee-4816232c0afa" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;unknown&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="25def16d-1ec7-a01a-566d-34d9eb59d2ed">
+      <ns0:Execution id="4fdf3eba-97e7-41fe-9833-9d69940f9302" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="7a04f7d7-8141-d2bd-f48e-7b5e8f7e3195" executionId="29043bca-943c-4bff-a33a-89df675313ca" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ecc0dfe2-99b6-25ad-3aef-a382bbc77179" executionId="20001f66-e3d0-4591-8bc1-03c121c4062b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ee3c022a-e6a8-14d5-d687-453e984ee313" executionId="80a48699-5140-408c-9f24-d7ea8339a1e8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="32acc2a0-b4b8-520b-2bc3-61a06f884e10" executionId="e8f04c0c-bc77-4ac8-a9d2-20fff1a119c6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="85913866-a2ce-c4f0-76f2-e093dd2c76de" executionId="01d3bfe7-aa97-418c-83c9-0627f2896df4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="000046b5-ade0-45fa-34e3-15cfbc826e84" executionId="48071e6d-187e-4617-b2ee-4816232c0afa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ac3447c0-acb7-6a46-35bf-37d87880ec70" executionId="7107e1c8-6a08-4a59-bb76-cd68cf1001f6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="25def16d-1ec7-a01a-566d-34d9eb59d2ed" executionId="4fdf3eba-97e7-41fe-9833-9d69940f9302" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e58ae7d1-2533-a3d9-34cf-8843275a164a" executionId="704d8337-7bc2-456c-b2a4-876d5269a4ff" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="9" executed="9" passed="0" failed="9" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.16]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.24]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.26]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.54]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.54]       Stack Trace:
+[xUnit.net 00:00:01.54]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs(17,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare)
+[xUnit.net 00:00:01.54]         $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs(60,0): at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup()
+[xUnit.net 00:00:01.54]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.54]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.55]       Stack Trace:
+[xUnit.net 00:00:01.55]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs(17,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare)
+[xUnit.net 00:00:01.55]         $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs(104,0): at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(String cut)
+[xUnit.net 00:00:01.55]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.55]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.55]       Stack Trace:
+[xUnit.net 00:00:01.55]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs(17,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare)
+[xUnit.net 00:00:01.55]         $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs(104,0): at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(String cut)
+[xUnit.net 00:00:01.55]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.56]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.56]       Stack Trace:
+[xUnit.net 00:00:01.56]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs(17,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare)
+[xUnit.net 00:00:01.56]         $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs(104,0): at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(String cut)
+[xUnit.net 00:00:01.56]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.57]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.57]       Stack Trace:
+[xUnit.net 00:00:01.57]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs(17,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare)
+[xUnit.net 00:00:01.57]         $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs(161,0): at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings()
+[xUnit.net 00:00:01.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.57]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.57]       Stack Trace:
+[xUnit.net 00:00:01.57]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs(17,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare)
+[xUnit.net 00:00:01.57]         $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs(140,0): at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(String failure)
+[xUnit.net 00:00:01.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.58]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.58]       Stack Trace:
+[xUnit.net 00:00:01.58]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs(17,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare)
+[xUnit.net 00:00:01.58]         $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs(140,0): at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(String failure)
+[xUnit.net 00:00:01.58]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.59]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.59]       Stack Trace:
+[xUnit.net 00:00:01.59]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs(17,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare)
+[xUnit.net 00:00:01.59]         $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs(81,0): at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(String blocker)
+[xUnit.net 00:00:01.59]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.61]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.61]       Stack Trace:
+[xUnit.net 00:00:01.61]         $REPO/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs(17,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecutePreparedAsync(BrowserLocalWriteRequest request, Func`2 prepare)
+[xUnit.net 00:00:01.61]         $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs(81,0): at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(String blocker)
+[xUnit.net 00:00:01.61]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.62]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:27:38.0611409-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.54]     BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:27:38.0675423-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.54]     BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: "rollback") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:27:38.0723914-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.55]     BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: "committed-cleanup") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:27:38.0830155-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.56]     BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: "unknown") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:27:38.0886453-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.57]     BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:27:38.0956907-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.57]     BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(failure: "runtime") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:27:38.1012017-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.58]     BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(failure: "owner-cleanup") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:27:38.1127021-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.59]     BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(blocker: "pending") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:27:38.1337931-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.61]     BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(blocker: "owner") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

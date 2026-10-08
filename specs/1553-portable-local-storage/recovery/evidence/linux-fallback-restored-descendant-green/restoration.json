@@ -1,0 +1,136 @@
+{
+  "commit": "3e1b11c220ea3286002ea78c90e4eb4498e887dd",
+  "parent": "d57b4574d0dd3695e9cef084addc6bc80934b6d1",
+  "tree": "c8a6734e9ce467616449c32118ecd71b470afcd8",
+  "clean": true,
+  "changedFiles": [
+    {
+      "path": "native/linux/boe-lineage-supervisor.c",
+      "bytes": 16145,
+      "sha256": "1f12338f013eb54070a198d0dd4a5998bbb5a7f426249442db4dfe5653b0217c",
+      "gitBlob": "e2c3add66cde56d64de90ca087304f9554e2cd0c"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/plan.md",
+      "bytes": 392036,
+      "sha256": "5c7ff06c784dc2a41b4242cfd6bed63946be24100298a2061ec504acc05827e8",
+      "gitBlob": "8cd8109b277a9da03552bf494b9b01f2e6b79601"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/descendant-red-plan-result.json",
+      "bytes": 447,
+      "sha256": "d87d8c77b11c0ce1a784526ce415f73ce9ba0a7b61214d6d1f31442c400ad46b",
+      "gitBlob": "e6267c94bbf6608c3eb27e08c5c11d76e82e6082"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/descendant-red-plan.log.gz",
+      "bytes": 592,
+      "sha256": "4f1a4437b393356cfba1f0fe230850f833cf3e65ca41539ff41044c4fab9194c",
+      "gitBlob": "ae84892d33483fdf310fca08654d9130aae3d54a"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/descendant-red-plan/Build-unit.log.gz",
+      "bytes": 1040,
+      "sha256": "40ca71dfbb69add854c6fd341eb525c1d36ca471734ab3f063f0ddac983c7faa",
+      "gitBlob": "5f38f016fe0db75c34bfebe14a9a5d7aa0d723cc"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/descendant-red-plan/dotnet-test.log.gz",
+      "bytes": 164760,
+      "sha256": "0fb4f6b730accc579c869c18d2827b52f397f2b3378324ff4690503e4b421bfe",
+      "gitBlob": "47cafc1334f9843d6c809f7c453c2b71e5c92596"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/descendant-red-plan/plan.json",
+      "bytes": 1117,
+      "sha256": "bd67671267b2e9565312cb39681bafa2c70762a09ac642ea904b0b7f4c506df6",
+      "gitBlob": "475a337351236a9638406c46df51ee8712e19077"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/descendant-red-plan/summary.json",
+      "bytes": 1467,
+      "sha256": "64b10557c04faca8bb0bdb60142a46a3c39b5b68819f043fc30a0eae66d42b84",
+      "gitBlob": "ccb4ebb1219857c2a4b20aadbe41c32cb188c5e9"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/descendant-red-result.json",
+      "bytes": 441,
+      "sha256": "6976ed2e2a007424127190c41a34baac99900489588460a032798e78901fa086",
+      "gitBlob": "e61ece843fb4a221150840beabc79ef6f5fe9801"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/descendant-red.log.gz",
+      "bytes": 1003,
+      "sha256": "dbd882540fdd29d5c554487698b161a399f2c700200cae14ceca0a77b960f371",
+      "gitBlob": "5ee8ed621bbeeb2cb7acb862bf6f96a5d545dca6"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/descendant-red/dotnet-test.log.gz",
+      "bytes": 164345,
+      "sha256": "59a6a23ff20c6c68a93fd524ddff48b9ffa0daa0e687b5fa4645fcba29d1e2f5",
+      "gitBlob": "a16981f5d1e622365315e54a574e3f4a5ebdbec1"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/descendant-red/linux-fallback-proc-discovery-unit-001.trx",
+      "bytes": 5221,
+      "sha256": "93a2c9580303608748fad0b2c1b7284268c60817b335b37c5e884ec2d743b6f5",
+      "gitBlob": "ec73299a09e6a4fb050b3fbd4fa03de85acaeb0c"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/descendant-red/plan.json",
+      "bytes": 1114,
+      "sha256": "e51b033d77d72f1d8df99dd1ba5d00306e8b2666a9f8a4d26b9ef3daf5674723",
+      "gitBlob": "a4740bf8f0471ef4c0a5b9e89ea8b6f61781744c"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/descendant-red/summary.json",
+      "bytes": 1369,
+      "sha256": "d58c25471fb5001501b9dc9598dd587fd87c64ad56e35b8f60ce7e13993c27b6",
+      "gitBlob": "ad43bb8cbf25b80616bbc38e979d0cdf9cbde568"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/manifest.json",
+      "bytes": 3176,
+      "sha256": "d01ffd5443defc0512b4d4fb6f9da6bb73e2db3382feb81c51a7ba912edacac6",
+      "gitBlob": "6c4a0f75eaaca0f489eda1ecaa883c955137515e"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/native/e8b612cd64124443b0758d67a1020a9c/build-provenance.json",
+      "bytes": 1160,
+      "sha256": "2081f6fca56fd3fb0248ac42bf5836c8ee26bc686ef2047dca0c6d2f3e701b2d",
+      "gitBlob": "15582ffe9525e8cc75fe04ccd1ef8092c6cd562f"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/native/e8b612cd64124443b0758d67a1020a9c/build.log.gz",
+      "bytes": 123,
+      "sha256": "5f4cdbd5bebe66f819fc2c45be26fe750c12eecf4de28b5dba1791f2eb112a0e",
+      "gitBlob": "688346651a27141d2f8c45182b5e019f22499516"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/native/e8b612cd64124443b0758d67a1020a9c/events.jsonl",
+      "bytes": 133,
+      "sha256": "8d3baaaef9e7372c80efec4b98dcd0d58e0421b0fd45af5de4e4250de58b3dce",
+      "gitBlob": "1a01793105b76427531d4eb8b2e55b09f1f140bb"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/native/e8b612cd64124443b0758d67a1020a9c/guardian.json",
+      "bytes": 176,
+      "sha256": "c01802ef78de8d6ef4b3bda3c3047fbbb2df815cc3058b97c80be9c77e4056c1",
+      "gitBlob": "5834bac0f69e6a17e1e2ab21e409d212dc52d82b"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/native/e8b612cd64124443b0758d67a1020a9c/status.jsonl",
+      "bytes": 1315,
+      "sha256": "017dea4375b85657da08e93deb8914d05fb030c8b258d263b2229a59bf11861a",
+      "gitBlob": "39d9d740ba4bd21b843465cc7b8fe5cf482340bb"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/linux-fallback-portable-descendant-red/native/e8b612cd64124443b0758d67a1020a9c/stderr.log.gz",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "gitBlob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0"
+    }
+  ],
+  "verifiedManifestArtifacts": 44,
+  "validGzipFiles": 16
+}

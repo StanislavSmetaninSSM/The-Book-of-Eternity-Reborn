@@ -1,0 +1,57 @@
+using BookOfEternityClient.CommandProtocol;
+using BookOfEternityClient.Core;
+using Microsoft.Extensions.Logging.Abstractions;
+using BookOfEternityClient.Services;
+using BookOfEternityClient.WebUi;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed class BrowserDirectGachaLinuxTests(ITestOutputHelper output)
+{
+    [Fact]
+    public async Task RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn()
+    {
+        using var fixture = new BrowserDirectGachaLinuxFixture(output);
+        await fixture.InitializeAsync();
+        var result = await fixture.PullAsync();
+        output.WriteLine(result.Message);
+        if (fixture.StageFailure != null) output.WriteLine("OriginalStageFailure=" + fixture.StageFailure);
+        if (fixture.ConsumerFailure != null) output.WriteLine("OriginalConsumerFailure=" + fixture.ConsumerFailure);
+        Assert.True(result.Success, result.Message);
+        Assert.Equal(CommandExecutionState.Completed, result.State);
+        Assert.Equal(fixture.BeforeSoul, File.ReadAllBytes(fixture.BackupPath()));
+        Assert.Equal(11, fixture.Feathers());
+        Assert.Equal("Rare", result.Payload!["gachaBaseResult"]!["baseRarity"]!.GetValue<string>());
+        Assert.Equal(7, result.Payload["spentInkFeathers"]!.GetValue<int>());
+        Assert.Contains("[CHAOS_SEA_DIRECT_GACHA]", result.Payload["gmAction"]!.GetValue<string>());
+        var manifest = fixture.Manifest();
+        var relativeBackup = manifest["rollbackBackups"]![BrowserDirectGachaLinuxFixture.Soul]!.GetValue<string>();
+        Assert.Equal(fixture.Files.ResolvePath(relativeBackup), fixture.BackupPath());
+        Assert.True(File.Exists(fixture.Files.ResolvePath(BrowserPendingTurnInspector.TurnRequestPath)));
+        Assert.True(File.Exists(fixture.Files.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)));
+        Assert.Equal(fixture.BeforeHistory, File.ReadAllBytes(fixture.Files.ResolvePath("game_state/history/chat_log.json")));
+        Assert.False(File.Exists(fixture.Files.ResolvePath(LocalUiSessionLockService.LockPath)));
+        Assert.Empty(Directory.GetFiles(fixture.Files.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root), "browser_write_manifest.json", SearchOption.AllDirectories));
+    }
+
+    [Fact]
+    public async Task FreshOriginalLeases_RetainPendingBackupAndBlockSecondPull()
+    {
+        using var fixture = new BrowserDirectGachaLinuxFixture(output);
+        await fixture.InitializeAsync();
+        Assert.True((await fixture.PullAsync()).Success);
+        var path = fixture.BackupPath();
+        var request = File.ReadAllBytes(fixture.Files.ResolvePath(BrowserPendingTurnInspector.TurnRequestPath));
+        var fresh = new FileSystemManager(fixture.Root, NullLogger<FileSystemManager>.Instance);
+        Assert.True(BrowserPendingTurnInspector.Build(fresh).HasActiveGmTurn);
+        await using (var lease = await fresh.AcquireCanonicalWriteLeaseAsync())
+            Assert.Equal(fixture.BeforeSoul, await fresh.ReadFileBytesAsync(lease, Path.GetRelativePath(fresh.GameSessionPath, path)));
+        var second = await fixture.PullAsync();
+        Assert.False(second.Success); Assert.Equal(CommandExecutionState.Blocked, second.State);
+        Assert.Equal(11, fixture.Feathers()); Assert.Equal(path, fixture.BackupPath());
+        Assert.Equal(request, File.ReadAllBytes(fresh.ResolvePath(BrowserPendingTurnInspector.TurnRequestPath)));
+        Assert.Equal(fixture.BeforeHistory, File.ReadAllBytes(fresh.ResolvePath("game_state/history/chat_log.json")));
+    }
+}

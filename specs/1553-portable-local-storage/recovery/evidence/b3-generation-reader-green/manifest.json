@@ -1,0 +1,45 @@
+{
+  "sourceCommit": "a6fc91c75f9b3577ca35c81fa3a418421d411359",
+  "appliedSourceTree": "41a027e3b7d36701c8c051e570ef2ca1d6ab8106",
+  "catalogBlobAfterPatch": "a66e7792c1e4208f728d87a39924d0ae4d2f55ea",
+  "sourcePatchSha256": "f2c0f469d6ce2f07a2d3071b88bdab2f806721f527cc7f97d704a0d71ff6b8ef",
+  "catalogPatchSha256": "96e96f5a33c7a37335321509f4e5ab83e306be21b39cee50f258d8a071c59180",
+  "kind": "Focused common generation-reader covering result; a later legacy commit-call boundary clarification remains pending",
+  "limits": [
+    "Three LegacyLoadBegin physical-reader methods return early on Linux; their Windows assertion bodies were not executed.",
+    "No generation rotation, clear, full new-game/save-load or provider shutdown acceptance."
+  ],
+  "sanitization": "Repository/run/toolchain paths and TRX user/computer/deployment identifiers replaced; LF line endings and trailing whitespace normalization; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "f71266a96497a6c6e2d54855dfbe9fd081a4570a595b35198447e8759e1a910d",
+      "sanitizedSha256": "f71266a96497a6c6e2d54855dfbe9fd081a4570a595b35198447e8759e1a910d"
+    },
+    {
+      "path": "portable-client-bootstrap-unit-001.trx",
+      "originalSha256": "e8b9389a8922335b5661ee4c48f2950d6593242681cb0dcf90b5ae6a29a01e59",
+      "sanitizedSha256": "91cd6aaeb83c1c0491aa23f4e81c6395c0dec2eee7d585ab6c5c310d001bb325"
+    },
+    {
+      "path": "portable-session-generation-consumers-integration-003.trx",
+      "originalSha256": "9d79be8e1f3bbc985dde2c429021cab39249131208628ee51e2a2eb46618d73d",
+      "sanitizedSha256": "5b401c0c1d4ee2a04dad4ed08be8ebf43ab1c55f61d943ff6ff74f04e198f913"
+    },
+    {
+      "path": "portable-session-generation-consumers-unit-004.trx",
+      "originalSha256": "18e1b393d56ea5798fa3a189a829ac7ab4530d03fdf05d31bca5e8c61f933a03",
+      "sanitizedSha256": "19416a38e7c5aeb9cadb6cd5808f111ad757958d3084c47ca18671b0bc0a064d"
+    },
+    {
+      "path": "portable-session-generation-unit-002.trx",
+      "originalSha256": "c8d52c288e4b07f17e26d0fea53242bb292360930529e59c49f4f0f938d5ecdc",
+      "sanitizedSha256": "fa1f3ed01d94da7ec93e87f1a1e5edf4fce157be5be617752e6702a9927f6f1a"
+    },
+    {
+      "path": "portable-storage-publication-unit-005.trx",
+      "originalSha256": "3a2db502688c4b80f3f2b6e8b5c79b30b8f742d71f1fd6fac9cfe823013963cf",
+      "sanitizedSha256": "b87fe8666353d08859f389a44e241e43cd69e7d66775895b556dd464a45b44e8"
+    }
+  ]
+}

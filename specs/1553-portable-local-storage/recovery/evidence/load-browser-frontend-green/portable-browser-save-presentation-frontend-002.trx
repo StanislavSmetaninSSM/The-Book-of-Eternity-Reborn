@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun>
+  <Results>
+    <UnitTestResult testId="46D24B213C90C85600B1C6392F9B0BCEDF0F5F6EAA4406766FF759A4D2FD8465" testName="BookOfEternityClient.WebFrontend/test/savePersistenceNotice.test.ts(node)" outcome="Passed" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest id="46D24B213C90C85600B1C6392F9B0BCEDF0F5F6EAA4406766FF759A4D2FD8465" storage="category-node" />
+  </TestDefinitions>
+  <ResultSummary>
+    <Counters total="1" executed="1" passed="1" failed="0" />
+  </ResultSummary>
+</TestRun>

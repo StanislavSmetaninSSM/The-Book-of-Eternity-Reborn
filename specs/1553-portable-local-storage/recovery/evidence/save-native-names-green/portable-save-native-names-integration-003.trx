@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="007cbb90-c396-4cd7-b89c-9e815cb7ccd7" name="@95e438a3e5cb 2026-10-05 02:14:41" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T02:14:41.6258703-04:00" queuing="2026-10-05T02:14:41.6258703-04:00" start="2026-10-05T02:14:38.7162758-04:00" finish="2026-10-05T02:14:41.6312034-04:00" />
+  <TestSettings name="default" id="91a37f7b-f38f-477c-8047-0b6c57ed6627">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-05_02_14_41" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="03f8b9c3-4391-4dd2-843e-c75c9a42d9ec" testId="09d0eb5a-2f0a-ab20-5416-31c69fea83b7" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave(upper: &quot;mods/Pair/member.bin&quot;, lower: &quot;mods/pair/member.bin&quot;)" computerName="95e438a3e5cb" duration="00:00:00.1348190" startTime="2026-10-05T02:14:41.4955224-04:00" endTime="2026-10-05T02:14:41.4955226-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="03f8b9c3-4391-4dd2-843e-c75c9a42d9ec">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberPublished, 22),(MemberPublished, 27),(MemberStaged, 10),(MemberPublished, 10),(MemberStaged, 16),(MemberPublished, 16),(MemberStaged, 17),(MemberPublished, 17),(MemberStaged, 18),(MemberPublished, 18),(MemberStaged, 19),(MemberPublished, 19),(MemberStaged, 21),(MemberPublished, 21),(MemberStaged, 23),(MemberPublished, 23),(MemberStaged, 29),(MemberPublished, 29),(MemberStaged, 34),(MemberPublished, 34),(MemberStaged, 36),(MemberPublished, 36),(MemberStaged, 39),(MemberPublished, 39),(MemberStaged, 42),(MemberPublished, 42),(CommitStaged, -1),(Committed, -1),(CleanupMember, 10),(CleanupMember, 16),(CleanupMember, 17),(CleanupMember, 18),(CleanupMember, 19),(CleanupMember, 21),(CleanupMember, 22),(CleanupMember, 23),(CleanupMember, 27),(CleanupMember, 29),(CleanupMember, 34),(CleanupMember, 36),(CleanupMember, 39),(CleanupMember, 42),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f641dcff-3fad-43bd-9d63-23065814cf6a" testId="6ec697f2-3fdd-506e-a91e-0d10a17fae4e" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave(upper: &quot;lore/Pair.bin&quot;, lower: &quot;lore/pair.bin&quot;)" computerName="95e438a3e5cb" duration="00:00:00.5389030" startTime="2026-10-05T02:14:41.3597674-04:00" endTime="2026-10-05T02:14:41.3597861-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f641dcff-3fad-43bd-9d63-23065814cf6a">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberPublished, 22),(MemberPublished, 27),(MemberStaged, 10),(MemberPublished, 10),(MemberStaged, 16),(MemberPublished, 16),(MemberStaged, 17),(MemberPublished, 17),(MemberStaged, 18),(MemberPublished, 18),(MemberStaged, 19),(MemberPublished, 19),(MemberStaged, 21),(MemberPublished, 21),(MemberStaged, 23),(MemberPublished, 23),(MemberStaged, 28),(MemberPublished, 28),(MemberStaged, 30),(MemberPublished, 30),(MemberStaged, 32),(MemberPublished, 32),(MemberStaged, 37),(MemberPublished, 37),(MemberStaged, 40),(MemberPublished, 40),(CommitStaged, -1),(Committed, -1),(CleanupMember, 10),(CleanupMember, 16),(CleanupMember, 17),(CleanupMember, 18),(CleanupMember, 19),(CleanupMember, 21),(CleanupMember, 22),(CleanupMember, 23),(CleanupMember, 27),(CleanupMember, 28),(CleanupMember, 30),(CleanupMember, 32),(CleanupMember, 37),(CleanupMember, 40),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="da375a54-425f-4df3-ba3a-5eb9172f4989" testId="799e7246-a707-8d9b-4364-7ba9b4ac51c2" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerRejectsFixedAuthorityCaseCollision(canonical: &quot;lore/codex_entries.json&quot;, alias: &quot;lore/CODEX_ENTRIES.JSON&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0213709" startTime="2026-10-05T02:14:41.5408164-04:00" endTime="2026-10-05T02:14:41.5408165-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="da375a54-425f-4df3-ba3a-5eb9172f4989" />
+    <UnitTestResult executionId="c2f59fca-7dd1-42fd-af03-c2a75ec1df69" testId="77322824-5933-e824-6063-3330d0b916bc" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerRejectsFixedAuthorityCaseCollision(canonical: &quot;game_state/world/world_time.json&quot;, alias: &quot;game_state/WORLD/WORLD_TIME.JSON&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0216272" startTime="2026-10-05T02:14:41.5189978-04:00" endTime="2026-10-05T02:14:41.5189980-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c2f59fca-7dd1-42fd-af03-c2a75ec1df69" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerRejectsFixedAuthorityCaseCollision(canonical: &quot;game_state/world/world_time.json&quot;, alias: &quot;game_state/WORLD/WORLD_TIME.JSON&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="77322824-5933-e824-6063-3330d0b916bc">
+      <Execution id="c2f59fca-7dd1-42fd-af03-c2a75ec1df69" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CurrentProducerRejectsFixedAuthorityCaseCollision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave(upper: &quot;lore/Pair.bin&quot;, lower: &quot;lore/pair.bin&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6ec697f2-3fdd-506e-a91e-0d10a17fae4e">
+      <Execution id="f641dcff-3fad-43bd-9d63-23065814cf6a" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CurrentProducerNativeNamesSurviveSaveTypedLoadSave" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave(upper: &quot;mods/Pair/member.bin&quot;, lower: &quot;mods/pair/member.bin&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="09d0eb5a-2f0a-ab20-5416-31c69fea83b7">
+      <Execution id="03f8b9c3-4391-4dd2-843e-c75c9a42d9ec" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CurrentProducerNativeNamesSurviveSaveTypedLoadSave" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerRejectsFixedAuthorityCaseCollision(canonical: &quot;lore/codex_entries.json&quot;, alias: &quot;lore/CODEX_ENTRIES.JSON&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="799e7246-a707-8d9b-4364-7ba9b4ac51c2">
+      <Execution id="da375a54-425f-4df3-ba3a-5eb9172f4989" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="CurrentProducerRejectsFixedAuthorityCaseCollision" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="09d0eb5a-2f0a-ab20-5416-31c69fea83b7" executionId="03f8b9c3-4391-4dd2-843e-c75c9a42d9ec" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6ec697f2-3fdd-506e-a91e-0d10a17fae4e" executionId="f641dcff-3fad-43bd-9d63-23065814cf6a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="799e7246-a707-8d9b-4364-7ba9b4ac51c2" executionId="da375a54-425f-4df3-ba3a-5eb9172f4989" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="77322824-5933-e824-6063-3330d0b916bc" executionId="c2f59fca-7dd1-42fd-af03-c2a75ec1df69" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="4" executed="4" passed="4" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.35]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.66]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.68]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.45]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

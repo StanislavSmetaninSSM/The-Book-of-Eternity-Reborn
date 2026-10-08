@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="cd0766b6-8c0c-4280-a034-d8520d908baf" name="@c7669543e9c7 2026-10-06 19:49:48" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T19:49:48.2501709+00:00" queuing="2026-10-06T19:49:48.2501709+00:00" start="2026-10-06T19:49:16.3670148+00:00" finish="2026-10-06T19:49:54.8624175+00:00" />
+  <TestSettings name="default" id="9758cfa2-7e12-4428-b20b-5b4797889c9c">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_19_49_48" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="e70529eb-ea44-48c3-9fc8-1df402f49efb" testId="a5e96253-6acb-fa9a-b257-20738c8a5b10" testName="BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli" computerName="c7669543e9c7" duration="00:00:29.6305049" startTime="2026-10-06T19:49:48.1951754+00:00" endTime="2026-10-06T19:49:48.1951908+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e70529eb-ea44-48c3-9fc8-1df402f49efb">
+      <Output>
+        <ErrorInfo>
+          <Message>{
+  "Success": false,
+  "Mode": "launcher",
+  "Argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "/workspace/native-1553/TestResults/production-main/98bca652f48a4c5d8d9d81dd4042df2e/ship/BookOfEternityClient/Launcher/bookofeternity.ps1",
+    "start-bridge",
+    "visible",
+    "-SessionPath",
+    "/workspace/native-1553/TestResults/production-main/98bca652f48a4c5d8d9d81dd4042df2e/root/game_session"
+  ],
+  "Failure": "FileNotFoundError: [Errno 2] No such file or directory",
+  "EntrypointExitCode": 143,
+  "ElapsedSeconds": 25.096096412002225
+}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.ProductionMainLinuxFixture.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs:line 47
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d64eb61c-423b-4a51-9ff3-8b85c1d4cf8f" testId="f4721a2d-6a0c-66c3-788e-ce4642efe415" testName="BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop" computerName="c7669543e9c7" duration="00:00:06.5787205" startTime="2026-10-06T19:49:54.7725033+00:00" endTime="2026-10-06T19:49:54.7725038+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d64eb61c-423b-4a51-9ff3-8b85c1d4cf8f">
+      <Output>
+        <ErrorInfo>
+          <Message>{
+  "Success": false,
+  "Mode": "daemon",
+  "Argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "/workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/ship/BookOfEternityClient/game_master_daemon.ps1",
+    "-GameSessionPath",
+    "/workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/root/game_session",
+    "-PollingInterval",
+    "50",
+    "-LogFile",
+    "/workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/daemon.log"
+  ],
+  "Failure": "RuntimeError: Entrypoint exited before b'Waiting for turns...'; \r\n  +===============================================+\r\n  |  Book of Eternity: Game Master Daemon         |\r\n  +===============================================+\r\n\r\n[19:49:54][INFO] Game Session : /workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/root/game_session\r\n[19:49:54][INFO] GM Backend   : OwnedTerminal\r\n[19:49:54][INFO] Bridge Status: bridge not started yet (fallbacks remain available)\r\n[19:49:54][INFO] Auto-Paste   : False\r\n[19:49:54][INFO] Timeout      : disabled (wait indefinitely)\r\n\r\n-ErrorAction: /workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/ship/BookOfEternityClient/game_master_daemon.ps1:5304\r\nLine |\r\n5304 |  } -ErrorAction SilentlyContinue\r\n     |    ~~~~~~~~~~~~\r\n     | The term '-ErrorAction' is not recognized as a name of a cmdlet,\r\n     | function, script file, or executable program. Check the spelling of the\r\n     | name, or if a path was included, verify that the path is correct and try\r\n     | again.\r\n",
+  "EntrypointExitCode": 1,
+  "ElapsedSeconds": 2.6843504489952466
+}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.ProductionMainLinuxFixture.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs:line 47
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f4721a2d-6a0c-66c3-788e-ce4642efe415">
+      <Execution id="d64eb61c-423b-4a51-9ff3-8b85c1d4cf8f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainLinuxLauncherTests" name="ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a5e96253-6acb-fa9a-b257-20738c8a5b10">
+      <Execution id="e70529eb-ea44-48c3-9fc8-1df402f49efb" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainLinuxLauncherTests" name="OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="a5e96253-6acb-fa9a-b257-20738c8a5b10" executionId="e70529eb-ea44-48c3-9fc8-1df402f49efb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f4721a2d-6a0c-66c3-788e-ce4642efe415" executionId="d64eb61c-423b-4a51-9ff3-8b85c1d4cf8f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="2" executed="2" passed="0" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.22]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.59]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.63]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:31.35]       {
+[xUnit.net 00:00:31.35]         "Success": false,
+[xUnit.net 00:00:31.35]         "Mode": "launcher",
+[xUnit.net 00:00:31.35]         "Argv": [
+[xUnit.net 00:00:31.35]           "pwsh",
+[xUnit.net 00:00:31.35]           "-NoLogo",
+[xUnit.net 00:00:31.35]           "-NoProfile",
+[xUnit.net 00:00:31.35]           "-File",
+[xUnit.net 00:00:31.35]           "/workspace/native-1553/TestResults/production-main/98bca652f48a4c5d8d9d81dd4042df2e/ship/BookOfEternityClient/Launcher/bookofeternity.ps1",
+[xUnit.net 00:00:31.35]           "start-bridge",
+[xUnit.net 00:00:31.35]           "visible",
+[xUnit.net 00:00:31.35]           "-SessionPath",
+[xUnit.net 00:00:31.35]           "/workspace/native-1553/TestResults/production-main/98bca652f48a4c5d8d9d81dd4042df2e/root/game_session"
+[xUnit.net 00:00:31.35]         ],
+[xUnit.net 00:00:31.35]         "Failure": "FileNotFoundError: [Errno 2] No such file or directory",
+[xUnit.net 00:00:31.35]         "EntrypointExitCode": 143,
+[xUnit.net 00:00:31.35]         "ElapsedSeconds": 25.096096412002225
+[xUnit.net 00:00:31.35]       }
+[xUnit.net 00:00:31.35]       Stack Trace:
+[xUnit.net 00:00:31.35]         /workspace/native-1553/BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs(47,0): at BookOfEternityClient.Tests.ProductionMainLinuxFixture.RunAsync(String mode)
+[xUnit.net 00:00:31.35]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:37.93]       {
+[xUnit.net 00:00:37.93]         "Success": false,
+[xUnit.net 00:00:37.93]         "Mode": "daemon",
+[xUnit.net 00:00:37.93]         "Argv": [
+[xUnit.net 00:00:37.93]           "pwsh",
+[xUnit.net 00:00:37.93]           "-NoLogo",
+[xUnit.net 00:00:37.93]           "-NoProfile",
+[xUnit.net 00:00:37.93]           "-File",
+[xUnit.net 00:00:37.93]           "/workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/ship/BookOfEternityClient/game_master_daemon.ps1",
+[xUnit.net 00:00:37.93]           "-GameSessionPath",
+[xUnit.net 00:00:37.93]           "/workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/root/game_session",
+[xUnit.net 00:00:37.93]           "-PollingInterval",
+[xUnit.net 00:00:37.93]           "50",
+[xUnit.net 00:00:37.93]           "-LogFile",
+[xUnit.net 00:00:37.93]           "/workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/daemon.log"
+[xUnit.net 00:00:37.93]         ],
+[xUnit.net 00:00:37.93]         "Failure": "RuntimeError: Entrypoint exited before b'Waiting for turns...'; \r\n  +===============================================+\r\n  |  Book of Eternity: Game Master Daemon         |\r\n  +===============================================+\r\n\r\n[19:49:54][INFO] Game Session : /workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/root/game_session\r\n[19:49:54][INFO] GM Backend   : OwnedTerminal\r\n[19:49:54][INFO] Bridge Status: bridge not started yet (fallbacks remain available)\r\n[19:49:54][INFO] Auto-Paste   : False\r\n[19:49:54][INFO] Timeout      : disabled (wait indefinitely)\r\n\r\n-ErrorAction: /workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/ship/BookOfEternityClient/game_master_daemon.ps1:5304\r\nLine |\r\n5304 |  } -ErrorAction SilentlyContinue\r\n     |    ~~~~~~~~~~~~\r\n     | The term '-ErrorAction' is not recognized as a name of a cmdlet,\r\n     | function, script file, or executable program. Check the spelling of the\r\n     | name, or if a path was included, verify that the path is correct and try\r\n     | again.\r\n",
+[xUnit.net 00:00:37.93]         "EntrypointExitCode": 1,
+[xUnit.net 00:00:37.93]         "ElapsedSeconds": 2.6843504489952466
+[xUnit.net 00:00:37.93]       }
+[xUnit.net 00:00:37.93]       Stack Trace:
+[xUnit.net 00:00:37.93]         /workspace/native-1553/BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs(47,0): at BookOfEternityClient.Tests.ProductionMainLinuxFixture.RunAsync(String mode)
+[xUnit.net 00:00:37.93]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:37.94]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:49:48.1987097+00:00">
+        <Text>[xUnit.net 00:00:31.35]     BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:49:54.7738634+00:00">
+        <Text>[xUnit.net 00:00:37.93]     BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

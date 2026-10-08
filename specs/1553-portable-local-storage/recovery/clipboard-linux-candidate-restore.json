@@ -1,0 +1,31 @@
+{
+  "Commit": "61a548ab5def2ab5fb8136b8215918e7dce54b2f",
+  "Tree": "bf7c5060c9c782a2fad8b888edb96b8ac911ea8a",
+  "Parent": "b5255b1fb96e405eb1ed195c6437b16ad5788246",
+  "RestoredDirectory": "/workspace/qualification-1553-clipboard-linux/candidate-github-restore",
+  "Transport": "fresh clone from GitHub HTTPS only; no local source/object/cache reuse",
+  "Origin": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+  "Clean": true,
+  "TrackedFilesByteCompared": 20755,
+  "Comparison": "restored and writer bytes each match independent GitHub-fetched blobs",
+  "FullFsck": true,
+  "Shallow": false,
+  "GitAlternatesPresent": false,
+  "RemoteAfterRestoration": "61a548ab5def2ab5fb8136b8215918e7dce54b2f",
+  "AcceptedAncestors": [
+    "113edbb00eeeb9172ee3a02e00585f7bde442243",
+    "d73e2cdf43d63cbda3e9cda033834d0e902ae734",
+    "953c48f81f06ef78010bf668133e2b974934e142",
+    "23a5b6695a34752005ffaff6f5d5aedc2ccca797",
+    "dc62a88a630ba20eacd65f7bdab138ba129123ff",
+    "4d456d5d5e12289d6fc97e5b2e7a0c523207bc08",
+    "fc49f271f5cd14ac3b24931cce2c98ef64a61068",
+    "14888663d608355098cc1a329d97ab61de0e6016",
+    "1bc9d67536dccbcc6672d8e7cd71ad885c2a946c",
+    "b5255b1fb96e405eb1ed195c6437b16ad5788246"
+  ],
+  "SourcePinsVerified": 14,
+  "EvidenceArtifactsVerified": 51,
+  "TestsExecutedForRestoration": 0,
+  "CLIOrServicesStarted": 0
+}

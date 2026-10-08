@@ -1,0 +1,118 @@
+{
+  "Categories": [
+    "portable-coordinated-qte-outcome",
+    "portable-coordinated-phase-consumers",
+    "portable-coordinated-progression"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-coordinated-qte-outcome",
+      "reason": "Two outcome cases unrun after the earlier prerequisite failure. Verify the actual uncertainty compensation filter and private Russian notice.",
+      "contracts": [
+        "no follow-up mutation after unresolved helper publication",
+        "exact evidence retained",
+        "safe Russian notice"
+      ]
+    },
+    {
+      "category": "portable-coordinated-phase-consumers",
+      "reason": "All 23 phase cases were unrun. Correct pre-decision deterministic cuts to non-I/O faults so unchanged B1 retry cannot defeat their oracle; retain final:* IOException domain compensation and post-commit cleanup controls.",
+      "contracts": [
+        "single deterministic rollback cut",
+        "real lease contention",
+        "known post-commit/domain compensation preserved"
+      ]
+    },
+    {
+      "category": "portable-coordinated-progression",
+      "reason": "The sole progression unit case was unrun. Minimal category split is necessary because the canonical runner selects all selectors of each category and exposes no project/descriptor filter.",
+      "contracts": [
+        "exact progression schedule/report guard/write mutation"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "4daa2d52a8f9f26897279e06f54482535fd8d3b4",
+    "WorkingTreeFingerprint": "EFC9C11956054167D49A025A014D249AEEA27D6952429262006A23E15FE1E9E2",
+    "ChangedFiles": 9
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-coordinated-phase-consumers",
+      "Seconds": 25.9422801,
+      "BudgetMinutes": 6,
+      "Completed": true
+    },
+    {
+      "Category": "portable-coordinated-progression",
+      "Seconds": 3.2621006,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-coordinated-qte-outcome",
+      "Seconds": 5.22757,
+      "BudgetMinutes": 5,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0901965,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0178729,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0315392,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 179.6179789,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 33.1820548,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0040532,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:04:15.9422436",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 4,
+    "PlannedCases": 26,
+    "CompletedCases": 26,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 26,
+    "Executed": 26,
+    "Passed": 26,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

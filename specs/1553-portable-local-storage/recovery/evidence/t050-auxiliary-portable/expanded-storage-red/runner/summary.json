@@ -1,0 +1,100 @@
+{
+  "Categories": [
+    "auxiliary-launcher-portable",
+    "auxiliary-launcher-root-binding",
+    "auxiliary-launcher-contract-regressions"
+  ],
+  "Reasons": [
+    {
+      "category": "auxiliary-launcher-portable",
+      "reason": "Actual relocated runtime-only route, explicit pending replacement, bounded guardian/resource/runtime/main-worker-storage refusal and header status/doc consumers",
+      "contracts": [
+        "T050-AUXILIARY-LAUNCHER-PORTABLE"
+      ]
+    },
+    {
+      "category": "auxiliary-launcher-root-binding",
+      "reason": "Demonstrated existing-directory payload redirection and exact prepare-only explicit-root delta",
+      "contracts": [
+        "T050-AUXILIARY-LAUNCHER-PORTABLE"
+      ]
+    },
+    {
+      "category": "auxiliary-launcher-contract-regressions",
+      "reason": "One exact affected preexisting launcher/options documentation guard; service/M1/fence source unchanged",
+      "contracts": [
+        "T050-AUXILIARY-LAUNCHER-PORTABLE"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "2a67dd2b8087e8cfb2f006fc76251ff2374db49f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "auxiliary-launcher-contract-regressions",
+      "Seconds": 3.1164723,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "auxiliary-launcher-portable",
+      "Seconds": 35.9041085,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0645012,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0690058,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1169585,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 37.8041378,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:01:21.0466134",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 20,
+    "CompletedCases": 17,
+    "UnderfilledDescriptors": [
+      "auxiliary-launcher-root-binding-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 17,
+    "Executed": 17,
+    "Passed": 16,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

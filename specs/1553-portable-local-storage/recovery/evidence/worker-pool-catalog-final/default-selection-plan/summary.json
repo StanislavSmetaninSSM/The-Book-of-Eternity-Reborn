@@ -1,0 +1,102 @@
+{
+  "Categories": [
+    "worker-execution-scoped-evidence",
+    "worker-consumer-execution-evidence",
+    "worker-pool-regression-managed-policy",
+    "worker-pool-regression-docs"
+  ],
+  "Reasons": [
+    {
+      "category": "worker-execution-scoped-evidence",
+      "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-consumer-execution-evidence",
+      "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-managed-policy",
+      "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-docs",
+      "reason": "Windows CI runs only platform-independent B evidence/consumer/order/documentation contracts; actual Linux qualification has explicit tests/selections/1553-worker-pool-linux.json and source-specific evidence.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1881619,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0286655,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0246761,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.006754,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:00:04.9577833",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 27,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "worker-consumer-execution-evidence-unit-001",
+      "worker-execution-scoped-evidence-unit-002",
+      "worker-pool-regression-docs-unit-003",
+      "worker-pool-regression-managed-policy-unit-004"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

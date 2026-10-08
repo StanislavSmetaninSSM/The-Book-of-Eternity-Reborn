@@ -1,0 +1,154 @@
+{
+  "Categories": [
+    "worker-host-ipc-admission"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "3fa4f0b62fa24cab57936b161a1b510323699e3f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 191.1226814,
+  "Descriptors": [
+    {
+      "Name": "worker-host-ipc-admission-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "worker-host-ipc-admission",
+      "Categories": [
+        "worker-host-ipc-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_LaunchFrameRequiresPayload|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_MissingKindCannotReleaseWorkerByEnumDefault|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_ReleaseFrameMissingRequiredPayloadFieldIsRejected|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_ReleaseFrameMustNotCarryPayload|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_WrongLaunchNonceCannotReleaseWorker|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_CompletedFrameMustNotCarryError|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_CompletedFrameWithoutExitCodeIsRejected|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_DuplicatePropertyIsRejected|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedDiagnosticNeverIncludesPeerText|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedFrameMustNotCarryExitCode|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingKindCannotBecomeReadyByEnumDefault|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_OutputDrainedFrameMustNotCarryExitCode|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_ReadyFrameMustNotCarryError|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_UnknownPropertyIsRejected|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_WrongLaunchNonceIsRejected|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.ValidateLaunchNonce_MissingNonceProducesTypedProtocolFailure|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 33,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_LaunchFrameRequiresPayload",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_MissingKindCannotReleaseWorkerByEnumDefault",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_ReleaseFrameMissingRequiredPayloadFieldIsRejected",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_ReleaseFrameMustNotCarryPayload",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_WrongLaunchNonceCannotReleaseWorker",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_CompletedFrameMustNotCarryError",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_CompletedFrameWithoutExitCodeIsRejected",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_DuplicatePropertyIsRejected",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedDiagnosticNeverIncludesPeerText",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedFrameMustNotCarryExitCode",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingKindCannotBecomeReadyByEnumDefault",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_OutputDrainedFrameMustNotCarryExitCode",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_ReadyFrameMustNotCarryError",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_UnknownPropertyIsRejected",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_WrongLaunchNonceIsRejected",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.ValidateLaunchNonce_MissingNonceProducesTypedProtocolFailure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-host-ipc-admission-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-host-ipc-admission",
+      "Categories": [
+        "worker-host-ipc-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

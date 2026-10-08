@@ -1,0 +1,182 @@
+{
+  "Source": "c4609e58023355021ddaa1b532fd76518369278d",
+  "ProviderRequests": 0,
+  "GameTurns": 0,
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 87731,
+      "SHA256": "b422a5d569b370a1dcc6b40133add7aeb9f959cf6c52ac0744967a3bee8c6246"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "Bytes": 4225,
+      "SHA256": "937a3dd992ae6f96d19c3e7a37da6d3d620b4e8ca3b2774961c5c94a3f335a49"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+      "Bytes": 10626,
+      "SHA256": "107658ee8137eb6ce8cec4690da97f1852e554fc2ddf3d7aa392a72b97a686ca"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmSynchronizedTerminalPresentationTests.cs",
+      "Bytes": 12745,
+      "SHA256": "96563620411e7379a9cbf7d0fe351765f23d87f153711a0708f67ca0f0f0257c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs",
+      "Bytes": 12449,
+      "SHA256": "a0719afb67d9eba1f5d39aa13ac171b873d4d491d1de7ff71675e8faebeb8df9"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+      "Bytes": 6411,
+      "SHA256": "bfb9f02e673c2babcea07b3d65736a2af114dbf8fe150b57c2b0d73503b1d7d3"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "Bytes": 29258,
+      "SHA256": "b2133880640e617b13f6e8963f91ab69f0fac617355031f95ed2c5fedf08ccbd"
+    },
+    {
+      "Path": "tests/fixtures/LinuxTerminal/foreground.py",
+      "Bytes": 5372,
+      "SHA256": "655c94f24d786087beb8925ea20ce35737335e5c29830c3f9fe9f4da8c797766"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1158882,
+      "SHA256": "12dadecccbb2325561eb12e925af54f13aa92a17f2921932e903b0e25f875902"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 303,
+      "SHA256": "c1276e2a9ae87bd27c562a5c7d97ce2605a6f8984a24f5d53aa2e3117b4c06c6"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmExternalDraftObservationTests.cs",
+      "Bytes": 7795,
+      "SHA256": "44e6d882df954992b2a79a6054f710079d089c5f5121eb32cb8e5f7033eb2209"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
+      "Bytes": 2380,
+      "SHA256": "73c3da3e09a434d7598a099c5ee20b5dc9ea10744bcd77e488aa016dbe621263"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "Bytes": 18984,
+      "SHA256": "5f057811c478dabaf62376f24f997fcc2ff604f8c1110509cf83448d90222cd6"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+      "Bytes": 1545,
+      "SHA256": "953f2094277bb934e6324a0a47007b453157401719bd7032a962ac885a58523a"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/DraftObservation.cs",
+      "Bytes": 7262,
+      "SHA256": "a45ef94ad16bc4418f4ebf7d951ce81c3c64172ed5d2a2a20f1ee48917cd8ee6"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/mini-panel-red/Build-unit.log.gz",
+      "Bytes": 24684,
+      "SHA256": "ae28d9e2c5d65221b5ea8489379e0429fd4b5f15cc603efb59e4de40e2d19b86",
+      "StoredSHA256": "3326c36ea1fcb450d67ec0d9f30c2f475e8b7ae43ece26e2186ab4729730ba92"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/mini-panel-red/dotnet-test.log.gz",
+      "Bytes": 1627510,
+      "SHA256": "2849cb100d8f117e6c18311234a4e270ab836b124e7075d85cc7bbde4d28a34c",
+      "StoredSHA256": "bfc60769ba65bc29ba32082ad090d98ece1caabfad6f4e4b8ad1acdf349feac7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/mini-panel-red/summary.json.gz",
+      "Bytes": 1446,
+      "SHA256": "e8a26542cdbccd389efda1b8cae1ebf0f618315b926c38355038a98c6dd287e4",
+      "StoredSHA256": "feca2a91011626aec941a866cbe70ad464fd43e5e61eb7e62bf2329009a35add"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/mini-panel-red/gm-mini-panel-refusal-unit-001.trx.gz",
+      "Bytes": 4786,
+      "SHA256": "8c6a42d8291c794d6cf4689110201026343db4b67930437d4bcd076a13e3ea9e",
+      "StoredSHA256": "da5afdd18b435469f0a9be8c2cc2361051cf292c6cdd681994bed9e711649b8e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/mini-panel-red/plan.json.gz",
+      "Bytes": 1085,
+      "SHA256": "c7e22efc20e720d8d7cece91e64cc8677ed644eac308c1639db6def4105f8735",
+      "StoredSHA256": "284c10bf6bf4a6ff18d0f82267ab56052288efc803834ec13140cc6bca65cf83"
+    }
+  ],
+  "RunSummary": {
+    "Categories": [
+      "gm-mini-panel-refusal"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "c4609e58023355021ddaa1b532fd76518369278d",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "gm-mini-panel-refusal",
+        "Seconds": 4.5821428,
+        "BudgetMinutes": 2,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0597496,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0693263,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1040109,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 96.4329153,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 7,
+    "WallTime": "00:01:47.6347257",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  }
+}

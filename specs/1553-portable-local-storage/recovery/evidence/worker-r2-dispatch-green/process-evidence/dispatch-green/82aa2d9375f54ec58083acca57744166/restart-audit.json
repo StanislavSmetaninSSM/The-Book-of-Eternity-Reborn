@@ -1,0 +1,1 @@
+{"mode":"wrong-bytes","refused":true,"error":"InvalidOperationException","message":"Cleanup purpose only permits the original frozen audit append.","appendedTwice":false,"exactOnce":false,"preserved":true,"retained":true}

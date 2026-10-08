@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="d5fc1607-634f-4393-b594-78868b53b285" name="@c7669543e9c7 2026-10-06 05:06:08" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T05:06:08.2386702+00:00" queuing="2026-10-06T05:06:08.2386702+00:00" start="2026-10-06T05:06:03.6774489+00:00" finish="2026-10-06T05:06:10.5456984+00:00" />
+  <TestSettings name="default" id="12ef1c69-bcc4-4870-a306-43ee4f7aa81d">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_05_06_08" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="901a763e-a32a-4e4a-b3a5-78cee92a38d2" testId="56d566b5-ecb9-bfab-a4a4-686bdf5fee72" testName="BookOfEternityClient.Tests.GmWorkerRestartControlTests.OriginalRelease_OneSendAndNoLateSuccessAfterAckLossOrCancellation(mode: &quot;released-ack&quot;)" computerName="c7669543e9c7" duration="00:00:02.2717820" startTime="2026-10-06T05:06:10.4687573+00:00" endTime="2026-10-06T05:06:10.4687580+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="901a763e-a32a-4e4a-b3a5-78cee92a38d2" />
+    <UnitTestResult executionId="d8eb61c9-6f35-4249-92ba-c830b218ea90" testId="81944213-b6d0-a3de-e0b3-a31bddde753d" testName="BookOfEternityClient.Tests.GmWorkerRestartControlTests.OriginalRelease_OneSendAndNoLateSuccessAfterAckLossOrCancellation(mode: &quot;cancel&quot;)" computerName="c7669543e9c7" duration="00:00:02.2913705" startTime="2026-10-06T05:06:08.1959843+00:00" endTime="2026-10-06T05:06:08.1960073+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d8eb61c9-6f35-4249-92ba-c830b218ea90" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartControlTests.OriginalRelease_OneSendAndNoLateSuccessAfterAckLossOrCancellation(mode: &quot;released-ack&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="56d566b5-ecb9-bfab-a4a4-686bdf5fee72">
+      <Execution id="901a763e-a32a-4e4a-b3a5-78cee92a38d2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartControlTests" name="OriginalRelease_OneSendAndNoLateSuccessAfterAckLossOrCancellation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartControlTests.OriginalRelease_OneSendAndNoLateSuccessAfterAckLossOrCancellation(mode: &quot;cancel&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="81944213-b6d0-a3de-e0b3-a31bddde753d">
+      <Execution id="d8eb61c9-6f35-4249-92ba-c830b218ea90" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartControlTests" name="OriginalRelease_OneSendAndNoLateSuccessAfterAckLossOrCancellation" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="56d566b5-ecb9-bfab-a4a4-686bdf5fee72" executionId="901a763e-a32a-4e4a-b3a5-78cee92a38d2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="81944213-b6d0-a3de-e0b3-a31bddde753d" executionId="d8eb61c9-6f35-4249-92ba-c830b218ea90" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.21]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.72]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.74]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:06.37]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

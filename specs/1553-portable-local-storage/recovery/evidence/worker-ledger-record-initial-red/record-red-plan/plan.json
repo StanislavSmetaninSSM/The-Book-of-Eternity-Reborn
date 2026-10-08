@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "worker-run-ledger-record"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "21e9008798c33eb7a2f7de551a338deaa5ae367a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 96.1308702,
+  "Descriptors": [
+    {
+      "Name": "worker-run-ledger-record-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-run-ledger-record",
+      "Categories": [
+        "worker-run-ledger-record"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain",
+          "Cases": 9
+        }
+      ]
+    }
+  ]
+}

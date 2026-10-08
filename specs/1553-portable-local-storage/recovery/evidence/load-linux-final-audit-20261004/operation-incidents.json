@@ -1,0 +1,236 @@
+{
+  "SchemaVersion": 1,
+  "GenericPlatformCybersecurityFlagObservedInThisContinuation": false,
+  "ToolIncidents": [
+    {
+      "ObservedUtc": "2026-10-03T22:33:30Z",
+      "Tool": "exec_command / write_stdin",
+      "Operation": "Clone the authorized codex/1553-load-filesystem branch",
+      "Target": "StanislavSmetaninSSM/The-Book-of-Eternity-Reborn",
+      "ReturnedError": "Unified exec process failed: automatic approval review was cancelled",
+      "Category": "approval-review cancellation",
+      "Execution": "Clone launch was reported; exit/cleanup result unavailable. No resulting checkout was observed; later normal clone and SHA verification succeeded."
+    },
+    {
+      "ObservedUtc": "2026-10-03T22:37:44Z",
+      "Tool": "exec_command / write_stdin",
+      "Operation": "Install optional official specify-cli==1.0.13 in the task-local toolchain",
+      "Target": "PyPI specify-cli",
+      "ReturnedError": "Unified exec process failed: network approval was cancelled before a decision was returned",
+      "Category": "network-approval cancellation",
+      "Execution": "No successful installation result; optional CLI deferred. Existing repository Spec Kit skills and prerequisite script were used."
+    },
+    {
+      "ObservedUtc": "2026-10-03T22:38:50Z",
+      "Tool": "git push via exec_command",
+      "Operation": "Publish initial WIP checkpoint",
+      "Target": "refs/heads/codex/1553-load-filesystem",
+      "ReturnedError": "fatal: could not read Username for 'https://github.com': No such device or address",
+      "ExitCode": 128,
+      "Category": "missing terminal Git authentication",
+      "Execution": "Command completed unsuccessfully; no remote change claimed. Authorized connected GitHub API publication succeeded without configuring credentials."
+    },
+    {
+      "ObservedUtc": "2026-10-03T22:39:21Z",
+      "Tool": "exec_command / write_stdin",
+      "Operation": "Initial canonical Linux selection PlanOnly/fresh build",
+      "Target": "tests/selections/1553-load-linux.json",
+      "ReturnedError": "Unified exec process failed: automatic approval review was cancelled",
+      "Category": "approval-review cancellation",
+      "Execution": "Runner and build-launch log present; no build result or cleanup summary. No behavioral tests were requested by PlanOnly. Separately retained incomplete log; a later same-command build/discovery completed."
+    },
+    {
+      "ObservedUtc": "2026-10-03T23:14:00Z",
+      "Tool": "functions.exec object-publication wrapper",
+      "Operation": "Read source/evidence and create unreferenced Git blobs/tree",
+      "Target": "Linux baseline evidence and native-name regression WIP",
+      "ReturnedError": "aborted by user after 1251.9s",
+      "Category": "coordination interruption with unconfirmed object write",
+      "Execution": "Parent interrupted an unresponsive invocation. No commit or ref update was included in that invocation; no branch publication was claimed. Nested completion/approval identity was not returned; later remote readback remained e73f1d60."
+    },
+    {
+      "ObservedUtc": "2026-10-03T23:31:31Z",
+      "Tool": "GitHub create_blob",
+      "Operation": "Store the changed test category catalog",
+      "Target": "tests/categories.json",
+      "ReturnedError": null,
+      "Category": "explicit connector approval, then success",
+      "Execution": "Existing pending call resumed after user approval and returned exact blob677943addc08f6d3ce0c9e183997365c817f5fec; not a runtime test or generic security flag."
+    },
+    {
+      "ObservedUtc": "2026-10-04T00:10:27Z",
+      "Tool": "functions.exec tree-publication wrapper",
+      "Operation": "Collect completed 39/46/128 cohorts and create a documentation/evidence tree",
+      "Target": "Non-resource native Linux qualification checkpoint",
+      "ReturnedError": "aborted by user after 1043.9s",
+      "Category": "coordination interruption with unconfirmed object write",
+      "Execution": "Parent interrupted an unresponsive invocation. It included no commit/ref update, and no approval ID or generic security message was returned. Remote remained46414e4f. Subsequent bounded tree calls returned normally and their exact final tree was published atfd83927c."
+    }
+  ],
+  "CompletedFailedVerificationRuns": [
+    {
+      "StartedUtc": "2026-10-03T23:33:27.9238217Z",
+      "Tool": "PowerShell7 scripts/test-csharp.ps1",
+      "Categories": [
+        "portable-load-native-names"
+      ],
+      "Source": {
+        "Head": "cbd5c81b664a5013b0f8a8a92b7f54e5f6d11fa5",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "Evidence": "load-linux-native-names-build-failure-20261003",
+      "WallTime": "00:02:10.0922058",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "SelectionComplete": false,
+      "OwnedCleanupComplete": true,
+      "Cases": [],
+      "Classification": "Ordinary fixture/build or intentionally retained causal test failure; no generic platform security flag."
+    },
+    {
+      "StartedUtc": "2026-10-03T23:38:47.3705442Z",
+      "Tool": "PowerShell7 scripts/test-csharp.ps1",
+      "Categories": [
+        "portable-load-native-names"
+      ],
+      "Source": {
+        "Head": "95a61076d84b255649b06ce8e42cacf6f8beaaf3",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "Evidence": "load-linux-native-names-red-20261003",
+      "WallTime": "00:02:01.2626904",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 7,
+        "Executed": 7,
+        "Passed": 4,
+        "Failed": 3
+      },
+      "SelectionComplete": true,
+      "OwnedCleanupComplete": true,
+      "Cases": [
+        {
+          "Case": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision(rollback: False)",
+          "Started": "2026-10-03T19:40:48.2757046-04:00",
+          "Finished": "2026-10-03T19:40:48.2757048-04:00",
+          "Error": "Assert.Equal() Failure: Values differ\nExpected: Committed\nActual:   NotLoaded"
+        },
+        {
+          "Case": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision(rollback: True)",
+          "Started": "2026-10-03T19:40:48.2436091-04:00",
+          "Finished": "2026-10-03T19:40:48.2436093-04:00",
+          "Error": "Assert.Equal() Failure: Values differ\nExpected: RolledBack\nActual:   NotLoaded"
+        },
+        {
+          "Case": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(kind: \"case-pair-hash\")",
+          "Started": "2026-10-03T19:40:48.1033227-04:00",
+          "Finished": "2026-10-03T19:40:48.1033229-04:00",
+          "Error": "Assert.Contains() Failure: Sub-string not found\nString:    \"Save archive contains duplicate normalize\"\u00b7\u00b7\u00b7\nNot found: \"SHA-256\""
+        }
+      ],
+      "Classification": "Ordinary fixture/build or intentionally retained causal test failure; no generic platform security flag."
+    },
+    {
+      "StartedUtc": "2026-10-04T00:22:11.7690835Z",
+      "Tool": "PowerShell7 scripts/test-csharp.ps1",
+      "Categories": [
+        "portable-load-resource-inventory-publication"
+      ],
+      "Source": {
+        "Head": "ff0dce30b887c87c51c5cd805c81b9b25980c1df",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "Evidence": "load-linux-resource-inventory-publication-failed-20261004",
+      "WallTime": "00:00:50.1832048",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "SelectionComplete": true,
+      "OwnedCleanupComplete": true,
+      "Cases": [
+        {
+          "Case": "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope",
+          "Started": "2026-10-03T20:23:01.6775083-04:00",
+          "Finished": "2026-10-03T20:23:01.6775226-04:00",
+          "Error": "System.IO.InvalidDataException : Owned disk sampling encountered a link."
+        }
+      ],
+      "Classification": "Ordinary fixture/build or intentionally retained causal test failure; no generic platform security flag."
+    },
+    {
+      "StartedUtc": "2026-10-04T00:33:36.0222421Z",
+      "Tool": "PowerShell7 scripts/test-csharp.ps1",
+      "Categories": [
+        "portable-load-resource-sampling"
+      ],
+      "Source": {
+        "Head": "8b77c3578bcac7d5b272a5938fe7230357f0275e",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "Evidence": "load-linux-resource-sampling-red-20261004",
+      "WallTime": "00:01:44.0004619",
+      "ExitCode": 1,
+      "Tests": {
+        "Total": 10,
+        "Executed": 10,
+        "Passed": 4,
+        "Failed": 6
+      },
+      "SelectionComplete": true,
+      "OwnedCleanupComplete": true,
+      "Cases": [
+        {
+          "Case": "BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: \"unexpected-directory\", active: True)",
+          "Started": "2026-10-03T20:35:19.7623323-04:00",
+          "Finished": "2026-10-03T20:35:19.7623323-04:00",
+          "Error": "Assert.Throws() Failure: Exception type was not an exact match\nExpected: typeof(System.IO.FileNotFoundException)\nActual:   typeof(System.IO.InvalidDataException)\n---- System.IO.InvalidDataException : Owned disk sampling encountered a link."
+        },
+        {
+          "Case": "BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: \"expected-directory\", active: True)",
+          "Started": "2026-10-03T20:35:19.7580984-04:00",
+          "Finished": "2026-10-03T20:35:19.7581114-04:00",
+          "Error": "System.IO.InvalidDataException : Owned disk sampling encountered a link."
+        },
+        {
+          "Case": "BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: \"file\", active: True)",
+          "Started": "2026-10-03T20:35:19.7659416-04:00",
+          "Finished": "2026-10-03T20:35:19.7659417-04:00",
+          "Error": "System.IO.InvalidDataException : Owned disk sampling encountered a link."
+        },
+        {
+          "Case": "BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: \"file\", active: False)",
+          "Started": "2026-10-03T20:35:19.7629367-04:00",
+          "Finished": "2026-10-03T20:35:19.7629368-04:00",
+          "Error": "Assert.Throws() Failure: Exception type was not an exact match\nExpected: typeof(System.IO.FileNotFoundException)\nActual:   typeof(System.IO.InvalidDataException)\n---- System.IO.InvalidDataException : Owned disk sampling encountered a link."
+        },
+        {
+          "Case": "BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: \"unexpected-directory\", active: False)",
+          "Started": "2026-10-03T20:35:19.7636680-04:00",
+          "Finished": "2026-10-03T20:35:19.7636680-04:00",
+          "Error": "Assert.Throws() Failure: Exception type was not an exact match\nExpected: typeof(System.IO.FileNotFoundException)\nActual:   typeof(System.IO.InvalidDataException)\n---- System.IO.InvalidDataException : Owned disk sampling encountered a link."
+        },
+        {
+          "Case": "BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes(kind: \"expected-directory\", active: False)",
+          "Started": "2026-10-03T20:35:19.7616631-04:00",
+          "Finished": "2026-10-03T20:35:19.7616632-04:00",
+          "Error": "Assert.Throws() Failure: Exception type was not an exact match\nExpected: typeof(System.IO.FileNotFoundException)\nActual:   typeof(System.IO.InvalidDataException)\n---- System.IO.InvalidDataException : Owned disk sampling encountered a link."
+        }
+      ],
+      "Classification": "Ordinary fixture/build or intentionally retained causal test failure; no generic platform security flag."
+    }
+  ],
+  "Interpretation": "Returned tool/approval/authentication messages and actual test exceptions are distinct. No causal link to the historical unspecified cybersecurity-risk message is established. No test or tool route was added to provoke or bypass platform screening. Times marked ObservedUtc are the recorded result-observation time, not inferred operation start."
+}

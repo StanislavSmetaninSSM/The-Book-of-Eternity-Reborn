@@ -161,6 +161,17 @@ public sealed class LocalUiSessionLockService
             _timeProvider.GetUtcNow().UtcDateTime,
             fallbackLease ?? TimeSpan.FromSeconds(120));
 
+    /// <summary>Inspects replacement admission without creating authority that was previously absent.</summary>
+    /// <param name="writeLease">The already held session-replacement lease.</param>
+    /// <returns>The observed UI owner, without changing its bytes or the session generation.</returns>
+    internal async Task<LocalUiSessionLockSnapshot?> InspectForSessionReplacementAsync(
+        FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        var file = await _fs.ReadFileSnapshotAsync(writeLease, LockPath);
+        return ParseSnapshot(file, _timeProvider.GetUtcNow().UtcDateTime,
+            TimeSpan.FromSeconds(120), _fs.ReadExistingSessionGeneration(writeLease) ?? string.Empty);
+    }
+
     private async Task<LocalUiSessionLockSnapshot?> TryReadSnapshotAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
         DateTime nowUtc,

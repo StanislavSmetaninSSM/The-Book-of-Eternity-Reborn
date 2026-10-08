@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "portable-storage-windows-handle-comparison"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-storage-windows-handle-comparison",
+      "reason": "The saved native two-failure run supplies RED. This correction changes only Windows handle-path comparison and causal native assertions. Linux performs fresh build/discovery and PlanOnly; the parent runs these seven actual Windows cases. Unaffected GREEN cohorts are not repeated.",
+      "contracts": [
+        "symmetric supported handle-path spelling",
+        "direct before-write generation rejection",
+        "retained original path and hard-link rejection"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "82e30691d4c197fb560033b2f057bb622912bb0a",
+    "WorkingTreeFingerprint": "C303BA55D8633FF519E7746679D981BA9AE633AA1680E585708837B1D01EBC19",
+    "ChangedFiles": 3
+  },
+  "PreparationSeconds": 10.2578104,
+  "Descriptors": [
+    {
+      "Name": "portable-storage-windows-handle-comparison-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-storage-windows-handle-comparison",
+      "Categories": [
+        "portable-storage-windows-handle-comparison"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsOpenedExternalLockHandleAfterPathSwap|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.AcquireSessionLifecycleLease_RejectsOpenedExternalLockHandleAfterPathSwap|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsOpenedExternalLockHandleAfterPathSwap",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireSessionLifecycleLease_RejectsOpenedExternalLockHandleAfterPathSwap",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-windows-handle-comparison-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-windows-handle-comparison",
+      "Categories": [
+        "portable-storage-windows-handle-comparison"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

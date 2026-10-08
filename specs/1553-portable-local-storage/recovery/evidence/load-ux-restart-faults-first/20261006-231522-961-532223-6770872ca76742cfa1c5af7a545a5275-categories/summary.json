@@ -1,0 +1,82 @@
+{
+  "Categories": [
+    "gm-load-restart-faults",
+    "gm-load-cleanup-debt",
+    "gm-load-console-entry"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "8aa961659233929a5f5dd8ebd94e19ebe8a31f59",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-load-cleanup-debt",
+      "Seconds": 17.1318781,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-load-console-entry",
+      "Seconds": 17.9406133,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-load-restart-faults",
+      "Seconds": 94.9618441,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0605845,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.053718,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1051865,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 39.112214,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 14,
+  "WallTime": "00:02:53.8671750",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 6,
+    "CompletedCases": 6,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 6,
+    "Executed": 6,
+    "Passed": 5,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

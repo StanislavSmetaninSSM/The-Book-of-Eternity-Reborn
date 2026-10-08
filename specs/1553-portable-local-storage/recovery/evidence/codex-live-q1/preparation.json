@@ -1,0 +1,18 @@
+{
+  "SourceCandidate": "89d11509b064e16f956f19f486b746b71a78f97a",
+  "PackageReusedFromAcceptedQ1": "13cdd9aedcacaba62e76859c16940583d285c365",
+  "ShippedFilesByteVerified": 677,
+  "RuntimeSourceChangedSincePackage": false,
+  "FreshPublishCommands": 0,
+  "NativeCompiles": 0,
+  "CodexBinary": "/opt/codex/bin/codex",
+  "CodexBinaryBytes": 286016808,
+  "CodexBinarySHA256": "981ade7b03926534c654fd718ced3a9f378b7b2841271e29156f939462d176e9",
+  "ActualVersionFromUnchangedBinary": "codex-cli 0.159.0-alpha.3",
+  "OfficialLoginStatusEvidence": "accepted Q1 receipt; not reread secret storage, not reexecuted",
+  "InheritedTERM": "dumb",
+  "NewCLIInvocations": 0,
+  "NewModelRequests": 0,
+  "ProfileCommand": "codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox",
+  "NewGameNotYetStarted": true
+}

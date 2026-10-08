@@ -1,0 +1,1870 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-PRODUCTION-MAIN-M1",
+  "AuditAtSource": "6d111cccf9ad740a12cd466fe9be32a11957a65f",
+  "Mismatches": 0,
+  "ManifestCount": 18,
+  "Totals": {
+    "SourcePins": 1559,
+    "Artifacts": 1221,
+    "Gzip": 669,
+    "GuardianReports": 90
+  },
+  "Historical": {
+    "Executed": 145,
+    "Passed": 120,
+    "Failed": 25
+  },
+  "Cohorts": [
+    {
+      "Label": "catalog-audit",
+      "Manifest": "evidence/t041-m1-catalog-audit/manifest.json",
+      "SourceCommit": "6d111cccf9ad740a12cd466fe9be32a11957a65f",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0,
+      "SourcePins": 90,
+      "Artifacts": 5,
+      "Gzip": 3,
+      "GuardianReports": 0,
+      "CompiledHashes": 16,
+      "Cases": [],
+      "Guardians": []
+    },
+    {
+      "Label": "cold-package-red",
+      "Manifest": "evidence/t041-m1-cold-package-red/manifest.json",
+      "SourceCommit": "a4da9d3da5011ae8f4316cb4289f76ec93ce047c",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-linux-launcher -Parallelism 1",
+      "Executed": 6,
+      "Passed": 2,
+      "Failed": 4,
+      "SourcePins": 87,
+      "Artifacts": 34,
+      "Gzip": 19,
+      "GuardianReports": 2,
+      "CompiledHashes": 0,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects(link: True)",
+          "Outcome": "Failed",
+          "Trx": "20261006-200610-192-444186-6df73ba138504905baac8abffd1737d0-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ShippedPublicationContainsRealLauncherAndParticipatingHelper",
+          "Outcome": "Failed",
+          "Trx": "20261006-200610-192-444186-6df73ba138504905baac8abffd1737d0-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects(link: False)",
+          "Outcome": "Failed",
+          "Trx": "20261006-200610-192-444186-6df73ba138504905baac8abffd1737d0-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualBootstrap_ConfigAndGenerationUseOneAtomicPublication",
+          "Outcome": "Failed",
+          "Trx": "20261006-200610-192-444186-6df73ba138504905baac8abffd1737d0-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli",
+          "Outcome": "Passed",
+          "Trx": "20261006-200610-192-444186-6df73ba138504905baac8abffd1737d0-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop",
+          "Outcome": "Passed",
+          "Trx": "20261006-200610-192-444186-6df73ba138504905baac8abffd1737d0-categories/gm-main-linux-launcher-unit-001.trx"
+        }
+      ],
+      "Guardians": [
+        {
+          "Path": "0bb02eb1159e4cc6b979576d98b084b1/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "a5f6d42005af4dd79ff9ffde2123274a/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        }
+      ]
+    },
+    {
+      "Label": "cold-preparation-failure",
+      "Manifest": "evidence/t041-m1-cold-preparation-failure/manifest.json",
+      "SourceCommit": "ef2c0f1b377f5a112872a6a970055d37db6592f8",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-linux-launcher -Parallelism 1",
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0,
+      "SourcePins": 87,
+      "Artifacts": 2,
+      "Gzip": 1,
+      "GuardianReports": 0,
+      "CompiledHashes": 0,
+      "Cases": [],
+      "Guardians": []
+    },
+    {
+      "Label": "consumer-inert-root-failure",
+      "Manifest": "evidence/t041-m1-consumer-inert-root-failure/manifest.json",
+      "SourceCommit": "1b61f36fc0f9525436bd5b2bb7636a8d65d526aa",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+      "Executed": 17,
+      "Passed": 16,
+      "Failed": 1,
+      "SourcePins": 90,
+      "Artifacts": 184,
+      "Gzip": 104,
+      "GuardianReports": 14,
+      "CompiledHashes": 16,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-cwd\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-worker\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RealConsoleHealthAndInertDaemonConsumers_BorrowOriginalLiveProductionPins",
+          "Outcome": "Failed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_PipeDraftTakeoverCancelScopedStop",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-auto\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-storage\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-command\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-package\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-systemd\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ShippedPublicationContainsRealLauncherAndParticipatingHelper",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects(link: False)",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects(link: True)",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualBootstrap_ConfigAndGenerationUseOneAtomicPublication",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli",
+          "Outcome": "Passed",
+          "Trx": "20261006-201857-471-450666-e3ae1346b0d64a13a84925780c2e45c3-categories/gm-main-linux-launcher-unit-001.trx"
+        }
+      ],
+      "Guardians": [
+        {
+          "Path": "11c3bf30dcab45a09bccdd861bfefec9/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "da1149a2714d491a9214f5b739c28742/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "9fcf574ffe984f458572cee8de7180a6/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "84066f279c544991a6be1dc913803be0/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "ac7a480f6595419ebaa8b170096732f5/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "155c2c7c8fbb437f98f0932ec6cf57f2/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "f38241e255b74d2c8f45c65c23a728f9/guardian.json",
+          "echild": true,
+          "driverExitCode": 1,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "5c77131fbd4a40389371453dcba4a31f/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "ebf70e8175bd4a7282e7922021def748/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "e40bcecaf6c2418a8e9440c6785cefb8/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "db3a30645ae24a01a0480d171a95d19d/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "164b23669cb147c7bd2e668f8723d946/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "3575079be977455b88ef1f887b990520/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "ebf70e8175bd4a7282e7922021def748/cold-check/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        }
+      ]
+    },
+    {
+      "Label": "consumer-preparation-failure",
+      "Manifest": "evidence/t041-m1-consumer-preparation-failure/manifest.json",
+      "SourceCommit": "6230e88bad2a1448621c48e3cf357c51a5db4624",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0,
+      "SourcePins": 88,
+      "Artifacts": 2,
+      "Gzip": 1,
+      "GuardianReports": 0,
+      "CompiledHashes": 0,
+      "Cases": [],
+      "Guardians": []
+    },
+    {
+      "Label": "expanded-admission-red",
+      "Manifest": "evidence/t041-m1-expanded-admission-red/manifest.json",
+      "SourceCommit": "3fef70d0be3f7671db4928d671966d864447ecc4",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-production-admission -Parallelism 1",
+      "Executed": 26,
+      "Passed": 14,
+      "Failed": 12,
+      "SourcePins": 86,
+      "Artifacts": 114,
+      "Gzip": 63,
+      "GuardianReports": 10,
+      "CompiledHashes": 0,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"uncertain\")",
+          "Outcome": "Failed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-auto\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+          "Outcome": "Passed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite",
+          "Outcome": "Passed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: \"load-transactions\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory",
+          "Outcome": "Failed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"[]\")",
+          "Outcome": "Failed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"{\\\"language\\\":\\\"en\\\",\\\"language\\\":\\\"ru\\\"}\")",
+          "Outcome": "Failed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-command\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"null\")",
+          "Outcome": "Failed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-storage\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-package\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"foreign\")",
+          "Outcome": "Failed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_CreatesConfigAndGenerationUnderOneLeaseAndInvalidatesGenerationRevision",
+          "Outcome": "Passed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_RepeatedAndNewManagerLoadsExistingValuesWithoutRewritingExactConfigOrGeneration",
+          "Outcome": "Passed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-cwd\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_PipeDraftTakeoverCancelScopedStop",
+          "Outcome": "Failed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-systemd\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"{broken\")",
+          "Outcome": "Failed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof",
+          "Outcome": "Failed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"incomplete\")",
+          "Outcome": "Failed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence",
+          "Outcome": "Failed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: \"file-publication-transactions\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-worker\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"retained\")",
+          "Outcome": "Failed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: \"worker-apply-transactions\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-195810-378-440609-2ac67d15b3de4b548e342950d9f02807-categories/gm-main-production-admission-unit-001.trx"
+        }
+      ],
+      "Guardians": [
+        {
+          "Path": "6fbced1ad35946b685566dc8aa2ed0e3/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "903ad89670f34dec83f0ec344561ece5/guardian.json",
+          "echild": true,
+          "driverExitCode": 127,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "beeeb7af7b124323954d49543ee6dafe/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "711c1cbe17e546baa2adf199eaa665b0/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "fbf0e269c7bc496c85194e4197a05fef/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "6f3b313fc87942d2adec1403baf25f7c/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "45aa19817d134036a825ae999dd48691/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "1eb7ce1f9e5c4e87ac35780692834177/guardian.json",
+          "echild": true,
+          "driverExitCode": 127,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "ff135d2e321943df8ee30344f2ce2a92/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "65c4e54a6aee468fa2ca64e7a7b7030a/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        }
+      ]
+    },
+    {
+      "Label": "expanded-preparation-failure",
+      "Manifest": "evidence/t041-m1-expanded-preparation-failure/manifest.json",
+      "SourceCommit": "9b5e54eb5e3c745bbbc5e118ff3d78034f62a3df",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-production-admission -Parallelism 1",
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0,
+      "SourcePins": 86,
+      "Artifacts": 2,
+      "Gzip": 1,
+      "GuardianReports": 0,
+      "CompiledHashes": 0,
+      "Cases": [],
+      "Guardians": []
+    },
+    {
+      "Label": "green-atomic-admission",
+      "Manifest": "evidence/t041-m1-green-atomic-admission/manifest.json",
+      "SourceCommit": "ee5d62b15a4c2f5e82fbe89fb129cbf639a5b38b",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+      "Executed": 32,
+      "Passed": 32,
+      "Failed": 0,
+      "SourcePins": 87,
+      "Artifacts": 146,
+      "Gzip": 80,
+      "GuardianReports": 12,
+      "CompiledHashes": 0,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-auto\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-systemd\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"{\\\"language\\\":\\\"en\\\",\\\"language\\\":\\\"ru\\\"}\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-cwd\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"foreign\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_PipeDraftTakeoverCancelScopedStop",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_RepeatedAndNewManagerLoadsExistingValuesWithoutRewritingExactConfigOrGeneration",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"uncertain\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"{broken\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"retained\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: \"file-publication-transactions\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: \"incomplete\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-command\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_CreatesConfigAndGenerationUnderOneLeaseAndInvalidatesGenerationRevision",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-worker\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-storage\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-package\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: \"worker-apply-transactions\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"null\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: \"load-transactions\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"[]\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ShippedPublicationContainsRealLauncherAndParticipatingHelper",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects(link: True)",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualBootstrap_ConfigAndGenerationUseOneAtomicPublication",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects(link: False)",
+          "Outcome": "Passed",
+          "Trx": "20261006-201220-591-446160-53455ea833bf41a1bb97a766bde4239c-categories/gm-main-linux-launcher-unit-001.trx"
+        }
+      ],
+      "Guardians": [
+        {
+          "Path": "85cbfc23d1274c8db30ed50fbd8f24c1/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "0db2581e10834779b80ad8cd2ad422ee/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "11c62cb5ac69418da0227ea7fecd3bed/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "7ccfe69251b14702b53b18a5d2bbaf64/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "169604ac797647e9b7a2c9c3cdc74b6e/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "7fe95676745a455a928d78d1c2de6e9b/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "9f3162e9e4ab4cd2b557830071727e50/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "08e16e535b374462a45f2b3f5fb28293/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "a0320b4041864260a3f8416354fd95a8/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "16494573ae394c3db014f32cfd3aab3e/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "72d41600e74f4b56a1ec382d93b6f4cc/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "6d839a4caa0f459ebf3aefc774684d58/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        }
+      ]
+    },
+    {
+      "Label": "green-consumers-package",
+      "Manifest": "evidence/t041-m1-green-consumers-package/manifest.json",
+      "SourceCommit": "5e9e7c127859190d0d52320455762951714d9ed1",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+      "Executed": 18,
+      "Passed": 18,
+      "Failed": 0,
+      "SourcePins": 90,
+      "Artifacts": 199,
+      "Gzip": 112,
+      "GuardianReports": 15,
+      "CompiledHashes": 16,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-command\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-systemd\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-worker\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-package\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-cwd\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RealConsoleHealthAndInertDaemonConsumers_BorrowOriginalLiveProductionPins",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-auto\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_PipeDraftTakeoverCancelScopedStop",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-storage\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualBootstrap_ConfigAndGenerationUseOneAtomicPublication",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects(link: False)",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ShippedPublicationContainsRealLauncherAndParticipatingHelper",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryDaemonLauncher_ForegroundSeparateStdinInstalledContext",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects(link: True)",
+          "Outcome": "Passed",
+          "Trx": "20261006-202725-856-456577-4899c57ce4e84bde9fa2a1c25f70d3a7-categories/gm-main-linux-launcher-unit-001.trx"
+        }
+      ],
+      "Guardians": [
+        {
+          "Path": "e669c78fe60f4b1d8410bde94ae567db/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "926a4c2115da440b9791b6494d6bcca7/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "8e33077ae9e943909f0e285a8683e879/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "7eb21f312f944707b5acf06dd89f2662/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "18162a1e85754115b04ef4d2e84437b5/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "e99a8b3d116144fe8d2eec2174f08d96/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "f6f01427bf154044bf89ed542a211706/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "41fe6429b08b49c19fb9dc146ba7f4ae/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "6d4eaa0c04ab49579d07651e820713ca/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "ebe1ece311824d798f1610daf7ecbbe7/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "e7f392ae3a3d419e85610cc193cc7f54/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "e64ac15b38d14d369e0ded4834ebba7e/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "af35a4b3e2b9437a9e4081379775336a/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "d38960b833a3404fbda546039c71d8f9/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "8e33077ae9e943909f0e285a8683e879/cold-check/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        }
+      ]
+    },
+    {
+      "Label": "green-entrypoints",
+      "Manifest": "evidence/t041-m1-green-entrypoints/manifest.json",
+      "SourceCommit": "36f912b4a67e35468a97f0507804659f3e4fbf8d",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+      "Executed": 3,
+      "Passed": 3,
+      "Failed": 0,
+      "SourcePins": 84,
+      "Artifacts": 40,
+      "Gzip": 21,
+      "GuardianReports": 3,
+      "CompiledHashes": 0,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+          "Outcome": "Passed",
+          "Trx": "20261006-195112-049-437596-a73ad3f76b0f4ca5a40398109107f9e9-categories/gm-main-production-admission-unit-002.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop",
+          "Outcome": "Passed",
+          "Trx": "20261006-195112-049-437596-a73ad3f76b0f4ca5a40398109107f9e9-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli",
+          "Outcome": "Passed",
+          "Trx": "20261006-195112-049-437596-a73ad3f76b0f4ca5a40398109107f9e9-categories/gm-main-linux-launcher-unit-001.trx"
+        }
+      ],
+      "Guardians": [
+        {
+          "Path": "95b4b95f25294718b3c82d2eb8f242d4/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "ec349a4aeeb74a96bccd3f5e8bef88ec/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "f5234511acd84c6c9ab77e9fd4d6f8d9/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        }
+      ]
+    },
+    {
+      "Label": "green-entrypoints-attempt1",
+      "Manifest": "evidence/t041-m1-green-entrypoints-attempt1/manifest.json",
+      "SourceCommit": "ea3bfe4435e52b789bb8934dc746beb593d8b605",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2,
+      "SourcePins": 84,
+      "Artifacts": 28,
+      "Gzip": 15,
+      "GuardianReports": 2,
+      "CompiledHashes": 0,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli",
+          "Outcome": "Failed",
+          "Trx": "20261006-194827-616-436180-41aa2a0e9738487db1ce1feeab503b83-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop",
+          "Outcome": "Failed",
+          "Trx": "20261006-194827-616-436180-41aa2a0e9738487db1ce1feeab503b83-categories/gm-main-linux-launcher-unit-001.trx"
+        }
+      ],
+      "Guardians": [
+        {
+          "Path": "52f8af088982458dab6d0498a3f73ad4/guardian.json",
+          "echild": true,
+          "driverExitCode": 1,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "98bca652f48a4c5d8d9d81dd4042df2e/guardian.json",
+          "echild": true,
+          "driverExitCode": 1,
+          "emergencySignals": 0,
+          "reaped": 2,
+          "failures": 0,
+          "deadline": false
+        }
+      ]
+    },
+    {
+      "Label": "green-installed-cwd",
+      "Manifest": "evidence/t041-m1-green-installed-cwd/manifest.json",
+      "SourceCommit": "f3c570a4ef883116be84eece97d6546b29651eff",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-linux-launcher -Parallelism 1",
+      "Executed": 8,
+      "Passed": 8,
+      "Failed": 0,
+      "SourcePins": 90,
+      "Artifacts": 73,
+      "Gzip": 39,
+      "GuardianReports": 4,
+      "CompiledHashes": 16,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RealConsoleHealthAndInertDaemonConsumers_BorrowOriginalLiveProductionPins",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryDaemonLauncher_ForegroundSeparateStdinInstalledContext",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ShippedPublicationContainsRealLauncherAndParticipatingHelper",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects(link: True)",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects(link: False)",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualBootstrap_ConfigAndGenerationUseOneAtomicPublication",
+          "Outcome": "Passed",
+          "Trx": "20261006-203414-064-460755-3100d0c5c2774c69a7b7ae4cf63cc2e6-categories/gm-main-linux-launcher-unit-001.trx"
+        }
+      ],
+      "Guardians": [
+        {
+          "Path": "86816f3bf03e4ddd9cbce5e4f8094d9d/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "136b23f9927549eba0ca7baf87b3f6f3/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "a6ac40cff5ec42f8a8f738515779e88c/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "766749279e974f4e8582380fee23f7c8/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        }
+      ]
+    },
+    {
+      "Label": "inventory-ref-green",
+      "Manifest": "evidence/t041-m1-inventory-ref-green/manifest.json",
+      "SourceCommit": "6d111cccf9ad740a12cd466fe9be32a11957a65f",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-production-admission -Parallelism 1",
+      "Executed": 12,
+      "Passed": 12,
+      "Failed": 0,
+      "SourcePins": 90,
+      "Artifacts": 157,
+      "Gzip": 84,
+      "GuardianReports": 12,
+      "CompiledHashes": 16,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-storage\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RealConsoleHealthAndInertDaemonConsumers_BorrowOriginalLiveProductionPins",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-worker\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-command\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_PipeDraftTakeoverCancelScopedStop",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-package\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-auto\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RejectedMainAttempt_ReleasesOnlyItsBorrowedOriginalInventoryClient",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-cwd\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-systemd\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory",
+          "Outcome": "Passed",
+          "Trx": "20261006-204332-591-466393-2e5394ab630d49dfbfa290ab053d580f-categories/gm-main-production-admission-unit-001.trx"
+        }
+      ],
+      "Guardians": [
+        {
+          "Path": "8c212cd2817a409197727f406dc2dddc/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "64dc22dc5b3c43e6aaeb48a4fe3da4c0/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "a5be78d7e1db469e8169aad66ea2eb43/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "25fd0334d02643ea86a3ed15b5cd3c50/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "02d203a4c8314b41aa5b933e36a55bf3/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "70f6cb65cb4042b58ce6db8a6ef17679/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "cd5bf5f167bf4fba831533d06f3cd50e/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "83cf97197e6b492d9f414a7dd6b5fd58/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "f188c2911ec749c1b8cb4f532d5aebb7/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "c42a85c62977451991cc288f365f70c2/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "bb03ec797a37465e9cb8d2e5031e9f90/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "83cf97197e6b492d9f414a7dd6b5fd58/cold-check/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        }
+      ]
+    },
+    {
+      "Label": "inventory-ref-red",
+      "Manifest": "evidence/t041-m1-inventory-ref-red/manifest.json",
+      "SourceCommit": "626cfa11c97cf2e3837dc773a820cc4aadd9b811",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-production-admission -Parallelism 1",
+      "Executed": 12,
+      "Passed": 10,
+      "Failed": 2,
+      "SourcePins": 90,
+      "Artifacts": 153,
+      "Gzip": 82,
+      "GuardianReports": 11,
+      "CompiledHashes": 16,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-command\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-203726-071-463004-6efe1070c2bd49289bf22cff7664d819-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+          "Outcome": "Passed",
+          "Trx": "20261006-203726-071-463004-6efe1070c2bd49289bf22cff7664d819-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-storage\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-203726-071-463004-6efe1070c2bd49289bf22cff7664d819-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-package\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-203726-071-463004-6efe1070c2bd49289bf22cff7664d819-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-auto\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-203726-071-463004-6efe1070c2bd49289bf22cff7664d819-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-systemd\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-203726-071-463004-6efe1070c2bd49289bf22cff7664d819-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-cwd\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-203726-071-463004-6efe1070c2bd49289bf22cff7664d819-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory",
+          "Outcome": "Failed",
+          "Trx": "20261006-203726-071-463004-6efe1070c2bd49289bf22cff7664d819-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RejectedMainAttempt_ReleasesOnlyItsBorrowedOriginalInventoryClient",
+          "Outcome": "Failed",
+          "Trx": "20261006-203726-071-463004-6efe1070c2bd49289bf22cff7664d819-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_PipeDraftTakeoverCancelScopedStop",
+          "Outcome": "Passed",
+          "Trx": "20261006-203726-071-463004-6efe1070c2bd49289bf22cff7664d819-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RealConsoleHealthAndInertDaemonConsumers_BorrowOriginalLiveProductionPins",
+          "Outcome": "Passed",
+          "Trx": "20261006-203726-071-463004-6efe1070c2bd49289bf22cff7664d819-categories/gm-main-production-admission-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: \"refuse-worker\")",
+          "Outcome": "Passed",
+          "Trx": "20261006-203726-071-463004-6efe1070c2bd49289bf22cff7664d819-categories/gm-main-production-admission-unit-001.trx"
+        }
+      ],
+      "Guardians": [
+        {
+          "Path": "b23dfe59ea184c6eb3dfdd3a2bee96c6/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "ca30c7a4716646f391c59e2084886725/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "38fb297670e1470a9c46fb4ef523aad9/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "fde3b6b2841540f59237ba725f975c51/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "98f6e7e770af4f4ca0878a035f5433ec/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "0e330cfcf77849faabf239634c2d6175/guardian.json",
+          "echild": true,
+          "driverExitCode": 1,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "1e30ea807b1b4f26a4146496485c7691/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "b2e0fbe125b24415a44092067cd0f5b1/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "5688d08ebaaa48219006ac4801906143/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "9e56a7dc0ea54e7180bb7ad6a12e4430/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "8eb29602599c4497bf85b4b6422b4579/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        }
+      ]
+    },
+    {
+      "Label": "operational-package-red",
+      "Manifest": "evidence/t041-m1-operational-package-red/manifest.json",
+      "SourceCommit": "865b3ef43ecb6f1753668e46619de7479b8d5d72",
+      "Command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-linux-launcher -Parallelism 1",
+      "Executed": 6,
+      "Passed": 5,
+      "Failed": 1,
+      "SourcePins": 90,
+      "Artifacts": 37,
+      "Gzip": 22,
+      "GuardianReports": 2,
+      "CompiledHashes": 16,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects(link: True)",
+          "Outcome": "Passed",
+          "Trx": "20261006-202321-261-454010-b806c50d42dd4d05818b8aff681dff22-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ColdMalformedWorkerNamespace_RefusesBootstrapBeforeEffects(link: False)",
+          "Outcome": "Passed",
+          "Trx": "20261006-202321-261-454010-b806c50d42dd4d05818b8aff681dff22-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ShippedPublicationContainsRealLauncherAndParticipatingHelper",
+          "Outcome": "Failed",
+          "Trx": "20261006-202321-261-454010-b806c50d42dd4d05818b8aff681dff22-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli",
+          "Outcome": "Passed",
+          "Trx": "20261006-202321-261-454010-b806c50d42dd4d05818b8aff681dff22-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualBootstrap_ConfigAndGenerationUseOneAtomicPublication",
+          "Outcome": "Passed",
+          "Trx": "20261006-202321-261-454010-b806c50d42dd4d05818b8aff681dff22-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop",
+          "Outcome": "Passed",
+          "Trx": "20261006-202321-261-454010-b806c50d42dd4d05818b8aff681dff22-categories/gm-main-linux-launcher-unit-001.trx"
+        }
+      ],
+      "Guardians": [
+        {
+          "Path": "f44e8ad09e4d48f3b5c60272a5ede423/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "30b5a3b0e3ae43f48ea1459a447f3bea/guardian.json",
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        }
+      ]
+    },
+    {
+      "Label": "red-admission",
+      "Manifest": "evidence/t041-m1-red-admission/manifest.json",
+      "SourceCommit": "cdf23316d4144effd171d03c91ce56fe2012a776",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-production-admission -NoBuild (fresh cdf23316 build reused)",
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1,
+      "SourcePins": 75,
+      "Artifacts": 15,
+      "Gzip": 7,
+      "GuardianReports": 1,
+      "CompiledHashes": 0,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+          "Outcome": "Failed",
+          "Trx": "20261006-194403-618-434720-ec6f736fbf88430e8a2187463939e4da-categories/gm-main-production-admission-unit-001.trx"
+        }
+      ],
+      "Guardians": [
+        {
+          "Path": "9f1cb67bd0a64f36815756a5cd535006/guardian.json",
+          "echild": true,
+          "driverExitCode": 1,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        }
+      ]
+    },
+    {
+      "Label": "red-launcher",
+      "Manifest": "evidence/t041-m1-red-launcher/manifest.json",
+      "SourceCommit": "cdf23316d4144effd171d03c91ce56fe2012a776",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2,
+      "SourcePins": 75,
+      "Artifacts": 27,
+      "Gzip": 14,
+      "GuardianReports": 2,
+      "CompiledHashes": 0,
+      "Cases": [
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.OrdinaryLauncher_ShippedLayoutWithoutSourceRunsConfiguredCli",
+          "Outcome": "Failed",
+          "Trx": "20261006-194143-778-433628-2d4a664f68954951b6572c54c70e7c64-categories/gm-main-linux-launcher-unit-001.trx"
+        },
+        {
+          "TestName": "BookOfEternityClient.Tests.GmMainLinuxLauncherTests.ActualDaemonStartup_PortableOwnedBridgeWithoutWindowsDesktop",
+          "Outcome": "Failed",
+          "Trx": "20261006-194143-778-433628-2d4a664f68954951b6572c54c70e7c64-categories/gm-main-linux-launcher-unit-001.trx"
+        }
+      ],
+      "Guardians": [
+        {
+          "Path": "873e7eefa9b34fa49e52bd15fb61c75b/guardian.json",
+          "echild": true,
+          "driverExitCode": 1,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "Path": "6a1ba924ba3e4921aae6b6cd4750dc59/guardian.json",
+          "echild": true,
+          "driverExitCode": 1,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        }
+      ]
+    },
+    {
+      "Label": "selection-plan",
+      "Manifest": "evidence/t041-m1-selection-plan/manifest.json",
+      "SourceCommit": "6d111cccf9ad740a12cd466fe9be32a11957a65f",
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly -NoBuild -Parallelism 1",
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0,
+      "SourcePins": 90,
+      "Artifacts": 3,
+      "Gzip": 1,
+      "GuardianReports": 0,
+      "CompiledHashes": 16,
+      "Cases": [],
+      "Guardians": []
+    }
+  ],
+  "Scope": "Every M1 source Git blob and stored/decompressed artifact hash; TRX executions separate from zero-test preparation/discovery; guardian cleanup evidence does not grant logical acceptance."
+}

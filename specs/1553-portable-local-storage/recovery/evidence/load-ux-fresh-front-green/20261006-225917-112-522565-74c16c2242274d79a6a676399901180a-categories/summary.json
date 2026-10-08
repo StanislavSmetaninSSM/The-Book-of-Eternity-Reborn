@@ -1,0 +1,81 @@
+{
+  "Categories": [
+    "browser-load-session-lifecycle"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "33c6b18e7aa4d3fdcb02a30f0c315ccd72aafcf5",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "browser-load-session-lifecycle",
+      "Seconds": 3.0555033,
+      "BudgetMinutes": 2,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [
+    {
+      "Descriptor": "browser-load-session-lifecycle-frontend-001",
+      "Adapter": "vitest",
+      "VerificationKind": "tests",
+      "Results": 6,
+      "Seconds": 3.0436629
+    }
+  ],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0753682,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0779461,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1228922,
+      "Completed": true
+    },
+    {
+      "Name": "browser-load-session-lifecycle-frontend-001",
+      "Seconds": 3.0017407,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0045845,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 7,
+  "WallTime": "00:00:03.9182918",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 6,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 6,
+    "Executed": 6,
+    "Passed": 6,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

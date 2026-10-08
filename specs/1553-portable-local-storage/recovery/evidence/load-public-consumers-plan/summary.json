@@ -1,0 +1,91 @@
+{
+  "Categories": [
+    "portable-load-public-entry",
+    "portable-load-public-consumers"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-load-public-entry",
+      "reason": "T032-B4 public typed result accessibility and actual ordinary public load compatibility wrapper: confirmed commit including required-refresh failure, exact rollback, retained uncertainty and pre-publication refusal. Bool is commitment-only, never continuation permission; all player-facing consumers use the typed API. Each case owns an isolated current-producer root.",
+      "contracts": [
+        "#1553 T032-B4; LOAD-FS-003/004 public decision preservation"
+      ]
+    },
+    {
+      "category": "portable-load-public-consumers",
+      "reason": "T032-B4 affected public-load consumers: detached profile repair and pre-publication foreign-byte refusal, canonical/lifecycle contention, stale bound writer fencing, in-progress real worker decision ordering, and bounded original ZIP preflight source guard. Retires only the superseded active original-load profile category; immutable historical diagnostic evidence stays unchanged.",
+      "contracts": [
+        "#1553 T032-B4 public API consumers; LOAD-FS-002/003/004"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "d0a8be96bb788aa38e2b1e834fdac95ab5331d57",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.053533,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0081889,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0105227,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 119.7499331,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 35.9154115,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0052413,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:02:41.3633753",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 13,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-load-public-consumers-integration-001",
+      "portable-load-public-consumers-unit-002",
+      "portable-load-public-entry-integration-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

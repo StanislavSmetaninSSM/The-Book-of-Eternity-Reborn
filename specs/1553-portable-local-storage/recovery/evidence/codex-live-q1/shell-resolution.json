@@ -1,0 +1,7 @@
+{
+  "PowerShell": "7.5.4",
+  "Pwsh": "/workspace/.onboarding/tools/pwsh/pwsh",
+  "Codex": "/opt/codex/bin/codex",
+  "CodexCommandType": "Application",
+  "TERM": "dumb"
+}

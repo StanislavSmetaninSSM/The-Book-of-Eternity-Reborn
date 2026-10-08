@@ -1,0 +1,39 @@
+  Determining projects to restore...
+  Restored /repo/BookOfEternityClient/BookOfEternityClient.csproj (in 11.54 sec).
+  Restored /repo/BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj (in 27 ms).
+  Restored /repo/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj (in 39 ms).
+/repo/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: XML comment is not placed on a valid language element [/repo/BookOfEternityClient/BookOfEternityClient.csproj]
+/repo/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: XML comment is not placed on a valid language element [/repo/BookOfEternityClient/BookOfEternityClient.csproj]
+/repo/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: XML comment is not placed on a valid language element [/repo/BookOfEternityClient/BookOfEternityClient.csproj]
+  BookOfEternityClient -> /repo/BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll
+  BookOfEternityClient.TestSupport -> /repo/BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll
+/repo/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableSave.cs(198,54): warning CS8602: Dereference of a possibly null reference. [/repo/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+/repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(78,9): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [/repo/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+/repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(195,9): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [/repo/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+  BookOfEternityClient.IntegrationTests -> /repo/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll
+
+Build succeeded.
+
+/repo/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: XML comment is not placed on a valid language element [/repo/BookOfEternityClient/BookOfEternityClient.csproj]
+/repo/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: XML comment is not placed on a valid language element [/repo/BookOfEternityClient/BookOfEternityClient.csproj]
+/repo/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: XML comment is not placed on a valid language element [/repo/BookOfEternityClient/BookOfEternityClient.csproj]
+/repo/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableSave.cs(198,54): warning CS8602: Dereference of a possibly null reference. [/repo/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+/repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(78,9): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [/repo/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+/repo/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(195,9): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [/repo/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+    6 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:03:17.21
+
+Welcome to .NET 10.0!
+---------------------
+SDK Version: 10.0.401
+
+----------------
+Write your first app: https://aka.ms/dotnet-hello-world
+Find out what's new: https://aka.ms/dotnet-whats-new
+Explore documentation: https://aka.ms/dotnet-docs
+Report issues and find source on GitHub: https://github.com/dotnet/core
+Use 'dotnet --help' to see available commands or visit: https://aka.ms/dotnet-cli
+--------------------------------------------------------------------------------------
+

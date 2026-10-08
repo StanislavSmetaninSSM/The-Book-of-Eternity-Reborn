@@ -1,0 +1,77 @@
+{
+  "Categories": [
+    "portable-session-generation"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-session-generation",
+      "reason": "Initial test-first exact generation snapshot and cold nonregular/fence reader cases; rotation/clear remain unchanged.",
+      "contracts": [
+        "exact generation bytes and explicit absence",
+        "nonrecursive regular-file generation admission"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "6f2e95e356e977199717fef57863b4dcf288720f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-session-generation",
+      "Seconds": 23.8948667,
+      "BudgetMinutes": 4,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0921616,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0163629,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0141856,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 131.8669088,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 9,
+  "WallTime": "00:02:40.6025731",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 24,
+    "CompletedCases": 24,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 24,
+    "Executed": 24,
+    "Passed": 0,
+    "Failed": 24
+  },
+  "DuplicateTests": []
+}

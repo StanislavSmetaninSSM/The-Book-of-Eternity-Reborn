@@ -1,0 +1,7 @@
+Exception: /workspace/native-1553/scripts/test-csharp.ps1:79
+Line |
+  79 |  … nt -ne 1) { throw "Unknown category '$id'. Use -ListCategories; no wo …
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Unknown category
+     | 'browser-direct-gacha-linux,browser-direct-gacha-linux-boundaries'. Use
+     | -ListCategories; no workload started.

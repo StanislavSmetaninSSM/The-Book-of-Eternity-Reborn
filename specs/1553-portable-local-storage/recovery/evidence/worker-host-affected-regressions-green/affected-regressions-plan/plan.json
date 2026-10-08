@@ -1,0 +1,87 @@
+{
+  "Categories": [
+    "worker-native-v1-transport-regression",
+    "worker-owned-original-ipc-regression"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "97cd5d50f7edc1c6d5cbc04007fa2ac6d60d64fc",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 66.8607863,
+  "Descriptors": [
+    {
+      "Name": "worker-native-v1-transport-regression-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-v1-transport-regression",
+      "Categories": [
+        "worker-native-v1-transport-regression"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackBootstrapTests.RealRootBinding_StartStopAndActualReap|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackProcDiscoveryTests.FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess|FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackBootstrapTests.RealRootBinding_StartStopAndActualReap",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackProcDiscoveryTests.FirstAdoptedChild_MustRetireBeforeIndependentFixtureExpiry",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-owned-original-ipc-regression-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "worker-owned-original-ipc-regression",
+      "Categories": [
+        "worker-owned-original-ipc-regression"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

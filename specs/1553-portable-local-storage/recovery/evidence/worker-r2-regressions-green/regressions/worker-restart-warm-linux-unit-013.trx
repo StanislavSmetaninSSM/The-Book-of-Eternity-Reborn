@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="1a4aa126-fbcf-4fdf-aad9-3e366a66a95f" name="@c7669543e9c7 2026-10-06 04:52:36" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T04:52:36.8460612+00:00" queuing="2026-10-06T04:52:36.8460613+00:00" start="2026-10-06T04:52:31.7121217+00:00" finish="2026-10-06T04:52:36.8573916+00:00" />
+  <TestSettings name="default" id="31cb4551-266b-4243-979b-d0a3f7e9185f">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_04_52_36" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="6bf84f3f-3a0b-4fa5-8d64-cf207aaede17" testId="fe041cb6-70df-5e01-1a82-7b0e18d3d8a5" testName="BookOfEternityClient.Tests.GmWorkerRestartWarmTests.DetectedNativeLoss_ClosesSharedRootBeforeStopAndSurvivesFailedJournalAndClientDisposal" computerName="c7669543e9c7" duration="00:00:02.3660902" startTime="2026-10-06T04:52:36.7512702+00:00" endTime="2026-10-06T04:52:36.7512867+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6bf84f3f-3a0b-4fa5-8d64-cf207aaede17" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartWarmTests.DetectedNativeLoss_ClosesSharedRootBeforeStopAndSurvivesFailedJournalAndClientDisposal" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fe041cb6-70df-5e01-1a82-7b0e18d3d8a5">
+      <Execution id="6bf84f3f-3a0b-4fa5-8d64-cf207aaede17" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartWarmTests" name="DetectedNativeLoss_ClosesSharedRootBeforeStopAndSurvivesFailedJournalAndClientDisposal" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="fe041cb6-70df-5e01-1a82-7b0e18d3d8a5" executionId="6bf84f3f-3a0b-4fa5-8d64-cf207aaede17" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.24]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:02.01]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:02.04]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:04.48]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

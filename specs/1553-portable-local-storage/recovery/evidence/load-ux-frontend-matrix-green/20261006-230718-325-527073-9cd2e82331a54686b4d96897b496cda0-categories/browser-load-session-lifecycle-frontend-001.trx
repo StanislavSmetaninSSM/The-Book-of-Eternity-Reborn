@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun>
+  <Results>
+    <UnitTestResult testId="C59C5D5C866AC0A15A8872A9C097F5C22F55A3E195934EE58A98BB3570E5E390" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh launcher: failed original stop names the GM and never refreshes/restarts)" outcome="Passed" />
+    <UnitTestResult testId="C2FF63C90953D12D73E85C57DE45ECA04610EF0108C5BCB6DEF0F5D0FECBBCA1" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh launcher: refresh-failed keeps one original dispatch and exact fresh decision)" outcome="Passed" />
+    <UnitTestResult testId="74390BC06EB0E549336FF5E3621CA2667E4DE16C1831394CB0DB41F12983B25F" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh launcher: stale-owner keeps one original dispatch and exact fresh decision)" outcome="Passed" />
+    <UnitTestResult testId="8D1CE9E464340723516A826811C6D508F2F6BB7C747E49FEFF86CDD38EB11304" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh launcher: wrong-generation keeps one original dispatch and exact fresh decision)" outcome="Passed" />
+    <UnitTestResult testId="EBA5F519F045457C97D733F07454E0995FEA84DBDF81ABF0F7EADC42E47EED17" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh launcher: confirmed keeps one original dispatch and exact fresh decision)" outcome="Passed" />
+    <UnitTestResult testId="70C4F105182B5EE838B3C2E1581193CBC21E6844E4B6032F571CB1A418ED74A7" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh launcher: no-active keeps one original dispatch and exact fresh decision)" outcome="Passed" />
+    <UnitTestResult testId="73041D89F773E1446A478172F4905A52AA018ADC6A5D639F80E01D6DCA9CA79E" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh launcher: missing-source preserves Committed and blocks fresh continuation)" outcome="Passed" />
+    <UnitTestResult testId="3B678036FAFEF48962FBED56630902CC4C4E6D17812F0CF1EF0EB26DF1288311" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh launcher: lost-restart preserves Committed and blocks fresh continuation)" outcome="Passed" />
+    <UnitTestResult testId="551431C3201E5E229B92B70288FB65EB25F95974AF68CE4A32582A0D10950701" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh launcher: cannot navigate while fresh launch remains unconfirmed)" outcome="Passed" />
+    <UnitTestResult testId="7B8A59316416A5691B07196C7F820533B1EFABDB0C767D8D550967F3A7807A91" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh settings: failed original stop names the GM and never refreshes/restarts)" outcome="Passed" />
+    <UnitTestResult testId="E32C9E5DA7F2743F7870C5D7CFE846C7FE6C9866779E6C62CFF48F06596DFF05" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh settings: refresh-failed keeps one original dispatch and exact fresh decision)" outcome="Passed" />
+    <UnitTestResult testId="27DF070EFF0226CFEEE32F4D0DD963BAE7794CECAC840B671ACA2E2F4EC41150" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh settings: stale-owner keeps one original dispatch and exact fresh decision)" outcome="Passed" />
+    <UnitTestResult testId="EADD1D1391275218582CDC3DECBAAFC6D67AEDA81E7BCD574EB7745DA5D7ED1C" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh settings: wrong-generation keeps one original dispatch and exact fresh decision)" outcome="Passed" />
+    <UnitTestResult testId="87337CF45B8E076C7299FCC75E3E07AD10B98D90D4D19E3BA4E3BE8F69133BD6" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh settings: confirmed keeps one original dispatch and exact fresh decision)" outcome="Passed" />
+    <UnitTestResult testId="99AD40CCD36746A096EAECEF65D331A7485A1A4B85A8025F2C5B58DD35A747AF" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh settings: no-active keeps one original dispatch and exact fresh decision)" outcome="Passed" />
+    <UnitTestResult testId="E2157274998A735B5A0E9B3B5A0F088E4EFDDB65A0FFA6B431FECB4035CCD0D7" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh settings: missing-source preserves Committed and blocks fresh continuation)" outcome="Passed" />
+    <UnitTestResult testId="B57093D9436460AD6B6E77FE35094779FB7593A157EE68AABA66606F5A6729BA" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh settings: lost-restart preserves Committed and blocks fresh continuation)" outcome="Passed" />
+    <UnitTestResult testId="342C111C184E57F80B37CB33DC1CE303898598D22134A2A61FEB30A84F34C1E4" testName="BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts(actual Load handlers await original fresh-launch receipt after applying refresh settings: cannot navigate while fresh launch remains unconfirmed)" outcome="Passed" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest id="C59C5D5C866AC0A15A8872A9C097F5C22F55A3E195934EE58A98BB3570E5E390" storage="category-vitest" />
+    <UnitTest id="C2FF63C90953D12D73E85C57DE45ECA04610EF0108C5BCB6DEF0F5D0FECBBCA1" storage="category-vitest" />
+    <UnitTest id="74390BC06EB0E549336FF5E3621CA2667E4DE16C1831394CB0DB41F12983B25F" storage="category-vitest" />
+    <UnitTest id="8D1CE9E464340723516A826811C6D508F2F6BB7C747E49FEFF86CDD38EB11304" storage="category-vitest" />
+    <UnitTest id="EBA5F519F045457C97D733F07454E0995FEA84DBDF81ABF0F7EADC42E47EED17" storage="category-vitest" />
+    <UnitTest id="70C4F105182B5EE838B3C2E1581193CBC21E6844E4B6032F571CB1A418ED74A7" storage="category-vitest" />
+    <UnitTest id="73041D89F773E1446A478172F4905A52AA018ADC6A5D639F80E01D6DCA9CA79E" storage="category-vitest" />
+    <UnitTest id="3B678036FAFEF48962FBED56630902CC4C4E6D17812F0CF1EF0EB26DF1288311" storage="category-vitest" />
+    <UnitTest id="551431C3201E5E229B92B70288FB65EB25F95974AF68CE4A32582A0D10950701" storage="category-vitest" />
+    <UnitTest id="7B8A59316416A5691B07196C7F820533B1EFABDB0C767D8D550967F3A7807A91" storage="category-vitest" />
+    <UnitTest id="E32C9E5DA7F2743F7870C5D7CFE846C7FE6C9866779E6C62CFF48F06596DFF05" storage="category-vitest" />
+    <UnitTest id="27DF070EFF0226CFEEE32F4D0DD963BAE7794CECAC840B671ACA2E2F4EC41150" storage="category-vitest" />
+    <UnitTest id="EADD1D1391275218582CDC3DECBAAFC6D67AEDA81E7BCD574EB7745DA5D7ED1C" storage="category-vitest" />
+    <UnitTest id="87337CF45B8E076C7299FCC75E3E07AD10B98D90D4D19E3BA4E3BE8F69133BD6" storage="category-vitest" />
+    <UnitTest id="99AD40CCD36746A096EAECEF65D331A7485A1A4B85A8025F2C5B58DD35A747AF" storage="category-vitest" />
+    <UnitTest id="E2157274998A735B5A0E9B3B5A0F088E4EFDDB65A0FFA6B431FECB4035CCD0D7" storage="category-vitest" />
+    <UnitTest id="B57093D9436460AD6B6E77FE35094779FB7593A157EE68AABA66606F5A6729BA" storage="category-vitest" />
+    <UnitTest id="342C111C184E57F80B37CB33DC1CE303898598D22134A2A61FEB30A84F34C1E4" storage="category-vitest" />
+  </TestDefinitions>
+  <ResultSummary>
+    <Counters total="18" executed="18" passed="18" failed="0" />
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="c883e933-2630-47d2-ae42-a6f9ffbbba02" name="Eja@[HOST] 2026-10-03 00:46:47" runUser="[HOST]\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T00:46:47.3289036+10:00" queuing="2026-10-03T00:46:47.3289041+10:00" start="2026-10-03T00:46:43.9992177+10:00" finish="2026-10-03T00:46:47.3375246+10:00" />
+  <TestSettings name="default" id="217a0934-8dcb-4440-ab80-d445c24ccfa9">
+    <Deployment runDeploymentRoot="Eja_[HOST]_2026-10-03_00_46_47" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="883388d3-7b63-4d91-9864-f80d1613278a" testId="a2a835a8-f8c9-6658-aa14-1ed95985dba2" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave(uncertainRetention: True)" computerName="[HOST]" duration="00:00:00.3130382" startTime="2026-10-03T00:46:47.2228726+10:00" endTime="2026-10-03T00:46:47.2228728+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="883388d3-7b63-4d91-9864-f80d1613278a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.True() Failure&#xD;
+Expected: True&#xD;
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave(Boolean uncertainRetention) in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveOutcomeTests.cs:line 292&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9b5301ac-6579-4c20-ba61-b7bcb47473b0" testId="596f16d9-63a7-b203-e78b-feaeac2d5d12" testName="BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave(uncertainRetention: False)" computerName="[HOST]" duration="00:00:00.6860957" startTime="2026-10-03T00:46:46.9122987+10:00" endTime="2026-10-03T00:46:46.9123303+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9b5301ac-6579-4c20-ba61-b7bcb47473b0">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.True() Failure&#xD;
+Expected: True&#xD;
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave(Boolean uncertainRetention) in [WORKTREE]\BookOfEternityClient.Tests\PortableSaveOutcomeTests.cs:line 292&#xD;
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave(uncertainRetention: True)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="a2a835a8-f8c9-6658-aa14-1ed95985dba2">
+      <Execution id="883388d3-7b63-4d91-9864-f80d1613278a" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="RetentionLeaseReleaseFailureBlocksCommittedAutosave" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave(uncertainRetention: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="596f16d9-63a7-b203-e78b-feaeac2d5d12">
+      <Execution id="9b5301ac-6579-4c20-ba61-b7bcb47473b0" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSaveOutcomeTests" name="RetentionLeaseReleaseFailureBlocksCommittedAutosave" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="a2a835a8-f8c9-6658-aa14-1ed95985dba2" executionId="883388d3-7b63-4d91-9864-f80d1613278a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="596f16d9-63a7-b203-e78b-feaeac2d5d12" executionId="9b5301ac-6579-4c20-ba61-b7bcb47473b0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="2" executed="2" passed="0" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.22]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.60]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.61]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.36]       Assert.True() Failure&#xD;
+[xUnit.net 00:00:02.36]       Expected: True&#xD;
+[xUnit.net 00:00:02.36]       Actual:   False&#xD;
+[xUnit.net 00:00:02.36]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.36]         [WORKTREE]\BookOfEternityClient.Tests\PortableSaveOutcomeTests.cs(292,0): at BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave(Boolean uncertainRetention)&#xD;
+[xUnit.net 00:00:02.36]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.67]       Assert.True() Failure&#xD;
+[xUnit.net 00:00:02.67]       Expected: True&#xD;
+[xUnit.net 00:00:02.67]       Actual:   False&#xD;
+[xUnit.net 00:00:02.67]       Stack Trace:&#xD;
+[xUnit.net 00:00:02.67]         [WORKTREE]\BookOfEternityClient.Tests\PortableSaveOutcomeTests.cs(292,0): at BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave(Boolean uncertainRetention)&#xD;
+[xUnit.net 00:00:02.67]         --- End of stack trace from previous location ---&#xD;
+[xUnit.net 00:00:02.68]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-03T00:46:46.9101216+10:00">
+        <Text>[xUnit.net 00:00:02.36]     BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave(uncertainRetention: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="[HOST]" outcome="Error" timestamp="2026-10-03T00:46:47.2227240+10:00">
+        <Text>[xUnit.net 00:00:02.67]     BookOfEternityClient.Tests.PortableSaveOutcomeTests.RetentionLeaseReleaseFailureBlocksCommittedAutosave(uncertainRetention: True) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

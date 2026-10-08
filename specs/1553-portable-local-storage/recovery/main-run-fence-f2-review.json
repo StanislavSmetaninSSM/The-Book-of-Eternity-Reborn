@@ -1,0 +1,39 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-RUN-FENCE-F2",
+  "Reviewer": "/root/f2_review",
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "SourceReviewed": "6202426f0db8197d12b72f2ce111dd4a0c8f490f",
+  "SourceVerdict": "PASS; no remaining concrete source blocker",
+  "FinalEvidenceVerdict": "Bounded F2 evidence/metadata PASS; no concrete blocker",
+  "FindingsClosed": [
+    "Frozen explicit outcome before finalization",
+    "Established result retained on finalization/reply failure",
+    "Same helper close and actual transport disposal before timeout/stall waits",
+    "Escaped borrower cannot remint; lease retain/freeze atomic",
+    "Canonical status admission, actual publisher drain/revoke outside sync",
+    "Full expected stop identity validated after lifecycle semaphore; no protected PID fallback",
+    "Outer main admission before prepare/prebinding; real ancillary/control effects",
+    "Same-response complete browser bundle under original quiescent guard"
+  ],
+  "WindowsFailureClassification": "Four unchanged legacy browser rollback preparation checks require Windows publication backend, fail before callback on Linux. Source split supported; actual18/14/4 retained, four unqualified.",
+  "ReviewerRuntimeEditsTestsBuildsProbes": 0,
+  "WriterEvidenceAudit": "Separately attributed in qualification; not claimed as reviewer performed",
+  "PublicationRestoration": "Final metadata carrier ready; ordinary final push/remote byte verification/fresh GitHub-only restore pending writer closure.",
+  "FinalEvidenceReviewed": "5037f1a993306c4800f1b97e11c0ff244b220bd6",
+  "IndependentChecks": {
+    "PrimaryCasesReconciled": 129,
+    "Native": 24,
+    "Frontend": 57,
+    "OtherManagedInertPowerShell": 48,
+    "ActualHistoricalCases": 241,
+    "ManifestHashes": 45,
+    "ArtifactHashes": 1172,
+    "DecompressedHashes": 251,
+    "CurrentSourceReferences": 80,
+    "LatestGuardianHashesAndResults": 24,
+    "HistoricalSourceInputSweepRepeated": false
+  },
+  "MetadataAmendment": "QualificationEligible renamed ExactCommittedSourceSnapshot; accepted subset/counts unchanged. Five unchanged worker source identities added with writer attribution."
+}

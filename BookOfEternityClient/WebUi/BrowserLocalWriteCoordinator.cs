@@ -1,9 +1,10 @@
+using BookOfEternityClient.Services.GmRuntime;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.WebUi;
 
-public sealed class BrowserLocalWriteCoordinator
+public sealed partial class BrowserLocalWriteCoordinator
 {
     private static readonly TimeSpan LockLease = TimeSpan.FromSeconds(120);
 
@@ -72,55 +73,70 @@ public sealed class BrowserLocalWriteCoordinator
             writeOperation);
     }
 
-    internal async Task<BrowserLocalWriteResult> ExecuteSessionReplacementAsync(
+    /// <summary>Retains load decisions and revalidates the acquired UI token on the loader's actual replacement lease.</summary>
+    internal async Task<LoadReplacementResult> ExecuteSessionReplacementAsync(
         BrowserLocalWriteRequest request,
-        Func<Task> replacementOperation)
+        Func<Func<FileSystemManager.CanonicalWriteLease, Task>, Task<LoadReplacementResult>> replacementOperation)
     {
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(replacementOperation);
-
-        LocalUiSessionLockLease replacementGuard;
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
-        {
-            var generation = _fs.GetOrCreateSessionGeneration(writeLease);
-            var acquisition = await SessionOperationContext.RunBoundAsync(
-                _fs,
-                generation,
-                writeLease,
-                async () =>
-                {
-                    var pending = BrowserPendingTurnInspector.Build(
-                        _fs,
-                        writeLease);
-                    if (pending.HasActiveGmTurn)
-                    {
-                        return LocalUiSessionLockResult.BlockedBy(
-                            snapshot: null,
-                            "Browser-write заблокирован: активный GM-turn или rollback/snapshot artifact должен быть завершён до локальной записи.");
-                    }
-
-                    return await _lockService.AcquireOrRefreshAsync(
-                        writeLease,
-                        BuildOwner(request),
-                        request.OperationLabel);
-                });
-            if (!acquisition.Acquired || acquisition.Lease == null)
-                return BrowserLocalWriteResult.Blocked(acquisition.BlockerMessage);
-
-            replacementGuard = acquisition.Lease;
-        }
-
+        using var mainAdmission=_fs.BeginMainAdmission();
+        LocalUiSessionLockLease? replacementGuard = null;
+        LoadReplacementResult? retained = null;
+        var dispatched = false;
         try
         {
-            await replacementOperation();
-            return BrowserLocalWriteResult.Completed("Browser-write завершён.");
+            await mainAdmission.AcquireAsync(quiescentOnly: true);
+            await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            {
+                if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
+                    return new(LoadReplacementDisposition.NotLoaded, null, null, false,
+                        new InvalidOperationException("Load admission refused an active turn."));
+                if (_fs.ReadExistingSessionGeneration(writeLease) == null)
+                    return new(LoadReplacementDisposition.NotLoaded, null, null, false,
+                        new InvalidOperationException("Load admission requires existing browser session authority."));
+                var acquisition = await _lockService.AcquireOrRefreshAsync(writeLease,
+                    BuildOwner(request), request.OperationLabel);
+                if (!acquisition.Acquired || acquisition.Lease == null)
+                    return new(LoadReplacementDisposition.NotLoaded, null, null, false,
+                        new InvalidOperationException("Load admission refused another UI owner."));
+                replacementGuard = acquisition.Lease;
+            }
+
+            dispatched = true;
+            retained = await replacementOperation(async writeLease =>
+            {
+                if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
+                    throw new InvalidOperationException("Load admission refused a late active turn.");
+                if (!string.Equals(_fs.ReadExistingSessionGeneration(writeLease), replacementGuard.SessionGeneration, StringComparison.Ordinal))
+                    throw new InvalidOperationException("Load admission no longer owns the original generation.");
+                var refreshed = await _lockService.RefreshAsync(writeLease, replacementGuard, request.OperationLabel);
+                if (!refreshed.Acquired)
+                    throw new InvalidOperationException("Load admission no longer owns the exact UI lease.");
+            });
         }
-        catch (Exception ex)
+        catch (Exception failure)
         {
-            await TryReleaseAsync(replacementGuard);
-            return BrowserLocalWriteResult.Failed(
-                $"Browser-write отменён до завершения замены сессии: {ex.Message}");
+            retained = retained?.WithFollowUp(failure, blocksContinuation: true)
+                ?? new(dispatched || failure is CoordinatedStatePublicationUncertainException
+                    ? LoadReplacementDisposition.Uncertain : LoadReplacementDisposition.NotLoaded,
+                    null, null, true, failure, true);
         }
+
+        // A commit replaces the old lock; uncertainty must not trigger recovery through a release.
+        // Refusal/rollback may release only the exact old token, never a newer same-owner lock.
+        if (replacementGuard != null && !retained.ContinuationBlocked &&
+            retained.Disposition is LoadReplacementDisposition.NotLoaded or LoadReplacementDisposition.RolledBack)
+        {
+            try
+            {
+                await using var releaseLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                if (string.Equals(_fs.ReadExistingSessionGeneration(releaseLease), replacementGuard.SessionGeneration, StringComparison.Ordinal))
+                    await _lockService.ReleaseAsync(releaseLease, replacementGuard);
+            }
+            catch (Exception failure) { retained = retained.WithFollowUp(failure, blocksContinuation: true); }
+        }
+        return retained;
     }
 
     internal async Task<BrowserLocalWriteResult> ExecuteAtomicAsync(
@@ -138,14 +154,14 @@ public sealed class BrowserLocalWriteCoordinator
         try
         {
             return await RunBoundTransactionAsync(
-                writeLease => ExecuteAtomicCoreAsync(
+                async writeLease => CaptureBrowserResult(await ExecuteAtomicCoreAsync(
                     writeLease,
                     request,
                     rollbackPaths,
                     writeOperation,
                     prepareAfterRollback,
                     rollbackCleanupDirectories,
-                    rollbackExternalFileIds));
+                    rollbackExternalFileIds)));
         }
         catch (SessionReplacedException)
         {
@@ -170,14 +186,14 @@ public sealed class BrowserLocalWriteCoordinator
 
         try
         {
-            return await ExecuteAtomicCoreAsync(
+            return CaptureBrowserResult(await ExecuteAtomicCoreAsync(
                 writeLease,
                 request,
                 rollbackPaths,
                 writeOperation,
                 prepareAfterRollback,
                 rollbackCleanupDirectories,
-                rollbackExternalFileIds);
+                rollbackExternalFileIds));
         }
         catch (SessionReplacedException)
         {
@@ -186,44 +202,59 @@ public sealed class BrowserLocalWriteCoordinator
         }
     }
 
-    internal async Task<T> RunBoundAsync<T>(Func<Task<T>> operation)
+    internal Task<T> RunBoundAsync<T>(Func<Task<T>> operation)
     {
         ArgumentNullException.ThrowIfNull(operation);
-
-        string generation;
-        if (!SessionOperationContext.TryGetExpectedGeneration(_fs.BasePath, out generation))
-        {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            generation = _fs.GetOrCreateSessionGeneration(writeLease);
-        }
-
-        return await SessionOperationContext.RunBoundAsync(_fs, generation, operation);
+        return SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, operation);
     }
 
-    internal async Task<T> RunBoundTransactionAsync<T>(
-        Func<FileSystemManager.CanonicalWriteLease, Task<T>> operation)
+    private sealed class BrowserDecisionCapture
+    {
+        internal MainOperationOutcome Outcome = MainOperationOutcome.Completed;
+        internal BrowserLocalWriteResult? Result;
+    }
+    private readonly AsyncLocal<BrowserDecisionCapture?> _browserDecision = new();
+    private BrowserLocalWriteResult CaptureBrowserResult(BrowserLocalWriteResult result)
+    {
+        if (_browserDecision.Value is { } captured)
+        {
+            captured.Result = result;
+            captured.Outcome = result.Disposition switch
+            {
+                BrowserPreparedWriteDisposition.Committed => MainOperationOutcome.Committed,
+                BrowserPreparedWriteDisposition.RolledBack => MainOperationOutcome.RolledBack,
+                BrowserPreparedWriteDisposition.Uncertain => MainOperationOutcome.Uncertain,
+                _ => MainOperationOutcome.Failed
+            };
+        }
+        return result;
+    }
+
+    internal async Task<T> RunBoundTransactionAsync<T>(Func<FileSystemManager.CanonicalWriteLease, Task<T>> operation)
     {
         ArgumentNullException.ThrowIfNull(operation);
-
-        if (!SessionOperationContext.TryGetExpectedGeneration(_fs.BasePath, out var generation))
+        var previous = _browserDecision.Value;
+        var captured = previous ?? new BrowserDecisionCapture();
+        _browserDecision.Value = captured;
+        try
         {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            generation = _fs.GetOrCreateSessionGeneration(writeLease);
-            return await SessionOperationContext.RunBoundAsync(
-                _fs,
-                generation,
-                writeLease,
-                () => operation(writeLease));
-        }
-
-        return await SessionOperationContext.RunBoundAsync(
-            _fs,
-            generation,
-            async () =>
+            return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
             {
                 await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-                return await operation(writeLease);
-            });
+                var generation = _fs.ReadExistingSessionGeneration(writeLease) ?? throw new InvalidDataException("Original transaction generation is missing.");
+                return await SessionOperationContext.RunBoundAsync(_fs, generation, writeLease,
+                    () => operation(writeLease), () => captured.Outcome);
+            }, () => captured.Outcome);
+        }
+        catch (MainOperationContinuationException<T> failure) when (failure.EstablishedResult is BrowserLocalWriteResult)
+        {
+            return (T)(object)((BrowserLocalWriteResult)(object)failure.EstablishedResult!).WithFollowUp();
+        }
+        catch (SessionReplacedException) when (captured.Result != null && typeof(T) == typeof(BrowserLocalWriteResult))
+        {
+            return (T)(object)captured.Result.WithFollowUp();
+        }
+        finally { _browserDecision.Value = previous; }
     }
 
     internal async Task RunBoundTransactionAsync(
@@ -248,35 +279,7 @@ public sealed class BrowserLocalWriteCoordinator
         IReadOnlyCollection<string>? rollbackCleanupDirectories,
         IReadOnlyCollection<string>? rollbackExternalFileIds)
     {
-        BrowserPendingTurnStatus pending;
-        try
-        {
-            pending = BrowserPendingTurnInspector.Build(
-                _fs,
-                writeLease);
-        }
-        catch (InvalidDataException ex)
-        {
-            return BrowserLocalWriteResult.Blocked(
-                $"Browser-write заблокирован: повреждена служебная разметка активного хода ({ex.Message}).");
-        }
-
-        if (pending.HasActiveGmTurn)
-        {
-            return BrowserLocalWriteResult.Blocked(
-                "Browser-write заблокирован: активный GM-turn или rollback/snapshot artifact должен быть завершён до локальной записи.");
-        }
-
-        var owner = BuildOwner(request);
-        var lockResult = request.ExistingLease == null
-            ? await _lockService.AcquireOrRefreshAsync(
-                writeLease,
-                owner,
-                request.OperationLabel)
-            : await _lockService.RefreshAsync(
-                writeLease,
-                request.ExistingLease,
-                request.OperationLabel);
+        var lockResult = await AcquireLocalWriteGuardAsync(writeLease, request);
         if (!lockResult.Acquired || lockResult.Lease == null)
             return BrowserLocalWriteResult.Blocked(lockResult.BlockerMessage);
         var lockLease = lockResult.Lease;
@@ -292,7 +295,7 @@ public sealed class BrowserLocalWriteCoordinator
                 rollbackCleanupDirectories,
                 rollbackExternalFileIds);
             writeLease.ExternalPublicationContext =
-                backups.DarenTransaction;
+                (object?)backups.LocalTransaction ?? backups.DarenTransaction;
             await writeOperation(writeLease);
             await ExplorerLocalTurnRollbackArtifacts.MarkBrowserWriteTransactionCommittedAsync(
                 _fs,
@@ -304,13 +307,19 @@ public sealed class BrowserLocalWriteCoordinator
             writeLease.ExternalPublicationContext = null;
             writeLease.MutationIntentRecorder = null;
             backups?.DarenTransaction?.Dispose();
+            backups?.LocalTransaction?.Access.Dispose();
             await TryReleaseAsync(writeLease, lockLease);
+            if (backups != null)
+                return CaptureBrowserResult(BrowserLocalWriteResult.Failed(
+                    "Полномочия исходной транзакции потеряны; результат изменений не подтверждён. Служебные данные сохранены, автоматически повторять операцию нельзя.",
+                    BrowserPreparedWriteDisposition.Uncertain));
             throw;
         }
         catch (Exception ex)
         {
             writeLease.MutationIntentRecorder = null;
             Exception? rollbackFailure = null;
+            var rollbackConfirmed = false;
             try
             {
                 if (backups != null)
@@ -318,6 +327,7 @@ public sealed class BrowserLocalWriteCoordinator
                     try
                     {
                         await RestoreRollbackAsync(writeLease, backups);
+                        rollbackConfirmed = true;
                         if (!ExplorerLocalTurnRollbackArtifacts.TryDeleteBrowserWriteTransaction(
                                 _fs,
                                 writeLease,
@@ -353,17 +363,21 @@ public sealed class BrowserLocalWriteCoordinator
                 writeLease.ExternalPublicationContext = null;
                 writeLease.MutationIntentRecorder = null;
                 backups?.DarenTransaction?.Dispose();
+            backups?.LocalTransaction?.Access.Dispose();
                 await TryReleaseAsync(writeLease, lockLease);
             }
 
             return backups == null
                 ? BrowserLocalWriteResult.Failed(
                     $"Browser-write отменён до применения изменений: {ex.Message}")
-                : rollbackFailure == null
+                : rollbackConfirmed
                 ? BrowserLocalWriteResult.Failed(
-                    $"Browser-write отменён, rollback восстановлен: {ex.Message}")
+                    $"Browser-write отменён, rollback восстановлен: {ex.Message}", BrowserPreparedWriteDisposition.RolledBack)
+                    with { NeedsFollowUp = rollbackFailure != null,
+                        Message = rollbackFailure == null ? $"Browser-write отменён, rollback восстановлен: {ex.Message}"
+                            : $"Browser-write отменён, файлы восстановлены; служебная очистка требует проверки: {ex.Message}" }
                 : BrowserLocalWriteResult.Failed(
-                    $"Browser-write отменён; rollback завершён не полностью: {ex.Message}; {rollbackFailure.Message}");
+                    $"Browser-write отменён; rollback завершён не полностью: {ex.Message}; {rollbackFailure.Message}", BrowserPreparedWriteDisposition.Uncertain);
         }
 
         var rollbackEvidenceCleaned = backups == null ||
@@ -377,11 +391,12 @@ public sealed class BrowserLocalWriteCoordinator
         writeLease.ExternalPublicationContext = null;
         writeLease.MutationIntentRecorder = null;
         backups?.DarenTransaction?.Dispose();
+        backups?.LocalTransaction?.Access.Dispose();
         var released = await TryReleaseAsync(writeLease, lockLease);
         return BrowserLocalWriteResult.Completed(
             released && rollbackEvidenceCleaned
                 ? "Browser-write завершён."
-                : "Browser-write завершён; служебная очистка будет повторена после устранения блокирующего файлового доступа.");
+                : "Browser-write завершён; служебная очистка будет повторена после устранения блокирующего файлового доступа.") with { NeedsFollowUp = !released || !rollbackEvidenceCleaned };
     }
 
     private async Task<bool> TryReleaseAsync(
@@ -443,13 +458,14 @@ public sealed class BrowserLocalWriteCoordinator
 
     private static LocalUiSessionLockOwner BuildOwner(BrowserLocalWriteRequest request)
     {
+        var kind = string.IsNullOrWhiteSpace(request.OwnerKind) ? "browser" : request.OwnerKind.Trim();
         var ownerId = string.IsNullOrWhiteSpace(request.OwnerId)
-            ? $"browser:{Environment.MachineName}:{Environment.ProcessId}"
+            ? $"{kind}:{Environment.MachineName}:{Environment.ProcessId}"
             : request.OwnerId.Trim();
         var label = string.IsNullOrWhiteSpace(request.OwnerLabel)
             ? $"Local Browser UI PID {Environment.ProcessId}"
             : request.OwnerLabel.Trim();
-        return new LocalUiSessionLockOwner(ownerId, "browser", label, LockLease);
+        return new LocalUiSessionLockOwner(ownerId, kind, label, LockLease);
     }
 
 }
@@ -458,7 +474,8 @@ public sealed record BrowserLocalWriteRequest(
     string? OwnerId,
     string? OwnerLabel,
     string OperationLabel,
-    LocalUiSessionLockLease? ExistingLease = null);
+    LocalUiSessionLockLease? ExistingLease = null,
+    string OwnerKind = "browser");
 
 public sealed record BrowserLocalWriteResult(
     bool Success,
@@ -469,7 +486,21 @@ public sealed record BrowserLocalWriteResult(
 
     public static BrowserLocalWriteResult Blocked(string message) => new(false, true, message);
 
-    public static BrowserLocalWriteResult Failed(string message) => new(false, false, message);
+    public BrowserPreparedWriteDisposition Disposition { get; init; } = Success
+        ? BrowserPreparedWriteDisposition.Committed : BrowserPreparedWriteDisposition.Blocked;
+    public bool NeedsFollowUp { get; init; }
+    public bool ContinuationBlocked { get; init; }
+
+    public static BrowserLocalWriteResult Failed(string message,
+        BrowserPreparedWriteDisposition disposition = BrowserPreparedWriteDisposition.Blocked) => new(false, false, message)
+        { Disposition = disposition, NeedsFollowUp = disposition == BrowserPreparedWriteDisposition.Uncertain,
+          ContinuationBlocked = disposition == BrowserPreparedWriteDisposition.Uncertain };
+
+    internal BrowserLocalWriteResult WithFollowUp() => this with
+    {
+        NeedsFollowUp = true, ContinuationBlocked = true,
+        Message = Message + " Продолжение не подтверждено; требуется проверка текущего состояния. Не повторяйте неизвестную операцию."
+    };
 }
 
 public sealed record BrowserLocalWriteStatus(

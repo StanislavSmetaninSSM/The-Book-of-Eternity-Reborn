@@ -1,0 +1,11 @@
+{
+  "kind": "Minimized derivative of read-only browser loopback diagnostic",
+  "minimization": "Retains observation interval, synthetic target host without port, rendered error, clearly reported prior server result, unresolved boundaries and public documentation links. Omits full policy dump, internal allowed port, extension inventory/permissions, native surface identifiers, environment/tool inventory and support-contact instructions.",
+  "files": [
+    {
+      "path": "diagnostic.json",
+      "originalSha256": "1a189fcc3662172d8733663a0ab0c21c0580a7ec1135600865b3a91bad5777cc",
+      "derivedSha256": "3e30b553e1cf474bca0797afe67b759ab227cc1fd7131ef56e6639a45ada9f51"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 using BookOfEternityClient.AgentConsole;
 using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Services;
 using BookOfEternityClient.Models.GameState;
 using Spectre.Console;
 
@@ -89,10 +90,21 @@ public partial class GameEngine
             actionInputValues: actionInputValues);
     }
 
+    /// <summary>
+    /// Publishes a private player-facing diagnostic while retaining uncertain or committed storage outcomes.
+    /// </summary>
+    /// <param name="ex">
+    /// The failure that stopped the current operation; technical details remain outside the player-facing snapshot.
+    /// </param>
     private void RecordGameLoopErrorObservation(Exception ex)
     {
-        _ = ex;
-        var playerText = $"{PlayerSafeTurnErrorText}\n{_loc.T("press_any_key")}";
+        var outcomeText = ex switch
+        {
+            CoordinatedStatePublicationUncertainException => CoordinatedStatePublicationUncertainException.PlayerMessage,
+            CommittedSaveContinuationException => CommittedSaveContinuationException.PlayerMessage,
+            _ => PlayerSafeTurnErrorText
+        };
+        var playerText = $"{outcomeText}\n{_loc.T("press_any_key")}";
         if (_inputSource is ConsoleE2EScriptedInputSource scriptedInput)
         {
             scriptedInput.WriteObservation(

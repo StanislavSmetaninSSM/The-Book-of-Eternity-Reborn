@@ -1,0 +1,101 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "e73f1d60c4f9be6d82d43bfc47d127b937eac92c",
+  "SourceResultDirectory": "20261003-184535-301-2-dc7b33f3a9e740f7bb6f1cb67346e05f-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 2939688,
+      "OriginalSha256": "66c1e5ddb7f9b37d8398051f2333a3fc629208aacb086c21c3f0de3fa6a3e448",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 13549,
+      "OriginalSha256": "69dbc4b7193e97f1d6147269c2cb818c52719c56c2205fcafc7f30eea150e00c",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 13549,
+      "StoredSha256": "69dbc4b7193e97f1d6147269c2cb818c52719c56c2205fcafc7f30eea150e00c"
+    },
+    {
+      "Path": "portable-load-alias-admission-integration-001.trx",
+      "OriginalBytes": 66604,
+      "OriginalSha256": "f4c13740cbfd431011515425e03fb4e26ddc95fc716fccbe942d02fb7674d472",
+      "Embedded": true,
+      "StoredPath": "portable-load-alias-admission-integration-001.trx",
+      "StoredBytes": 63073,
+      "StoredSha256": "613fa4000db4d5fc699eb284d051942d63874f4dd0bf95c3af9053743ee0ed75"
+    },
+    {
+      "Path": "portable-load-entry-integration-002.trx",
+      "OriginalBytes": 31621,
+      "OriginalSha256": "91626bde58499feb759f204b73e366b15c359cbe0a638f91f296a8ce780d388b",
+      "Embedded": true,
+      "StoredPath": "portable-load-entry-integration-002.trx",
+      "StoredBytes": 29602,
+      "StoredSha256": "3fedfd3a2efe1e26472fcbd9f91e958c444b64387041567b6221a4323c98e858"
+    },
+    {
+      "Path": "portable-load-lease-consumers-integration-003.trx",
+      "OriginalBytes": 6119,
+      "OriginalSha256": "f5cfbc9f1f8c1079b8e10c90490c5ef33b94f35ea1fc7e31110e060c720b060e",
+      "Embedded": true,
+      "StoredPath": "portable-load-lease-consumers-integration-003.trx",
+      "StoredBytes": 5900,
+      "StoredSha256": "8283a0f51b94a2da2e272b35f15c54ae395f86175965aedcc69553945603de69"
+    },
+    {
+      "Path": "portable-load-lease-consumers-unit-004.trx",
+      "OriginalBytes": 10817,
+      "OriginalSha256": "dec445f2dcbd9a7802059833c176653b902a910af8824bdbe0ef499073a4737f",
+      "Embedded": true,
+      "StoredPath": "portable-load-lease-consumers-unit-004.trx",
+      "StoredBytes": 10382,
+      "StoredSha256": "53033d65442ea736644ca6d465fd3a594a987769330bc7ee0880896d0f203422"
+    },
+    {
+      "Path": "portable-load-original-admission-integration-005.trx",
+      "OriginalBytes": 22362,
+      "OriginalSha256": "728fbb21252a308208d71b1baf265d8c618cfe147239e76db6655bb2773e3b31",
+      "Embedded": true,
+      "StoredPath": "portable-load-original-admission-integration-005.trx",
+      "StoredBytes": 20631,
+      "StoredSha256": "8086a8b9f88834a1e37fa10152b41fd90e0e7d4017dccefc0db04f7b3ab55747"
+    },
+    {
+      "Path": "portable-load-outcomes-integration-006.trx",
+      "OriginalBytes": 26909,
+      "OriginalSha256": "045e214237d255b4c03f6d0f5049d7228cee31babcefc4fc6fa796b4924d95a9",
+      "Embedded": true,
+      "StoredPath": "portable-load-outcomes-integration-006.trx",
+      "StoredBytes": 24638,
+      "StoredSha256": "59be4b8cac094a893060ad08164e4ecebac005cd80697c0b64c87d0451681f96"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 3992,
+      "OriginalSha256": "163dc0b0a8656fd81df0d9079da8890636570626b478cdeb5d4d262b00049ac7",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 3992,
+      "StoredSha256": "163dc0b0a8656fd81df0d9079da8890636570626b478cdeb5d4d262b00049ac7"
+    }
+  ],
+  "MeasuredChildren": 0
+}

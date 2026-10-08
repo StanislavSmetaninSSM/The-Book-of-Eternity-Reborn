@@ -1,0 +1,9 @@
+{
+  "Command": "npm run build --prefix BookOfEternityClient.WebFrontend",
+  "SourceCommit": "cff44debfd7c0e091c6bbc7ec608c3fae2a8a46c",
+  "ExitCode": 0,
+  "TypecheckPassed": true,
+  "StoredBytes": 9476,
+  "StoredSha256": "78c1390a69209c500d193de60ae99c9904da0c89f8b209d36b7bd9b6e4994237",
+  "Kind": "Separate production build after discovery; no tests executed"
+}

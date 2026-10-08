@@ -1,0 +1,13 @@
+{
+  "exclude": [],
+  "extends": "/workspace/native-1553/BookOfEternityClient.WebFrontend/tsconfig.player-facing-tests.json",
+  "compilerOptions": {
+    "outDir": "/workspace/native-1553/TestResults/test-categories/20261006-231204-940-530070-f3fa967ae22242719714134e5741cf9f-categories/frontend-shell-types-frontend-001-compiled",
+    "rootDir": "/workspace/native-1553/BookOfEternityClient.WebFrontend",
+    "noEmit": true
+  },
+  "include": [
+    "/workspace/native-1553/BookOfEternityClient.WebFrontend/test/appRouteExtraction.test.ts",
+    "/workspace/native-1553/BookOfEternityClient.WebFrontend/test/shellContextComponents.test.ts"
+  ]
+}

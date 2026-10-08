@@ -11,6 +11,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+. (Join-Path $PSScriptRoot 'gm_main_operation.ps1')
 $projectRoot = Split-Path $PSScriptRoot -Parent
 $daemonPath = Join-Path $projectRoot "game_master_daemon.ps1"
 $launchScriptGenerator = Join-Path $PSScriptRoot "Generate_CLI_Launch_Script.ps1"
@@ -20,8 +21,8 @@ if ([string]::IsNullOrWhiteSpace($GameSessionPath)) {
 }
 
 $controlDir = Join-Path $GameSessionPath "game_state\control"
-if (!(Test-Path $controlDir)) {
-    New-Item -ItemType Directory -Path $controlDir -Force | Out-Null
+Invoke-GmParticipatingConsumer $GameSessionPath {
+    Ensure-GmCanonicalDirectory $GameSessionPath $controlDir
 }
 $generatedLaunchScriptPath = Join-Path $controlDir "CLI_Launch_Script.generated.md"
 

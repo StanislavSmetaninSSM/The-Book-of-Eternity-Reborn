@@ -1,0 +1,92 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T043-RELAY-GM-BOUNDED",
+  "Verdict": "PASS for controlled test-relay live GM turn and original lifecycle",
+  "Branch": "codex/1553-load-filesystem",
+  "EvidenceCheckpoint": "259fc8e58d25833ce54811505fb2d25b674a1459",
+  "EvidenceCheckpointRemoteSHAAndByteReadback": {
+    "Verified": true,
+    "ChangedFiles": 42
+  },
+  "IndependentFinalReview": {
+    "Verdict": "PASS",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "AgentTask": "/root/relay_final_evidence_review",
+    "ReviewedBase": "1aad7e6faa87fcd5ee855acf9ff88ac1ee152288",
+    "ReviewedCheckpoint": "259fc8e58d25833ce54811505fb2d25b674a1459",
+    "ActionableFindings": 0,
+    "RequiredTestReruns": false,
+    "ArtifactsVerified": 36,
+    "CurrentSourcePinsVerified": 7,
+    "ShippedFilesVerified": 678,
+    "ShippedBytesVerified": 99051904,
+    "Execution": "Read-only; no edits, tests, CLI/provider calls",
+    "Scope": "Final source-delta, r3 application/original lifecycle evidence and handoff metadata; unchanged source has prior independent source reviews"
+  },
+  "RuntimeSourceCommit": "e42b7050cdf0049603b3aa3bc4ffd8e26dda9673",
+  "DriverSourceCommit": "1aad7e6faa87fcd5ee855acf9ff88ac1ee152288",
+  "LiveR3": {
+    "OrdinaryNewGame": true,
+    "Model": "gpt-6.1-sol",
+    "GameTestProfile": "codex-agent/gpt-6.1-sol-test-relay",
+    "GenuineActionsSent": 1,
+    "AcceptedAppliedGameTurns": 1,
+    "PromptBytes": 40139,
+    "ResponseBytes": 16257,
+    "PromptSHA256": "8b5db25063cd4eb7abe4e97f451ab6424a3b624f41aeb2d6a63d1cc72404cf12",
+    "ResponseSHA256": "00d1e5f256755b864d2b3e8ea15860252d7eaf3bdedb429cb092df240aa1e7d1",
+    "StoryMatchesActualActionAndModelNarrative": true,
+    "CanonicalChronicleGuardianJournalAndProgressionApplied": true,
+    "ChatLogTurns": 0,
+    "RequestReadyPendingAbsent": true,
+    "OriginalInputQualified": true,
+    "RelayClosedChildExitedAndIoDrained": true,
+    "OriginalShutdownAttempts": 1,
+    "SameIdentityDurableStoppedAndACK": true,
+    "AllPeersExit0EofAndTermiosRestored": true,
+    "GuardianECHILD": true,
+    "GuardianEmergencySignals": 0,
+    "ElapsedSeconds": 442.006
+  },
+  "HistoricalOutcomes": {
+    "r1": "Accepted0; logical Uncertain retained after early artifact stall; guardian physical cleanup separate",
+    "r2": "Actually applied1; original BOM-failed driver counter0 and client cleanup unqualified retained",
+    "ConsecutiveCampaignTurnsClaimed": false
+  },
+  "NarrowChecks": {
+    "Repair": {
+      "Executed": 3,
+      "Passed": 3,
+      "Category": "gm-relay-repair"
+    },
+    "ArtifactStall": {
+      "Executed": 7,
+      "Passed": 7,
+      "Category": "gm-daemon-artifact-stall"
+    },
+    "DriverBomAcceptance": {
+      "Executed": 6,
+      "Passed": 6,
+      "Category": "gm-relay-driver-acceptance"
+    },
+    "FinalCollectionTestsExecuted": 0,
+    "CatalogCategories": 424,
+    "CatalogInventoryIdentities": 11162,
+    "CatalogExecuted": 0,
+    "Old21TransportIsRepairOrGameplayProof": false
+  },
+  "Evidence": "evidence/relay-gm/live-r3/manifest.json",
+  "FinalCarrierRole": "Metadata-only record of reviewed checkpoint; no runtime/test changes",
+  "RequiredBeforeDelivery": [
+    "Normal non-force push; exact final remote SHA and changed-file byte readback",
+    "Fresh final-tip direct GitHub-only clone without local objects/references/alternates; clean tree, every tracked file byte readback and git fsck"
+  ],
+  "UnknownProvenanceBase": "Stable understood original172feb runtime accepted after independent source reconciliation; no actor attributed from git author",
+  "DeferredOrUnqualified": [
+    "Installed Codex/OpenCode CLI compatibility (Codex read-only state home; OpenCode CONNECT403, no retries/bypass)",
+    "Primary systemd-user source design preserved/deferred at63e99009; implementation and positive available-manager qualification open",
+    "Native Windows, production workers, arbitrary TUI, live browser, real user saves, cold/reboot guarantees, broad rollout"
+  ],
+  "NextAction": "Stop at verified bounded handoff after final publication/restoration; no replay or new game"
+}

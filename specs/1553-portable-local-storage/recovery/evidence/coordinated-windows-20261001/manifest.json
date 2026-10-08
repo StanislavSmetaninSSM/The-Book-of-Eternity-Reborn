@@ -1,0 +1,414 @@
+{
+  "kind": "T031-A exact sixteen-case native Windows coordinated-publication verification",
+  "sourceSha": "5bfa0a1b017f4830e202be7fd8cb25d5c180082a",
+  "sourceTree": "b5091deaa949ae4c1a16deee98a1a93942aac71d",
+  "catalogBlob": "b63e8a81f53172bdd26eae63570a6a894bee4560",
+  "category": "portable-coordinated-windows",
+  "selectionFile": "specs/1553-portable-local-storage/recovery/coordinated-native-selection.json",
+  "selectionFileBlob": "868a7ea78739aeb2006740ecaf608bfea0207e93",
+  "selectionFileSha256": "484c524cfb6f18a7071e142f8d3796293418d39b5a143a9ebb639c811058566c",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile specs/1553-portable-local-storage/recovery/coordinated-native-selection.json -Parallelism 1",
+  "os": "Microsoft Windows 10.0.26200",
+  "architecture": "X64",
+  "isWindows": true,
+  "powershell": "7.6.6",
+  "dotnetSdk": "10.0.401",
+  "startedUtc": "2026-10-01T18:43:49.7790958Z",
+  "endedUtc": "2026-10-01T18:51:49.3307965Z",
+  "wallTime": "00:07:57.9395266",
+  "result": {
+    "skipped": 0,
+    "selectionComplete": true,
+    "plannedCases": 16,
+    "exitCode": 0,
+    "total": 16,
+    "launcherExitCode": 0,
+    "timedOut": false,
+    "executed": 16,
+    "unrun": 0,
+    "passed": 16,
+    "plannedDescriptors": 2,
+    "completedCases": 16,
+    "plannedMethods": 12,
+    "failed": 0,
+    "completedDescriptors": 2,
+    "duplicateIds": 0
+  },
+  "bodyEvidence": "Twelve exact methods expand to sixteen cases. Platform case/authority assertions and resolved native separator/whitespace alias actually execute on Windows. Lease tests use real owning locks and throwing release contexts. Two hard-link cases assert actual CreateHardLinkW, owned crash-host exit73 and cold recovery exit0. InvalidLaterType directory/link cases use real Directory.CreateDirectory/File.CreateSymbolicLink before negative admission assertions; creation failure is a failed fixture, never skipped or passed. Wound consumer awaits CreateProcedureTreatmentPipelineContextAsync with actual LiveTurnPreparationService.PrepareAsync before terminal quarantine claims. No fake preparation, platform-return pass, fixture workaround or elevation.",
+  "fixtureQualification": {
+    "symbolicLinkCapabilityBeforeRun": "Unverified; only actual selected link case may establish capability.",
+    "symbolicLinkCase": {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:00.1616291",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation(kind: \"link\")"
+    },
+    "realWoundWindowsPreparation": {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+      "qualification": "Selected body awaits actual LiveTurnPreparationService.PrepareAsync; no fake preparation/platform-return workaround",
+      "stack": "",
+      "outcome": "Passed",
+      "message": ""
+    },
+    "linuxPreparationLimit": "Previously observed LiveTurnPreparationService/DeleteDirectoryTree/kernel32 dependency on Linux remains open even if native Windows preparation passes."
+  },
+  "normalizationProof": {
+    "frozenBase": "34089bc1930b52a67cdeeac2273ddbdbd7ebf802",
+    "normalSha": "5bfa0a1b017f4830e202be7fd8cb25d5c180082a",
+    "normalTree": "b5091deaa949ae4c1a16deee98a1a93942aac71d",
+    "fullAppliedIndexTree": "c582289ce6278ecfe059c52e0c6bb2085a38b815",
+    "packetExcludedSourceTree": "a2cbf6b9b9897ced72774b476d327359a8a053a2",
+    "patchBytes": 51685,
+    "patchSha256": "730c0dd18dbe2d2b189e827e74f099e860842ee60158be7cfef2f3dfcc2a6f98",
+    "manifestSha256": "053bf5fdece31ac17d9e06ab228a2d2739307d18557a8f09f25239f1ac240356",
+    "deliveryManifestSha256": "3aa8e1f4a5d0970eef272f7eef936fc47480d02f262a99cc5a32561268f95211",
+    "verifiedPacketEntries": 9,
+    "verifiedDeliveryEntries": 31,
+    "allAcceptedBytesIdentical": true
+  },
+  "immutableDeliveryManifest": "specs/1553-portable-local-storage/recovery/coordinated-delivery-source.json",
+  "cleanup": {
+    "runtimeDirectoryRemainders": 0,
+    "launcherProcessRemainders": 0,
+    "ownedTreeComplete": true,
+    "syntheticFixtureDirectoryRemainders": 0,
+    "runtimeComplete": true
+  },
+  "isolation": "Per-process synthetic TEMP/CLI home/NuGet caches/appdata; unique owned runner output. No user saves or authorization profiles.",
+  "externalExecution": "Only selected unit/integration assertions plus their owned cold-recovery crash-host child processes. Browser callbacks are service fixtures, no live browser/client/game/server/GM/provider/GUI/audio entrypoints.",
+  "processorCount": "DOTNET_PROCESSOR_COUNT=1",
+  "telemetryOptOuts": [
+    "DOTNET_CLI_TELEMETRY_OPTOUT=1",
+    "POWERSHELL_TELEMETRY_OPTOUT=1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT=1"
+  ],
+  "sourceReadback": {
+    "sourceSha": "5bfa0a1b017f4830e202be7fd8cb25d5c180082a",
+    "sourceTree": "b5091deaa949ae4c1a16deee98a1a93942aac71d",
+    "parentSha": "34089bc1930b52a67cdeeac2273ddbdbd7ebf802",
+    "restoration": "New clean GitHub-only depth-one clone; no local alternate/copy",
+    "trackedFiles": 3758,
+    "verifiedDeliveryEntries": 31,
+    "verifiedPacketAfterImages": 9,
+    "clean": true,
+    "fsckPassed": true,
+    "githubApiCommitTreeParentVerified": true,
+    "verifiedUtc": "2026-10-01T18:43:13.3086297Z"
+  },
+  "sourceWorkingTreeClean": true,
+  "cases": [
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:01.1988892",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime(decision: \"decline\")"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:01:12.3492681",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:03.9187571",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime(decision: \"accept\")"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:00.1386530",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:00.9968494",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink(cut: \"Committed\", committed: True)"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:00.0915040",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseKeepsCompletedDispositionOnContextFailure",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseKeepsCompletedDispositionOnContextFailure"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:00.3408375",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperPublishesCompleteMemberSetUnderOneDecision",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperPublishesCompleteMemberSetUnderOneDecision"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:00.1993469",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedAuthorityTests.ActualAuthorityFactoryRetainsEveryPlatformDistinctInitialGuard",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableCoordinatedAuthorityTests.ActualAuthorityFactoryRetainsEveryPlatformDistinctInitialGuard"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:00.1616291",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation(kind: \"link\")"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:00.9866721",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink(cut: \"first-member\", committed: False)"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:00.0979042",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(uncertain: False)"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:00.1418055",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation(kind: \"directory\")"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:00.1638904",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure(uncertain: True)"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:00.1889794",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:00.1692471",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DestinationCaseUsesTheActualPlatformPolicy",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DestinationCaseUsesTheActualPlatformPolicy"
+    },
+    {
+      "stack": "",
+      "outcome": "Passed",
+      "duration": "00:00:00.3160228",
+      "symbolicLinkSetupFailure": false,
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperUnknownLaterMemberPreservesWholeUnresolvedSet",
+      "fixtureSetupFailure": false,
+      "message": "",
+      "name": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperUnknownLaterMemberPreservesWholeUnresolvedSet"
+    }
+  ],
+  "methodCoverage": [
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+      "recordedCases": 1,
+      "plannedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.ResolveOfferDecision_LateRuntimeFailureRollsBackOfferAndRuntime",
+      "recordedCases": 2,
+      "plannedCases": 2,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedAuthorityTests.ActualAuthorityFactoryRetainsEveryPlatformDistinctInitialGuard",
+      "recordedCases": 1,
+      "plannedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition",
+      "recordedCases": 1,
+      "plannedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure",
+      "recordedCases": 2,
+      "plannedCases": 2,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseKeepsCompletedDispositionOnContextFailure",
+      "recordedCases": 1,
+      "plannedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperPublishesCompleteMemberSetUnderOneDecision",
+      "recordedCases": 1,
+      "plannedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ActualHelperUnknownLaterMemberPreservesWholeUnresolvedSet",
+      "recordedCases": 1,
+      "plannedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.DestinationCaseUsesTheActualPlatformPolicy",
+      "recordedCases": 1,
+      "plannedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.InvalidLaterTypeFailsBeforeAnyNewIntentOrMutation",
+      "recordedCases": 2,
+      "plannedCases": 2,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.ResolvedSeparatorAndWhitespaceAliasesPublishOneFinalDestination",
+      "recordedCases": 1,
+      "plannedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.ActualHelperColdRecoveryPreservesTheOutsideHardLink",
+      "recordedCases": 2,
+      "plannedCases": 2,
+      "unrunCases": 0
+    }
+  ],
+  "trxCounters": [
+    {
+      "failed": 0,
+      "passed": 3,
+      "skipped": 0,
+      "total": 3,
+      "file": "portable-coordinated-windows-integration-001.sanitized.trx",
+      "executed": 3
+    },
+    {
+      "failed": 0,
+      "passed": 13,
+      "skipped": 0,
+      "total": 13,
+      "file": "portable-coordinated-windows-unit-002.sanitized.trx",
+      "executed": 13
+    }
+  ],
+  "descriptorResults": [
+    {
+      "actualTrx": [
+        {
+          "failed": 0,
+          "passed": 3,
+          "skipped": 0,
+          "total": 3,
+          "file": "portable-coordinated-windows-integration-001.sanitized.trx",
+          "executed": 3
+        }
+      ],
+      "plannedCases": 3,
+      "adapter": "integration"
+    },
+    {
+      "actualTrx": [
+        {
+          "failed": 0,
+          "passed": 13,
+          "skipped": 0,
+          "total": 13,
+          "file": "portable-coordinated-windows-unit-002.sanitized.trx",
+          "executed": 13
+        }
+      ],
+      "plannedCases": 13,
+      "adapter": "unit"
+    }
+  ],
+  "files": [
+    {
+      "bytes": 2351,
+      "file": "summary.sanitized.json",
+      "sanitizedSha256": "336095fbdea733690ad8f3f2ce0f56172c18f1f011110befccdacc1fa0f48836",
+      "originalSha256": "e1068c8211e3d137586222d0b4b4848c75fd7ce07b622a44fcce12d8eaa41fa9"
+    },
+    {
+      "bytes": 6598,
+      "file": "portable-coordinated-windows-integration-001.sanitized.trx",
+      "sanitizedSha256": "01293d43a57cf158cda43891003542ab82e8dfaebd2ea4e4b1f33531431ffc79",
+      "originalSha256": "2e1a33053a4d7f692925d649911210d1fd90a56c6a6a5018d662a73e587030a2"
+    },
+    {
+      "bytes": 20262,
+      "file": "portable-coordinated-windows-unit-002.sanitized.trx",
+      "sanitizedSha256": "1d89b30b37e527ce76f046c56d2419ec8e4fddbca1fe3286f8a5e715f5ce4aa0",
+      "originalSha256": "f6bc3b35d071cc5058d77cb49a4b79e588044ca42ef15ba53708f4e241239c8c"
+    }
+  ],
+  "limits": [
+    "Only the sixteen explicitly selected native filesystem cases; missing/failed fixture setup is not success",
+    "No additional suite, passing rerun or source fixes",
+    "No Linux/full-suite/PTY/browser/GM/provider/GUI/audio/game/server acceptance",
+    "T031-A final scoped acceptance remains separate; observed Linux kernel32 preparation dependency remains open"
+  ],
+  "sanitization": "Only generated summary/TRX and own run metadata read. Private source/run/home/tool paths and host/user labels replaced consistently. UTF-8 without BOM, LF; original and sanitized SHA256 recorded. JSON/TRX reparsed and privacy/token-like guards passed. No raw logs, credentials, authorization profiles or user saves published."
+}

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "a0a35d57bde429befbf1b9b90e5b7410d4fb202a",
+  "sourceFingerprint": "E554088E16DA53A941AAC99A95A88E8DFB85C34A3321C387B511A74B298F092E",
+  "patchSha256": "95646e45277e0d3fd913ac610d2412381e8aefec5692c532a90f41d643e46f0f",
+  "appliedSourceTree": "dd78dd2497e080d72121e509aef467a7689fe378",
+  "platform": "Linux x64",
+  "toolchain": {
+    "sdk": "10.0.401",
+    "runtime": "8.0.31",
+    "powershell": "7.6.6"
+  },
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-directory-uncertain-consumer -Parallelism 1",
+  "scope": "Corrected actual live-preparation uncertainty consumer: exact finalization InvalidDataException/retained-evidence diagnostic, reached cut, exact journal/partial/unknown bytes, unchanged dice/no request and blocked cold admission. One case only, fresh unit build.",
+  "categories": [
+    "portable-directory-uncertain-consumer"
+  ],
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 1,
+    "Failed": 0
+  },
+  "duration": "00:02:19.9949960",
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "734c20d3b9faa4948db09894024825cf547c7669e5f504e64868feb0864ea50b",
+      "sanitizedSha256": "734c20d3b9faa4948db09894024825cf547c7669e5f504e64868feb0864ea50b",
+      "sanitizedBytes": 1576
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "56de8ce43138dadbbc2212bbe0b527e006b7848f79db3181a978fb89bc6cfb48",
+      "sanitizedSha256": "56de8ce43138dadbbc2212bbe0b527e006b7848f79db3181a978fb89bc6cfb48",
+      "sanitizedBytes": 1188
+    },
+    {
+      "file": "portable-directory-uncertain-consumer-unit-001.trx",
+      "originalSha256": "f3cc3059b1b6e9a57af09ca467c13e989a8f7700a6d6565d0ba675062f8ab94c",
+      "sanitizedSha256": "b97d5c1d0b9c8c76297893f901e62d5eb52dcd6806861c6ce48738e4b73ba0c8",
+      "sanitizedBytes": 3016
+    }
+  ]
+}

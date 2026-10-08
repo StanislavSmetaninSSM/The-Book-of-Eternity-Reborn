@@ -1,0 +1,71 @@
+{
+  "Categories": [
+    "portable-save-original-profile-windows",
+    "portable-save-profile-consumers"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "112c523731cb8305472645099c4b24277b56c022",
+    "WorkingTreeFingerprint": "CED36F19CF3DC18A4C99FA53E3590AA5783A22137CFFBFE93E9C407183CCB803",
+    "ChangedFiles": 2
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-save-original-profile-windows",
+      "Seconds": 5.5617552,
+      "BudgetMinutes": 2,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.5400355,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.2541729,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.2159706,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 36.2778573,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 9,
+  "WallTime": "00:00:53.3173348",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 4,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [
+      "portable-save-profile-consumers-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

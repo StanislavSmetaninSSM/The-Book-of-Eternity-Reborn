@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="f6c79b01-0f34-4421-af38-a0e36473e864" name="@95e438a3e5cb 2026-10-05 02:14:37" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T02:14:37.8083615-04:00" queuing="2026-10-05T02:14:37.8083616-04:00" start="2026-10-05T02:14:34.8158296-04:00" finish="2026-10-05T02:14:37.8137601-04:00" />
+  <TestSettings name="default" id="03b874b7-c96b-4286-a842-bff44196bfbd">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-05_02_14_37" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="7943f691-6db1-4b04-9f09-13f0d1608c4c" testId="682706ae-f21a-ed70-328b-a4e1b52dcfc3" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(kind: &quot;exact-duplicate&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0347006" startTime="2026-10-05T02:14:37.3174426-04:00" endTime="2026-10-05T02:14:37.3174428-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7943f691-6db1-4b04-9f09-13f0d1608c4c">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.IO.InvalidDataException: Save archive contains duplicate normalized path 'lore/Pair.bin'.
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchiveStructureAsync(ZipArchive archive, String stagingSessionRoot, Boolean preserveNativePayloadNames) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 1053
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 322
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 409
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithAdmissionAsync(String saveFilePath, Func`2 ensureAdmissionAsync, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 191
+System.IO.InvalidDataException: Save archive contains duplicate normalized path 'lore/Pair.bin'.
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchiveStructureAsync(ZipArchive archive, String stagingSessionRoot, Boolean preserveNativePayloadNames) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 1053
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 322
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 409
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithAdmissionAsync(String saveFilePath, Func`2 ensureAdmissionAsync, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 191</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d88ab84b-650c-4fcc-833c-ef794dc0d80f" testId="d608f45d-c038-4672-95ec-cbf5385339c7" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision(rollback: False)" computerName="95e438a3e5cb" duration="00:00:00.1150780" startTime="2026-10-05T02:14:37.7218469-04:00" endTime="2026-10-05T02:14:37.7218471-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d88ab84b-650c-4fcc-833c-ef794dc0d80f">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberPublished, 21),(MemberStaged, 10),(MemberPublished, 10),(MemberStaged, 16),(MemberPublished, 16),(MemberStaged, 17),(MemberPublished, 17),(MemberStaged, 18),(MemberPublished, 18),(MemberStaged, 19),(MemberPublished, 19),(MemberStaged, 22),(MemberPublished, 22),(MemberStaged, 26),(MemberPublished, 26),(MemberStaged, 29),(MemberPublished, 29),(MemberStaged, 30),(MemberPublished, 30),(MemberStaged, 35),(MemberPublished, 35),(MemberStaged, 38),(MemberPublished, 38),(CommitStaged, -1),(Committed, -1),(CleanupMember, 10),(CleanupMember, 16),(CleanupMember, 17),(CleanupMember, 18),(CleanupMember, 19),(CleanupMember, 21),(CleanupMember, 22),(CleanupMember, 26),(CleanupMember, 29),(CleanupMember, 30),(CleanupMember, 35),(CleanupMember, 38),(CleanupComplete, -1)</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="096cafa8-4239-428c-af71-539f7b7748e9" testId="313aa052-c9c2-3f7b-44fc-a2969c3d2451" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision(rollback: True)" computerName="95e438a3e5cb" duration="00:00:00.2135548" startTime="2026-10-05T02:14:37.6054313-04:00" endTime="2026-10-05T02:14:37.6054316-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="096cafa8-4239-428c-af71-539f7b7748e9">
+      <Output>
+        <StdOut>Disposition=RolledBack; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberPublished, 21),(MemberStaged, 10),(MemberPublished, 10),(MemberStaged, 16),(MemberPublished, 16),(MemberStaged, 17),(MemberPublished, 17),(MemberStaged, 18),(MemberPublished, 18),(MemberStaged, 19),(MemberPublished, 19),(MemberStaged, 22),(MemberPublished, 22),(MemberStaged, 26),(MemberPublished, 26),(MemberStaged, 29),(MemberPublished, 29),(MemberStaged, 30),(MemberPublished, 30)
+System.InvalidOperationException: native case-pair publication cut
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;&gt;c__DisplayClass53_0.&lt;NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision&gt;b__0(TrustedLocalPublicationPhase phase, Int32 index) in [checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs:line 45
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;.ctor&gt;b__20_0(TrustedLocalPublicationPhase phase, Int32 index) in [checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 45
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 524
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.ReconcileNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Boolean after, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 626
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishNamespaceCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, TrustedLocalNamespacePlan plan, Action`2 observer, PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 122
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass79_0.&lt;PublishNamespaceWithOutcome&gt;b__0(PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 28
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 170
+System.InvalidOperationException: native case-pair publication cut
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;&gt;c__DisplayClass53_0.&lt;NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision&gt;b__0(TrustedLocalPublicationPhase phase, Int32 index) in [checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs:line 45
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;.ctor&gt;b__20_0(TrustedLocalPublicationPhase phase, Int32 index) in [checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs:line 45
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 524
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.ReconcileNamespace(CanonicalWriteLease lease, NamespaceJournal journal, Boolean after, Action`2 observer) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 626
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishNamespaceCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, TrustedLocalNamespacePlan plan, Action`2 observer, PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 122
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass79_0.&lt;PublishNamespaceWithOutcome&gt;b__0(PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs:line 28
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 170</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="43d10973-e8ec-4032-b8a6-62ab5d1e07f4" testId="2ceb6193-2449-ff17-ce30-b06418e30960" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(kind: &quot;ambiguous-manifest-alias&quot;)" computerName="95e438a3e5cb" duration="00:00:00.3813548" startTime="2026-10-05T02:14:37.2008521-04:00" endTime="2026-10-05T02:14:37.2008652-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="43d10973-e8ec-4032-b8a6-62ab5d1e07f4">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.IO.InvalidDataException: Save original reference 'lore/PAIR.bin' has ambiguous case aliases.
+   at BookOfEternityClient.Services.SaveLoadService.FindOriginalArchiveEntry(IReadOnlyDictionary`2 entries, String path) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 1255
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchiveStructureAsync(ZipArchive archive, String stagingSessionRoot, Boolean preserveNativePayloadNames) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 1140
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 322
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 409
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithAdmissionAsync(String saveFilePath, Func`2 ensureAdmissionAsync, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 191
+System.IO.InvalidDataException: Save original reference 'lore/PAIR.bin' has ambiguous case aliases.
+   at BookOfEternityClient.Services.SaveLoadService.FindOriginalArchiveEntry(IReadOnlyDictionary`2 entries, String path) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 1255
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchiveStructureAsync(ZipArchive archive, String stagingSessionRoot, Boolean preserveNativePayloadNames) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 1140
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 322
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 409
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithAdmissionAsync(String saveFilePath, Func`2 ensureAdmissionAsync, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 191</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a1824ccf-9004-4011-b80a-d380a4291d91" testId="63b4d7eb-b200-945e-411a-b838c46153af" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(kind: &quot;duplicate-manifest&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0391650" startTime="2026-10-05T02:14:37.2400923-04:00" endTime="2026-10-05T02:14:37.2400925-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a1824ccf-9004-4011-b80a-d380a4291d91">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.IO.InvalidDataException: Save archive contains duplicate integrity manifests.
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchiveStructureAsync(ZipArchive archive, String stagingSessionRoot, Boolean preserveNativePayloadNames) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 1059
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 322
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 409
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithAdmissionAsync(String saveFilePath, Func`2 ensureAdmissionAsync, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 191
+System.IO.InvalidDataException: Save archive contains duplicate integrity manifests.
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchiveStructureAsync(ZipArchive archive, String stagingSessionRoot, Boolean preserveNativePayloadNames) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 1059
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 322
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 409
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithAdmissionAsync(String saveFilePath, Func`2 ensureAdmissionAsync, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 191</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f819e5f7-82cf-43e1-a60c-35ee1f742016" testId="a0846dd8-1519-c654-c5f4-64ab9ff637b2" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(kind: &quot;double-claimed-entry&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0364801" startTime="2026-10-05T02:14:37.3891234-04:00" endTime="2026-10-05T02:14:37.3891236-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f819e5f7-82cf-43e1-a60c-35ee1f742016">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.IO.InvalidDataException: Save integrity manifest claims one original payload more than once.
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchiveStructureAsync(ZipArchive archive, String stagingSessionRoot, Boolean preserveNativePayloadNames) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 1148
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 322
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 409
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithAdmissionAsync(String saveFilePath, Func`2 ensureAdmissionAsync, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 191
+System.IO.InvalidDataException: Save integrity manifest claims one original payload more than once.
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchiveStructureAsync(ZipArchive archive, String stagingSessionRoot, Boolean preserveNativePayloadNames) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 1148
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 322
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 409
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithAdmissionAsync(String saveFilePath, Func`2 ensureAdmissionAsync, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 191</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="37168083-522d-4b80-b04b-5cea3dff0080" testId="84658ea9-68ed-264e-0a78-88dd212aa1be" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(kind: &quot;case-pair-hash&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0396987" startTime="2026-10-05T02:14:37.2805189-04:00" endTime="2026-10-05T02:14:37.2805193-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="37168083-522d-4b80-b04b-5cea3dff0080">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.IO.InvalidDataException: Save payload 'lore/pair.bin' does not match its manifested SHA-256 digest.
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchiveStructureAsync(ZipArchive archive, String stagingSessionRoot, Boolean preserveNativePayloadNames) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 1157
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 322
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 409
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithAdmissionAsync(String saveFilePath, Func`2 ensureAdmissionAsync, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 191
+System.IO.InvalidDataException: Save payload 'lore/pair.bin' does not match its manifested SHA-256 digest.
+   at BookOfEternityClient.Services.SaveLoadService.ValidateArchiveStructureAsync(ZipArchive archive, String stagingSessionRoot, Boolean preserveNativePayloadNames) in [checkout]/BookOfEternityClient/Services/SaveLoadService.cs:line 1157
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 322
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 409
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithAdmissionAsync(String saveFilePath, Func`2 ensureAdmissionAsync, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 191</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="900fdf59-34b1-4d94-86a5-a186285b7350" testId="96d8d892-6d29-b63d-c28f-72eb3b5acbd4" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(kind: &quot;fixed-alias&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0359009" startTime="2026-10-05T02:14:37.3521522-04:00" endTime="2026-10-05T02:14:37.3521525-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="900fdf59-34b1-4d94-86a5-a186285b7350">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=
+System.IO.InvalidDataException: Load payload 'game_state/meta/soul_state.json' collides with a canonical fixed-state path.
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 340
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 409
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithAdmissionAsync(String saveFilePath, Func`2 ensureAdmissionAsync, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 191
+System.IO.InvalidDataException: Load payload 'game_state/meta/soul_state.json' collides with a canonical fixed-state path.
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 340
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 409
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithAdmissionAsync(String saveFilePath, Func`2 ensureAdmissionAsync, CancellationToken cancellationToken) in [checkout]/BookOfEternityClient/Services/SaveLoadService.Loading.cs:line 191</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision(rollback: False)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d608f45d-c038-4672-95ec-cbf5385339c7">
+      <Execution id="d88ab84b-650c-4fcc-833c-ef794dc0d80f" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision(rollback: True)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="313aa052-c9c2-3f7b-44fc-a2969c3d2451">
+      <Execution id="096cafa8-4239-428c-af71-539f7b7748e9" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="NativeCaseDistinctPayloadsKeepExactCommittedOrRolledBackDecision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(kind: &quot;case-pair-hash&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="84658ea9-68ed-264e-0a78-88dd212aa1be">
+      <Execution id="37168083-522d-4b80-b04b-5cea3dff0080" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(kind: &quot;ambiguous-manifest-alias&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2ceb6193-2449-ff17-ce30-b06418e30960">
+      <Execution id="43d10973-e8ec-4032-b8a6-62ab5d1e07f4" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(kind: &quot;exact-duplicate&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="682706ae-f21a-ed70-328b-a4e1b52dcfc3">
+      <Execution id="7943f691-6db1-4b04-9f09-13f0d1608c4c" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(kind: &quot;double-claimed-entry&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a0846dd8-1519-c654-c5f4-64ab9ff637b2">
+      <Execution id="f819e5f7-82cf-43e1-a60c-35ee1f742016" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(kind: &quot;duplicate-manifest&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="63b4d7eb-b200-945e-411a-b838c46153af">
+      <Execution id="a1824ccf-9004-4011-b80a-d380a4291d91" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash(kind: &quot;fixed-alias&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="96d8d892-6d29-b63d-c28f-72eb3b5acbd4">
+      <Execution id="900fdf59-34b1-4d94-86a5-a186285b7350" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="NativeOriginalInventoryRejectsDuplicateFixedAliasAndWrongHash" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="682706ae-f21a-ed70-328b-a4e1b52dcfc3" executionId="7943f691-6db1-4b04-9f09-13f0d1608c4c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d608f45d-c038-4672-95ec-cbf5385339c7" executionId="d88ab84b-650c-4fcc-833c-ef794dc0d80f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="313aa052-c9c2-3f7b-44fc-a2969c3d2451" executionId="096cafa8-4239-428c-af71-539f7b7748e9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ceb6193-2449-ff17-ce30-b06418e30960" executionId="43d10973-e8ec-4032-b8a6-62ab5d1e07f4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="63b4d7eb-b200-945e-411a-b838c46153af" executionId="a1824ccf-9004-4011-b80a-d380a4291d91" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a0846dd8-1519-c654-c5f4-64ab9ff637b2" executionId="f819e5f7-82cf-43e1-a60c-35ee1f742016" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="84658ea9-68ed-264e-0a78-88dd212aa1be" executionId="37168083-522d-4b80-b04b-5cea3dff0080" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="96d8d892-6d29-b63d-c28f-72eb3b5acbd4" executionId="900fdf59-34b1-4d94-86a5-a186285b7350" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="8" executed="8" passed="8" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.33]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.54]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.57]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.53]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

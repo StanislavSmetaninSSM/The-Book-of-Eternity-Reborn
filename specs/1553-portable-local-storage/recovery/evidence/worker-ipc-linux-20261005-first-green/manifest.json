@@ -1,0 +1,55 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "c1a4a3760ddb8da106e871b20b12e7c18a6765d8",
+  "SourceResultDirectory": "20261005-102300-173-8227-0c6281bd5881422192adcb9c0b70a814-categories",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-host-ipc-admission -NoBuild",
+  "Os": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Sdk": "10.0.401",
+  "Runtime": "8.0.31",
+  "PowerShell": "7.6.6",
+  "EffectiveUid": 1000,
+  "TMPDIR": "/workspace/ipc-tmp",
+  "DOTNET_PROCESSOR_COUNT": null,
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 2967561,
+      "OriginalSha256": "8e33ff54da050fb74e92dcb22d7d8304b627277409ab1d1c8fc1fd17b5a6a276",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 329738,
+      "StoredSha256": "acfca145d8ac46bf71dc39f89a583db682654ec704397e236437b1feeb9ec6bc"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 7851,
+      "OriginalSha256": "bcafc5f2d1fa3b1dc2d9a4b94d471509645fa4f050081878f9dda4a5b801631e",
+      "StoredPath": "plan.json",
+      "StoredBytes": 7851,
+      "StoredSha256": "bcafc5f2d1fa3b1dc2d9a4b94d471509645fa4f050081878f9dda4a5b801631e"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1463,
+      "OriginalSha256": "47e874f9a9b397743223c7644f656d66e3b2d76aaddff043f4f027a6bf080ce4",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1463,
+      "StoredSha256": "47e874f9a9b397743223c7644f656d66e3b2d76aaddff043f4f027a6bf080ce4"
+    },
+    {
+      "Path": "worker-host-ipc-admission-integration-001.trx",
+      "OriginalBytes": 49932,
+      "OriginalSha256": "15591e56ad9fd3cb1b1a79c4ba1551077c4699d3c2e4f628303bc7e52087916e",
+      "StoredPath": "worker-host-ipc-admission-integration-001.trx",
+      "StoredBytes": 49932,
+      "StoredSha256": "15591e56ad9fd3cb1b1a79c4ba1551077c4699d3c2e4f628303bc7e52087916e"
+    },
+    {
+      "Path": "worker-host-ipc-admission-unit-002.trx",
+      "OriginalBytes": 3043,
+      "OriginalSha256": "5b6af5e6aff2a09c2a3ed8130901b5b04d6fa55daaff24cc7af87282bce13dfc",
+      "StoredPath": "worker-host-ipc-admission-unit-002.trx",
+      "StoredBytes": 3043,
+      "StoredSha256": "5b6af5e6aff2a09c2a3ed8130901b5b04d6fa55daaff24cc7af87282bce13dfc"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "worker-run-ledger-process-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4046a5bb4b49d7cc008fbf3412ad7555f95cf798",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 39.0436543,
+  "Descriptors": [
+    {
+      "Name": "worker-run-ledger-process-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-run-ledger-process-linux",
+      "Categories": [
+        "worker-run-ledger-process-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerProcessTests.FiniteGuardian_RealInitializationThenFreshProcessObservation",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerProcessTests.FiniteGuardian_RealInitializationThenFreshProcessObservation",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,108 @@
 # Быстрый запуск игры с авто-пинками ГМа
 
+## Linux: bounded M1 path
+
+M1 qualifies the ordinary launcher with a persistent **neutral configured CLI** in
+isolated roots. Real Codex readiness/VT/provider/game turns remain Q1/Q2; this is
+not a live-GM acceptance. Select `GmBridgeBackend=OwnedTerminal` and explicitly
+`GmMainOwnerBackend=NativeLineage` in the game profile; keep its original CLI command,
+model, arguments and cwd. Helpers remain disabled. `Auto`/`SystemdUser` do not
+silently downgrade. A user systemd manager is not installed or qualified by M1.
+
+### Configure the existing game profile before launch
+
+Settings live at `<game-root>/game_session/config.json`. For a new disposable
+root, first open the ordinary client to initialize its local profile, then exit
+normally. Configure that profile while the client, bridge and daemon are stopped;
+then use the three-terminal launch below. This setup does not require starting a
+provider or sending a model prompt.
+
+Merge these fields into the existing JSON object; this is a **partial example**,
+not a replacement configuration:
+
+```json
+{
+  "gmBridgeEnabled": true,
+  "gmBridgeBackend": "OwnedTerminal",
+  "gmMainOwnerBackend": "NativeLineage"
+}
+```
+
+Keep the selected `gmCliLaunchCommand` (including model and arguments),
+`gmBridgeShellWorkingDirectory` and existing `gmCliInputProfile`. Retain the
+original `gmWorkerBridgeProfiles` inventory with each helper's `enabled=false`;
+do not replace the profiles with an empty list. The initial defaults remain
+`ConPTYBridge`/`Auto` and do not select this qualified Linux path automatically.
+The systemd backend is disabled pending qualification with an already-working
+user manager; explicit `SystemdUser` does not downgrade to NativeLineage.
+
+An empty `gmCliInputProfile` deliberately refuses automatic submission. Configure
+it only from an observed supported CLI presentation: reliable `idleMarker`,
+`promptPrefix`, `workingMarker`, `blockedMarkers`, draft observation, paste framing,
+newline and submit sequences must describe that CLI. Starting a process or setting
+`TERM` does not establish readiness. There is no generic Codex/OpenCode profile
+whose selectors can safely be copied as proof.
+
+Developers may separately configure the maintained [test relay](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/codex/1553-load-filesystem/tools/gm-relay/README.md)
+with its exact [qualified input profile](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/codex/1553-load-filesystem/tools/gm-relay/input-profile.json).
+That is an explicit test transport choice, not an automatic substitution of the
+player's command or model. One isolated generated/applied relay action is accepted;
+native Codex/OpenCode compatibility remains unqualified.
+
+Publisher preparation (SDK/compiler needed only here):
+
+```powershell
+pwsh -NoProfile -File scripts/build-linux-supervisor.ps1 -OutputDirectory out/native/linux-x64
+dotnet publish BookOfEternityClient/BookOfEternityClient.csproj -c Release -o out/ship/BookOfEternityClient -p:BoeNativePackageDirectory=$PWD/out/native/linux-x64 -p:BoeRequireNativePackage=true
+dotnet publish BookOfEternityGMBridge/BookOfEternityGMBridge.csproj -c Release -o out/ship/BookOfEternityGMBridge -p:BoeNativePackageDirectory=$PWD/out/native/linux-x64 -p:BoeRequireNativePackage=true
+```
+
+Keep both published directories together. The client includes Launcher, daemon,
+unchanged operational docs/rules and built-in guardians; native helper+manifest
+are prebuilt at `runtimes/linux-x64/native`. Preserve executable mode and package
+provenance. Player startup needs .NET8 shared frameworks (Microsoft.NETCore.App
+and Microsoft.AspNetCore.App), PowerShell7 and the measured
+linux-x64/glibc ABI; it does not compile/download the helper or require the source tree.
+The qualification used Debug publications; the commands above describe publisher
+layout and do not claim production Release gameplay qualification.
+
+Use three separate caller-supplied terminals and an admitted disposable root:
+
+```powershell
+# Terminal A: ordinary client, with its own stdin
+ dotnet out/ship/BookOfEternityClient/BookOfEternityClient.dll /path/to/disposable-root
+# Terminal B: foreground main terminal, manual keyboard belongs to this host
+ pwsh -NoProfile -File out/ship/BookOfEternityClient/Launcher/bookofeternity.ps1 start-bridge visible -SessionPath /path/to/disposable-root/game_session
+# Terminal C: foreground daemon, independent stdin
+ pwsh -NoProfile -File out/ship/BookOfEternityClient/Launcher/bookofeternity.ps1 start-daemon visible --no-autopaste -SessionPath /path/to/disposable-root/game_session
+```
+
+`--no-autopaste` controls legacy Windows desktop paste gestures. With
+`OwnedTerminal`, the daemon still uses the existing T042 bridge transaction;
+this option does not turn off its paste → fresh observation → submit checks.
+
+Status reports `native-lineage` / `ordinary-same-namespace-lineage`: original
+process lineage in the same PID namespace. It does not control external services.
+T042 automatic submission requires the configured reliable idle view and an empty
+draft; unknown results pause without replay. Unsupported VT/TUI, trust/access or
+TERM prompts require separate qualification; do not auto-confirm or substitute TERM.
+Confirmed scoped stop/disposal/Stopped ACK must precede restart. Uncertain owner,
+worker inventory or storage debt keeps refusal. Accepted bounded Load UX requires
+confirmed original stop + successful Load + current-owner refresh before a fresh
+configured launch; uncertain/failed decisions pause without old-session continuation.
+Linux browser rollback/gacha/Daren portability is accepted in isolated automated
+checks. Full native Windows validation is scheduled after merge in the existing
+desktop task; it is not a Linux launch prerequisite. Actual hardware/desktop
+capabilities and generated gameplay through Load/fresh continuation remain separate.
+Windows instructions below retain their existing route.
+
+
+## legacy Windows/source recipe
+
+Ниже сохранены отдельные Windows/source инструкции. Они не задают Linux packaged
+startup или prerequisites команды prepare-turn; текущий M1 путь описан выше.
+Старая window/clipboard автовставка не заменяет принятый T042 paste/observe/submit.
+
 ## Шаг 1. Открой окно ГМа и зарегистрируй его
 
 Открой отдельное окно PowerShell и выполни:
@@ -72,22 +175,46 @@ dotnet run
 
 ## Подготовка следующего live-test хода без ручного JSON
 
-Если нужно поставить следующий ход в очередь для живого теста, не собирайте `turn_request.json` и pending snapshot руками. Используйте launcher-команду:
+Это действующая auxiliary-команда существующего launcher. В установленном или
+перенесённом package она запускает `BookOfEternityClient.dll`; нужны PowerShell 7
+и прежние shared runtimes Microsoft.NETCore.App 8 / Microsoft.AspNetCore.App 8.
+Launcher, `gm_main_operation.ps1`, DLL, deps и runtimeconfig поставляются издателем.
+Нет необходимости в checkout, SDK или компиляторе у игрока. Отсутствующий ресурс
+или runtime означает точный отказ до подготовки; автоматической установки нет.
+
+Linux, из любого текущего каталога:
 
 ```powershell
-cd "E:\Games\The Book of Eternity Reborn"
-.\BookOfEternityClient\Launcher\bookofeternity.ps1 -SessionPath "E:\Games\The Book of Eternity Reborn\BookOfEternityClient\game_session" prepare-turn --action "Надеть руническую перчатку и изучить письмо." --dice "14,8,17"
+pwsh -NoProfile -File /opt/boe/BookOfEternityClient/Launcher/bookofeternity.ps1 -SessionPath "/home/player/boe-game/game_session" prepare-turn --action "Надеть руническую перчатку и изучить письмо." --dice "14,8,17"
 ```
 
-Команда создаёт согласованные `input\turn_request.json`, `game_state\control\pending_turn_snapshot.json` и `game_state\control\pending_turn_snapshot.authority.json`, нормализуя пути и исключая служебные bridge/daemon/harness артефакты.
+Windows, тот же поставляемый launcher:
 
-Подготовка выполняется одной generation-bound транзакцией: клиент привязывает
-операцию к текущей сессии до первого чтения, затем под одной канонической
-блокировкой очищает прежние артефакты, снимает no-follow snapshot и публикует
-manifest, authority и запрос хода. Параллельный Load или New Game либо ждёт
-завершения этой транзакции, либо останавливает старую операцию через
-`SessionReplaced`; артефакты старой сессии не попадут в новую. Поэтому не
-собирайте и не очищайте эти файлы вручную.
+```powershell
+pwsh -NoProfile -File "C:\Games\BOE\BookOfEternityClient\Launcher\bookofeternity.ps1" -SessionPath "C:\Games\MyGame\game_session" prepare-turn --action "Надеть руническую перчатку и изучить письмо." --dice "14,8,17"
+```
+
+Корень игры должен быть существующим и подготовленным клиентом. `-SessionPath`
+указывает его `game_session`; тексты/каталоги в `--action` не меняют этот корень.
+Команда не запускает настроенный CLI, не меняет команду/модель/аргументы профиля,
+не вставляет и не отправляет запрос ГМу. Linux не требует регистрации окна.
+Без активного ГМа используется существующее локальное admission; при активном
+ГМе нужен original participating pin. Cold nonterminal, worker или storage debt
+не обходятся; отказ не является поводом очищать запись или повторять неизвестный ход.
+
+Команда создаёт согласованные `input/turn_request.json`,
+`game_state/control/pending_turn_snapshot.json` и
+`game_state/control/pending_turn_snapshot.authority.json`. Подготовка сохраняет
+существующую generation-bound транзакцию, canonical lease, no-follow snapshot
+и исключения служебных bridge/daemon/harness артефактов. Load/New Game не получает
+артефакты старой generation; не собирайте и не очищайте эти файлы вручную.
+
+Действующие bounded Load/browser/clipboard/audio результаты и ограничения — в
+[repository roadmap](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/codex/1553-load-filesystem/specs/1553-portable-local-storage/roadmap-after-daren.md) и
+[repository auxiliary plan](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/codex/1553-load-filesystem/specs/1553-portable-local-storage/auxiliary-launcher-portable-plan.md).
+Load UX принят отдельным срезом: подтверждённые stop + Load + refresh предшествуют
+fresh launch; неопределённость не продолжает старую сессию. Эти helper-инструкции
+не объявляют live GM, физический audio, desktop clipboard или native Windows проверенными.
 
 ## Самая короткая версия
 

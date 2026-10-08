@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="382e7766-7719-43a2-b5f2-4365dcbd6470" name="@c7669543e9c7 2026-10-06 07:21:12" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T07:21:12.4596879+00:00" queuing="2026-10-06T07:21:12.4596879+00:00" start="2026-10-06T07:21:08.4986484+00:00" finish="2026-10-06T07:21:12.8581745+00:00" />
+  <TestSettings name="default" id="77d4657d-e889-4ddf-bb17-2b9c5cf8252e">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_07_21_12" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="b89fd3ff-709d-4be4-a17f-84e3f9538fdc" testId="874ffa86-7e58-7329-a05f-62cdd1b1b966" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation" computerName="c7669543e9c7" duration="00:00:00.9130514" startTime="2026-10-06T07:21:12.7677292+00:00" endTime="2026-10-06T07:21:12.7677294+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b89fd3ff-709d-4be4-a17f-84e3f9538fdc">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Collections differ
+           ↓ (pos 0)
+Expected: ["dispatch-operation"]
+Actual:   ["addText", "sendEnter"]
+           ↑ (pos 0)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c.&lt;DormantAllowNotReady_UsesOneImmutableOperation&gt;b__1_0(JsonElement result) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 22
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 41
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation() in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 19
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="450362b4-5cfa-4ed4-b458-22932ac8b796" testId="b5feeaa0-46bf-f3c8-dc06-a96544bdb13e" testName="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat" computerName="c7669543e9c7" duration="00:00:00.9557002" startTime="2026-10-06T07:21:11.8549846+00:00" endTime="2026-10-06T07:21:11.8550011+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="450362b4-5cfa-4ed4-b458-22932ac8b796">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   2</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c.&lt;ActualRetry_TransportAmbiguityDoesNotRepeat&gt;b__0_0(JsonElement result) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 13
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert) in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 41
+   at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat() in /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs:line 11
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="874ffa86-7e58-7329-a05f-62cdd1b1b966">
+      <Execution id="b89fd3ff-709d-4be4-a17f-84e3f9538fdc" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="DormantAllowNotReady_UsesOneImmutableOperation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b5feeaa0-46bf-f3c8-dc06-a96544bdb13e">
+      <Execution id="450362b4-5cfa-4ed4-b458-22932ac8b796" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests" name="ActualRetry_TransportAmbiguityDoesNotRepeat" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="874ffa86-7e58-7329-a05f-62cdd1b1b966" executionId="b89fd3ff-709d-4be4-a17f-84e3f9538fdc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b5feeaa0-46bf-f3c8-dc06-a96544bdb13e" executionId="450362b4-5cfa-4ed4-b458-22932ac8b796" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="2" executed="2" passed="0" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.26]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.71]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.73]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.76]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.76]       Expected: 1
+[xUnit.net 00:00:02.76]       Actual:   2
+[xUnit.net 00:00:02.76]       Stack Trace:
+[xUnit.net 00:00:02.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(13,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c.&lt;ActualRetry_TransportAmbiguityDoesNotRepeat&gt;b__0_0(JsonElement result)
+[xUnit.net 00:00:02.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(41,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert)
+[xUnit.net 00:00:02.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(11,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat()
+[xUnit.net 00:00:02.77]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.68]       Assert.Equal() Failure: Collections differ
+[xUnit.net 00:00:03.68]                  ↓ (pos 0)
+[xUnit.net 00:00:03.68]       Expected: ["dispatch-operation"]
+[xUnit.net 00:00:03.68]       Actual:   ["addText", "sendEnter"]
+[xUnit.net 00:00:03.68]                  ↑ (pos 0)
+[xUnit.net 00:00:03.68]       Stack Trace:
+[xUnit.net 00:00:03.68]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(22,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.&lt;&gt;c.&lt;DormantAllowNotReady_UsesOneImmutableOperation&gt;b__1_0(JsonElement result)
+[xUnit.net 00:00:03.68]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(41,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.Run(String scenario, Action`1 assert)
+[xUnit.net 00:00:03.68]         /workspace/native-1553/BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs(19,0): at BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation()
+[xUnit.net 00:00:03.68]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.68]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T07:21:11.8504837+00:00">
+        <Text>[xUnit.net 00:00:02.76]     BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T07:21:12.7674186+00:00">
+        <Text>[xUnit.net 00:00:03.68]     BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

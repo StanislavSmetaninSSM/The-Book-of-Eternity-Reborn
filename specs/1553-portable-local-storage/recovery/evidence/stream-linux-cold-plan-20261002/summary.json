@@ -1,0 +1,72 @@
+{
+  "Categories": [
+    "portable-storage-stream-cold-phases",
+    "portable-storage-stream-cold-before",
+    "portable-storage-stream-cold-conflicts"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "e5a009c3078934d7b7cd98d894c1fd4d2d3bab59",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1369514,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0225478,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0237159,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 281.0351124,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0075037,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 16,
+  "WallTime": "00:04:45.5768465",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 16,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-storage-stream-cold-before-unit-001",
+      "portable-storage-stream-cold-conflicts-unit-002",
+      "portable-storage-stream-cold-phases-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

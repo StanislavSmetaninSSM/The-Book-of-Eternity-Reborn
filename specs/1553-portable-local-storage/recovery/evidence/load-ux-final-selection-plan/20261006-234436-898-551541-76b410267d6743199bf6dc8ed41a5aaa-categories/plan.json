@@ -1,0 +1,539 @@
+{
+  "Categories": [
+    "gm-load-session-lifecycle",
+    "gm-load-cleanup-debt",
+    "gm-load-early-ack",
+    "gm-load-protocol",
+    "gm-load-stop-faults",
+    "gm-load-restart-faults",
+    "gm-load-storage-faults",
+    "gm-load-installed-profile",
+    "browser-load-session-lifecycle",
+    "gm-load-affected-backend",
+    "gm-load-affected-frontend",
+    "frontend-shell-types",
+    "gm-load-lost-reply",
+    "gm-load-admission-faults",
+    "gm-load-rollback-cut",
+    "gm-load-ordinary-schema",
+    "gm-load-affected-refresh"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-load-session-lifecycle",
+      "reason": "T041 Load UX original production terminal stop/replacement/refresh/fresh epoch in isolated Linux roots and real entrypoints",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-cleanup-debt",
+      "reason": "Causal real console selected-Load original owner stop/replacement/refresh/fresh session; isolated configured neutral CLI only",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-early-ack",
+      "reason": "Actual loopback Load/full-bundle completion endpoints and installed production original GM stop/current refresh/fresh epoch; configured neutral CLI",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-protocol",
+      "reason": "Strict original Load receipt fields and refusal of bound filesystem scopes before stop IPC; portable inert fixtures",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-stop-faults",
+      "reason": "Actual installed production-neutral original Load HTTP/pipe fault boundary: BrowserHttp_OriginalStopAndRefreshFaults",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-restart-faults",
+      "reason": "Actual installed production-neutral original Load HTTP/pipe fault boundary: BrowserHttp_OriginalRestartFaults",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-storage-faults",
+      "reason": "Actual nontransient conflicting-marker Uncertain Load cut retains logical evidence and prevents fresh launch",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-installed-profile",
+      "reason": "Actual production fresh Load consumes installed archive command/model/args/cwd without executor override; configured neutral CLI only",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "browser-load-session-lifecycle",
+      "reason": "Actual launcher/settings Load handlers: immutable owner, complete refresh/fresh-launch receipt, stale/cancel/lost reply",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-affected-backend",
+      "reason": "Twelve exact existing unit Load/admission/original-guard consumers; integration schema and refresh are separately selected",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-affected-frontend",
+      "reason": "Exact existing real Load handler/complete bundle/settings reconciliation consumers affected by new lifecycle",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "frontend-shell-types",
+      "reason": "Compile-time contracts for extracted app routes and shell context component shapes.",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction; exact source-delta selection reviewed on Sol6.1/xhigh"
+      ]
+    },
+    {
+      "category": "gm-load-lost-reply",
+      "reason": "Exact unconfirmed HTTP Load transport boundary; separate from three already qualified restart faults",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "original connection and no replay"
+      ]
+    },
+    {
+      "category": "gm-load-admission-faults",
+      "reason": "Exact no-active/full refresh and retained worker admission conjunction, separated from storage cuts to avoid repeats",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "worker/main/storage conjunction"
+      ]
+    },
+    {
+      "category": "gm-load-rollback-cut",
+      "reason": "Single original replacement publication cut with actual rollback; separated from already passed Uncertain cut",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "typed rollback and no false fresh session"
+      ]
+    },
+    {
+      "category": "gm-load-ordinary-schema",
+      "reason": "Seven actual no-active console/HTTP causal RED cases for existing canonical writer schema; rerun after shared parser fix",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "schema1 generation and complete refresh"
+      ]
+    },
+    {
+      "category": "gm-load-affected-refresh",
+      "reason": "Eight exact affected refresh integrations already passed before schema fix; preserve separate scope without repeating them",
+      "contracts": [
+        "T041-LOAD-SESSION-LIFECYCLE",
+        "original guard and committed refresh"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "19dc27ea9ada6dbccd22bbf637b60b02d829876a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 10.8493288,
+  "Descriptors": [
+    {
+      "Name": "browser-load-session-lifecycle-frontend-001",
+      "Project": "frontend",
+      "Category": "browser-load-session-lifecycle",
+      "Categories": [
+        "browser-load-session-lifecycle"
+      ],
+      "Filter": null,
+      "Adapter": "vitest",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "frontend-shell-types-frontend-002",
+      "Project": "frontend",
+      "Category": "frontend-shell-types",
+      "Categories": [
+        "frontend-shell-types"
+      ],
+      "Filter": null,
+      "Adapter": "typecheck",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/appRouteExtraction.test.ts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/shellContextComponents.test.ts",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-admission-faults-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-admission-faults",
+      "Categories": [
+        "gm-load-admission-faults"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_TypedStorageAndIndependentAdmission",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_TypedStorageAndIndependentAdmission",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-affected-backend-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-affected-backend",
+      "Categories": [
+        "gm-load-affected-backend"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing|FullyQualifiedName=BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission",
+          "Cases": 11
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-affected-frontend-frontend-005",
+      "Project": "frontend",
+      "Category": "gm-load-affected-frontend",
+      "Categories": [
+        "gm-load-affected-frontend"
+      ],
+      "Filter": null,
+      "Adapter": "vitest",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/settingsLoadReconciliation.test.ts",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-affected-refresh-integration-006",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "gm-load-affected-refresh",
+      "Categories": [
+        "gm-load-affected-refresh"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads",
+          "Cases": 7
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-cleanup-debt-unit-007",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-cleanup-debt",
+      "Categories": [
+        "gm-load-cleanup-debt"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_CommittedCleanupDebtCannotLaunchFresh",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_CommittedCleanupDebtCannotLaunchFresh",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-early-ack-unit-008",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-early-ack",
+      "Categories": [
+        "gm-load-early-ack"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_PrematureAckCannotAuthorizeFreshLaunch",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_PrematureAckCannotAuthorizeFreshLaunch",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-installed-profile-unit-009",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-installed-profile",
+      "Categories": [
+        "gm-load-installed-profile"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_FreshLaunchConsumesInstalledArchiveProfile",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_FreshLaunchConsumesInstalledArchiveProfile",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-lost-reply-unit-010",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-lost-reply",
+      "Categories": [
+        "gm-load-lost-reply"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LostLoadReplyNeverStartsFresh",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LostLoadReplyNeverStartsFresh",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-ordinary-schema-integration-011",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "gm-load-ordinary-schema",
+      "Categories": [
+        "gm-load-ordinary-schema"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-protocol-unit-012",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-protocol",
+      "Categories": [
+        "gm-load-protocol"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionProtocolTests.LoadIpcRefusesOriginalFilesystemScopeBeforeSideEffects|FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionProtocolTests.LoadIpcRefusesOriginalFilesystemScopeBeforeSideEffects",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-restart-faults-unit-013",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-restart-faults",
+      "Categories": [
+        "gm-load-restart-faults"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalRestartFaults",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalRestartFaults",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-rollback-cut-unit-014",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-rollback-cut",
+      "Categories": [
+        "gm-load-rollback-cut"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualRollbackCutOutcome",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualRollbackCutOutcome",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-session-lifecycle-unit-015",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-session-lifecycle",
+      "Categories": [
+        "gm-load-session-lifecycle"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LoadFullBundleCurrentAckFreshEpoch|FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserLoad_OriginalLiveOwnerStopsBeforeRealReplacement|FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LoadFullBundleCurrentAckFreshEpoch",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-stop-faults-unit-016",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-stop-faults",
+      "Categories": [
+        "gm-load-stop-faults"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalStopAndRefreshFaults",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalStopAndRefreshFaults",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-storage-faults-unit-017",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-storage-faults",
+      "Categories": [
+        "gm-load-storage-faults"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualStorageCutOutcomes",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualStorageCutOutcomes",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

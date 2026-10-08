@@ -1,0 +1,36 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T043-Q1-Q2-LIVE-BOUNDED",
+  "Feasibility": {
+    "Agent": "/root/codex_live_feasibility",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Candidate": "5217f127fd9b14c394a2a9de95395159333ca248",
+    "Verdict": "PASS for immediate nextscreen-only Q1 observation; not readiness/Q2",
+    "ConfirmedScope": "One exact TERM warning answer y CR; unchanged TERM/source-default command/profile/parser; original M1 identity/status, bounded capture and scoped stop/retirement/ECHILD",
+    "Limitations": [
+      "Consumes sole authorized TERM answer; no automatic second acceptance",
+      "Default profile unsupported and frozen by production BridgeHost",
+      "Initial NewGame live-launch ordering gap is source-backed, not causally executed",
+      "Existing cancel-initial-wait then Continue candidate needs connected verification",
+      "No model/game turn accepted; systemd design remains deferred"
+    ],
+    "ReviewCommands": "Read-only source inspection; zero CLI/tests/processes/edits"
+  },
+  "Source": {
+    "Agent": "/root/codex_live_source_review",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "RejectedCandidate": "89d11509b064e16f956f19f486b746b71a78f97a",
+    "Finding": "S1 cumulative TERM substrings could answer changed gate; fixed before execution",
+    "ClosedCandidate": "b9b3aeb3d8dddc45385aeea319301e6e21eb22c3",
+    "Verdict": "PASS for immediate one-nextscreen diagnostic only",
+    "ExecutionLimitation": "Actual early CLI failure exposed later cleanup oracle gap; original scoped stop not proven. No accepted lifecycle/gameplay claim."
+  },
+  "Evidence": {
+    "Status": "Unexecuted"
+  },
+  "Metadata": {
+    "Status": "Pending"
+  }
+}

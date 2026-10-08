@@ -1,0 +1,46 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "audit",
+  "Artifacts": [
+    {
+      "Path": "catalog-audit.json",
+      "StoredPath": "catalog-audit.json",
+      "StoredBytes": 103,
+      "StoredSha256": "bdbff99f0080156137322e26f02c3a558794649ac74fad1f0a40650719cfb451",
+      "OriginalBytes": 103,
+      "OriginalSha256": "bdbff99f0080156137322e26f02c3a558794649ac74fad1f0a40650719cfb451"
+    },
+    {
+      "Path": "command-result.json",
+      "StoredPath": "command-result.json",
+      "StoredBytes": 374,
+      "StoredSha256": "6211ba12d61445b3684d36573c70df5c153375294192873358a1d51e70cc5d53",
+      "OriginalBytes": 374,
+      "OriginalSha256": "6211ba12d61445b3684d36573c70df5c153375294192873358a1d51e70cc5d53"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 332360,
+      "StoredSha256": "6df11a022721de2f525f45f788fe4c56adceea5521ea6efdaf954cdc3519151f",
+      "OriginalBytes": 2989250,
+      "OriginalSha256": "29661eecdc151f8ab1355512152667933e24fefe242b97cc6d08a28aa465befd"
+    },
+    {
+      "Path": "runner.log",
+      "StoredPath": "runner.log.gz",
+      "StoredBytes": 388,
+      "StoredSha256": "c3a3e199d6b79be954240b8b438a1a33e324cce5e92424977b9f43661934951a",
+      "OriginalBytes": 696,
+      "OriginalSha256": "a326c23812cf89e50657b1e1b01a7307ab46c0b08a58b83cfe6c6802845dc041"
+    },
+    {
+      "Path": "summary.json",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1403,
+      "StoredSha256": "6573d1408c596e73606a963cb64cbd6229a473f992af20f86a2041b288b5a912",
+      "OriginalBytes": 1403,
+      "OriginalSha256": "6573d1408c596e73606a963cb64cbd6229a473f992af20f86a2041b288b5a912"
+    }
+  ]
+}

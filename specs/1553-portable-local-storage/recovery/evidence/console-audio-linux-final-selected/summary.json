@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "console-audio-linux",
+    "browser-audio-isolation"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "cf787a8f7873e83e7c02e96504ad8e7ff2d9870c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "browser-audio-isolation",
+      "Seconds": 4.3329474,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "console-audio-linux",
+      "Seconds": 12.1578029,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0594824,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0696761,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0988516,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 36.6789205,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0196304,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:58.0941847",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 27,
+    "CompletedCases": 27,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 27,
+    "Executed": 27,
+    "Passed": 27,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

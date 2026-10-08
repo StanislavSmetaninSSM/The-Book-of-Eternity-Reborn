@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
@@ -296,17 +297,20 @@ public sealed partial class MortalItemIdentityTransitionTests
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
-                BeforeCanonicalMutationBoundaryAsync = path =>
+                LocalPublicationObserver = (phase, index) =>
                 {
+                    if (phase != TrustedLocalPublicationPhase.MemberPublished) return;
+                    using var journal = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(
+                        context.FileSystem.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
+                    var path = journal.RootElement.GetProperty("Members")[index].GetProperty("Path").GetString();
                     if (!injected && string.Equals(
                             path,
-                            StorageTransportMoveService.CurrentLocationPath,
+                            context.FileSystem.ResolvePath(StorageTransportMoveService.CurrentLocationPath),
                             StringComparison.OrdinalIgnoreCase))
                     {
                         injected = true;
-                        throw new IOException("injected second carrier write failure");
+                        throw new InvalidOperationException("injected second carrier write failure");
                     }
-                    return Task.CompletedTask;
                 }
             });
 

@@ -1,0 +1,180 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "74d978bd81634a349b537c2db97a8ab4f74b7133",
+  "Inputs": [
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Sha256": "1f12338f013eb54070a198d0dd4a5998bbb5a7f426249442db4dfe5653b0217c",
+      "GitBlob": "e2c3add66cde56d64de90ca087304f9554e2cd0c"
+    },
+    {
+      "Path": "scripts/build-linux-supervisor.ps1",
+      "Sha256": "14a665eb1734e3d4cca3607efc69c1b37ef3a355dd94d93487989d2fd6882485",
+      "GitBlob": "f0bde0ae108612a995ecab179ad655cb3d3747a9"
+    },
+    {
+      "Path": "tests/fixtures/LinuxLineage/lineage-fixture.c",
+      "Sha256": "49861138606b63e591e5768276b291f2f6b2fa2791252001543a4f2b937164ea",
+      "GitBlob": "65dc5adefda6742b1122f9ffbac97f8b44393609"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs",
+      "Sha256": "5d2499a966de61ead072aead6b72a0d32ba1e354c3519653c0ac04adaeee0bca",
+      "GitBlob": "e19014edd1382362120ed836d100878d421134d6"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Sha256": "0772515e494d2700398428cfb7a6daf832b5638a8632842f4f1acde4eaa6613f",
+      "GitBlob": "e119c5030f09dbc6685d030ebeafd3feb6af3c17"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Sha256": "a5f4d5adc2a56e74b78997b8fe46858b60e227b90c0bbc2de0bb4b085ddfbf4f",
+      "GitBlob": "db5e2c05686d0d96350c82575e6619a72b2cf891"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs",
+      "Sha256": "305be9e8bdb3ff1b9e746e1f658a00daa37e89082acb6a0e2dd13efb7c8b94b0",
+      "GitBlob": "2aa8074ce650664693ea2c5bbd3d1bc933c1d5e8"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs",
+      "Sha256": "c02d231ecc979f76c08a2eb8ae1c1300b14728821081f28cae5bf4a81bb312de",
+      "GitBlob": "1b63f80616e77137c71425f0ab0af7f43154bd16"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativePackageTests.cs",
+      "Sha256": "2254d97ddcbdcb32031849e7f612ee6336d73271d19d235740c77b134652dea5",
+      "GitBlob": "01b54ed03506e7ce7a94616fb2636b4eb5543dc0"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Sha256": "009f4dbfe71f80887561227b708af0abb9a153a8de2a75c10af0be1487f6e4c6",
+      "GitBlob": "e6e78f3b5797ed6367763878790309e48041befe"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Sha256": "c84fc6eb14dd0495ca64b6bf7f8aa5e8298dbd4bf3f14ca2ef799f8b9cc386a4",
+      "GitBlob": "60504f3b44d02923bf940df7a979c87a49a4a934"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativeGuardianTests.cs",
+      "Sha256": "c5cb165f3a054b57f05c1be9ac6082187905c37c8c007f859fa583e913577370",
+      "GitBlob": "5c598f0c56d9b34735adbdafc947decf87482a64"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerOwnedLaunch.cs",
+      "Sha256": "94d250c18fa6527fb09c57d28d5d76303325ce9bf529a325fbf4d6e881f1f9b3",
+      "GitBlob": "f7480d6ad2717c31ce726bce64180c28af7770d8"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+      "Sha256": "0e510f47de454aa9b88c2b86dc0b0b398e153b32fbfd4e60203362a13f518cdf",
+      "GitBlob": "6dbff626f5705e2938cda452adec6d7ec3f66c2d"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "Sha256": "e179a0dea8ea8fa08fcdf88af0f63368b0b6309b4609cbf86d5e4dc50551b82c",
+      "GitBlob": "65612d29102134a1b9efe599e3d67ddc0d129a60"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+      "Sha256": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+      "GitBlob": "ddbbc890b30c53a35df72256552c195aa57f6b4c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativeHostTests.cs",
+      "Sha256": "15375281677bb6047101fee1b1e1de174ef2932c056dc001f3a47958f7d332f1",
+      "GitBlob": "245522c3f206e4609ae7e934035b93a61889b659"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "host-ready-red/dotnet-test.log.gz",
+      "Bytes": 164632,
+      "Sha256": "cc9a2b7cbeca84a93a6b80309c412f4f86075f7a75f74a0dcc4b623eaae8750d",
+      "DecompressedSha256": "626cc4d90076790f7022363b1b55dc0414ab0d5073e6ebae634de38a7c6b72a8"
+    },
+    {
+      "Path": "host-ready-red/plan.json",
+      "Bytes": 1092,
+      "Sha256": "0cfa798487d8710c9d0d7ee6f4776dfaaccfb3f5f4d4a158dd546891d449c3a2"
+    },
+    {
+      "Path": "host-ready-red/summary.json",
+      "Bytes": 1358,
+      "Sha256": "48c0f0c28343e13b9c56719d9c3b57f5d986a1521e766e62fb3449683044df45"
+    },
+    {
+      "Path": "host-ready-red/worker-native-host-ready-unit-001.trx",
+      "Bytes": 4217,
+      "Sha256": "75244d6f33bb8ac88e870ea3a959f701c4c5e7526eb43c8954290a9892ba95b0"
+    },
+    {
+      "Path": "host-ready-red-plan/Build-unit.log.gz",
+      "Bytes": 1070,
+      "Sha256": "2e8bcf4199194b25a5d2a69230da79abf0d74c436e3f6169e2150b14c9867387",
+      "DecompressedSha256": "0cb8bec69ded9fa8aa69a9c7dc4b459c9361179bfa93a695b93643088a98242c"
+    },
+    {
+      "Path": "host-ready-red-plan/dotnet-test.log.gz",
+      "Bytes": 165188,
+      "Sha256": "74002ef54612f1626cf37711863dfadc95ec58bbfb2e7332c4e4272a926e931d",
+      "DecompressedSha256": "f89e09508e41babab8c7a262c77ca41b9b42fb8e5385b2d16662d8c5040cd625"
+    },
+    {
+      "Path": "host-ready-red-plan/plan.json",
+      "Bytes": 1094,
+      "Sha256": "3a1c0c6d17dc0c1142b78366646bc4c83208bc3c76b4925d35c7284765954112"
+    },
+    {
+      "Path": "host-ready-red-plan/summary.json",
+      "Bytes": 1456,
+      "Sha256": "0b2a018ab27d00bf8ad0653c018982e467c14d3c5bbde047f9dc40f9d42e53ba"
+    },
+    {
+      "Path": "host-ready-red-plan.log.gz",
+      "Bytes": 582,
+      "Sha256": "513e7932a87618998ceb7c9ca2f8e47973e3621be81c49d5c6e4e515877149be",
+      "DecompressedSha256": "e46eba5429b77512ba7164b5eeec135d125b8f4068bc0b9c884434b22276126b"
+    },
+    {
+      "Path": "host-ready-red.log.gz",
+      "Bytes": 904,
+      "Sha256": "9c95a6dd49d84583c76f8b35cdb77d5cc4c8aa85c27e340c6bf48e6b6ae261b4",
+      "DecompressedSha256": "f459d39169ee4614f95ec225c326e3ba0587830a9ebe27b581938e8dcd5d3844"
+    },
+    {
+      "Path": "native/542505b31a8d4d75bea8e4f9d964cc43/build-provenance.json",
+      "Bytes": 1153,
+      "Sha256": "b44bc6e96e41536db6aff0d2623b66ce3b64ab50fc78a856b8699a082da0b188"
+    },
+    {
+      "Path": "native/542505b31a8d4d75bea8e4f9d964cc43/build.log.gz",
+      "Bytes": 115,
+      "Sha256": "03c69477bcf985d419863fc61b5eb25dba281858488a2eedd299f52211e2c1e7",
+      "DecompressedSha256": "6bdde0743881fc27ae7f896ccd22f72494c7f65a1d86296fb4a88c84da9ccabd"
+    },
+    {
+      "Path": "native/542505b31a8d4d75bea8e4f9d964cc43/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "native/542505b31a8d4d75bea8e4f9d964cc43/guardian.log.gz",
+      "Bytes": 20,
+      "Sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "DecompressedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "native/542505b31a8d4d75bea8e4f9d964cc43/package-manifest.json",
+      "Bytes": 968,
+      "Sha256": "05b6a04167d443e2e426bb59f18a19e71e62383698158134879302f3fd6cf133"
+    },
+    {
+      "Path": "native/542505b31a8d4d75bea8e4f9d964cc43/scenario.json",
+      "Bytes": 143,
+      "Sha256": "db1cb536afe816e42e148ec48cb64cf21f94fdffa31e8ad85d78d5d548622915"
+    }
+  ]
+}

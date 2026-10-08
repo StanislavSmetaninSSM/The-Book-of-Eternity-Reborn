@@ -18,12 +18,17 @@ namespace BookOfEternityClient.Services;
 internal sealed class QteSceneServiceHooks
 {
     internal Func<Task>? BeforeRuntimeWriteAsync { get; init; }
+    // Standalone/runtime domain writes; deferred acceptance uses the explicit legacy hook below.
     internal Func<QteSceneService.QteRuntimeState, Task>? AfterRuntimeWrittenAsync { get; init; }
     internal Func<Task>? AfterHistoryWrittenAsync { get; init; }
     internal Func<Task>? BeforeDarenProfileWriteAsync { get; init; }
     internal Func<Task>? AfterDarenProfileWrittenAsync { get; init; }
     internal Func<Task>? BeforeQteCharacteristicReadAsync { get; init; }
+    // These remain later gameplay/compensation hooks. Ordinary member-set
+    // fault cuts use FileSystemManagerHooks.LocalPublicationObserver instead.
     internal Func<string, Task>? AfterDeferredEffectMutationAsync { get; init; }
+    internal Func<QteSceneService.QteRuntimeState, Task>? AfterLegacyAcceptanceRuntimeWrittenAsync { get; init; }
+    internal Func<string, Task>? AfterLegacyDeferredEffectMutationAsync { get; init; }
 }
 
 public sealed partial class QteSceneService
@@ -730,21 +735,16 @@ public sealed partial class QteSceneService
                     ExactPrevious: capture.OfferBeforeImage)
             ])
             .ToArray();
-        var committed = await CoordinatedStateWriteHelper.TryCommitWithHookAsync(
-            _fs,
-            writeLease,
-            async applied =>
-            {
-                if (string.Equals(
-                        applied.Path,
-                        QteRuntimePath,
-                        StringComparison.Ordinal) &&
-                    _hooks?.AfterRuntimeWrittenAsync != null)
-                {
-                    await _hooks.AfterRuntimeWrittenAsync(state);
-                }
-            },
-            writes);
+        var legacyRuntimeHook = _hooks?.AfterLegacyAcceptanceRuntimeWrittenAsync;
+        var committed = legacyRuntimeHook == null
+            ? await CoordinatedStateWriteHelper.TryCommitAsync(_fs, writeLease, writes)
+            : await CoordinatedStateWriteHelper.TryCommitWithHookAsync(
+                _fs,
+                writeLease,
+                applied => string.Equals(applied.Path, QteRuntimePath, StringComparison.Ordinal)
+                    ? legacyRuntimeHook(state)
+                    : Task.CompletedTask,
+                writes);
         if (!committed)
         {
             throw new InvalidOperationException(
@@ -1782,7 +1782,7 @@ public sealed partial class QteSceneService
                             writeLease,
                             active,
                             receiptResume,
-                            _hooks?.AfterDeferredEffectMutationAsync);
+                            _hooks?.AfterLegacyDeferredEffectMutationAsync);
                     return new QteSceneCompletion
                     {
                         QteId = offer.QteId,
@@ -1804,7 +1804,7 @@ public sealed partial class QteSceneService
                         writeLease,
                         active,
                         deferredPreparation,
-                        _hooks?.AfterDeferredEffectMutationAsync);
+                        _hooks?.AfterLegacyDeferredEffectMutationAsync);
                 return new QteSceneCompletion
                 {
                     QteId = offer.QteId,
@@ -1919,7 +1919,7 @@ public sealed partial class QteSceneService
                 ScoreSummary = scoreSummary
             };
         }
-        catch (Exception originalFailure)
+        catch (Exception originalFailure) when (originalFailure is not CoordinatedStatePublicationUncertainException)
         {
             await RestoreQteNormalizationBaselineAfterFailureAsync(
                 writeLease,
@@ -2001,7 +2001,7 @@ public sealed partial class QteSceneService
             baseline.AllowCleanup();
             return response;
         }
-        catch (Exception originalFailure)
+        catch (Exception originalFailure) when (originalFailure is not CoordinatedStatePublicationUncertainException)
         {
             await RestoreQteNormalizationBaselineAfterFailureAsync(
                 writeLease,
@@ -2038,7 +2038,7 @@ public sealed partial class QteSceneService
             baseline.AllowCleanup();
             return response;
         }
-        catch (Exception originalFailure)
+        catch (Exception originalFailure) when (originalFailure is not CoordinatedStatePublicationUncertainException)
         {
             await RestoreQteNormalizationBaselineAfterFailureAsync(
                 writeLease,
@@ -2201,6 +2201,10 @@ public sealed partial class QteSceneService
     {
         RejectUnboundResourceSurfaces(response);
         await _stateDistributor.DistributeAsync(writeLease, response);
+        // An accepted distribution can retain backup cleanup debt. Resolve it
+        // before experience/normalizer work, preserving the existing uncertain
+        // classification that excludes the enclosing baseline compensation.
+        _fs.ResolveBackupPublicationRecovery(writeLease);
 
         await ApplyAuthoritativeExperienceAsync(writeLease, response.ExperienceGained);
         var qteNormalizer = _normalizer.ForQteNormalization();

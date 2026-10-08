@@ -1,0 +1,31 @@
+{
+  "sourceCommit": "438d5bbec51cf939a236a20a1a95efff04a12d68",
+  "catalogBlobAfterPatch": "75452a9f5bbe1c0b383eaa680214ed64a4d1ce02",
+  "kind": "newly executed b3b-proposal-consumers-green; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Isolated run-root paths replaced; LF/trailing whitespace normalized; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "32fa1e6b464d0b2317bff20bd1a27df5344adf000ff2d007b4d533fd5ef6f72c",
+      "sanitizedSha256": "32fa1e6b464d0b2317bff20bd1a27df5344adf000ff2d007b4d533fd5ef6f72c"
+    },
+    {
+      "path": "portable-proposal-admission-unit-001.trx",
+      "originalSha256": "347e146a272b86cce8fb10ea73a95099092fbaf7b1ba6c404037a3f029abad8f",
+      "sanitizedSha256": "98bba33121908027f8d59672229ad09c16b97e4cdd45989249fd7dde50254354"
+    },
+    {
+      "path": "portable-session-replacement-consumers-integration-002.trx",
+      "originalSha256": "ff3628c75c0d306f4922d5ee88501c0e90b7291283a6fa628c2309a3216318f7",
+      "sanitizedSha256": "2bf7caa49301c431d80e6348e532a5e7c8cb73dc0ad33140cad7b7bbfeb74354"
+    },
+    {
+      "path": "portable-session-replacement-consumers-unit-003.trx",
+      "originalSha256": "7e5384505f171b458746ce426a943135279969d904e6f48d76290a9fb9f0e1b0",
+      "sanitizedSha256": "8e57e7195c7246cf4c1495336c76ff5e5b714789eba56037ce6df6f3446a0bd7"
+    }
+  ],
+  "appliedSourceTree": "c3d8a5f4d34b0d8ba6c4c95788a2aaae33ba684e",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+  "interpretation": "30/30 reported passes: 8 actual proposal admission cases, 13 integration consumers and 9 unit consumers. Three Windows-only integration bodies (directory junction, lock junction, dangling lock node) returned early on Linux. Linux proposal cases validate admission and the explicit unsupported-backend boundary, not successful directory publication."
+}

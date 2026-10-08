@@ -1,0 +1,273 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="8c89f963-dcfd-4702-89f0-9ae50f9b51b3" name="@c7669543e9c7 2026-10-06 00:07:33" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T00:07:33.6878291+00:00" queuing="2026-10-06T00:07:33.6878292+00:00" start="2026-10-06T00:07:31.3045572+00:00" finish="2026-10-06T00:07:33.6968852+00:00" />
+  <TestSettings name="default" id="e02c36a0-d5ff-4f94-aa58-89cc0e175078">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_00_07_33" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="616a24ee-dfb7-4fcb-959b-892672010e88" testId="ce04c2c1-3f4e-8122-3063-d6f44da01c36" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Prepared&quot;)" computerName="c7669543e9c7" duration="00:00:00.0028788" startTime="2026-10-06T00:07:33.5838506+00:00" endTime="2026-10-06T00:07:33.5838508+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="616a24ee-dfb7-4fcb-959b-892672010e88">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 24
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5640715b-ca32-4aa4-9ecb-44795fc6d797" testId="130d0060-997a-77c3-5a23-b55ad12abdb0" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Uncertain&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005299" startTime="2026-10-06T00:07:33.5893253+00:00" endTime="2026-10-06T00:07:33.5893253+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5640715b-ca32-4aa4-9ecb-44795fc6d797">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 24
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="736c43c8-393d-41c8-aec4-670fce2d85db" testId="ddad1bf0-6ec5-db1e-ce43-7615761672f9" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;LaunchIntent&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004701" startTime="2026-10-06T00:07:33.5845857+00:00" endTime="2026-10-06T00:07:33.5845858+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="736c43c8-393d-41c8-aec4-670fce2d85db">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 24
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ec9bc3f5-fe9d-4503-991d-904e92888d8c" testId="92d57016-e74a-6338-f587-8e3731095250" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Released&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003691" startTime="2026-10-06T00:07:33.5850242+00:00" endTime="2026-10-06T00:07:33.5850243+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ec9bc3f5-fe9d-4503-991d-904e92888d8c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 24
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9b6fb41d-da93-4907-be41-631f733170f1" testId="c8b1bb43-8a73-d264-8c20-eb9f47561906" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Published&quot;)" computerName="c7669543e9c7" duration="00:00:00.0583604" startTime="2026-10-06T00:07:33.5800804+00:00" endTime="2026-10-06T00:07:33.5801171+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9b6fb41d-da93-4907-be41-631f733170f1">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 24
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1176ff03-8071-4cfd-bb71-60755880343e" testId="3af65e45-be75-d50f-34f7-776dd7689f66" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;ReleaseIntent&quot;)" computerName="c7669543e9c7" duration="00:00:00.0011513" startTime="2026-10-06T00:07:33.5855191+00:00" endTime="2026-10-06T00:07:33.5855192+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1176ff03-8071-4cfd-bb71-60755880343e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 24
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="fe6f19e7-a165-4985-9dab-e6a9388b42c0" testId="52c5fe66-8e87-1687-cc30-0e89e820a824" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;CleanupPending&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004023" startTime="2026-10-06T00:07:33.5859602+00:00" endTime="2026-10-06T00:07:33.5859602+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fe6f19e7-a165-4985-9dab-e6a9388b42c0">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 24
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c103c0be-ed3f-492f-85d6-8d63d55467e3" testId="755cc9e0-d13f-d10d-07e4-3c39075887ce" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;StopValidated&quot;)" computerName="c7669543e9c7" duration="00:00:00.0003293" startTime="2026-10-06T00:07:33.5882953+00:00" endTime="2026-10-06T00:07:33.5882954+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c103c0be-ed3f-492f-85d6-8d63d55467e3">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 24
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4c64ec25-a2ff-412a-9845-ecc82b0489ed" testId="3a0e2135-14ec-727a-e5e6-b929e9353900" testName="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;PublicationIntent&quot;)" computerName="c7669543e9c7" duration="00:00:00.0005905" startTime="2026-10-06T00:07:33.5874700+00:00" endTime="2026-10-06T00:07:33.5874701+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4c64ec25-a2ff-412a-9845-ecc82b0489ed">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Missing</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs:line 24
+   at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Prepared&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ce04c2c1-3f4e-8122-3063-d6f44da01c36">
+      <Execution id="616a24ee-dfb7-4fcb-959b-892672010e88" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;StopValidated&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="755cc9e0-d13f-d10d-07e4-3c39075887ce">
+      <Execution id="c103c0be-ed3f-492f-85d6-8d63d55467e3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;ReleaseIntent&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3af65e45-be75-d50f-34f7-776dd7689f66">
+      <Execution id="1176ff03-8071-4cfd-bb71-60755880343e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Released&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="92d57016-e74a-6338-f587-8e3731095250">
+      <Execution id="ec9bc3f5-fe9d-4503-991d-904e92888d8c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;PublicationIntent&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3a0e2135-14ec-727a-e5e6-b929e9353900">
+      <Execution id="4c64ec25-a2ff-412a-9845-ecc82b0489ed" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Uncertain&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="130d0060-997a-77c3-5a23-b55ad12abdb0">
+      <Execution id="5640715b-ca32-4aa4-9ecb-44795fc6d797" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;Published&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c8b1bb43-8a73-d264-8c20-eb9f47561906">
+      <Execution id="9b6fb41d-da93-4907-be41-631f733170f1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;CleanupPending&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="52c5fe66-8e87-1687-cc30-0e89e820a824">
+      <Execution id="fe6f19e7-a165-4985-9dab-e6a9388b42c0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: &quot;LaunchIntent&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ddad1bf0-6ec5-db1e-ce43-7615761672f9">
+      <Execution id="736c43c8-393d-41c8-aec4-670fce2d85db" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunRecordTests" name="ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="ce04c2c1-3f4e-8122-3063-d6f44da01c36" executionId="616a24ee-dfb7-4fcb-959b-892672010e88" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="130d0060-997a-77c3-5a23-b55ad12abdb0" executionId="5640715b-ca32-4aa4-9ecb-44795fc6d797" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ddad1bf0-6ec5-db1e-ce43-7615761672f9" executionId="736c43c8-393d-41c8-aec4-670fce2d85db" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="92d57016-e74a-6338-f587-8e3731095250" executionId="ec9bc3f5-fe9d-4503-991d-904e92888d8c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c8b1bb43-8a73-d264-8c20-eb9f47561906" executionId="9b6fb41d-da93-4907-be41-631f733170f1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3af65e45-be75-d50f-34f7-776dd7689f66" executionId="1176ff03-8071-4cfd-bb71-60755880343e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="52c5fe66-8e87-1687-cc30-0e89e820a824" executionId="fe6f19e7-a165-4985-9dab-e6a9388b42c0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="755cc9e0-d13f-d10d-07e4-3c39075887ce" executionId="c103c0be-ed3f-492f-85d6-8d63d55467e3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3a0e2135-14ec-727a-e5e6-b929e9353900" executionId="4c64ec25-a2ff-412a-9845-ecc82b0489ed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="9" executed="9" passed="0" failed="9" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.23]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.66]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.68]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.79]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.79]       Expected: Uncertain
+[xUnit.net 00:00:01.79]       Actual:   Missing
+[xUnit.net 00:00:01.79]       Stack Trace:
+[xUnit.net 00:00:01.79]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(24,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.79]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.79]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.79]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.79]       Expected: Uncertain
+[xUnit.net 00:00:01.79]       Actual:   Missing
+[xUnit.net 00:00:01.79]       Stack Trace:
+[xUnit.net 00:00:01.79]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(24,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.79]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.79]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.80]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.80]       Expected: Uncertain
+[xUnit.net 00:00:01.80]       Actual:   Missing
+[xUnit.net 00:00:01.80]       Stack Trace:
+[xUnit.net 00:00:01.80]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(24,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.80]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.80]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.80]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.80]       Expected: Uncertain
+[xUnit.net 00:00:01.80]       Actual:   Missing
+[xUnit.net 00:00:01.80]       Stack Trace:
+[xUnit.net 00:00:01.80]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(24,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.80]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.80]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.80]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.80]       Expected: Uncertain
+[xUnit.net 00:00:01.80]       Actual:   Missing
+[xUnit.net 00:00:01.80]       Stack Trace:
+[xUnit.net 00:00:01.80]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(24,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.80]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.80]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.80]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.80]       Expected: Uncertain
+[xUnit.net 00:00:01.80]       Actual:   Missing
+[xUnit.net 00:00:01.80]       Stack Trace:
+[xUnit.net 00:00:01.80]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(24,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.80]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.80]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.80]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.80]       Expected: Uncertain
+[xUnit.net 00:00:01.80]       Actual:   Missing
+[xUnit.net 00:00:01.80]       Stack Trace:
+[xUnit.net 00:00:01.80]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(24,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.80]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.80]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.80]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.80]       Expected: Uncertain
+[xUnit.net 00:00:01.80]       Actual:   Missing
+[xUnit.net 00:00:01.80]       Stack Trace:
+[xUnit.net 00:00:01.80]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(24,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.80]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.80]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.80]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.80]       Expected: Uncertain
+[xUnit.net 00:00:01.80]       Actual:   Missing
+[xUnit.net 00:00:01.80]       Stack Trace:
+[xUnit.net 00:00:01.80]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs(24,0): at BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(String phase)
+[xUnit.net 00:00:01.80]            at InvokeStub_GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(Object, Span`1)
+[xUnit.net 00:00:01.80]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.80]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:07:33.5785349+00:00">
+        <Text>[xUnit.net 00:00:01.79]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "Published") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:07:33.5837584+00:00">
+        <Text>[xUnit.net 00:00:01.79]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "Prepared") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:07:33.5863482+00:00">
+        <Text>[xUnit.net 00:00:01.80]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "LaunchIntent") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:07:33.5864118+00:00">
+        <Text>[xUnit.net 00:00:01.80]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "Released") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:07:33.5864498+00:00">
+        <Text>[xUnit.net 00:00:01.80]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "ReleaseIntent") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:07:33.5864648+00:00">
+        <Text>[xUnit.net 00:00:01.80]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "CleanupPending") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:07:33.5864779+00:00">
+        <Text>[xUnit.net 00:00:01.80]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "PublicationIntent") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:07:33.5878077+00:00">
+        <Text>[xUnit.net 00:00:01.80]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "StopValidated") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:07:33.5885964+00:00">
+        <Text>[xUnit.net 00:00:01.80]     BookOfEternityClient.Tests.GmWorkerRunRecordTests.ColdNonterminalRecord_RetainsExactIdentityAndRemainsUncertain(phase: "Uncertain") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

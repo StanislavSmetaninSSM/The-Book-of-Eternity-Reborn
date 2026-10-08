@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "worker-restart-admission-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "73207b8fe957249107277b93b1fb0c3d75cf0d10",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 93.4237105,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-admission-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-admission-linux",
+      "Categories": [
+        "worker-restart-admission-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartAdmissionTests.ColdPrepared_ActualPoolRefusesBeforeRecoveryCapacityAndLaunch",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartAdmissionTests.ColdPrepared_ActualPoolRefusesBeforeRecoveryCapacityAndLaunch",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

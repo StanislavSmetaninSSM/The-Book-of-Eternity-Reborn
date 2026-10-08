@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "dafd37e589eaf6fd4e05a996fd3ecf00e74e4a97",
+  "status": "Frozen dafd37e5 binaries: actual save outcomes 10 plus ordinary reads/refresh 9, all 19 passed; caller block and Linux remain unaccepted.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-read-refresh",
+    "portable-save-outcomes"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:27.5663279",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 19,
+    "CompletedCases": 19,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 19,
+    "Executed": 19,
+    "Passed": 19,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "A303CF51AD68EBCEEC507A37D0F199E7FA3BA72DB7ADC15B34B4AF1B9278A969",
+      "sha256": "7A32CEF1DEE9AB8196FE66E5D0D272ACB4E78A3AAE7A8F4523C4817A62700CF1"
+    },
+    {
+      "path": "portable-save-outcomes-unit-001.trx",
+      "originalSha256": "33987754AAF13DECF57A0A730EC58E9F9CE27E3B68D251928C2595937FFC9A11",
+      "sha256": "749EED7FDFD74FC0E39BEEBCBC34E64747CB393F003E8B87D1F073109664AE09"
+    },
+    {
+      "path": "portable-save-read-refresh-unit-002.trx",
+      "originalSha256": "78A4ADB09648FABD97630F0BE3C69EB90877FE867E925880D0C5C9DA373C0ACE",
+      "sha256": "43975FC73550239BFB8D75C1FB58EBD58633F8C5D0531693185927286321E799"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "F110F84FD06BF5266941A09805246C61ECBC0C1BD54E8EF29D2734509CCC9C09",
+      "sha256": "AAB63D0BAA70E620D10E5E4238F6A6E9A6072DB556B2D2F6A8D4F763094DFADF"
+    }
+  ]
+}

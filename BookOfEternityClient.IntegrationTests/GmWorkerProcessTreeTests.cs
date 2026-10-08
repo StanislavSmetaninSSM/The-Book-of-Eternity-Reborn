@@ -149,7 +149,7 @@ public sealed class GmWorkerProcessTreeTests
         internal void ReleaseConfirmation() =>
             _releaseConfirmation.TrySetResult();
 
-        public async Task ConfirmDeathAsync()
+        public async Task<GmWorkerCleanupEvidence> ConfirmDeathAsync()
         {
             Interlocked.Increment(ref _confirmationCalls);
             _confirmationStarted.TrySetResult();
@@ -160,6 +160,7 @@ public sealed class GmWorkerProcessTreeTests
                 throw new TimeoutException(
                     "Synthetic process-tree death remains unconfirmed.");
             }
+            return new(true, null); // No process exists in this capacity/serialization fixture.
         }
 
         public Task CleanupConfirmedAsync()

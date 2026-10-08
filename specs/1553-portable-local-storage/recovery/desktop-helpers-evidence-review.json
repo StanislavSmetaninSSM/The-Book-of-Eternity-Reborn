@@ -1,0 +1,32 @@
+{
+  "Task": "T050-DESKTOP-HELPERS-PORTABLE",
+  "Verdict": "PASS",
+  "ReviewedCommit": "6d0b5d6f42a35f048289ce5aa668a042ba3480eb",
+  "UnchangedEvidenceAt": "a14228c5c5e271e17dec63ed92636c1b68d7041f",
+  "Model": "gpt-6.1-sol",
+  "Reasoning": "xhigh",
+  "Reviewer": "/root/desktop_helpers_evidence_review",
+  "RequiredCorrections": [],
+  "SourcePinsVerified": 19,
+  "ArtifactPinsVerified": 36,
+  "DistinctGREEN": 23,
+  "HistoricalExecuted": 29,
+  "HistoricalPASS": 23,
+  "HistoricalFAIL": 6,
+  "PreparationTests": 0,
+  "DirectChecks": [
+    "Raw6phase summary/log/TRX counts and six causalRED names recur inGREEN",
+    "All source pins match frozen04c/current; complete artifact inventory",
+    "Actual ImageService/original settings session/menu/Explorer mods/main related folder consumers",
+    "SecondPrompt screen afterClear, original acknowledgements, inert audio/per-test own roots with assert removal",
+    "Safe baseline injection retained original behavior; no desktop process from controlled adapter",
+    "Catalog390/11111valid0tests; later related metadata only"
+  ],
+  "ClosurePending": "Final carrier writer GitHub-only restoration/remote readback",
+  "QualificationsExcluded": [
+    "positive Linux desktop association",
+    "native Windows execution",
+    "other blocks"
+  ],
+  "ReviewerTestsOrAppsExecuted": 0
+}

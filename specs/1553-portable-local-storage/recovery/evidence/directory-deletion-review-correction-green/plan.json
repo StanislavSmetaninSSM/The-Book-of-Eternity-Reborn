@@ -1,0 +1,63 @@
+{
+  "Categories": [
+    "portable-directory-recovery-boundary",
+    "portable-directory-same-lease-recovery"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+    "WorkingTreeFingerprint": "953962DAA135244FCDFCF4294E3346CD614AA4546D1C168791636526DE01610B",
+    "ChangedFiles": 5
+  },
+  "PreparationSeconds": 3.8799592,
+  "Descriptors": [
+    {
+      "Name": "portable-directory-recovery-boundary-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-directory-recovery-boundary",
+      "Categories": [
+        "portable-directory-recovery-boundary"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-directory-same-lease-recovery-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-directory-same-lease-recovery",
+      "Categories": [
+        "portable-directory-same-lease-recovery"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

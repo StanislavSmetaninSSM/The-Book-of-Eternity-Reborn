@@ -1,0 +1,30 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "Independent actual Sol6.1/xhigh final source/evidence review and GitHub-only candidate restoration",
+  "Artifacts": [
+    {
+      "Path": "review-restore.clone.log",
+      "StoredPath": "review-restore.clone.log.gz",
+      "StoredBytes": 357,
+      "StoredSha256": "d87777cb0314aaf5653161fc056899e2e408079c1a52b2f365ff59ff85554c8a",
+      "OriginalBytes": 1679,
+      "OriginalSha256": "e3fa090389341d0defca1eae3d4919e5479a9346d867f7caad8bb9f1cb8784ee"
+    },
+    {
+      "Path": "review-restore.json",
+      "StoredPath": "review-restore.json",
+      "StoredBytes": 558,
+      "StoredSha256": "650820db492bd23e8d7bae82132fa27da5fb51b2dee7d604aae23c750929fe6b",
+      "OriginalBytes": 558,
+      "OriginalSha256": "650820db492bd23e8d7bae82132fa27da5fb51b2dee7d604aae23c750929fe6b"
+    },
+    {
+      "Path": "review.json",
+      "StoredPath": "review.json",
+      "StoredBytes": 1504,
+      "StoredSha256": "e2373d8051acd24c10b18a25f5c26b1c355a3b3777a57a11104ae36b78a730c0",
+      "OriginalBytes": 1504,
+      "OriginalSha256": "e2373d8051acd24c10b18a25f5c26b1c355a3b3777a57a11104ae36b78a730c0"
+    }
+  ]
+}

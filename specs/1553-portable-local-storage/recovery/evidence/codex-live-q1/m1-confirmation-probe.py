@@ -1,0 +1,262 @@
+"""One authorized TERM confirmation via original ordinary M1; no model prompt or replay.
+
+Run only under the independently owned, pinned host-guardian. Arguments name
+this diagnostic's own runtime-only package and synthetic root, never user data.
+"""
+import errno
+import fcntl
+import json
+import os
+from pathlib import Path
+import pty
+import select
+import socket
+import struct
+import subprocess
+import sys
+import termios
+import time
+import uuid
+
+out = Path(sys.argv[1]).resolve()
+ship = out / "ship"
+scratch = out / "empty-codex-scratch"
+root = out / "fixture-root"
+session = root / "game_session"
+assert not scratch.exists() and not root.exists()
+scratch.mkdir()
+session.mkdir(parents=True)
+assert not list(scratch.iterdir())
+assert os.environ.get("TERM") == "dumb", "Do not replace the inherited presentation"
+pipe = "live-q1-" + uuid.uuid4().hex
+quote = lambda value: "'" + str(value).replace("'", "''") + "'"
+command = "codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox"
+config = {
+    "GmBridgeEnabled": True, "GmBridgeBackend": "OwnedTerminal",
+    "GmMainOwnerBackend": "NativeLineage", "GmBridgeAutoStart": False,
+    "GmBridgePipeNameOverride": pipe, "GmCliLaunchCommand": command,
+    "GmBridgeShellWorkingDirectory": str(scratch), "GmWorkerBridgeProfiles": [],
+    "MusicEnabled": False, "SoundEnabled": False,
+    # Unsupported default observation profile: do not invent Codex readiness.
+    "GmCliInputProfile": {"IdleMarker": "", "PromptPrefix": "", "WorkingMarker": ""},
+}
+(session / "config.json").write_text(json.dumps(config, indent=2) + "\n")
+record_path = root / ".boe_runtime/gm-runs/main.json"
+master, slave = pty.openpty()
+fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 25, 100, 0, 0))
+initial = termios.tcgetattr(slave)
+started = time.monotonic()
+captured = bytearray()
+rpc_journal = []
+result = {"Success": False, "InheritedTERM": os.environ["TERM"], "Dimensions": [100, 25],
+          "InputJournal": [], "KeyboardBytes": 0, "TERMAnswersAttempted": 0, "ModelPromptsSent": 0,
+          "ProfileIsSupported": False, "ConfiguredCommand": command,
+          "NoNeutralPackage": True, "Scope": "ordinary-same-namespace-lineage"}
+process = None
+eof = False
+original_identity = None
+
+TERM_GATE = (b'WARNING: TERM is set to "dumb". Codex\'s interactive TUI may not work in this terminal.\n'
+             b'Continue anyway? [y/N]:')
+FORBIDDEN_GATES = [b"do you trust", b"trust this", b"accept the terms", b"sign in to codex",
+                   b"grant access", b"update now", b"accept and continue"]
+
+
+def forbidden_gate(data):
+    lower = bytes(data).lower()
+    return any(marker in lower for marker in FORBIDDEN_GATES)
+
+
+def current_term_gate(data):
+    # Normalize only the observed PTY CR expansion, never strip arbitrary VT.
+    plain = bytes(data).replace(b"\r", b"").rstrip(b"\n ")
+    return not forbidden_gate(data) and plain.endswith(TERM_GATE) and plain.count(TERM_GATE) == 1
+
+
+def elapsed():
+    return time.monotonic() - started
+
+
+def receive(delay=.02):
+    global eof
+    if not eof and select.select([master], [], [], delay)[0]:
+        try:
+            data = os.read(master, 65536)
+        except OSError as ex:
+            if ex.errno != errno.EIO:
+                raise
+            data = b""
+        if not data:
+            eof = True
+        captured.extend(data)
+        if len(captured) > 262144:
+            raise RuntimeError("Startup capture exceeded 256KiB bound")
+
+
+def rpc(payload, seconds):
+    """One send, one reply; drain foreground output while the original peer waits."""
+    assert payload["command"] in ["status", "diagnostics", "shutdown"]
+    rpc_journal.append({"AtSeconds": round(elapsed(), 3), "Request": payload})
+    with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as peer:
+        peer.settimeout(.5)
+        peer.connect("/tmp/CoreFxPipe_" + pipe)
+        peer.sendall(json.dumps(payload).encode() + b"\n")
+        peer.setblocking(False)
+        reply = bytearray()
+        deadline = min(started + 25, time.monotonic() + seconds)
+        while time.monotonic() < deadline:
+            readable, _, _ = select.select([peer] + ([] if eof else [master]), [], [], .02)
+            if master in readable:
+                receive(0)
+            if peer in readable:
+                data = peer.recv(8192)
+                if not data:
+                    raise EOFError("Original pipe closed before complete receipt")
+                reply.extend(data)
+                if len(reply) > 262144:
+                    raise RuntimeError("RPC response exceeded bound")
+                if reply.endswith(b"\n"):
+                    response = json.loads(reply)
+                    rpc_journal[-1]["Response"] = response
+                    return response
+        raise TimeoutError("Original RPC outcome unknown; never resend")
+
+
+def own_foreground():
+    os.setsid()
+    fcntl.ioctl(slave, termios.TIOCSCTTY, 0)
+    os.tcsetpgrp(slave, os.getpid())
+
+
+try:
+    args = ["pwsh", "-NoLogo", "-NoProfile", "-File",
+            str(ship / "BookOfEternityClient/Launcher/bookofeternity.ps1"),
+            "start-bridge", "visible", "-SessionPath", str(session)]
+    result["Argv"] = args
+    process = subprocess.Popen(args, cwd=ship, stdin=slave, stdout=slave, stderr=slave,
+                               preexec_fn=own_foreground)
+    result["OriginalLauncherPid"] = process.pid
+    gate = None
+    # Exactly one owner-authorized TERM answer; no reply to another gate/query.
+    while elapsed() < 8:
+        receive()
+        if forbidden_gate(captured):
+            gate = "Other CLI confirmation/authentication gate; unanswered"
+            break
+        if current_term_gate(captured):
+            gate = "Exact TERM confirmation observed"
+            running = json.loads(record_path.read_bytes())
+            assert running["Disposition"] == "Running"
+            original_identity = {k[0].lower() + k[1:]: v for k, v in running["Identity"].items()}
+            original_identity["backend"] = 2
+            before = rpc({"command": "status"}, 2)
+            result["BeforeConfirmationStatus"] = before
+            assert before["ok"] and not before["status"]["ready"]
+            assert before["status"]["terminalOwnerRetained"] and not before["status"]["terminalUncertain"]
+            assert before["status"]["terminalRunId"] == original_identity["runId"]
+            assert before["status"]["cliLaunchCommand"] == command
+            # The status read may have drained additional foreground output.
+            # Drain pending bytes and revalidate the CURRENT trailing exact gate.
+            while elapsed() < 8 and not eof and select.select([master], [], [], 0)[0]:
+                receive(0)
+            result["ConfirmationGateRevalidatedAtSeconds"] = round(elapsed(), 3)
+            result["OriginalConfirmationGateStillCurrent"] = current_term_gate(captured)
+            if elapsed() >= 8 or not current_term_gate(captured) or process.poll() is not None:
+                gate = "Exact TERM gate no longer current or startup bound reached; unanswered"
+                break
+            offset = len(captured)
+            result["TERMAnswersAttempted"] = 1
+            journal = {"AtSeconds": round(elapsed(), 3), "Kind": "Exact authorized TERM warning", "BytesHex": "790d", "Attempt": 1}
+            result["InputJournal"].append(journal)
+            written = os.write(master, b"y\r")
+            journal["WrittenBytes"] = written
+            result["KeyboardBytes"] = written
+            assert written == 2, "Partial/unknown answer: never resend"
+            result["PostConfirmationOffset"] = offset
+            # Observe only: no response to cursor/color queries, access/trust/terms/update.
+            deadline = min(started + 8, time.monotonic() + 4)
+            while time.monotonic() < deadline and process.poll() is None:
+                receive()
+                tail = bytes(captured[offset:]).lower()
+                if forbidden_gate(tail):
+                    gate = "Post-TERM confirmation/authentication gate; unanswered"
+                    break
+            if gate == "Exact TERM confirmation observed":
+                gate = "Post-TERM bounded presentation captured; readiness unqualified"
+            break
+        if process.poll() is not None:
+            break
+    result["ObservationEndedAtSeconds"] = round(elapsed(), 3)
+    result["Gate"] = gate or "No qualified readiness within bounded observation"
+    running = json.loads(record_path.read_bytes())
+    result["RunningRecord"] = running
+    assert running["Disposition"] == "Running", "M1 did not reach acknowledged Running"
+    original_identity = {k[0].lower() + k[1:]: v for k, v in running["Identity"].items()}
+    original_identity["backend"] = 2
+    status = rpc({"command": "status"}, 2)
+    diagnostics = rpc({"command": "diagnostics"}, 2)
+    result["StartupStatus"] = status
+    result["StartupDiagnostics"] = diagnostics
+    assert status["ok"] and not status["status"]["ready"]
+    assert status["status"]["terminalOwnerRetained"] and not status["status"]["terminalUncertain"]
+    assert status["status"]["terminalRunId"] == original_identity["runId"]
+    assert status["status"]["cliLaunchCommand"] == command
+    assert status["status"]["shellWorkingDirectory"] == str(scratch)
+    result["ShutdownRequestAtSeconds"] = round(elapsed(), 3)
+    stopped = rpc({"command": "shutdown", "rootKey": original_identity["rootKey"],
+                   "expectedMainIdentity": original_identity}, 12)
+    result["ShutdownReceipt"] = stopped
+    assert stopped["ok"], "Original stop unconfirmed"
+    proof = stopped["status"]["terminalStop"]
+    assert proof["identity"]["runId"] == original_identity["runId"]
+    assert proof["state"] == "stopped-within-scope"
+    assert proof["cleanupComplete"] and not proof["authorityRetained"]
+    assert not stopped["status"]["terminalOwnerRetained"] and not stopped["status"]["terminalUncertain"]
+    while process.poll() is None and elapsed() < 25:
+        receive()
+    assert process.poll() == 0, "Original launcher did not exit successfully"
+    # Only master remains after original launcher and owned terminal exit.
+    os.close(slave)
+    slave = -1
+    while not eof and elapsed() < 25:
+        receive()
+    settled = json.loads(record_path.read_bytes())
+    result["StoppedRecord"] = settled
+    assert settled["Disposition"] == "Stopped" and settled["Identity"] == running["Identity"]
+    assert eof, "Foreground PTY was not actually drained"
+    result["OriginalScopedStopReceiptObserved"] = True
+    result["LifecycleVerified"] = True
+except Exception as ex:
+    # No retry, broad signals, PID-based cleanup or false logical settlement.
+    # Independent guardian owns emergency physical cleanup after this driver exits.
+    result["Failure"] = type(ex).__name__ + ": " + str(ex)
+finally:
+    result["LauncherExitCode"] = process.poll() if process is not None else None
+    result["ForegroundPtyEOF"] = eof
+    cleanup_errors = []
+    try:
+        result["ForegroundTermiosRestored"] = termios.tcgetattr(master) == initial
+        if not result["ForegroundTermiosRestored"]:
+            cleanup_errors.append("Original foreground termios was not restored")
+    except Exception as ex:
+        result["ForegroundTermiosRestored"] = False
+        cleanup_errors.append("Foreground termios observation: " + type(ex).__name__ + ": " + str(ex))
+    for descriptor in [slave, master]:
+        if descriptor >= 0:
+            try:
+                os.close(descriptor)
+            except OSError as ex:
+                cleanup_errors.append("Own descriptor closure: " + str(ex))
+    result["ForegroundDescriptorsClosed"] = not any(error.startswith("Own descriptor") for error in cleanup_errors)
+    result["CleanupErrors"] = cleanup_errors
+    result["Success"] = bool(result.get("LifecycleVerified")) and not cleanup_errors
+    result["ScratchFilesAfter"] = sorted(str(p.relative_to(scratch)) for p in scratch.rglob("*"))
+    result["ElapsedSeconds"] = round(elapsed(), 3)
+    result["CapturedBytes"] = len(captured)
+    (out / "startup.raw").write_bytes(captured)
+    (out / "startup-readable.txt").write_text(captured.decode("utf-8", errors="replace").replace("\x1b", "<ESC>"))
+    (out / "rpc-journal.json").write_text(json.dumps(rpc_journal, indent=2) + "\n")
+    (out / "probe-result.json").write_text(json.dumps(result, indent=2) + "\n")
+    print(json.dumps({"Success": result["Success"], "Gate": result.get("Gate"), "Failure": result.get("Failure"),
+                      "KeyboardBytes": result["KeyboardBytes"], "TERMAnswersAttempted": result["TERMAnswersAttempted"], "ElapsedSeconds": result["ElapsedSeconds"]}))
+sys.exit(0 if result["Success"] else 1)

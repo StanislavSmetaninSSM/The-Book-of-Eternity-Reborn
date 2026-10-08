@@ -36,6 +36,11 @@ public partial class GameEngine
 
     private async Task<GameResponse> BuildGameResponseFromFiles()
     {
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, BuildGameResponseFromFilesCoreAsync);
+    }
+
+    private async Task<GameResponse> BuildGameResponseFromFilesCoreAsync()
+    {
         var response = new GameResponse();
         var spiritualOutput = Interlocked.Exchange(ref _acceptedTurnSpiritualOutput, null);
         IReadOnlyDictionary<string, string?>? acceptedOutputs = null;
@@ -177,11 +182,16 @@ public partial class GameEngine
 
     private async Task RefreshRuntimeStateAsync()
     {
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, RefreshRuntimeStateCoreAsync);
+    }
+
+    private async Task RefreshRuntimeStateCoreAsync()
+    {
         await _stateManager.RefreshGameStateAsync();
         await _progressionSchedule.EnsureInitializedAsync();
     }
 
-    private async Task RebindRuntimeAfterSessionReplacementAsync()
+    private async Task RebindRuntimeAfterSessionReplacementAsync(string? establishedGeneration = null)
     {
         _lastResponse = null;
         _acceptedTurnWoundNotifications = Array.Empty<WoundPlayerNotification>();
@@ -194,7 +204,7 @@ public partial class GameEngine
         _lastKnownLevel = 1;
         _explorer.ForgetSessionTransientState();
 
-        var replacementGeneration = await CaptureCurrentSessionGenerationAsync();
+        var replacementGeneration = establishedGeneration ?? await CaptureCurrentSessionGenerationAsync();
         await SessionOperationContext.RunBoundAsync(_fs, replacementGeneration, async () =>
         {
             await RefreshRuntimeStateAsync();
@@ -1186,6 +1196,11 @@ public partial class GameEngine
 
     private async Task NormalizePendingRepairArtifactsAsync()
     {
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, NormalizePendingRepairArtifactsCoreAsync);
+    }
+
+    private async Task NormalizePendingRepairArtifactsCoreAsync()
+    {
         var repairRequestExists = _fs.FileExists(ValidationRepairRequestPath);
         var repairReadyExists = _fs.FileExists(ValidationRepairReadyPath);
         if (!repairRequestExists && !repairReadyExists)
@@ -1353,6 +1368,11 @@ public partial class GameEngine
 
     private async Task NormalizePendingTerminalProtocolFailureArtifactsAsync()
     {
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, NormalizePendingTerminalProtocolFailureArtifactsCoreAsync);
+    }
+
+    private async Task NormalizePendingTerminalProtocolFailureArtifactsCoreAsync()
+    {
         if (!_fs.FileExists(TerminalProtocolFailureRequestPath))
             return;
 
@@ -1383,6 +1403,11 @@ public partial class GameEngine
     /// A task completing after startup normalization and any diagnostic evidence retirement attempt.
     /// </returns>
     private async Task NormalizeRuntimeUiArtifactsAsync()
+    {
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, NormalizeRuntimeUiArtifactsCoreAsync);
+    }
+
+    private async Task NormalizeRuntimeUiArtifactsCoreAsync()
     {
         await _stateManager.RefreshGameStateAsync();
         var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
@@ -2274,4 +2299,3 @@ public partial class GameEngine
         ExplorerLocalTurnRollbackArtifacts.DeleteEmptyDirectories(_fs, writeLease);
     }
 }
-

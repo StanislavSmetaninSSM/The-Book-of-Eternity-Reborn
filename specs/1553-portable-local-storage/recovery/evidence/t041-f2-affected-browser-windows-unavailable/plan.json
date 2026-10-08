@@ -1,0 +1,112 @@
+{
+  "Categories": [
+    "gm-main-browser-bundle-client",
+    "gm-main-affected-browser",
+    "gm-main-affected-browser-client"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "6202426f0db8197d12b72f2ce111dd4a0c8f490f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 33.7980047,
+  "Descriptors": [
+    {
+      "Name": "gm-main-affected-browser-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "gm-main-affected-browser",
+      "Categories": [
+        "gm-main-affected-browser"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_SessionReplacementWaitsForWholeLegacyTransaction|FullyQualifiedName=BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction|FullyQualifiedName=BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ExplicitLeaseWritesWithoutAmbientAuthority|FullyQualifiedName=BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_LockReleaseFailureDoesNotRollbackCommittedMutation|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": true,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 18,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_SessionReplacementWaitsForWholeLegacyTransaction",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ExplicitLeaseWritesWithoutAmbientAuthority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_LockReleaseFailureDoesNotRollbackCommittedMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.BoundInvocationRejectsBeforePreparationAndUnboundLoadRemainsAvailable",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-affected-browser-client-frontend-002",
+      "Project": "frontend",
+      "Category": "gm-main-affected-browser-client",
+      "Categories": [
+        "gm-main-affected-browser-client"
+      ],
+      "Filter": null,
+      "Adapter": "vitest",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/browserLoadContinuation.test.ts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/browserLoadState.test.ts",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-browser-bundle-client-frontend-003",
+      "Project": "frontend",
+      "Category": "gm-main-browser-bundle-client",
+      "Categories": [
+        "gm-main-browser-bundle-client"
+      ],
+      "Filter": null,
+      "Adapter": "vitest",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/mainOperationLoadBundle.test.ts",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

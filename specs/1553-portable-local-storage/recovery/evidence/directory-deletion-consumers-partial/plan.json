@@ -1,0 +1,132 @@
+{
+  "Categories": [
+    "portable-directory-same-lease-recovery",
+    "portable-directory-recovery-boundary",
+    "portable-directory-consumers"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "efc28137c92515a9d72f16637084e571e48806b1",
+    "WorkingTreeFingerprint": "7E696551FCAD356396131896B8B1E7D4F3116A1069F7EA757D006C488207DB7E",
+    "ChangedFiles": 5
+  },
+  "PreparationSeconds": 232.6081925,
+  "Descriptors": [
+    {
+      "Name": "portable-directory-consumers-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-directory-consumers",
+      "Categories": [
+        "portable-directory-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_TerminalError_CleansTurnRequestAndPendingSnapshot",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_TerminalError_CleansTurnRequestAndPendingSnapshot",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-directory-consumers-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-directory-consumers",
+      "Categories": [
+        "portable-directory-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingSnapshotCleanup_AndLateRollback_MustNotTrustRawManifestArtifactPaths|FullyQualifiedName=BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_RemovesStalePendingDiceStateSoTurnRequestIsOnlyCurrentDiceAuthority|FullyQualifiedName=BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts|FullyQualifiedName=BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingSnapshotCleanup_AndLateRollback_MustNotTrustRawManifestArtifactPaths",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_RemovesStalePendingDiceStateSoTurnRequestIsOnlyCurrentDiceAuthority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-directory-recovery-boundary-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-directory-recovery-boundary",
+      "Categories": [
+        "portable-directory-recovery-boundary"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-directory-same-lease-recovery-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-directory-same-lease-recovery",
+      "Categories": [
+        "portable-directory-same-lease-recovery"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

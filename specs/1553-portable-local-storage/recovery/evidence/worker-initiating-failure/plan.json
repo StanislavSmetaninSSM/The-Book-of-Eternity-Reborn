@@ -1,0 +1,70 @@
+{
+  "Categories": [
+    "portable-worker-diagnostic",
+    "portable-load-worker-ordering"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-worker-diagnostic",
+      "reason": "T031 worker primary/cleanup causal diagnosis",
+      "contracts": [
+        "#1553 FR-005/007 T031-WORKER-PORTABLE"
+      ]
+    },
+    {
+      "category": "portable-load-worker-ordering",
+      "reason": "Retained real worker decision versus public Load ordering",
+      "contracts": [
+        "#1553 FR-006 T031-WORKER-PORTABLE"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "24b16d557bd5cc2cff5e3d1f11fe8c65e681f7a6",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 125.5632737,
+  "Descriptors": [
+    {
+      "Name": "portable-load-worker-ordering-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-load-worker-ordering",
+      "Categories": [
+        "portable-load-worker-ordering"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-worker-diagnostic-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-diagnostic",
+      "Categories": [
+        "portable-worker-diagnostic"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerDiagnosticTests.Begin_PreservesInitiatingFailureWhenPrivateCleanupAlsoFails",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerDiagnosticTests.Begin_PreservesInitiatingFailureWhenPrivateCleanupAlsoFails",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

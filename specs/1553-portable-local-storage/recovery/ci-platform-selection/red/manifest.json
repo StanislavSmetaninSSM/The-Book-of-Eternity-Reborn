@@ -1,0 +1,40 @@
+{
+  "sourceHead": "8661262e6f77e4482301cd2a0ad6fad8516f40ff",
+  "command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1 -TimeoutMinutes 3",
+  "exitCode": 1,
+  "powerShellAssertions": {
+    "passed": 0,
+    "failed": 2
+  },
+  "runnerAcceptedCaseResults": 0,
+  "causalFailure": "Fixed Windows workflow and absent matrix planner",
+  "preparationFailure": false,
+  "cleanup": "complete",
+  "sourcePins": {
+    ".github/workflows/dotnet-ci.yml": "fb75bd4800e15d74cf44c305be465f51eaefbddff9dbb55fbe8911a084e6d10b",
+    "scripts/testing/TestCategoryCatalog.psm1": "865b7e528b48bca008524865abe6186d5c61f3e623f73f785ce1f41c3da53112",
+    "scripts/tests/test-ci-platform.tests.ps1": "ee547224cfaf5df661cd9109ccec135d459f32ae7a9c6d49091fbc44394f8f5f",
+    "tests/categories.json": "25f38d97b9ec8cb57b0a93a065713ea383d426f3b431e88d200d37609b44a942",
+    "tests/selection.json": "48e9b6c8fded4501f0e9eb3a2bdbcca66ed889278597fa30186955264e7047a2"
+  },
+  "artifacts": [
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/red/plan.json.gz",
+      "originalSize": 1119,
+      "originalSha256": "01236823e725b5d8fa77b69af7c59e2a43ac412991f21d6bbccb2bdb7cb0bf8c",
+      "storedSha256": "0ccff122cdbda05f56df8422a581b603718e1173ae8776946c884bd96be373a5"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/red/summary.json.gz",
+      "originalSize": 1806,
+      "originalSha256": "ff1521b6e8dd5c2f847da5130ff78c4f74ff8d25ea291467caa26b40f6e4b72c",
+      "storedSha256": "f1b1de44bec5aef97183ba09b86fdc0c1dac1e9f0e40afd652349fdce9890e29"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/red/dotnet-test.log.gz",
+      "originalSize": 2754,
+      "originalSha256": "70a3ad0c84d95ef83793200043fadfdc53c3dd55010f8e7b2e48cfd08f714e66",
+      "storedSha256": "2c0a9060492427ffb67cb196adc51adb354cfaa98bff9d1989bbaf94d94bff7c"
+    }
+  ]
+}

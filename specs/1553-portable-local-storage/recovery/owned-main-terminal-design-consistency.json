@@ -1,0 +1,29 @@
+{
+  "Kind": "read-only Spec Kit delta consistency and source/evidence validation",
+  "SourceInputs": 18,
+  "ReusedAudits": 5,
+  "ProbeInputs": 2,
+  "Artifacts": 3,
+  "ValidGzip": 1,
+  "RuntimeTestsCatalogUnchanged": true,
+  "TestsExecuted": 0,
+  "NewTasks": [
+    "T041-OWNED-MAIN-TERMINAL-DESIGN reviewed",
+    "T041-OWNED-MAIN-TERMINAL-NEUTRAL unchecked/unimplemented"
+  ],
+  "RequirementsMapped": [
+    "US4/FR009/012/013/014/015/SC004",
+    "accepted native/systemd/Windows ownership scope",
+    "accepted T042 shared input arbitration/view consumption",
+    "run fence before production release",
+    "neutral-only persistent fixture and scoped stop",
+    "explicit live/cold/systemd/native Windows exclusions"
+  ],
+  "SourceTraceLinksValid": true,
+  "ConstitutionConflict": false,
+  "NoUnmappedCurrentRequestRequirement": true,
+  "HistoricalTasksNotReaudited": true,
+  "Unresolved": "No substantial design issue remains after independent review. Runtime implementation still unqualified/unapproved in this block.",
+  "HistoricalCandidate": "63c1383884f03294d82da8e6bb46d1d0d25644cb",
+  "ReviewedDesignCandidate": "ed435a6062e1a0b5554e3d1374f29b2a3412cd33"
+}

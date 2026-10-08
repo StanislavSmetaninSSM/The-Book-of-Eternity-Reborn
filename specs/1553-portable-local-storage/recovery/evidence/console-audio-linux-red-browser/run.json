@@ -1,0 +1,19 @@
+{
+  "Run": "red-browser",
+  "Source": "211e4f58d14a94ca1899472b8665401d8c23b297",
+  "Command": "pwsh -NoProfile -Command \"& ./scripts/test-csharp.ps1 -Category @('console-audio-linux','browser-audio-isolation')\"",
+  "Result": "causal RED; fail-fast executed browser1 of planned2",
+  "EvidenceDirectory": "recovery/evidence/console-audio-linux-red-browser",
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "ExitCode": 1,
+  "OwnedTreeCleanupSucceeded": true,
+  "Environment": {
+    "Activation": "source /workspace/.onboarding/activate.sh",
+    "AudioEvidence": "Own per-run BOE_AUDIO_EVIDENCE root; synthetic data only"
+  }
+}

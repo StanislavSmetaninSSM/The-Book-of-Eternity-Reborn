@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "portable-storage-stream-generation",
+    "portable-storage-image-admission",
+    "portable-storage-stream-linux-fifo"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "6322cb31d766571b63e3054fcecca89aa9f3ec24",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.0554105,
+  "Descriptors": [
+    {
+      "Name": "portable-storage-image-admission-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-image-admission",
+      "Categories": [
+        "portable-storage-image-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalImageAdapterAdmissionTests.PreIntentDriftCannotPublishCapturedArchive",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalImageAdapterAdmissionTests.PreIntentDriftCannotPublishCapturedArchive",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-stream-generation-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-generation",
+      "Categories": [
+        "portable-storage-stream-generation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages",
+          "Cases": 6
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-stream-linux-fifo-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-linux-fifo",
+      "Categories": [
+        "portable-storage-stream-linux-fifo"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LinuxFifoLaterMemberPreventsEarlierColdRollback",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LinuxFifoLaterMemberPreventsEarlierColdRollback",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

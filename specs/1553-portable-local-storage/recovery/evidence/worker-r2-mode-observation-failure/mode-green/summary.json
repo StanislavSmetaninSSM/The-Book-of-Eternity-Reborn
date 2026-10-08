@@ -1,0 +1,73 @@
+{
+  "Categories": [
+    "worker-restart-mode-linux",
+    "worker-run-ledger-storage-linux",
+    "worker-run-ledger-failures-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "8186b994b04c0e7deb416035f4d79686b9185d5e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "worker-restart-mode-linux",
+      "Seconds": 3.075243,
+      "BudgetMinutes": 2,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1058757,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0455992,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0402685,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 35.6103659,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 13,
+  "WallTime": "00:00:43.3185723",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 104,
+    "CompletedCases": 8,
+    "UnderfilledDescriptors": [
+      "worker-run-ledger-failures-linux-unit-002",
+      "worker-run-ledger-storage-linux-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 8,
+    "Executed": 8,
+    "Passed": 2,
+    "Failed": 6
+  },
+  "DuplicateTests": []
+}

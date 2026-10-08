@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "gm-main-crash-fixture-admission"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "9542eb31402e542e0f2498dd36ac6c06756bb248",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 54.2804052,
+  "Descriptors": [
+    {
+      "Name": "gm-main-crash-fixture-admission-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-crash-fixture-admission",
+      "Categories": [
+        "gm-main-crash-fixture-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainCrashFixtureAdmissionTests.FixtureAdmission_RejectsOutsideRootAndNonFixedPackageBeforeEffects|FullyQualifiedName=BookOfEternityClient.Tests.GmMainCrashFixtureAdmissionTests.FreshFixtureAdmission_IsSingleUseAndDoesNotDecodeOldRecord",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 1,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainCrashFixtureAdmissionTests.FixtureAdmission_RejectsOutsideRootAndNonFixedPackageBeforeEffects",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainCrashFixtureAdmissionTests.FreshFixtureAdmission_IsSingleUseAndDoesNotDecodeOldRecord",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

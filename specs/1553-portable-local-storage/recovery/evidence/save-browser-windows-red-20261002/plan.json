@@ -1,0 +1,54 @@
+{
+  "Categories": [
+    "portable-browser-save-creation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ae5d1f9ee7063ffa308d38388a96ab903ba4eb15",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.9553271,
+  "Descriptors": [
+    {
+      "Name": "portable-browser-save-creation-frontend-001",
+      "Project": "frontend",
+      "Category": "portable-browser-save-creation",
+      "Categories": [
+        "portable-browser-save-creation"
+      ],
+      "Filter": null,
+      "Adapter": "node",
+      "Exclusive": true,
+      "FrontendBuild": true,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/savePersistenceNotice.test.ts",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-browser-save-creation-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-browser-save-creation",
+      "Categories": [
+        "portable-browser-save-creation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBrowserSaveCreationTests.BrowserSaveUsesPreparedImageDecisionAndRetainsExactOutcome",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": true,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserSaveCreationTests.BrowserSaveUsesPreparedImageDecisionAndRetainsExactOutcome",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}

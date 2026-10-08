@@ -1,0 +1,26 @@
+{
+  "Task": "T031-BROWSER-DIRECT-GACHA-LINUX",
+  "Classification": "Preparation refusals, not causal RED",
+  "Runs": [
+    {
+      "SourceCommit": "d47d3f16837f56f23e3254e30047dc71d3b3ee17",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-direct-gacha-linux,browser-direct-gacha-linux-boundaries",
+      "Executed": 0,
+      "NoBuildOrWorkload": true,
+      "ExitCode": 1,
+      "Artifact": "comma-string.log",
+      "Bytes": 382,
+      "Sha256": "624f8134097ec5ed70ce4c652bd36ce5a87bd2175b8c1c6c1fee390fcae26f6b"
+    },
+    {
+      "SourceCommit": "1097f9ab9aa9047033096a7c149582615ed3ceaa",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-direct-gacha-linux-boundaries",
+      "Executed": 0,
+      "NoBuildOrWorkload": true,
+      "ExitCode": 1,
+      "Artifact": "related-shape.log",
+      "Bytes": 346,
+      "Sha256": "0eaa6ea05c01fd8fccfa94cb83c8cd2402e0d9428bf2a085fefebb04e03c556a"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-crash-pins-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d26f676132a2264ccac42a8ee524020de0016693",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 53.2132782,
+  "Descriptors": [
+    {
+      "Name": "gm-main-crash-pins-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-crash-pins-linux",
+      "Categories": [
+        "gm-main-crash-pins-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.ClientDeath_OriginalReceiptBoundaryControlsColdContinuation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunCrashLinuxTests.ClientDeath_OriginalReceiptBoundaryControlsColdContinuation",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

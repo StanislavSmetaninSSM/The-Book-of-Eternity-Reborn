@@ -1,0 +1,29 @@
+{
+  "sourceHead": "3464cd2438b95e13146fbcf2f75ad5382902ebc2",
+  "command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly -Parallelism 1 -TimeoutMinutes 3",
+  "exitCode": 0,
+  "cleanup": "complete",
+  "artifacts": [
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/final-plan/plan.json.gz",
+      "originalSize": 1942,
+      "originalSha256": "79ce91d3a502fdec72e59ecf6de7a9655825002714605358740e2f0a8b94f52b",
+      "storedSha256": "8ffb82e2895db34af9f91b6abc8dd32e683ddb36504ad83eb3c813a6a9a06024"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/final-plan/summary.json.gz",
+      "originalSize": 1982,
+      "originalSha256": "3993a30c7bec8ea5046fa9f1243aa94a0bf7d719743b83543917d8e3a145466e",
+      "storedSha256": "dbdf4a8ca880a05dded8b656d1f74c09a81a4361b31ab81bb62ce75ed9b642b3"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/final-plan/dotnet-test.log.gz",
+      "originalSize": 1626,
+      "originalSha256": "f76b1d9e6267b2682e261df71a41afc4251acb819bc5cee2fdc36e71634db1e7",
+      "storedSha256": "07a6a8bd217decc6aa773de6c2fa635c585321aecc05090c922e82b3b8ce94e7"
+    }
+  ],
+  "descriptors": 2,
+  "plannedFiles": 2,
+  "executed": 0
+}

@@ -43,9 +43,14 @@ public class GameSettings
     /// </summary>
     public bool GmBridgeEnabled { get; set; } = true;
     /// <summary>
-    /// Preferred GM daemon backend: ConPTYBridge, Clipboard, or WindowAutoPaste.
+    /// Preferred GM transport: OwnedTerminal (Linux), ConPTYBridge (Windows), Clipboard, or WindowAutoPaste.
     /// </summary>
     public string GmBridgeBackend { get; set; } = "ConPTYBridge";
+    /// <summary>Explicit Linux main owner request; Auto never silently downgrades to native.</summary>
+    public string GmMainOwnerBackend { get; set; } = "Auto";
+    /// <summary>Transport selection only; this value never grants process or write authority.</summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public bool UsesOwnedGmBridge => GmBridgeEnabled && (string.Equals(GmBridgeBackend,"ConPTYBridge",StringComparison.OrdinalIgnoreCase) || string.Equals(GmBridgeBackend,"OwnedTerminal",StringComparison.OrdinalIgnoreCase));
     /// <summary>
     /// Arbitrary shell command line started inside the GM bridge shell session, for example "codex -m gpt-5.6-terra -c model_reasoning_effort=high --dangerously-bypass-approvals-and-sandbox".
     /// </summary>
@@ -67,7 +72,11 @@ public class GameSettings
     /// </summary>
     public string GmBridgePasteVisibilityPolicy { get; set; } = BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.ExactTextOrConfiguredMarker;
     /// <summary>
-    /// Max seconds the GM bridge waits for a CLI prompt to render the pasted text or collapsed paste marker before pressing Enter.
+    /// Explicit controlled live-owner input profile. Empty defaults do not qualify an arbitrary live CLI.
+    /// </summary>
+    public GmCliInputProfile GmCliInputProfile { get; set; } = new();
+    /// <summary>
+    /// Legacy visibility timeout retained for the dormant visibility-policy helpers.
     /// </summary>
     public double GmBridgePromptVisibilityTimeoutSeconds { get; set; } = 15;
     /// <summary>
@@ -173,6 +182,7 @@ public class GameSettings
         GmBridgePromptVisibilityTimeoutSeconds = loaded.GmBridgePromptVisibilityTimeoutSeconds > 0
             ? Math.Clamp(loaded.GmBridgePromptVisibilityTimeoutSeconds, 1, 60)
             : 15;
+        GmCliInputProfile = (loaded.GmCliInputProfile ?? new()).Snapshot();
         GmBridgePasteVisibilityMarkers = BookOfEternityClient.Configuration.GmBridgePasteVisibilityPolicy.NormalizeMarkers(GmBridgePasteVisibilityMarkers);
         GmWorkerBridgeProfiles = NormalizeWorkerProfiles(loaded.GmWorkerBridgeProfiles);
     }

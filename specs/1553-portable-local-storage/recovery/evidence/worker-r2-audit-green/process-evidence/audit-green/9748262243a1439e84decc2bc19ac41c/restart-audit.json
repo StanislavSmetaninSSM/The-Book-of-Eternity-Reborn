@@ -1,0 +1,1 @@
+{"mode":"direct-publish","refused":true,"error":"InvalidOperationException","message":"Cleanup publication is outside the original audit path.","appendedTwice":false,"exactOnce":false,"preserved":true,"retained":true}

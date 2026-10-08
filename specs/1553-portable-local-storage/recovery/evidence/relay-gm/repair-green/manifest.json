@@ -1,0 +1,59 @@
+{
+  "Base": "328b113c386f2f0dfe6ed887b46cbab465c58965",
+  "Executed": 3,
+  "Passed": 3,
+  "Failed": 0,
+  "CompleteSelection": true,
+  "OwnedCleanup": true,
+  "Command": "scripts/test-csharp.ps1 -Category gm-relay-repair -NoBuild after fresh successful selected-project RED build",
+  "ModelCalls": 0,
+  "Scope": "Actual isolated relay ordinary repair protocol/current helper; not gameplay",
+  "SourcePins": [
+    {
+      "Path": "tests/fixtures/ProductionMain/codex-gm-relay.py",
+      "Bytes": 8446,
+      "SHA256": "113941f1f3e1a4d2f77c0c3fc12b6dd9e1ff4e3d357973371772e83867f91f22"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/relay-apply-response.ps1",
+      "Bytes": 2032,
+      "SHA256": "c2db9f9b9f155259270e02a950d8619730d30b231a05f115cb00e839a83dfc00"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/relay-repair-checks.py",
+      "Bytes": 5623,
+      "SHA256": "f04b747c99a0c0d2557395697528e8be275a90453f3b0934901fd877ce6aaa8d"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmRelayRepairTests.cs",
+      "Bytes": 1922,
+      "SHA256": "eec9dff7e313249350d382d524bbad6fd0e900efb15c071e805665b95804d76e"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "gm-relay-repair-unit-001.trx",
+      "Bytes": 5754,
+      "SHA256": "3b0d5c1a322e4f4b4fe3c97d45b78bbb269d48ebc271d231480a6ca92866898f",
+      "StoredPath": "gm-relay-repair-unit-001.trx.gz",
+      "StoredBytes": 1473,
+      "StoredSHA256": "854e7ff985c623c811be7da0bfa798de4c212b9e397c693f4bb619452e4be1fb"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1438,
+      "SHA256": "c5acf42af21951572ba07236de8ee8f6017280129e34b398c4c0a45634b98625",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 598,
+      "StoredSHA256": "408bc77ae6646a28d249809e701ac4cf1cf625eed4d9342c550b9cde596aa075"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 991,
+      "SHA256": "7eaeb3c3685017e569cb17b56d9bd883aa1c2b308655b35dc37cb6f77603382f",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 489,
+      "StoredSHA256": "4f89b3a467f225aee0af5b4106cefe7d9483131c5f9c6bdd43760e7c2a090c36"
+    }
+  ]
+}

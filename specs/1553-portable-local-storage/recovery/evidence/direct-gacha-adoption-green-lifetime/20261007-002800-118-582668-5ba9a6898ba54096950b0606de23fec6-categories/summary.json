@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "browser-direct-gacha-linux",
+    "browser-direct-gacha-linux-boundaries"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "d47d3f16837f56f23e3254e30047dc71d3b3ee17",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "browser-direct-gacha-linux",
+      "Seconds": 5.8817544,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "browser-direct-gacha-linux-boundaries",
+      "Seconds": 6.8302197,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0943326,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0715081,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1221249,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 50.3897496,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0050656,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:01:07.7388772",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 8,
+    "CompletedCases": 8,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 8,
+    "Executed": 8,
+    "Passed": 8,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

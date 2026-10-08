@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="e582de98-5d27-4351-a829-4acefd6d3b30" name="@c7669543e9c7 2026-10-07 00:17:48" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-07T00:17:48.5845608+00:00" queuing="2026-10-07T00:17:48.5845609+00:00" start="2026-10-07T00:17:44.8476231+00:00" finish="2026-10-07T00:17:48.5916128+00:00" />
+  <TestSettings name="default" id="c019e6cd-5dc1-4538-b6e2-568158cc57de">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-07_00_17_48" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="3fc40afc-b988-4110-9c16-c0c742a86e0e" testId="f41af748-80db-f816-3ab4-d0227ff3dd24" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn" computerName="c7669543e9c7" duration="00:00:01.1193432" startTime="2026-10-07T00:17:48.4787904+00:00" endTime="2026-10-07T00:17:48.4788118+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3fc40afc-b988-4110-9c16-c0c742a86e0e">
+      <Output>
+        <StdOut>Локальная запись не выполнена, состояние восстановлено: действие временно ждёт проверки ГМ. Завершите или обновите текущий запрос, затем повторите действие.
+OriginalStageFailure=System.PlatformNotSupportedException: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.
+   at BookOfEternityClient.Core.FileSystemManager.EnsureDescriptorBoundCreateOnlyPublicationSupported(String authorityName) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.cs:line 4023
+   at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.cs:line 3995
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesCoreAsync(String relativePath, Byte[] content, CancellationToken cancellationToken, IReadOnlySet`1 allowedCurrentSha256s, Boolean allowMissingCurrent, FileIdentity expectedDestinationIdentity, String expectedDestinationSha256, Func`1 afterPublicationNotCommitted) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.cs:line 1108
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.cs:line 847
+   at BookOfEternityClient.Services.ExplorerLocalTurnRollbackArtifacts.StageFileAsync(FileSystemManager fs, CanonicalWriteLease writeLease, String trackedFile, String scope) in /workspace/native-1553/BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs:line 354
+   at BookOfEternityClient.WebUi.BrowserAfterlifeWriteService.&lt;&gt;c__DisplayClass49_0.&lt;&lt;ApplyGachaPullAsync&gt;b__0&gt;d.MoveNext() in /workspace/native-1553/BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs:line 2199
+--- End of stack trace from previous location ---
+   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecuteAtomicCoreAsync(CanonicalWriteLease writeLease, BrowserLocalWriteRequest request, IReadOnlyCollection`1 rollbackPaths, Func`2 writeOperation, Func`1 prepareAfterRollback, IReadOnlyCollection`1 rollbackCleanupDirectories, IReadOnlyCollection`1 rollbackExternalFileIds) in /workspace/native-1553/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 299
+FixtureCleanup root=/tmp/boe-direct-gacha-linux-78cdd89137454c9b9a639bd294308774 rootRemoved=True</StdOut>
+        <ErrorInfo>
+          <Message>Локальная запись не выполнена, состояние восстановлено: действие временно ждёт проверки ГМ. Завершите или обновите текущий запрос, затем повторите действие.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn() in /workspace/native-1553/BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxTests.cs:line 19
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f41af748-80db-f816-3ab4-d0227ff3dd24">
+      <Execution id="3fc40afc-b988-4110-9c16-c0c742a86e0e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests" name="RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="f41af748-80db-f816-3ab4-d0227ff3dd24" executionId="3fc40afc-b988-4110-9c16-c0c742a86e0e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.50]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.96]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.99]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:03.17]       Локальная запись не выполнена, состояние восстановлено: действие временно ждёт проверки ГМ. Завершите или обновите текущий запрос, затем повторите действие.
+[xUnit.net 00:00:03.17]       Stack Trace:
+[xUnit.net 00:00:03.17]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxTests.cs(19,0): at BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn()
+[xUnit.net 00:00:03.17]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.17]       Output:
+[xUnit.net 00:00:03.17]         Локальная запись не выполнена, состояние восстановлено: действие временно ждёт проверки ГМ. Завершите или обновите текущий запрос, затем повторите действие.
+[xUnit.net 00:00:03.17]         OriginalStageFailure=System.PlatformNotSupportedException: Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.
+[xUnit.net 00:00:03.17]            at BookOfEternityClient.Core.FileSystemManager.EnsureDescriptorBoundCreateOnlyPublicationSupported(String authorityName) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.cs:line 4023
+[xUnit.net 00:00:03.17]            at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.cs:line 3995
+[xUnit.net 00:00:03.17]            at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesCoreAsync(String relativePath, Byte[] content, CancellationToken cancellationToken, IReadOnlySet`1 allowedCurrentSha256s, Boolean allowMissingCurrent, FileIdentity expectedDestinationIdentity, String expectedDestinationSha256, Func`1 afterPublicationNotCommitted) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.cs:line 1108
+[xUnit.net 00:00:03.17]            at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.cs:line 847
+[xUnit.net 00:00:03.17]            at BookOfEternityClient.Services.ExplorerLocalTurnRollbackArtifacts.StageFileAsync(FileSystemManager fs, CanonicalWriteLease writeLease, String trackedFile, String scope) in /workspace/native-1553/BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs:line 354
+[xUnit.net 00:00:03.17]            at BookOfEternityClient.WebUi.BrowserAfterlifeWriteService.&lt;&gt;c__DisplayClass49_0.&lt;&lt;ApplyGachaPullAsync&gt;b__0&gt;d.MoveNext() in /workspace/native-1553/BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs:line 2199
+[xUnit.net 00:00:03.17]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.17]            at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecuteAtomicCoreAsync(CanonicalWriteLease writeLease, BrowserLocalWriteRequest request, IReadOnlyCollection`1 rollbackPaths, Func`2 writeOperation, Func`1 prepareAfterRollback, IReadOnlyCollection`1 rollbackCleanupDirectories, IReadOnlyCollection`1 rollbackExternalFileIds) in /workspace/native-1553/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 299
+[xUnit.net 00:00:03.17]         FixtureCleanup root=/tmp/boe-direct-gacha-linux-78cdd89137454c9b9a639bd294308774 rootRemoved=True
+[xUnit.net 00:00:03.18]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T00:17:48.4742399+00:00">
+        <Text>[xUnit.net 00:00:03.17]     BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

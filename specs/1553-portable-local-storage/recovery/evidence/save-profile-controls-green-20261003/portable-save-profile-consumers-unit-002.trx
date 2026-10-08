@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="2f0ae6f7-74cc-4ed2-8e97-bdd3cf40efd7" name="Eja@[HOST] 2026-10-03 01:19:26" runUser="[HOST]\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T01:19:26.2250299+10:00" queuing="2026-10-03T01:19:26.2250305+10:00" start="2026-10-03T01:19:21.7741560+10:00" finish="2026-10-03T01:19:26.2394467+10:00" />
+  <TestSettings name="default" id="84d5e3d5-f3b5-486f-8854-988b9196b29d">
+    <Deployment runDeploymentRoot="Eja_[HOST]_2026-10-03_01_19_26" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="dedaaaf1-2ff3-453b-aa25-aedefd0fe6bd" testId="9f6c5c02-6d5d-bfc7-9b10-d3ae34c8489a" testName="BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_PlayerSoulProfileAuthorityMirror_RepairsStaleAutoProgression" computerName="[HOST]" duration="00:00:00.7015437" startTime="2026-10-03T01:19:25.3897862+10:00" endTime="2026-10-03T01:19:25.3898584+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dedaaaf1-2ff3-453b-aa25-aedefd0fe6bd" />
+    <UnitTestResult executionId="d06f7986-6e1a-464d-94f8-8bef0dac584d" testId="cd67b100-f2c2-50f7-0b48-17985241707f" testName="BookOfEternityClient.Tests.StateManagerTests.AfterlifeEntityProfileState_DoesNotExposeUnleasedCanonicalMirrorWrite" computerName="[HOST]" duration="00:00:00.0028343" startTime="2026-10-03T01:19:26.0499158+10:00" endTime="2026-10-03T01:19:26.0499160+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d06f7986-6e1a-464d-94f8-8bef0dac584d" />
+    <UnitTestResult executionId="c0535daa-e31b-4154-bb86-e8744f60984d" testId="31cc8539-1643-a86e-554e-99f040d71731" testName="BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease" computerName="[HOST]" duration="00:00:00.6532768" startTime="2026-10-03T01:19:26.0466214+10:00" endTime="2026-10-03T01:19:26.0466216+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c0535daa-e31b-4154-bb86-e8744f60984d" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.StateManagerTests.AfterlifeEntityProfileState_DoesNotExposeUnleasedCanonicalMirrorWrite" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="cd67b100-f2c2-50f7-0b48-17985241707f">
+      <Execution id="d06f7986-6e1a-464d-94f8-8bef0dac584d" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.StateManagerTests" name="AfterlifeEntityProfileState_DoesNotExposeUnleasedCanonicalMirrorWrite" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="31cc8539-1643-a86e-554e-99f040d71731">
+      <Execution id="c0535daa-e31b-4154-bb86-e8744f60984d" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.StateManagerTests" name="RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_PlayerSoulProfileAuthorityMirror_RepairsStaleAutoProgression" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="9f6c5c02-6d5d-bfc7-9b10-d3ae34c8489a">
+      <Execution id="dedaaaf1-2ff3-453b-aa25-aedefd0fe6bd" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.StateManagerTests" name="RefreshGameStateAsync_PlayerSoulProfileAuthorityMirror_RepairsStaleAutoProgression" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="9f6c5c02-6d5d-bfc7-9b10-d3ae34c8489a" executionId="dedaaaf1-2ff3-453b-aa25-aedefd0fe6bd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cd67b100-f2c2-50f7-0b48-17985241707f" executionId="d06f7986-6e1a-464d-94f8-8bef0dac584d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="31cc8539-1643-a86e-554e-99f040d71731" executionId="c0535daa-e31b-4154-bb86-e8744f60984d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="3" executed="3" passed="3" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.30]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.96]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.98]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:03.44]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

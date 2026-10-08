@@ -1,0 +1,207 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-OWNED-MAIN-TERMINAL-DESIGN",
+  "Issue": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553",
+  "AcceptedBase": "1bc9d67536dccbcc6672d8e7cd71ad885c2a946c",
+  "Design": "specs/1553-portable-local-storage/owned-main-terminal-design.md",
+  "Status": "DESIGN PASS; neutral-only implementation is the next proposed slice, not authorized by this checkpoint",
+  "RuntimeOrTestOrCatalogChanged": false,
+  "TestsExecuted": 0,
+  "PriorCohortsRepeated": false,
+  "SourceInputs": [
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Sha256": "43dc3a6477afa4240e6b537001972a7869006da57b8fdadd06ae038dcbcbd7bc",
+      "GitBlob": "3b2398e45ea394551a21e546e3e9fa2db18c60e9",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "BookOfEternityGMBridge/ConPtySession.cs",
+      "Sha256": "8c609242e9c9f6fe2e29526184c7350058a959b56bf02852826572b762d152c7",
+      "GitBlob": "9f23aba595233798908a1f211c05534574c2f293",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "Sha256": "0d1a690eccd1fa66712bb66066f4c86702c85effbe69aad664e74c18497d8536",
+      "GitBlob": "b8f49428e1eba155963679009d5c803a3776f2f7",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+      "Sha256": "aea4e886f3f2209b32e3f79ab37b62793567d6e7510109a6622be31f2af9de4d",
+      "GitBlob": "603f4886992cc8326a72d4249e9042390cf539f4",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Sha256": "009f4dbfe71f80887561227b708af0abb9a153a8de2a75c10af0be1487f6e4c6",
+      "GitBlob": "e6e78f3b5797ed6367763878790309e48041befe",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Sha256": "b8b6ed123ca2b437713e51e022f9fe943d0d762967e6d7388f040e2ae68f8b9a",
+      "GitBlob": "beeb7e12a25ffb7f3874db41b17b8d6f46836702",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs",
+      "Sha256": "42d4ef1fb51e5e269d807dab09b47774aec54b9e2e1fe9fd9f6e7cb69a7d8949",
+      "GitBlob": "7001377199fd168a85dc110481454846c2573dda",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeDescriptors.cs",
+      "Sha256": "59540c43658b8a079ae842eb252196ad3878c3912a3726a4a6b2c1a1f8a62160",
+      "GitBlob": "0d889a1d4cc5f1048c50122feebb85082d119808",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerWindowsOwnedLaunch.cs",
+      "Sha256": "2960a8393c651768896bee1867aa971dff40c4d33000320b0cfb9454e3086056",
+      "GitBlob": "7336881118fcbeb0268db2eca36ebed3dd73deb5",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs",
+      "Sha256": "70d56db7e8f3ce129310c7e207c9c38bff8a450ecfaa43ddec1a515582162ba1",
+      "GitBlob": "b104fa202efd54b616e8f04b9b2e324411db7668",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerOwnedLaunch.cs",
+      "Sha256": "632fd3b046ff0732351341e78f49b2af5334766f69169e6d2e367e50b408ccac",
+      "GitBlob": "7b8fb1555d1f73b098718e11c06cf312ac4750f2",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs",
+      "Sha256": "fdc63764d17b50c37477c900b9a8fea0c97ec7eaaab84b1a25c0703dacd2a7a1",
+      "GitBlob": "855114bfafa9981c76cb2f15c04accaffc7629c7",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunAdmission.cs",
+      "Sha256": "aa1338fbfa3ba4b8a89851acaa41b4a5bfa3b95c8cc3239116fc24057add621a",
+      "GitBlob": "aaa6433bb7ca0caa687f66d660be85ff82f83983",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
+      "Sha256": "d31a714f9485647ab68b6ee7b7d07da852cb1e88edb3f0df7a1e6bf5ff9ec8c8",
+      "GitBlob": "877b16da222a4326d3228d08a1a253b0b81ecbbb",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Sha256": "d7963c86632153ec2bf1adf9a7c30dea29e1cea5c274e5fa0ea311a0518cc3db",
+      "GitBlob": "6c3ddbc42282d9b0ee2251764fda61250f97984c",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "scripts/build-linux-supervisor.ps1",
+      "Sha256": "14a665eb1734e3d4cca3607efc69c1b37ef3a355dd94d93487989d2fd6882485",
+      "GitBlob": "f0bde0ae108612a995ecab179ad655cb3d3747a9",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "tests/categories.json",
+      "Sha256": "2e8f0d3c2c6a31d829fd441dee9897ed0bc66a646d822220e6f96f87ec45641c",
+      "GitBlob": "f1cc62f95ea2f5a5f498972991af954b8dcc4225",
+      "UnchangedFromAcceptedBase": true
+    },
+    {
+      "Path": "tests/selection.json",
+      "Sha256": "5368fc330a4b0719b118ba0e1fe26ff7f612338ad27be7a702feeecdcddb5d18",
+      "GitBlob": "543e1e298a04268f754ebdb03d3c25fc17eca0c3",
+      "UnchangedFromAcceptedBase": true
+    }
+  ],
+  "ReusedAudits": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-fallback-qualification.json",
+      "Sha256": "14e7f7f9eee859546d93d0d0b769a832b91a1bf3e80c7b044e27758cb7be74b6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/worker-host-qualification.json",
+      "Sha256": "3b678c0a8c0eb3980782f3c1d54c26b47d7606b8bc43ed04e74ed5a970fe7af4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/gm-output-qualification.json",
+      "Sha256": "17f6360bf8242c3791419527aef5d819901b8b46272981234ac43b3ca4312e0b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/gm-input-lifetime-qualification.json",
+      "Sha256": "e217ed38a476d3ac30da00684e0e98ea69375997519767effaf91d765ebaec6c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/gm-input-transaction-qualification.json",
+      "Sha256": "1fadb324185ceb9d97f386a163e1f9a8da2fe1c14cf7b96f28d6e5c3cbfcfa87"
+    }
+  ],
+  "ProbeManifest": "specs/1553-portable-local-storage/recovery/evidence/t041-owned-terminal-probe/manifest.json",
+  "ProbeDriversExecuted": 1,
+  "PrimitiveChecksPassed": 8,
+  "NativeIntegratedBackendQualified": false,
+  "SystemdPositiveQualification": false,
+  "MainProductionAdmissionEnabled": false,
+  "NeutralImplementationAuthorized": false,
+  "SpecKit": {
+    "Prerequisites": "pwsh -NoProfile -File .specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks",
+    "FeatureDir": "/workspace/native-1553/specs/1553-portable-local-storage",
+    "Constitution": "2.1.0",
+    "Method": "Existing feature amendments, no setup-plan overwrite/scaffold, Superpowers brainstorming/writing-plans, spec-kit-superpowers-bridge; read-only cross-artifact consistency review."
+  },
+  "NoGMUpdateRationale": "Design-only client-owned terminal transport; no gameplay/save/model/GM-authored contract changed.",
+  "Review": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Status": "DESIGN PASS",
+    "CandidateCommit": "ed435a6062e1a0b5554e3d1374f29b2a3412cd33",
+    "Report": "specs/1553-portable-local-storage/recovery/owned-main-terminal-design-review.json",
+    "ClosedFindings": 2,
+    "UnresolvedSubstantialDefects": 0
+  },
+  "Publication": {
+    "InitialBoundaryCheckpoint": "8ebee46783a801a759e64cc91daff451cad0d14c",
+    "InitialRemoteReadback": {
+      "Matched": true,
+      "ChangedFilesByteReadback": 4,
+      "Clean": true
+    },
+    "CandidateAndFinal": "Exact publication and fresh restore evidence follow after independent review; final SHA is recorded in handoff to avoid self-reference.",
+    "CandidateRestoration": {
+      "Commit": "63c1383884f03294d82da8e6bb46d1d0d25644cb",
+      "Proof": "specs/1553-portable-local-storage/recovery/owned-main-terminal-design-candidate-restore.json",
+      "TrackedFiles": 13137,
+      "FreshGitHubOnly": true,
+      "ByteTreeHistoryCleanFsckRemote": true,
+      "TestsExecuted": 0
+    },
+    "DesignCorrectionReadbacks": [
+      {
+        "Commit": "6a63d31cb3faf3e2d213c115c010fc868a16543e",
+        "RemoteMatched": true,
+        "ChangedFilesByteReadback": 1,
+        "Clean": true
+      },
+      {
+        "Commit": "ed435a6062e1a0b5554e3d1374f29b2a3412cd33",
+        "RemoteMatched": true,
+        "ChangedFilesByteReadback": 1,
+        "Clean": true
+      }
+    ]
+  },
+  "Limits": [
+    "Runtime not implemented",
+    "No integrated Linux terminal/backend qualification",
+    "No positive systemd-user/native Windows qualification",
+    "No production main run fence or launch",
+    "No arbitrary live CLI viewport/input UX qualification",
+    "No provider/saves/public rollout",
+    "No cold exactly-once"
+  ],
+  "ConsistencyReport": "specs/1553-portable-local-storage/recovery/owned-main-terminal-design-consistency.json"
+}

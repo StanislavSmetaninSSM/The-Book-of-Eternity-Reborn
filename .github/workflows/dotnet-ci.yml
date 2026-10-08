@@ -13,40 +13,68 @@ permissions:
   contents: read
 
 jobs:
-  build-and-test:
-    name: Selected category verification
-    runs-on: windows-latest
+  plan:
+    name: Plan explicit category hosts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.selection.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Plan only the reviewed selection
+        id: selection
+        shell: pwsh
+        run: ./scripts/plan-test-ci.ps1 -SelectionFile tests/selection.json -GitHubOutput $env:GITHUB_OUTPUT
+
+  selected-tests:
+    name: Selected contracts (${{ matrix.platform }})
+    needs: plan
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 35
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Read selected environment requirements
-        id: requirements
+      - name: Validate actual host and materialize exact group
         shell: pwsh
+        env:
+          BOE_CI_SELECTION: ${{ toJSON(matrix.selection) }}
+          BOE_CI_RUNNER: ${{ matrix.runner }}
         run: |
+          $ErrorActionPreference = 'Stop'
           Import-Module ./scripts/testing/TestCategoryCatalog.psm1
           $catalog = Read-TestCategoryCatalog ./tests/categories.json
-          $selection = Get-Content ./tests/selection.json -Raw | ConvertFrom-Json
-          $needsFrontend = $false
-          foreach ($entry in $selection.selections) {
-            $category = @($catalog.categories | Where-Object id -CEQ $entry.category)
-            if ($category.Count -ne 1) { throw "Unknown selected category: $($entry.category)" }
-            $needsFrontend = $needsFrontend -or $category[0].requirements.frontendBuild -or @($category[0].selectors | Where-Object project -EQ frontend).Count -gt 0
+          $selection = $env:BOE_CI_SELECTION | ConvertFrom-Json -AsHashtable
+          $plan = Get-TestCategoryCiMatrix $catalog $selection
+          if ($plan.include.Count -ne 1 -or $plan.include[0].runner -cne $env:BOE_CI_RUNNER) {
+            throw 'Matrix group differs from the exact catalog selection.'
           }
-          "frontend=$($needsFrontend.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+          if (($env:BOE_CI_RUNNER -ceq 'ubuntu-24.04' -and -not [OperatingSystem]::IsLinux()) -or
+              ($env:BOE_CI_RUNNER -ceq 'windows-latest' -and -not [OperatingSystem]::IsWindows())) {
+            throw 'Selected native host differs from the actual operating system.'
+          }
+          New-Item -ItemType Directory -Path TestResults -Force | Out-Null
+          $selection | ConvertTo-Json -Depth 20 | Set-Content TestResults/ci-selection.json -Encoding utf8NoBOM
 
-      - name: Setup Node 22
-        if: steps.requirements.outputs.frontend == 'true'
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          cache: npm
-          cache-dependency-path: BookOfEternityClient.WebFrontend/package-lock.json
+      - name: Verify preinstalled frontend Node
+        if: matrix.frontend
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $nodeVersion = & node --version
+          if ($LASTEXITCODE -ne 0 -or $nodeVersion -isnot [string] -or
+              $nodeVersion -notmatch '^v22\.(\d+)\.\d+$' -or [int]$Matches[1] -lt 12) {
+            throw 'Frontend CI requires preinstalled Node.js 22.12+ (major 22); no installer or fallback is used.'
+          }
+          Write-Host "Using runner Node.js $nodeVersion"
 
       - name: Restore browser frontend dependencies
-        if: steps.requirements.outputs.frontend == 'true'
+        if: matrix.frontend
         run: npm ci --prefix BookOfEternityClient.WebFrontend
 
       - name: Setup current compiler and target runtime
@@ -59,7 +87,7 @@ jobs:
       - name: Verify explicitly selected contracts
         shell: pwsh
         run: |
-          ./scripts/test-csharp.ps1 -SelectionFile tests/selection.json
+          ./scripts/test-csharp.ps1 -SelectionFile TestResults/ci-selection.json
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Preserve warning budget for selected builds
@@ -73,7 +101,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: dotnet-test-results
+          name: dotnet-test-results-${{ matrix.platform }}
           path: TestResults
           if-no-files-found: ignore
 
@@ -81,6 +109,24 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: browser-smoke-artifacts
+          name: browser-smoke-artifacts-${{ matrix.platform }}
           path: TestResults/browser-smoke
           if-no-files-found: ignore
+
+  build-and-test:
+    # Preserve the existing final check name; successful planning alone is insufficient.
+    name: Selected category verification
+    needs: [plan, selected-tests]
+    if: ${{ always() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Require every selected group to succeed
+        shell: pwsh
+        env:
+          BOE_PLAN_RESULT: ${{ needs.plan.result }}
+          BOE_TEST_RESULT: ${{ needs.selected-tests.result }}
+        run: |
+          if ($env:BOE_PLAN_RESULT -cne 'success' -or $env:BOE_TEST_RESULT -cne 'success') {
+            throw 'Explicit category planning or selected verification did not succeed.'
+          }

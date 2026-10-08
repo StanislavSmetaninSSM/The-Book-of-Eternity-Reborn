@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "dafd37e589eaf6fd4e05a996fd3ecf00e74e4a97",
+  "status": "Fresh Windows builds succeeded; actual player save boundary reached once, then finalization masked typed save outcome with InvalidDataException. Player category timed out; no TRX, formal count zero; core categories unrun in this invocation.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-read-refresh",
+    "portable-save-outcomes",
+    "portable-engine-save-player"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:04:31.4579846",
+  "exitCode": 124,
+  "selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 21,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-engine-save-player-integration-001",
+      "portable-save-outcomes-unit-002",
+      "portable-save-read-refresh-unit-003"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "timedOut": true,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "81C534C20655F9D544BDC9485689F6B2F79DD32E892EC8E2218F732BE6208243",
+      "sha256": "0587C407EAA7BBF111C10D177913309B594AFA034970C036791E30F3F7348E25"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "C9B12D8347249BB6FE74300595CE6046328A411711E42DFF86CCFF091CACEC19",
+      "sha256": "CDBA6CBC3FFAF30C1B08CF736A8D28AF272D581CAF115F9C1AEB480E330E44D9"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "AB79E093C2B51FA8EE921F9EA94292221DA15CF241311FDC90405118DF3FBC43",
+      "sha256": "7BE054CCAA01D014F8377E6DAD76CE99C835F5E819EBF0212330939140EE8C6B"
+    },
+    {
+      "path": "Build-integration.log",
+      "originalSha256": "6E267228B5DAA72725FE53CB46FC1F1054A75568C109005F4E742B5E78FB89A2",
+      "sha256": "64C669A2AA8DF5AAC97CC5FA8F138547D66EBCA8D5124EAF24372E52CB7DE98A",
+      "transform": "full sanitized text"
+    },
+    {
+      "path": "dotnet-test.log",
+      "originalSha256": "D940903EE9215E9208C2E9B0F6E85DDF97FFC2DA0CF62593570AEDC8129DCCB3",
+      "sha256": "C28F7A83E0716DC74C08FC0ECF99DCEBB2A5D32BCABB71DEE20F511F74A312ED",
+      "transform": "execution tail after discovery; full source hash retained"
+    }
+  ]
+}

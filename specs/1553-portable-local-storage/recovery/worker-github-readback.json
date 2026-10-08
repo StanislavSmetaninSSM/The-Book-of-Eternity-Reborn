@@ -1,0 +1,16 @@
+{
+  "Commit": "c122d3e18550f8169b288628ecab3276758bdd7c",
+  "Tree": "4093c98d3495942ee4b41024870e2237852390e5",
+  "TrackedFiles": 5042,
+  "CleanCheckout": true,
+  "AllPhysicalGitBlobHashesMatch": true,
+  "WorkerManifestsVerified": 19,
+  "WorkerEvidenceTrxParsed": 21,
+  "EmbeddedArtifactsVerified": 72,
+  "QualifiedProductionBlobsVerified": 8,
+  "Method": "Fresh GitHub-only restoration and direct branch verification, followed by independent Sol6.1 XHigh physical blob/artifact/TRX/runtime verification on 2026-10-05. No old source or object copy used.",
+  "Connectivity": "git fsck --connectivity-only exit0",
+  "BuildOrTestsRepeated": false,
+  "Limit": "Verifies the published bounded native-Linux worker supplement. It does not qualify native Windows, process/IPC/PTY or full gameplay/client acceptance.",
+  "ManifestScope": "recovery/evidence/worker*/manifest.json, including two validator-supplement PlanOnly manifests"
+}

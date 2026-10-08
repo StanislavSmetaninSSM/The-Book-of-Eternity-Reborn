@@ -1,0 +1,951 @@
+{
+  "Counts": {
+    "Manifests": 36,
+    "Inputs": 4619,
+    "Artifacts": 680,
+    "Gzip": 352,
+    "Guardians": 42
+  },
+  "AllSourceBytesAndGitBlobsMatched": true,
+  "AllArtifactsAndGzipMatched": true,
+  "AllGuardianScopesEmpty": true,
+  "Runs": [
+    {
+      "Label": "load-ux-affected-frontend-green",
+      "SourceCommit": "ecd14793df2ebec532f7908e982dc80c40be7f09",
+      "Summaries": [
+        {
+          "SourceRevision": "ecd14793df2ebec532f7908e982dc80c40be7f09",
+          "ExitCode": 0,
+          "Tests": {
+            "Total": 64,
+            "Executed": 64,
+            "Passed": 64,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 2,
+            "CompletedDescriptors": 2,
+            "PlannedCases": 6,
+            "CompletedCases": 64,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-catalog-discovery",
+      "SourceCommit": "19dc27ea9ada6dbccd22bbf637b60b02d829876a",
+      "Summaries": [
+        {
+          "SourceRevision": "19dc27ea9ada6dbccd22bbf637b60b02d829876a",
+          "ExitCode": 0,
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 0,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 0,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [],
+            "Complete": false
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-connected-positive-first",
+      "SourceCommit": "d69e440402da2a17e987ea7aca876ced99518d80",
+      "Summaries": [
+        {
+          "SourceRevision": "d69e440402da2a17e987ea7aca876ced99518d80",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 3,
+            "Executed": 3,
+            "Passed": 2,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 3,
+            "CompletedCases": 3,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-console-causal-red",
+      "SourceCommit": "6f28d36134c665b787d985e404fe06c4aa7f16a9",
+      "Summaries": [
+        {
+          "SourceRevision": "6f28d36134c665b787d985e404fe06c4aa7f16a9",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 1,
+            "Executed": 1,
+            "Passed": 0,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 1,
+            "CompletedCases": 1,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-console-fixture-canonical",
+      "SourceCommit": "8d71b38a9b60800c5e0efd4ff035dd66d3abcd0c",
+      "Summaries": [
+        {
+          "SourceRevision": "8d71b38a9b60800c5e0efd4ff035dd66d3abcd0c",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 1,
+            "Executed": 1,
+            "Passed": 0,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 2,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 2,
+            "CompletedCases": 1,
+            "UnderfilledDescriptors": [
+              "gm-load-early-ack-unit-002"
+            ],
+            "Complete": false
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-console-fixture-schema",
+      "SourceCommit": "3aa1f64b837e651ba10bc539b188620806c6df40",
+      "Summaries": [
+        {
+          "SourceRevision": "3aa1f64b837e651ba10bc539b188620806c6df40",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 1,
+            "Executed": 1,
+            "Passed": 0,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 1,
+            "CompletedCases": 1,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-console-fixture-validation",
+      "SourceCommit": "ebdf6b990fe61a018583f0477eee245ee8ec03c6",
+      "Summaries": [
+        {
+          "SourceRevision": "ebdf6b990fe61a018583f0477eee245ee8ec03c6",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 1,
+            "Executed": 1,
+            "Passed": 0,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 1,
+            "CompletedCases": 1,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-console-preparation-namespace",
+      "SourceCommit": "4c5431ad49b9e468d931b1f374f3fb4b2a80cb63",
+      "Summaries": [
+        {
+          "SourceRevision": "4c5431ad49b9e468d931b1f374f3fb4b2a80cb63",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 0,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 0,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [],
+            "Complete": false
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-console-preparation-serialization",
+      "SourceCommit": "bf802ff8b550a798be2f70a685c4fb53a9ec36f9",
+      "Summaries": [
+        {
+          "SourceRevision": "bf802ff8b550a798be2f70a685c4fb53a9ec36f9",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 1,
+            "Executed": 1,
+            "Passed": 0,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 1,
+            "CompletedCases": 1,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-debt-causal-red",
+      "SourceCommit": "9cb3481c142df2a236fa95809ef3a6f79bec36c6",
+      "Summaries": [
+        {
+          "SourceRevision": "9cb3481c142df2a236fa95809ef3a6f79bec36c6",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 1,
+            "Executed": 1,
+            "Passed": 0,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 1,
+            "CompletedCases": 1,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-debt-fixture-unreached",
+      "SourceCommit": "33c6b18e7aa4d3fdcb02a30f0c315ccd72aafcf5",
+      "Summaries": [
+        {
+          "SourceRevision": "33c6b18e7aa4d3fdcb02a30f0c315ccd72aafcf5",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 1,
+            "Executed": 1,
+            "Passed": 0,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 1,
+            "CompletedCases": 1,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-fault-matrix-build-preparation",
+      "SourceCommit": "b6f5849a282942db6a0e19ac947869872bf20f2d",
+      "Summaries": [
+        {
+          "SourceRevision": "b6f5849a282942db6a0e19ac947869872bf20f2d",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 0,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 0,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [],
+            "Complete": false
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-final-selection-plan",
+      "SourceCommit": "19dc27ea9ada6dbccd22bbf637b60b02d829876a",
+      "Summaries": [
+        {
+          "SourceRevision": "19dc27ea9ada6dbccd22bbf637b60b02d829876a",
+          "ExitCode": 0,
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 17,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 57,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [
+              "browser-load-session-lifecycle-frontend-001",
+              "frontend-shell-types-frontend-002",
+              "gm-load-admission-faults-unit-003",
+              "gm-load-affected-backend-unit-004",
+              "gm-load-affected-frontend-frontend-005",
+              "gm-load-affected-refresh-integration-006",
+              "gm-load-cleanup-debt-unit-007",
+              "gm-load-early-ack-unit-008",
+              "gm-load-installed-profile-unit-009",
+              "gm-load-lost-reply-unit-010",
+              "gm-load-ordinary-schema-integration-011",
+              "gm-load-protocol-unit-012",
+              "gm-load-restart-faults-unit-013",
+              "gm-load-rollback-cut-unit-014",
+              "gm-load-session-lifecycle-unit-015",
+              "gm-load-stop-faults-unit-016",
+              "gm-load-storage-faults-unit-017"
+            ],
+            "Complete": false
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-first-green-frontend",
+      "SourceCommit": "4a5397db91e490313b000d146502eff193d63980",
+      "Summaries": [
+        {
+          "SourceRevision": "4a5397db91e490313b000d146502eff193d63980",
+          "ExitCode": 0,
+          "Tests": {
+            "Total": 2,
+            "Executed": 2,
+            "Passed": 2,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 1,
+            "CompletedCases": 2,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-first-green-native",
+      "SourceCommit": "4a5397db91e490313b000d146502eff193d63980",
+      "Summaries": [
+        {
+          "SourceRevision": "4a5397db91e490313b000d146502eff193d63980",
+          "ExitCode": 0,
+          "Tests": {
+            "Total": 1,
+            "Executed": 1,
+            "Passed": 1,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 1,
+            "CompletedCases": 1,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-first-red-frontend",
+      "SourceCommit": "ed8aafb4e585affc0b9d06edd65f3ad2f0f3a5a5",
+      "Summaries": [
+        {
+          "SourceRevision": "ed8aafb4e585affc0b9d06edd65f3ad2f0f3a5a5",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 2,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 2,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [
+              "browser-load-session-lifecycle-frontend-001",
+              "gm-load-session-lifecycle-unit-002"
+            ],
+            "Complete": false
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-first-red-native",
+      "SourceCommit": "ed8aafb4e585affc0b9d06edd65f3ad2f0f3a5a5",
+      "Summaries": [
+        {
+          "SourceRevision": "ed8aafb4e585affc0b9d06edd65f3ad2f0f3a5a5",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 1,
+            "Executed": 1,
+            "Passed": 0,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 1,
+            "CompletedCases": 1,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-fresh-front-green",
+      "SourceCommit": "33c6b18e7aa4d3fdcb02a30f0c315ccd72aafcf5",
+      "Summaries": [
+        {
+          "SourceRevision": "33c6b18e7aa4d3fdcb02a30f0c315ccd72aafcf5",
+          "ExitCode": 0,
+          "Tests": {
+            "Total": 6,
+            "Executed": 6,
+            "Passed": 6,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 1,
+            "CompletedCases": 6,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-frontend-matrix-green",
+      "SourceCommit": "ff500224542243641a64d05894c3ca9f4b68e07a",
+      "Summaries": [
+        {
+          "SourceRevision": "ff500224542243641a64d05894c3ca9f4b68e07a",
+          "ExitCode": 0,
+          "Tests": {
+            "Total": 18,
+            "Executed": 18,
+            "Passed": 18,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 1,
+            "CompletedCases": 18,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-independent-ack-red",
+      "SourceCommit": "8d71b38a9b60800c5e0efd4ff035dd66d3abcd0c",
+      "Summaries": [
+        {
+          "SourceRevision": "8d71b38a9b60800c5e0efd4ff035dd66d3abcd0c",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 1,
+            "Executed": 1,
+            "Passed": 0,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 1,
+            "CompletedCases": 1,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-independent-front-red",
+      "SourceCommit": "8d71b38a9b60800c5e0efd4ff035dd66d3abcd0c",
+      "Summaries": [
+        {
+          "SourceRevision": "8d71b38a9b60800c5e0efd4ff035dd66d3abcd0c",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 1,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [
+              "browser-load-session-lifecycle-frontend-001"
+            ],
+            "Complete": false
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-lost-load-bundle-progress",
+      "SourceCommit": "03ee6d9591b6a7c41e3fab4d3a4ec9ea34faa101",
+      "Summaries": [
+        {
+          "SourceRevision": "03ee6d9591b6a7c41e3fab4d3a4ec9ea34faa101",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 1,
+            "Executed": 1,
+            "Passed": 0,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 2,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 3,
+            "CompletedCases": 1,
+            "UnderfilledDescriptors": [
+              "gm-load-storage-faults-unit-002"
+            ],
+            "Complete": false
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-lost-load-green-rollback-transient",
+      "SourceCommit": "555711c17ebcba14878285136e6ea775a9d2634e",
+      "Summaries": [
+        {
+          "SourceRevision": "555711c17ebcba14878285136e6ea775a9d2634e",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 2,
+            "Executed": 2,
+            "Passed": 1,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 2,
+            "CompletedDescriptors": 2,
+            "PlannedCases": 2,
+            "CompletedCases": 2,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-lost-load-phase-red",
+      "SourceCommit": "63ac56aee281ac4a405345fc616b0760c5cb134d",
+      "Summaries": [
+        {
+          "SourceRevision": "63ac56aee281ac4a405345fc616b0760c5cb134d",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 1,
+            "Executed": 1,
+            "Passed": 0,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 1,
+            "CompletedCases": 1,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-ordinary-schema-causal-red",
+      "SourceCommit": "55ac46ac45249aadc9336d4e6d2547301978d9db",
+      "Summaries": [
+        {
+          "SourceRevision": "55ac46ac45249aadc9336d4e6d2547301978d9db",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 15,
+            "Executed": 15,
+            "Passed": 8,
+            "Failed": 7
+          },
+          "Selection": {
+            "PlannedDescriptors": 4,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 29,
+            "CompletedCases": 15,
+            "UnderfilledDescriptors": [
+              "gm-load-affected-backend-unit-002",
+              "gm-load-rollback-cut-unit-003",
+              "gm-load-storage-faults-unit-004"
+            ],
+            "Complete": false
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-profile-green-lost-load-timeout",
+      "SourceCommit": "5671d19c31b941e776c7e9181140a803d0f6186f",
+      "Summaries": [
+        {
+          "SourceRevision": "5671d19c31b941e776c7e9181140a803d0f6186f",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 2,
+            "Executed": 2,
+            "Passed": 1,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 3,
+            "CompletedDescriptors": 2,
+            "PlannedCases": 6,
+            "CompletedCases": 2,
+            "UnderfilledDescriptors": [
+              "gm-load-storage-faults-unit-003"
+            ],
+            "Complete": false
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-receipt-fields-red",
+      "SourceCommit": "33c6b18e7aa4d3fdcb02a30f0c315ccd72aafcf5",
+      "Summaries": [
+        {
+          "SourceRevision": "33c6b18e7aa4d3fdcb02a30f0c315ccd72aafcf5",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 3,
+            "Executed": 3,
+            "Passed": 0,
+            "Failed": 3
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 3,
+            "CompletedCases": 3,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-restart-faults-first",
+      "SourceCommit": "8aa961659233929a5f5dd8ebd94e19ebe8a31f59",
+      "Summaries": [
+        {
+          "SourceRevision": "8aa961659233929a5f5dd8ebd94e19ebe8a31f59",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 6,
+            "Executed": 6,
+            "Passed": 5,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 3,
+            "CompletedDescriptors": 3,
+            "PlannedCases": 6,
+            "CompletedCases": 6,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-reviewed-positive-green",
+      "SourceCommit": "ff500224542243641a64d05894c3ca9f4b68e07a",
+      "Summaries": [
+        {
+          "SourceRevision": "ff500224542243641a64d05894c3ca9f4b68e07a",
+          "ExitCode": 0,
+          "Tests": {
+            "Total": 10,
+            "Executed": 10,
+            "Passed": 10,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 4,
+            "CompletedDescriptors": 4,
+            "PlannedCases": 10,
+            "CompletedCases": 10,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-schema-and-storage-green",
+      "SourceCommit": "d4cfb195b4df67af090e0b54357cdb0d6419ef65",
+      "Summaries": [
+        {
+          "SourceRevision": "d4cfb195b4df67af090e0b54357cdb0d6419ef65",
+          "ExitCode": 0,
+          "Tests": {
+            "Total": 21,
+            "Executed": 21,
+            "Passed": 21,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 4,
+            "CompletedDescriptors": 4,
+            "PlannedCases": 21,
+            "CompletedCases": 21,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-stop-faults-green",
+      "SourceCommit": "ecd14793df2ebec532f7908e982dc80c40be7f09",
+      "Summaries": [
+        {
+          "SourceRevision": "ecd14793df2ebec532f7908e982dc80c40be7f09",
+          "ExitCode": 0,
+          "Tests": {
+            "Total": 4,
+            "Executed": 4,
+            "Passed": 4,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 4,
+            "CompletedCases": 4,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-stop-message-red",
+      "SourceCommit": "b6f5849a282942db6a0e19ac947869872bf20f2d",
+      "Summaries": [
+        {
+          "SourceRevision": "b6f5849a282942db6a0e19ac947869872bf20f2d",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 1,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [
+              "browser-load-session-lifecycle-frontend-001"
+            ],
+            "Complete": false
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-storage-admission-first",
+      "SourceCommit": "1ffda2e8972080dfc9d74c5a299b6301c28f7826",
+      "Summaries": [
+        {
+          "SourceRevision": "1ffda2e8972080dfc9d74c5a299b6301c28f7826",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 4,
+            "Executed": 4,
+            "Passed": 2,
+            "Failed": 2
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 4,
+            "CompletedCases": 4,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-storage-cuts-first",
+      "SourceCommit": "03ee6d9591b6a7c41e3fab4d3a4ec9ea34faa101",
+      "Summaries": [
+        {
+          "SourceRevision": "03ee6d9591b6a7c41e3fab4d3a4ec9ea34faa101",
+          "ExitCode": 1,
+          "Tests": {
+            "Total": 2,
+            "Executed": 2,
+            "Passed": 1,
+            "Failed": 1
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 2,
+            "CompletedCases": 2,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-typecheck-green",
+      "SourceCommit": "4c5431ad49b9e468d931b1f374f3fb4b2a80cb63",
+      "Summaries": [
+        {
+          "SourceRevision": "4c5431ad49b9e468d931b1f374f3fb4b2a80cb63",
+          "ExitCode": 0,
+          "Tests": {
+            "Total": 2,
+            "Executed": 2,
+            "Passed": 2,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 1,
+            "PlannedCases": 2,
+            "CompletedCases": 2,
+            "UnderfilledDescriptors": [],
+            "Complete": true
+          },
+          "Cleanup": true
+        }
+      ]
+    },
+    {
+      "Label": "load-ux-typecheck-red",
+      "SourceCommit": "4a5397db91e490313b000d146502eff193d63980",
+      "Summaries": [
+        {
+          "SourceRevision": "4a5397db91e490313b000d146502eff193d63980",
+          "ExitCode": 2,
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "Selection": {
+            "PlannedDescriptors": 1,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 2,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [
+              "frontend-shell-types-frontend-001"
+            ],
+            "Complete": false
+          },
+          "Cleanup": true
+        }
+      ]
+    }
+  ]
+}

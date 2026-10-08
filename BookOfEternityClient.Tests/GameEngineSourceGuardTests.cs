@@ -688,13 +688,15 @@ public sealed class GameEngineSourceGuardTests
         var lifeTransitionMethod = ExtractMethodSource(source, "private async Task<bool> CheckLifeTransitions(");
 
         Assert.Contains("CaptureCurrentSessionGenerationAsync()", waitMethod, StringComparison.Ordinal);
-        Assert.Contains("SessionOperationContext.RunBoundAsync(_fs, sessionGeneration", waitMethod, StringComparison.Ordinal);
+        Assert.Contains("SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs", waitMethod, StringComparison.Ordinal);
         Assert.Contains("CaptureCurrentSessionGenerationAsync()", rawWaitMethod, StringComparison.Ordinal);
-        Assert.Contains("SessionOperationContext.RunBoundAsync(_fs, sessionGeneration", rawWaitMethod, StringComparison.Ordinal);
+        Assert.Contains("SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs", rawWaitMethod, StringComparison.Ordinal);
         Assert.Contains("CaptureCurrentSessionGenerationAsync()", playerTurnMethod, StringComparison.Ordinal);
-        Assert.Contains("SessionOperationContext.RunBoundAsync(_fs, sessionGeneration", playerTurnMethod, StringComparison.Ordinal);
+        Assert.Contains("SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs", playerTurnMethod, StringComparison.Ordinal);
         Assert.Contains("CaptureCurrentSessionGenerationAsync()", lifeTransitionMethod, StringComparison.Ordinal);
-        Assert.Contains("SessionOperationContext.RunBoundAsync(_fs, sessionGeneration", lifeTransitionMethod, StringComparison.Ordinal);
+        Assert.Contains("SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs", lifeTransitionMethod, StringComparison.Ordinal);
+        foreach(var body in new[]{waitMethod,rawWaitMethod,playerTurnMethod,lifeTransitionMethod})
+            Assert.True(body.IndexOf("RunParticipatingCurrentSessionAsync",StringComparison.Ordinal)<body.IndexOf("CaptureCurrentSessionGenerationAsync",StringComparison.Ordinal));
         Assert.Contains("catch (SessionReplacedException)", lifeTransitionMethod, StringComparison.Ordinal);
     }
 
@@ -914,7 +916,7 @@ public sealed class GameEngineSourceGuardTests
         var source = ReadGameEngineSource();
 
         Assert.Contains("\\p", source, StringComparison.Ordinal);
-        Assert.Contains("ResolveClipboardPlayerInput()", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("ResolveClipboardPlayerInput", source, StringComparison.Ordinal);
         Assert.Contains("TextComposer.Read", source, StringComparison.Ordinal);
     }
 

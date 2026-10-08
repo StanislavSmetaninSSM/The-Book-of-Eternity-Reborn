@@ -1,0 +1,28 @@
+{
+  "VerifiedCandidate": {
+    "Commit": "6bbb376ed403edca87ef2549affff5d840239d9a",
+    "RemoteMatched": true,
+    "Origin": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+    "FreshDirectory": "/workspace/qualification-1553-bootstrap-diagnosis/fresh-github",
+    "Tree": "a62987da670c7d51aa3b4272cd08794a9a42dae8",
+    "Shallow": true,
+    "HistoryClaim": "Depth1 current commit/tree only; no full-history restoration claim",
+    "Alternates": false,
+    "TrackedByteCompared": 22355,
+    "SymlinksComparedWithoutDereference": 0,
+    "TrackedBytes": 363042586,
+    "ComparisonDigestSHA256": "a2da8fd9212370ac2e6259cc69cc20bd82b83cc92d618ad20bf17f246125c726",
+    "Clean": true,
+    "FsckFullExitCode": 0,
+    "RuntimeTestsOrCliExecuted": false
+  },
+  "MetadataReview": {
+    "Agent": "/root/codex_q1_metadata_review",
+    "Verdict": "PASS",
+    "ReviewedCommit": "6bbb376ed403edca87ef2549affff5d840239d9a",
+    "MaterialFindings": 0,
+    "WritesTestsOrCliProbes": false
+  },
+  "FinalCarrierScope": "Only archive existing candidate restoration and metadata verdict; no runtime/fixture/test change",
+  "FinalCarrierRemoteAndFreshRestore": "Writer must separately verify exact final tip before reporting closure"
+}

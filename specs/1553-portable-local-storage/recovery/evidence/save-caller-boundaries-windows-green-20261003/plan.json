@@ -1,0 +1,92 @@
+{
+  "Categories": [
+    "portable-browser-save-creation",
+    "portable-engine-save-presentation",
+    "portable-save-entry"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "dafd37e589eaf6fd4e05a996fd3ecf00e74e4a97",
+    "WorkingTreeFingerprint": "5B1A390A01EE08723F840D2F019D41D5F5415FC0B41BBD5D59B7A9A94E92D204",
+    "ChangedFiles": 17
+  },
+  "PreparationSeconds": 23.9483241,
+  "Descriptors": [
+    {
+      "Name": "portable-browser-save-creation-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-browser-save-creation",
+      "Categories": [
+        "portable-browser-save-creation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBrowserSaveCreationTests.BrowserSaveUsesPreparedImageDecisionAndRetainsExactOutcome|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPlayerActionSarefAndManualSave_BindBeforeAuthoritativeReads",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserSaveCreationTests.BrowserSaveUsesPreparedImageDecisionAndRetainsExactOutcome",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPlayerActionSarefAndManualSave_BindBeforeAuthoritativeReads",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-engine-save-presentation-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-engine-save-presentation",
+      "Categories": [
+        "portable-engine-save-presentation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_CommittedDebtObservationDoesNotPromiseReplay|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_CommittedDebtObservationDoesNotPromiseReplay",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-save-entry-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-entry",
+      "Categories": [
+        "portable-save-entry"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveCreationTests.FailedPreparationCleansActualOwnedRuntimeSaveScratch|FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveCreationTests.PublicSaveReachesCompletedArchiveAndPublishesOneCreateOnlyDecision",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveCreationTests.FailedPreparationCleansActualOwnedRuntimeSaveScratch",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveCreationTests.PublicSaveReachesCompletedArchiveAndPublishesOneCreateOnlyDecision",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

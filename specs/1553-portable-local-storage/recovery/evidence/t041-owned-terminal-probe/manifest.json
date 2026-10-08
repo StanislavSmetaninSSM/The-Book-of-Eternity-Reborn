@@ -1,0 +1,99 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "one isolated PTY primitive capability probe; not runtime/test/backend qualification",
+  "BaseCommit": "1bc9d67536dccbcc6672d8e7cd71ad885c2a946c",
+  "TrackedBoundaryCheckpoint": "8ebee46783a801a759e64cc91daff451cad0d14c",
+  "Question": "Can this unprivileged environment allocate and attach its own controlling PTY, exchange two inputs, resize, distinguish canonical EOF from process exit, and reap exactly its child?",
+  "ExistingEvidenceGap": "Accepted native lineage and input/output audits contain no PTY attachment/transport capability run.",
+  "Commands": [
+    "cc -std=c11 -Wall -Wextra -Werror -O2 specs/1553-portable-local-storage/recovery/evidence/t041-owned-terminal-probe/pty-capability.c -o /workspace/qualification-1553-terminal-design/pty-capability",
+    "cc -std=c11 -Wall -Wextra -Werror -O2 tests/fixtures/LinuxHost/host-guardian.c -o /workspace/qualification-1553-terminal-design/host-guardian",
+    "/workspace/qualification-1553-terminal-design/host-guardian /workspace/qualification-1553-terminal-design/guardian.json 10000 /workspace/qualification-1553-terminal-design/pty-capability --probe > /workspace/qualification-1553-terminal-design/probe.json 2> /workspace/qualification-1553-terminal-design/transcript.txt"
+  ],
+  "Toolchain": {
+    "Compiler": "cc (Debian 14.2.0-19) 14.2.0",
+    "CompilerResolvedPath": "/usr/bin/x86_64-linux-gnu-gcc-14",
+    "CompilerSha256": "a23ecab8ff08f09ad8c80602c2c5df7f49e09c25905cb8975902e101bf72635f",
+    "Kernel": "Linux 6.18.44 x86_64 GNU/Linux",
+    "Sdk": "10.0.401",
+    "InstalledCoreRuntimes": [
+      "8.0.31",
+      "10.0.12"
+    ],
+    "InstalledAspNetRuntimes": [
+      "8.0.31",
+      "10.0.12"
+    ],
+    "PowerShell": "7.5.4",
+    "Python": "3.12.14",
+    "CSharpRuntimeExecuted": false,
+    "PackageOrServiceInstall": false
+  },
+  "Inputs": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-owned-terminal-probe/pty-capability.c",
+      "Sha256": "cf20f880714620582e0368f12129ae32f0964890d4e8f1496a91f0f9e32d2e77"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Sha256": "d7963c86632153ec2bf1adf9a7c30dea29e1cea5c274e5fa0ea311a0518cc3db"
+    }
+  ],
+  "Binaries": [
+    {
+      "LocalPath": "/workspace/qualification-1553-terminal-design/pty-capability",
+      "Bytes": 22112,
+      "Sha256": "04f3fe077f7a3eaa185cd6572cf70edb050a5f7d7b7857475e95fa0dff70821a"
+    },
+    {
+      "LocalPath": "/workspace/qualification-1553-terminal-design/host-guardian",
+      "Bytes": 22168,
+      "Sha256": "31d79893b1f1480c02039dfae904eb39d3781d54caff01b85343b3225bf91f24"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-owned-terminal-probe/probe.json",
+      "Bytes": 222,
+      "Sha256": "d9d8ed5200326515c0e839db7b3f3fbd4a9e14b3422a090f3c2ce290aa157103"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-owned-terminal-probe/guardian.json",
+      "Bytes": 97,
+      "Sha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/t041-owned-terminal-probe/transcript.txt.gz",
+      "Bytes": 110,
+      "Sha256": "a6afcf20c7d91d311310b4bd939393d0c2b6960deddf7e032d022567212ad7ed",
+      "UncompressedBytes": 107,
+      "UncompressedSha256": "b0d9198c441d3f3da3997dfa7fcb0d954d889649d3c1daac3d6b26942fc08f37",
+      "Encoding": "gzip; exact CRLF PTY bytes retained"
+    }
+  ],
+  "Result": {
+    "allocated": true,
+    "controlTerminal": true,
+    "twoInputsUnicode": true,
+    "resizeSignal": true,
+    "canonicalEofChildAlive": true,
+    "exactPidfdTermReap": true,
+    "echild": true,
+    "masterHangup": true,
+    "masterHangupErrno": 5,
+    "lastErrnoDiagnostic": 0
+  },
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 1,
+    "failures": 0,
+    "deadline": false
+  },
+  "ExecutedProbeDrivers": 1,
+  "PrimitiveChecks": 8,
+  "CSharpOrPowerShellTestsExecuted": 0,
+  "PreparationFailures": 0,
+  "Cleanup": "Probe exclusively reaped its one direct child and observed ECHILD; independent unchanged guardian reaped driver and observed ECHILD with no emergency signals/failures/deadline. Probe closes master/slave/gate/pidfd handles. No grandchildren, services, saves or persistent settings; retained local binaries are evidence artifacts."
+}

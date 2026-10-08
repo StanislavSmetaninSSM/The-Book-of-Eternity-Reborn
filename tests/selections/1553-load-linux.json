@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-save-native-names",
+      "reason": "Causal producer and end-to-end case-pair roundtrip plus fixed authority collision negatives on actual Linux.",
+      "contracts": [
+        "#1553 T032-A4-NATIVE-NAMES FR-002/006/015 US3"
+      ]
+    },
+    {
+      "category": "portable-load-native-names",
+      "reason": "Affected archive boundary preserves original name/hash/manifest identity and rejects fixed aliases and invalid claims.",
+      "contracts": [
+        "#1553 T032-A4-NATIVE-NAMES LOAD-FS-001"
+      ]
+    },
+    {
+      "category": "portable-load-alias-admission",
+      "reason": "The producer reuses the finite fixed-authority registry; preserve exact mapping and trim/source/settings guards.",
+      "contracts": [
+        "#1553 T032-A4-NATIVE-NAMES LOAD-FS-001/004"
+      ]
+    }
+  ]
+}

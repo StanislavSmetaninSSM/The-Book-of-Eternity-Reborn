@@ -1,0 +1,72 @@
+{
+  "Categories": [
+    "portable-session-generation-source"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-session-generation-source",
+      "reason": "Observe the single existing stale parser-chain guard against freshly built unchanged runtime/test assemblies; all other browser guards remain excluded.",
+      "contracts": [
+        "strict generation parser delegation",
+        "existing authority classification and lease bookkeeping"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "cd90edb926c57d58f2de0c9ee7d745c2471c9c79",
+    "WorkingTreeFingerprint": "4839B74231ABF4DEF9E5EC5897E5585ED894EF1F241CA2CB8F4108F84AAC1305",
+    "ChangedFiles": 3
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-session-generation-source",
+      "Seconds": 3.5430686,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1031786,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0122578,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0157142,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:00:08.4741489",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

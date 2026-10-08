@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-worker-diagnostic"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "f3732e3fdae3146035a1000cb80dba6fd2e17cfe",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 131.7077774,
+  "Descriptors": [
+    {
+      "Name": "portable-worker-diagnostic-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-diagnostic",
+      "Categories": [
+        "portable-worker-diagnostic"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerDiagnosticTests.Begin_PreservesInitiatingFailureWhenPrivateCleanupAlsoFails",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerDiagnosticTests.Begin_PreservesInitiatingFailureWhenPrivateCleanupAlsoFails",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

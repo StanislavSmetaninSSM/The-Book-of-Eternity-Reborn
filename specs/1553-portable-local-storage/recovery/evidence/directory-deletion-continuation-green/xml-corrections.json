@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "provenance": "Original raw artifact bytes verified against the existing manifest; all path replacements use XML-safe square-bracket tokens. Original manifest and malformed sanitized artifact remain unchanged. No behavior was rerun.",
+  "originalManifestSha256": "b341112fa4e558735b32b0b7d099bdf584780b0e5c1181b7ff31a0816e920b83",
+  "corrections": [
+    {
+      "originalArtifact": "portable-directory-fixture-correction-unit-001.trx",
+      "originalRawSha256": "796d1512e8dbd3752d0aef2f6e051bbe2f3e3506e74cb1e0c881e5123f9e0d2a",
+      "retainedMalformedSanitizedSha256": "7501a374602bba43c947e31a56f52eea864bfa067eb48e195b22dbb578d49ac0",
+      "parseError": "not well-formed (invalid token): line 15, column 139",
+      "correctedArtifact": "portable-directory-fixture-correction-unit-001.sanitized-v2.trx",
+      "correctedSanitizedSha256": "ec9959e5b8a52c122da5510713f76eda464abea8d0168c39935baeb227a835ac",
+      "correctedBytes": 8730,
+      "xmlValid": true,
+      "testIdentitiesAndOutcomesUnchanged": true
+    },
+    {
+      "originalArtifact": "portable-directory-linux-special-unit-002.trx",
+      "originalRawSha256": "be061537f51c69da3ca4d206d223c345c400917c9c17b068382003106ce68822",
+      "retainedMalformedSanitizedSha256": "95630025085b956e3588f1cd3dfce60c4dc0f45b3ffbfd2754f30bf88eb5472e",
+      "parseError": "not well-formed (invalid token): line 11, column 161",
+      "correctedArtifact": "portable-directory-linux-special-unit-002.sanitized-v2.trx",
+      "correctedSanitizedSha256": "9a1707b4cca3dc064084ac1f9d64d3eeb41043bd168e9708a8e5496265d90fe3",
+      "correctedBytes": 2998,
+      "xmlValid": true,
+      "testIdentitiesAndOutcomesUnchanged": true
+    },
+    {
+      "originalArtifact": "portable-directory-recovery-unit-003.trx",
+      "originalRawSha256": "ede761915c28ec17b7a60a0975b9c9584fc7605ccf51bf7011c99c47cb4e5382",
+      "retainedMalformedSanitizedSha256": "f6140639f4bdaca3fb98737944140aa04c9f4910930afffad065e3a499b7cd36",
+      "parseError": "not well-formed (invalid token): line 23, column 207",
+      "correctedArtifact": "portable-directory-recovery-unit-003.sanitized-v2.trx",
+      "correctedSanitizedSha256": "77e101e6c400673cda62301211e3ce1a1e17fa3a1432bed61e7b00c51296db33",
+      "correctedBytes": 21326,
+      "xmlValid": true,
+      "testIdentitiesAndOutcomesUnchanged": true
+    }
+  ]
+}

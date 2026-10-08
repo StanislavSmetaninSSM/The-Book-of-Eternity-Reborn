@@ -1,0 +1,271 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-RUN-FENCE-F1",
+  "Branch": "codex/1553-load-filesystem",
+  "AcceptedDesign": "0658e4405a4d0d958eb1b64b11b83956917fb81b",
+  "RuntimeCandidate": "da3ffc6fa7a93bb89d8e81ee4d5e2c533b51c1f6",
+  "NativeQualificationSource": "da3ffc6fa7a93bb89d8e81ee4d5e2c533b51c1f6",
+  "Status": "Focused F1 PASS;84 distinct verified; stop before F2",
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "Tools": {
+    "SDK": "10.0.401",
+    "RuntimeNet8": "8.0.31",
+    "PowerShell": "7.5.4",
+    "NativeCompiler": "GCC 14.2.0-19"
+  },
+  "SourceReferences": [
+    {
+      "Path": "BookOfEternityClient.TestSupport/MainRunFenceScenarioDriver.cs",
+      "GitBlob": "435644e80992876d72ecbd0723b9662e25f25d75",
+      "Bytes": 37416,
+      "Sha256": "28fad4c248f775c8791fa638fed32e90961403c3d5014c9abe7577c62126021c"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "GitBlob": "917381117fa666aacde77f1754e58f9fa313927e",
+      "Bytes": 10269,
+      "Sha256": "e8d7008706c6c653fd51e4cbbc3afd1499d81bd051434a21a07b937764522cbe"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "GitBlob": "0e03f7f96700262dab09afb7ac59528e096b1869",
+      "Bytes": 20382,
+      "Sha256": "3a300aff1f47d43889fb23195ed90deb0ad708f04654aa89acd2080ca7d6e241"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainRunFenceTests.cs",
+      "GitBlob": "d925ad80b566b4cb21419b55faa7af2c4f5bc641",
+      "Bytes": 7850,
+      "Sha256": "d13434775f875de39120d1adf9ed72d39c1821b916781096b12329ada8c18903"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainRunOwnerLinuxTests.cs",
+      "GitBlob": "cfa0746755455113744966169f20e1814fe59b3b",
+      "Bytes": 1959,
+      "Sha256": "633ab01ea12bf8271e9fdc90595e13c0f891c42996984da91979c655d466e92e"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+      "GitBlob": "8318a43f82e66c8fe6977cb925ab370a6a4c5f78",
+      "Bytes": 6331,
+      "Sha256": "e62a602f364d6232fbc7ae8752f237a6123e7442b950c5dfefbcbb3ca73c647a"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/StateDistributorCanonicalLeaseTests.cs",
+      "GitBlob": "4e6fb87ea55b4a47800c1020bc86fdee68f2e436",
+      "Bytes": 13225,
+      "Sha256": "dc54b851d4e249751ab75dbe68c8f61d78907dae317b03a1cf275641bfaf104f"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/StateManagerTests.cs",
+      "GitBlob": "96a72d5be0ca7bccf2022e7e40529251ecbcf3de",
+      "Bytes": 27275,
+      "Sha256": "7c023ba16cffceebb62619a4b7bd5a3d50af4363814b788db4add6036b3b6f95"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/CanonicalRootIdentity.cs",
+      "GitBlob": "7152787bd91c20630deda394d7a32f52f6a82867",
+      "Bytes": 4859,
+      "Sha256": "d6e1bc480d50227ce43d1703e48fee9cf19bb45d859f5bd937a2a3432751d928"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "GitBlob": "034479d9794b28ea44ace4a28bc88667e6dd8346",
+      "Bytes": 2822,
+      "Sha256": "a07f7651bf60d70bcde1527a2655125cd03395ad152da83fbdaf797fcb394a0d"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "GitBlob": "3ced05f4b9ec9a30e36f6572ed5a4969c9cf4f6e",
+      "Bytes": 6393,
+      "Sha256": "359b8d767e683e40db92b0704102ed28f523791c89a837a695bd97c3b44eb6f2"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+      "GitBlob": "1acfdd100a4cf566fb55ffadf3ac4014a9fbe8f7",
+      "Bytes": 3583,
+      "Sha256": "d372ecf78ecde37d351272d0e0c9b2476bb4a54f494d48762c1579e13885ab8b"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "GitBlob": "2eb57b26524dae368ac808aff87038a92883edb8",
+      "Bytes": 234355,
+      "Sha256": "6740bf71dcbe08f4e95ab73030dd059062697796b27e16f0fd9fdae2b3bd223c"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+      "GitBlob": "d3f12bc62ad391efa1cd60c1603d54fc89b93c22",
+      "Bytes": 7702,
+      "Sha256": "e1c6dcee08a1d8c4e961c7960bd20a231ba1edbf4678f2892c60bbf0fefe15dc"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs",
+      "GitBlob": "abf75da3edb325af039deb1fdbc9a65f0e5ac97b",
+      "Bytes": 36016,
+      "Sha256": "78ee3c6b545622fd200985596372137bda29d4d7398ca508eda7da5b7874ab64"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "GitBlob": "52377b2d829846e65bf82a062d2fe4b202926739",
+      "Bytes": 29757,
+      "Sha256": "f2ec71e643e891264424d84d965df3394d618bd81f661a134bebfb0e0bf27539"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "GitBlob": "f70e80d163b858fbcd89de392263b2f38357114c",
+      "Bytes": 14774,
+      "Sha256": "9a2921eeccab1f1aba76cea9582a6b6071319d6d10a763b2966009e3f13d8daf"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/NeutralTerminalLaunch.cs",
+      "GitBlob": "e3b29180043981434e440928099250e396535eac",
+      "Bytes": 1311,
+      "Sha256": "7f9a3eb49b1eeb2a4a1f9989d798ed9ca233d6479e63275e240307552ebd6b5d"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+      "GitBlob": "f8ecc0eb9b9b29f6553561ffb9cd8e616091b16f",
+      "Bytes": 3131,
+      "Sha256": "e13604183b559d6afcabc05ad19d676fd7dd4d52f2769d30fd0452dbd1f6967c"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeObservationFault.cs",
+      "GitBlob": "d318760cdac59ea7fa57d3913fe0eb9175d69f26",
+      "Bytes": 3176,
+      "Sha256": "1b424a44e7cd6e465714ecd5ae0f8d3b5a027027078b5ce869cae88fc3902300"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "GitBlob": "40874a26d7576e61e8d0832fc2f7e7d427f2ff3d",
+      "Bytes": 22418,
+      "Sha256": "cac9672ce457e406ad77dadf823656b55bf6a2079296d69d957735c32fa46eda"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "GitBlob": "4a1b27006c2cfa277613f62591019c494355696c",
+      "Bytes": 21245,
+      "Sha256": "0cddcb687c371fbe1818d7be6122bc7f85ec5668cb9c2e994afefd5aea0e9bf1"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs",
+      "GitBlob": "ca28c85b6cd9fc54d2a498a8bb974d60426654c7",
+      "Bytes": 35225,
+      "Sha256": "1203f6977d468ea4938225b419c0aad6c238589195018af28d4d46cfb38d5f0a"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/ConPtySession.cs",
+      "GitBlob": "f4ae4aeff42f6469e2bd561328a6f861759fcbf3",
+      "Bytes": 16916,
+      "Sha256": "c4f0a7a86987333997e57e6af672c612a35dbc141ddd3ec205e108515eb757c6"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "GitBlob": "56c492e2a0f52ec26a2f224a181955674bc68639",
+      "Bytes": 80503,
+      "Sha256": "4932c8810e4080a40a5eb1a021e9f59330db3321d56fedf006ce5b9bf93ca56f"
+    },
+    {
+      "Path": "tests/categories.json",
+      "GitBlob": "a3ef00b78cede6e79e8b9cd48f1067646f3369db",
+      "Bytes": 1073288,
+      "Sha256": "6d7d6edb2e25adef0701257d279194200eae92ad788a11d59c57cc5d0c6aaf78"
+    },
+    {
+      "Path": "tests/selection.json",
+      "GitBlob": "da418988a401d9e35cf19ddca445746c7894c7d3",
+      "Bytes": 454,
+      "Sha256": "e8bd638bd5f9be089b8477500d39d5b36b95473f8809278ea57a9fc38b6da011"
+    },
+    {
+      "Path": "tests/selections/1553-main-run-fence-f1-linux.json",
+      "GitBlob": "5447a8de1433ba6f51070b34ee38a5e11669cd17",
+      "Bytes": 858,
+      "Sha256": "e56fd8ccdbb1a0e61e2d7de80f09835b81bdff65aad94c51124f09112b80f4b1"
+    }
+  ],
+  "Selection": [
+    "gm-main-run-fence",
+    "gm-main-run-owner-linux"
+  ],
+  "PassingEvidence": [
+    {
+      "Manifest": "evidence/t041-f1-profile-green/manifest.json",
+      "Source": "39362ff85cb1f8e9cfa68819787d2292ce2ae662",
+      "Passed": 50,
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-run-fence"
+    },
+    {
+      "Manifest": "evidence/t041-f1-connected-green/manifest.json",
+      "Source": "a874fb5d3c82bdaf2c605db38a6bde103acd0a1f",
+      "Passed": 82,
+      "NativeSubsetPassed": 33,
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-main-run-fence-f1-linux.json"
+    },
+    {
+      "Manifest": "evidence/t041-f1-release-ack-green/manifest.json",
+      "Source": "da3ffc6fa7a93bb89d8e81ee4d5e2c533b51c1f6",
+      "Passed": 34,
+      "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-run-owner-linux"
+    }
+  ],
+  "DistinctPassed": 84,
+  "Reuse": "Final portable50 at39362ff8 plus finalLinux34 atda3ffc6f. Only test/negative-observation seam changed after portable50: default and prior fault behavior unchanged. Only Linux owner category replayed for explicit release-ACK negative; no unrelated cohort replay.",
+  "GuardianSummary": {
+    "LatestGreenGuardians": 27,
+    "Echild": 27,
+    "EmergencySignals": 0,
+    "Failures": 0,
+    "Deadline": 0,
+    "DriverExitFailures": 0
+  },
+  "CausalEvidence": [
+    "t041-f1-fence-red",
+    "t041-f1-owner-red",
+    "t041-f1-review-red",
+    "t041-f1-review-owner-red",
+    "t041-f1-browser-red",
+    "t041-f1-partial-red",
+    "t041-f1-bounds-red",
+    "t041-f1-bounded-owner-red",
+    "t041-f1-connected-stage-red"
+  ],
+  "ExcludedFromCausalRed": {
+    "preparation-c07": "CS0122;0tests",
+    "preparation-f769": "CS1503;0tests",
+    "preparation-4ab": "CS1525;0tests",
+    "generation-initial-red": "2 namespace cases used incomplete fixture roots; remaining launch/partial failures are separately evidenced",
+    "fault-fixes-partial-green": "staged before-image failed on BOM precondition; cut not reached",
+    "staged-precondition": "BOM before-image mismatch, not staged cut",
+    "connected-stage-red": "save-load failure was a Boolean expectation of retained typed Uncertain; staged case reached IntentStaged and is causal",
+    "contention-red": "outer guard changed the wait boundary; exact old test now observes actual main/canonical contention without weakening final writer/rollback assertions"
+  },
+  "QualifiedScope": "Fixed admitted inert Linux-x64/glibc neutral original terminal; one schema1 main.json durable CAS; same-process original operation pins and actual FileSystemManager consumers; separate unbound child refusal. Ordinary same-PID-namespace lineage only.",
+  "Invariants": [
+    "Prepared ACK before original process creation",
+    "Running ACK and exact original identity before one release",
+    "Closed pins/input and durable revocation; settlement of earlier linearized decision permitted",
+    "Original guard/owner retained for Uncertain and frozen metadata debt, including visible Stopped pending ACK",
+    "Stopped only after exact scoped stop, input/managed loop EOF+settlement/disposal and durability ACK",
+    "New epoch only after old confirmed retirement; no identity reconstruction from record/PID/EOF",
+    "Real pre-recovery/held-lease generation, clear, Load, synthetic save and publication gates",
+    "Independent worker/storage conditions unchanged; main metadata cannot grant ordinary cleanup or writes"
+  ],
+  "Unqualified": [
+    "F2 actual separate-client/daemon pin protocol and launcher/QTE/repair mutation bindings",
+    "F3 bounded process-crash/replacement/recovery qualification",
+    "primary existing-systemd-user terminal backend: no user manager here",
+    "native Windows qualification; ConPTY/Job source/build preserved only",
+    "ordinary public game-writing launcher, production Release, live provider/arbitrary CLI/TUI",
+    "real user saves, cold exactly-once, reboot/power-loss salvage",
+    "future product stop/load/fresh-start UX"
+  ],
+  "StopBefore": "F2",
+  "ReleaseAckNegative": {
+    "NativeFolder": "b4f72618e82c4de0825a04f8d8f3d02d",
+    "Proof": "Actual Started frame invalidated by existing negative seam only after original A1 consumed once; same partial adapter/owner retained, actual pipe input refused, Uncertain/non-Stopped and replay denied; physical scope guardian ECHILD. This closes coverage gap; it does not repair an observed runtime defect."
+  },
+  "Review": "main-run-fence-f1-review.json",
+  "EvidenceAudit": "main-run-fence-f1-evidence-audit.json",
+  "FinalPublicationRestoration": "Final verdict carrier gets ordinary non-force push, exact remote SHA/byte readback and fresh GitHub HTTPS-only restoration. Exact carrier SHA/proof returned in handoff after execution."
+}

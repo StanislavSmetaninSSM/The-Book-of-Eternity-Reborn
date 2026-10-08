@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "browser-load-session-lifecycle"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b6f5849a282942db6a0e19ac947869872bf20f2d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 0.1698173,
+  "Descriptors": [
+    {
+      "Name": "browser-load-session-lifecycle-frontend-001",
+      "Project": "frontend",
+      "Category": "browser-load-session-lifecycle",
+      "Categories": [
+        "browser-load-session-lifecycle"
+      ],
+      "Filter": null,
+      "Adapter": "vitest",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/browserLoadSessionLifecycle.test.ts",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

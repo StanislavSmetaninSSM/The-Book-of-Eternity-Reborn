@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-load-public-entry"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d0a8be96bb788aa38e2b1e834fdac95ab5331d57",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.2268872,
+  "Descriptors": [
+    {
+      "Name": "portable-load-public-entry-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-public-entry",
+      "Categories": [
+        "portable-load-public-entry"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityDoesNotReportRollbackOrUncertaintyAsCommit|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityRejectsInvalidInputWithoutPublication|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityReportsCommitEvenWhenRequiredRefreshFails|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.TypedLoadContractIsPublicAndRetainsFourDistinctDecisions",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityDoesNotReportRollbackOrUncertaintyAsCommit",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityRejectsInvalidInputWithoutPublication",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.PublicLoadCompatibilityReportsCommitEvenWhenRequiredRefreshFails",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.TypedLoadContractIsPublicAndRetainsFourDistinctDecisions",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

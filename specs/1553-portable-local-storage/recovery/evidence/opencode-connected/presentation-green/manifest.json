@@ -1,0 +1,81 @@
+{
+  "Source": "7472903c00a36077234862c2e5a946f00c99213c",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-synchronized-terminal-presentation",
+  "Planned": 9,
+  "Executed": 9,
+  "Passed": 9,
+  "Failed": 0,
+  "OwnedCleanupComplete": true,
+  "ProviderRequests": 0,
+  "GameTurns": 0,
+  "Verdict": "Bounded consumed parser/pump transcript GREEN; source review pending; automatic witness/dispatch unimplemented",
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "Bytes": 4167,
+      "SHA256": "9381e92ab3342ef30bd2347c1d18a31a752971e6472c0db2da5d236ac14cfa24"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+      "Bytes": 8585,
+      "SHA256": "a34d412f9e1e5a2a847c2e3ffa83cb8ce179d96e7d16dd77497cdcf5df3e9f25"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 87086,
+      "SHA256": "bf2077aedd5db210a02a19319ab25fccfb7db882b239ae88b0ff30269baaf47b"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
+      "Bytes": 1958,
+      "SHA256": "9025f811e9824ae7e3da92019534ca3b1cf72be03a5ffd4b4e6bd5873c6d9a60"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmSynchronizedTerminalPresentationTests.cs",
+      "Bytes": 9236,
+      "SHA256": "5dc662a4b74e8f6b9be7f2d876f8d9ccaf20d451f5873d3ad82d76c03333baef"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1150524,
+      "SHA256": "21648bcb1dedd8a6637d740f211829ff9c65064f00373b2939d02b6f196e82f8"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 379,
+      "SHA256": "cb77f22f2be8fe3cd5f36a06328753c1124166195c4662a053b1ee2d43138d7b"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/presentation-green/Build-unit.log.gz",
+      "Bytes": 24684,
+      "SHA256": "ad0d192f15b129136c3934af40fc84d6b3ec9628004d8f1292b29be643623689",
+      "StoredSHA256": "9ec4d460cc2d2e052889d3d6c312fd62b16899eb2f80a4815b0b47b8bd0b044a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/presentation-green/dotnet-test.log.gz",
+      "Bytes": 1623137,
+      "SHA256": "07fcf5dab74319f51e2230ffdf6810ecb47dd5f271f8108e7d8c420ea60301ad",
+      "StoredSHA256": "f719f685895ed916b996d62a743eb1e68b7caa0001139a5e468a118795128996"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/presentation-green/gm-synchronized-terminal-presentation-unit-001.trx.gz",
+      "Bytes": 15126,
+      "SHA256": "c69bb75354adb457dcbe2ed08f246df5828ed1223113424b467b947ef75418ca",
+      "StoredSHA256": "c475137e9d41a6ec2e2ea95c9e47add04c4e766561a5fb01f380608d4951d64f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/presentation-green/plan.json.gz",
+      "Bytes": 2876,
+      "SHA256": "c397f71b97847f3af2ec2caf549c2f8446a2e9aa0fee94d9afffcab756739b28",
+      "StoredSHA256": "0d9681ed372438daf1e87f6714aaf35e8fa07653ca24919bc68c91ad0ef9f8fe"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/presentation-green/summary.json.gz",
+      "Bytes": 1573,
+      "SHA256": "24b2d4a0337de75681824738751edf47edba3f1fd1f86758c85c6e028acff73d",
+      "StoredSHA256": "eb38718005149f1d82b6cfca43ab5ec6db4db61142971bf2178716a17f853d50"
+    }
+  ]
+}

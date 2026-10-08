@@ -1,0 +1,33 @@
+{
+  "Kind": "Inert preparation oracle for evidence-driver predicate; no CLI/system/runtime/test-category invocation",
+  "Cases": [
+    {
+      "Name": "exact",
+      "AllowedAnswer": true
+    },
+    {
+      "Name": "substring only",
+      "AllowedAnswer": false
+    },
+    {
+      "Name": "intervening trust",
+      "AllowedAnswer": false
+    },
+    {
+      "Name": "unknown trailing VT",
+      "AllowedAnswer": false
+    },
+    {
+      "Name": "repeated",
+      "AllowedAnswer": false
+    },
+    {
+      "Name": "trust before exact",
+      "AllowedAnswer": false
+    }
+  ],
+  "Assertions": 6,
+  "SingleKeyboardWriteSites": 1,
+  "UnknownTrailingPresentationRefused": true,
+  "RevalidatedAfterStatus": true
+}

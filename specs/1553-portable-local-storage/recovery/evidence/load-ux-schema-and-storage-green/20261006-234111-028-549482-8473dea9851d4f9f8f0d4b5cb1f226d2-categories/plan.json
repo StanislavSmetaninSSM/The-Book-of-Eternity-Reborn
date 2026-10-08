@@ -1,0 +1,109 @@
+{
+  "Categories": [
+    "gm-load-ordinary-schema",
+    "gm-load-affected-backend",
+    "gm-load-rollback-cut",
+    "gm-load-storage-faults"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d4cfb195b4df67af090e0b54357cdb0d6419ef65",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 71.4320505,
+  "Descriptors": [
+    {
+      "Name": "gm-load-affected-backend-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-affected-backend",
+      "Categories": [
+        "gm-load-affected-backend"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing|FullyQualifiedName=BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission",
+          "Cases": 11
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-ordinary-schema-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "gm-load-ordinary-schema",
+      "Categories": [
+        "gm-load-ordinary-schema"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard|FullyQualifiedName=BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-rollback-cut-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-rollback-cut",
+      "Categories": [
+        "gm-load-rollback-cut"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualRollbackCutOutcome",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualRollbackCutOutcome",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-storage-faults-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-storage-faults",
+      "Categories": [
+        "gm-load-storage-faults"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualStorageCutOutcomes",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualStorageCutOutcomes",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

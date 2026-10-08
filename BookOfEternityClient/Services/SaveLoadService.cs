@@ -14,16 +14,22 @@ namespace BookOfEternityClient.Services;
 internal sealed class SaveLoadServiceHooks
 {
     internal Func<Task>? BeforeLoadLeaseAcquisitionAsync { get; init; }
+    internal Func<string, Task>? AfterLoadArchiveExtractedAsync { get; init; }
+    internal Func<string, Task>? BeforeLoadPreparationCleanupAsync { get; init; }
     internal Func<Task>? AfterLoadPublicationValidatedAsync { get; init; }
     internal Func<Task>? BeforeAutosaveCleanupLeaseAcquisitionAsync { get; init; }
     internal Func<Task>? BeforeAutosaveDeletionAsync { get; init; }
+    /// <summary>
+    /// Observes the held retention lease before deletion; null leaves production behavior unchanged.
+    /// </summary>
+    internal Func<FileSystemManager.CanonicalWriteLease, Task>? BeforeAutosaveRetentionAsync { get; init; }
     internal Func<Task>? BeforeSaveCommitAsync { get; init; }
 }
 
 /// <summary>
 /// Manages save/load with ZIP archives, autosaves, and metadata.
 /// </summary>
-public class SaveLoadService
+public partial class SaveLoadService
 {
     internal sealed record SaveArchiveBudget(
         int MaxEntryCount,
@@ -126,21 +132,28 @@ public class SaveLoadService
         _hooks = hooks;
     }
 
-    public async Task<bool> SaveGameAsync(string saveName, string description, string saveDir = "saves/manual_saves", int turnNumber = 0)
-    {
-        try
-        {
-            await using var canonicalSnapshotLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            return await SaveGameAsync(canonicalSnapshotLease, saveName, description, saveDir, turnNumber);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Ошибка сохранения: {Name}", saveName);
-            return false;
-        }
-    }
-
-    internal async Task<bool> SaveGameAsync(
+    /// <summary>
+    /// Prepares one complete closed archive under the caller's snapshot lease without publishing it.
+    /// </summary>
+    /// <param name="canonicalSnapshotLease">
+    /// The active canonical lease retained throughout preparation and the later publication decision.
+    /// </param>
+    /// <param name="saveName">
+    /// The player-visible name used in metadata and the sanitized destination filename.
+    /// </param>
+    /// <param name="description">
+    /// The player-visible description stored unchanged in metadata.
+    /// </param>
+    /// <param name="saveDir">
+    /// The canonical relative destination directory, defaulting to manual saves.
+    /// </param>
+    /// <param name="turnNumber">
+    /// A positive explicit turn number, or zero to use the current aggregated state.
+    /// </param>
+    /// <returns>
+    /// An owned closed candidate whose caller must dispose after publication or abandonment.
+    /// </returns>
+    internal async Task<PreparedSaveArchive> PrepareSaveArchiveAsync(
         FileSystemManager.CanonicalWriteLease canonicalSnapshotLease,
         string saveName,
         string description,
@@ -150,9 +163,11 @@ public class SaveLoadService
         string? stagingRoot = null;
         string? temporaryPath = null;
         FileSystemManager.RuntimeStagedFile? stagedFile = null;
+        Exception? preparationFailure = null;
         try
         {
-            _fs.EnsureCanonicalWriteLeaseActive(canonicalSnapshotLease);
+            _fs.ResolveBackupPublicationRecovery(canonicalSnapshotLease);
+            var generation = _fs.ReadLocalGenerationSnapshot(canonicalSnapshotLease).Binding;
             if (!_fs.DirectoryExists(
                     canonicalSnapshotLease,
                     GameStateDirectory))
@@ -170,7 +185,12 @@ public class SaveLoadService
             var fileName = SanitizeFileName($"{saveName}_{timestamp}.zip");
             var destinationRelativePath = Path.Combine(saveDir, fileName)
                 .Replace('\\', '/');
-            _ = _fs.ResolvePath(destinationRelativePath);
+            var destination = _fs.ResolvePath(destinationRelativePath);
+            if (!_fs.UsesTrustedLocalWriter(canonicalSnapshotLease, destinationRelativePath))
+                throw new InvalidOperationException("Ordinary save preparation cannot run inside an original physical publication recorder.");
+            var destinationScope = new TrustedLocalFileScope([_fs.GameSessionPath]);
+            if (File.Exists(destinationScope.ValidateFile(destination)))
+                throw new IOException("The save destination already exists; create-only save cannot replace it.");
             stagingRoot = _fs.CreateRuntimeSaveStagingRoot();
             temporaryPath = Path.Combine(stagingRoot, "save.zip");
             stagedFile = await _fs.CreateRuntimeStagedFileAsync(temporaryPath);
@@ -313,297 +333,79 @@ public class SaveLoadService
                             manifest,
                             SaveManifestJsonOptions)));
             }
+            await stagedFile.Stream.FlushAsync();
+            stagedFile.Stream.Flush(flushToDisk: true);
+            await stagedFile.DisposeAsync();
+            stagedFile = null;
             if (_hooks?.BeforeSaveCommitAsync != null)
                 await _hooks.BeforeSaveCommitAsync();
-            await _fs.MoveRuntimeFileIntoCanonicalSessionAsync(
-                canonicalSnapshotLease,
-                stagedFile,
-                destinationRelativePath);
-            stagedFile = null;
+            var candidate = new PreparedSaveArchive(_fs, canonicalSnapshotLease, destinationRelativePath, stagingRoot,
+                TrustedLocalFileImage.CaptureFile(new TrustedLocalFileScope([stagingRoot]), temporaryPath), generation);
+            stagingRoot = null;
             temporaryPath = null;
-
-            _logger.LogInformation("Игра сохранена: {Name}", saveName);
-            return true;
+            return candidate;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ошибка сохранения: {Name}", saveName);
-            return false;
+            preparationFailure = ex;
+            throw;
         }
         finally
         {
-            if (stagedFile != null)
-                await stagedFile.DisposeAsync();
-            if (!string.IsNullOrWhiteSpace(stagingRoot))
-            {
-                try
-                {
-                    _fs.DeleteRuntimeSaveStagingRoot(stagingRoot);
-                }
-                catch (Exception cleanupEx)
-                {
-                    _logger.LogWarning(
-                        cleanupEx,
-                        "Не удалось удалить staging-директорию сохранения: {Path}",
-                        stagingRoot);
-                }
-            }
+            await ReleaseFailedSavePreparationAsync(stagedFile, stagingRoot, preparationFailure);
         }
     }
 
-    public async Task<bool> AutosaveAsync(int turnNumber)
-    {
-        const string autosaveDirectory = "saves/autosaves";
-        var saved = await SaveGameAsync(
-            $"autosave_turn{turnNumber}",
-            $"Автосохранение - ход {turnNumber}",
-            autosaveDirectory,
-            turnNumber);
-        if (!saved)
-            return false;
+    /// <summary>
+    /// Loads through the portable typed operation and reports only whether replacement committed.
+    /// Player-facing callers must use <see cref="LoadGameWithOutcomeAsync"/> instead.
+    /// </summary>
+    /// <param name="saveFilePath">
+    /// The selected archive's absolute path or canonical session-relative path.
+    /// </param>
+    /// <returns>
+    /// True only for a confirmed commit, including a commit whose follow-up blocks continuation.
+    /// False combines admission refusal, confirmed rollback and unresolved uncertainty; it is not
+    /// permission to retry. This compatibility result does not establish safe continuation.
+    /// </returns>
+    public async Task<bool> LoadGameAsync(string saveFilePath) =>
+        (await LoadGameWithOutcomeAsync(saveFilePath)).Disposition == LoadReplacementDisposition.Committed;
 
-        if (_hooks?.BeforeAutosaveCleanupLeaseAcquisitionAsync != null)
-            await _hooks.BeforeAutosaveCleanupLeaseAcquisitionAsync();
-        await CleanupOldSaves(autosaveDirectory, _stateManager.Settings.MaxAutosaves);
-        return true;
-    }
-
-    public async Task<bool> LoadGameAsync(string saveFilePath)
-    {
-        CanonicalLoadTransactionPaths? transactionPaths = null;
-        FileSystemManager.LoadStagingAuthoritySet? stagingAuthorities = null;
-        try
-        {
-            var fullPath = saveFilePath;
-            if (!Path.IsPathRooted(fullPath))
-                fullPath = _fs.ResolvePath(saveFilePath);
-
-            var openedArchive = _fs.OpenExactPhysicalReadFile(
-                fullPath,
-                "Selected save archive");
-            if (openedArchive == null)
-            {
-                _logger.LogWarning("Файл сохранения не найден: {Path}", fullPath);
-                return false;
-            }
-
-            var transactionId = Guid.NewGuid().ToString("N");
-            transactionPaths = _fs.GetLoadTransactionPaths(transactionId);
-            _fs.CreateLoadDirectory(transactionPaths.StagingSessionPath);
-            stagingAuthorities = _fs.CreateLoadStagingAuthoritySet(
-                transactionPaths.StagingSessionPath);
-
-            await using (openedArchive)
-            {
-                try
-                {
-                    ValidateTrustedArchiveBeforeMaterialization(
-                        openedArchive.Stream);
-                    using (var archive = new ZipArchive(
-                               openedArchive.Stream,
-                               ZipArchiveMode.Read,
-                               leaveOpen: true))
-                    {
-                        await ValidateArchiveStructureAsync(
-                            archive,
-                            transactionPaths.StagingSessionPath);
-
-                        foreach (var entry in archive.Entries)
-                        {
-                            if (string.IsNullOrEmpty(entry.Name))
-                                continue;
-
-                            if (!TryResolveArchiveEntryTargetPath(
-                                    transactionPaths.StagingSessionPath,
-                                    entry.FullName,
-                                    out var targetPath))
-                            {
-                                _logger.LogWarning(
-                                    "Загрузка отклонена: zip entry выходит за пределы sandbox: {Entry}",
-                                    entry.FullName);
-                                openedArchive.Abandon();
-                                return false;
-                            }
-                            var normalizedPath = Path
-                                .GetRelativePath(
-                                    transactionPaths.StagingSessionPath,
-                                    targetPath)
-                                .Replace('\\', '/');
-                            if (normalizedPath.Equals(
-                                    SaveManifestArchivePath,
-                                    StringComparison.OrdinalIgnoreCase) ||
-                                IsEphemeralArchivePath(normalizedPath))
-                            {
-                                continue;
-                            }
-
-                            var targetDir = Path.GetDirectoryName(targetPath);
-                            if (targetDir != null)
-                                _fs.CreateLoadDirectory(targetDir);
-
-                            await using var entryStream = entry.Open();
-                            await _fs.WriteLoadTransactionFileAsync(
-                                targetPath,
-                                entryStream,
-                                entry.Length,
-                                stagingAuthorities);
-                        }
-                    }
-
-                    openedArchive.Complete();
-                }
-                catch
-                {
-                    openedArchive.Abandon();
-                    throw;
-                }
-            }
-
-            DeleteEphemeralArtifacts(transactionPaths.StagingSessionPath);
-
-            var liveSessionPath = _fs.GameSessionPath;
-
-            if (_hooks?.BeforeLoadLeaseAcquisitionAsync != null)
-                await _hooks.BeforeLoadLeaseAcquisitionAsync();
-            stagingAuthorities.EnsureExactAtRoot(
-                transactionPaths.StagingSessionPath,
-                "Load staging before session lifecycle acquisition");
-            await using var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();
-            var runtimeSnapshot = _stateManager.CaptureRuntimeSnapshot();
-            await using (var writeLease =
-                         await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease))
-            {
-                _fs.BeginLoadTransaction(writeLease, transactionId);
-                try
-                {
-                    if (_fs.LoadDirectoryExists(liveSessionPath))
-                    {
-                        _fs.CreateLoadDirectory(Path.GetDirectoryName(transactionPaths.BackupSessionPath)!);
-                        _fs.MoveLoadDirectory(liveSessionPath, transactionPaths.BackupSessionPath);
-                    }
-
-                    _fs.MoveLoadDirectory(
-                        transactionPaths.StagingSessionPath,
-                        liveSessionPath,
-                        stagingAuthorities);
-                    if (_hooks?.AfterLoadPublicationValidatedAsync != null)
-                        await _hooks.AfterLoadPublicationValidatedAsync();
-                    stagingAuthorities.EnsurePublishedExactBeforeActivation(
-                        liveSessionPath,
-                        "Load publication immediately before activation");
-                    _fs.ActivateLoadTransactionSession(writeLease, transactionId);
-                    _fs.EnsureDirectoryStructure(writeLease);
-                    var profilePublication =
-                        await AfterlifeEntityProfileState
-                            .ApplyPlayerSoulProfileClientAuthorityAsync(
-                                _fs,
-                                writeLease,
-                                publishReplacementAsync: async content =>
-                                {
-                                    var currentAuthority =
-                                        stagingAuthorities
-                                            .YieldPublishedFileAuthorityForConditionalReplacement(
-                                                liveSessionPath,
-                                                AfterlifeEntityProfileState
-                                                    .StatePath,
-                                                "Client-owned load profile repair boundary");
-                                    return await _fs
-                                        .WriteFileAtomicWithPublicationIfCurrentAuthorityAsync(
-                                            writeLease,
-                                            AfterlifeEntityProfileState
-                                                .StatePath,
-                                            content,
-                                            currentAuthority.Identity,
-                                            currentAuthority.Sha256);
-                                });
-                    if (profilePublication != null)
-                    {
-                        stagingAuthorities.RebindPublishedFileAuthority(
-                            liveSessionPath,
-                            AfterlifeEntityProfileState.StatePath,
-                            profilePublication,
-                            "Client-owned load profile repair publication");
-                    }
-                    stagingAuthorities
-                        .SealPublishedAuthorityForCanonicalReads(
-                            liveSessionPath,
-                            "Load publication before canonical reads");
-                    await _stateManager.RefreshGameStateAsync(writeLease);
-                    await _stateManager.LoadSettingsAsync();
-                    stagingAuthorities.EnsureSealedExactBeforeCommit(
-                        liveSessionPath,
-                        "Load publication immediately before commit");
-                    _fs.CommitLoadTransaction(writeLease, transactionId);
-                }
-                catch (Exception loadException)
-                {
-                    try
-                    {
-                        stagingAuthorities.ReleaseForRecovery();
-                        _fs.RecoverInterruptedLoadTransaction(writeLease);
-                        _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
-                        await _stateManager.RefreshGameStateAsync(writeLease);
-                        await _stateManager.LoadSettingsAsync();
-                    }
-                    catch (Exception recoveryException)
-                    {
-                        _stateManager.RestoreRuntimeSnapshot(runtimeSnapshot);
-                        throw new AggregateException(
-                            "Load failed and automatic rollback could not restore the last valid session. " +
-                            "Recovery journal and backup were preserved for startup retry.",
-                            loadException,
-                            recoveryException);
-                    }
-
-                    throw;
-                }
-            }
-
-            _logger.LogInformation("Игра загружена: {Path}", saveFilePath);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Ошибка загрузки: {Path}", saveFilePath);
-            return false;
-        }
-        finally
-        {
-            if (stagingAuthorities != null)
-            {
-                try
-                {
-                    await stagingAuthorities.DisposeAsync();
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(
-                        ex,
-                        "Не удалось освободить удерживаемые файловые полномочия staging загрузки.");
-                }
-            }
-
-            if (transactionPaths != null)
-            {
-                try
-                {
-                    _fs.CleanupInactiveLoadTransaction(transactionPaths);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(
-                        ex,
-                        "Не удалось очистить неактивную staging-директорию транзакции загрузки {TransactionId}.",
-                        transactionPaths.TransactionId);
-                }
-            }
-        }
-    }
-
+    /// <summary>
+    /// Lists readable save metadata while holding one ordinary canonical lease.
+    /// </summary>
+    /// <param name="saveDir">
+    /// The session-relative save directory; defaults to manual saves.
+    /// </param>
+    /// <returns>
+    /// Valid bounded archives ordered by descending metadata timestamp.
+    /// </returns>
     public async Task<List<SaveInfo>> GetAvailableSavesAsync(string saveDir = "saves/manual_saves")
     {
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return await GetAvailableSavesAsync(lease, saveDir);
+    }
+
+    /// <summary>
+    /// Reads bounded metadata on the caller's existing lease without loading complete ZIP images into memory.
+    /// </summary>
+    /// <param name="lease">
+    /// The active lease held across listing and stream completion.
+    /// </param>
+    /// <param name="saveDir">
+    /// The session-relative directory containing save archives.
+    /// </param>
+    /// <returns>
+    /// Successfully validated metadata and opened file lengths, ordered by descending timestamp.
+    /// </returns>
+    internal async Task<List<SaveInfo>> GetAvailableSavesAsync(FileSystemManager.CanonicalWriteLease lease,
+        string saveDir = "saves/manual_saves")
+    {
+        _fs.ResolveBackupPublicationRecovery(lease);
         var saves = new List<SaveInfo>();
         var fullDir = _fs.ResolvePath(saveDir);
+        var ordinary = _fs.UsesTrustedLocalWriter(lease, saveDir);
+        if (ordinary) new TrustedLocalFileScope([_fs.GameSessionPath]).ValidateDirectory(fullDir);
 
         if (!Directory.Exists(fullDir))
             return saves;
@@ -612,27 +414,69 @@ public class SaveLoadService
         {
             try
             {
-                var metadata = await ReadSaveMetadataWithRetryAsync(saveFile);
-                if (metadata == null)
+                var relativePath = Path.GetRelativePath(_fs.GameSessionPath, saveFile).Replace('\\', '/');
+                var info = ordinary
+                    ? await ReadOrdinarySaveMetadataWithRetryAsync(lease, relativePath)
+                    : await ReadOriginalSaveMetadataWithRetryAsync(saveFile);
+                if (info?.Metadata == null)
                     continue;
 
-                saves.Add(new SaveInfo
-                {
-                    FileName = saveFile,
-                    Metadata = metadata,
-                    FileSize = new FileInfo(saveFile).Length
-                });
+                saves.Add(info);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException && ex is not SessionReplacedException)
             {
                 _logger.LogWarning(ex, "Повреждённое сохранение: {File}", Path.GetFileName(saveFile));
             }
         }
 
+        _fs.ResolveBackupPublicationRecovery(lease);
         return saves.OrderByDescending(s => s.Metadata?.Timestamp).ToList();
     }
 
-    private async Task<SaveMetadata?> ReadSaveMetadataWithRetryAsync(string saveFile)
+    /// <summary>
+    /// Retries only transient open failures and completes a validated ordinary archive stream.
+    /// </summary>
+    /// <param name="lease">
+    /// The lease retained by the enclosing listing operation.
+    /// </param>
+    /// <param name="relativePath">
+    /// The session-relative ZIP path.
+    /// </param>
+    /// <returns>
+    /// Its bounded metadata and opened length, or null when the validated file is absent.
+    /// </returns>
+    private async Task<SaveInfo?> ReadOrdinarySaveMetadataWithRetryAsync(FileSystemManager.CanonicalWriteLease lease, string relativePath)
+    {
+        FileSystemManager.OrdinaryReadFile? openedFile;
+        for (var attempt = 1; ; attempt++)
+        {
+            try { openedFile = await _fs.OpenOrdinaryReadFileAsync(lease, relativePath); break; }
+            catch (Exception ex) when (IsTransientSaveMetadataOpenException(ex) && attempt < SaveMetadataReadAttempts)
+            { await Task.Delay(SaveMetadataReadRetryDelay); }
+        }
+        if (openedFile == null) return null;
+        await using (openedFile)
+        {
+            try
+            {
+                var metadata = await ReadSaveMetadataStreamAsync(openedFile.Stream);
+                openedFile.Complete();
+                return new SaveInfo { FileName = _fs.ResolvePath(relativePath), Metadata = metadata, FileSize = openedFile.Length };
+            }
+            catch { openedFile.Abandon(); throw; }
+        }
+    }
+
+    /// <summary>
+    /// Retains original physical read authority for explicit original transaction callers.
+    /// </summary>
+    /// <param name="saveFile">
+    /// The original route's exact archive path.
+    /// </param>
+    /// <returns>
+    /// Its bounded metadata and opened length, or null for absence.
+    /// </returns>
+    private async Task<SaveInfo?> ReadOriginalSaveMetadataWithRetryAsync(string saveFile)
     {
         FileSystemManager.StableReadFile? openedFile = null;
         for (var attempt = 1; ; attempt++)
@@ -652,42 +496,15 @@ public class SaveLoadService
             }
         }
 
-        return openedFile == null
-            ? null
-            : await ReadSaveMetadataAsync(openedFile);
-    }
-
-    private static async Task<SaveMetadata?> ReadSaveMetadataAsync(
-        FileSystemManager.StableReadFile openedFile)
-    {
+        if (openedFile == null) return null;
         await using (openedFile)
         {
             try
             {
-                SaveMetadata? metadata = null;
-                ValidateTrustedArchiveBeforeMaterialization(
-                    openedFile.Stream);
-                using (var archive = new ZipArchive(
-                           openedFile.Stream,
-                           ZipArchiveMode.Read,
-                           leaveOpen: true))
-                {
-                    ValidateTrustedArchiveBudget(archive);
-                    var metadataEntry = archive.GetEntry("save_metadata.json");
-                    if (metadataEntry != null)
-                    {
-                        var content = await ReadArchiveEntryBytesAsync(
-                            metadataEntry,
-                            TrustedArchiveBudget.MaxEntryExpandedBytes,
-                            "Save metadata");
-                        metadata = JsonSerializer.Deserialize<SaveMetadata>(
-                            StripUtf8Bom(content).Span,
-                            SaveMetadataJsonOptions);
-                    }
-                }
-
+                var metadata = await ReadSaveMetadataStreamAsync(openedFile.Stream);
+                var length = openedFile.Stream.Length;
                 openedFile.Complete();
-                return metadata;
+                return new SaveInfo { FileName = saveFile, Metadata = metadata, FileSize = length };
             }
             catch
             {
@@ -697,9 +514,29 @@ public class SaveLoadService
         }
     }
 
+    /// <summary>
+    /// Validates raw ZIP structure and budgets before reading the bounded metadata entry.
+    /// </summary>
+    /// <param name="stream">
+    /// The readable seekable archive stream, retained by its owning read wrapper.
+    /// </param>
+    /// <returns>
+    /// The decoded metadata, or null when the archive has no metadata entry.
+    /// </returns>
+    private static async Task<SaveMetadata?> ReadSaveMetadataStreamAsync(Stream stream)
+    {
+        ValidateTrustedArchiveBeforeMaterialization(stream);
+        using var archive = new ZipArchive(stream, ZipArchiveMode.Read, leaveOpen: true);
+        ValidateTrustedArchiveBudget(archive);
+        var entry = archive.GetEntry("save_metadata.json");
+        if (entry == null) return null;
+        var content = await ReadArchiveEntryBytesAsync(entry, TrustedArchiveBudget.MaxEntryExpandedBytes, "Save metadata");
+        return JsonSerializer.Deserialize<SaveMetadata>(StripUtf8Bom(content).Span, SaveMetadataJsonOptions);
+    }
+
     private static bool IsTransientSaveMetadataOpenException(Exception ex) =>
         ex is IOException &&
-        (ex.HResult & 0xFFFF) is 32 or 33;
+        (ex.HResult & 0xFFFF) is 11 or 32 or 33;
 
     private async Task<int> AddDirectoryToArchive(
         FileSystemManager.CanonicalWriteLease canonicalSnapshotLease,
@@ -768,10 +605,14 @@ public class SaveLoadService
         List<SaveIntegrityManifestEntry> manifestEntries)
     {
         var normalizedPath = entryPath.Replace('\\', '/');
+        // Arbitrary Linux payloads retain native identity, while fixed whole-file
+        // authorities must remain unambiguous under the loader's declared mapping.
+        var nameComparison = OperatingSystem.IsLinux() && !FixedLoadStatePaths.ContainsKey(normalizedPath)
+            ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase;
         if (manifestEntries.Any(entry =>
                 entry.Path.Equals(
                     normalizedPath,
-                    StringComparison.OrdinalIgnoreCase)))
+                    nameComparison)))
         {
             throw new InvalidDataException(
                 $"Save payload contains duplicate archive path '{normalizedPath}'.");
@@ -1173,15 +1014,32 @@ public class SaveLoadService
         return true;
     }
 
+    /// <summary>
+    /// Validates original archive schema, inventory and hashes before portable fixed-path materialization.
+    /// </summary>
+    /// <param name="archive">
+    /// The admitted original ZIP, whose entry keys and payload bytes remain unchanged during validation.
+    /// </param>
+    /// <param name="stagingSessionRoot">
+    /// The owned future extraction root used only for normalized path admission.
+    /// </param>
+    /// <param name="preserveNativePayloadNames">
+    /// Enables distinct original Linux payload names for typed load while retaining the original public reader contract.
+    /// </param>
+    /// <returns>
+    /// Completion only after each original durable payload has a unique validated manifest claim when a manifest exists.
+    /// </returns>
     private static async Task ValidateArchiveStructureAsync(
         ZipArchive archive,
-        string stagingSessionRoot)
+        string stagingSessionRoot,
+        bool preserveNativePayloadNames = false)
     {
         ValidateTrustedArchiveBudget(archive);
 
+        var originalNameComparer = preserveNativePayloadNames && OperatingSystem.IsLinux()
+            ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
         var payloadEntries =
-            new Dictionary<string, ZipArchiveEntry>(
-                StringComparer.OrdinalIgnoreCase);
+            new Dictionary<string, ZipArchiveEntry>(originalNameComparer);
         foreach (var entry in archive.Entries)
         {
             if (string.IsNullOrEmpty(entry.Name))
@@ -1197,9 +1055,11 @@ public class SaveLoadService
             }
         }
 
-        if (!payloadEntries.TryGetValue(
-                SoulStateArchivePath,
-                out var soulStateEntry))
+        if (payloadEntries.Keys.Count(path => path.Equals(SaveManifestArchivePath, StringComparison.OrdinalIgnoreCase)) > 1)
+            throw new InvalidDataException("Save archive contains duplicate integrity manifests.");
+
+        var soulStateEntry = FindOriginalArchiveEntry(payloadEntries, SoulStateArchivePath);
+        if (soulStateEntry == null)
         {
             throw new InvalidDataException(
                 $"Save archive is missing mandatory canonical state '{SoulStateArchivePath}'.");
@@ -1208,9 +1068,8 @@ public class SaveLoadService
         await ValidateSoulStateEntryAsync(soulStateEntry);
         await ValidateArchivedResourceStateAsync(payloadEntries);
 
-        if (!payloadEntries.TryGetValue(
-                SaveManifestArchivePath,
-                out var manifestEntry))
+        var manifestEntry = FindOriginalArchiveEntry(payloadEntries, SaveManifestArchivePath);
+        if (manifestEntry == null)
         {
             return;
         }
@@ -1238,8 +1097,7 @@ public class SaveLoadService
         }
 
         var expectedEntries =
-            new Dictionary<string, SaveIntegrityManifestEntry>(
-                StringComparer.OrdinalIgnoreCase);
+            new Dictionary<string, SaveIntegrityManifestEntry>(originalNameComparer);
         foreach (var manifestPayload in manifest.Entries)
         {
             var normalizedPath = NormalizeArchiveEntryPath(
@@ -1269,21 +1127,25 @@ public class SaveLoadService
             .ToDictionary(
                 pair => pair.Key,
                 pair => pair.Value,
-                StringComparer.OrdinalIgnoreCase);
+                originalNameComparer);
         if (expectedEntries.Count != durablePayloadEntries.Count)
         {
             throw new InvalidDataException(
                 "Save integrity manifest does not cover every archive payload.");
         }
 
+        var claimedPayloads = new HashSet<ZipArchiveEntry>(ReferenceEqualityComparer.Instance);
         foreach (var (path, expected) in expectedEntries)
         {
-            if (!durablePayloadEntries.TryGetValue(path, out var actualEntry) ||
-                actualEntry.Length != expected.Length)
+            var actualEntry = FindOriginalArchiveEntry(durablePayloadEntries, path);
+            if (actualEntry == null || actualEntry.Length != expected.Length)
             {
                 throw new InvalidDataException(
                     $"Save payload '{path}' does not match its manifested length.");
             }
+
+            if (!claimedPayloads.Add(actualEntry))
+                throw new InvalidDataException("Save integrity manifest claims one original payload more than once.");
 
             var digest = await ComputeArchiveEntrySha256Async(
                 actualEntry,
@@ -1368,6 +1230,34 @@ public class SaveLoadService
             requirePersistedAuthorityRoot: true);
     }
 
+    /// <summary>
+    /// Resolves original entry identity exactly first, preserving an existing single case alias without folding distinct payloads.
+    /// </summary>
+    /// <param name="entries">
+    /// The original inventory; typed Linux admission keeps its ordinal keys, while the original reader retains its comparer.
+    /// </param>
+    /// <param name="path">
+    /// The original manifest or schema reference to resolve without renaming an entry.
+    /// </param>
+    /// <returns>
+    /// The exact original entry, its sole case alias, or null when absent; ambiguous aliases are invalid evidence.
+    /// </returns>
+    private static ZipArchiveEntry? FindOriginalArchiveEntry(
+        IReadOnlyDictionary<string, ZipArchiveEntry> entries,
+        string path)
+    {
+        if (entries.TryGetValue(path, out var exact)) return exact;
+        ZipArchiveEntry? alias = null;
+        foreach (var (candidate, entry) in entries)
+        {
+            if (!candidate.Equals(path, StringComparison.OrdinalIgnoreCase)) continue;
+            if (alias != null)
+                throw new InvalidDataException($"Save original reference '{path}' has ambiguous case aliases.");
+            alias = entry;
+        }
+        return alias;
+    }
+
     private static async Task ValidateArchivedResourceStateAsync(
         IReadOnlyDictionary<string, ZipArchiveEntry> payloadEntries)
     {
@@ -1393,7 +1283,7 @@ public class SaveLoadService
         IReadOnlyDictionary<string, ZipArchiveEntry> payloadEntries,
         string path)
     {
-        if (!payloadEntries.TryGetValue(path, out var entry))
+        if (FindOriginalArchiveEntry(payloadEntries, path) == null)
         {
             throw new InvalidDataException(
                 $"Save archive is missing mandatory canonical state '{path}'.");
@@ -1408,7 +1298,8 @@ public class SaveLoadService
         IReadOnlyDictionary<string, ZipArchiveEntry> payloadEntries,
         string path)
     {
-        if (!payloadEntries.TryGetValue(path, out var entry))
+        var entry = FindOriginalArchiveEntry(payloadEntries, path);
+        if (entry == null)
             return null;
 
         var bytes = await ReadArchiveEntryBytesAsync(
@@ -1677,27 +1568,76 @@ public class SaveLoadService
         long Length,
         string Sha256);
 
+    /// <summary>
+    /// Applies autosave retention after confirmed creation, stopping on unresolved publication evidence.
+    /// </summary>
+    /// <param name="saveDir">
+    /// The session-relative autosave directory.
+    /// </param>
+    /// <param name="maxSaves">
+    /// The number of newest archives to retain; negative values are treated as zero.
+    /// </param>
+    /// <returns>
+    /// Completion after bounded image deletions, or an explicit failure for the committed save's follow-up.
+    /// </returns>
     private async Task CleanupOldSaves(string saveDir, int maxSaves)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        var fullDir = _fs.ResolvePath(saveDir);
-        if (!Directory.Exists(fullDir))
-            return;
-
-        var files = Directory.GetFiles(fullDir, "*.zip")
-            .OrderByDescending(f => File.GetCreationTime(f))
-            .Skip(Math.Max(maxSaves, 0))
-            .Select(file => Path.GetRelativePath(_fs.GameSessionPath, file)
-                .Replace('\\', '/'))
-            .ToArray();
-
-        if (_hooks?.BeforeAutosaveDeletionAsync != null)
-            await _hooks.BeforeAutosaveDeletionAsync();
-
-        foreach (var file in files)
+        FileSystemManager.CanonicalWriteLease writeLease;
+        try { writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(); }
+        catch (SessionReplacedException) { throw; }
+        catch (Exception failure) { throw new CoordinatedStatePublicationUncertainException(failure); }
+        Exception? retentionFailure = null;
+        try
         {
-            try { _fs.DeleteFile(writeLease, file); }
-            catch { /* ignore cleanup errors */ }
+            _fs.ResolveBackupPublicationRecovery(writeLease);
+            if (_hooks?.BeforeAutosaveRetentionAsync != null)
+                await _hooks.BeforeAutosaveRetentionAsync(writeLease);
+            var scope = new TrustedLocalFileScope([_fs.GameSessionPath]);
+            var fullDir = _fs.ResolvePath(saveDir);
+            scope.ValidateDirectory(fullDir);
+            if (!Directory.Exists(fullDir))
+                return;
+
+            var files = Directory.GetFiles(fullDir, "*.zip")
+                .OrderByDescending(f => File.GetCreationTime(f))
+                .Skip(Math.Max(maxSaves, 0))
+                .Select(file => Path.GetRelativePath(_fs.GameSessionPath, file)
+                    .Replace('\\', '/'))
+                .ToArray();
+
+            if (_hooks?.BeforeAutosaveDeletionAsync != null)
+                await _hooks.BeforeAutosaveDeletionAsync();
+
+            foreach (var file in files)
+            {
+                _fs.ResolveBackupPublicationRecovery(writeLease);
+                var before = TrustedLocalFileImage.CaptureFile(scope, _fs.ResolvePath(file));
+                var outcome = await _fs.PublishLocalImageFilesAsync(writeLease,
+                    [new CanonicalLocalImageChange(file, before, TrustedLocalFileImage.FromBytes(null))]);
+                if (outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain)
+                    throw new CoordinatedStatePublicationUncertainException(outcome.Failure);
+                _fs.RequireCommittedLocalPublication(outcome);
+                _fs.ResolveBackupPublicationRecovery(writeLease);
+            }
+        }
+        catch (Exception failure)
+        {
+            retentionFailure = failure;
+            throw;
+        }
+        finally
+        {
+            try { await writeLease.DisposeAsync(); }
+            catch (Exception releaseFailure)
+            {
+                // Preserve a primary stop decision; a failed release also stops
+                // continuation when retention otherwise completed or rolled back.
+                if (retentionFailure is CoordinatedStatePublicationUncertainException or SessionReplacedException)
+                    retentionFailure.Data["AutosaveRetentionLeaseReleaseFailure"] = releaseFailure;
+                else
+                    throw new CoordinatedStatePublicationUncertainException(retentionFailure == null
+                        ? releaseFailure : new AggregateException(retentionFailure, releaseFailure));
+            }
         }
     }
 

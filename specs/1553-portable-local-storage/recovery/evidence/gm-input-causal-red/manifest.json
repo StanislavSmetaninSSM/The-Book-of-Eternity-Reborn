@@ -1,0 +1,54 @@
+{
+  "SchemaVersion": 1,
+  "Kind": "causal-red",
+  "Artifacts": [
+    {
+      "Path": "command-result.json",
+      "StoredPath": "command-result.json",
+      "StoredBytes": 432,
+      "StoredSha256": "078e2077d9acf958090fda0515445159dc00e17ae277e3c51a999f1e14842b41",
+      "OriginalBytes": 432,
+      "OriginalSha256": "078e2077d9acf958090fda0515445159dc00e17ae277e3c51a999f1e14842b41"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 164537,
+      "StoredSha256": "f58fd430c093310c57f689891db9964042b2251d04b6e9554626bc34c0a7b513",
+      "OriginalBytes": 1502568,
+      "OriginalSha256": "e2c614734745bdcf40f60fcab22e2a84d1f2629fad8fd974e606bff086b558be"
+    },
+    {
+      "Path": "gm-bridge-input-lifetime-unit-001.trx",
+      "StoredPath": "gm-bridge-input-lifetime-unit-001.trx",
+      "StoredBytes": 75218,
+      "StoredSha256": "4caaba939eb09da81dc17f6d5713e7788851ce7df1b7f05fc7dfaa72d9b143ea",
+      "OriginalBytes": 75218,
+      "OriginalSha256": "4caaba939eb09da81dc17f6d5713e7788851ce7df1b7f05fc7dfaa72d9b143ea"
+    },
+    {
+      "Path": "plan.json",
+      "StoredPath": "plan.json",
+      "StoredBytes": 6370,
+      "StoredSha256": "8c0817342585f55577c82b628e633f0bb4e479871f70f1ae5977661fa3d9bde6",
+      "OriginalBytes": 6370,
+      "OriginalSha256": "8c0817342585f55577c82b628e633f0bb4e479871f70f1ae5977661fa3d9bde6"
+    },
+    {
+      "Path": "runner.log",
+      "StoredPath": "runner.log.gz",
+      "StoredBytes": 2279,
+      "StoredSha256": "603cdef9f5ccfac7b50ee6154dbd4dfbeeb66178cf92f3aae7f15a2ce3ec108d",
+      "OriginalBytes": 22223,
+      "OriginalSha256": "9541027768ab5f496af5790a45515db1bef7736794bc8a42084a29e6f08e0906"
+    },
+    {
+      "Path": "summary.json",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1364,
+      "StoredSha256": "08036b06a097c7eb6f35b900b32575232e45c7658554b930426241e194c2d00b",
+      "OriginalBytes": 1364,
+      "OriginalSha256": "08036b06a097c7eb6f35b900b32575232e45c7658554b930426241e194c2d00b"
+    }
+  ]
+}

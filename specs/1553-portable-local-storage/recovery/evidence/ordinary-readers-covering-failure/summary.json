@@ -1,0 +1,107 @@
+{
+  "Categories": [
+    "portable-ordinary-readers",
+    "portable-ordinary-read-consumers",
+    "portable-storage-consumers"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-ordinary-readers",
+      "reason": "T030-E ordinary content/presence cutover: exact data, ownership, timestamp, cancellation, hard-linked real publication input and Linux FIFO boundaries. Initial RED runs only this owner.",
+      "contracts": [
+        "ordinary reads",
+        "pre-open non-following type checks",
+        "owning lease and handle timestamp"
+      ]
+    },
+    {
+      "category": "portable-ordinary-read-consumers",
+      "reason": "GREEN selection preserves ordinary type/retry/absence and common-journal recovery, real coordinated baseline/rollback ownership and original-handler source guard.",
+      "contracts": [
+        "recovery/quiescence",
+        "coordinated publication",
+        "retained original authority"
+      ]
+    },
+    {
+      "category": "portable-storage-consumers",
+      "reason": "Sharing the B2 read core affects the already-migrated ordinary writers and LocalUiSessionLockService, including actual stale malformed timestamp fallback.",
+      "contracts": [
+        "B2 ordinary writers",
+        "UI ownership and timestamps"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "642f58285f8927cdbac8dbd8a341654e1927a43c",
+    "WorkingTreeFingerprint": "C1B5565B93BE28A416FAC4D94014202CD628F92417BD13A3B06B594DFBC09AE5",
+    "ChangedFiles": 4
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-ordinary-read-consumers",
+      "Seconds": 5.737865,
+      "BudgetMinutes": 4,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1666309,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0352597,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0352734,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 239.4079542,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 51.2353399,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 17,
+  "WallTime": "00:05:08.1639347",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 44,
+    "CompletedCases": 9,
+    "UnderfilledDescriptors": [
+      "portable-ordinary-read-consumers-unit-002",
+      "portable-ordinary-readers-unit-003",
+      "portable-storage-consumers-integration-004",
+      "portable-storage-consumers-unit-005"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 9,
+    "Executed": 9,
+    "Passed": 8,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

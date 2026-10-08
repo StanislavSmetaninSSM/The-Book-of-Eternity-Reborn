@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="4fa40fcf-d0e6-4399-a738-5346e2331d69" name="@c7669543e9c7 2026-10-06 04:51:54" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T04:51:54.3773161+00:00" queuing="2026-10-06T04:51:54.3773161+00:00" start="2026-10-06T04:51:51.7768236+00:00" finish="2026-10-06T04:51:54.3843346+00:00" />
+  <TestSettings name="default" id="e4564792-f001-401c-8eb4-448ab57cc92e">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_04_51_54" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="673711f5-ec59-4a5b-bfc6-e771a47e7000" testId="201613bc-28b8-ccd9-ce58-ed1affbb26eb" testName="BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake" computerName="c7669543e9c7" duration="00:00:00.0110010" startTime="2026-10-06T04:51:54.1878764+00:00" endTime="2026-10-06T04:51:54.1878765+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="673711f5-ec59-4a5b-bfc6-e771a47e7000" />
+    <UnitTestResult executionId="afcf1dc3-f779-4c86-8e6f-6245e7d034c6" testId="728ea769-9eb4-0409-4739-5dbcc354d49f" testName="BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics" computerName="c7669543e9c7" duration="00:00:00.0083378" startTime="2026-10-06T04:51:54.1848135+00:00" endTime="2026-10-06T04:51:54.1848315+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="afcf1dc3-f779-4c86-8e6f-6245e7d034c6" />
+    <UnitTestResult executionId="f19ced99-5b74-411f-b631-ddc488a6eaf1" testId="d2fe18a7-d3fc-6e0f-b93e-cf1b3d01823a" testName="BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions" computerName="c7669543e9c7" duration="00:00:00.0967287" startTime="2026-10-06T04:51:54.2595739+00:00" endTime="2026-10-06T04:51:54.2595741+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f19ced99-5b74-411f-b631-ddc488a6eaf1" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d2fe18a7-d3fc-6e0f-b93e-cf1b3d01823a">
+      <Execution id="f19ced99-5b74-411f-b631-ddc488a6eaf1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests" name="ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="201613bc-28b8-ccd9-ce58-ed1affbb26eb">
+      <Execution id="673711f5-ec59-4a5b-bfc6-e771a47e7000" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests" name="ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="728ea769-9eb4-0409-4739-5dbcc354d49f">
+      <Execution id="afcf1dc3-f779-4c86-8e6f-6245e7d034c6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests" name="WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="201613bc-28b8-ccd9-ce58-ed1affbb26eb" executionId="673711f5-ec59-4a5b-bfc6-e771a47e7000" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="728ea769-9eb4-0409-4739-5dbcc354d49f" executionId="afcf1dc3-f779-4c86-8e6f-6245e7d034c6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d2fe18a7-d3fc-6e0f-b93e-cf1b3d01823a" executionId="f19ced99-5b74-411f-b631-ddc488a6eaf1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="3" executed="3" passed="3" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.23]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.80]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.82]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.99]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

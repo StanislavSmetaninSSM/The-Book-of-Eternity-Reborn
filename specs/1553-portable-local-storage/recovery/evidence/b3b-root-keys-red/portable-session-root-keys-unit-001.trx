@@ -1,0 +1,160 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="7aa38063-30dc-45b6-ab30-5b47ca2774b4" name="b3b-root-keys-red" runUser="$USER">
+  <ns0:Times creation="2026-10-01T07:04:16.8312737-04:00" queuing="2026-10-01T07:04:16.8312737-04:00" start="2026-10-01T07:04:14.6962073-04:00" finish="2026-10-01T07:04:16.8385057-04:00" />
+  <ns0:TestSettings name="default" id="775dccc1-a98b-4b25-89ff-8257d4240b1c">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="175e05c9-bb18-44ae-8843-94bf68e0df12" testId="12335c63-f102-edb3-8039-75deffae7bf7" testName="BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxRootKeysKeepCaseDistinctNamesSeparate" computerName="$HOST" duration="00:00:00.0007911" startTime="2026-10-01T07:04:16.7272254-04:00" endTime="2026-10-01T07:04:16.7272256-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="175e05c9-bb18-44ae-8843-94bf68e0df12">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.CanonicalRootIdentityInterner.NormalizeRootKey(String fullPath, Boolean windows) in $REPO/BookOfEternityClient/Core/CanonicalRootIdentity.cs:line 89
+   at BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxRootKeysKeepCaseDistinctNamesSeparate() in $REPO/BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs:line 26
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="fb77a0fd-573f-45da-988d-27d346af08c3" testId="3c3e00d3-2268-b3e2-cac2-8d7925017920" testName="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;C:\\session&quot;, extended: &quot;\\\\?\\C:\\session&quot;)" computerName="$HOST" duration="00:00:00.0003369" startTime="2026-10-01T07:04:16.5674888-04:00" endTime="2026-10-01T07:04:16.5674890-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fb77a0fd-573f-45da-988d-27d346af08c3">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.CanonicalRootIdentityInterner.NormalizeRootKey(String fullPath, Boolean windows) in $REPO/BookOfEternityClient/Core/CanonicalRootIdentity.cs:line 89
+   at BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(String ordinary, String extended) in $REPO/BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs:line 19
+   at InvokeStub_PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="39fe777c-7604-4ca8-abbe-8a8d95914a3e" testId="e0decdc7-a668-a56e-4348-9a94ac4d4f78" testName="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;C:\\session&quot;, extended: &quot;\\\\?\\C:\\session\\&quot;)" computerName="$HOST" duration="00:00:00.0062438" startTime="2026-10-01T07:04:16.5584213-04:00" endTime="2026-10-01T07:04:16.5584562-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="39fe777c-7604-4ca8-abbe-8a8d95914a3e">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.CanonicalRootIdentityInterner.NormalizeRootKey(String fullPath, Boolean windows) in $REPO/BookOfEternityClient/Core/CanonicalRootIdentity.cs:line 89
+   at BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(String ordinary, String extended) in $REPO/BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs:line 19
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="652c62ce-f7b7-4c53-9b83-404985fe18ec" testId="cc2dc164-57c0-d120-4c22-20820988027e" testName="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;\\\\server\\share\\session&quot;, extended: &quot;\\\\?\\UNC\\server\\share\\session&quot;)" computerName="$HOST" duration="00:00:00.0001290" startTime="2026-10-01T07:04:16.5690019-04:00" endTime="2026-10-01T07:04:16.5690021-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="652c62ce-f7b7-4c53-9b83-404985fe18ec">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.CanonicalRootIdentityInterner.NormalizeRootKey(String fullPath, Boolean windows) in $REPO/BookOfEternityClient/Core/CanonicalRootIdentity.cs:line 89
+   at BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(String ordinary, String extended) in $REPO/BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs:line 19
+   at InvokeStub_PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="604725c4-9364-4178-8455-46cb905a3081" testId="4ff63a89-df84-1f30-a65c-4d45aa545cb0" testName="BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxClearRetainsDistinctMemberImagesAcrossRollbackThenDeletesBoth" computerName="$HOST" duration="00:00:00.1668450" startTime="2026-10-01T07:04:16.7223263-04:00" endTime="2026-10-01T07:04:16.7223266-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="604725c4-9364-4178-8455-46cb905a3081" />
+    <ns0:UnitTestResult executionId="163b2e70-4817-42b2-a7ec-6a6b6d7ea6fe" testId="f900360c-966e-5691-d376-faea54bc9db8" testName="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;\\\\server\\share\\session&quot;, extended: &quot;//?/UNC/server/share/session/&quot;)" computerName="$HOST" duration="00:00:00.0001207" startTime="2026-10-01T07:04:16.5692879-04:00" endTime="2026-10-01T07:04:16.5692880-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="163b2e70-4817-42b2-a7ec-6a6b6d7ea6fe">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.CanonicalRootIdentityInterner.NormalizeRootKey(String fullPath, Boolean windows) in $REPO/BookOfEternityClient/Core/CanonicalRootIdentity.cs:line 89
+   at BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(String ordinary, String extended) in $REPO/BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs:line 19
+   at InvokeStub_PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;C:\\session&quot;, extended: &quot;\\\\?\\C:\\session\\&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e0decdc7-a668-a56e-4348-9a94ac4d4f78">
+      <ns0:Execution id="39fe777c-7604-4ca8-abbe-8a8d95914a3e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionRootKeyTests" name="RootKeysUnifySupportedDriveAndUncSpellings" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;\\\\server\\share\\session&quot;, extended: &quot;\\\\?\\UNC\\server\\share\\session&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="cc2dc164-57c0-d120-4c22-20820988027e">
+      <ns0:Execution id="652c62ce-f7b7-4c53-9b83-404985fe18ec" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionRootKeyTests" name="RootKeysUnifySupportedDriveAndUncSpellings" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxRootKeysKeepCaseDistinctNamesSeparate" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="12335c63-f102-edb3-8039-75deffae7bf7">
+      <ns0:Execution id="175e05c9-bb18-44ae-8843-94bf68e0df12" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionRootKeyTests" name="LinuxRootKeysKeepCaseDistinctNamesSeparate" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;C:\\session&quot;, extended: &quot;\\\\?\\C:\\session&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3c3e00d3-2268-b3e2-cac2-8d7925017920">
+      <ns0:Execution id="fb77a0fd-573f-45da-988d-27d346af08c3" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionRootKeyTests" name="RootKeysUnifySupportedDriveAndUncSpellings" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxClearRetainsDistinctMemberImagesAcrossRollbackThenDeletesBoth" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4ff63a89-df84-1f30-a65c-4d45aa545cb0">
+      <ns0:Execution id="604725c4-9364-4178-8455-46cb905a3081" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionRootKeyTests" name="LinuxClearRetainsDistinctMemberImagesAcrossRollbackThenDeletesBoth" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: &quot;\\\\server\\share\\session&quot;, extended: &quot;//?/UNC/server/share/session/&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f900360c-966e-5691-d376-faea54bc9db8">
+      <ns0:Execution id="163b2e70-4817-42b2-a7ec-6a6b6d7ea6fe" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionRootKeyTests" name="RootKeysUnifySupportedDriveAndUncSpellings" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="12335c63-f102-edb3-8039-75deffae7bf7" executionId="175e05c9-bb18-44ae-8843-94bf68e0df12" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3c3e00d3-2268-b3e2-cac2-8d7925017920" executionId="fb77a0fd-573f-45da-988d-27d346af08c3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e0decdc7-a668-a56e-4348-9a94ac4d4f78" executionId="39fe777c-7604-4ca8-abbe-8a8d95914a3e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="cc2dc164-57c0-d120-4c22-20820988027e" executionId="652c62ce-f7b7-4c53-9b83-404985fe18ec" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="4ff63a89-df84-1f30-a65c-4d45aa545cb0" executionId="604725c4-9364-4178-8455-46cb905a3081" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="f900360c-966e-5691-d376-faea54bc9db8" executionId="163b2e70-4817-42b2-a7ec-6a6b6d7ea6fe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="6" executed="6" passed="1" failed="5" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.17]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.32]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.35]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.43]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.43]       Stack Trace:
+[xUnit.net 00:00:01.43]         $REPO/BookOfEternityClient/Core/CanonicalRootIdentity.cs(89,0): at BookOfEternityClient.Core.CanonicalRootIdentityInterner.NormalizeRootKey(String fullPath, Boolean windows)
+[xUnit.net 00:00:01.43]         $REPO/BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs(19,0): at BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(String ordinary, String extended)
+[xUnit.net 00:00:01.43]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.43]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.44]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.44]       Stack Trace:
+[xUnit.net 00:00:01.44]         $REPO/BookOfEternityClient/Core/CanonicalRootIdentity.cs(89,0): at BookOfEternityClient.Core.CanonicalRootIdentityInterner.NormalizeRootKey(String fullPath, Boolean windows)
+[xUnit.net 00:00:01.44]         $REPO/BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs(19,0): at BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(String ordinary, String extended)
+[xUnit.net 00:00:01.44]            at InvokeStub_PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(Object, Span`1)
+[xUnit.net 00:00:01.44]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.44]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.44]       Stack Trace:
+[xUnit.net 00:00:01.44]         $REPO/BookOfEternityClient/Core/CanonicalRootIdentity.cs(89,0): at BookOfEternityClient.Core.CanonicalRootIdentityInterner.NormalizeRootKey(String fullPath, Boolean windows)
+[xUnit.net 00:00:01.44]         $REPO/BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs(19,0): at BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(String ordinary, String extended)
+[xUnit.net 00:00:01.44]            at InvokeStub_PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(Object, Span`1)
+[xUnit.net 00:00:01.44]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.44]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.44]       Stack Trace:
+[xUnit.net 00:00:01.44]         $REPO/BookOfEternityClient/Core/CanonicalRootIdentity.cs(89,0): at BookOfEternityClient.Core.CanonicalRootIdentityInterner.NormalizeRootKey(String fullPath, Boolean windows)
+[xUnit.net 00:00:01.44]         $REPO/BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs(19,0): at BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(String ordinary, String extended)
+[xUnit.net 00:00:01.44]            at InvokeStub_PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(Object, Span`1)
+[xUnit.net 00:00:01.44]            at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.60]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.60]       Stack Trace:
+[xUnit.net 00:00:01.60]         $REPO/BookOfEternityClient/Core/CanonicalRootIdentity.cs(89,0): at BookOfEternityClient.Core.CanonicalRootIdentityInterner.NormalizeRootKey(String fullPath, Boolean windows)
+[xUnit.net 00:00:01.60]         $REPO/BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs(26,0): at BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxRootKeysKeepCaseDistinctNamesSeparate()
+[xUnit.net 00:00:01.60]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.60]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.61]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T07:04:16.5564561-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.43]     BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: "C:\\session", extended: "\\\\?\\C:\\session\\") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T07:04:16.5839375-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.44]     BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: "C:\\session", extended: "\\\\?\\C:\\session") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T07:04:16.5840094-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.44]     BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: "\\\\server\\share\\session", extended: "\\\\?\\UNC\\server\\share\\session") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T07:04:16.5840217-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.44]     BookOfEternityClient.Tests.PortableSessionRootKeyTests.RootKeysUnifySupportedDriveAndUncSpellings(ordinary: "\\\\server\\share\\session", extended: "//?/UNC/server/share/session/") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T07:04:16.7275567-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.60]     BookOfEternityClient.Tests.PortableSessionRootKeyTests.LinuxRootKeysKeepCaseDistinctNamesSeparate [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

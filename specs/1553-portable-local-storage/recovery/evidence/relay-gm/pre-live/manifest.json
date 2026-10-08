@@ -1,0 +1,65 @@
+{
+  "SourceReview": "Independent Sol6.1/xhigh PASS6ba696b4 relay_repair_source_review;9artifacts/4sourcepins verified; no actionable findings",
+  "Catalog": {
+    "Valid": true,
+    "Categories": 422,
+    "Methods": 11160,
+    "TestsExecuted": 0
+  },
+  "Package": {
+    "Root": "/tmp/relay-live-r1",
+    "Files": 678,
+    "Bytes": 99051718,
+    "FreshUnseededGame": true,
+    "NativePublisherOnly": true,
+    "CLIOrProviderStarted": false
+  },
+  "Environment": {
+    "SDK": "10.0.401",
+    "Net8Runtime": "8.0.31",
+    "PowerShell": "7.5.4",
+    "Compiler": "Debian14.2.0-19"
+  },
+  "Artifacts": [
+    {
+      "Path": "catalog-audit.json",
+      "Bytes": 103,
+      "SHA256": "c92a15b079a2abe07969ab07d7400ad892d1d4fff3e762cc3156fe3c06c038c1",
+      "StoredPath": "catalog-audit.json.gz",
+      "StoredBytes": 103,
+      "StoredSHA256": "84f253a312543cdc2fad07a9b2776b5963640a9e8b42c524dfb9dbf3780962aa"
+    },
+    {
+      "Path": "catalog-summary.json",
+      "Bytes": 1600,
+      "SHA256": "98cf5d16015d2e8ef360bed96bc0867fb51bc3c6971e10234ff7db5b880e95ab",
+      "StoredPath": "catalog-summary.json.gz",
+      "StoredBytes": 641,
+      "StoredSHA256": "8559eea7522338cce4d4b742699ebd69d77643a1307211afac359b02c3c3cc86"
+    },
+    {
+      "Path": "package-manifest.json",
+      "Bytes": 143627,
+      "SHA256": "b4c9039df9b154a01794835ab3bf13c75d4b003ebd9d8cf7d0c5a832c7886426",
+      "StoredPath": "package-manifest.json.gz",
+      "StoredBytes": 37082,
+      "StoredSHA256": "0d281cc6cd2f3fa0beb44d12951fcf4ab68ade60c6215455e771d712ae6e078c"
+    },
+    {
+      "Path": "native-build-provenance.json",
+      "Bytes": 1153,
+      "SHA256": "ab21dc73f20533fd4667f709eb746249c825d804c831d5b8ad3c5b3851c4c2b5",
+      "StoredPath": "native-build-provenance.json.gz",
+      "StoredBytes": 685,
+      "StoredSHA256": "930d7bd136aa8d7b14020297a1161cb10bcab7a5fb506ead6c3489f934095536"
+    },
+    {
+      "Path": "native-package-manifest.json",
+      "Bytes": 968,
+      "SHA256": "894f70d654d3c79d419d5c78a02c415db3f84eb57120570be5cab534c9104b37",
+      "StoredPath": "native-package-manifest.json.gz",
+      "StoredBytes": 630,
+      "StoredSHA256": "7b57f3fe63e74d888c4094dd3fc3c4084f5d08fa5ed55c87a4aef27e42d0ca1b"
+    }
+  ]
+}

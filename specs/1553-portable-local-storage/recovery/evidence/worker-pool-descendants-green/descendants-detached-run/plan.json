@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "worker-native-pool-detached-descendants"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "14aa66678f74e4db5c27e65d5db4afd815b9f682",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.8054072,
+  "Descriptors": [
+    {
+      "Name": "worker-native-pool-detached-descendants-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-detached-descendants",
+      "Categories": [
+        "worker-native-pool-detached-descendants"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

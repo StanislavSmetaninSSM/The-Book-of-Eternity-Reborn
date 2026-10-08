@@ -1,0 +1,78 @@
+{
+  "SourceCommit": "cf123da871381c6b08786062eab18575a2b2ad50",
+  "Cleanup": [
+    {
+      "Case": "457b692cf049455587d730ceb5f4c369",
+      "RunId": "325acc2fc8934870bee67b1e1ebc08e3",
+      "PrivateBootstrap": "/tmp/boe-native-325acc2fc8934870bee67b1e1ebc08e3",
+      "Existed": true,
+      "Removed": true,
+      "GuardianEchild": true,
+      "LogicalDispositionUnchanged": "Running"
+    },
+    {
+      "Case": "f3e8269b374a48969009bae7304e17c0",
+      "RunId": "b55067de039349ec83eda61ed93292a2",
+      "PrivateBootstrap": "/tmp/boe-native-b55067de039349ec83eda61ed93292a2",
+      "Existed": true,
+      "Removed": true,
+      "GuardianEchild": true,
+      "LogicalDispositionUnchanged": "Running"
+    },
+    {
+      "Case": "2d2277a57aa84371b465edf435f0ab38",
+      "RunId": "db6c9d810af3486c8a353f9ed77537a5",
+      "PrivateBootstrap": "/tmp/boe-native-db6c9d810af3486c8a353f9ed77537a5",
+      "Existed": false,
+      "Removed": true,
+      "GuardianEchild": true,
+      "LogicalDispositionUnchanged": "Prepared"
+    },
+    {
+      "Case": "498c5b3bc84543b0b4bbcc604704a24e",
+      "RunId": "b991608cf02d4f9db6c5f4a93f504078",
+      "PrivateBootstrap": "/tmp/boe-native-b991608cf02d4f9db6c5f4a93f504078",
+      "Existed": true,
+      "Removed": true,
+      "GuardianEchild": true,
+      "LogicalDispositionUnchanged": "Prepared"
+    },
+    {
+      "Case": "d4fc0103eadb42168635a182da00fa40",
+      "RunId": "896bd3c2782841e7971ad7fe40e2909b",
+      "PrivateBootstrap": "/tmp/boe-native-896bd3c2782841e7971ad7fe40e2909b",
+      "Existed": true,
+      "Removed": true,
+      "GuardianEchild": true,
+      "LogicalDispositionUnchanged": "Running"
+    },
+    {
+      "Case": "3756f638a0554867849896ebcd0bf1ec",
+      "RunId": "a5d7c653ce9840a38cd7d0eeef6989cc",
+      "PrivateBootstrap": "/tmp/boe-native-a5d7c653ce9840a38cd7d0eeef6989cc",
+      "Existed": true,
+      "Removed": true,
+      "GuardianEchild": true,
+      "LogicalDispositionUnchanged": "Running"
+    },
+    {
+      "Case": "1a6ec0af5efd42aba671c75c0d2586ee",
+      "RunId": "9bb9d969b2b14ef192b8ef11acc93b70",
+      "PrivateBootstrap": "/tmp/boe-native-9bb9d969b2b14ef192b8ef11acc93b70",
+      "Existed": true,
+      "Removed": true,
+      "GuardianEchild": true,
+      "LogicalDispositionUnchanged": "Prepared"
+    },
+    {
+      "Case": "bc8a67887aac4fb6bdc7f70337c0e884",
+      "RunId": "3b24b50d165c4343992c1b8972bc2e4d",
+      "PrivateBootstrap": "/tmp/boe-native-3b24b50d165c4343992c1b8972bc2e4d",
+      "Existed": false,
+      "Removed": true,
+      "GuardianEchild": true,
+      "LogicalDispositionUnchanged": "Prepared"
+    }
+  ],
+  "Reason": "Known synthetic private native bootstrap residue removed only after independent guardian ECHILD; no logical evidence or canonical data removed."
+}

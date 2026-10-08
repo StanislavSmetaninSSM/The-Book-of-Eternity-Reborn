@@ -1,0 +1,54 @@
+{
+  "Categories": [
+    "worker-run-ledger-storage-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "638e60c83afede2ec65252987d47accf9ac63335",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 40.3255783,
+  "Descriptors": [
+    {
+      "Name": "worker-run-ledger-storage-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-run-ledger-storage-linux",
+      "Categories": [
+        "worker-run-ledger-storage-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdMissing_IsReadOnlyAndDoesNotCreateNamespace|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerTests.PreparedEntry_PersistsIdentityAndColdRestartCannotAdoptIt",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 28,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdActiveInventory_PreservesProgressWithoutReconstructingLiveOwner",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ColdMissing_IsReadOnlyAndDoesNotCreateNamespace",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.ExistingEmptyNamespace_IsBlockedWithoutBootstrapRepair",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.Initialize_PersistsBoundRootStateAndStableLocks",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.InvalidInventory_IsBlockedAndNeverRepaired",
+          "Cases": 15
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerTests.PreparedEntry_PersistsIdentityAndColdRestartCannotAdoptIt",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

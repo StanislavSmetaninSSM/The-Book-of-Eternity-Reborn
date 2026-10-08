@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "linux-fallback-build-lifetime"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "c41dc9c107713d2dc919a02f4c550357b725bb52",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 40.530967,
+  "Descriptors": [
+    {
+      "Name": "linux-fallback-build-lifetime-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "linux-fallback-build-lifetime",
+      "Categories": [
+        "linux-fallback-build-lifetime"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.LinuxFallbackBuildLifetimeTests.PreparationTimeout_RetainsProcessAndOutputUntilActualExit",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 1,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.LinuxFallbackBuildLifetimeTests.PreparationTimeout_RetainsProcessAndOutputUntilActualExit",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

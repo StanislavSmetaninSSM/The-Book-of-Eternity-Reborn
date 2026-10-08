@@ -1,0 +1,13 @@
+{
+  "OriginalGuardiansComplete": true,
+  "GuardianECHILD": true,
+  "SameIdentityRunningToStopped": true,
+  "ActualStopReceiptObserved": true,
+  "OriginalTerminalOwnerRetired": true,
+  "ForegroundPTYDrainedClosedAndTermiosRestored": true,
+  "OwnPipeAbsentAfterShutdown": true,
+  "ScratchEmptyAfterAndRemoved": true,
+  "ActiveSessions": [],
+  "StartupReplays": 0,
+  "EmergencyPhysicalCleanupUsed": false
+}

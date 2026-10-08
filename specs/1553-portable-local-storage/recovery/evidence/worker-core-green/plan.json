@@ -1,0 +1,187 @@
+{
+  "Categories": [
+    "portable-worker-transaction",
+    "portable-worker-admission",
+    "portable-worker-diagnostic",
+    "portable-load-worker-ordering"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-worker-transaction",
+      "reason": "Deferred B1 worker decision, generation/identity/nesting, actual cold and current envelope cases.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-worker-admission",
+      "reason": "Review-driven causal safe rejection, lost evidence, empty-parent guard and streamed envelope.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-worker-diagnostic",
+      "reason": "Preserve both initiating original-backend and private cleanup failures.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    },
+    {
+      "category": "portable-load-worker-ordering",
+      "reason": "Real worker decision serializes public Load and preserves the original positive result assertions.",
+      "contracts": [
+        "#1553 T031-WORKER-PORTABLE FR-002/004/005/006/007/015"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "ce0d39f349982a44fde16bb6e85b6a499fc552b9",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 120.3497253,
+  "Descriptors": [
+    {
+      "Name": "portable-load-worker-ordering-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-load-worker-ordering",
+      "Categories": [
+        "portable-load-worker-ordering"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-worker-admission-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-admission",
+      "Categories": [
+        "portable-worker-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_PreparationBaselineConflictReturnsRejectedWithoutDecisionEvidence",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_PreparationBaselineConflictReturnsRejectedWithoutDecisionEvidence",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-worker-diagnostic-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-diagnostic",
+      "Categories": [
+        "portable-worker-diagnostic"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerDiagnosticTests.Begin_PreservesInitiatingFailureWhenPrivateCleanupAlsoFails",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerDiagnosticTests.Begin_PreservesInitiatingFailureWhenPrivateCleanupAlsoFails",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-worker-transaction-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-transaction",
+      "Categories": [
+        "portable-worker-admission",
+        "portable-worker-transaction"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.ActualWorkerDecisionRecoversInIndependentProcess|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.BeginRetainsInitiatingFailureAndConflictingRecoveryWithoutEarlierUndo|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.ColdRollbackCanResumeAfterItsOwnInterruption|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.ColdUnknownMemberOrGenerationBlocksBeforeAnyRestoration|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.CommitCleanupFailurePreservesCommitForNextWriter|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.CompleteSetRemainsPendingUntilExplicitDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.DecisionPreflightsLateUnknownMemberAndGenerationBeforeAnyRestore|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.DifferentLeaseCannotFinalizePendingDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.LateBaselineMismatchRefusesWholeSetWithoutMutation|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.MissingGenerationIsNotInventedByWorkerAdmission|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.OldHandleCannotCommitOrRollbackNewerDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.OrdinaryWorkerCannotBeginInsideOriginalRecoveryOrRecorder|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDecisionRefusesNestedPublicationAndRecoveryWithoutUndo|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDeletionRefusesEmptyParentRemovalBeforeRollback",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 38,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ActualWorkerDecisionRecoversInIndependentProcess",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.BeginRetainsInitiatingFailureAndConflictingRecoveryWithoutEarlierUndo",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ColdRollbackCanResumeAfterItsOwnInterruption",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ColdUnknownMemberOrGenerationBlocksBeforeAnyRestoration",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.CommitCleanupFailurePreservesCommitForNextWriter",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.CompleteSetRemainsPendingUntilExplicitDecision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.DecisionPreflightsLateUnknownMemberAndGenerationBeforeAnyRestore",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.DifferentLeaseCannotFinalizePendingDecision",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.LateBaselineMismatchRefusesWholeSetWithoutMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.MissingGenerationIsNotInventedByWorkerAdmission",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.OldHandleCannotCommitOrRollbackNewerDecision",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.OrdinaryWorkerCannotBeginInsideOriginalRecoveryOrRecorder",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDecisionRefusesNestedPublicationAndRecoveryWithoutUndo",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDeletionRefusesEmptyParentRemovalBeforeRollback",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

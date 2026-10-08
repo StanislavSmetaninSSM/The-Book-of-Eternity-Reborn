@@ -1,0 +1,58 @@
+{
+  "AcceptedBase": "65674ee83ddeac9c63e368334ea170cf9b700c54",
+  "SourceIssue": 1553,
+  "Pins": [
+    {
+      "Path": "BookOfEternityClient/Services/ImageService.cs",
+      "SHA256": "a98e680d85912486a8d4cad5c40e9d94b25e75752ed8e144f13796098c5883a3"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine.cs",
+      "SHA256": "b94f77072b7d329c4b3e6cd940f97c52964d9c6b9bb3352fdfaa578c38a8ee21"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "SHA256": "8b67cdc2777322bc20d540bb90e785c38fa762cdd3b11c0ea99cdc34a3eb741a"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs",
+      "SHA256": "a66a8cc6de44cd62af4760106fafccde4fd68a569996c06f9ff492533660a419"
+    },
+    {
+      "Path": "BookOfEternityClient/UI/ExplorerMode.cs",
+      "SHA256": "73d38697ca7bda41fb06c4b659b4fe8fa7be31d2c8e1f13a0ac39f11e917e19f"
+    },
+    {
+      "Path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
+      "SHA256": "79afb81f2d1937609ba8a2bd1e3845faef837095ebff3df8d50e06c607ad9835"
+    },
+    {
+      "Path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "SHA256": "62c3c68ea2e6c912a9e3770fe84d40661493c8f54bde8245449e414ee5fae834"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/ConsoleAppearanceService.cs",
+      "SHA256": "b71013c291697e2161e79267772bac75b5601eee5ac77c8c69db7dc670079a23"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/SystemModService.cs",
+      "SHA256": "2bcf79136d7b183b16507c51e0b896250e85c1c3e39afc0a5a31ba3ea07179d5"
+    },
+    {
+      "Path": "AGENTS.md",
+      "SHA256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "Path": "docs/development-workflow.md",
+      "SHA256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "Path": "docs/testing.md",
+      "SHA256": "20ea808053428488ac21e5b1fee9f05b3e981e503dc8f610f0b25f91d44b84a1"
+    },
+    {
+      "Path": ".specify/memory/constitution.md",
+      "SHA256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    }
+  ]
+}

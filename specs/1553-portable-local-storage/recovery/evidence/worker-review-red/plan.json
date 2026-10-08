@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-worker-admission"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "9120aed5b61c7529e0d5ee84b72e094a91f67751",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 104.3521736,
+  "Descriptors": [
+    {
+      "Name": "portable-worker-admission-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-admission",
+      "Categories": [
+        "portable-worker-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_PreparationBaselineConflictReturnsRejectedWithoutDecisionEvidence|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDeletionRefusesEmptyParentRemovalBeforeRollback",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_PreparationBaselineConflictReturnsRejectedWithoutDecisionEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.ImportedEnvelopeAndLargerBaselinesUseStreamedDecision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.LostPendingEvidenceCannotConfirmRollbackOrClearWriteGuard",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDeletionRefusesEmptyParentRemovalBeforeRollback",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

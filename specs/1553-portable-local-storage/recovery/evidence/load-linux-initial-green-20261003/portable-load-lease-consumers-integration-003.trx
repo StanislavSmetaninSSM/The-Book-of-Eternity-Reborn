@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="b6f91b00-98e9-40d4-9fc1-7cba1e1ae236" name="@95e438a3e5cb 2026-10-03 18:45:51" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T18:45:51.8716425-04:00" queuing="2026-10-03T18:45:51.8716425-04:00" start="2026-10-03T18:45:50.0191386-04:00" finish="2026-10-03T18:45:51.8759093-04:00" />
+  <TestSettings name="default" id="f842c0af-5c0e-403e-a032-5cd5a7919012">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-03_18_45_51" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9c93fed1-97cb-41c5-bfa5-18059c79d158" testId="3d2aab3d-b947-9139-9555-d7f930b7ae84" testName="BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority" computerName="95e438a3e5cb" duration="00:00:00.0234476" startTime="2026-10-03T18:45:51.7139027-04:00" endTime="2026-10-03T18:45:51.7139156-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9c93fed1-97cb-41c5-bfa5-18059c79d158" />
+    <UnitTestResult executionId="debff44a-474d-462b-9454-2284c88b3729" testId="3abb2b28-1867-a3cc-4801-9ca597751559" testName="BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive" computerName="95e438a3e5cb" duration="00:00:00.0417553" startTime="2026-10-03T18:45:51.7553008-04:00" endTime="2026-10-03T18:45:51.7553010-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="debff44a-474d-462b-9454-2284c88b3729" />
+    <UnitTestResult executionId="8b70d713-c26e-46d0-a082-08dfe65d3db1" testId="963dc99e-2982-b8b0-e273-762e335e92aa" testName="BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration" computerName="95e438a3e5cb" duration="00:00:00.0039766" startTime="2026-10-03T18:45:51.7594097-04:00" endTime="2026-10-03T18:45:51.7594098-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8b70d713-c26e-46d0-a082-08dfe65d3db1" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3abb2b28-1867-a3cc-4801-9ca597751559">
+      <Execution id="debff44a-474d-462b-9454-2284c88b3729" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="963dc99e-2982-b8b0-e273-762e335e92aa">
+      <Execution id="8b70d713-c26e-46d0-a082-08dfe65d3db1" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="SessionMutationLease_CannotRotateSessionGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3d2aab3d-b947-9139-9555-d7f930b7ae84">
+      <Execution id="9c93fed1-97cb-41c5-bfa5-18059c79d158" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="SessionReplacementLease_RequiresActiveLifecycleAuthority" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="3d2aab3d-b947-9139-9555-d7f930b7ae84" executionId="9c93fed1-97cb-41c5-bfa5-18059c79d158" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3abb2b28-1867-a3cc-4801-9ca597751559" executionId="debff44a-474d-462b-9454-2284c88b3729" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="963dc99e-2982-b8b0-e273-762e335e92aa" executionId="8b70d713-c26e-46d0-a082-08dfe65d3db1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="3" executed="3" passed="3" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.33]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.26]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.28]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.39]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

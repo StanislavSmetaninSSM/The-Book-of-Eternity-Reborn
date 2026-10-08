@@ -1,0 +1,118 @@
+{
+  "Categories": [
+    "gm-main-run-fence"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "39362ff85cb1f8e9cfa68819787d2292ce2ae662",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 70.2527808,
+  "Descriptors": [
+    {
+      "Name": "gm-main-run-fence-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-run-fence",
+      "Categories": [
+        "gm-main-run-fence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.BoundedGeneration_RejectsOversizeBeforeAllocatingAuthority|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.StoppedTombstone_ClearRetainsEpochOutsideReplacement|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedKeyboard_PairsUnicodeScalarsBeforeWriting|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_OutputTimeoutIsAbsorbingWithOriginalOwner|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_EraseWithoutHomeCannotCertifyIdle|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_PartialUtf8AndUnsupportedVtCannotBorrowIdle|FullyQualifiedName=BookOfEternityClient.Tests.GmOwnedTerminalSessionTests.ActualStop_RetainsOriginalOwnerWhileScopedStopAndOutputAreUnfinished|FullyQualifiedName=BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission|FullyQualifiedName=BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension|FullyQualifiedName=BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_BackupCleanupFailure_DoesNotRollbackCommittedDistribution|FullyQualifiedName=BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter|FullyQualifiedName=BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter|FullyQualifiedName=BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_SeparatesRollbackFromDurableCommitCleanupFailure|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 50,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.ActualBrowserLoad_GuardSpansCommittedMenuRefreshAndClosing",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.BoundedGeneration_RejectsOversizeBeforeAllocatingAuthority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.InitializedMissingOrInvalid_RefusesClearBeforeEffects",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.StoppedTombstone_ClearRetainsEpochOutsideReplacement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedKeyboard_PairsUnicodeScalarsBeforeWriting",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_OutputTimeoutIsAbsorbingWithOriginalOwner",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_EraseWithoutHomeCannotCertifyIdle",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedView_PartialUtf8AndUnsupportedVtCannotBorrowIdle",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmOwnedTerminalSessionTests.ActualStop_RetainsOriginalOwnerWhileScopedStopAndOutputAreUnfinished",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission",
+          "Cases": 11
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_BackupCleanupFailure_DoesNotRollbackCommittedDistribution",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.StateManagerTests.RefreshGameStateAsync_ProfileMirrorReadModifyWrite_HoldsOneCanonicalLease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_SeparatesRollbackFromDurableCommitCleanupFailure",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision",
+          "Cases": 6
+        }
+      ]
+    }
+  ]
+}

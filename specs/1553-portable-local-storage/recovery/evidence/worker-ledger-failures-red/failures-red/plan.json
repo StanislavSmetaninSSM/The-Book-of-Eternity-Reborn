@@ -1,0 +1,54 @@
+{
+  "Categories": [
+    "worker-run-ledger-failures-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "1731af49662b1a32274e6a795f0eb90052dafd0f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 38.5515914,
+  "Descriptors": [
+    {
+      "Name": "worker-run-ledger-failures-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-run-ledger-failures-linux",
+      "Categories": [
+        "worker-run-ledger-failures-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CapacityAndTaskIdentityBounds_RefuseBeforeMutation|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InvalidPreparation_IsReadOnly|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 46,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction",
+          "Cases": 29
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CapacityAndTaskIdentityBounds_RefuseBeforeMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InvalidPreparation_IsReadOnly",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

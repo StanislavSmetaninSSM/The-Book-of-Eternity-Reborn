@@ -1,0 +1,591 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="afe0cd46-2178-4e90-b3f9-169dfe2a9b22" name="@3a7834d0640d 2026-10-05 10:05:25" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T10:05:25.9927404+00:00" queuing="2026-10-05T10:05:25.9927414+00:00" start="2026-10-05T10:05:23.5916779+00:00" finish="2026-10-05T10:05:26.0585334+00:00" />
+  <TestSettings name="default" id="3ad41b57-da87-4dff-9df9-cca986e583b5">
+    <Deployment runDeploymentRoot="_3a7834d0640d_2026-10-05_10_05_25" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="da0573c0-05da-4961-a490-ce356f42e723" testId="c8ecc4c2-86e2-013d-23a1-6210444a9d53" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing" computerName="3a7834d0640d" duration="00:00:00.0010966" startTime="2026-10-05T10:05:25.9749759+00:00" endTime="2026-10-05T10:05:25.9749760+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="da0573c0-05da-4961-a490-ce356f42e723">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-4e8295751f3c41caac5569722b845403' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-4e8295751f3c41caac5569722b845403.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 114
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 135
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 129
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="efa6ea1b-7704-4834-b8e4-74c10c78f39b" testId="d1fa634a-d69f-ca37-dc04-7ee0aaa98bf4" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: False)" computerName="3a7834d0640d" duration="00:00:00.0008824" startTime="2026-10-05T10:05:25.9513503+00:00" endTime="2026-10-05T10:05:25.9513504+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="efa6ea1b-7704-4834-b8e4-74c10c78f39b">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-bc0a420a31a44717851c8bb65e3374dd' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-bc0a420a31a44717851c8bb65e3374dd.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 114
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 135
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 112
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a293e8ca-fcc9-4f33-985b-7ceafe69c416" testId="8a296819-97a8-8799-e3d8-f0291e4e2bb5" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels" computerName="3a7834d0640d" duration="00:00:00.0047188" startTime="2026-10-05T10:05:25.9732111+00:00" endTime="2026-10-05T10:05:25.9732112+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a293e8ca-fcc9-4f33-985b-7ceafe69c416">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-ab243f6d3c994b6388cc0d14d96d2921' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-ab243f6d3c994b6388cc0d14d96d2921.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 74
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 104
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f64e085a-dcd2-43ff-bb4e-3ef5e0d84c25" testId="f847d1f7-270c-6649-907b-d2f48ecf0993" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost" computerName="3a7834d0640d" duration="00:00:00.0135079" startTime="2026-10-05T10:05:25.9434368+00:00" endTime="2026-10-05T10:05:25.9434599+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f64e085a-dcd2-43ff-bb4e-3ef5e0d84c25">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-0ac2ab95b68b4f13b7889e2d1cdf7949' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-0ac2ab95b68b4f13b7889e2d1cdf7949.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 524
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 561
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="789a0880-ad2c-4a4b-9778-944eae7a9dfa" testId="b2aee4e9-0446-99ba-f139-41ba95e6c671" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: False)" computerName="3a7834d0640d" duration="00:00:00.0024983" startTime="2026-10-05T10:05:25.9518129+00:00" endTime="2026-10-05T10:05:25.9518130+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="789a0880-ad2c-4a4b-9778-944eae7a9dfa">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-be516f77770f40b1a8d6442f5482200b' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-be516f77770f40b1a8d6442f5482200b.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 18
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 36
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7d57720e-d317-4d0e-b5a5-23a94ede2f49" testId="4fddc5ca-1581-0b4b-c519-0f0dd75be9b7" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: True)" computerName="3a7834d0640d" duration="00:00:00.0008647" startTime="2026-10-05T10:05:25.9525642+00:00" endTime="2026-10-05T10:05:25.9525643+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7d57720e-d317-4d0e-b5a5-23a94ede2f49">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-de2a7a6286eb4e9c84f081410fc6bb0a' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-de2a7a6286eb4e9c84f081410fc6bb0a.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 18
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 36
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="52c7e667-849d-4bb6-9f1b-2eee014f7723" testId="2d637dc7-56fc-e37a-b60a-4d1f9ab2e57d" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths" computerName="3a7834d0640d" duration="00:00:00.0031698" startTime="2026-10-05T10:05:25.9719484+00:00" endTime="2026-10-05T10:05:25.9719485+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="52c7e667-849d-4bb6-9f1b-2eee014f7723">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-a0ed6554ee6d458ab57b5d4d8bb3fd67' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-a0ed6554ee6d458ab57b5d4d8bb3fd67.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 34
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="aa2e7851-cf8d-4a14-9d0f-9bfbb956a4d0" testId="20af7b4c-93f6-6f2a-f14f-824dc8f64c98" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker" computerName="3a7834d0640d" duration="00:00:00.0021764" startTime="2026-10-05T10:05:25.9737267+00:00" endTime="2026-10-05T10:05:25.9737269+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aa2e7851-cf8d-4a14-9d0f-9bfbb956a4d0">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-24fec37715d449628d3d03304ba668d0' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-24fec37715d449628d3d03304ba668d0.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 84
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 103
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="17294816-a96e-41fc-a808-b3bc7c205ce5" testId="9c06fc6d-da45-36a4-fabe-fbec8b4a37fb" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: &quot;schema&quot;)" computerName="3a7834d0640d" duration="00:00:00.0006411" startTime="2026-10-05T10:05:25.9539377+00:00" endTime="2026-10-05T10:05:25.9539379+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="17294816-a96e-41fc-a808-b3bc7c205ce5">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-53b2c59a4d6e4f4b87d36b3ca8322682' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-53b2c59a4d6e4f4b87d36b3ca8322682.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 114
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1cd0c8a3-ce5c-4d28-b746-9d4a92636d29" testId="96bfe5ca-584d-ab8b-515c-29b9c23ea1d8" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: True)" computerName="3a7834d0640d" duration="00:00:00.0036643" startTime="2026-10-05T10:05:25.9506005+00:00" endTime="2026-10-05T10:05:25.9506006+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1cd0c8a3-ce5c-4d28-b746-9d4a92636d29">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-c8da0eb57da74631a72b60858466e233' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-c8da0eb57da74631a72b60858466e233.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 114
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 135
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 112
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="628129d6-8fac-48a1-be9a-6d613e7cac5c" testId="60aa339f-222f-7ed1-5cb2-b93e1fdedc3e" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost" computerName="3a7834d0640d" duration="00:00:00.0003458" startTime="2026-10-05T10:05:25.9500867+00:00" endTime="2026-10-05T10:05:25.9500868+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="628129d6-8fac-48a1-be9a-6d613e7cac5c">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-57c781ac9c3f4ac6b42c3a60763b1722' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-57c781ac9c3f4ac6b42c3a60763b1722.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 524
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 561
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="25ad91f3-7ed4-4c6b-ad5c-6c43d7f0b950" testId="be01edbc-ddd4-32b4-2998-13ab0b8b194b" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: &quot;nonce&quot;)" computerName="3a7834d0640d" duration="00:00:00.0006690" startTime="2026-10-05T10:05:25.9548524+00:00" endTime="2026-10-05T10:05:25.9548525+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="25ad91f3-7ed4-4c6b-ad5c-6c43d7f0b950">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-112d51496cfc4648aac6d7082bf3b2ad' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-112d51496cfc4648aac6d7082bf3b2ad.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 114
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 135
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4a3993c5-ff7c-424c-8845-1810061e5034" testId="e27ce202-a5a9-7275-a7da-a46dc16e7a04" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected" computerName="3a7834d0640d" duration="00:00:00.0011761" startTime="2026-10-05T10:05:25.9744176+00:00" endTime="2026-10-05T10:05:25.9744176+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4a3993c5-ff7c-424c-8845-1810061e5034">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-d637d0294c0f4b4c9f1edb34d6a7ba6b' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-d637d0294c0f4b4c9f1edb34d6a7ba6b.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 114
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 135
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 122
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="991885e2-37a6-48bb-9422-f527d2da2219" testId="e296c3e3-3317-833c-8b76-e63147805e44" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted" computerName="3a7834d0640d" duration="00:00:00.0021771" startTime="2026-10-05T10:05:25.9725408+00:00" endTime="2026-10-05T10:05:25.9725409+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="991885e2-37a6-48bb-9422-f527d2da2219">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-bd7b8fea14a24cd48c9180478dc5f3ed' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-bd7b8fea14a24cd48c9180478dc5f3ed.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 46
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs:line 62
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="81628e20-2618-43cf-9101-644a62c6f3c7" testId="7a67044a-3784-2916-f33c-38be6332fdf8" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch" computerName="3a7834d0640d" duration="00:00:00.0004300" startTime="2026-10-05T10:05:25.9487176+00:00" endTime="2026-10-05T10:05:25.9487178+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="81628e20-2618-43cf-9101-644a62c6f3c7">
+      <Output>
+        <ErrorInfo>
+          <Message>System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-32eef10fddfa47f28522993f8b964503' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-32eef10fddfa47f28522993f8b964503.</Message>
+          <StackTrace>   at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 524
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 561
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="96bfe5ca-584d-ab8b-515c-29b9c23ea1d8">
+      <Execution id="1cd0c8a3-ce5c-4d28-b746-9d4a92636d29" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_StatusFrameByteLimitIsExact" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7a67044a-3784-2916-f33c-38be6332fdf8">
+      <Execution id="81628e20-2618-43cf-9101-644a62c6f3c7" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d1fa634a-d69f-ca37-dc04-7ee0aaa98bf4">
+      <Execution id="efa6ea1b-7704-4834-b8e4-74c10c78f39b" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_StatusFrameByteLimitIsExact" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: &quot;schema&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="9c06fc6d-da45-36a4-fabe-fbec8b4a37fb">
+      <Execution id="17294816-a96e-41fc-a808-b3bc7c205ce5" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2d637dc7-56fc-e37a-b60a-4d1f9ab2e57d">
+      <Execution id="52c7e667-849d-4bb6-9f1b-2eee014f7723" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e27ce202-a5a9-7275-a7da-a46dc16e7a04">
+      <Execution id="4a3993c5-ff7c-424c-8845-1810061e5034" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="4fddc5ca-1581-0b4b-c519-0f0dd75be9b7">
+      <Execution id="7d57720e-d317-4d0e-b5a5-23a94ede2f49" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b2aee4e9-0446-99ba-f139-41ba95e6c671">
+      <Execution id="789a0880-ad2c-4a4b-9778-944eae7a9dfa" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c8ecc4c2-86e2-013d-23a1-6210444a9d53">
+      <Execution id="da0573c0-05da-4961-a490-ce356f42e723" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="8a296819-97a8-8799-e3d8-f0291e4e2bb5">
+      <Execution id="a293e8ca-fcc9-4f33-985b-7ceafe69c416" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e296c3e3-3317-833c-8b76-e63147805e44">
+      <Execution id="991885e2-37a6-48bb-9422-f527d2da2219" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: &quot;nonce&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="be01edbc-ddd4-32b4-2998-13ab0b8b194b">
+      <Execution id="25ad91f3-7ed4-4c6b-ad5c-6c43d7f0b950" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="20af7b4c-93f6-6f2a-f14f-824dc8f64c98">
+      <Execution id="aa2e7851-cf8d-4a14-9d0f-9bfbb956a4d0" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="60aa339f-222f-7ed1-5cb2-b93e1fdedc3e">
+      <Execution id="628129d6-8fac-48a1-be9a-6d613e7cac5c" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f847d1f7-270c-6649-907b-d2f48ecf0993">
+      <Execution id="f64e085a-dcd2-43ff-bb4e-3ef5e0d84c25" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c8ecc4c2-86e2-013d-23a1-6210444a9d53" executionId="da0573c0-05da-4961-a490-ce356f42e723" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d1fa634a-d69f-ca37-dc04-7ee0aaa98bf4" executionId="efa6ea1b-7704-4834-b8e4-74c10c78f39b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8a296819-97a8-8799-e3d8-f0291e4e2bb5" executionId="a293e8ca-fcc9-4f33-985b-7ceafe69c416" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f847d1f7-270c-6649-907b-d2f48ecf0993" executionId="f64e085a-dcd2-43ff-bb4e-3ef5e0d84c25" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b2aee4e9-0446-99ba-f139-41ba95e6c671" executionId="789a0880-ad2c-4a4b-9778-944eae7a9dfa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4fddc5ca-1581-0b4b-c519-0f0dd75be9b7" executionId="7d57720e-d317-4d0e-b5a5-23a94ede2f49" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2d637dc7-56fc-e37a-b60a-4d1f9ab2e57d" executionId="52c7e667-849d-4bb6-9f1b-2eee014f7723" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="20af7b4c-93f6-6f2a-f14f-824dc8f64c98" executionId="aa2e7851-cf8d-4a14-9d0f-9bfbb956a4d0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9c06fc6d-da45-36a4-fabe-fbec8b4a37fb" executionId="17294816-a96e-41fc-a808-b3bc7c205ce5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="96bfe5ca-584d-ab8b-515c-29b9c23ea1d8" executionId="1cd0c8a3-ce5c-4d28-b746-9d4a92636d29" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60aa339f-222f-7ed1-5cb2-b93e1fdedc3e" executionId="628129d6-8fac-48a1-be9a-6d613e7cac5c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="be01edbc-ddd4-32b4-2998-13ab0b8b194b" executionId="25ad91f3-7ed4-4c6b-ad5c-6c43d7f0b950" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e27ce202-a5a9-7275-a7da-a46dc16e7a04" executionId="4a3993c5-ff7c-424c-8845-1810061e5034" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e296c3e3-3317-833c-8b76-e63147805e44" executionId="991885e2-37a6-48bb-9422-f527d2da2219" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7a67044a-3784-2916-f33c-38be6332fdf8" executionId="81628e20-2618-43cf-9101-644a62c6f3c7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="15" executed="15" passed="0" failed="15" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.37]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.82]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.84]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.93]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-0ac2ab95b68b4f13b7889e2d1cdf7949' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.93]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-0ac2ab95b68b4f13b7889e2d1cdf7949.
+[xUnit.net 00:00:01.93]       Stack Trace:
+[xUnit.net 00:00:01.93]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.93]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.93]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(524,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:01.93]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(561,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:01.93]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.93]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-32eef10fddfa47f28522993f8b964503' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.93]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-32eef10fddfa47f28522993f8b964503.
+[xUnit.net 00:00:01.93]       Stack Trace:
+[xUnit.net 00:00:01.93]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.93]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.93]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(524,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:01.93]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(561,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:01.93]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.93]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-57c781ac9c3f4ac6b42c3a60763b1722' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.93]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-57c781ac9c3f4ac6b42c3a60763b1722.
+[xUnit.net 00:00:01.93]       Stack Trace:
+[xUnit.net 00:00:01.93]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.93]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.93]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(524,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:01.93]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(561,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:01.93]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.93]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-c8da0eb57da74631a72b60858466e233' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.93]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-c8da0eb57da74631a72b60858466e233.
+[xUnit.net 00:00:01.93]       Stack Trace:
+[xUnit.net 00:00:01.93]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.93]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.93]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(114,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(135,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(112,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized)
+[xUnit.net 00:00:01.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.94]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-bc0a420a31a44717851c8bb65e3374dd' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.94]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-bc0a420a31a44717851c8bb65e3374dd.
+[xUnit.net 00:00:01.94]       Stack Trace:
+[xUnit.net 00:00:01.94]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(114,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(135,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(112,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized)
+[xUnit.net 00:00:01.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.94]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-be516f77770f40b1a8d6442f5482200b' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.94]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-be516f77770f40b1a8d6442f5482200b.
+[xUnit.net 00:00:01.94]       Stack Trace:
+[xUnit.net 00:00:01.94]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(18,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(36,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected)
+[xUnit.net 00:00:01.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.94]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-de2a7a6286eb4e9c84f081410fc6bb0a' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.94]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-de2a7a6286eb4e9c84f081410fc6bb0a.
+[xUnit.net 00:00:01.94]       Stack Trace:
+[xUnit.net 00:00:01.94]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(18,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(36,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(Boolean controlConnected)
+[xUnit.net 00:00:01.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.94]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-53b2c59a4d6e4f4b87d36b3ca8322682' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.94]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-53b2c59a4d6e4f4b87d36b3ca8322682.
+[xUnit.net 00:00:01.94]       Stack Trace:
+[xUnit.net 00:00:01.94]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(114,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(135,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:01.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.94]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-112d51496cfc4648aac6d7082bf3b2ad' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.94]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-112d51496cfc4648aac6d7082bf3b2ad.
+[xUnit.net 00:00:01.94]       Stack Trace:
+[xUnit.net 00:00:01.94]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.94]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(114,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:01.94]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(135,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:01.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.96]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-a0ed6554ee6d458ab57b5d4d8bb3fd67' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.96]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-a0ed6554ee6d458ab57b5d4d8bb3fd67.
+[xUnit.net 00:00:01.96]       Stack Trace:
+[xUnit.net 00:00:01.96]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(34,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths()
+[xUnit.net 00:00:01.96]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.96]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-bd7b8fea14a24cd48c9180478dc5f3ed' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.96]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-bd7b8fea14a24cd48c9180478dc5f3ed.
+[xUnit.net 00:00:01.96]       Stack Trace:
+[xUnit.net 00:00:01.96]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(46,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted()
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(62,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted()
+[xUnit.net 00:00:01.96]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.96]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-ab243f6d3c994b6388cc0d14d96d2921' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.96]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-ab243f6d3c994b6388cc0d14d96d2921.
+[xUnit.net 00:00:01.96]       Stack Trace:
+[xUnit.net 00:00:01.96]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(74,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels()
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(104,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels()
+[xUnit.net 00:00:01.96]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.96]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-24fec37715d449628d3d03304ba668d0' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.96]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-24fec37715d449628d3d03304ba668d0.
+[xUnit.net 00:00:01.96]       Stack Trace:
+[xUnit.net 00:00:01.96]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(84,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker()
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(103,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker()
+[xUnit.net 00:00:01.96]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.96]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-d637d0294c0f4b4c9f1edb34d6a7ba6b' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.96]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-d637d0294c0f4b4c9f1edb34d6a7ba6b.
+[xUnit.net 00:00:01.96]       Stack Trace:
+[xUnit.net 00:00:01.96]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(114,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(135,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(122,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected()
+[xUnit.net 00:00:01.96]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.96]       System.ArgumentOutOfRangeException : The path '/workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-4e8295751f3c41caac5569722b845403' is of an invalid length for use with domain sockets on this platform.  The length must be between 1 and 108 characters, inclusive. (Parameter 'path')
+[xUnit.net 00:00:01.96]       Actual value was /workspace/linux-1553-ipc-artifacts/run/tmp/CoreFxPipe_boe-gm-worker-control-4e8295751f3c41caac5569722b845403.
+[xUnit.net 00:00:01.96]       Stack Trace:
+[xUnit.net 00:00:01.96]            at System.Net.Sockets.UnixDomainSocketEndPoint..ctor(String path, String boundFileName)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.96]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(114,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.PipePeer.cs(135,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithOwnedStatusPeerAsync(Func`2 statusBytes, Boolean rejected, Boolean closeStatus)
+[xUnit.net 00:00:01.96]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(129,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing()
+[xUnit.net 00:00:01.96]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.96]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:25.9741295+00:00">
+        <Text>[xUnit.net 00:00:01.92]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:25.9745898+00:00">
+        <Text>[xUnit.net 00:00:01.93]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:25.9747141+00:00">
+        <Text>[xUnit.net 00:00:01.93]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:25.9780235+00:00">
+        <Text>[xUnit.net 00:00:01.93]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:25.9781325+00:00">
+        <Text>[xUnit.net 00:00:01.94]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:25.9782044+00:00">
+        <Text>[xUnit.net 00:00:01.94]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:25.9782579+00:00">
+        <Text>[xUnit.net 00:00:01.94]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledPartialConnectionClosesWithoutLaunch(controlConnected: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:25.9782990+00:00">
+        <Text>[xUnit.net 00:00:01.94]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: "schema") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:25.9783596+00:00">
+        <Text>[xUnit.net 00:00:01.94]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidStatusEnvelopeIsRejected(invalidField: "nonce") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:25.9996467+00:00">
+        <Text>[xUnit.net 00:00:01.96]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:26.0000933+00:00">
+        <Text>[xUnit.net 00:00:01.96]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ExitedExpectedHostCannotBeAdmitted [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:26.0001475+00:00">
+        <Text>[xUnit.net 00:00:01.96]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_CanceledBlockedLaunchAwaitsIoAndClosesChannels [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:26.0001897+00:00">
+        <Text>[xUnit.net 00:00:01.96]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:26.0002281+00:00">
+        <Text>[xUnit.net 00:00:01.96]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T10:05:26.0002748+00:00">
+        <Text>[xUnit.net 00:00:01.96]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

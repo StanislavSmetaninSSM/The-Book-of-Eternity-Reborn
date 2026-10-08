@@ -1,0 +1,90 @@
+RequestedLane: Categories
+EffectiveLane: Categories
+Filter: <pending validation>
+TimeoutMinutes: 15
+StartedUtc: 2026-10-03T23:33:27.9238217Z
+Owned process 'Revision': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Revision: stdout =====
+cbd5c81b664a5013b0f8a8a92b7f54e5f6d11fa5
+
+===== Revision: stderr =====
+
+===== Revision: exit 0 =====
+Owned process 'Changed-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Changed-paths: stdout =====
+
+===== Changed-paths: stderr =====
+
+===== Changed-paths: exit 0 =====
+Owned process 'New-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== New-paths: stdout =====
+
+===== New-paths: stderr =====
+
+===== New-paths: exit 0 =====
+Owned process 'Build-integration': FileName=dotnet; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=dotnet
+
+===== Build-integration: stdout =====
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+[checkout]/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]
+[checkout]/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]
+[checkout]/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]
+  BookOfEternityClient -> [checkout]/BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll
+  BookOfEternityClient.TestSupport -> [checkout]/BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs(52,26): error CS0103: The name 'LoadReplacementDisposition' does not exist in the current context [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs(60,37): error CS0103: The name 'LoadReplacementDisposition' does not exist in the current context [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs(60,77): error CS0103: The name 'LoadReplacementDisposition' does not exist in the current context [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs(119,22): error CS0103: The name 'LoadReplacementDisposition' does not exist in the current context [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableSave.cs(198,54): warning CS8602: Dereference of a possibly null reference. [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(84,9): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(208,9): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeBoundaries.cs(340,60): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.StartsWith instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs(75,17): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs(57,9): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs(464,9): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.Topology.cs(64,9): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+
+Build FAILED.
+
+[checkout]/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]
+[checkout]/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]
+[checkout]/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableSave.cs(198,54): warning CS8602: Dereference of a possibly null reference. [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(84,9): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs(208,9): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeBoundaries.cs(340,60): warning xUnit2009: Do not use Assert.True() to check for substrings. Use Assert.StartsWith instead. (https://xunit.net/xunit.analyzers/rules/xUnit2009) [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs(75,17): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs(57,9): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.ReviewRegression.cs(464,9): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.Topology.cs(64,9): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs(52,26): error CS0103: The name 'LoadReplacementDisposition' does not exist in the current context [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs(60,37): error CS0103: The name 'LoadReplacementDisposition' does not exist in the current context [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs(60,77): error CS0103: The name 'LoadReplacementDisposition' does not exist in the current context [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs(119,22): error CS0103: The name 'LoadReplacementDisposition' does not exist in the current context [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+    11 Warning(s)
+    4 Error(s)
+
+Time Elapsed 00:02:09.70
+
+===== Build-integration: stderr =====
+
+===== Build-integration: exit 1 =====
+
+Category result
+  Categories: portable-load-native-names
+  Filter: <none>
+  Timeout: 15 minute(s)
+  Wall time: 00:02:10.0922058
+  Exit code: 1
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=0, cases=0; completed descriptors=0, cases=0, complete=False
+  Tests: total=0, executed=0, passed=0, failed=0
+  Duplicate test IDs: 0
+  Results: [checkout]/TestResults/test-categories/20261003-193327-910-2-f8e13b4eb5554589a5a6f31631957559-categories
+  Log: [checkout]/TestResults/test-categories/20261003-193327-910-2-f8e13b4eb5554589a5a6f31631957559-categories/dotnet-test.log
+  Failure: Build-integration failed with exit code 1.

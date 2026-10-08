@@ -1,0 +1,14 @@
+{
+  "Task": "T031-BROWSER-DIRECT-GACHA-LINUX",
+  "ActualReadOnlyVersionCommand": "source /workspace/.onboarding/activate.sh; dotnet --info; pwsh -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion.ToString()'; command -v gcc; gcc --version",
+  "Sdk": "10.0.401",
+  "Net8Runtime": "8.0.31",
+  "Net10Runtime": "10.0.12",
+  "PowerShell": "7.5.4",
+  "NativeCompiler": "/usr/bin/gcc; Debian14.2.0-19; GCC14.2.0",
+  "NativeCompilerInvocationsInThisSlice": 0,
+  "NativeOrLiveGameProcessesInThisSlice": 0,
+  "Platform": "Debian13 linux-x64",
+  "VersionOutputSha256": "5fef1845cae54a1136ea7896b778d1ce3f3560c539ac9dd257d4708e4aa6c387",
+  "VersionOutputBytes": 1820
+}

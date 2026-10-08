@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "restoredCommit": "3f50036ce07b8406ac5fd50fe23d666100785c23",
+  "restoredTree": "6ecd89e2dc9aef93475990b20ac0fda3ef2b3027",
+  "method": "Fresh GitHub-only single-branch depth12 clone into a new empty directory; no local checkout/object cache copied",
+  "command": "git clone --depth 12 --single-branch --branch codex/1553-save-windows https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git <new-empty-directory>",
+  "cleanCheckout": true,
+  "connectivityFsck": true,
+  "trackedFiles": 4313,
+  "artifactCount": 40,
+  "sourceIdentityAssertions": 255,
+  "omittedArtifacts": [],
+  "productionAndCrashHostUnchangedFromEntry": true,
+  "testsExecutedInRestoredCheckout": 0,
+  "limits": "Source/artifact restoration only; executed source/OS/cohort results remain their separate manifest identities, and independent review/acceptance remain pending.",
+  "artifactIdentityListSha256": "25603b012ac57693bcd7034e1e02fc089447675c7e6122d1d87a444ebb8d7b55",
+  "sourceIdentityCheckListSha256": "9c926b84bf15d717b0277e0fafe0b322f7e3bbbaed2789ecfc1735b99c746c74",
+  "bundles": [
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/save-linux-affected-green-20261002/manifest.json",
+      "manifestSha256": "2d9ef97b2eb6af8c0a7efb377adc22bf07ab690a08460c0d0006d504568c809e",
+      "embeddedArtifacts": 8,
+      "sourceIdentityAssertions": 28,
+      "sourceCommit": "4e57bd58d05a6565853cf5f07a7e9b3402551e44"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/save-linux-affected-plan-20261002/manifest.json",
+      "manifestSha256": "6ee5d17c9def7730ac96f4900961c3af392ba01483742c58543cf71dde6b58ea",
+      "embeddedArtifacts": 3,
+      "sourceIdentityAssertions": 28,
+      "sourceCommit": "4e57bd58d05a6565853cf5f07a7e9b3402551e44"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/save-linux-catalog-audit-20261002/manifest.json",
+      "manifestSha256": "a389823103d6c2b37e7b311ac1a69b9e2af2d3cbd915faebef7494d15b3adbd4",
+      "embeddedArtifacts": 6,
+      "sourceIdentityAssertions": 29,
+      "sourceCommit": "f331a5231a00823ae33f3fd87b11b349a46aa034"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/save-linux-five-green-20261002/manifest.json",
+      "manifestSha256": "2dbeaaedf4e2421c096b9fb7509c5fb4640e1c0cb2d2ea0be145841205a1c7d4",
+      "embeddedArtifacts": 4,
+      "sourceIdentityAssertions": 28,
+      "sourceCommit": "f22ea96354f1f18d5a400db01d7c52579b3425d7"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/save-linux-five-plan-20261002/manifest.json",
+      "manifestSha256": "a3882eb3e3fcfd7db1fc05d34b2ad18b70683ad0287bff528a63ff323184acb4",
+      "embeddedArtifacts": 4,
+      "sourceIdentityAssertions": 28,
+      "sourceCommit": "f22ea96354f1f18d5a400db01d7c52579b3425d7"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/save-linux-resource-corrected-plan-20261002/manifest.json",
+      "manifestSha256": "feacb10bc372a409b0c71cfabd430a3e1e4410451c03ce3cb3f8251bc9ef4fd5",
+      "embeddedArtifacts": 3,
+      "sourceIdentityAssertions": 29,
+      "sourceCommit": "cc087195af6fb507d9c9e1edc6612e214a536aec"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/save-linux-resource-green-20261002/manifest.json",
+      "manifestSha256": "0b0566a7ebff0874b94f186aa0a11cf94f59097708dd46dbb72aae0591724853",
+      "embeddedArtifacts": 5,
+      "sourceIdentityAssertions": 29,
+      "sourceCommit": "cc087195af6fb507d9c9e1edc6612e214a536aec"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/save-linux-resource-monitor-failure-20261002/manifest.json",
+      "manifestSha256": "96183b06409a6a3e8fbf04e4a9adea3863842940d5438350ed38cf1557baf032",
+      "embeddedArtifacts": 4,
+      "sourceIdentityAssertions": 28,
+      "sourceCommit": "ce7750daba51859a4cab8632d7ed7472bcb450ab"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/save-linux-resource-plan-20261002/manifest.json",
+      "manifestSha256": "c521ac7e6ad959ac6bcc3fde8d19c9163191faf91ac62eb46c1badec83ea0865",
+      "embeddedArtifacts": 3,
+      "sourceIdentityAssertions": 28,
+      "sourceCommit": "ce7750daba51859a4cab8632d7ed7472bcb450ab"
+    }
+  ]
+}

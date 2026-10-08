@@ -1,0 +1,2 @@
+{"version":1,"runId":"0a7b2d2d104846b5ba42a31a24a34221","backend":"native-lineage","guarantee":"ordinary-same-namespace-lineage","state":"Ready","reason":"ready","cleanupComplete":false,"authorityRetained":true,"rootExitCode":-1,"rootSignal":0,"errno":0}
+{"version":1,"runId":"0a7b2d2d104846b5ba42a31a24a34221","backend":"native-lineage","guarantee":"ordinary-same-namespace-lineage","state":"Started","reason":"started","cleanupComplete":false,"authorityRetained":true,"rootExitCode":-1,"rootSignal":0,"errno":0}

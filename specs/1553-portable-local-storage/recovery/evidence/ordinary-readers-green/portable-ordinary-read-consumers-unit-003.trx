@@ -1,0 +1,63 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="58b7a564-514c-44e4-9863-06a329edafe6" name="ordinary-readers-green" runUser="$USER">
+  <ns0:Times creation="2026-10-01T09:34:15.5189944-04:00" queuing="2026-10-01T09:34:15.5189945-04:00" start="2026-10-01T09:34:12.0757997-04:00" finish="2026-10-01T09:34:15.5316898-04:00" />
+  <ns0:TestSettings name="default" id="7c954e6f-75f1-4329-a30a-7c2eef529717">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="28dd2c89-b024-4e4f-89cf-df0a2baf9a1e" testId="ac68d9cd-2fd8-50c3-d2d9-a4b10cb5dfdf" testName="BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.TryCommitAsync_HoldsCanonicalLeaseAcrossBaselineChecksAndEveryWrite" computerName="$HOST" duration="00:00:00.5407592" startTime="2026-10-01T09:34:15.0562915-04:00" endTime="2026-10-01T09:34:15.0563186-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="28dd2c89-b024-4e4f-89cf-df0a2baf9a1e" />
+    <ns0:UnitTestResult executionId="a746ee50-fda9-4b3f-8400-baddbeb9ffd3" testId="be5030a4-edc7-c9c6-9af6-8cd0a8366733" testName="BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: &quot;committed&quot;)" computerName="$HOST" duration="00:00:00.0480844" startTime="2026-10-01T09:34:15.2381180-04:00" endTime="2026-10-01T09:34:15.2381183-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a746ee50-fda9-4b3f-8400-baddbeb9ffd3" />
+    <ns0:UnitTestResult executionId="d127f139-2253-4bd8-9177-2a617c13467b" testId="31436618-d3b8-4379-644e-bbe753c97223" testName="BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.TryCommitAsync_ConcurrentChangeAfterFirstWrite_IsNotOverwrittenByRollback" computerName="$HOST" duration="00:00:00.1225731" startTime="2026-10-01T09:34:15.1741890-04:00" endTime="2026-10-01T09:34:15.1741893-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d127f139-2253-4bd8-9177-2a617c13467b" />
+    <ns0:UnitTestResult executionId="8ecae1c7-58d6-44da-8032-f63179ae08ef" testId="43a4c23a-37ad-770c-da2f-1ebdcab7e40e" testName="BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: &quot;pending&quot;)" computerName="$HOST" duration="00:00:00.0345856" startTime="2026-10-01T09:34:15.2902298-04:00" endTime="2026-10-01T09:34:15.2902300-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8ecae1c7-58d6-44da-8032-f63179ae08ef" />
+    <ns0:UnitTestResult executionId="024f0119-be28-410a-a3ae-218fce258714" testId="77b03e0a-0218-668b-20b3-03a1c8e48c18" testName="BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: &quot;conflict&quot;)" computerName="$HOST" duration="00:00:00.0142175" startTime="2026-10-01T09:34:15.2525990-04:00" endTime="2026-10-01T09:34:15.2525992-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="024f0119-be28-410a-a3ae-218fce258714" />
+    <ns0:UnitTestResult executionId="3f9a8e1d-b47c-4325-87f7-669618ef059a" testId="3d90389a-e629-a64c-caf8-80d8e7e89da6" testName="BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.DurableFileAuthoritySourceGuard_RejectsPathBasedRuntimeMutations" computerName="$HOST" duration="00:00:00.0045628" startTime="2026-10-01T09:34:15.1869721-04:00" endTime="2026-10-01T09:34:15.1869723-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3f9a8e1d-b47c-4325-87f7-669618ef059a" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.TryCommitAsync_HoldsCanonicalLeaseAcrossBaselineChecksAndEveryWrite" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ac68d9cd-2fd8-50c3-d2d9-a4b10cb5dfdf">
+      <ns0:Execution id="28dd2c89-b024-4e4f-89cf-df0a2baf9a1e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests" name="TryCommitAsync_HoldsCanonicalLeaseAcrossBaselineChecksAndEveryWrite" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: &quot;pending&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="43a4c23a-37ad-770c-da2f-1ebdcab7e40e">
+      <ns0:Execution id="8ecae1c7-58d6-44da-8032-f63179ae08ef" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: &quot;committed&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="be5030a4-edc7-c9c6-9af6-8cd0a8366733">
+      <ns0:Execution id="a746ee50-fda9-4b3f-8400-baddbeb9ffd3" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: &quot;conflict&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="77b03e0a-0218-668b-20b3-03a1c8e48c18">
+      <ns0:Execution id="024f0119-be28-410a-a3ae-218fce258714" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests.TryCommitAsync_ConcurrentChangeAfterFirstWrite_IsNotOverwrittenByRollback" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="31436618-d3b8-4379-644e-bbe753c97223">
+      <ns0:Execution id="d127f139-2253-4bd8-9177-2a617c13467b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.CoordinatedStateWriteHelperTests" name="TryCommitAsync_ConcurrentChangeAfterFirstWrite_IsNotOverwrittenByRollback" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.DurableFileAuthoritySourceGuard_RejectsPathBasedRuntimeMutations" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3d90389a-e629-a64c-caf8-80d8e7e89da6">
+      <ns0:Execution id="3f9a8e1d-b47c-4325-87f7-669618ef059a" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests" name="DurableFileAuthoritySourceGuard_RejectsPathBasedRuntimeMutations" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="ac68d9cd-2fd8-50c3-d2d9-a4b10cb5dfdf" executionId="28dd2c89-b024-4e4f-89cf-df0a2baf9a1e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="be5030a4-edc7-c9c6-9af6-8cd0a8366733" executionId="a746ee50-fda9-4b3f-8400-baddbeb9ffd3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="31436618-d3b8-4379-644e-bbe753c97223" executionId="d127f139-2253-4bd8-9177-2a617c13467b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="43a4c23a-37ad-770c-da2f-1ebdcab7e40e" executionId="8ecae1c7-58d6-44da-8032-f63179ae08ef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="77b03e0a-0218-668b-20b3-03a1c8e48c18" executionId="024f0119-be28-410a-a3ae-218fce258714" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3d90389a-e629-a64c-caf8-80d8e7e89da6" executionId="3f9a8e1d-b47c-4325-87f7-669618ef059a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="6" executed="6" passed="6" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.34]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.76]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.78]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.67]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>

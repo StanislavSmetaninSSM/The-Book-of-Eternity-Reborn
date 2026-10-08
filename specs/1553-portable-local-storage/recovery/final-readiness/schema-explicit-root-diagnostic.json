@@ -1,0 +1,134 @@
+{
+  "phase": "schema-explicit-root-diagnostic",
+  "command": "BOE_REPO_ROOT=/workspace/native-1553 pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-load-ordinary-schema -NoBuild -Parallelism 1 -TimeoutMinutes 6",
+  "revision": "07d7a4e1536493d7a74c4ff7e9b84ea8550bdf20",
+  "summary": {
+    "Categories": [
+      "gm-load-ordinary-schema"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "07d7a4e1536493d7a74c4ff7e9b84ea8550bdf20",
+      "WorkingTreeFingerprint": "E4221E139731905B582F95B09BAC8F00281BBFDB030D327E0BBA7089D237E231",
+      "ChangedFiles": 5
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "gm-load-ordinary-schema",
+        "Seconds": 18.4143971,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0554426,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0582279,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1436586,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0034333,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 6,
+    "WallTime": "00:00:23.9162582",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 7,
+      "CompletedCases": 7,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 7,
+      "Executed": 7,
+      "Passed": 7,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "sourcePins": [
+    {
+      "path": "README.md",
+      "size": 7769,
+      "sha256": "12882faa49e037e963b20eab56577119f3230747b560ebd9578e842533247832"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+      "size": 13657,
+      "sha256": "edd73ec994fb2eae95bbc441f50846b0655063cf2ece34e71d6300c8cf651edf"
+    },
+    {
+      "path": "scripts/tests/linux-main-guide.tests.ps1",
+      "size": 4747,
+      "sha256": "f54141319363ae46c39a72cdf90ab908aa07cda2eef1a3afd80cdafbb5570e2f"
+    },
+    {
+      "path": "tests/categories.json",
+      "size": 1194521,
+      "sha256": "46a1ea0725d7b6ac2583393d8ce1c0568e6cbbe118d7566f3ded067decaa8e7b"
+    },
+    {
+      "path": "tests/selection.json",
+      "size": 1404,
+      "sha256": "7654450596fab684974ca5f8491e461c5952642cd8560abf2e5d5d37b4f84ec6"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "recovery/final-readiness/schema-explicit-root-diagnostic-dotnet-test.log.gz",
+      "size": 172566,
+      "sha256": "60581ccc87be7ecad2177b808381c6a37ab44f72259afb198bd887d843468f25",
+      "rawPath": "dotnet-test.log",
+      "rawSize": 1522933,
+      "rawSha256": "337a24b3ae5df2f6d3f68c0795c293f87e913e0c10db619f75f0728c6dd68655"
+    },
+    {
+      "path": "recovery/final-readiness/schema-explicit-root-diagnostic-gm-load-ordinary-schema-integration-001.trx.gz",
+      "size": 2083,
+      "sha256": "a5b411250d76512903137edb0f610673b588f7c516f251b3ca75090166559058",
+      "rawPath": "gm-load-ordinary-schema-integration-001.trx",
+      "rawSize": 12149,
+      "rawSha256": "f40b24157e8511183378e6dfb5e2a87f5ddc883e932033032c6ff3c90ac924de"
+    },
+    {
+      "path": "recovery/final-readiness/schema-explicit-root-diagnostic-plan.json.gz",
+      "size": 643,
+      "sha256": "1cc1d9d4f1483266e215baa0c7ab8151aa73dfd2c7fd31876aa2aa974acf1c41",
+      "rawPath": "plan.json",
+      "rawSize": 1727,
+      "rawSha256": "d732e0a6c9ca8030e052e63fef183b2e5cd15322ba25de65466c3c83eb428f02"
+    },
+    {
+      "path": "recovery/final-readiness/schema-explicit-root-diagnostic-summary.json.gz",
+      "size": 604,
+      "sha256": "e4f2a036e4320b3eb76b10ed8866432920bb090713e7f1bfa093ce4908976077",
+      "rawPath": "summary.json",
+      "rawSize": 1454,
+      "rawSha256": "590124e966b5d3a194ae9d20b6153886746cd50a16675354aec3a58c1e7478de"
+    }
+  ]
+}

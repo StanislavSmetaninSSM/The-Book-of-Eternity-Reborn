@@ -1,0 +1,312 @@
+{
+  "Source": "80f695b8d99049b66616f097ad83b6632306bc84",
+  "ProviderRequests": 0,
+  "GameTurns": 0,
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 88769,
+      "SHA256": "8bbe0df4d7f935b594d0b306772a143fef92effc0e04067b06ab90389ea1786b"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "Bytes": 4225,
+      "SHA256": "937a3dd992ae6f96d19c3e7a37da6d3d620b4e8ca3b2774961c5c94a3f335a49"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+      "Bytes": 10650,
+      "SHA256": "4129fffc3d2d5f28354ecfea2c2d544ac205480deb4a8ae2eea7833a24d7bd00"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmSynchronizedTerminalPresentationTests.cs",
+      "Bytes": 12745,
+      "SHA256": "96563620411e7379a9cbf7d0fe351765f23d87f153711a0708f67ca0f0f0257c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs",
+      "Bytes": 12449,
+      "SHA256": "a0719afb67d9eba1f5d39aa13ac171b873d4d491d1de7ff71675e8faebeb8df9"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+      "Bytes": 6443,
+      "SHA256": "939e8b2454d39081947b6eae2a56304e72ffdad28a02d5034f8bac55d097ebae"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "Bytes": 31151,
+      "SHA256": "e4811b0e98afc094adf5d74dc8a8468c7fc47a518bc2ad06a01093de6cfd5ee7"
+    },
+    {
+      "Path": "tests/fixtures/LinuxTerminal/foreground.py",
+      "Bytes": 5372,
+      "SHA256": "655c94f24d786087beb8925ea20ce35737335e5c29830c3f9fe9f4da8c797766"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1166295,
+      "SHA256": "271b39a97efce677797420815b89c31d55d06eccf77d7972037198bd01fe8909"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 440,
+      "SHA256": "2b3d15cbdc772b3e451337133bb8838e498dcfff72d148575d31d28d2ee33e6c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmExternalDraftObservationTests.cs",
+      "Bytes": 8176,
+      "SHA256": "94fbc96807188a42729df81064f78df36371a8f23654fc0b4d7411eea5d4cdbd"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
+      "Bytes": 2895,
+      "SHA256": "a07fa2ff57b1b34e0fc4863b7857b259eb3f966777e115cf3b455a3314a48d01"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "Bytes": 20668,
+      "SHA256": "92982796e3573122cbd2b8045835b6090b5564010ebd59043a1fb075a109f55e"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+      "Bytes": 5868,
+      "SHA256": "1843769691e42ed5d201b993223b8a19f1d81b991606f0f50f3db3e197540e81"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/DraftObservation.cs",
+      "Bytes": 8385,
+      "SHA256": "3ca0e90475c150efb5e5d92aaf8c5955def8683b3eba9d3d9a4ba4fcc6eaffc1"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.DraftObservation.cs",
+      "Bytes": 8337,
+      "SHA256": "e0ac9791df84c6ad58cf9a18c1133ba421415b821a2f25f16733a6def4bf8bf1"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmConnectedMiniTransactionTests.cs",
+      "Bytes": 13082,
+      "SHA256": "dfc94f197afc05f2168b7632425fafcfa4b78b8126f522f9134776f931e08d81"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "Bytes": 22709,
+      "SHA256": "718f1948f7a35630a8a8245862bf7179de67e37922c3a8171483fd6baa37ca57"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
+      "Bytes": 3009,
+      "SHA256": "46b141084f32f109d9bf921a4f551c0ccd3bae4d557b4ec77d5f649bca07c34b"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Bytes": 9528,
+      "SHA256": "758aa4515184fd69b8469ed37e5d67c80519f41d7dac56e835beef157ef88796"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmLiveTurnGuardianBudgetTests.cs",
+      "Bytes": 2412,
+      "SHA256": "94b40ee2f0768c99a2b4a84e6a5e2cff758c51b5edaae55da2d936d31e664c35"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/live-game-one-turn.py",
+      "Bytes": 19313,
+      "SHA256": "aa3f423e90e9bfa95e1d406544389afe4583e2f2706ae7a498c90d66990762e7"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "Bytes": 165629,
+      "SHA256": "a421d0e0d8862ae25da1a24e271b4e30f0c9c3158488feae81e50fab6a715768"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "Bytes": 99870,
+      "SHA256": "338755528c442183f24b15d202914feeb9cbcddd5be93b8f70dafed706d9815f"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "Bytes": 260894,
+      "SHA256": "12b2e79a9f59a6c1078b187a949d816066a641e0f56ebe7b846c410f43357334"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "Bytes": 19882,
+      "SHA256": "e3b4a5d8ee83dbce297761c6e1e24b95d438544425b934a67499d8151c0d0dba"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmConsoleRuntimeAdmissionTests.cs",
+      "Bytes": 289,
+      "SHA256": "65911b5fbf6ae780dfb9e892d271c0802c80df4e84bac9b45b98f345aedbfb24"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs",
+      "Bytes": 13719,
+      "SHA256": "c8be2922ce5ae12444951f4ade4d3b99c48390531a7f5549cc1abb142df98079"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.ConsoleRuntime.cs",
+      "Bytes": 3823,
+      "SHA256": "7fb2f048cc95ebbbfd24a163af5ae05a2d563f8829903a7a171a3c1d5b1b8dc3"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/Build-unit.log.gz",
+      "Bytes": 27708,
+      "SHA256": "a2a1a10687a915dded9d971c5b0eb6e49b3b0254b617ca3b310bc9db42afa097",
+      "StoredSHA256": "56ea64ea98ff43ebeaeb2f12ed08abc029d4c48ac668a897ec86871728f5c33e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/dotnet-test.log.gz",
+      "Bytes": 1638214,
+      "SHA256": "56d80e90d0b078081b9268093ce9777d367db39be5bbad09560b0461d6821683",
+      "StoredSHA256": "7ebb9a34d4cc4edad02a0ea38e194802fccb20a320ed2a07b012fdbead4b9c34"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/summary.json.gz",
+      "Bytes": 1460,
+      "SHA256": "e427104207246339b24638b519b97e84e9f23811504a17d58ee4db064d824a06",
+      "StoredSHA256": "a16070b9cfb198f56d390d951db1fda215755a581a7c9db17e77f69d5fefe9e3"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/gm-console-runtime-admission-unit-001.trx.gz",
+      "Bytes": 12939,
+      "SHA256": "c97145901c2d7b4063ea67367caadf01db9e1a6e0dfa7595c73d80b7ab33f534",
+      "StoredSHA256": "c1b67354ec57d2c53c0c76b20446ac49754beb4dcc0f202a9c61e14674136b73"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/plan.json.gz",
+      "Bytes": 1137,
+      "SHA256": "c418a84e3aa53107785043a110c03b83c53c1d4195f243398c0617565897cf5b",
+      "StoredSHA256": "8b730accf74d2c9075eefae0501b271f13b958ac81c457c85609198f81d5b8f8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/native/e7c643420f414d798fabf211f6b96966/fixture-preparation.json.gz",
+      "Bytes": 1030,
+      "SHA256": "3e6ffc2a42cb3acdd7397c5fe6ccaf71df416d4a931ae6442ccce6b9a3fdbec3",
+      "StoredSHA256": "b0020c927428e1d3b4314942c558742416c9905ef1a7cb4f39e2ba262778c7d4"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/native/e7c643420f414d798fabf211f6b96966/fixture-build.log.gz",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredSHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/native/e7c643420f414d798fabf211f6b96966/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 141,
+      "SHA256": "88ab16a54a9475c59ee4cfdff904fdbd6683e1aa805867634418d7e42988b2ff",
+      "StoredSHA256": "dc8f4988c804ad9f83ab21acdd810a43c3293201ef06bafff571e0b50e3b7617"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/native/e7c643420f414d798fabf211f6b96966/guardian.json.gz",
+      "Bytes": 97,
+      "SHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "StoredSHA256": "4a3b0059fa67390b10d972bcdc68fb8a39a3a11f5a922f20018e3c4660692a35"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/native/e7c643420f414d798fabf211f6b96966/fixture-compiler-version.log.gz",
+      "Bytes": 231,
+      "SHA256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc",
+      "StoredSHA256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/native/e7c643420f414d798fabf211f6b96966/scenario.json.gz",
+      "Bytes": 4418,
+      "SHA256": "614fbe5ecbd13219f4cdb3c3387c2fb2d34fbccf991f6731b20bb4660bfee51f",
+      "StoredSHA256": "d485922fd4c06c87d081551ed7b604ba30ed9e91a2bba4863d07ffc22db0164d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/native/e7c643420f414d798fabf211f6b96966/helper-build.log.gz",
+      "Bytes": 114,
+      "SHA256": "0bcde80d4550e280b2d3580a404fcf61e1002e294b91fdcf93292f635e398aa0",
+      "StoredSHA256": "198c40fa80537c388d152e75d1a77e3a355fbb9eafd94f8f79f99b3e6567e05b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/native/e7c643420f414d798fabf211f6b96966/publish-BookOfEternityClient.TestSupport.log.gz",
+      "Bytes": 161,
+      "SHA256": "a00a4bfd3928e717af7792774bf69d9c0359aec2fe3508aae7c6774845c32e3f",
+      "StoredSHA256": "9636eb44e49bcb8aa97b6555a5d8426551e8a8e237135927f56ef4df652deafb"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/native/e7c643420f414d798fabf211f6b96966/guardian.log.gz",
+      "Bytes": 289,
+      "SHA256": "22732dc8bcfa64eff8e2d5bb2d774d0c2eb9d5211f5566101802d68afccfe105",
+      "StoredSHA256": "2963ec0b9249874035a6d3ef852f10b16053ecf3df3e575f388dfc5b1ff10230"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/console-runtime-red/native/e7c643420f414d798fabf211f6b96966/publish-BookOfEternityClient.log.gz",
+      "Bytes": 137,
+      "SHA256": "8e16d039960c912722889364e6e09bd91992085b41a793a88ec0e6433b0f7364",
+      "StoredSHA256": "6dda8a51605ec98a3aadae70a8122bdf34802b164388f83a107ad5b498bb2728"
+    }
+  ],
+  "RunSummary": {
+    "Categories": [
+      "gm-console-runtime-admission"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "80f695b8d99049b66616f097ad83b6632306bc84",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "gm-console-runtime-admission",
+        "Seconds": 11.4789918,
+        "BudgetMinutes": 4,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0612085,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0636201,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.09187,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 104.8207767,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 9,
+    "WallTime": "00:02:02.5837174",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  }
+}

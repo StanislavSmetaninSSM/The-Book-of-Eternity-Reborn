@@ -1,0 +1,76 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="f1c370d3-6069-461a-9f57-5a32c3a83f66" name="ordinary-readers-retry-red" runUser="$USER">
+  <ns0:Times creation="2026-10-01T09:24:28.7043606-04:00" queuing="2026-10-01T09:24:28.7043606-04:00" start="2026-10-01T09:24:25.1934061-04:00" finish="2026-10-01T09:24:28.7125324-04:00" />
+  <ns0:TestSettings name="default" id="b2a25c6f-7cb4-4f37-9124-4262d68f41bc">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="4528dc62-0450-4ab4-8a25-4b5c30e85611" testId="2af6e70c-fe4a-7b83-244a-f8d682bf0231" testName="BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable" computerName="$HOST" duration="00:00:00.2454701" startTime="2026-10-01T09:24:28.5678450-04:00" endTime="2026-10-01T09:24:28.5678684-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4528dc62-0450-4ab4-8a25-4b5c30e85611">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>The transient read failed with HResult 0x0000000B: System.IO.IOException: The process cannot access the file '$ISOLATED_RUN/temp/boe-filesystem-manager-9e064c694d1b4d5eb412ad006cefd3dc/game_session/input/turn_request.json' because it is being used by another process.
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)
+   at BookOfEternityClient.Core.FileSystemManager.OpenValidatedOrdinaryFile(TrustedLocalFileScope scope, String expectedPath, Boolean asynchronous) in $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs:line 123
+   at BookOfEternityClient.Core.FileSystemManager.ReadOrdinaryFileSnapshotCoreAsync(String relativePath, CancellationToken cancellationToken, CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs:line 56
+   at BookOfEternityClient.Core.FileSystemManager.ReadOrdinaryFileSnapshotCoreAsync(String relativePath, CancellationToken cancellationToken, CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs:line 70
+   at BookOfEternityClient.Core.FileSystemManager.ReadOrdinaryFileCoreAsync(String relativePath, CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs:line 20
+   at BookOfEternityClient.Core.FileSystemManager.ReadFileAsync(String relativePath) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 1200
+   at BookOfEternityClient.Tests.FileSystemManagerTests.&lt;&gt;c__DisplayClass3_0.&lt;&lt;ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs:line 40
+--- End of stack trace from previous location ---
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable() in $REPO/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs:line 41
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2af6e70c-fe4a-7b83-244a-f8d682bf0231">
+      <ns0:Execution id="4528dc62-0450-4ab4-8a25-4b5c30e85611" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="2af6e70c-fe4a-7b83-244a-f8d682bf0231" executionId="4528dc62-0450-4ab4-8a25-4b5c30e85611" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.62]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.46]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.50]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.83]       The transient read failed with HResult 0x0000000B: System.IO.IOException: The process cannot access the file '$ISOLATED_RUN/temp/boe-filesystem-manager-9e064c694d1b4d5eb412ad006cefd3dc/game_session/input/turn_request.json' because it is being used by another process.
+[xUnit.net 00:00:02.83]          at Microsoft.Win32.SafeHandles.SafeFileHandle.Init(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Int64&amp; fileLength, UnixFileMode&amp; filePermissions)
+[xUnit.net 00:00:02.83]          at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:02.83]          at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:02.83]          at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:02.83]          at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)
+[xUnit.net 00:00:02.83]          at BookOfEternityClient.Core.FileSystemManager.OpenValidatedOrdinaryFile(TrustedLocalFileScope scope, String expectedPath, Boolean asynchronous) in $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs:line 123
+[xUnit.net 00:00:02.83]          at BookOfEternityClient.Core.FileSystemManager.ReadOrdinaryFileSnapshotCoreAsync(String relativePath, CancellationToken cancellationToken, CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs:line 56
+[xUnit.net 00:00:02.83]          at BookOfEternityClient.Core.FileSystemManager.ReadOrdinaryFileSnapshotCoreAsync(String relativePath, CancellationToken cancellationToken, CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs:line 70
+[xUnit.net 00:00:02.83]          at BookOfEternityClient.Core.FileSystemManager.ReadOrdinaryFileCoreAsync(String relativePath, CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs:line 20
+[xUnit.net 00:00:02.83]          at BookOfEternityClient.Core.FileSystemManager.ReadFileAsync(String relativePath) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 1200
+[xUnit.net 00:00:02.83]          at BookOfEternityClient.Tests.FileSystemManagerTests.&lt;&gt;c__DisplayClass3_0.&lt;&lt;ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs:line 40
+[xUnit.net 00:00:02.83]       --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.83]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76
+[xUnit.net 00:00:02.83]       Stack Trace:
+[xUnit.net 00:00:02.83]         $REPO/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs(41,0): at BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable()
+[xUnit.net 00:00:02.83]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.84]   Finished:    BookOfEternityClient.IntegrationTests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T09:24:28.5621711-04:00">
+        <ns0:Text>[xUnit.net 00:00:02.83]     BookOfEternityClient.Tests.FileSystemManagerTests.ReadFileAsync_WhenFileIsBrieflyLocked_RetriesUntilContentIsReadable [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

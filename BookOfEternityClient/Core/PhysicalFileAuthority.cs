@@ -1552,7 +1552,7 @@ internal static class PhysicalFileAuthority
             return;
 
         var openedPath = NormalizeWindowsHandlePath(GetFinalPath(handle, flags));
-        var normalizedExpectedPath = Path.GetFullPath(expectedPath);
+        var normalizedExpectedPath = NormalizeWindowsHandlePath(expectedPath);
         if (!PathsEqual(openedPath, normalizedExpectedPath))
         {
             throw new InvalidDataException(

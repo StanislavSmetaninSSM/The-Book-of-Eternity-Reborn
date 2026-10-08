@@ -1,0 +1,337 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="62f5c34f-88d5-4c69-910a-0f6955637264" name="@c7669543e9c7 2026-10-06 07:45:45" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T07:45:45.1290651+00:00" queuing="2026-10-06T07:45:45.1290651+00:00" start="2026-10-06T07:45:42.6217676+00:00" finish="2026-10-06T07:45:50.3586278+00:00" />
+  <TestSettings name="default" id="6b99a889-bf58-4d7b-a9e8-8f86f9af7ce5">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_07_45_45" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9e30d794-2501-4b9d-83fa-e9d6d802dc48" testId="322f193a-5966-c320-600b-d7654acf6426" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchRequiresFreshPasteAndSubmissionEvidence" computerName="c7669543e9c7" duration="00:00:00.0002341" startTime="2026-10-06T07:45:45.0808755+00:00" endTime="2026-10-06T07:45:45.0808755+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9e30d794-2501-4b9d-83fa-e9d6d802dc48" />
+    <UnitTestResult executionId="b719b92f-0924-4c25-983c-c94b1f151489" testId="9b083a47-653f-8e31-3dd3-cd98bdb2c102" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\r', key: Enter, control: False, expected: &quot;\r&quot;)" computerName="c7669543e9c7" duration="00:00:00.0032747" startTime="2026-10-06T07:45:45.1944084+00:00" endTime="2026-10-06T07:45:45.1944085+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b719b92f-0924-4c25-983c-c94b1f151489" />
+    <UnitTestResult executionId="5b1efcde-80a3-4e47-a8e7-a57e03afc9df" testId="a7e725c2-71be-4ac7-f18e-1110a2615679" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualReadyCannotClearUncertainDelivery" computerName="c7669543e9c7" duration="00:00:00.0006502" startTime="2026-10-06T07:45:45.0805734+00:00" endTime="2026-10-06T07:45:45.0805734+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5b1efcde-80a3-4e47-a8e7-a57e03afc9df" />
+    <UnitTestResult executionId="a135f0c3-c287-41bc-bac3-2f9a261a294e" testId="da891458-896d-f863-338d-52bca7beaf29" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(submit: True, expected: &quot;unknown-outcome&quot;)" computerName="c7669543e9c7" duration="00:00:00.0081407" startTime="2026-10-06T07:45:47.6303497+00:00" endTime="2026-10-06T07:45:47.6303499+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a135f0c3-c287-41bc-bac3-2f9a261a294e" />
+    <UnitTestResult executionId="51df91cd-5c36-424a-b678-5f7404515c6a" testId="c6cc4827-5169-b838-b772-9c02c863cf92" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding" computerName="c7669543e9c7" duration="00:00:00.0092028" startTime="2026-10-06T07:45:48.7683777+00:00" endTime="2026-10-06T07:45:48.7683779+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="51df91cd-5c36-424a-b678-5f7404515c6a" />
+    <UnitTestResult executionId="fae6661c-7d05-44ec-a038-1fe816a808cd" testId="cb8cae33-9312-d125-a2a9-680c47a775e5" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_IdleObservationCannotClearUncertainDelivery" computerName="c7669543e9c7" duration="00:00:00.0004105" startTime="2026-10-06T07:45:45.0807307+00:00" endTime="2026-10-06T07:45:45.0807308+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fae6661c-7d05-44ec-a038-1fe816a808cd" />
+    <UnitTestResult executionId="c271a29a-af40-4a00-9d53-3991b23163b2" testId="63f42e6d-105d-b953-a2de-4e5e84c8df2b" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchUsesPositiveProfileAndEmptyComposer" computerName="c7669543e9c7" duration="00:00:00.0003627" startTime="2026-10-06T07:45:45.0952946+00:00" endTime="2026-10-06T07:45:45.0952948+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c271a29a-af40-4a00-9d53-3991b23163b2" />
+    <UnitTestResult executionId="02b50201-89bf-48a3-bd38-805b6b749d6f" testId="883630fc-6c03-a842-3654-e47bc736daf6" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_AutoReadyRequiresSupportedEmptyIdleView" computerName="c7669543e9c7" duration="00:00:00.0005298" startTime="2026-10-06T07:45:45.0802693+00:00" endTime="2026-10-06T07:45:45.0802694+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="02b50201-89bf-48a3-bd38-805b6b749d6f" />
+    <UnitTestResult executionId="c3e117a0-5e4d-4fce-9f4b-ace850c89ede" testId="4dbb842f-6511-65aa-e346-06c2bb6df7b8" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAnswerUpdatePrompt" computerName="c7669543e9c7" duration="00:00:00.0004590" startTime="2026-10-06T07:45:45.0956678+00:00" endTime="2026-10-06T07:45:45.0956678+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c3e117a0-5e4d-4fce-9f4b-ace850c89ede" />
+    <UnitTestResult executionId="6580008f-ce40-414e-9076-dfc3fbe30352" testId="5ce29ef7-7165-444b-6554-8d298f51ecf8" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateAndChangedBody_RetainOriginalWithoutRepaste" computerName="c7669543e9c7" duration="00:00:00.0644282" startTime="2026-10-06T07:45:47.5826967+00:00" endTime="2026-10-06T07:45:47.5826970+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6580008f-ce40-414e-9076-dfc3fbe30352" />
+    <UnitTestResult executionId="9de61996-4ee4-4bb0-a6a1-b5ff05b53365" testId="969cfc66-a641-7d25-95a4-a3b400af89d5" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;&quot;)" computerName="c7669543e9c7" duration="00:00:00.0043400" startTime="2026-10-06T07:45:47.6081291+00:00" endTime="2026-10-06T07:45:47.6081293+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9de61996-4ee4-4bb0-a6a1-b5ff05b53365" />
+    <UnitTestResult executionId="a31f3d15-dc4f-4f2c-b1d1-64ada358a311" testId="f6bd1efe-637a-9202-2f50-67145d9363db" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops" computerName="c7669543e9c7" duration="00:00:00.1032831" startTime="2026-10-06T07:45:45.1649011+00:00" endTime="2026-10-06T07:45:45.1649013+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a31f3d15-dc4f-4f2c-b1d1-64ada358a311" />
+    <UnitTestResult executionId="870a06d8-0823-425b-8560-62924f47fdc1" testId="c6bc03db-95df-5c3f-ecc9-eda1877861cb" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion" computerName="c7669543e9c7" duration="00:00:05.0172328" startTime="2026-10-06T07:45:50.2426649+00:00" endTime="2026-10-06T07:45:50.2426652+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="870a06d8-0823-425b-8560-62924f47fdc1" />
+    <UnitTestResult executionId="d2bf8a24-b056-4670-b035-4e14b3e53a58" testId="01faa2a3-3058-c27b-9241-de09fab4f6ff" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke" computerName="c7669543e9c7" duration="00:00:00.0274692" startTime="2026-10-06T07:45:48.7214859+00:00" endTime="2026-10-06T07:45:48.7214863+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d2bf8a24-b056-4670-b035-4e14b3e53a58" />
+    <UnitTestResult executionId="fffd3c31-d19f-4283-8594-1478a7d6d2c0" testId="2d2cf4a8-25ce-401f-760e-6b8f3d473d46" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ChangedBodyQuery_CannotBorrowOriginalSuccess" computerName="c7669543e9c7" duration="00:00:00.0104553" startTime="2026-10-06T07:45:48.6847265+00:00" endTime="2026-10-06T07:45:48.6847268+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fffd3c31-d19f-4283-8594-1478a7d6d2c0">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotEqual() Failure: Strings are equal
+Expected: Not "submission-observed"
+Actual:       "submission-observed"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgePromptOperationTests.ChangedBodyQuery_CannotBorrowOriginalSuccess() in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 170
+   at BookOfEternityClient.Tests.GmBridgePromptOperationTests.ChangedBodyQuery_CannotBorrowOriginalSuccess() in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 171
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="af626a0a-2344-45cc-a86e-d187eb0f4bd1" testId="48768043-53c1-bf62-cec2-6fc9d1f33fcd" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft" computerName="c7669543e9c7" duration="00:00:00.0112917" startTime="2026-10-06T07:45:47.6424715+00:00" endTime="2026-10-06T07:45:47.6424720+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="af626a0a-2344-45cc-a86e-d187eb0f4bd1" />
+    <UnitTestResult executionId="f6387098-0a4a-446e-a122-bf5745e31fa8" testId="6f12401b-bc18-43fc-a1ae-46cfae488449" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ActiveOperationCannotBeMarkedReady" computerName="c7669543e9c7" duration="00:00:00.0004538" startTime="2026-10-06T07:45:45.0808087+00:00" endTime="2026-10-06T07:45:45.0808088+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f6387098-0a4a-446e-a122-bf5745e31fa8" />
+    <UnitTestResult executionId="9d4d33b2-45a9-4cf9-b9a9-218057ce436e" testId="a9466fb4-5a0b-b0ef-61f9-d408ed08d1ee" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAcceptTrustPrompt" computerName="c7669543e9c7" duration="00:00:00.0007293" startTime="2026-10-06T07:45:45.0955801+00:00" endTime="2026-10-06T07:45:45.0955801+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9d4d33b2-45a9-4cf9-b9a9-218057ce436e" />
+    <UnitTestResult executionId="5088cbf8-e1ed-4688-8d7e-9106f6680cdc" testId="bcbd06f6-9989-5a5a-3055-10b9339d38f7" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.PasteNeedsFreshObservation_TimeoutRetainsDraftAndPause" computerName="c7669543e9c7" duration="00:00:01.0272081" startTime="2026-10-06T07:45:48.6703936+00:00" endTime="2026-10-06T07:45:48.6703939+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5088cbf8-e1ed-4688-8d7e-9106f6680cdc" />
+    <UnitTestResult executionId="3a577cb6-754e-47ff-9152-dcf63764b8a2" testId="ac4216f9-16a6-8d0f-fdee-b64134216bf6" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\0', key: C, control: True, expected: &quot;\x03&quot;)" computerName="c7669543e9c7" duration="00:00:00.0101475" startTime="2026-10-06T07:45:45.1780346+00:00" endTime="2026-10-06T07:45:45.1780348+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3a577cb6-754e-47ff-9152-dcf63764b8a2" />
+    <UnitTestResult executionId="6a21312a-d41b-46da-923e-9129fa9f926c" testId="e3a5e745-b241-ec2a-4220-786c3dcdb16f" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;CONTROLLED CLI\nUPDATE\n› &quot;)" computerName="c7669543e9c7" duration="00:00:00.0039706" startTime="2026-10-06T07:45:47.6025555+00:00" endTime="2026-10-06T07:45:47.6025556+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6a21312a-d41b-46da-923e-9129fa9f926c" />
+    <UnitTestResult executionId="502e0ecb-c60e-4cd6-b380-08dbaa0a0369" testId="3b31a1eb-754a-14ba-2de8-04e4c6045076" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods" computerName="c7669543e9c7" duration="00:00:00.0098443" startTime="2026-10-06T07:45:45.0733898+00:00" endTime="2026-10-06T07:45:45.0733899+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="502e0ecb-c60e-4cd6-b380-08dbaa0a0369" />
+    <UnitTestResult executionId="f36b17d4-cc09-4291-b334-5a8c02c5e7b8" testId="8a0f74c6-acd4-b104-a488-72cce4bc2952" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus" computerName="c7669543e9c7" duration="00:00:00.0049629" startTime="2026-10-06T07:45:48.7516341+00:00" endTime="2026-10-06T07:45:48.7516343+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f36b17d4-cc09-4291-b334-5a8c02c5e7b8" />
+    <UnitTestResult executionId="237d44cf-ed03-4f10-b4d8-f4e1515f3d0f" testId="f063ee4e-a422-5438-2150-9066a88ed7dd" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\0', key: UpArrow, control: False, expected: &quot;\x1b[A&quot;)" computerName="c7669543e9c7" duration="00:00:00.0030775" startTime="2026-10-06T07:45:45.1877723+00:00" endTime="2026-10-06T07:45:45.1877723+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="237d44cf-ed03-4f10-b4d8-f4e1515f3d0f" />
+    <UnitTestResult executionId="c8294050-3338-4017-846d-5acd2b53cd37" testId="f5dbc3e8-80b7-6315-a355-56102a79fe21" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ManualTakeover_BlocksAutomaticShellBootstrap" computerName="c7669543e9c7" duration="00:00:00.0078478" startTime="2026-10-06T07:45:48.6961261+00:00" endTime="2026-10-06T07:45:48.6961266+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c8294050-3338-4017-846d-5acd2b53cd37">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: Collection was not empty
+Collection: [115, 104, 101, 108, 108, ···]</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgePromptOperationTests.ManualTakeover_BlocksAutomaticShellBootstrap() in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 202
+   at BookOfEternityClient.Tests.GmBridgePromptOperationTests.ManualTakeover_BlocksAutomaticShellBootstrap() in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 202
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="30ab47da-75b2-41bb-bd5c-a3500704c471" testId="8292e3c6-9400-ec6d-e05b-aea50811fc83" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit(afterSubmit: False, expected: &quot;draft-uncertain&quot;)" computerName="c7669543e9c7" duration="00:00:00.0086478" startTime="2026-10-06T07:45:48.7463513+00:00" endTime="2026-10-06T07:45:48.7463515+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="30ab47da-75b2-41bb-bd5c-a3500704c471" />
+    <UnitTestResult executionId="ed80ff13-ab18-43f5-8057-caf56d49f6de" testId="8e88b00b-90af-37e6-d8cf-950f416a88d8" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit(afterSubmit: True, expected: &quot;unknown-outcome&quot;)" computerName="c7669543e9c7" duration="00:00:00.0148127" startTime="2026-10-06T07:45:48.7368680+00:00" endTime="2026-10-06T07:45:48.7368683+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ed80ff13-ab18-43f5-8057-caf56d49f6de" />
+    <UnitTestResult executionId="06a93640-c887-42cb-93eb-a85ce239c0b1" testId="2b74bf3c-bed3-375c-82e0-57fa5edc2bc7" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding" computerName="c7669543e9c7" duration="00:00:00.0076850" startTime="2026-10-06T07:45:50.2516091+00:00" endTime="2026-10-06T07:45:50.2516095+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="06a93640-c887-42cb-93eb-a85ce239c0b1" />
+    <UnitTestResult executionId="ae50f0cb-c95a-4c3a-8dd9-43a54ff08195" testId="9dbc8b7a-cbbf-f042-1359-f039c5d837f2" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualTakeoverPrecedesCompetingWrite" computerName="c7669543e9c7" duration="00:00:00.0002078" startTime="2026-10-06T07:45:45.0806509+00:00" endTime="2026-10-06T07:45:45.0806510+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ae50f0cb-c95a-4c3a-8dd9-43a54ff08195" />
+    <UnitTestResult executionId="2f4cc600-40be-4fec-b230-fd5103cee603" testId="075cfaaf-8bbb-1e6b-6f10-29310934483f" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualAssemblyAndPortablePdbMatchProductionSource" computerName="c7669543e9c7" duration="00:00:00.0310870" startTime="2026-10-06T07:45:45.2244110+00:00" endTime="2026-10-06T07:45:45.2244113+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2f4cc600-40be-4fec-b230-fd5103cee603" />
+    <UnitTestResult executionId="3eaf1248-6a55-44dd-be25-6c9e4aa6c157" testId="cb526d31-d241-58f3-df23-1d6955480011" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateFlood_HeldInputCannotOccupyControlService" computerName="c7669543e9c7" duration="00:00:02.4707543" startTime="2026-10-06T07:45:47.5312488+00:00" endTime="2026-10-06T07:45:47.5312493+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3eaf1248-6a55-44dd-be25-6c9e4aa6c157">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   System.TimeoutException: The operation has timed out.
+   at BookOfEternityClient.Tests.GmBridgePromptOperationTests.&lt;&gt;c__DisplayClass13_0.&lt;&lt;DuplicateFlood_HeldInputCannotOccupyControlService&gt;b__1&gt;d.MoveNext() in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 183
+--- End of stack trace from previous location ---
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateFlood_HeldInputCannotOccupyControlService() in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 184
+   at BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateFlood_HeldInputCannotOccupyControlService() in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 190
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c513ad58-aa79-435c-930d-81eee8cfa3b6" testId="5a66f271-4576-603c-fb3f-5a897c3f3f93" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_PreservesPendingCliDraftBeforeAutomaticDispatch" computerName="c7669543e9c7" duration="00:00:00.0006118" startTime="2026-10-06T07:45:45.0955040+00:00" endTime="2026-10-06T07:45:45.0955040+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c513ad58-aa79-435c-930d-81eee8cfa3b6" />
+    <UnitTestResult executionId="9222297d-efcf-43cd-b6b3-10bc9db0795e" testId="6905e732-988e-5c37-1a97-2b988a74107f" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(submit: False, expected: &quot;draft-uncertain&quot;)" computerName="c7669543e9c7" duration="00:00:00.0077350" startTime="2026-10-06T07:45:47.6216965+00:00" endTime="2026-10-06T07:45:47.6216968+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9222297d-efcf-43cd-b6b3-10bc9db0795e" />
+    <UnitTestResult executionId="c754791a-ade4-42f1-8e53-83463195fe2d" testId="55f3b239-657c-c931-978d-b9c252523cb1" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;CONTROLLED CLI\nTRUST\n› &quot;)" computerName="c7669543e9c7" duration="00:00:00.0053096" startTime="2026-10-06T07:45:47.5978682+00:00" endTime="2026-10-06T07:45:47.5978684+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c754791a-ade4-42f1-8e53-83463195fe2d" />
+    <UnitTestResult executionId="05c41e40-8a1e-435e-a559-19842f740e2c" testId="480c515b-ac8f-5790-cbf8-80ddf56f6cff" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.TwoPromptsOneBinding_CustomSequences_OneSubmitEach" computerName="c7669543e9c7" duration="00:00:00.0063193" startTime="2026-10-06T07:45:48.7608065+00:00" endTime="2026-10-06T07:45:48.7608067+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="05c41e40-8a1e-435e-a559-19842f740e2c" />
+    <UnitTestResult executionId="01f3ae1f-de1f-4e8f-8223-5d6054f02d58" testId="5d4c4008-6205-5c8e-3bc9-927572990467" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: 'a', key: A, control: False, expected: &quot;a&quot;)" computerName="c7669543e9c7" duration="00:00:00.0050417" startTime="2026-10-06T07:45:45.1843467+00:00" endTime="2026-10-06T07:45:45.1843468+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="01f3ae1f-de1f-4e8f-8223-5d6054f02d58" />
+    <UnitTestResult executionId="33bd7825-4e2f-450c-9ceb-6a4e2035db1b" testId="df5d9eaf-1d05-65de-6db5-0e4208d89bff" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;CONTROLLED CLI\nAUTH\n› &quot;)" computerName="c7669543e9c7" duration="00:00:00.0084400" startTime="2026-10-06T07:45:47.5917044+00:00" endTime="2026-10-06T07:45:47.5917047+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="33bd7825-4e2f-450c-9ceb-6a4e2035db1b" />
+    <UnitTestResult executionId="d9d12933-ff77-4068-9bce-7c6e54e60e76" testId="16749874-6ed6-63c8-e87d-32d12dce1af2" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys" computerName="c7669543e9c7" duration="00:00:00.0103250" startTime="2026-10-06T07:45:50.2626059+00:00" endTime="2026-10-06T07:45:50.2626062+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d9d12933-ff77-4068-9bce-7c6e54e60e76" />
+    <UnitTestResult executionId="b90f145d-0898-4e1b-98af-d19653ad0619" testId="ce31469d-ae7d-cc7f-2614-3af333e640ef" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_StatusAndCancelReachRealPromptOperation" computerName="c7669543e9c7" duration="00:00:00.0097384" startTime="2026-10-06T07:45:45.0701643+00:00" endTime="2026-10-06T07:45:45.0701858+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b90f145d-0898-4e1b-98af-d19653ad0619" />
+    <UnitTestResult executionId="d8a3537e-5eab-4535-9751-9a58789d0b51" testId="097deac2-bda8-3b2f-4f53-7057799e3780" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;unknown&quot;)" computerName="c7669543e9c7" duration="00:00:00.0045441" startTime="2026-10-06T07:45:47.6144031+00:00" endTime="2026-10-06T07:45:47.6144032+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d8a3537e-5eab-4535-9751-9a58789d0b51" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="969cfc66-a641-7d25-95a4-a3b400af89d5">
+      <Execution id="9de61996-4ee4-4bb0-a6a1-b5ff05b53365" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="UnsupportedOrBlockedView_WritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="01faa2a3-3058-c27b-9241-de09fab4f6ff">
+      <Execution id="d2bf8a24-b056-4670-b035-4e14b3e53a58" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="ActualPipe_HeldPasteStatusQueueCancelOverflowAndRevoke" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;CONTROLLED CLI\nAUTH\n› &quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="df5d9eaf-1d05-65de-6db5-0e4208d89bff">
+      <Execution id="33bd7825-4e2f-450c-9ceb-6a4e2035db1b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="UnsupportedOrBlockedView_WritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f6bd1efe-637a-9202-2f50-67145d9363db">
+      <Execution id="a31f3d15-dc4f-4f2c-b1d1-64ada358a311" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualKeyboard_WriteFailureIsRecordedAndPumpStops" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="48768043-53c1-bf62-cec2-6fc9d1f33fcd">
+      <Execution id="af626a0a-2344-45cc-a86e-d187eb0f4bd1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="AutomaticDispatch_DoesNotEraseManualDraft" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c6cc4827-5169-b838-b772-9c02c863cf92">
+      <Execution id="51df91cd-5c36-424a-b678-5f7404515c6a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="StaleBinding_IsZeroWriteAndCannotQueryAnotherBinding" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualTakeoverPrecedesCompetingWrite" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9dbc8b7a-cbbf-f042-1359-f039c5d837f2">
+      <Execution id="ae50f0cb-c95a-4c3a-8dd9-43a54ff08195" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_ManualTakeoverPrecedesCompetingWrite" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;CONTROLLED CLI\nUPDATE\n› &quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e3a5e745-b241-ec2a-4220-786c3dcdb16f">
+      <Execution id="6a21312a-d41b-46da-923e-9129fa9f926c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="UnsupportedOrBlockedView_WritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateAndChangedBody_RetainOriginalWithoutRepaste" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5ce29ef7-7165-444b-6554-8d298f51ecf8">
+      <Execution id="6580008f-ce40-414e-9076-dfc3fbe30352" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="DuplicateAndChangedBody_RetainOriginalWithoutRepaste" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ActiveOperationCannotBeMarkedReady" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6f12401b-bc18-43fc-a1ae-46cfae488449">
+      <Execution id="f6387098-0a4a-446e-a122-bf5745e31fa8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_ActiveOperationCannotBeMarkedReady" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ManualReadyCannotClearUncertainDelivery" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a7e725c2-71be-4ac7-f18e-1110a2615679">
+      <Execution id="5b1efcde-80a3-4e47-a8e7-a57e03afc9df" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_ManualReadyCannotClearUncertainDelivery" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ChangedBodyQuery_CannotBorrowOriginalSuccess" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2d2cf4a8-25ce-401f-760e-6b8f3d473d46">
+      <Execution id="fffd3c31-d19f-4283-8594-1478a7d6d2c0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="ChangedBodyQuery_CannotBorrowOriginalSuccess" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAnswerUpdatePrompt" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4dbb842f-6511-65aa-e346-06c2bb6df7b8">
+      <Execution id="c3e117a0-5e4d-4fce-9f4b-ace850c89ede" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_DoesNotAutoAnswerUpdatePrompt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit(afterSubmit: False, expected: &quot;draft-uncertain&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8292e3c6-9400-ec6d-e05b-aea50811fc83">
+      <Execution id="30ab47da-75b2-41bb-bd5c-a3500704c471" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="ActualPipe_ManualTakeoverBeforeOrAfterSubmit" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.TwoPromptsOneBinding_CustomSequences_OneSubmitEach" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="480c515b-ac8f-5790-cbf8-80ddf56f6cff">
+      <Execution id="05c41e40-8a1e-435e-a559-19842f740e2c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="TwoPromptsOneBinding_CustomSequences_OneSubmitEach" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_IdleObservationCannotClearUncertainDelivery" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="cb8cae33-9312-d125-a2a9-680c47a775e5">
+      <Execution id="fae6661c-7d05-44ec-a038-1fe816a808cd" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_IdleObservationCannotClearUncertainDelivery" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_ManualTakeoverBeforeOrAfterSubmit(afterSubmit: True, expected: &quot;unknown-outcome&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8e88b00b-90af-37e6-d8cf-950f416a88d8">
+      <Execution id="ed80ff13-ab18-43f5-8057-caf56d49f6de" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="ActualPipe_ManualTakeoverBeforeOrAfterSubmit" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3b31a1eb-754a-14ba-2de8-04e4c6045076">
+      <Execution id="502e0ecb-c60e-4cd6-b380-08dbaa0a0369" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ProductionOriginsAndRetirementConsumeTheTestedLifetimeMethods" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchUsesPositiveProfileAndEmptyComposer" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="63f42e6d-105d-b953-a2de-4e5e84c8df2b">
+      <Execution id="c271a29a-af40-4a00-9d53-3991b23163b2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_DispatchUsesPositiveProfileAndEmptyComposer" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_StatusAndCancelReachRealPromptOperation" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ce31469d-ae7d-cc7f-2614-3af333e640ef">
+      <Execution id="b90f145d-0898-4e1b-98af-d19653ad0619" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_StatusAndCancelReachRealPromptOperation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c6bc03db-95df-5c3f-ecc9-eda1877861cb">
+      <Execution id="870a06d8-0823-425b-8560-62924f47fdc1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DispatchRequiresFreshPasteAndSubmissionEvidence" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="322f193a-5966-c320-600b-d7654acf6426">
+      <Execution id="9e30d794-2501-4b9d-83fa-e9d6d802dc48" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_DispatchRequiresFreshPasteAndSubmissionEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\r', key: Enter, control: False, expected: &quot;\r&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9b083a47-653f-8e31-3dd3-cd98bdb2c102">
+      <Execution id="b719b92f-0924-4c25-983c-c94b1f151489" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualKeyboard_PreservesExistingKeyBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\0', key: C, control: True, expected: &quot;\x03&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ac4216f9-16a6-8d0f-fdee-b64134216bf6">
+      <Execution id="3a577cb6-754e-47ff-9152-dcf63764b8a2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualKeyboard_PreservesExistingKeyBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.PasteNeedsFreshObservation_TimeoutRetainsDraftAndPause" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bcbd06f6-9989-5a5a-3055-10b9339d38f7">
+      <Execution id="5088cbf8-e1ed-4688-8d7e-9106f6680cdc" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="PasteNeedsFreshObservation_TimeoutRetainsDraftAndPause" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DoesNotAutoAcceptTrustPrompt" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a9466fb4-5a0b-b0ef-61f9-d408ed08d1ee">
+      <Execution id="9d4d33b2-45a9-4cf9-b9a9-218057ce436e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_DoesNotAutoAcceptTrustPrompt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="16749874-6ed6-63c8-e87d-32d12dce1af2">
+      <Execution id="d9d12933-ff77-4068-9bce-7c6e54e60e76" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2b74bf3c-bed3-375c-82e0-57fa5edc2bc7">
+      <Execution id="06a93640-c887-42cb-93eb-a85ce239c0b1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;CONTROLLED CLI\nTRUST\n› &quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="55f3b239-657c-c931-978d-b9c252523cb1">
+      <Execution id="c754791a-ade4-42f1-8e53-83463195fe2d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="UnsupportedOrBlockedView_WritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualAssemblyAndPortablePdbMatchProductionSource" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="075cfaaf-8bbb-1e6b-6f10-29310934483f">
+      <Execution id="2f4cc600-40be-4fec-b230-fd5103cee603" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualAssemblyAndPortablePdbMatchProductionSource" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: 'a', key: A, control: False, expected: &quot;a&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5d4c4008-6205-5c8e-3bc9-927572990467">
+      <Execution id="01f3ae1f-de1f-4e8f-8223-5d6054f02d58" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualKeyboard_PreservesExistingKeyBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\0', key: UpArrow, control: False, expected: &quot;\x1b[A&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f063ee4e-a422-5438-2150-9066a88ed7dd">
+      <Execution id="237d44cf-ed03-4f10-b4d8-f4e1515f3d0f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualKeyboard_PreservesExistingKeyBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateFlood_HeldInputCannotOccupyControlService" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="cb526d31-d241-58f3-df23-1d6955480011">
+      <Execution id="3eaf1248-6a55-44dd-be25-6c9e4aa6c157" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="DuplicateFlood_HeldInputCannotOccupyControlService" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(submit: True, expected: &quot;unknown-outcome&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="da891458-896d-f863-338d-52bca7beaf29">
+      <Execution id="a135f0c3-c287-41bc-bac3-2f9a261a294e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="PartialWrite_RecordsPhaseAndNeverReplays" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.UnsupportedOrBlockedView_WritesNothing(screen: &quot;unknown&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="097deac2-bda8-3b2f-4f53-7057799e3780">
+      <Execution id="d8a3537e-5eab-4535-9751-9a58789d0b51" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="UnsupportedOrBlockedView_WritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ManualTakeover_BlocksAutomaticShellBootstrap" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f5dbc3e8-80b7-6315-a355-56102a79fe21">
+      <Execution id="c8294050-3338-4017-846d-5acd2b53cd37" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="ManualTakeover_BlocksAutomaticShellBootstrap" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_AutoReadyRequiresSupportedEmptyIdleView" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="883630fc-6c03-a842-3654-e47bc736daf6">
+      <Execution id="02b50201-89bf-48a3-bd38-805b6b749d6f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_AutoReadyRequiresSupportedEmptyIdleView" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.PartialWrite_RecordsPhaseAndNeverReplays(submit: False, expected: &quot;draft-uncertain&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6905e732-988e-5c37-1a97-2b988a74107f">
+      <Execution id="9222297d-efcf-43cd-b6b3-10bc9db0795e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="PartialWrite_RecordsPhaseAndNeverReplays" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_PreservesPendingCliDraftBeforeAutomaticDispatch" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5a66f271-4576-603c-fb3f-5a897c3f3f93">
+      <Execution id="c513ad58-aa79-435c-930d-81eee8cfa3b6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_PreservesPendingCliDraftBeforeAutomaticDispatch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8a0f74c6-acd4-b104-a488-72cce4bc2952">
+      <Execution id="f36b17d4-cc09-4291-b334-5a8c02c5e7b8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="ActualPipe_SlowPeerDoesNotBlockStatus" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="322f193a-5966-c320-600b-d7654acf6426" executionId="9e30d794-2501-4b9d-83fa-e9d6d802dc48" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9b083a47-653f-8e31-3dd3-cd98bdb2c102" executionId="b719b92f-0924-4c25-983c-c94b1f151489" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a7e725c2-71be-4ac7-f18e-1110a2615679" executionId="5b1efcde-80a3-4e47-a8e7-a57e03afc9df" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="da891458-896d-f863-338d-52bca7beaf29" executionId="a135f0c3-c287-41bc-bac3-2f9a261a294e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c6cc4827-5169-b838-b772-9c02c863cf92" executionId="51df91cd-5c36-424a-b678-5f7404515c6a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cb8cae33-9312-d125-a2a9-680c47a775e5" executionId="fae6661c-7d05-44ec-a038-1fe816a808cd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="63f42e6d-105d-b953-a2de-4e5e84c8df2b" executionId="c271a29a-af40-4a00-9d53-3991b23163b2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="883630fc-6c03-a842-3654-e47bc736daf6" executionId="02b50201-89bf-48a3-bd38-805b6b749d6f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4dbb842f-6511-65aa-e346-06c2bb6df7b8" executionId="c3e117a0-5e4d-4fce-9f4b-ace850c89ede" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5ce29ef7-7165-444b-6554-8d298f51ecf8" executionId="6580008f-ce40-414e-9076-dfc3fbe30352" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="969cfc66-a641-7d25-95a4-a3b400af89d5" executionId="9de61996-4ee4-4bb0-a6a1-b5ff05b53365" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f6bd1efe-637a-9202-2f50-67145d9363db" executionId="a31f3d15-dc4f-4f2c-b1d1-64ada358a311" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c6bc03db-95df-5c3f-ecc9-eda1877861cb" executionId="870a06d8-0823-425b-8560-62924f47fdc1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="01faa2a3-3058-c27b-9241-de09fab4f6ff" executionId="d2bf8a24-b056-4670-b035-4e14b3e53a58" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2d2cf4a8-25ce-401f-760e-6b8f3d473d46" executionId="fffd3c31-d19f-4283-8594-1478a7d6d2c0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="48768043-53c1-bf62-cec2-6fc9d1f33fcd" executionId="af626a0a-2344-45cc-a86e-d187eb0f4bd1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6f12401b-bc18-43fc-a1ae-46cfae488449" executionId="f6387098-0a4a-446e-a122-bf5745e31fa8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a9466fb4-5a0b-b0ef-61f9-d408ed08d1ee" executionId="9d4d33b2-45a9-4cf9-b9a9-218057ce436e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bcbd06f6-9989-5a5a-3055-10b9339d38f7" executionId="5088cbf8-e1ed-4688-8d7e-9106f6680cdc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ac4216f9-16a6-8d0f-fdee-b64134216bf6" executionId="3a577cb6-754e-47ff-9152-dcf63764b8a2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e3a5e745-b241-ec2a-4220-786c3dcdb16f" executionId="6a21312a-d41b-46da-923e-9129fa9f926c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b31a1eb-754a-14ba-2de8-04e4c6045076" executionId="502e0ecb-c60e-4cd6-b380-08dbaa0a0369" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8a0f74c6-acd4-b104-a488-72cce4bc2952" executionId="f36b17d4-cc09-4291-b334-5a8c02c5e7b8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f063ee4e-a422-5438-2150-9066a88ed7dd" executionId="237d44cf-ed03-4f10-b4d8-f4e1515f3d0f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f5dbc3e8-80b7-6315-a355-56102a79fe21" executionId="c8294050-3338-4017-846d-5acd2b53cd37" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8292e3c6-9400-ec6d-e05b-aea50811fc83" executionId="30ab47da-75b2-41bb-bd5c-a3500704c471" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8e88b00b-90af-37e6-d8cf-950f416a88d8" executionId="ed80ff13-ab18-43f5-8057-caf56d49f6de" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2b74bf3c-bed3-375c-82e0-57fa5edc2bc7" executionId="06a93640-c887-42cb-93eb-a85ce239c0b1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9dbc8b7a-cbbf-f042-1359-f039c5d837f2" executionId="ae50f0cb-c95a-4c3a-8dd9-43a54ff08195" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="075cfaaf-8bbb-1e6b-6f10-29310934483f" executionId="2f4cc600-40be-4fec-b230-fd5103cee603" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cb526d31-d241-58f3-df23-1d6955480011" executionId="3eaf1248-6a55-44dd-be25-6c9e4aa6c157" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5a66f271-4576-603c-fb3f-5a897c3f3f93" executionId="c513ad58-aa79-435c-930d-81eee8cfa3b6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6905e732-988e-5c37-1a97-2b988a74107f" executionId="9222297d-efcf-43cd-b6b3-10bc9db0795e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="55f3b239-657c-c931-978d-b9c252523cb1" executionId="c754791a-ade4-42f1-8e53-83463195fe2d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="480c515b-ac8f-5790-cbf8-80ddf56f6cff" executionId="05c41e40-8a1e-435e-a559-19842f740e2c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5d4c4008-6205-5c8e-3bc9-927572990467" executionId="01f3ae1f-de1f-4e8f-8223-5d6054f02d58" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="df5d9eaf-1d05-65de-6db5-0e4208d89bff" executionId="33bd7825-4e2f-450c-9ceb-6a4e2035db1b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="16749874-6ed6-63c8-e87d-32d12dce1af2" executionId="d9d12933-ff77-4068-9bce-7c6e54e60e76" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ce31469d-ae7d-cc7f-2614-3af333e640ef" executionId="b90f145d-0898-4e1b-98af-d19653ad0619" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="097deac2-bda8-3b2f-4f53-7057799e3780" executionId="d8a3537e-5eab-4535-9751-9a58789d0b51" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="40" executed="40" passed="37" failed="3" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.25]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.74]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.77]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:04.31]       Assert.Null() Failure: Value is not null
+[xUnit.net 00:00:04.31]       Expected: null
+[xUnit.net 00:00:04.31]       Actual:   System.TimeoutException: The operation has timed out.
+[xUnit.net 00:00:04.31]          at BookOfEternityClient.Tests.GmBridgePromptOperationTests.&lt;&gt;c__DisplayClass13_0.&lt;&lt;DuplicateFlood_HeldInputCannotOccupyControlService&gt;b__1&gt;d.MoveNext() in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 183
+[xUnit.net 00:00:04.31]       --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.31]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76
+[xUnit.net 00:00:04.31]       Stack Trace:
+[xUnit.net 00:00:04.31]         /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs(184,0): at BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateFlood_HeldInputCannotOccupyControlService()
+[xUnit.net 00:00:04.31]         /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs(190,0): at BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateFlood_HeldInputCannotOccupyControlService()
+[xUnit.net 00:00:04.31]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.47]       Assert.NotEqual() Failure: Strings are equal
+[xUnit.net 00:00:05.47]       Expected: Not "submission-observed"
+[xUnit.net 00:00:05.47]       Actual:       "submission-observed"
+[xUnit.net 00:00:05.47]       Stack Trace:
+[xUnit.net 00:00:05.47]         /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs(170,0): at BookOfEternityClient.Tests.GmBridgePromptOperationTests.ChangedBodyQuery_CannotBorrowOriginalSuccess()
+[xUnit.net 00:00:05.47]         /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs(171,0): at BookOfEternityClient.Tests.GmBridgePromptOperationTests.ChangedBodyQuery_CannotBorrowOriginalSuccess()
+[xUnit.net 00:00:05.47]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.48]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:05.48]       Collection: [115, 104, 101, 108, 108, ···]
+[xUnit.net 00:00:05.48]       Stack Trace:
+[xUnit.net 00:00:05.48]         /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs(202,0): at BookOfEternityClient.Tests.GmBridgePromptOperationTests.ManualTakeover_BlocksAutomaticShellBootstrap()
+[xUnit.net 00:00:05.48]         /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs(202,0): at BookOfEternityClient.Tests.GmBridgePromptOperationTests.ManualTakeover_BlocksAutomaticShellBootstrap()
+[xUnit.net 00:00:05.48]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:07.05]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T07:45:47.5266384+00:00">
+        <Text>[xUnit.net 00:00:04.31]     BookOfEternityClient.Tests.GmBridgePromptOperationTests.DuplicateFlood_HeldInputCannotOccupyControlService [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T07:45:48.6856046+00:00">
+        <Text>[xUnit.net 00:00:05.47]     BookOfEternityClient.Tests.GmBridgePromptOperationTests.ChangedBodyQuery_CannotBorrowOriginalSuccess [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T07:45:48.6963405+00:00">
+        <Text>[xUnit.net 00:00:05.48]     BookOfEternityClient.Tests.GmBridgePromptOperationTests.ManualTakeover_BlocksAutomaticShellBootstrap [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

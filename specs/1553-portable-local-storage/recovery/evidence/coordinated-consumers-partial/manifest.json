@@ -1,0 +1,172 @@
+{
+  "sourceCommit": "5cc0bc984e31c0606097c2100aa9e8d0afc5f17b",
+  "sourceAppliedTree": "e71c85c16111e9c9edf165bbdc6a8e7bec2762f2",
+  "packetSha256": "413b7f28a23f1c3132cee566fa142d097302136363420605d4c7c9549be3691e",
+  "kind": "coordinated-consumers-partial; exact completed selected-run evidence",
+  "sanitization": "Repository/toolchain/isolated environment paths and TRX run user/computer/deployment identifiers replaced; original and sanitized hashes retained.",
+  "command": "DOTNET_PROCESSOR_COUNT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+  "environment": "Linux x64; SDK10.0.401, .NET8.0.31, PowerShell7.6.6; existing isolated homes/temp/cache; no app/provider execution",
+  "tests": {
+    "Total": 9,
+    "Executed": 9,
+    "Passed": 8,
+    "Failed": 1
+  },
+  "selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 35,
+    "CompletedCases": 9,
+    "UnderfilledDescriptors": [
+      "portable-coordinated-actual-consumers-unit-002",
+      "portable-coordinated-phase-consumers-integration-003",
+      "portable-coordinated-phase-consumers-unit-004",
+      "portable-coordinated-qte-outcome-integration-005"
+    ],
+    "Complete": false
+  },
+  "exitCode": 1,
+  "wallTime": "00:04:41.0285665",
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "7e28039c39142a0ccbfcbffd20c8d68ae61c68fed9fc8899bceaeb0e4abd2ec5",
+      "sanitizedSha256": "7e28039c39142a0ccbfcbffd20c8d68ae61c68fed9fc8899bceaeb0e4abd2ec5"
+    },
+    {
+      "path": "portable-coordinated-actual-consumers-integration-001.trx",
+      "originalSha256": "40aa8c6517e4fc18eec5a55a215f96d56ead3eeceaa840b45cc1efd9fc1f99dc",
+      "sanitizedSha256": "6f222e9eb8fbe3881a70043720b5a4d413bffc0813bdb3ba09ae4c26b19836ba"
+    }
+  ],
+  "scope": "Fresh integration/unit builds passed; first actual-consumer integration descriptor executed nine cases: eight passed, one failed during unchanged LiveTurnPreparationService physical directory deletion (kernel32.dll on Linux), before wound quarantine helper publication. Runner stopped; 26 cases in four descriptors are unrun, including the two outcome and all 23 phase cases plus progression unit. No skip or whole-selection GREEN is claimed.",
+  "unchangedSourceAgainstReview": {
+    "sourceCommit": "5cc0bc984e31c0606097c2100aa9e8d0afc5f17b",
+    "appliedSourceTree": "e71c85c16111e9c9edf165bbdc6a8e7bec2762f2",
+    "sourceTestCatalogSelectionHashes": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.CoordinatedOutcome.cs",
+        "sha256": "fe9dbb1e933fb9879cea64e64a3c9d581cf7a2031ea3930ce087a5bf15078638"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/NpcTradeServiceRequestFlowTests.cs",
+        "sha256": "ec5c2e356490d585ebfd1781659398ddefff767570f80474212d4a775611bcc6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/PortableCoordinatedCleanupTests.cs",
+        "sha256": "e4cde2dd24950bbd319059b150587e7ced45c00a8065512e0edb3f0d773dd8fb"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.CoordinatedOutcome.cs",
+        "sha256": "8498f1f38083f3077bff2a82066721a00f3db7071d566469207d4bf7112676e3"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs",
+        "sha256": "dfcf0cf41d4429723ffd6798d0065772b587697a945bff420485f8c38f4cca93"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContextTests.cs",
+        "sha256": "470a25539761f7f8e09fe951da7d75bd70dfc63769056685c0ca90bbbab02211"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs",
+        "sha256": "406341a88c769d60eb55e5549480ea286f159f5345acaf174ff3f8dd10bd9bbc"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/WebUi/BrowserQteGenerationFencingTests.cs",
+        "sha256": "aca420135eed93efb3b7801c72506a28ffad7bf1b15518288a7be734c61b150a"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs",
+        "sha256": "15374b84a2c75ee5adbdb7edd91b7ce0fe35f62ba6dd3d779ee2449cab426b94"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/CoordinatedStateWriteHelperTests.cs",
+        "sha256": "97b53b64d51022e11b15470fef422bd5f065b4932c4f83d0c688e79725b59726"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/MortalItemIdentityTransitionTests.Stacks.cs",
+        "sha256": "dc08d9b744be6888ad4c0a4821c7478a731afb99bcd2934c8e33a49d02db926c"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/MortalItemIdentityTransitionTests.cs",
+        "sha256": "d37b5d331715c49cadd4d64f87bbb9aedea9ce8c9caa23476151f5b13c51e082"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/PortableCoordinatedAuthorityTests.cs",
+        "sha256": "5302e187134f3a639e2cb0e510baec1f6c5169e00967810016d83d715ed50643"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs",
+        "sha256": "6c58bcaf41d36dc14191076ff098d40b14b0c6d9656aca94b472ad2d049c0665"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.Contracts.cs",
+        "sha256": "dd785dde8d292d7eecf2bf41c5abb9b072e0a0861b12da5821ce4f9f5cd75e35"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/PortableCoordinatedPublicationTests.cs",
+        "sha256": "7fafa6960844f7b71b6d7c0eb7bafafc1b2fc143dfba36298487f843d635884e"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/PortableCoordinatedRecoveryTests.cs",
+        "sha256": "3bf43f04e115f3217f67528440374ba9b331e47223782578cfc56c2cb6a2fa2c"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "8a0f54f3107a76fb0fd0062a4f91f8b60fd398bf79696c83ed1ce3244f02a0c1"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "7c9ee54899e040fdfe07b283590299b98e50abe4560ffc851696949bcc392356"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
+        "sha256": "16b5e47b843ca92bafd3723a732dbf1159cf07f2c87c87ca789b230e038c7ff9"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "sha256": "8ec839c921c756a701658dbec724dc9e9de71ed570b8a30b427dff6df016a486"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs",
+        "sha256": "4c7bcdb716281e961b5882b10d1d378c5804bc52c2a7285f56ec1e329e80ebe7"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GuardianTradeRequestState.cs",
+        "sha256": "deeadc31d9fd64f04c2d11fa6a43267fab1a563c36b5219162c0d9970e10fe39"
+      },
+      {
+        "path": "BookOfEternityClient/Services/NpcTradeRequestState.cs",
+        "sha256": "24304eb1d54546701601e77c94267a639f324073553c907f15701682d9738c49"
+      },
+      {
+        "path": "BookOfEternityClient/Services/QteDeferredEffectResolutionTransport.cs",
+        "sha256": "00978d30571e9c3d2eb6e2155c3ee82f4099a3bdd07361625f51dbc23440dabb"
+      },
+      {
+        "path": "BookOfEternityClient/Services/QteSceneService.cs",
+        "sha256": "752cf5468cd818d241d190b4b22184f79ed211abab4a1b282a192b2d2f94aea9"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ShiningTradeRequestState.cs",
+        "sha256": "76647048e7c6059755c5c41ca2612638a446e5baff6d627ccec23ea08b8f96b9"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "d083bb0479531ef0ff6a96bc801befaaeb1992500def574a29fa985912d06f00"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "3e1cc0adc60782b929b307d980f31a2fae87b41886c50fa52ee9bdf3d15c226c"
+      }
+    ]
+  }
+}

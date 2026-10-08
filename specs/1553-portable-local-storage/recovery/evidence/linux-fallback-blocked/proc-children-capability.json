@@ -1,0 +1,52 @@
+{
+  "Utc": "2026-10-05T15:46:44.076815+00:00",
+  "Source": "690a975593e3696530a355057c761480f3d43e70",
+  "getpid": 42354,
+  "procSelf": "42354",
+  "procThreadSelf": "42354/task/42354",
+  "pidNamespace": "pid:[4026532200]",
+  "PidFields": [
+    "Pid:\t42354",
+    "PPid:\t42351",
+    "NSpid:\t42354"
+  ],
+  "Reads": [
+    {
+      "Path": "/proc/self/task/42354/children",
+      "Result": "BLOCKED",
+      "Errno": 2,
+      "Error": "[Errno 2] No such file or directory: '/proc/self/task/42354/children'"
+    },
+    {
+      "Path": "/proc/thread-self/children",
+      "Result": "BLOCKED",
+      "Errno": 2,
+      "Error": "[Errno 2] No such file or directory: '/proc/thread-self/children'"
+    }
+  ],
+  "TaskEntries": [
+    "42354"
+  ],
+  "CurrentTaskProcessRows": [
+    "  41483       1 Z    boe-lineage-sup",
+    "  41520       1 Z    boe-lineage-sup",
+    "  41559       1 Z    boe-lineage-sup",
+    "  41596       1 Z    boe-lineage-sup",
+    "  41633       1 Z    boe-lineage-sup",
+    "  41670       1 Z    boe-lineage-sup",
+    "  41731       1 Z    boe-lineage-sup",
+    "  41772       1 Z    boe-lineage-sup",
+    "  41809       1 Z    boe-lineage-sup",
+    "  41846       1 Z    lineage-fixture",
+    "  41847       1 Z    boe-lineage-sup",
+    "  41884       1 Z    boe-lineage-sup",
+    "  41921       1 Z    boe-lineage-sup",
+    "  41958       1 Z    boe-lineage-sup",
+    "  41995       1 Z    boe-lineage-sup",
+    "  42032       1 Z    boe-lineage-sup",
+    "  42069       1 Z    boe-lineage-sup",
+    "  42144       1 Z    boe-lineage-sup",
+    "  42181       1 Z    boe-lineage-sup"
+  ],
+  "LiveCurrentTaskProcesses": 0
+}

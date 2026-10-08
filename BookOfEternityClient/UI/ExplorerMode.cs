@@ -11,6 +11,7 @@ namespace BookOfEternityClient.UI;
 /// </summary>
 public partial class ExplorerMode
 {
+    private readonly DesktopPathOpener _desktopPathOpener;
     public ExplorerMode(StateManager stateManager, FileSystemManager fs, LocalizationManager loc,
         ValidationService? validator = null, CharacteristicsService? charService = null,
         StoryService? storyService = null, ImageService? imageService = null,
@@ -31,7 +32,8 @@ public partial class ExplorerMode
         IExplorerConsole? console = null,
         IConsoleInputSource? inputSource = null,
         LocalUiSessionLockService? localUiSessionLockService = null,
-        LocalUiSessionLockOwner? localUiSessionLockOwner = null)
+        LocalUiSessionLockOwner? localUiSessionLockOwner = null,
+        DesktopPathOpener? desktopPathOpener = null)
     {
         var baseConsole = console ?? new SpectreExplorerConsole(clipboardService, inputSource);
         _agentConsoleInputSource = inputSource as AgentConsoleLiveInputSource;
@@ -50,6 +52,7 @@ public partial class ExplorerMode
         _charService = charService;
         _storyService = storyService;
         _imageService = imageService;
+        _desktopPathOpener = desktopPathOpener ?? new();
         _pendingTurnState = pendingTurnState;
         _guardianTradeService = guardianTradeService;
         _npcTradeService = npcTradeService;

@@ -1,0 +1,14 @@
+using Xunit;
+namespace BookOfEternityClient.Tests;
+public sealed class GmConsoleRuntimeAdmissionTests
+{
+    [Fact]
+    public Task ActualHasCurrentSession_DeferredPublicationRetainsOriginalAdmission()=>
+        ProductionMainLinuxFixture.RunAsync("production-main-console-pending-availability");
+    [Fact]
+    public Task ActualConsoleNormalizationAndRefresh_CloseOriginalPinsAndRefuseStopping()=>
+        ProductionMainLinuxFixture.RunAsync("production-main-console-runtime");
+    [Fact]
+    public Task ActualConsoleContinue_MissingOutputReadReachesPlayerAndReturnsToMenu()=>
+        ProductionMainLinuxFixture.RunAsync("production-main-console-continue");
+}

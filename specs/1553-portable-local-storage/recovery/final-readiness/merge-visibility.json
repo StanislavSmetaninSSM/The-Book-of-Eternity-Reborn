@@ -1,0 +1,68 @@
+[
+  {
+    "utc": "2026-10-08T01:52:54.201637+00:00",
+    "operation": "GET",
+    "endpoint": "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn",
+    "exitCode": 0,
+    "body": {
+      "default_branch": "main",
+      "permissions": {
+        "admin": true,
+        "maintain": true,
+        "push": true,
+        "triage": true,
+        "pull": true
+      }
+    },
+    "safeStderr": ""
+  },
+  {
+    "utc": "2026-10-08T01:52:54.616035+00:00",
+    "operation": "GET",
+    "endpoint": "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/branches/main",
+    "exitCode": 0,
+    "body": {
+      "name": "main",
+      "protected": true,
+      "protection": {
+        "enabled": true,
+        "required_status_checks": {
+          "enforcement_level": "off",
+          "contexts": [],
+          "checks": []
+        }
+      },
+      "protection_url": "https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/branches/main/protection",
+      "commitSha": "f6dc2a1ce3e73f5e6940f686c97b863c9f7a8173"
+    },
+    "safeStderr": ""
+  },
+  {
+    "utc": "2026-10-08T01:52:55.079758+00:00",
+    "operation": "GET",
+    "endpoint": "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/branches/main/protection",
+    "exitCode": 1,
+    "body": {
+      "message": "Resource not accessible by integration",
+      "documentation_url": "https://docs.github.com/rest/branches/branch-protection#get-branch-protection",
+      "status": "403"
+    },
+    "safeStderr": "gh: Resource not accessible by integration (HTTP 403)"
+  },
+  {
+    "utc": "2026-10-08T01:52:55.479864+00:00",
+    "operation": "GET",
+    "endpoint": "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/rulesets?includes_parents=true",
+    "exitCode": 0,
+    "body": [],
+    "safeStderr": ""
+  },
+  {
+    "utc": "2026-10-08T01:52:55.852846+00:00",
+    "operation": "GET",
+    "endpoint": "repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/rules/branches/main",
+    "exitCode": 0,
+    "body": [],
+    "safeStderr": ""
+  }
+]

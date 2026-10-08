@@ -1,0 +1,90 @@
+{
+  "Categories": [
+    "browser-rollback-linux",
+    "browser-rollback-linux-boundaries"
+  ],
+  "Reasons": [
+    {
+      "category": "browser-rollback-linux",
+      "reason": "T031 first causal RED against actual existing consumer, bootstrapped isolated Linux root. New positive oracles reach staging and record callback execution; no unrelated cohort.",
+      "contracts": [
+        "#1553 T031 trusted-local browser original main/worker/generation/UI lease rollback"
+      ]
+    },
+    {
+      "category": "browser-rollback-linux-boundaries",
+      "reason": "T031 next bounded actual recovery/closing/directory consumer gaps after first three causal RED→GREEN; no old cohort reruns.",
+      "contracts": [
+        "#1553 T031 original browser record byte intent + scoped recovery + exact outcome retention"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "c22fd6f58f4f3064e682688de5de846cfa1875a7",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "browser-rollback-linux",
+      "Seconds": 4.9366308,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "browser-rollback-linux-boundaries",
+      "Seconds": 8.3643836,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0886977,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0542135,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.124706,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 52.5040119,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:01:12.1366866",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 36,
+    "CompletedCases": 36,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 36,
+    "Executed": 36,
+    "Passed": 33,
+    "Failed": 3
+  },
+  "DuplicateTests": []
+}

@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="3bc4705f-7aae-4e73-be4d-04aca10eaf62" name="Eja@HOME-PC 2026-10-04 01:50:49" runUser="HOME-PC\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T01:50:49.4657967+10:00" queuing="2026-10-04T01:50:49.4657972+10:00" start="2026-10-04T01:50:43.6272486+10:00" finish="2026-10-04T01:50:53.2328992+10:00" />
+  <TestSettings name="default" id="86b9f33c-f71f-4522-b3f3-3c138c75c238">
+    <Deployment runDeploymentRoot="Eja_HOME-PC_2026-10-04_01_50_49" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="8149d304-cf40-4b32-abd2-098b927bec53" testId="cab82e1c-286d-0d52-beec-d5b6c681ab0a" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.ConfirmedCommitRetainsIdentityWhenRequiredRefreshFails" computerName="HOME-PC" duration="00:00:02.0540738" startTime="2026-10-04T01:50:49.4197904+10:00" endTime="2026-10-04T01:50:49.4198332+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8149d304-cf40-4b32-abd2-098b927bec53">
+      <Output>
+        <StdOut>Disposition=Committed; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberPublished, 5),(MemberStaged, 6),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(CommitStaged, -1),(Committed, -1),(CleanupMember, 0),(CleanupMember, 1),(CleanupMember, 2),(CleanupMember, 3),(CleanupMember, 4),(CleanupMember, 5),(CleanupMember, 6),(CleanupMember, 7),(CleanupMember, 8),(CleanupMember, 9),(CleanupComplete, -1)&#xD;
+System.IO.IOException: committed load refresh cut&#xD;
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;&gt;c__DisplayClass46_0.&lt;ConfirmedCommitRetainsIdentityWhenRequiredRefreshFails&gt;b__0() in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.ReviewRegression.cs:line 297&#xD;
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;.ctor&gt;b__20_5() in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs:line 59&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 212</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cb56ea5e-df07-452b-8030-128fc6c02914" testId="17e5098b-ca6b-8624-0026-988755a9771a" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.ConflictAfterGenerationPublicationDoesNotClaimAnEstablishedGeneration" computerName="HOME-PC" duration="00:00:02.3053830" startTime="2026-10-04T01:50:52.5531212+10:00" endTime="2026-10-04T01:50:52.5531217+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cb56ea5e-df07-452b-8030-128fc6c02914">
+      <Output>
+        <StdOut>Disposition=Uncertain; preparation=1; lifecycle opens=1; B1 phases=(IntentStaged, -1),(IntentPublished, -1),(MemberStaged, 0),(MemberPublished, 0),(MemberStaged, 1),(MemberPublished, 1),(MemberStaged, 2),(MemberPublished, 2),(MemberStaged, 3),(MemberPublished, 3),(MemberStaged, 4),(MemberPublished, 4),(MemberPublished, 5),(MemberStaged, 6),(MemberPublished, 6),(MemberStaged, 7),(MemberPublished, 7),(MemberStaged, 8),(MemberPublished, 8),(MemberStaged, 9),(MemberPublished, 9),(CommitStaged, -1)&#xD;
+System.AggregateException: One or more errors occurred. (load conflict after generation publication) (A publication member contains unknown bytes; evidence retained.)&#xD;
+ ---&gt; System.InvalidOperationException: load conflict after generation publication&#xD;
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;&gt;c__DisplayClass45_0.&lt;ConflictAfterGenerationPublicationDoesNotClaimAnEstablishedGeneration&gt;b__0(TrustedLocalPublicationPhase phase, Int32 _) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.ReviewRegression.cs:line 273&#xD;
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;.ctor&gt;b__20_0(TrustedLocalPublicationPhase phase, Int32 index) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs:line 45&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 403&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 202&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass47_0.&lt;PublishImagesWithOutcome&gt;b__0(PublicationAttempt attempt) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.Images.cs:line 18&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 86&#xD;
+   --- End of inner exception stack trace ---&#xD;
+ ---&gt; (Inner Exception #1) System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 268&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 231&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 97&lt;---&#xD;
+&#xD;
+System.AggregateException: One or more errors occurred. (load conflict after generation publication) (A publication member contains unknown bytes; evidence retained.)&#xD;
+ ---&gt; System.InvalidOperationException: load conflict after generation publication&#xD;
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;&gt;c__DisplayClass45_0.&lt;ConflictAfterGenerationPublicationDoesNotClaimAnEstablishedGeneration&gt;b__0(TrustedLocalPublicationPhase phase, Int32 _) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.ReviewRegression.cs:line 273&#xD;
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;.ctor&gt;b__20_0(TrustedLocalPublicationPhase phase, Int32 index) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs:line 45&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 403&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 202&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass47_0.&lt;PublishImagesWithOutcome&gt;b__0(PublicationAttempt attempt) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.Images.cs:line 18&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 86&#xD;
+   --- End of inner exception stack trace ---&#xD;
+ ---&gt; (Inner Exception #1) System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 268&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 231&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 97&lt;---</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b4db623d-b6f5-4342-9713-0a18db818483" testId="b26408cb-19a0-8071-8745-b5799ae49a6e" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PriorJournalConflictDuringAcquisitionIsUncertainAndBlocksContinuation" computerName="HOME-PC" duration="00:00:00.8215339" startTime="2026-10-04T01:50:50.2470958+10:00" endTime="2026-10-04T01:50:50.2470961+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b4db623d-b6f5-4342-9713-0a18db818483">
+      <Output>
+        <StdOut>Disposition=Uncertain; preparation=1; lifecycle opens=1; B1 phases=&#xD;
+BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.&#xD;
+ ---&gt; System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 268&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 231&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs:line 62&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.cs:line 3669&#xD;
+   --- End of inner exception stack trace ---&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.cs:line 3674&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.cs:line 3690&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.cs:line 3574&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 155&#xD;
+BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.&#xD;
+ ---&gt; System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 268&#xD;
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\TrustedLocalFilePublication.cs:line 231&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.TrustedLocalStorage.cs:line 62&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.cs:line 3669&#xD;
+   --- End of inner exception stack trace ---&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.cs:line 3674&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.cs:line 3690&#xD;
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Core\FileSystemManager.cs:line 3574&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 155</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1e81ad3d-6459-4485-adaa-e301e4480ccc" testId="97827300-1af5-e5f7-016e-9b680b59e63a" testName="BookOfEternityClient.Tests.PortableLoadReplacementTests.PreparationAndCleanupFailureRetainsKnownPrivateDebt" computerName="HOME-PC" duration="00:00:00.5659436" startTime="2026-10-04T01:50:53.1198544+10:00" endTime="2026-10-04T01:50:53.1198546+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1e81ad3d-6459-4485-adaa-e301e4480ccc">
+      <Output>
+        <StdOut>Disposition=NotLoaded; preparation=0; lifecycle opens=0; B1 phases=&#xD;
+BookOfEternityClient.Services.LoadPreparationCleanupException: Load preparation failed and its private staging directory requires follow-up.&#xD;
+ ---&gt; System.AggregateException: One or more errors occurred. (detached preparation cut) (owned preparation cleanup cut)&#xD;
+ ---&gt; System.IO.InvalidDataException: detached preparation cut&#xD;
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;&gt;c__DisplayClass44_0.&lt;PreparationAndCleanupFailureRetainsKnownPrivateDebt&gt;b__0(String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.ReviewRegression.cs:line 228&#xD;
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;.ctor&gt;b__20_3(String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs:line 57&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 338&#xD;
+   --- End of inner exception stack trace ---&#xD;
+ ---&gt; (Inner Exception #1) System.IO.IOException: owned preparation cleanup cut&#xD;
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;&gt;c__DisplayClass44_0.&lt;PreparationAndCleanupFailureRetainsKnownPrivateDebt&gt;b__1(String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.ReviewRegression.cs:line 234&#xD;
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;.ctor&gt;b__20_4(String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs:line 58&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 358&lt;---&#xD;
+&#xD;
+   --- End of inner exception stack trace ---&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 363&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 150&#xD;
+BookOfEternityClient.Services.LoadPreparationCleanupException: Load preparation failed and its private staging directory requires follow-up.&#xD;
+ ---&gt; System.AggregateException: One or more errors occurred. (detached preparation cut) (owned preparation cleanup cut)&#xD;
+ ---&gt; System.IO.InvalidDataException: detached preparation cut&#xD;
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;&gt;c__DisplayClass44_0.&lt;PreparationAndCleanupFailureRetainsKnownPrivateDebt&gt;b__0(String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.ReviewRegression.cs:line 228&#xD;
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;.ctor&gt;b__20_3(String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs:line 57&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 338&#xD;
+   --- End of inner exception stack trace ---&#xD;
+ ---&gt; (Inner Exception #1) System.IO.IOException: owned preparation cleanup cut&#xD;
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;&gt;c__DisplayClass44_0.&lt;PreparationAndCleanupFailureRetainsKnownPrivateDebt&gt;b__1(String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.ReviewRegression.cs:line 234&#xD;
+   at BookOfEternityClient.Tests.PortableLoadReplacementTests.&lt;.ctor&gt;b__20_4(String path) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\PortableLoadReplacementTests.cs:line 58&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 358&lt;---&#xD;
+&#xD;
+   --- End of inner exception stack trace ---&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.PrepareLoadArchiveAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 363&#xD;
+   at BookOfEternityClient.Services.SaveLoadService.LoadGameWithOutcomeAsync(String saveFilePath, CancellationToken cancellationToken) in C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient\Services\SaveLoadService.Loading.cs:line 150</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PriorJournalConflictDuringAcquisitionIsUncertainAndBlocksContinuation" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="b26408cb-19a0-8071-8745-b5799ae49a6e">
+      <Execution id="b4db623d-b6f5-4342-9713-0a18db818483" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PriorJournalConflictDuringAcquisitionIsUncertainAndBlocksContinuation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.ConflictAfterGenerationPublicationDoesNotClaimAnEstablishedGeneration" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="17e5098b-ca6b-8624-0026-988755a9771a">
+      <Execution id="cb56ea5e-df07-452b-8030-128fc6c02914" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="ConflictAfterGenerationPublicationDoesNotClaimAnEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.ConfirmedCommitRetainsIdentityWhenRequiredRefreshFails" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="cab82e1c-286d-0d52-beec-d5b6c681ab0a">
+      <Execution id="8149d304-cf40-4b32-abd2-098b927bec53" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="ConfirmedCommitRetainsIdentityWhenRequiredRefreshFails" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableLoadReplacementTests.PreparationAndCleanupFailureRetainsKnownPrivateDebt" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="97827300-1af5-e5f7-016e-9b680b59e63a">
+      <Execution id="1e81ad3d-6459-4485-adaa-e301e4480ccc" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLoadReplacementTests" name="PreparationAndCleanupFailureRetainsKnownPrivateDebt" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="cab82e1c-286d-0d52-beec-d5b6c681ab0a" executionId="8149d304-cf40-4b32-abd2-098b927bec53" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="17e5098b-ca6b-8624-0026-988755a9771a" executionId="cb56ea5e-df07-452b-8030-128fc6c02914" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b26408cb-19a0-8071-8745-b5799ae49a6e" executionId="b4db623d-b6f5-4342-9713-0a18db818483" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="97827300-1af5-e5f7-016e-9b680b59e63a" executionId="1e81ad3d-6459-4485-adaa-e301e4480ccc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="4" executed="4" passed="4" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.58]   Discovering: BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:02.88]   Discovered:  BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:02.92]   Starting:    BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:08.76]   Finished:    BookOfEternityClient.IntegrationTests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

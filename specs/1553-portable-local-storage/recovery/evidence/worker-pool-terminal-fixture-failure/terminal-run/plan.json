@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "worker-native-pool-terminal"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "f115c7629667d4b0bd63bec2f84aa2fd88f1d17b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.5783073,
+  "Descriptors": [
+    {
+      "Name": "worker-native-pool-terminal-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-terminal",
+      "Categories": [
+        "worker-native-pool-terminal"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

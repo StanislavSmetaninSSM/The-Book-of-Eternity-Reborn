@@ -1,0 +1,758 @@
+{
+  "Categories": [
+    "worker-native-pool-happy",
+    "worker-execution-scoped-evidence",
+    "worker-consumer-execution-evidence",
+    "worker-synthetic-bundle-publication",
+    "worker-synthetic-bundle-cleanup",
+    "worker-native-pool-descendants",
+    "worker-native-pool-detached-descendants",
+    "worker-native-pool-terminal",
+    "worker-native-pool-publication-rejection",
+    "worker-native-pool-content",
+    "worker-native-pool-release-authority",
+    "worker-native-pool-uncertainty",
+    "worker-native-pool-owner-loss",
+    "worker-native-pool-completion-boundaries",
+    "worker-native-pool-late-output",
+    "worker-native-pool-cleanup-retry",
+    "worker-pool-regression-host",
+    "worker-pool-regression-ipc",
+    "worker-pool-regression-reaper",
+    "worker-pool-regression-policy",
+    "worker-pool-regression-docs"
+  ],
+  "Reasons": [
+    {
+      "category": "worker-native-pool-happy",
+      "reason": "T041-FALLBACK-POOL first causal actual pool RED/GREEN under independent finite guardian; internal admission scaffold stays closed until typed integration.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-execution-scoped-evidence",
+      "reason": "Pure typed authority causal RED/GREEN before connecting native admission; wrong run/scope and late certainty must never reuse cleanup evidence.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL"
+      ]
+    },
+    {
+      "category": "worker-consumer-execution-evidence",
+      "reason": "Causal negatives at both real consumer acceptance boundaries before replacing legacy Proposal/exit0 checks with the shared exact-execution permit.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-synthetic-bundle-publication",
+      "reason": "New bounded Linux directory bundle prerequisite through real Store, preserving default refusal and exact publication semantics.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B3-P",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-synthetic-bundle-cleanup",
+      "reason": "Causal staging residue after successful native rename; requalify only changed sealed-adapter cleanup and Store callers.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B3-P"
+      ]
+    },
+    {
+      "category": "worker-native-pool-descendants",
+      "reason": "Expand actual pool lifetime qualification only after positive root cleanup: independent finite actors inherit output handles; helper must prove scoped stop before actual Store publication.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-detached-descendants",
+      "reason": "Expand actual pool lifetime qualification only after positive root cleanup: independent finite actors inherit output handles; helper must prove scoped stop before actual Store publication.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-terminal",
+      "reason": "New actual pool terminal-boundary negatives after happy/descendant GREEN; verify rejected results cannot mint an accepted with-copy and native cleanup still releases owned capacity.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-publication-rejection",
+      "reason": "Only affected4 terminal cases: fix generation lifecycle preparation and strengthen exact completion outcome assertions; do not repeat unchanged cancellation/timeout4.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5"
+      ]
+    },
+    {
+      "category": "worker-native-pool-content",
+      "reason": "#1553 POOL B Actual pool detached content import exact bytes and rejection for missing/hash mismatch, without applying canonical game state.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-release-authority",
+      "reason": "#1553 POOL B Actual original native supervisor lost before Release; no worker launch or publication, original quarantine retained and independent guardian owns cleanup.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-uncertainty",
+      "reason": "#1553 POOL B Original native terminal corruption, explicit uncertainty and late original status/output observations retain workspace, receipt denial and quarantine across concurrent reaper passes.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-owner-loss",
+      "reason": "#1553 POOL B Actual owner-control EOF, status-reader loss and original helper loss after real Completed retain uncertainty and cannot publish or free owned capacity.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-completion-boundaries",
+      "reason": "#1553 POOL B Actual cancellation/timeout at buffered Completed, original terminal stop and output settlement precede publication while positive physical cleanup is preserved.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-late-output",
+      "reason": "#1553 POOL B Late original output-observation task actually settles yet uncertainty/worker slot/quarantine remain held; exact corrected fixture row only.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-native-pool-cleanup-retry",
+      "reason": "#1553 POOL B Actual native valid-stop owner disposal/workspace/audit/fallback receipt retries preserve original phases and exactly-once slot/capacity across concurrent passes.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B5",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-host",
+      "reason": "#1553 B6 Original actual HOST lifecycle/output/authority and neutral Release guards affected by common owner changes.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-ipc",
+      "reason": "#1553 B6 Original Process readiness owner-close and completion arbiter cancellation/timeout precedence.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-reaper",
+      "reason": "#1553 B6 Affected original retained-cleanup constructor/phase and reaper overlap/capacity semantics; exact receipt retry remains unchanged.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-policy",
+      "reason": "#1553 B6 Explicit synthetic admission denial and original public Linux/Windows selection; managed native/Windows drain order and narrow retained Job pending retry.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-docs",
+      "reason": "#1553 B6 Three affected operational documentation/isolation source guards; synchronize synthetic typed evidence and unchanged public admission.",
+      "contracts": [
+        "#1553 T041-FALLBACK-POOL B6",
+        "FR-012/014/015"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "b7ca1ba587ef44fe75edbc7cc6331d647b7fb2ae",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 9.3249553,
+  "Descriptors": [
+    {
+      "Name": "worker-consumer-execution-evidence-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-consumer-execution-evidence",
+      "Categories": [
+        "worker-consumer-execution-evidence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-execution-scoped-evidence-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-execution-scoped-evidence",
+      "Categories": [
+        "worker-execution-scoped-evidence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-cleanup-retry-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-cleanup-retry",
+      "Categories": [
+        "worker-native-pool-cleanup-retry"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ValidatedStopCleanupRetriesRetainOriginalPhasesAndCapacity",
+          "Cases": 8
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-completion-boundaries-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-completion-boundaries",
+      "Categories": [
+        "worker-native-pool-completion-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries",
+          "Cases": 6
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-content-unit-005",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-content",
+      "Categories": [
+        "worker-native-pool-content"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ImportsExactDetachedContentWithoutApplyingCanonicalChange|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_RejectsMissingOrChangedDetachedContent",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_ImportsExactDetachedContentWithoutApplyingCanonicalChange",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_RejectsMissingOrChangedDetachedContent",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-descendants-unit-006",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-descendants",
+      "Categories": [
+        "worker-native-pool-descendants"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_EarlyDescendantRootExitDoesNotReleaseItsRemainingChild|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_OrdinaryDescendantsHoldingOutputsAreRetiredBeforePublication",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_EarlyDescendantRootExitDoesNotReleaseItsRemainingChild",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_OrdinaryDescendantsHoldingOutputsAreRetiredBeforePublication",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-detached-descendants-unit-007",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-detached-descendants",
+      "Categories": [
+        "worker-native-pool-detached-descendants"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_DetachedTermResistantAndStopSpawnedDescendantsAreRetired",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-happy-unit-008",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-happy",
+      "Categories": [
+        "worker-native-pool-happy"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_SyntheticAnalysisPublishesAfterOwnedRetirement",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_SyntheticAnalysisPublishesAfterOwnedRetirement",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-late-output-unit-009",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-late-output",
+      "Categories": [
+        "worker-native-pool-late-output"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LateOriginalOutputObservationCannotClearUncertainty",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LateOriginalOutputObservationCannotClearUncertainty",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-owner-loss-unit-010",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-owner-loss",
+      "Categories": [
+        "worker-native-pool-owner-loss"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_AuthorityLossAfterCompletedRetainsOriginalExecution",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_AuthorityLossAfterCompletedRetainsOriginalExecution",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-release-authority-unit-011",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-release-authority",
+      "Categories": [
+        "worker-native-pool-release-authority"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-terminal-unit-012",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-terminal",
+      "Categories": [
+        "worker-native-pool-publication-rejection",
+        "worker-native-pool-terminal"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutNeverPublishDespiteConfirmedCleanup",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NonzeroOrMissingProposalCannotBecomeSuccessfulStoppedResult",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_StaleGenerationOrTaskRejectsAfterRealWorkerStop",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-native-pool-uncertainty-unit-013",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-pool-uncertainty",
+      "Categories": [
+        "worker-native-pool-uncertainty"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_NativeObservationUncertaintySurvivesLateCleanup",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "worker-pool-regression-docs-unit-014",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-pool-regression-docs",
+      "Categories": [
+        "worker-pool-regression-docs"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-pool-regression-host-unit-015",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-pool-regression-host",
+      "Categories": [
+        "worker-pool-regression-host"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.ActualNeutralHost_ReadyThenOwnerClose_RetiresWithoutWorkerRelease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.AuthorityOrExecLoss_RemainsUncertainAfterLaterObservation",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.CancellationAfterNativeBinding_RetainsOwnerThroughScopedRetirement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HelperLossAndOutputEof_CannotDisposeLiveHostIdentity",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.HostOutput_IsDistinctAndPrivateDescriptorsDoNotSurviveExec",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeHostTests.NeutralHostCapability_RejectsReleaseBeforeSendingAnyWorkerCommand",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-pool-regression-ipc-integration-016",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "worker-pool-regression-ipc",
+      "Categories": [
+        "worker-pool-regression-ipc"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.CompletionArbiter_AlreadySignaledTimeoutOverridesBufferedCompletion|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.CompletionArbiter_CancellationDuringOutputDrainOverridesCompletion|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.CompletionArbiter_AlreadySignaledTimeoutOverridesBufferedCompletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.CompletionArbiter_CancellationDuringOutputDrainOverridesCompletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-pool-regression-policy-unit-017",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-pool-regression-policy",
+      "Categories": [
+        "worker-pool-regression-policy"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.DefaultWindowsCompletion_PreservesDiagnosticDrainBeforeStop|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.NativeCompletion_DoesNotWaitForDiagnosticDrainBeforeScopedStop|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.WindowsOwner_DoesNotTreatArbitraryProcessTreeAsRetainedJob",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBackendSelectionTests.WindowsAuto_PreservesJobCapabilityWithoutNativePreflight",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.ActualPool_RejectsLinuxReleaseBeforeReservationAttachOrRelease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeAdmissionTests.SharedPreparation_RejectsUnavailableCapabilityWithoutCallingLauncher",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.DefaultWindowsCompletion_PreservesDiagnosticDrainBeforeStop",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.NativeCompletion_DoesNotWaitForDiagnosticDrainBeforeScopedStop",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.ObservationException_RetriesOnlyRetainedAssignedWindowsJob",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerPoolPlatformPolicyTests.WindowsOwner_DoesNotTreatArbitraryProcessTreeAsRetainedJob",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-pool-regression-reaper-integration-018",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "worker-pool-regression-reaper",
+      "Categories": [
+        "worker-pool-regression-reaper"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_OverlappingPassesCleanAndReleaseCapacityExactlyOnce|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_UnconfirmedOwnerRetainsBoundedCapacityUntilLaterDeath|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_OverlappingPassesCleanAndReleaseCapacityExactlyOnce",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_UnconfirmedOwnerRetainsBoundedCapacityUntilLaterDeath",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-synthetic-bundle-publication-unit-019",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-synthetic-bundle-publication",
+      "Categories": [
+        "worker-synthetic-bundle-cleanup",
+        "worker-synthetic-bundle-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.CancellationWhileWaitingForCanonicalLease_PublishesNothing|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DefaultStore_RetainsExistingLinuxDescriptorBackendRefusal|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationOutsideSingleSafeBundle_IsRejected|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ForeignManagerLease_DoesNotAuthorizeThisFixture|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidatedLeaseAfterAwait_CannotReachNativeMove|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidNestedTreeEntryAtFinalBoundary_IsRejectedWithoutFollowingIt|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.NativeRename_ExistingDirectoryActuallyFailsWithoutOverwrite|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.NativeRename_MissingSourceReportsErrnoWithoutCreatingDestination|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SourceMustBeMatchingBundleInsidePrivateStaging|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.StaleTaskOrGeneration_RetainsExistingEmptyStructure|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_ActualStoreInvalidTreeRetainsExactStagingAndOutsideData|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_LinkedTreeRetainsWholeStagingAndOutsideBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_OwnPrivateRootIsRemovedAndMissingRootRetryIsIdempotent|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.WrongFixtureRoot_CannotPublishIntoThisManager",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 33,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ActualStore_PublishesCompleteBundleAndDerivedInboxAudit",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.CancellationWhileWaitingForCanonicalLease_PublishesNothing",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DefaultStore_RetainsExistingLinuxDescriptorBackendRefusal",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationArrivingAtFinalStoreBoundary_IsNeverReplaced",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.DestinationOutsideSingleSafeBundle_IsRejected",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.ForeignManagerLease_DoesNotAuthorizeThisFixture",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidatedLeaseAfterAwait_CannotReachNativeMove",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.InvalidNestedTreeEntryAtFinalBoundary_IsRejectedWithoutFollowingIt",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.NativeRename_ExistingDirectoryActuallyFailsWithoutOverwrite",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.NativeRename_MissingSourceReportsErrnoWithoutCreatingDestination",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SourceMustBeMatchingBundleInsidePrivateStaging",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.StaleTaskOrGeneration_RetainsExistingEmptyStructure",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_ActualStoreInvalidTreeRetainsExactStagingAndOutsideData",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_LinkedTreeRetainsWholeStagingAndOutsideBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_OwnPrivateRootIsRemovedAndMissingRootRetryIsIdempotent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.SyntheticCleanup_UnownedOrMalformedRootRetainsStagingBytes",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerSyntheticBundlePublicationTests.WrongFixtureRoot_CannotPublishIntoThisManager",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

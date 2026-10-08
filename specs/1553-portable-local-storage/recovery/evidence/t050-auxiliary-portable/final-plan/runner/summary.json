@@ -1,0 +1,98 @@
+{
+  "Categories": [
+    "auxiliary-launcher-portable",
+    "auxiliary-launcher-root-binding",
+    "auxiliary-launcher-contract-regressions",
+    "auxiliary-launcher-storage-refusal"
+  ],
+  "Reasons": [
+    {
+      "category": "auxiliary-launcher-portable",
+      "reason": "Actual relocated runtime-only route, explicit pending replacement, bounded guardian/resource/runtime/main-worker-storage refusal and header status/doc consumers",
+      "contracts": [
+        "T050-AUXILIARY-LAUNCHER-PORTABLE"
+      ]
+    },
+    {
+      "category": "auxiliary-launcher-root-binding",
+      "reason": "Demonstrated existing-directory payload redirection and exact prepare-only explicit-root delta",
+      "contracts": [
+        "T050-AUXILIARY-LAUNCHER-PORTABLE"
+      ]
+    },
+    {
+      "category": "auxiliary-launcher-contract-regressions",
+      "reason": "One exact affected preexisting launcher/options documentation guard; service/M1/fence source unchanged",
+      "contracts": [
+        "T050-AUXILIARY-LAUNCHER-PORTABLE"
+      ]
+    },
+    {
+      "category": "auxiliary-launcher-storage-refusal",
+      "reason": "New causal invalid-publication-journal exception envelope; exact record retention/no writes/no retry through actual route",
+      "contracts": [
+        "T050-AUXILIARY-LAUNCHER-PORTABLE"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "39fb7534a8a492dbb22c9ee530d1b6a9397566e5",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0744603,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0455168,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0950743,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0046773,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 18,
+  "WallTime": "00:00:05.0034264",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 21,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "auxiliary-launcher-contract-regressions-unit-001",
+      "auxiliary-launcher-portable-unit-002",
+      "auxiliary-launcher-root-binding-unit-003",
+      "auxiliary-launcher-storage-refusal-unit-004"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

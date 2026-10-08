@@ -1,0 +1,214 @@
+RequestedLane: Categories
+EffectiveLane: Categories
+Filter: <pending validation>
+TimeoutMinutes: 9
+StartedUtc: 2026-10-02T15:00:16.1274274Z
+Owned process 'Revision': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=C:\Program Files\PowerShell\7\pwsh.exe
+
+===== Revision: stdout =====
+7c52a5e6bc2165a0a1cc1179f89f43e6749dac56
+
+===== Revision: stderr =====
+
+===== Revision: exit 0 =====
+Owned process 'Changed-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=C:\Program Files\PowerShell\7\pwsh.exe
+
+===== Changed-paths: stdout =====
+
+===== Changed-paths: stderr =====
+
+===== Changed-paths: exit 0 =====
+Owned process 'New-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=C:\Program Files\PowerShell\7\pwsh.exe
+
+===== New-paths: stdout =====
+
+===== New-paths: stderr =====
+
+===== New-paths: exit 0 =====
+Owned process 'Frontend-build': FileName=C:\Program Files\nodejs\npm.cmd; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=C:\Program Files\PowerShell\7\pwsh.exe
+
+===== Frontend-build: stdout =====
+
+> book-of-eternity-reborn-webfrontend@0.1.0 build
+> npm run typecheck && vite build
+
+
+> book-of-eternity-reborn-webfrontend@0.1.0 typecheck
+> tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.node.json
+
+vite v8.0.14 building client environment for production...
+[2Ktransforming...✓ 1987 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                                          0.78 kB │ gzip:   0.44 kB
+dist/assets/jetbrains-mono-greek-400-normal-C190GLew.woff2               4.22 kB
+dist/assets/jetbrains-mono-greek-600-normal-H7WoG9Et.woff2               4.30 kB
+dist/assets/jetbrains-mono-cyrillic-400-normal-BEIGL1Tu.woff2            5.32 kB
+dist/assets/jetbrains-mono-vietnamese-400-normal-CqNFfHCs.woff           5.37 kB
+dist/assets/jetbrains-mono-cyrillic-600-normal-EVf6-Yzo.woff2            5.38 kB
+dist/assets/jetbrains-mono-vietnamese-600-normal-OWROknRo.woff           5.47 kB
+dist/assets/jetbrains-mono-greek-400-normal-B9oWc5Lo.woff                5.66 kB
+dist/assets/jetbrains-mono-greek-600-normal-mc2nkWzM.woff                5.70 kB
+dist/assets/cormorant-garamond-vietnamese-700-normal--OtHbi1I.woff2      6.22 kB
+dist/assets/cormorant-garamond-vietnamese-400-normal-6K-YXo6g.woff2      6.74 kB
+dist/assets/cormorant-garamond-vietnamese-500-normal-BZGLGj12.woff2      6.75 kB
+dist/assets/cormorant-garamond-vietnamese-400-italic-BoXDRTEW.woff2      6.76 kB
+dist/assets/cormorant-garamond-vietnamese-600-normal-BoXdMtcr.woff2      6.79 kB
+dist/assets/jetbrains-mono-cyrillic-400-normal-ugxPyKxw.woff             6.97 kB
+dist/assets/jetbrains-mono-cyrillic-600-normal-8K4wrrwR.woff             7.02 kB
+dist/assets/jetbrains-mono-latin-ext-400-normal-Bc8Ftmh3.woff2           7.33 kB
+dist/assets/jetbrains-mono-latin-ext-600-normal-BfB_LPfz.woff2           7.51 kB
+dist/assets/cinzel-latin-ext-400-normal-XQK_CSAr.woff2                   7.85 kB
+dist/assets/cinzel-decorative-latin-ext-400-normal-bHvtSFkP.woff2        8.02 kB
+dist/assets/cinzel-decorative-latin-ext-900-normal-BhxIA4xV.woff2        8.06 kB
+dist/assets/cinzel-latin-ext-700-normal-C24KFjuG.woff2                   8.25 kB
+dist/assets/cinzel-latin-ext-600-normal-BEFdM_VE.woff2                   8.35 kB
+dist/assets/cinzel-decorative-latin-ext-700-normal-Dul5pKgq.woff2        8.60 kB
+dist/assets/cormorant-garamond-vietnamese-700-normal-GOTdnRS1.woff       8.87 kB
+dist/assets/cinzel-latin-ext-400-normal-DJ0Lq8y-.woff                    9.29 kB
+dist/assets/cormorant-garamond-vietnamese-400-normal-4uxlocMh.woff       9.31 kB
+dist/assets/cormorant-garamond-vietnamese-500-normal-DqXqCC0q.woff       9.33 kB
+dist/assets/cormorant-garamond-vietnamese-400-italic-CJpMwFnN.woff       9.40 kB
+dist/assets/cormorant-garamond-vietnamese-600-normal-C4HEjEaf.woff       9.42 kB
+dist/assets/cinzel-latin-ext-600-normal-BY9Mq9iK.woff                    9.78 kB
+dist/assets/cinzel-latin-ext-700-normal-CORa-yIv.woff                    9.81 kB
+dist/assets/cinzel-decorative-latin-ext-400-normal-DFyBg16u.woff         9.86 kB
+dist/assets/cinzel-decorative-latin-ext-900-normal-CTiVNQCf.woff         9.99 kB
+dist/assets/jetbrains-mono-latin-ext-400-normal-fXTG6kC5.woff           10.12 kB
+dist/assets/inter-vietnamese-wght-normal-CBcvBZtf.woff2                 10.25 kB
+dist/assets/jetbrains-mono-latin-ext-600-normal-DObL3zCW.woff           10.31 kB
+dist/assets/cinzel-decorative-latin-ext-700-normal-BaOC-94C.woff        10.45 kB
+dist/assets/inter-greek-ext-wght-normal-DlzME5K_.woff2                  11.23 kB
+dist/assets/cormorant-garamond-cyrillic-700-normal-SLG_-a_c.woff2       12.53 kB
+dist/assets/cormorant-garamond-cyrillic-400-italic-D3GtrbRZ.woff2       12.72 kB
+dist/assets/cormorant-garamond-cyrillic-400-normal-DD2KOZkl.woff2       12.77 kB
+dist/assets/cormorant-garamond-cyrillic-500-normal-CyAY5ZLS.woff2       12.92 kB
+dist/assets/cormorant-garamond-cyrillic-600-normal-C2atO-64.woff2       13.01 kB
+dist/assets/cormorant-garamond-cyrillic-ext-700-normal-Do0rx6yy.woff2   13.83 kB
+dist/assets/cormorant-garamond-cyrillic-ext-400-normal-W3Dto7M0.woff2   13.92 kB
+dist/assets/cormorant-garamond-cyrillic-ext-500-normal-Yta7XZ9C.woff2   14.09 kB
+dist/assets/cinzel-latin-400-normal-DnUIPmzd.woff2                      14.12 kB
+dist/assets/cormorant-garamond-cyrillic-ext-600-normal-BMhMHfrj.woff2   14.18 kB
+dist/assets/cinzel-decorative-latin-400-normal-C3uAaiWr.woff2           14.41 kB
+dist/assets/cinzel-decorative-latin-900-normal-MnIZQgjg.woff2           14.56 kB
+dist/assets/cormorant-garamond-cyrillic-ext-400-italic-BEGvmv_3.woff2   14.74 kB
+dist/assets/cinzel-latin-700-normal-Dkw14w9r.woff2                      15.18 kB
+dist/assets/cinzel-latin-600-normal-Dd5YO2UX.woff2                      15.20 kB
+dist/assets/cormorant-garamond-cyrillic-700-normal-D3uyJ5DH.woff        15.28 kB
+dist/assets/cinzel-decorative-latin-700-normal-CnX1aK6s.woff2           15.48 kB
+dist/assets/cormorant-garamond-cyrillic-400-normal-CVFrM67f.woff        15.69 kB
+dist/assets/cormorant-garamond-cyrillic-500-normal-DkJXBcIH.woff        15.76 kB
+dist/assets/cormorant-garamond-cyrillic-600-normal-FNmA3REe.woff        15.82 kB
+dist/assets/cormorant-garamond-cyrillic-400-italic-AH1vqu4S.woff        16.01 kB
+dist/assets/cinzel-latin-400-normal-C8jUSQqm.woff                       16.61 kB
+dist/assets/cormorant-garamond-cyrillic-ext-700-normal-BaW-xaxb.woff    17.08 kB
+dist/assets/cinzel-decorative-latin-400-normal-Bspm-4mP.woff            17.27 kB
+dist/assets/cormorant-garamond-cyrillic-ext-400-normal-DLdKLAvx.woff    17.42 kB
+dist/assets/cinzel-decorative-latin-900-normal-BBdTCSMn.woff            17.44 kB
+dist/assets/cinzel-latin-600-normal-CH_LB4su.woff                       17.50 kB
+dist/assets/cinzel-latin-700-normal-C-gK7hA8.woff                       17.52 kB
+dist/assets/cormorant-garamond-cyrillic-ext-500-normal-lsPpqi9g.woff    17.55 kB
+dist/assets/cormorant-garamond-cyrillic-ext-600-normal-CsIYWmWK.woff    17.62 kB
+dist/assets/cinzel-decorative-latin-700-normal-ov6XPGpn.woff            18.30 kB
+dist/assets/inter-cyrillic-wght-normal-DqGufNeO.woff2                   18.74 kB
+dist/assets/inter-greek-wght-normal-CkhJZR-_.woff2                      18.99 kB
+dist/assets/cormorant-garamond-cyrillic-ext-400-italic-C_Uk1MUY.woff    19.13 kB
+dist/assets/cormorant-garamond-latin-ext-700-normal-CNjt5vTB.woff2      19.32 kB
+dist/assets/cormorant-garamond-latin-ext-400-normal-Drx2k2n9.woff2      19.88 kB
+dist/assets/cormorant-garamond-latin-ext-500-normal-CH1kM7og.woff2      20.20 kB
+dist/assets/cormorant-garamond-latin-ext-400-italic-BdEzgT7i.woff2      20.28 kB
+dist/assets/cormorant-garamond-latin-ext-600-normal-DaBc-lu7.woff2      20.30 kB
+dist/assets/jetbrains-mono-latin-400-normal-V6pRDFza.woff2              21.16 kB
+dist/assets/jetbrains-mono-latin-600-normal-C8RAYTDA.woff2              21.86 kB
+dist/assets/cormorant-garamond-latin-700-normal-DajfzrDU.woff2          22.34 kB
+dist/assets/cormorant-garamond-latin-400-normal-B-1hWBU7.woff2          22.87 kB
+dist/assets/cormorant-garamond-latin-500-normal-BsRWmXhO.woff2          23.31 kB
+dist/assets/cormorant-garamond-latin-600-normal-Co1r35X9.woff2          23.39 kB
+dist/assets/cormorant-garamond-latin-400-italic-Dc_OZ8oc.woff2          23.66 kB
+dist/assets/inter-cyrillic-ext-wght-normal-BOeWTOD4.woff2               25.96 kB
+dist/assets/cormorant-garamond-latin-ext-700-normal-qRbaVVD7.woff       27.04 kB
+dist/assets/jetbrains-mono-latin-400-normal-6-qcROiO.woff               27.49 kB
+dist/assets/cormorant-garamond-latin-ext-400-normal-uvC0WHQr.woff       27.92 kB
+dist/assets/jetbrains-mono-latin-600-normal-BfsvjouI.woff               28.18 kB
+dist/assets/cormorant-garamond-latin-ext-600-normal-Dk3-quAP.woff       28.26 kB
+dist/assets/cormorant-garamond-latin-ext-500-normal-DYeaGGzO.woff       28.28 kB
+dist/assets/cormorant-garamond-latin-ext-400-italic-CQvLaSWn.woff       28.71 kB
+dist/assets/cormorant-garamond-latin-700-normal-O25Qpphb.woff           30.24 kB
+dist/assets/cormorant-garamond-latin-400-normal-B7YtguxJ.woff           30.98 kB
+dist/assets/cormorant-garamond-latin-600-normal-2CBVLo0M.woff           31.30 kB
+dist/assets/cormorant-garamond-latin-500-normal-zIXX3Q-H.woff           31.37 kB
+dist/assets/cormorant-garamond-latin-400-italic-BLh7T8o8.woff           32.88 kB
+dist/assets/inter-latin-wght-normal-Dx4kXJAl.woff2                      48.25 kB
+dist/assets/inter-latin-ext-wght-normal-DO1Apj_S.woff2                  85.06 kB
+dist/assets/index-DrvFFnc7.css                                         248.15 kB │ gzip:  50.95 kB
+dist/assets/index-CrupOGZF.js                                          534.78 kB │ gzip: 159.39 kB
+
+✓ built in 754ms
+
+===== Frontend-build: stderr =====
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+===== Frontend-build: exit 0 =====
+Owned process 'portable-settings-notices-frontend-001-compile': FileName=node; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=C:\Program Files\PowerShell\7\pwsh.exe
+
+===== portable-settings-notices-frontend-001-compile: stdout =====
+
+===== portable-settings-notices-frontend-001-compile: stderr =====
+
+===== portable-settings-notices-frontend-001-compile: exit 0 =====
+Owned process 'portable-settings-notices-frontend-001-settingsPersistenceNotice.test.js': FileName=node; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=C:\Program Files\PowerShell\7\pwsh.exe
+
+===== portable-settings-notices-frontend-001-settingsPersistenceNotice.test.js: stdout =====
+PASS HTTP client preserves committed follow-up metadata
+PASS committed warning is visible and survives ordinary refresh handling
+PASS a later clean update deliberately clears the previous warning
+PASS stale clean response cannot erase a newer committed warning
+PASS stale warning response cannot replace a newer clean result
+PASS unmounted or invalidated response ownership cannot update the notice
+PASS a lost response is uncertain rather than a rollback claim
+PASS server uncertainty remains explicit and retains prior committed advice
+PASS blocked and rolled-back outcomes are distinguishable
+PASS a committed failure-shaped response still reports persisted follow-up
+PASS an earlier commit warning remains relevant while the latest request is uncertain
+PASS duplicate older completion cannot restore advice cleared by a later clean commit
+PASS stale and unmounted responses cannot apply state or start refresh side effects
+PASS current response applies once and a delayed refresh loses ownership after a new request
+PASS unmount cancels unsent dispatch but superseded same-mount changes remain admitted
+PASS save-load boundary invalidates both settings and audio dispatch and response ownership
+PASS two locally current settings/audio refreshes publish only the newest shared snapshot
+PASS actual consumers fence dispatch and cancel settings before save loading
+PASS rapid independent settings changes coalesce without losing fields
+PASS both actual settings consumers render and own persistence notices
+PASS frontend build resolves the platform-specific npm application
+PASS shared refresh checks optional owner after asynchronous reads before publication
+Settings persistence scenarios: passed=22 failed=0
+
+===== portable-settings-notices-frontend-001-settingsPersistenceNotice.test.js: stderr =====
+
+===== portable-settings-notices-frontend-001-settingsPersistenceNotice.test.js: exit 0 =====
+Owned process 'portable-settings-notices-frontend-002': FileName=node; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=C:\Program Files\PowerShell\7\pwsh.exe
+
+===== portable-settings-notices-frontend-002: stdout =====
+JSON report written to [WORKTREE]/TestResults/test-categories/20261003-010016-098-9344-0ac53504024c407487a291473e00c2b8-categories/portable-settings-notices-frontend-002.vitest.json
+
+===== portable-settings-notices-frontend-002: stderr =====
+
+===== portable-settings-notices-frontend-002: exit 0 =====
+
+Category result
+  Categories: portable-settings-notices
+  Filter: <none>
+  Timeout: 9 minute(s)
+  Wall time: 00:00:20.4722371
+  Exit code: 0
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=2, cases=2; completed descriptors=2, cases=7, complete=True
+  Tests: total=7, executed=7, passed=7, failed=0
+  Duplicate test IDs: 0
+  Results: [WORKTREE]\TestResults\test-categories\20261003-010016-098-9344-0ac53504024c407487a291473e00c2b8-categories
+  Log: [WORKTREE]\TestResults\test-categories\20261003-010016-098-9344-0ac53504024c407487a291473e00c2b8-categories\dotnet-test.log

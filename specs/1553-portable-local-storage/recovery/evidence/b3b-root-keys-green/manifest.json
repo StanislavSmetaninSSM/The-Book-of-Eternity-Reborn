@@ -1,0 +1,28 @@
+{
+  "sourceCommit": "37a567030eda09ed242223fd222129b6741dff12",
+  "catalogBlobAfterPatch": "f8dd72a355a4639ca7b95ccce7eee5cd23c43038",
+  "kind": "newly executed b3b-root-keys-green; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "e6cb3affda104552cf55fecf58a032a72f8d182268e2aa0a4c4d83a6dd14f4fa",
+      "sanitizedSha256": "e6cb3affda104552cf55fecf58a032a72f8d182268e2aa0a4c4d83a6dd14f4fa"
+    },
+    {
+      "path": "portable-session-root-key-consumers-unit-001.trx",
+      "originalSha256": "5b371d8d979b01d47ca46f794df94f753288962c9b556d0f1f23caeab92a2636",
+      "sanitizedSha256": "8b201744695e6b14486f707b4acb816df56c086adb8e237e9d2ca25d1919c9fe"
+    },
+    {
+      "path": "portable-session-root-keys-unit-002.trx",
+      "originalSha256": "7a2ea15968c30f998852284a3aa8430952459dc6d33a07e173add52ca59e9891",
+      "sanitizedSha256": "a06fcaa50c3117c20df100a61e2b3a7a5e877e6fdb32af1f6750ebe49ef7f2f2"
+    }
+  ],
+  "sourceAppliedTree": "5f507366b5ee08a8b8139b08efe12129dd2b3924",
+  "selectionBlob": "d7cf76b6392c56db713c0c05057c8547013938aa",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+  "platform": "Linux x64",
+  "result": "17/17 passed: six root-key cases and eleven exact existing operation-binding/authority-cache consumers; both descriptors, selection and owned cleanup complete; no failures/skips/timeouts/duplicates. No Windows-only category executed; pure drive/UNC mapping does not prove actual Windows filesystem behavior."
+}

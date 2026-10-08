@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="53ab4efc-73aa-42a5-bead-366f752dd560" name="@c7669543e9c7 2026-10-06 06:07:09" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T06:07:09.6514221+00:00" queuing="2026-10-06T06:07:09.6514222+00:00" start="2026-10-06T06:07:04.2168031+00:00" finish="2026-10-06T06:07:25.4133657+00:00" />
+  <TestSettings name="default" id="fb733126-6f5b-49dd-aec9-79cb47229dfb">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_06_07_09" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="a6681ed2-8056-48c2-85e9-a33127644348" testId="811cf238-6e2c-a1b6-c27f-eb4abe20f86f" testName="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: &quot;terminal-ack&quot;, terminal: True, acknowledged: True)" computerName="c7669543e9c7" duration="00:00:04.3762551" startTime="2026-10-06T06:07:21.4303331+00:00" endTime="2026-10-06T06:07:21.4303333+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a6681ed2-8056-48c2-85e9-a33127644348" />
+    <UnitTestResult executionId="4a47f480-0c42-4c0b-a4ba-65d8b9d80415" testId="ca50ee99-87d9-c584-47f0-f6f25a77e516" testName="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: &quot;cleanup-pending&quot;, terminal: False, acknowledged: False)" computerName="c7669543e9c7" duration="00:00:03.2425505" startTime="2026-10-06T06:07:09.6103557+00:00" endTime="2026-10-06T06:07:09.6103694+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4a47f480-0c42-4c0b-a4ba-65d8b9d80415" />
+    <UnitTestResult executionId="320406e7-8ecd-445d-a5ea-003ee847a7ae" testId="df36537b-cbe9-9c64-a4b1-73b191f1fea4" testName="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: &quot;terminal-disk&quot;, terminal: True, acknowledged: False)" computerName="c7669543e9c7" duration="00:00:03.9011243" startTime="2026-10-06T06:07:25.3331970+00:00" endTime="2026-10-06T06:07:25.3331972+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="320406e7-8ecd-445d-a5ea-003ee847a7ae" />
+    <UnitTestResult executionId="5419cad5-b749-4780-90fe-de7c27355808" testId="5d885ce8-3b07-caa7-fdf8-3bbb6b04d072" testName="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: &quot;archive&quot;, terminal: False, acknowledged: False)" computerName="c7669543e9c7" duration="00:00:03.0427909" startTime="2026-10-06T06:07:12.6541664+00:00" endTime="2026-10-06T06:07:12.6541668+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5419cad5-b749-4780-90fe-de7c27355808" />
+    <UnitTestResult executionId="35a4bd43-a5e9-42b4-83fb-04b5af064aee" testId="266f3087-f9ea-2be3-a52e-2d450520782b" testName="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: &quot;capacity-released&quot;, terminal: True, acknowledged: True)" computerName="c7669543e9c7" duration="00:00:04.3961968" startTime="2026-10-06T06:07:17.0518977+00:00" endTime="2026-10-06T06:07:17.0518979+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="35a4bd43-a5e9-42b4-83fb-04b5af064aee" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: &quot;cleanup-pending&quot;, terminal: False, acknowledged: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ca50ee99-87d9-c584-47f0-f6f25a77e516">
+      <Execution id="4a47f480-0c42-4c0b-a4ba-65d8b9d80415" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartFenceTests" name="RetirementCrash_ExactTerminalCommitGatesNewTask" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: &quot;terminal-ack&quot;, terminal: True, acknowledged: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="811cf238-6e2c-a1b6-c27f-eb4abe20f86f">
+      <Execution id="a6681ed2-8056-48c2-85e9-a33127644348" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartFenceTests" name="RetirementCrash_ExactTerminalCommitGatesNewTask" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: &quot;terminal-disk&quot;, terminal: True, acknowledged: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="df36537b-cbe9-9c64-a4b1-73b191f1fea4">
+      <Execution id="320406e7-8ecd-445d-a5ea-003ee847a7ae" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartFenceTests" name="RetirementCrash_ExactTerminalCommitGatesNewTask" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: &quot;archive&quot;, terminal: False, acknowledged: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5d885ce8-3b07-caa7-fdf8-3bbb6b04d072">
+      <Execution id="5419cad5-b749-4780-90fe-de7c27355808" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartFenceTests" name="RetirementCrash_ExactTerminalCommitGatesNewTask" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask(cut: &quot;capacity-released&quot;, terminal: True, acknowledged: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="266f3087-f9ea-2be3-a52e-2d450520782b">
+      <Execution id="35a4bd43-a5e9-42b4-83fb-04b5af064aee" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartFenceTests" name="RetirementCrash_ExactTerminalCommitGatesNewTask" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="811cf238-6e2c-a1b6-c27f-eb4abe20f86f" executionId="a6681ed2-8056-48c2-85e9-a33127644348" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ca50ee99-87d9-c584-47f0-f6f25a77e516" executionId="4a47f480-0c42-4c0b-a4ba-65d8b9d80415" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="df36537b-cbe9-9c64-a4b1-73b191f1fea4" executionId="320406e7-8ecd-445d-a5ea-003ee847a7ae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5d885ce8-3b07-caa7-fdf8-3bbb6b04d072" executionId="5419cad5-b749-4780-90fe-de7c27355808" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="266f3087-f9ea-2be3-a52e-2d450520782b" executionId="35a4bd43-a5e9-42b4-83fb-04b5af064aee" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="5" executed="5" passed="5" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.39]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.61]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.62]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:20.65]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

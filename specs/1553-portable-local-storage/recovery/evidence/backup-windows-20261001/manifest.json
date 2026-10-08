@@ -1,0 +1,890 @@
+{
+  "kind": "T030-G exact thirty-case/seven-descriptor native Windows backup lifecycle verification",
+  "sourceSha": "fda03346e38ba4e6a16bff015d6ddc88a91b7f3b",
+  "sourceTree": "d79419a10e562915cc87d276487453408844c7ac",
+  "catalogBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+  "categories": [
+    "portable-backup-api",
+    "portable-backup-windows-paths",
+    "portable-backup-native-boundaries",
+    "portable-backup-native-routing",
+    "portable-backup-native-cold",
+    "portable-backup-generation-debt",
+    "portable-backup-qte"
+  ],
+  "selectionFile": "specs/1553-portable-local-storage/recovery/backup-windows-selection.json",
+  "selectionFileBlob": "70d611ea6fabfcdeef190bb6ac07014a41cf65f1",
+  "selectionFileSha256": "1c38a7d47fd187eecc53a01d5cdf95eadd652c8a47dbc2fadbb16449e3d189d7",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile specs/1553-portable-local-storage/recovery/backup-windows-selection.json -Parallelism 1",
+  "os": "Microsoft Windows 10.0.26200",
+  "architecture": "X64",
+  "isWindows": true,
+  "powershell": "7.6.6",
+  "dotnetSdk": "10.0.401",
+  "startedUtc": "2026-10-01T23:32:43.0702979Z",
+  "endedUtc": "2026-10-01T23:40:52.2955346Z",
+  "wallTime": "00:08:07.4900708",
+  "result": {
+    "passed": 30,
+    "plannedMethods": 14,
+    "unrun": 0,
+    "completedCases": 30,
+    "planQualification": "Actual discovered plan matches frozen14/30/7 selection.",
+    "plannedDescriptors": 7,
+    "failed": 0,
+    "exitCode": 0,
+    "executed": 30,
+    "launcherExitCode": 0,
+    "timedOut": false,
+    "actualPlannedDescriptors": 7,
+    "completedDescriptors": 7,
+    "total": 30,
+    "actualPlannedCases": 30,
+    "selectionComplete": true,
+    "plannedCases": 30,
+    "duplicateIds": 0,
+    "actualTrxFiles": 7,
+    "skipped": 0
+  },
+  "bodyEvidence": "Exactly14methods/30cases/7descriptors: ordinary sync/async backup API6, bound distributor generation-debt1, native namespace/link/hard-link/lease/debt boundaries13, two actual cold restore/cleanup cuts with external hard links2, original recorder/recovery physical routing and mixed-route rejection4, actual QTE uncertainty3, Windows extended-root and same-file case alias1. Native assertions and setup must execute; fixture failure or unsupported body is retained honestly without security or source workaround.",
+  "fixtureQualification": {
+    "selectedNativeBodies": "Exactly14methods/30cases/7descriptors: ordinary sync/async backup API6, bound distributor generation-debt1, native namespace/link/hard-link/lease/debt boundaries13, two actual cold restore/cleanup cuts with external hard links2, original recorder/recovery physical routing and mixed-route rejection4, actual QTE uncertainty3, Windows extended-root and same-file case alias1. Native assertions and setup must execute; fixture failure or unsupported body is retained honestly without security or source workaround.",
+    "nativePrerequisiteOutcomes": [
+      {
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"root\")",
+        "fixtureSetupFailure": false,
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"ancestor-link\")",
+        "fixtureSetupFailure": false,
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.HardLinkedSourceTargetAndBackupPreserveEveryOutsideName",
+        "fixtureSetupFailure": false,
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"dangling-link\")",
+        "fixtureSetupFailure": false,
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"link\")",
+        "fixtureSetupFailure": false,
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"outside\")",
+        "fixtureSetupFailure": false,
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"directory\")",
+        "fixtureSetupFailure": false,
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames(cut: \"cleanup-debt\", committed: True)",
+        "fixtureSetupFailure": false,
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames(cut: \"last-member\", committed: False)",
+        "fixtureSetupFailure": false,
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks(recovery: False)",
+        "fixtureSetupFailure": false,
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget(originalTarget: True)",
+        "fixtureSetupFailure": false,
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks(recovery: True)",
+        "fixtureSetupFailure": false,
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget(originalTarget: False)",
+        "fixtureSetupFailure": false,
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.WindowsExtendedRootBackupLifecycleAndCaseAliasAreValidated",
+        "fixtureSetupFailure": false,
+        "symbolicLinkSetupFailure": false
+      }
+    ],
+    "actualQteWindowsBodies": [
+      {
+        "duration": "00:00:00.9045709",
+        "message": "",
+        "stack": "",
+        "testId": "56a5896f-a9ee-a960-fdb3-943f6a3d5368",
+        "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+        "executionId": "4c1b371a-21eb-48eb-92f2-d2e549fa137b",
+        "fixtureSetupFailure": false,
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: \"accepted-cleanup\")",
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "duration": "00:00:00.8294376",
+        "message": "",
+        "stack": "",
+        "testId": "50bdf3fd-87b5-ff9f-ddf7-421d48981d5a",
+        "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+        "executionId": "a06b8d4c-fb98-45da-81af-ef89b05f45a2",
+        "fixtureSetupFailure": false,
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: \"create-debt\")",
+        "symbolicLinkSetupFailure": false
+      },
+      {
+        "duration": "00:00:00.5707812",
+        "message": "",
+        "stack": "",
+        "testId": "2c964b24-d03a-49fe-7f21-8609d4e3eda3",
+        "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+        "executionId": "8ade3004-837f-4d6e-ae5c-653f8d10171d",
+        "fixtureSetupFailure": false,
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: \"create-unknown\")",
+        "symbolicLinkSetupFailure": false
+      }
+    ],
+    "boundDistributorWindowsBody": [
+      {
+        "duration": "00:00:01.0174764",
+        "message": "",
+        "stack": "",
+        "testId": "540bb761-f63e-0165-e4c4-ab3dd1be8034",
+        "method": "BookOfEternityClient.Tests.PortableBackupConsumerTests.BoundDistributorClassifiesGenerationConflictInCommittedBackupDebtBeforeCompensation",
+        "executionId": "cf63e6ad-794f-469f-bc31-897b7c9c9d79",
+        "fixtureSetupFailure": false,
+        "outcome": "Passed",
+        "name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.BoundDistributorClassifiesGenerationConflictInCommittedBackupDebtBeforeCompensation",
+        "symbolicLinkSetupFailure": false
+      }
+    ],
+    "linuxQualification": "Source/Linux independently accepted at f3e26dd8;94distinct Linux passing cases are the union of separate43/50/19cohorts. The exact previously blocked real Linux quarantine now PASSED. Audit168categories/10443identities and plans executed0tests. This native subset does not rerun quarantine or establish full StateDistributor/QTE/accepted-turn/preparation/platform/gameplay readiness; T030-G final acceptance stays parent-owned.",
+    "quarantineScope": "No quarantine method is selected in this exact native subset; its real Linux PASSED body is preserved in prior T030-G continuation evidence."
+  },
+  "normalizationProof": {
+    "frozenHead": "3deb291865afa84f47a3ed6050e674f1f6745327",
+    "frozenTree": "af8e049e7a5400fe9638df95d44be9077256ba19",
+    "fullAppliedTree": "5f008eb1048f6403caf2710a2fc9e16cc26f2cc8",
+    "packetExcludedSourceTree": "93f306202561bcfb4692ac037963bc4fba04775c",
+    "patchBytes": 28296,
+    "patchSha256": "a88e5df0ed4ae56fe851e5bba7aa8cb9b0962074cd12cd3c789693604c793e38",
+    "manifestSha256": "0ef441097e8450b3f58bc896c127ee7a5128a1c81bff0ff57b9793dd1d209bb2",
+    "deliveryManifestSha256": "554c9b27cdc14414fc3e2a0b4c6105d5814fe983eb2033d04c41c085f78b4e0f",
+    "verifiedPacketEntries": 4,
+    "verifiedDeliveryEntries": 17,
+    "allAcceptedBytesIdentical": true,
+    "nativeExecutedCases": 0,
+    "normalizationQualification": "One ordinary git apply --check then one apply; exact four payloads and only two active carriers retired; no source decision/fix."
+  },
+  "immutableDeliveryManifest": "specs/1553-portable-local-storage/recovery/backup-delivery-source.json",
+  "cleanup": {
+    "runtimeComplete": true,
+    "runtimeDirectoryRemainders": 0,
+    "ownedTreeComplete": true,
+    "launcherProcessRemainders": 0,
+    "syntheticFixtureDirectoryRemainders": 0
+  },
+  "protectedEnvironment": "HOME/home/CODEX_HOME untouched; no profile/security/elevation changes",
+  "isolation": "Per-process synthetic TEMP, CLI home, NuGet caches, appdata; unique runner output under owned QA copy. No user saves/profiles.",
+  "externalExecution": "Only selected assertion fixtures and owned separate-process cold-recovery crash hosts. Original routing and actual QTE are service fixtures; no live browser/client/game/server/GM/provider/GUI/audio.",
+  "processorCount": "DOTNET_PROCESSOR_COUNT=1",
+  "telemetryOptOuts": [
+    "DOTNET_CLI_TELEMETRY_OPTOUT=1",
+    "POWERSHELL_TELEMETRY_OPTOUT=1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT=1"
+  ],
+  "sourceReadback": {
+    "sourceSha": "fda03346e38ba4e6a16bff015d6ddc88a91b7f3b",
+    "sourceTree": "d79419a10e562915cc87d276487453408844c7ac",
+    "parentSha": "3deb291865afa84f47a3ed6050e674f1f6745327",
+    "restoration": "New clean depth-two GitHub-only clone; no local source/object copy",
+    "trackedFiles": 3914,
+    "verifiedDeliveryEntries": 17,
+    "verifiedPacketAfterImages": 4,
+    "clean": true,
+    "fsckPassed": true,
+    "githubApiCommitTreeParentVerified": true,
+    "verifiedUtc": "2026-10-01T23:30:49.8324776Z"
+  },
+  "sourceWorkingTreeClean": true,
+  "cases": [
+    {
+      "duration": "00:00:00.1349650",
+      "message": "",
+      "stack": "",
+      "testId": "18cde7bf-a81a-34d9-d9d1-0e314fd0a817",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes",
+      "executionId": "4157190f-d6a3-4a2d-beb8-dfc224e155f0",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(asynchronous: True)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0819939",
+      "message": "",
+      "stack": "",
+      "testId": "eeac358e-cc87-6afd-ff65-a65537adf895",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion",
+      "executionId": "9b958384-8267-4cff-95e4-7f1712de6b31",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(asynchronous: True)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.1072568",
+      "message": "",
+      "stack": "",
+      "testId": "3342614c-7b1e-3fa2-8175-8ad236f0fcf4",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes",
+      "executionId": "700fcee6-8c63-497e-bb36-f8cc96fb2bdf",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(asynchronous: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0962741",
+      "message": "",
+      "stack": "",
+      "testId": "caffeb95-8848-370a-79e6-6cb9a176af62",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether",
+      "executionId": "fc4abff6-8ac3-4eaf-91df-bae0ca68f9c2",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(asynchronous: True)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.9148395",
+      "message": "",
+      "stack": "",
+      "testId": "0fa4b1bf-1b9d-1f01-671f-3ea3c382d899",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether",
+      "executionId": "b346d484-8b2d-4831-ae9b-5c0330b5de79",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(asynchronous: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0957419",
+      "message": "",
+      "stack": "",
+      "testId": "165e4097-c3d0-44ea-5aee-30b11c3ce562",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion",
+      "executionId": "ffa22d1d-828c-4e73-a615-92f5f3ce02c2",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(asynchronous: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:01.0174764",
+      "message": "",
+      "stack": "",
+      "testId": "540bb761-f63e-0165-e4c4-ab3dd1be8034",
+      "method": "BookOfEternityClient.Tests.PortableBackupConsumerTests.BoundDistributorClassifiesGenerationConflictInCommittedBackupDebtBeforeCompensation",
+      "executionId": "cf63e6ad-794f-469f-bc31-897b7c9c9d79",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.BoundDistributorClassifiesGenerationConflictInCommittedBackupDebtBeforeCompensation",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0444104",
+      "message": "",
+      "stack": "",
+      "testId": "c22b6026-e5ab-334c-2cae-49fe45126628",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected",
+      "executionId": "ff4a1629-ba36-4905-b1a3-1342026e1fd5",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected(operation: \"restore\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0412850",
+      "message": "",
+      "stack": "",
+      "testId": "61ef6b1c-ee03-41e1-60d3-276df6b7c32d",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+      "executionId": "9cc336ce-cfcf-48a3-a4e0-2bb3b387292f",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"root\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0778326",
+      "message": "",
+      "stack": "",
+      "testId": "265baa7d-6a16-2a40-1a73-accde5e14d42",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+      "executionId": "f5438645-35c6-497c-af28-6933b0110e3b",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"ancestor-link\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0821653",
+      "message": "",
+      "stack": "",
+      "testId": "0700ef25-2ca0-f231-946e-c9ee6abbdecd",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
+      "executionId": "707a9bd3-ee51-4f81-8fe9-b954ce055c6b",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence(unknown: True)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.3221989",
+      "message": "",
+      "stack": "",
+      "testId": "67a927a2-3ed6-06df-446c-6ecb4fb8cdb8",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.HardLinkedSourceTargetAndBackupPreserveEveryOutsideName",
+      "executionId": "48376e5c-d4d9-480c-9b42-3ae4806b3f92",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.HardLinkedSourceTargetAndBackupPreserveEveryOutsideName",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0445548",
+      "message": "",
+      "stack": "",
+      "testId": "2c704006-55db-58a5-ce1a-da2f9c9b98d0",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+      "executionId": "ceaef649-b649-47c3-ae10-c222cf3a8edb",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"dangling-link\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0307440",
+      "message": "",
+      "stack": "",
+      "testId": "67f15df3-e077-f595-406e-2a88bb64ec71",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreSameNameIsRejectedBeforeDeletingItsOnlyCopy",
+      "executionId": "d06a7ae8-f81b-4f16-b9e9-7a663cf7f971",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreSameNameIsRejectedBeforeDeletingItsOnlyCopy",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0364776",
+      "message": "",
+      "stack": "",
+      "testId": "4be52d01-ae99-b219-dacd-b3d31d2961b2",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected",
+      "executionId": "9ac0420b-eac3-4f32-bff1-eb28261b20a9",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected(operation: \"create\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:01.0581866",
+      "message": "",
+      "stack": "",
+      "testId": "6a9257a0-e6d8-75bf-fea9-5c51898ecc82",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
+      "executionId": "e6b2293a-fb96-4dff-b7ad-1d4c038531c4",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence(unknown: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0512054",
+      "message": "",
+      "stack": "",
+      "testId": "a2e31c36-7675-ed21-12d8-9faf5c79294c",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+      "executionId": "79993f50-280c-46dc-80b4-9caadf226cb0",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"link\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0394568",
+      "message": "",
+      "stack": "",
+      "testId": "5ef028c0-7e16-0f8c-6eca-75ae6bb42af7",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+      "executionId": "19a82deb-058e-4834-b90c-f22cd33583a3",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"outside\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0447978",
+      "message": "",
+      "stack": "",
+      "testId": "882e28ad-81b2-0d83-300d-8a6626b30ec4",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+      "executionId": "5daacb5e-c18d-489d-a3d4-6d47520de39d",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"directory\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0411982",
+      "message": "",
+      "stack": "",
+      "testId": "8985467a-1f6c-5a76-6e1c-4b43415f144b",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected",
+      "executionId": "a771faef-e4e0-4eeb-96f8-770c7ebc3b25",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected(operation: \"cleanup\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.7432101",
+      "message": "",
+      "stack": "",
+      "testId": "b60f164a-365f-b5ae-8284-e9fa91d913d2",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames",
+      "executionId": "a2d9cdfa-4c31-4a55-b93e-af208e0f1492",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames(cut: \"cleanup-debt\", committed: True)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.7733205",
+      "message": "",
+      "stack": "",
+      "testId": "0a5e4822-4c8a-2d34-8fe3-ccdc0b1a8538",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames",
+      "executionId": "f0beb182-80b7-4ea0-91b2-f932890314b9",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames(cut: \"last-member\", committed: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:01.0069918",
+      "message": "",
+      "stack": "",
+      "testId": "1ac5b714-ecae-5ec7-db8d-697a4991d702",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks",
+      "executionId": "6ecf24a0-eeb6-48df-ad41-d87344d9cedf",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks(recovery: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.1175480",
+      "message": "",
+      "stack": "",
+      "testId": "2ed20ae6-4ce8-f7e5-f1c7-fef0e3f59b63",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget",
+      "executionId": "e0b387c7-62bc-48e1-b12a-4a15de9864e2",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget(originalTarget: True)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.1501174",
+      "message": "",
+      "stack": "",
+      "testId": "5ad9b6e9-76a6-1357-2573-47ceeb0a185c",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks",
+      "executionId": "2e1f0ae4-fbf6-41e0-8034-0d22c33aaf27",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks(recovery: True)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.0339855",
+      "message": "",
+      "stack": "",
+      "testId": "2d220164-f100-fc29-1929-a5ff529fdd69",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget",
+      "executionId": "91a4d122-b4b7-4344-a962-76434a5fd7df",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget(originalTarget: False)",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.9045709",
+      "message": "",
+      "stack": "",
+      "testId": "56a5896f-a9ee-a960-fdb3-943f6a3d5368",
+      "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+      "executionId": "4c1b371a-21eb-48eb-92f2-d2e549fa137b",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: \"accepted-cleanup\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.8294376",
+      "message": "",
+      "stack": "",
+      "testId": "50bdf3fd-87b5-ff9f-ddf7-421d48981d5a",
+      "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+      "executionId": "a06b8d4c-fb98-45da-81af-ef89b05f45a2",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: \"create-debt\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.5707812",
+      "message": "",
+      "stack": "",
+      "testId": "2c964b24-d03a-49fe-7f21-8609d4e3eda3",
+      "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+      "executionId": "8ade3004-837f-4d6e-ae5c-653f8d10171d",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: \"create-unknown\")",
+      "symbolicLinkSetupFailure": false
+    },
+    {
+      "duration": "00:00:00.5949907",
+      "message": "",
+      "stack": "",
+      "testId": "666d7f56-4a74-7989-65e6-dcb41bd1dedf",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.WindowsExtendedRootBackupLifecycleAndCaseAliasAreValidated",
+      "executionId": "9a7c3d61-2c83-40da-a189-b29f11454045",
+      "fixtureSetupFailure": false,
+      "outcome": "Passed",
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.WindowsExtendedRootBackupLifecycleAndCaseAliasAreValidated",
+      "symbolicLinkSetupFailure": false
+    }
+  ],
+  "methodCoverage": [
+    {
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion",
+      "plannedCases": 2,
+      "recordedCases": 2,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes",
+      "plannedCases": 2,
+      "recordedCases": 2,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether",
+      "plannedCases": 2,
+      "recordedCases": 2,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableBackupConsumerTests.BoundDistributorClassifiesGenerationConflictInCommittedBackupDebtBeforeCompensation",
+      "plannedCases": 1,
+      "recordedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.HardLinkedSourceTargetAndBackupPreserveEveryOutsideName",
+      "plannedCases": 1,
+      "recordedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+      "plannedCases": 6,
+      "recordedCases": 6,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected",
+      "plannedCases": 3,
+      "recordedCases": 3,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreSameNameIsRejectedBeforeDeletingItsOnlyCopy",
+      "plannedCases": 1,
+      "recordedCases": 1,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
+      "plannedCases": 2,
+      "recordedCases": 2,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames",
+      "plannedCases": 2,
+      "recordedCases": 2,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks",
+      "plannedCases": 2,
+      "recordedCases": 2,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget",
+      "plannedCases": 2,
+      "recordedCases": 2,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+      "plannedCases": 3,
+      "recordedCases": 3,
+      "unrunCases": 0
+    },
+    {
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.WindowsExtendedRootBackupLifecycleAndCaseAliasAreValidated",
+      "plannedCases": 1,
+      "recordedCases": 1,
+      "unrunCases": 0
+    }
+  ],
+  "trxCounters": [
+    {
+      "failed": 0,
+      "total": 6,
+      "executed": 6,
+      "file": "portable-backup-api-unit-001.sanitized.trx",
+      "skipped": 0,
+      "passed": 6
+    },
+    {
+      "failed": 0,
+      "total": 1,
+      "executed": 1,
+      "file": "portable-backup-generation-debt-unit-002.sanitized.trx",
+      "skipped": 0,
+      "passed": 1
+    },
+    {
+      "failed": 0,
+      "total": 13,
+      "executed": 13,
+      "file": "portable-backup-native-boundaries-unit-003.sanitized.trx",
+      "skipped": 0,
+      "passed": 13
+    },
+    {
+      "failed": 0,
+      "total": 2,
+      "executed": 2,
+      "file": "portable-backup-native-cold-unit-004.sanitized.trx",
+      "skipped": 0,
+      "passed": 2
+    },
+    {
+      "failed": 0,
+      "total": 4,
+      "executed": 4,
+      "file": "portable-backup-native-routing-unit-005.sanitized.trx",
+      "skipped": 0,
+      "passed": 4
+    },
+    {
+      "failed": 0,
+      "total": 3,
+      "executed": 3,
+      "file": "portable-backup-qte-integration-006.sanitized.trx",
+      "skipped": 0,
+      "passed": 3
+    },
+    {
+      "failed": 0,
+      "total": 1,
+      "executed": 1,
+      "file": "portable-backup-windows-paths-unit-007.sanitized.trx",
+      "skipped": 0,
+      "passed": 1
+    }
+  ],
+  "descriptorResults": [
+    {
+      "failed": 0,
+      "adapter": "unit",
+      "category": "portable-backup-api",
+      "recordedCases": 6,
+      "passed": 6,
+      "unrun": 0,
+      "name": "portable-backup-api-unit-001",
+      "skipped": 0,
+      "plannedCases": 6
+    },
+    {
+      "failed": 0,
+      "adapter": "unit",
+      "category": "portable-backup-generation-debt",
+      "recordedCases": 1,
+      "passed": 1,
+      "unrun": 0,
+      "name": "portable-backup-generation-debt-unit-002",
+      "skipped": 0,
+      "plannedCases": 1
+    },
+    {
+      "failed": 0,
+      "adapter": "unit",
+      "category": "portable-backup-native-boundaries",
+      "recordedCases": 13,
+      "passed": 13,
+      "unrun": 0,
+      "name": "portable-backup-native-boundaries-unit-003",
+      "skipped": 0,
+      "plannedCases": 13
+    },
+    {
+      "failed": 0,
+      "adapter": "unit",
+      "category": "portable-backup-native-cold",
+      "recordedCases": 2,
+      "passed": 2,
+      "unrun": 0,
+      "name": "portable-backup-native-cold-unit-004",
+      "skipped": 0,
+      "plannedCases": 2
+    },
+    {
+      "failed": 0,
+      "adapter": "unit",
+      "category": "portable-backup-native-routing",
+      "recordedCases": 4,
+      "passed": 4,
+      "unrun": 0,
+      "name": "portable-backup-native-routing-unit-005",
+      "skipped": 0,
+      "plannedCases": 4
+    },
+    {
+      "failed": 0,
+      "adapter": "integration",
+      "category": "portable-backup-qte",
+      "recordedCases": 3,
+      "passed": 3,
+      "unrun": 0,
+      "name": "portable-backup-qte-integration-006",
+      "skipped": 0,
+      "plannedCases": 3
+    },
+    {
+      "failed": 0,
+      "adapter": "unit",
+      "category": "portable-backup-windows-paths",
+      "recordedCases": 1,
+      "passed": 1,
+      "unrun": 0,
+      "name": "portable-backup-windows-paths-unit-007",
+      "skipped": 0,
+      "plannedCases": 1
+    }
+  ],
+  "files": [
+    {
+      "sanitizedSha256": "0b18464a4b08b22117e6afe91e2f22e78bd0f4e630ccbed7ec1ae81dc537d713",
+      "originalSha256": "a2c422459b9c196e34754d8754c8f3857a272e37ef6536f663012c01603f8899",
+      "bytes": 4871,
+      "originalBytes": 5041,
+      "file": "summary.sanitized.json"
+    },
+    {
+      "sanitizedSha256": "3ebf1baedb7c11125666133631c584214698008d592957c5e160596a1c45a621",
+      "originalSha256": "4582a2c6eeb0330cde551ce38d237a1af4ff9c781d58c191a0e7480eef45baea",
+      "bytes": 10238,
+      "originalBytes": 10959,
+      "file": "portable-backup-api-unit-001.sanitized.trx"
+    },
+    {
+      "sanitizedSha256": "7ff66688ac44444cd32eccdaa95e2d2788574dcf19a66db16e3953b79680a54f",
+      "originalSha256": "25c5d5513e5d19d6003a5777089aac87648050f154caae7e334127c0571cdc6e",
+      "bytes": 3125,
+      "originalBytes": 3261,
+      "file": "portable-backup-generation-debt-unit-002.sanitized.trx"
+    },
+    {
+      "sanitizedSha256": "baaa0090aaf535a6365695386c8e80dabb5deb4341dcc0f3af1dbe9fa341709d",
+      "originalSha256": "58ced584768e81c583708ce39ae3532666296777058001e4d33d49d84fba992e",
+      "bytes": 20334,
+      "originalBytes": 21874,
+      "file": "portable-backup-native-boundaries-unit-003.sanitized.trx"
+    },
+    {
+      "sanitizedSha256": "63e58f3ff77b1086ab3ad8035e4fbf72a0108f9ff127b7095420b8566ea9b2e0",
+      "originalSha256": "bd9e001efa62051dcf3e940a9669951abb2d769d282e552a0863481b4ee38600",
+      "bytes": 4592,
+      "originalBytes": 4845,
+      "file": "portable-backup-native-cold-unit-004.sanitized.trx"
+    },
+    {
+      "sanitizedSha256": "122b6bbc8174170f846e5984b4a1a9d980d8f611339fdfa159b6ebe135ff2611",
+      "originalSha256": "ab0ba0f777159c3238822b4f0ec3cfd54336830649bc89e82425ab43e00f59b8",
+      "bytes": 7382,
+      "originalBytes": 7869,
+      "file": "portable-backup-native-routing-unit-005.sanitized.trx"
+    },
+    {
+      "sanitizedSha256": "a0a194a23cf40aaf789b55d38f08285693034dcb95077f28269b4224c3246812",
+      "originalSha256": "11a8696e72f1b71768dfab3568408402ddd4350b8fe3855db6471e57a80cdbeb",
+      "bytes": 6308,
+      "originalBytes": 6678,
+      "file": "portable-backup-qte-integration-006.sanitized.trx"
+    },
+    {
+      "sanitizedSha256": "373b1afdff6449d959b63999ac88bcf30158024a14d6abe8810a60511abbeab5",
+      "originalSha256": "139e7f75d2a18c5a334ec840678947cf2f5c359663607b2c33d631d2e149d0eb",
+      "bytes": 3053,
+      "originalBytes": 3189,
+      "file": "portable-backup-windows-paths-unit-007.sanitized.trx"
+    }
+  ],
+  "limits": [
+    "Only the exact30selected native backup filesystem/service-fixture cases; unsupported/missing/failed setup is not success",
+    "No other category, broadmatrix, passing rerun or source fix",
+    "94Linuxpasses remain a separate saved43/50/19union; realLinuxquarantine passed and is not rerun here",
+    "No full StateDistributor/QTE/accepted-turn/preparation/platform/gameplay/GM/provider/browser/save-load/worker acceptance",
+    "T030-G final normal/native acceptance remains parent-owned; wider project remains open"
+  ],
+  "sanitization": "Only generated summary/TRX and own run metadata read. Private source/run/home/tool paths and host/user labels replaced consistently. UTF-8 without BOM, LF; original and sanitized SHA256/bytes recorded. JSON/TRX reparsed and privacy/token-like guards passed. No raw logs, credentials, authorization profiles or user saves published."
+}

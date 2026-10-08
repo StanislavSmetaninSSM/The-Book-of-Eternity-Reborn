@@ -237,30 +237,28 @@ public sealed class ValidationSourceGuardTests
             "Core",
             "FileSystemManager.cs"));
 
-        foreach (var methodName in new[]
+        var loadingSource = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot,
+            "BookOfEternityClient", "Services", "SaveLoadService.Loading.cs"));
+        foreach (var (source, methodName, nextMethod) in new[]
                  {
-                     "public async Task<bool> LoadGameAsync(",
-                     "private static async Task<SaveMetadata?> ReadSaveMetadataAsync("
+                     (loadingSource, "internal async Task<PreparedLoadArchive> PrepareLoadArchiveAsync(",
+                         "private static string CanonicalizeFixedLoadStatePath("),
+                     (saveLoadSource, "private static async Task<SaveMetadata?> ReadSaveMetadataStreamAsync(",
+                         "private static bool IsTransientSaveMetadataOpenException(")
                  })
         {
-            var methodStart = saveLoadSource.IndexOf(
-                methodName,
-                StringComparison.Ordinal);
-            var archiveMaterialization = saveLoadSource.IndexOf(
-                "new ZipArchive(",
-                methodStart,
-                StringComparison.Ordinal);
-            var rawPreflight = saveLoadSource.IndexOf(
-                "ValidateTrustedArchiveBeforeMaterialization(",
-                methodStart,
-                StringComparison.Ordinal);
-            Assert.True(
-                methodStart >= 0 &&
-                rawPreflight > methodStart &&
-                archiveMaterialization > rawPreflight,
+            var methodStart = source.IndexOf(methodName, StringComparison.Ordinal);
+            Assert.True(methodStart >= 0, $"Missing archive entry point: {methodName}");
+            var methodEnd = source.IndexOf(nextMethod, methodStart, StringComparison.Ordinal);
+            Assert.True(methodEnd > methodStart, $"Missing boundary after: {methodName}");
+            var method = source[methodStart..methodEnd];
+            var archiveMaterialization = method.IndexOf("new ZipArchive(", StringComparison.Ordinal);
+            var rawPreflight = method.IndexOf("ValidateTrustedArchiveBeforeMaterialization(", StringComparison.Ordinal);
+            Assert.True(rawPreflight > 0 && archiveMaterialization > rawPreflight,
                 $"{methodName} must run raw bounded archive preflight before ZipArchive materializes entries.");
         }
 
+        // Retained original-handler helpers still own old evidence; their physical contract is distinct.
         var prepareStart = fileSystemSource.IndexOf(
             "internal void PrepareForDirectoryMove(",
             StringComparison.Ordinal);

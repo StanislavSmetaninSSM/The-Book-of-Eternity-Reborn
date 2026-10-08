@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="fea66ded-6ec7-4499-b5be-1116e6222864" name="@95e438a3e5cb 2026-10-03 22:11:23" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T22:11:23.1936882-04:00" queuing="2026-10-03T22:11:23.1936882-04:00" start="2026-10-03T22:11:19.8640064-04:00" finish="2026-10-03T22:11:27.1956753-04:00" />
+  <TestSettings name="default" id="4033e44d-c241-4b01-bbb9-00c9e4b63f1b">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-03_22_11_23" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="66bc8cca-3256-4014-b333-a6ae736daa0d" testId="ce85e46c-ef16-b056-983b-c7d6c2339820" testName="BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_LoadRotatesGeneration_ThrowsBeforeReplacementMutation" computerName="95e438a3e5cb" duration="00:00:00.4749401" startTime="2026-10-03T22:11:21.9685111-04:00" endTime="2026-10-03T22:11:21.9685324-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="66bc8cca-3256-4014-b333-a6ae736daa0d" />
+    <UnitTestResult executionId="108d5fc0-b2ac-4532-abbe-8fe4bc77d8e1" testId="e41495db-5530-f5ad-80e2-b202958506eb" testName="BookOfEternityClient.Tests.ValidationSourceGuardTests.ResourceAuthorityBoundaries_MustPreflightZipAndRetainLoadLeavesThroughPublication" computerName="95e438a3e5cb" duration="00:00:00.0017146" startTime="2026-10-03T22:11:27.1149943-04:00" endTime="2026-10-03T22:11:27.1149944-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="108d5fc0-b2ac-4532-abbe-8fe4bc77d8e1" />
+    <UnitTestResult executionId="64f1c462-24b3-4d2c-8ad8-7cbdc3f94a3b" testId="d3665005-f397-f341-5a54-8a5c363de411" testName="BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock" computerName="95e438a3e5cb" duration="00:00:05.1297731" startTime="2026-10-03T22:11:27.1141410-04:00" endTime="2026-10-03T22:11:27.1141412-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="64f1c462-24b3-4d2c-8ad8-7cbdc3f94a3b">
+      <Output>
+        <ErrorInfo>
+          <Message>System.TimeoutException : The operation has timed out.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock() in [checkout]/BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs:line 365
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_LoadRotatesGeneration_ThrowsBeforeReplacementMutation" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ce85e46c-ef16-b056-983b-c7d6c2339820">
+      <Execution id="66bc8cca-3256-4014-b333-a6ae736daa0d" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SessionOperationContextTests" name="BoundWriter_LoadRotatesGeneration_ThrowsBeforeReplacementMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ValidationSourceGuardTests.ResourceAuthorityBoundaries_MustPreflightZipAndRetainLoadLeavesThroughPublication" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e41495db-5530-f5ad-80e2-b202958506eb">
+      <Execution id="108d5fc0-b2ac-4532-abbe-8fe4bc77d8e1" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ValidationSourceGuardTests" name="ResourceAuthorityBoundaries_MustPreflightZipAndRetainLoadLeavesThroughPublication" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d3665005-f397-f341-5a54-8a5c363de411">
+      <Execution id="64f1c462-24b3-4d2c-8ad8-7cbdc3f94a3b" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerApplyGateTests" name="ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="ce85e46c-ef16-b056-983b-c7d6c2339820" executionId="66bc8cca-3256-4014-b333-a6ae736daa0d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e41495db-5530-f5ad-80e2-b202958506eb" executionId="108d5fc0-b2ac-4532-abbe-8fe4bc77d8e1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d3665005-f397-f341-5a54-8a5c363de411" executionId="64f1c462-24b3-4d2c-8ad8-7cbdc3f94a3b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="3" executed="3" passed="2" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.14]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:00.97]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:00.98]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:06.90]       System.TimeoutException : The operation has timed out.
+[xUnit.net 00:00:06.90]       Stack Trace:
+[xUnit.net 00:00:06.90]         [checkout]/BookOfEternityClient.Tests/GmWorkerApplyGateTests.cs(365,0): at BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock()
+[xUnit.net 00:00:06.90]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.90]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-03T22:11:27.1117440-04:00">
+        <Text>[xUnit.net 00:00:06.89]     BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

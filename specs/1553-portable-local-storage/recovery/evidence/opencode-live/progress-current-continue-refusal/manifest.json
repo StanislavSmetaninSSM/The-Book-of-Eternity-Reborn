@@ -1,0 +1,400 @@
+{
+  "ExecutionSource": "37b274e821e24db891acf4b1994353e49b1c654e",
+  "RuntimeBuildSource": "421d01c649a37ba4fff16b23a0c846fe84ab3433",
+  "SourceRoot": "/workspace/og8",
+  "PrivateCliAuthConfigStateExcluded": true,
+  "Artifacts": [
+    {
+      "Path": "bridge.raw",
+      "Bytes": 2856,
+      "SHA256": "716a4c0cc1ee2eec33c84e41e549a2845db2e0cdf7c891073300aafcb941fb85",
+      "StoredPath": "bridge.raw.gz",
+      "StoredBytes": 729,
+      "StoredSHA256": "b71b2db98e1a52709993edefb86f3ebcd747edf135714967a39aee7834784970"
+    },
+    {
+      "Path": "client-echo.raw",
+      "Bytes": 2,
+      "SHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "StoredPath": "client-echo.raw.gz",
+      "StoredBytes": 22,
+      "StoredSHA256": "3827170a82238309b60bbe54f61f44a944267563d05ea7b34f44afe350742c00"
+    },
+    {
+      "Path": "client.raw",
+      "Bytes": 4195,
+      "SHA256": "21ad04038efb9b3107544333a248f4362e33cbc368a6a8bec3f04ea5c30d8009",
+      "StoredPath": "client.raw.gz",
+      "StoredBytes": 1139,
+      "StoredSHA256": "40e8870d9f9464365fba638187b08c6dcd6e95ca6d6f662ad7d0b20885d83ca7"
+    },
+    {
+      "Path": "daemon.log",
+      "Bytes": 514,
+      "SHA256": "681abbb6f45ebc2fd7b09e93c8c88ed71aadada6d5d319fb141b87516b4d0949",
+      "StoredPath": "daemon.log.gz",
+      "StoredBytes": 288,
+      "StoredSHA256": "854786024a3249a8e506e405622695442df20b2dd14442990940e4321b2e7d66"
+    },
+    {
+      "Path": "daemon.raw",
+      "Bytes": 696,
+      "SHA256": "b7de262d8fe5c08a776b78854c3f883dd2fde548472c6aeddfd788a63281812c",
+      "StoredPath": "daemon.raw.gz",
+      "StoredBytes": 337,
+      "StoredSHA256": "5f0dcc9d811c07ae12b6016b4dba944bfe6532fbfd0d522356e301d35c451f45"
+    },
+    {
+      "Path": "execution.json",
+      "Bytes": 1351,
+      "SHA256": "e138cb9eb6162e897ee2981d4e7f5b10fad40f7e7890a232ee1d7e3054038357",
+      "StoredPath": "execution.json.gz",
+      "StoredBytes": 715,
+      "StoredSHA256": "a11e326a299cbfeec742d5f2905a14c0feacff8e09fb4ed8a2d281a1d16071aa"
+    },
+    {
+      "Path": "guardian.json",
+      "Bytes": 97,
+      "SHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "StoredPath": "guardian.json.gz",
+      "StoredBytes": 104,
+      "StoredSHA256": "4a3b0059fa67390b10d972bcdc68fb8a39a3a11f5a922f20018e3c4660692a35"
+    },
+    {
+      "Path": "guardian.log",
+      "Bytes": 182,
+      "SHA256": "51d1dd88c91c09d6b88d96e895ee088b59827a2fd795c44a0245bccc11d24ae4",
+      "StoredPath": "guardian.log.gz",
+      "StoredBytes": 165,
+      "StoredSHA256": "7cdba1caa0bd4c24b73f6b7923d48a7524e2bdb5c5fc6bdf4be33dc411083cbc"
+    },
+    {
+      "Path": "package-manifest.json",
+      "Bytes": 143694,
+      "SHA256": "09e25d36e4fa106d02f960e088e1c6cc749fe33eb3d85f7f205eb49972a57ee3",
+      "StoredPath": "package-manifest.json.gz",
+      "StoredBytes": 38066,
+      "StoredSHA256": "8cf3606d51dbff70eebfbb8caa32ff72684920bda3ef34c5950d1c8bcbefa1e9"
+    },
+    {
+      "Path": "play/.boe_runtime/gm-runs/main.json",
+      "Bytes": 693,
+      "SHA256": "540931cdab0970bdc25fe626b6d112dc3cb406fe9e5c84608c77193e20d49e80",
+      "StoredPath": "play/.boe_runtime/gm-runs/main.json.gz",
+      "StoredBytes": 304,
+      "StoredSHA256": "52ce8f3f7b178059c1217253a9f4ddfeaf8866c8b614470e3623a5f8e371e4d0"
+    },
+    {
+      "Path": "play/.boe_runtime/locks/canonical-write.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredPath": "play/.boe_runtime/locks/canonical-write.lock.gz",
+      "StoredBytes": 20,
+      "StoredSHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "play/.boe_runtime/locks/gm-main-owner.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredPath": "play/.boe_runtime/locks/gm-main-owner.lock.gz",
+      "StoredBytes": 20,
+      "StoredSHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "play/.boe_runtime/locks/session-lifecycle.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredPath": "play/.boe_runtime/locks/session-lifecycle.lock.gz",
+      "StoredBytes": 20,
+      "StoredSHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "play/.boe_runtime/session-generation/current.json",
+      "Bytes": 69,
+      "SHA256": "6561eb55e9c71a6dded7c293e3b4576c353029c5deee19352b30749ce6b07e48",
+      "StoredPath": "play/.boe_runtime/session-generation/current.json.gz",
+      "StoredBytes": 87,
+      "StoredSHA256": "987bb7fcdefb95c4df87362c1501d6541d72e13026e01322c00a7e341f776856"
+    },
+    {
+      "Path": "play/.boe_runtime/worker-runs-v1/journal.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredPath": "play/.boe_runtime/worker-runs-v1/journal.lock.gz",
+      "StoredBytes": 20,
+      "StoredSHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "play/.boe_runtime/worker-runs-v1/mode.json",
+      "Bytes": 77,
+      "SHA256": "42580b7ce0455d8061e363e3d01f961763d68bf8f5324d03a867e331935cec99",
+      "StoredPath": "play/.boe_runtime/worker-runs-v1/mode.json.gz",
+      "StoredBytes": 96,
+      "StoredSHA256": "3395bcd343c32b4138c704b750178ebaac3d290c257465b2dbfd152e6ab17a42"
+    },
+    {
+      "Path": "play/.boe_runtime/worker-runs-v1/owner.lock",
+      "Bytes": 0,
+      "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "StoredPath": "play/.boe_runtime/worker-runs-v1/owner.lock.gz",
+      "StoredBytes": 20,
+      "StoredSHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "Path": "play/.boe_runtime/worker-runs-v1/state.json",
+      "Bytes": 109,
+      "SHA256": "cacda95be90b2daaf07f3501fd22da84dca1aeaf48a9991813d92f797b8443af",
+      "StoredPath": "play/.boe_runtime/worker-runs-v1/state.json.gz",
+      "StoredBytes": 122,
+      "StoredSHA256": "ee0e3d87b64e7ebb55c5b9434d49c9f4f12ec28874681d97a678bb34d33418a0"
+    },
+    {
+      "Path": "play/game_session/config.json",
+      "Bytes": 1096,
+      "SHA256": "bb6f3d8cd3df3f0e275d84251703b4abd67c4800ac165a352611281750cfeb2c",
+      "StoredPath": "play/game_session/config.json.gz",
+      "StoredBytes": 572,
+      "StoredSHA256": "08ac08010dbcb322936a8d1b35f29a58b845625a760ea7caa5dd9b1d1417ddf4"
+    },
+    {
+      "Path": "play/game_session/game_state/control/gm_bridge_status.json",
+      "Bytes": 2734,
+      "SHA256": "d7bdd3070435105f58fbef65cdd261960a334459fddab132a1ac7e17d663beef",
+      "StoredPath": "play/game_session/game_state/control/gm_bridge_status.json.gz",
+      "StoredBytes": 662,
+      "StoredSHA256": "64fdbcbff4937f4ba4107f4fa1a9114da0b8a47c3e70b6dafb0d2af70ba19a95"
+    },
+    {
+      "Path": "play/game_session/game_state/control/gm_daemon_status.json",
+      "Bytes": 569,
+      "SHA256": "b24804c5a4fc0f500d1d7feab1c38743e542aa0e4cfe7f8aa2461d21a5d40847",
+      "StoredPath": "play/game_session/game_state/control/gm_daemon_status.json.gz",
+      "StoredBytes": 332,
+      "StoredSHA256": "51103a09126a33f836ce41916b34653c529a55e58cdece571ce7d14652b2dbcf"
+    },
+    {
+      "Path": "play/game_session/game_state/control/gm_turn_helper.bootstrap.ps1",
+      "Bytes": 175,
+      "SHA256": "82c835fab99ef8fff93b56170000c0728762e857691881e8ebad02d0f3a4dd20",
+      "StoredPath": "play/game_session/game_state/control/gm_turn_helper.bootstrap.ps1.gz",
+      "StoredBytes": 145,
+      "StoredSHA256": "eb8279b9af1a083f3048e60f606376c995c8caa68cc57101bdb7b7080d62cef0"
+    },
+    {
+      "Path": "play/game_session/game_state/control/progression_schedule.json",
+      "Bytes": 1022,
+      "SHA256": "c0e3d6660bbd986c9332e0a9fde9506dad22866853f9dfda9bfa00d3d4fd8a9b",
+      "StoredPath": "play/game_session/game_state/control/progression_schedule.json.gz",
+      "StoredBytes": 370,
+      "StoredSHA256": "30a0878bff115264316cb32140504874b4e485c8ded557047a5f4bf0661ecf82"
+    },
+    {
+      "Path": "play/game_session/game_state/core/game_settings.json",
+      "Bytes": 184,
+      "SHA256": "df915c18492a2cb5f22938df7a096b4a24d52e602498f1378f95887c58050c26",
+      "StoredPath": "play/game_session/game_state/core/game_settings.json.gz",
+      "StoredBytes": 164,
+      "StoredSHA256": "21da9fbc82c189fb780b07a7f09426041c78d42b46163c8a82ef02ee7694b92d"
+    },
+    {
+      "Path": "play/game_session/game_state/core/system_mods.json",
+      "Bytes": 191,
+      "SHA256": "6fb80ea5de74794c2d81df25b46ea8620261ce4ed5090d2b525115b617e1cdaa",
+      "StoredPath": "play/game_session/game_state/core/system_mods.json.gz",
+      "StoredBytes": 149,
+      "StoredSHA256": "4dd19a6543a7803667c1532d278cfd89fdc43ac6237a4a847ffb34be7c1538bc"
+    },
+    {
+      "Path": "play/game_session/game_state/history/chat_log.json",
+      "Bytes": 100,
+      "SHA256": "f43cf05c6ae0ce75ceaf4320358a313afa038447f25ab4f2275e2267dad00a64",
+      "StoredPath": "play/game_session/game_state/history/chat_log.json.gz",
+      "StoredBytes": 110,
+      "StoredSHA256": "5b55dfc4fbc46cf422e58e03b9b5cfb050e5a027b2a725561533b2a5c9076728"
+    },
+    {
+      "Path": "play/game_session/game_state/inventory/item_identity_index.json",
+      "Bytes": 44,
+      "SHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "StoredPath": "play/game_session/game_state/inventory/item_identity_index.json.gz",
+      "StoredBytes": 61,
+      "StoredSHA256": "56ae4a875768c0bc0b169892386f1b8607e2f33c23662fff26453e54c8412cf7"
+    },
+    {
+      "Path": "play/game_session/game_state/meta/achievements.json",
+      "Bytes": 402,
+      "SHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "StoredPath": "play/game_session/game_state/meta/achievements.json.gz",
+      "StoredBytes": 202,
+      "StoredSHA256": "ac3671cea22ae422db0038a882b520f100e98884d55a67a2697503d952a3999b"
+    },
+    {
+      "Path": "play/game_session/game_state/meta/afterlife_chronicles.json",
+      "Bytes": 47,
+      "SHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "StoredPath": "play/game_session/game_state/meta/afterlife_chronicles.json.gz",
+      "StoredBytes": 64,
+      "StoredSHA256": "3b652af7e573acf0b7424f0660a6e14401acd9e6fe0030cfffd2fbf76e9437d9"
+    },
+    {
+      "Path": "play/game_session/game_state/meta/afterlife_entity_profiles.json",
+      "Bytes": 6852,
+      "SHA256": "fe421fff2f65a4299cad6e331f3763a464c1730ab5e303b37641c573e0846591",
+      "StoredPath": "play/game_session/game_state/meta/afterlife_entity_profiles.json.gz",
+      "StoredBytes": 1891,
+      "StoredSHA256": "8dcf5e641b101f1dbaa4a160a416c5396da7e220dd1a91e34e7d9f7bc71ae0e8"
+    },
+    {
+      "Path": "play/game_session/game_state/meta/afterlife_global_flags.json",
+      "Bytes": 42,
+      "SHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "StoredPath": "play/game_session/game_state/meta/afterlife_global_flags.json.gz",
+      "StoredBytes": 59,
+      "StoredSHA256": "324b7cf437d226f9fe5fec710ce6382c5d9bdc86ec9a84d02767f26d4c96194a"
+    },
+    {
+      "Path": "play/game_session/game_state/meta/afterlife_spiritual_conflict_state.json",
+      "Bytes": 78,
+      "SHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "StoredPath": "play/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "StoredBytes": 84,
+      "StoredSHA256": "7bd3800591e20ebecccfa1e3906ae366c04e12063825958865bbbb8ddc2839cd"
+    },
+    {
+      "Path": "play/game_session/game_state/meta/character_chronicle.json",
+      "Bytes": 1155,
+      "SHA256": "2afbd240780638f4890bbf95f72da7812abdbd9a56cf2d7bc961d911c2402670",
+      "StoredPath": "play/game_session/game_state/meta/character_chronicle.json.gz",
+      "StoredBytes": 497,
+      "StoredSHA256": "9203ba1a948bf7655a32c6d3bc8e5327e6c2b1b8925a32cd8df47517d2c7f8fe"
+    },
+    {
+      "Path": "play/game_session/game_state/meta/guardian_projects.json",
+      "Bytes": 91,
+      "SHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "StoredPath": "play/game_session/game_state/meta/guardian_projects.json.gz",
+      "StoredBytes": 84,
+      "StoredSHA256": "70cd63d812d6638477df713eca61331c77b75d91047226282cc0e337d7173a20"
+    },
+    {
+      "Path": "play/game_session/game_state/meta/guardians.json",
+      "Bytes": 20298,
+      "SHA256": "d9c04d5c34c53150297bd548f218be9734c40c524bf8a4e567b325c65eb9e6be",
+      "StoredPath": "play/game_session/game_state/meta/guardians.json.gz",
+      "StoredBytes": 2584,
+      "StoredSHA256": "b2d96971661fdc6c8e702cac1f7bbe20f950a3fe753ed6ae9c72a1382edc218b"
+    },
+    {
+      "Path": "play/game_session/game_state/meta/soul_state.json",
+      "Bytes": 853,
+      "SHA256": "a7f184286d72f793cfed021183db5a64513def3818e83dea892c142e474730fd",
+      "StoredPath": "play/game_session/game_state/meta/soul_state.json.gz",
+      "StoredBytes": 462,
+      "StoredSHA256": "ac88d7527a27f7a9ae01c84ff403ab2be0513f9a265f1ac171ba8a1d566cec85"
+    },
+    {
+      "Path": "play/game_session/game_state/resources/resource_definitions.json",
+      "Bytes": 6885,
+      "SHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "StoredPath": "play/game_session/game_state/resources/resource_definitions.json.gz",
+      "StoredBytes": 924,
+      "StoredSHA256": "0db87404f712c0841de798ec3be6f4444ab4085ac95e2ab851ec3cd7df01046d"
+    },
+    {
+      "Path": "play/game_session/game_state/resources/resource_history.json",
+      "Bytes": 35,
+      "SHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "StoredPath": "play/game_session/game_state/resources/resource_history.json.gz",
+      "StoredBytes": 55,
+      "StoredSHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "play/game_session/game_state/resources/resource_owner_authority.json",
+      "Bytes": 64,
+      "SHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "StoredPath": "play/game_session/game_state/resources/resource_owner_authority.json.gz",
+      "StoredBytes": 80,
+      "StoredSHA256": "dbd4a1ad720bfa86a95206ab350be7b590346d737f6f63c315aac0a95f2eefae"
+    },
+    {
+      "Path": "play/game_session/game_state/resources/resource_state.json",
+      "Bytes": 35,
+      "SHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "StoredPath": "play/game_session/game_state/resources/resource_state.json.gz",
+      "StoredBytes": 55,
+      "StoredSHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "play/game_session/game_state/wounds/wound_history.json",
+      "Bytes": 55,
+      "SHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "StoredPath": "play/game_session/game_state/wounds/wound_history.json.gz",
+      "StoredBytes": 71,
+      "StoredSHA256": "6665815b9eceb7b38c66ce95cd25c6cfc0cc5a327bb2c2ae5127b3ef098399c6"
+    },
+    {
+      "Path": "play/game_session/game_state/wounds/wound_identity_index.json",
+      "Bytes": 35,
+      "SHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "StoredPath": "play/game_session/game_state/wounds/wound_identity_index.json.gz",
+      "StoredBytes": 55,
+      "StoredSHA256": "06c502de423a3befecf6b1b438cd174660ba568295790b13e22c92806ac7ef37"
+    },
+    {
+      "Path": "play/game_session/lore/chaos_sea/cosmology.json",
+      "Bytes": 1114,
+      "SHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "StoredPath": "play/game_session/lore/chaos_sea/cosmology.json.gz",
+      "StoredBytes": 594,
+      "StoredSHA256": "67bd71fbfb6fbe7791d3e58e273be0e5947fccc8860a97bfa43a3c35b95959e1"
+    },
+    {
+      "Path": "play/game_session/lore/chaos_sea/guardians_lore.json",
+      "Bytes": 1107,
+      "SHA256": "1bee57d5c914943f31bcf6bb60b256985a119b43b72ddb85a741a8e1a87d2ee6",
+      "StoredPath": "play/game_session/lore/chaos_sea/guardians_lore.json.gz",
+      "StoredBytes": 568,
+      "StoredSHA256": "33287e467f9ff2aa91b6af7e46c90fa295e255d991d568eae555341ea34dba70"
+    },
+    {
+      "Path": "play/game_session/lore/chaos_sea/player_chronicle.json",
+      "Bytes": 22,
+      "SHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "StoredPath": "play/game_session/lore/chaos_sea/player_chronicle.json.gz",
+      "StoredBytes": 42,
+      "StoredSHA256": "6c9bc1e4f178ca9d96703c56afaec02397cc341a6f85afbbcf9644ede2d3a925"
+    },
+    {
+      "Path": "play/game_session/lore/chaos_sea/soul_system_lore.json",
+      "Bytes": 875,
+      "SHA256": "3e395107cbe35a63dfe2af30f79cfccda6e5a7d330b7cdcc25f80def64a0a391",
+      "StoredPath": "play/game_session/lore/chaos_sea/soul_system_lore.json.gz",
+      "StoredBytes": 517,
+      "StoredSHA256": "009b6eee924b9c60bd6b399ed869719c67526e113487514c04b596174d5a4257"
+    },
+    {
+      "Path": "play/game_session/lore/codex_entries.json",
+      "Bytes": 3034,
+      "SHA256": "7b27a03a69e65b80627b36ed3461bb3eb54a5d19c081fd24c96008fba6191d3c",
+      "StoredPath": "play/game_session/lore/codex_entries.json.gz",
+      "StoredBytes": 863,
+      "StoredSHA256": "855d63d08ae79fc281eea13d67ead8bab96bca0367c4ef0b0dea1f1ca440f8de"
+    },
+    {
+      "Path": "probe-result.json",
+      "Bytes": 70913,
+      "SHA256": "8bb5955b53d1b966167ce03340f22417f977a7674b232bcc4cbf28f0957e9624",
+      "StoredPath": "probe-result.json.gz",
+      "StoredBytes": 19650,
+      "StoredSHA256": "efc64fd3defb29524fbe2d4cddeb4dea9b4aafc418e5eeaaee4dc3b631ca48bd"
+    },
+    {
+      "Path": "rpc-journal.json",
+      "Bytes": 564930,
+      "SHA256": "bde1f4078ad06283e1ff362c0862ef5439d3c7f83c0ebf03f64f8959fdf1fcc3",
+      "StoredPath": "rpc-journal.json.gz",
+      "StoredBytes": 8678,
+      "StoredSHA256": "6776787a13bfb56d0e5f63114929ec84c71b1327b67b53611a5882547551fd59"
+    }
+  ]
+}

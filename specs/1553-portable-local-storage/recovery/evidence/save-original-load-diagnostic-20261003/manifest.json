@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "7c52a5e6bc2165a0a1cc1179f89f43e6749dac56",
+  "status": "Fresh7c52 exact original-load controls0/2. Full logged exception shows ordinary acquisition rejects extraction staging before BeginLoad/refresh; pre-existing admission boundary versus new refresh dispatch under independent analysis.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-original-load"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:59.2441542",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 0,
+    "Failed": 2
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "742372298448221269CFC824720A85C4F53B38DDE0DD05FA4254288766EE58B1",
+      "sha256": "17C31556C20EA6974393CE14AAE41B4ABF476D403D8E8F94A7E4B8AA77CE21D6"
+    },
+    {
+      "path": "portable-save-original-load-integration-001.trx",
+      "originalSha256": "E2E218D5F9BB9E5D630B2058040A6E73D73663C7B919396486B9751F215458E5",
+      "sha256": "DFECB44679A0A7B017D419395C3A71C51E154BA710AE2A935C31954A872942A4"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "3F57223EA642DC06A57DFFCF0239402ED7C282392A08F89A1FBF6427792B0DE5",
+      "sha256": "7517E06A1F832A8A55C3FD5FB9A76B154DFE9F113F0D0A1F24ECA788EFFA3466"
+    },
+    {
+      "path": "Build-integration.log",
+      "originalSha256": "6EA2595F3782459A7FC551C9E06FBE7DE5C841C6F6CE9FC918BD72ABC843C165",
+      "sha256": "E3C37178D9B07F2365308D02ABB10B7A58BD96B5B50436A7893C439B30A47A92",
+      "transform": "complete sanitized text"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "Commit": "63c1383884f03294d82da8e6bb46d1d0d25644cb",
+  "Tree": "4727fea1431e2643d0cc92e4f9d537db92f9aaaf",
+  "Parent": "e5bb12d865341b2574cb4dd30f828fe56988c936",
+  "RestoredDirectory": "/workspace/github-1553-terminal-design-candidate",
+  "Transport": "fresh clone from GitHub HTTPS only; no local source/object/cache reuse",
+  "Clean": true,
+  "TrackedFilesByteCompared": 13137,
+  "Comparison": "each restored and writer checkout file byte-identical to independent GitHub-fetched blob",
+  "ConnectivityFsck": true,
+  "RemoteAfterRestoration": "63c1383884f03294d82da8e6bb46d1d0d25644cb",
+  "TestsExecutedForRestoration": 0
+}

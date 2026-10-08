@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "Head": "26c0327c20b41e82e647287a455b7a8018f0796a",
+    "WorkingTreeFingerprint": "CD64227C05F9D87A0B9D39E2BE7760AAD9E9872F06BD236CEF6F3F1C9CD11862",
+    "ChangedFiles": 1
+  },
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-storage-stream-dispatch -Parallelism 1",
+  "summary": {
+    "ExitCode": 0,
+    "WallTime": "00:02:26.4767827",
+    "Tests": {
+      "Total": 4,
+      "Executed": 4,
+      "Passed": 4,
+      "Failed": 0
+    },
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 4,
+      "CompletedCases": 4,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "DuplicateTests": []
+  },
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalBytes": 1563,
+      "sanitizedBytes": 1563,
+      "originalSha256": "afa99c091fa04bf3d1fa8d929ba41fc7c11a9ee7e06c38a24ba747a9bab4b28d",
+      "sanitizedSha256": "afa99c091fa04bf3d1fa8d929ba41fc7c11a9ee7e06c38a24ba747a9bab4b28d"
+    },
+    {
+      "file": "plan.json",
+      "originalBytes": 1451,
+      "sanitizedBytes": 1451,
+      "originalSha256": "220d89d49b5442e31c0db6ee415bcfc832abb5c275552748497782cfb7696158",
+      "sanitizedSha256": "220d89d49b5442e31c0db6ee415bcfc832abb5c275552748497782cfb7696158"
+    },
+    {
+      "file": "portable-storage-stream-dispatch-unit-001.trx",
+      "originalBytes": 14095,
+      "sanitizedBytes": 12827,
+      "originalSha256": "860f1cd9a47a126df7a296753b5be45474f32a50b669fdaeceff94900e319934",
+      "sanitizedSha256": "83ae6f9eb7d8da8ac502e1c357261dee916cb4f51e63e2cff3ea352b28f304ad"
+    }
+  ],
+  "sanitization": "Role-based TEST_REPO/WORKSPACE/TEST_HOST tokens without angle brackets; sanitized TRX parsed as XML. Original hashes retained.",
+  "packet": {
+    "schemaVersion": 1,
+    "baseCommit": "a8a9f30020ee1c58576560b53f36452e85e984dd",
+    "patchFile": "save-creation-pending.patch",
+    "patchBytes": 5297,
+    "patchSha256": "9eaf741fc068b9e5b1e0cc52458476381115f652c531f10efb42b792b57ad3d3",
+    "entries": [
+      {
+        "path": "tests/categories.json",
+        "beforeBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+        "afterBlob": "15baf6e54171ec75cba96caceffda864cbbe787a",
+        "beforeSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08",
+        "afterSha256": "67ce98b124c6bee052f099881681f4e8baa7e76084a7016678599f877c949f92"
+      }
+    ],
+    "appliedSourceTree": "08684d201d50d16cef0f58e87646db58fdb82355",
+    "comparisonExcludes": [
+      "specs/1553-portable-local-storage/recovery/save-creation-pending.patch",
+      "specs/1553-portable-local-storage/recovery/save-creation-pending.json"
+    ],
+    "scope": "T032-A ordinary save creation; current plan records exact execution and remaining scope"
+  },
+  "reconciliation": {
+    "mode": "Read-only inspection of already completed output; no test or application was rerun.",
+    "completedLogMtimeUtc": "2026-10-02T02:05:32Z",
+    "verifiedUtc": "2026-10-02T02:09:11Z",
+    "sourceVerification": "Test copy remains at the tested HEAD; its only tracked delta is the exact catalog after-image from the saved packet.",
+    "laterAgentRestriction": "The later agent turn ended with a platform cybersecurity-content restriction. Its triggering operation is not identified by the notification; this completed run predates the restriction.",
+    "remaining": "No runtime continuation of the restricted diagnostic. Subsequent local cold-recovery scaffold is unrun WIP. Full prerequisite, resource and native acceptance remain open."
+  }
+}

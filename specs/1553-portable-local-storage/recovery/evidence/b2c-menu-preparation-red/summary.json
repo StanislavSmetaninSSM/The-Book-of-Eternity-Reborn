@@ -1,0 +1,104 @@
+{
+  "Categories": [
+    "portable-console-settings-session",
+    "portable-console-settings",
+    "portable-console-settings-client"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-console-settings-session",
+      "reason": "Ordinary-entry read-only full-set comparison and complete scoped language/font/audio preview unwind APIs, plus their established controller consumers.",
+      "contracts": [
+        "ordinary settings entry",
+        "detached preview unwind"
+      ]
+    },
+    {
+      "category": "portable-console-settings",
+      "reason": "An unchanged effective config must preserve original BOM/encoding/whitespace, avoiding manufactured entrypoint publication.",
+      "contracts": [
+        "exact unchanged config preservation",
+        "three-member preparation"
+      ]
+    },
+    {
+      "category": "portable-console-settings-client",
+      "reason": "Immediate QTE save must remain complete before interrupted-menu restart; explicit discard and blocked-save discard restore accepted locale. Exact existing menu consumers moved here, without the broad console category.",
+      "contracts": [
+        "console settings save triggers",
+        "real process settings restart",
+        "discard and owner-block UI"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "b60f1f6de81ae4bd0251369867e22b5dd44aba92",
+    "WorkingTreeFingerprint": "0B06B49D8772C330C016B5DE5E643F4C85D87FAF285136E5454746DF6501C407",
+    "ChangedFiles": 1
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-console-settings",
+      "Seconds": 3.9747584,
+      "BudgetMinutes": 4,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0588986,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0123171,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0161023,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 187.6788217,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 42.9373467,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 18,
+  "WallTime": "00:04:03.3679675",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 42,
+    "CompletedCases": 13,
+    "UnderfilledDescriptors": [
+      "portable-console-settings-client-integration-002",
+      "portable-console-settings-session-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 13,
+    "Executed": 13,
+    "Passed": 12,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

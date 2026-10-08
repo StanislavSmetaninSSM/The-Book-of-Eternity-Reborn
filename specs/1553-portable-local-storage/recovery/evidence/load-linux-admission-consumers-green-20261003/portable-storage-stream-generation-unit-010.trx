@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="29194bab-50e1-4460-a110-6fdc43336305" name="@95e438a3e5cb 2026-10-03 19:51:50" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T19:51:50.6053999-04:00" queuing="2026-10-03T19:51:50.6053999-04:00" start="2026-10-03T19:51:47.2734055-04:00" finish="2026-10-03T19:51:51.0157847-04:00" />
+  <TestSettings name="default" id="ada1d5a8-9766-483a-bd67-b76f12daef66">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-03_19_51_50" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="14a860bc-fd31-4e84-87db-bfd205582100" testId="c0851384-d913-ff2a-f817-1e61ae78f3e9" testName="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: True, cut: &quot;generation-published&quot;, committed: False)" computerName="95e438a3e5cb" duration="00:00:00.3962117" startTime="2026-10-03T19:51:49.2967627-04:00" endTime="2026-10-03T19:51:49.2967773-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="14a860bc-fd31-4e84-87db-bfd205582100">
+      <Output>
+        <StdOut>mode=generation-fresh-publish; cut=generation-published; sampledPeakBytes=61599744; milliseconds=201.5192; {"HeapBytes":805306368,"Mode":"generation-fresh-publish","GenerationAfterBytes":"eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiIzZDQwYjZmZWRmOWI0ZDhjYTA4NzVkZGE2ZmM5ZDAyMyJ9","GenerationAfterId":"3d40b6fedf9b4d8ca0875dda6fc9d023","GenerationBeforeExists":false,"GenerationBeforeId":null,"MemberCount":4,"CreatedEmptyExists":true,"CreatedEmptyLength":0,"DeletedEmptyBeforeExists":true,"DeletedEmptyBeforeLength":0,"DeletedEmptyAfterExists":false,"Phase":"AbruptExit","Cut":"MemberPublished","Index":3}
+
+mode=generation-recover; cut=unused; sampledPeakBytes=59154432; milliseconds=138.7751; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368,"GenerationId":null,"GenerationBytes":null}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="82a6bd54-c569-428b-91b9-10404745e07b" testId="aedb3ee7-2c66-25e2-56b5-6edefaa78c29" testName="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: True, cut: &quot;generation-staged&quot;, committed: False)" computerName="95e438a3e5cb" duration="00:00:00.3139075" startTime="2026-10-03T19:51:50.9563468-04:00" endTime="2026-10-03T19:51:50.9563470-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="82a6bd54-c569-428b-91b9-10404745e07b">
+      <Output>
+        <StdOut>mode=generation-fresh-publish; cut=generation-staged; sampledPeakBytes=61140992; milliseconds=165.5791; {"HeapBytes":805306368,"Mode":"generation-fresh-publish","GenerationAfterBytes":"eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJkNmQ3NjZmM2VkMWE0MGRmYTE2MjRkYTc5ZmM4MDI5ZCJ9","GenerationAfterId":"d6d766f3ed1a40dfa1624da79fc8029d","GenerationBeforeExists":false,"GenerationBeforeId":null,"MemberCount":4,"CreatedEmptyExists":true,"CreatedEmptyLength":0,"DeletedEmptyBeforeExists":true,"DeletedEmptyBeforeLength":0,"DeletedEmptyAfterExists":false,"Phase":"AbruptExit","Cut":"MemberStaged","Index":3}
+
+mode=generation-recover; cut=unused; sampledPeakBytes=58855424; milliseconds=138.6638; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368,"GenerationId":null,"GenerationBytes":null}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="01559d43-e71e-4b9e-9378-53553256770e" testId="bcea7eb3-4f17-cc0e-2583-36ee74445f37" testName="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: True, cut: &quot;Committed&quot;, committed: True)" computerName="95e438a3e5cb" duration="00:00:00.3726678" startTime="2026-10-03T19:51:50.6419654-04:00" endTime="2026-10-03T19:51:50.6419655-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="01559d43-e71e-4b9e-9378-53553256770e">
+      <Output>
+        <StdOut>mode=generation-fresh-publish; cut=Committed; sampledPeakBytes=61612032; milliseconds=193.5615; {"HeapBytes":805306368,"Mode":"generation-fresh-publish","GenerationAfterBytes":"eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJmOTVmZjBiODVkODk0YTNkYjI0YzM1MTlmMGExMmU2MyJ9","GenerationAfterId":"f95ff0b85d894a3db24c3519f0a12e63","GenerationBeforeExists":false,"GenerationBeforeId":null,"MemberCount":4,"CreatedEmptyExists":true,"CreatedEmptyLength":0,"DeletedEmptyBeforeExists":true,"DeletedEmptyBeforeLength":0,"DeletedEmptyAfterExists":false,"Phase":"AbruptExit","Cut":"Committed","Index":-1}
+
+mode=generation-recover; cut=unused; sampledPeakBytes=60018688; milliseconds=169.8878; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368,"GenerationId":"f95ff0b85d894a3db24c3519f0a12e63","GenerationBytes":"eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJmOTVmZjBiODVkODk0YTNkYjI0YzM1MTlmMGExMmU2MyJ9"}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0d0729f8-74ae-4315-ab9d-01cf43699f5e" testId="11f4e0ec-489f-39e4-3849-80c30f6d29e6" testName="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: False, cut: &quot;generation-published&quot;, committed: False)" computerName="95e438a3e5cb" duration="00:00:00.3163791" startTime="2026-10-03T19:51:49.6124044-04:00" endTime="2026-10-03T19:51:49.6124046-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0d0729f8-74ae-4315-ab9d-01cf43699f5e">
+      <Output>
+        <StdOut>mode=generation-transition-publish; cut=generation-published; sampledPeakBytes=60125184; milliseconds=165.1138; {"HeapBytes":805306368,"Mode":"generation-transition-publish","GenerationAfterBytes":"77u/eyJzQ2hlbWFWZXJzaW9uIjoxLCJnRW5lcmF0aW9uSWQiOiJmZWRjYmE5ODc2NTQzMjEwZmVkY2JhOTg3NjU0MzIxMCIsImV4dGVuc2lvbiI6eyJhZnRlciI6ItC90L7QstC\u002B0LUifX0=","GenerationAfterId":"fedcba9876543210fedcba9876543210","GenerationBeforeExists":true,"GenerationBeforeId":"0123456789abcdef0123456789abcdef","MemberCount":4,"CreatedEmptyExists":true,"CreatedEmptyLength":0,"DeletedEmptyBeforeExists":true,"DeletedEmptyBeforeLength":0,"DeletedEmptyAfterExists":false,"Phase":"AbruptExit","Cut":"MemberPublished","Index":3}
+
+mode=generation-recover; cut=unused; sampledPeakBytes=59031552; milliseconds=138.4466; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368,"GenerationId":"0123456789abcdef0123456789abcdef","GenerationBytes":"//57ACIAcwBDAGgARQBtAEEAdgBFAHIAUwBpAE8AbgAiADoAMQAsACIAZwBFAG4ARQByAEEAdABJAG8ATgBpAEQAIgA6ACIAMAAxADIAMwA0ADUANgA3ADgAOQBhAGIAYwBkAGUAZgAwADEAMgAzADQANQA2ADcAOAA5AGEAYgBjAGQAZQBmACIALAAiAGUAeAB0AGUAbgBzAGkAbwBuACIAOgB7ACIAYgBlAGYAbwByAGUAIgA6ACIAQQRCBDAEQAQ\u002BBDUEIgB9AH0A"}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e54b01b6-b7b2-44af-be1c-4d401fce3cc3" testId="589d429b-ed32-9086-b638-820df5cc3115" testName="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: False, cut: &quot;Committed&quot;, committed: True)" computerName="95e438a3e5cb" duration="00:00:00.3150630" startTime="2026-10-03T19:51:49.9278909-04:00" endTime="2026-10-03T19:51:49.9278911-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e54b01b6-b7b2-44af-be1c-4d401fce3cc3">
+      <Output>
+        <StdOut>mode=generation-transition-publish; cut=Committed; sampledPeakBytes=61784064; milliseconds=168.332; {"HeapBytes":805306368,"Mode":"generation-transition-publish","GenerationAfterBytes":"77u/eyJzQ2hlbWFWZXJzaW9uIjoxLCJnRW5lcmF0aW9uSWQiOiJmZWRjYmE5ODc2NTQzMjEwZmVkY2JhOTg3NjU0MzIxMCIsImV4dGVuc2lvbiI6eyJhZnRlciI6ItC90L7QstC\u002B0LUifX0=","GenerationAfterId":"fedcba9876543210fedcba9876543210","GenerationBeforeExists":true,"GenerationBeforeId":"0123456789abcdef0123456789abcdef","MemberCount":4,"CreatedEmptyExists":true,"CreatedEmptyLength":0,"DeletedEmptyBeforeExists":true,"DeletedEmptyBeforeLength":0,"DeletedEmptyAfterExists":false,"Phase":"AbruptExit","Cut":"Committed","Index":-1}
+
+mode=generation-recover; cut=unused; sampledPeakBytes=58777600; milliseconds=137.8605; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368,"GenerationId":"fedcba9876543210fedcba9876543210","GenerationBytes":"77u/eyJzQ2hlbWFWZXJzaW9uIjoxLCJnRW5lcmF0aW9uSWQiOiJmZWRjYmE5ODc2NTQzMjEwZmVkY2JhOTg3NjU0MzIxMCIsImV4dGVuc2lvbiI6eyJhZnRlciI6ItC90L7QstC\u002B0LUifX0="}</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="59a1944c-52a8-49e1-9df6-99e5317d978e" testId="23190eba-6008-7324-9b60-2c5c3ee18d56" testName="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: True, cut: &quot;before-generation&quot;, committed: False)" computerName="95e438a3e5cb" duration="00:00:00.3401777" startTime="2026-10-03T19:51:50.2686736-04:00" endTime="2026-10-03T19:51:50.2686738-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="59a1944c-52a8-49e1-9df6-99e5317d978e">
+      <Output>
+        <StdOut>mode=generation-fresh-publish; cut=before-generation; sampledPeakBytes=61321216; milliseconds=165.5645; {"HeapBytes":805306368,"Mode":"generation-fresh-publish","GenerationAfterBytes":"eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI1OGFiMzc1MzBjZjQ0OTA3YTA3NDZmY2NlMzg3YzA0MiJ9","GenerationAfterId":"58ab37530cf44907a0746fcce387c042","GenerationBeforeExists":false,"GenerationBeforeId":null,"MemberCount":4,"CreatedEmptyExists":true,"CreatedEmptyLength":0,"DeletedEmptyBeforeExists":true,"DeletedEmptyBeforeLength":0,"DeletedEmptyAfterExists":false,"Phase":"AbruptExit","Cut":"MemberPublished","Index":2}
+
+mode=generation-recover; cut=unused; sampledPeakBytes=58376192; milliseconds=166.9101; {"Phase":"CanonicalAcquisitionReturned","HeapBytes":805306368,"GenerationId":null,"GenerationBytes":null}</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: True, cut: &quot;generation-staged&quot;, committed: False)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="aedb3ee7-2c66-25e2-56b5-6edefaa78c29">
+      <Execution id="82a6bd54-c569-428b-91b9-10404745e07b" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests" name="GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: False, cut: &quot;generation-published&quot;, committed: False)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="11f4e0ec-489f-39e4-3849-80c30f6d29e6">
+      <Execution id="0d0729f8-74ae-4315-ab9d-01cf43699f5e" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests" name="GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: False, cut: &quot;Committed&quot;, committed: True)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="589d429b-ed32-9086-b638-820df5cc3115">
+      <Execution id="e54b01b6-b7b2-44af-be1c-4d401fce3cc3" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests" name="GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: True, cut: &quot;generation-published&quot;, committed: False)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c0851384-d913-ff2a-f817-1e61ae78f3e9">
+      <Execution id="14a860bc-fd31-4e84-87db-bfd205582100" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests" name="GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: True, cut: &quot;before-generation&quot;, committed: False)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="23190eba-6008-7324-9b60-2c5c3ee18d56">
+      <Execution id="59a1944c-52a8-49e1-9df6-99e5317d978e" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests" name="GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests.GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages(fresh: True, cut: &quot;Committed&quot;, committed: True)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bcea7eb3-4f17-cc0e-2583-36ee74445f37">
+      <Execution id="01559d43-e71e-4b9e-9378-53553256770e" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalStreamGenerationRecoveryTests" name="GenerationMemberCrashOrderingPreservesExactBytesAndEmptyImages" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c0851384-d913-ff2a-f817-1e61ae78f3e9" executionId="14a860bc-fd31-4e84-87db-bfd205582100" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aedb3ee7-2c66-25e2-56b5-6edefaa78c29" executionId="82a6bd54-c569-428b-91b9-10404745e07b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bcea7eb3-4f17-cc0e-2583-36ee74445f37" executionId="01559d43-e71e-4b9e-9378-53553256770e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="11f4e0ec-489f-39e4-3849-80c30f6d29e6" executionId="0d0729f8-74ae-4315-ab9d-01cf43699f5e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="589d429b-ed32-9086-b638-820df5cc3115" executionId="e54b01b6-b7b2-44af-be1c-4d401fce3cc3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="23190eba-6008-7324-9b60-2c5c3ee18d56" executionId="59a1944c-52a8-49e1-9df6-99e5317d978e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="6" executed="6" passed="6" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.13]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:00.97]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:00.99]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:03.34]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

@@ -442,6 +442,10 @@ public sealed record ApplyGateValidationCheck
 
 public sealed record WorkerBridgeStatus
 {
+    public GmWorkerExecutionIdentity? ExecutionIdentity { get; internal init; }
+    public GmWorkerStopEvidence? StopEvidence { get; internal init; }
+    public bool OutputsSettled { get; internal init; }
+    public bool CleanupDeferred { get; internal init; }
     public string WorkerId { get; init; } = "";
     public WorkerBridgeState State { get; init; } = WorkerBridgeState.Disabled;
     public bool Ready { get; init; }
@@ -453,6 +457,11 @@ public sealed record WorkerBridgeStatus
 
 public sealed record GmWorkerTaskRunResult
 {
+    internal GmWorkerExecutionAuthority? ExecutionAuthority { get; init; }
+    public GmWorkerExecutionIdentity? ExecutionIdentity => ExecutionAuthority?.Identity;
+    public GmWorkerStopEvidence? StopEvidence => ExecutionAuthority?.StopEvidence;
+    public bool OutputsSettled => ExecutionAuthority?.OutputsSettled == true;
+    public bool HasValidatedExecutionFor(WorkerTaskPacket task) => ExecutionAuthority?.Allows(this, task) == true;
     public WorkerBridgeStatus Status { get; init; } = new();
     public IReadOnlyList<WorkerBridgeStatus> StatusHistory { get; init; } = [];
     public WorkerProposal? Proposal { get; init; }

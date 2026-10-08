@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "gm-main-production-admission",
+    "gm-main-linux-launcher"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-main-production-admission",
+      "reason": "#1553 M1 Consumed production main/root admission and retained independent worker/storage conjunction, configured neutral-only Linux fixture; causal RED from accepted design checkpoint before production corrections. Current fixture delta qualifies compiler-absent shipped startup and live original consumer pins; successful sixteen directly affected old cases at ee5d62b1 are retained without rerun.",
+      "contracts": [
+        "#1553 T041-PRODUCTION-MAIN-M1 original authority/run fence/T042, shipped no-build ordinary Linux entrypoint"
+      ]
+    },
+    {
+      "category": "gm-main-linux-launcher",
+      "reason": "#1553 M1 Actual ordinary Linux launcher/daemon/console entrypoints in relocated shipped layout, configured neutral-only fixture; causal RED from accepted design checkpoint before production corrections. Current fixture delta qualifies compiler-absent shipped startup and live original consumer pins; successful sixteen directly affected old cases at ee5d62b1 are retained without rerun.",
+      "contracts": [
+        "#1553 T041-PRODUCTION-MAIN-M1 original authority/run fence/T042, shipped no-build ordinary Linux entrypoint"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "6d111cccf9ad740a12cd466fe9be32a11957a65f",
+    "WorkingTreeFingerprint": "7D17031C95166B30E7C6EBE4F323A7D8E92FF7409A956E55E8FAF3C257E928C5",
+    "ChangedFiles": 161
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0757073,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.5915073,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1588057,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0043779,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 13,
+  "WallTime": "00:00:07.0748232",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 19,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "gm-main-linux-launcher-unit-001",
+      "gm-main-production-admission-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -1,0 +1,135 @@
+{
+  "Categories": [
+    "portable-ordinary-readers",
+    "portable-ordinary-read-consumers",
+    "portable-storage-consumers",
+    "portable-client-bootstrap"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-ordinary-readers",
+      "reason": "T030-E ordinary content/presence cutover: exact data, ownership, timestamp, cancellation, hard-linked real publication input and Linux FIFO boundaries. Initial RED runs only this owner.",
+      "contracts": [
+        "ordinary reads",
+        "pre-open non-following type checks",
+        "owning lease and handle timestamp"
+      ]
+    },
+    {
+      "category": "portable-ordinary-read-consumers",
+      "reason": "GREEN selection preserves ordinary type/retry/absence and common-journal recovery, real coordinated baseline/rollback ownership and original-handler source guard.",
+      "contracts": [
+        "recovery/quiescence",
+        "coordinated publication",
+        "retained original authority"
+      ]
+    },
+    {
+      "category": "portable-storage-consumers",
+      "reason": "Sharing the B2 read core affects the already-migrated ordinary writers and LocalUiSessionLockService, including actual stale malformed timestamp fallback.",
+      "contracts": [
+        "B2 ordinary writers",
+        "UI ownership and timestamps"
+      ]
+    },
+    {
+      "category": "portable-client-bootstrap",
+      "reason": "The shared B2 before-image reader serves actual StateManager config/bootstrap. Cover absent config/generation, preserved existing config and integrated FIFO/hard-link bootstrap plus legacy admission; common recovery selectors are deduplicated.",
+      "contracts": [
+        "actual client bootstrap",
+        "portable before-image input",
+        "original recovery admission"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "e688dfbeea2890c96691215306a02faa8760be9c",
+    "WorkingTreeFingerprint": "E331933FD742157164FF6244F4F0F19B85C1842A0C698D13FBBB8DCC99364B80",
+    "ChangedFiles": 4
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-client-bootstrap",
+      "Seconds": 7.1784134,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-ordinary-read-consumers",
+      "Seconds": 10.0625964,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-ordinary-readers",
+      "Seconds": 9.9627793,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-consumers",
+      "Seconds": 10.1345902,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.2889454,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0348612,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0275246,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 253.8564375,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 57.217818,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0050067,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 21,
+  "WallTime": "00:06:00.3004909",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 7,
+    "CompletedDescriptors": 7,
+    "PlannedCases": 76,
+    "CompletedCases": 76,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 76,
+    "Executed": 76,
+    "Passed": 76,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

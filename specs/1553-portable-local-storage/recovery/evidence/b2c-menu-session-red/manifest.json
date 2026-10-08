@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "b60f1f6de81ae4bd0251369867e22b5dd44aba92",
+  "catalogBlobAfterPatch": "161d1afde1d97bc3d158863c92b51d90eaec48c9",
+  "kind": "newly executed b2c-menu-session-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "e9ff0d64c8d06c9821e41c9bc47b343e4e4eeeb0311d4f41fc66fb377bd0d76c",
+      "sanitizedSha256": "e9ff0d64c8d06c9821e41c9bc47b343e4e4eeeb0311d4f41fc66fb377bd0d76c"
+    },
+    {
+      "path": "portable-console-settings-session-unit-001.trx",
+      "originalSha256": "57115e9989b05f2f34a862d91877c5cabdbbb92470e1b1bec33190ca145713f0",
+      "sanitizedSha256": "710884cb4cbbe7a4e90c2410855e9fcd2d1b665756efad0d1d302efa51b0afa1"
+    }
+  ]
+}

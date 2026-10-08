@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="7aaf899a-aeda-4578-b6a5-d511e2ff4b72" name="@c7669543e9c7 2026-10-05 22:08:12" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T22:08:12.0362333+00:00" queuing="2026-10-05T22:08:12.0362333+00:00" start="2026-10-05T22:08:10.0534043+00:00" finish="2026-10-05T22:08:12.0765114+00:00" />
+  <TestSettings name="default" id="275d9f53-5df1-415a-a10b-c6216ff8227f">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_22_08_12" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="cc8d3426-ca92-47c8-b663-f3b1905025b4" testId="457278ba-1a0b-d2ca-36b7-df47b257180d" testName="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: False)" computerName="c7669543e9c7" duration="00:00:00.0005243" startTime="2026-10-05T22:08:11.9298207+00:00" endTime="2026-10-05T22:08:11.9298208+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cc8d3426-ca92-47c8-b663-f3b1905025b4" />
+    <UnitTestResult executionId="5d64dccc-fd09-407e-ac98-88f613636163" testId="b7653ecf-d636-02eb-70e8-2504bcb89c2d" testName="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: True)" computerName="c7669543e9c7" duration="00:00:00.0059118" startTime="2026-10-05T22:08:11.9264643+00:00" endTime="2026-10-05T22:08:11.9264797+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5d64dccc-fd09-407e-ac98-88f613636163" />
+    <UnitTestResult executionId="e32cf009-9128-427e-988f-7fb00851d8bc" testId="511b228c-4db9-3afa-e18c-5f95809e7451" testName="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: False)" computerName="c7669543e9c7" duration="00:00:00.0004877" startTime="2026-10-05T22:08:12.0108050+00:00" endTime="2026-10-05T22:08:12.0108052+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e32cf009-9128-427e-988f-7fb00851d8bc" />
+    <UnitTestResult executionId="f50a51e3-96e1-47e5-9592-b0d9d60d6a39" testId="c03965f8-84cd-0f5e-ee4a-11f9c3bcd5cc" testName="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: True)" computerName="c7669543e9c7" duration="00:00:00.0616405" startTime="2026-10-05T22:08:11.9898579+00:00" endTime="2026-10-05T22:08:11.9898581+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f50a51e3-96e1-47e5-9592-b0d9d60d6a39" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c03965f8-84cd-0f5e-ee4a-11f9c3bcd5cc">
+      <Execution id="f50a51e3-96e1-47e5-9592-b0d9d60d6a39" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests" name="FailedButStoppedWithCopy_CannotBorrowCleanupEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b7653ecf-d636-02eb-70e8-2504bcb89c2d">
+      <Execution id="5d64dccc-fd09-407e-ac98-88f613636163" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests" name="LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="457278ba-1a0b-d2ca-36b7-df47b257180d">
+      <Execution id="cc8d3426-ca92-47c8-b663-f3b1905025b4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests" name="LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="511b228c-4db9-3afa-e18c-5f95809e7451">
+      <Execution id="e32cf009-9128-427e-988f-7fb00851d8bc" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests" name="FailedButStoppedWithCopy_CannotBorrowCleanupEvidence" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="457278ba-1a0b-d2ca-36b7-df47b257180d" executionId="cc8d3426-ca92-47c8-b663-f3b1905025b4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b7653ecf-d636-02eb-70e8-2504bcb89c2d" executionId="5d64dccc-fd09-407e-ac98-88f613636163" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="511b228c-4db9-3afa-e18c-5f95809e7451" executionId="e32cf009-9128-427e-988f-7fb00851d8bc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c03965f8-84cd-0f5e-ee4a-11f9c3bcd5cc" executionId="f50a51e3-96e1-47e5-9592-b0d9d60d6a39" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="4" executed="4" passed="4" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.20]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.32]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.34]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.47]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "browser-direct-gacha-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ed0990605d524d1addc5b93c17c75420adb37f40",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 59.2820452,
+  "Descriptors": [
+    {
+      "Name": "browser-direct-gacha-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "browser-direct-gacha-linux",
+      "Categories": [
+        "browser-direct-gacha-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

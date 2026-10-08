@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "worker-restart-root-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "7b800e13c912ab614ec4a9abd89c4507afe3896c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 37.8209248,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-root-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-root-linux",
+      "Categories": [
+        "worker-restart-root-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartRootTests.IndependentOriginalEpochs_DoNotBorrowJournalOrRecoveryAuthority",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartRootTests.IndependentOriginalEpochs_DoNotBorrowJournalOrRecoveryAuthority",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

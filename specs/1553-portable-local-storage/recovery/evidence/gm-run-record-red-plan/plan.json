@@ -1,0 +1,130 @@
+{
+  "Categories": [
+    "gm-session-run-record"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "46e641a1d83daa32ba199e04ccb61a0d4edd8756",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 121.5173792,
+  "Descriptors": [
+    {
+      "Name": "gm-session-run-record-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-session-run-record",
+      "Categories": [
+        "gm-session-run-record"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Admission_ActiveMutationRejectsEveryStaleIdentityField|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Admission_InvalidTargetOrRecordFailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Admission_RequiresCurrentGenerationAndExistingOwner|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Admission_StartRequiresFreshExactSuccessorAndCannotWrap|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Admission_StateMatrixIsSlotLocal|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Admission_UnreadableBlocksMutationsButDiagnosticReadRemainsAvailable|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Admission_UsesTrustedTargetBackendForRootIdentity|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Observation_OnlyExplicitAbsenceIsMissing|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_AcceptsExistingAllZeroGeneration|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_EnforcesEncodedDocumentBoundary|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_EnforcesUtf8RootAndBootBoundsOnEncodingAndDecoding|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RejectsInvalidDocumentWithoutPayloadDiagnostics|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RejectsInvalidIdentityFields|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RejectsInvalidUtf8BomEmptyAndTruncation|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RejectsNonpositiveEpoch|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RejectsStopEvidenceOnNonterminalState|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RejectsStoppedWithoutEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RoundTripsBothRetainedStopEvidenceKinds|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RoundTripsEveryDisposition|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.OrdinaryFile_ColdInterpretationNeverReleasesNonterminalAndPreservesBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.OrdinaryFile_UnreadableRecordRemainsEvidenceAndNeverBecomesMissing|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Transition_ConfirmedStopRetainsEvidenceAndIsIdempotent|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Transition_RejectsEveryStopIdentityMismatchAndRetainsOriginal|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Transition_RejectsInvalidStopObservation|FullyQualifiedName=BookOfEternityClient.Tests.GmSessionRunRecordTests.Transition_RequiresMatchingOwnerAndLegalProgression",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 90,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Admission_ActiveMutationRejectsEveryStaleIdentityField",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Admission_InvalidTargetOrRecordFailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Admission_RequiresCurrentGenerationAndExistingOwner",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Admission_StartRequiresFreshExactSuccessorAndCannotWrap",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Admission_StateMatrixIsSlotLocal",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Admission_UnreadableBlocksMutationsButDiagnosticReadRemainsAvailable",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Admission_UsesTrustedTargetBackendForRootIdentity",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunAdmissionTests.Observation_OnlyExplicitAbsenceIsMissing",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_AcceptsExistingAllZeroGeneration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_EnforcesEncodedDocumentBoundary",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_EnforcesUtf8RootAndBootBoundsOnEncodingAndDecoding",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RejectsInvalidDocumentWithoutPayloadDiagnostics",
+          "Cases": 23
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RejectsInvalidIdentityFields",
+          "Cases": 11
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RejectsInvalidUtf8BomEmptyAndTruncation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RejectsNonpositiveEpoch",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RejectsStopEvidenceOnNonterminalState",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RejectsStoppedWithoutEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RoundTripsBothRetainedStopEvidenceKinds",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Codec_RoundTripsEveryDisposition",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.OrdinaryFile_ColdInterpretationNeverReleasesNonterminalAndPreservesBytes",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.OrdinaryFile_UnreadableRecordRemainsEvidenceAndNeverBecomesMissing",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Transition_ConfirmedStopRetainsEvidenceAndIsIdempotent",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Transition_RejectsEveryStopIdentityMismatchAndRetainsOriginal",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Transition_RejectsInvalidStopObservation",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmSessionRunRecordTests.Transition_RequiresMatchingOwnerAndLegalProgression",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

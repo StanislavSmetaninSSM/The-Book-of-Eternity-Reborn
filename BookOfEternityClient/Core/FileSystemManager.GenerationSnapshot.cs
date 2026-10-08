@@ -1,0 +1,56 @@
+using System.Text;
+using System.Text.Json;
+
+namespace BookOfEternityClient.Core;
+
+internal sealed record LocalSessionGenerationSnapshot(TrustedLocalGeneration Binding, byte[]? Bytes);
+
+public partial class FileSystemManager
+{
+    // This reader is below the generation fence: it must not verify that fence
+    // or enter the ordinary canonical byte reader, which calls it in turn.
+    internal LocalSessionGenerationSnapshot ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+    {
+        EnsureCanonicalWriteLeaseActive(lease);
+        return ReadLocalGenerationSnapshotBelowWorkerFence(lease);
+    }
+
+    internal LocalSessionGenerationSnapshot ReadLocalGenerationSnapshotBelowWorkerFence(CanonicalWriteLease lease)
+    {
+        EnsurePhysicalCanonicalWriteLease(lease);
+        var scope = new TrustedLocalFileScope([RuntimeRootPath]);
+        var path = scope.ValidateFile(SessionGenerationPath);
+        if (!File.Exists(path)) return new(TrustedLocalGeneration.Absent, null);
+
+        using var authority=new FileStream(path,FileMode.Open,FileAccess.Read,FileShare.ReadWrite|FileShare.Delete);
+        var length=authority.Length;
+        if(length is <1 or >65536)throw new InvalidDataException("Session generation authority exceeds its bounded record.");
+        var bytes=new byte[(int)length];authority.ReadExactly(bytes);
+        if(authority.ReadByte()!=-1)throw new InvalidDataException("Session generation authority changed while reading.");
+        scope.ValidateFile(path, allowMissing: false);
+        using var stream = new MemoryStream(bytes, writable: false);
+        using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
+        var generation = ParseSessionGenerationText(reader.ReadToEnd());
+        return new(TrustedLocalGeneration.Existing(generation), bytes);
+    }
+
+    // The original load reader keeps its physical open/completion contract and
+    // shares only this existing BOM-decoded schema interpretation.
+    internal static string ParseSessionGenerationText(string json)
+    {
+        try
+        {
+            var document = StrictJsonAuthority.Deserialize<SessionGenerationDocument>(
+                json, RecoveryJsonOptions, "Session generation authority");
+            if (document is null || document.SchemaVersion != 1 ||
+                !Guid.TryParseExact(document.GenerationId, "N", out var parsedGeneration) ||
+                !string.Equals(document.GenerationId, parsedGeneration.ToString("N"), StringComparison.Ordinal))
+                throw new InvalidDataException("Session generation authority is invalid.");
+            return document.GenerationId;
+        }
+        catch (JsonException ex)
+        {
+            throw new InvalidDataException("Session generation authority is invalid.", ex);
+        }
+    }
+}

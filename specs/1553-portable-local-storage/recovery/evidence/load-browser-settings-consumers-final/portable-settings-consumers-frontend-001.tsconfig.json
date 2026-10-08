@@ -1,0 +1,13 @@
+{
+  "exclude": [],
+  "include": [
+    "[checkout]/BookOfEternityClient.WebFrontend/test/audioPanelCatalogVisibility.test.ts",
+    "[checkout]/BookOfEternityClient.WebFrontend/test/gracefulDegradation.test.ts"
+  ],
+  "compilerOptions": {
+    "rootDir": "[checkout]/BookOfEternityClient.WebFrontend",
+    "outDir": "[checkout]/TestResults/test-categories/20261004-134517-563-6-faddf8b0dd1448b08751104063711fdc-categories/portable-settings-consumers-frontend-001-compiled",
+    "noEmit": false
+  },
+  "extends": "[checkout]/BookOfEternityClient.WebFrontend/tsconfig.player-facing-tests.json"
+}

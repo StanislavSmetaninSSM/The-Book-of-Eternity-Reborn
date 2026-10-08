@@ -1,0 +1,16 @@
+{
+  "Run": "catalog-repeat",
+  "Source": "70594282c8df744cb6f2b6066f9f39f1e878ea86",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+  "Result": "Supplemental discovery-only after context recovery; prior unchanged inventory success already existed; no runtime tests repeated",
+  "TestsExecuted": 0,
+  "ExitCode": 0,
+  "CatalogAudit": {
+    "Valid": true,
+    "Methods": 11088,
+    "Categories": 383,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "EvidenceDirectory": "recovery/evidence/console-audio-linux-catalog-repeat"
+}

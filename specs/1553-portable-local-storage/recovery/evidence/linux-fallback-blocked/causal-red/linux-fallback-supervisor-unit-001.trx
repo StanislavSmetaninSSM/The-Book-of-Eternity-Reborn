@@ -1,0 +1,700 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="fbc1b5a3-cb20-4348-aa1a-79e53c59d6cc" name="@3a7834d0640d 2026-10-05 15:42:57" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T15:42:57.5493506+00:00" queuing="2026-10-05T15:42:57.5493507+00:00" start="2026-10-05T15:42:53.4098973+00:00" finish="2026-10-05T15:43:11.5939185+00:00" />
+  <TestSettings name="default" id="6cfc87fc-954f-400d-a829-db3e13f5dfe9">
+    <Deployment runDeploymentRoot="_3a7834d0640d_2026-10-05_15_42_57" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="f096d789-3da8-411c-8e76-d67726fa3890" testId="df72f9d5-a03f-b190-a864-ac92226735f7" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: &quot;doublefork&quot;)" computerName="3a7834d0640d" duration="00:00:01.0506543" startTime="2026-10-05T15:42:57.0707589+00:00" endTime="2026-10-05T15:42:57.0707744+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f096d789-3da8-411c-8e76-d67726fa3890">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/dc41f02b8e3f423fbc2bbdebe455733c/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(String mode) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 40
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3bbb16c4-fae8-453c-a196-29fbd7e3f1d4" testId="2ef0fabe-e4b9-c5fb-c430-91733958c386" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess" computerName="3a7834d0640d" duration="00:00:00.8983631" startTime="2026-10-05T15:43:08.8446364+00:00" endTime="2026-10-05T15:43:08.8446373+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3bbb16c4-fae8-453c-a196-29fbd7e3f1d4">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/9fe0e9b5642e454996c900bb506cd2db/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 94
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="eddd8230-d278-4642-86eb-95c848decca5" testId="54dfcd1e-f525-e5e0-1dab-c9f8e28589f3" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Deadline_RetainsAuthorityAndUncertaintyThroughLateCleanup" computerName="3a7834d0640d" duration="00:00:00.7756572" startTime="2026-10-05T15:43:10.7403261+00:00" endTime="2026-10-05T15:43:10.7403264+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eddd8230-d278-4642-86eb-95c848decca5">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/ff1556a7dacf473ba030f130d5f68480/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Deadline_RetainsAuthorityAndUncertaintyThroughLateCleanup() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 74
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="464387b8-cbe7-48f7-bacc-ffe0306977fb" testId="d921c2ea-d871-198b-0ec4-fddf16ae9e44" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.FullStatusPipe_BeforeReadyFailsClosedWithoutAnyLaunch" computerName="3a7834d0640d" duration="00:00:00.7463352" startTime="2026-10-05T15:43:07.9425346+00:00" endTime="2026-10-05T15:43:07.9425358+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="464387b8-cbe7-48f7-bacc-ffe0306977fb">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/23a1bab2c54149f793162e48b60667d1/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.FullStatusPipe_BeforeReadyFailsClosedWithoutAnyLaunch() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 132
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="aa38e938-86d4-47d2-9314-9a0a3a82fce5" testId="2a2950c9-dca4-03d8-e4de-36b14a3b2829" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd" computerName="3a7834d0640d" duration="00:00:00.7705105" startTime="2026-10-05T15:43:11.5120934+00:00" endTime="2026-10-05T15:43:11.5120937+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aa38e938-86d4-47d2-9314-9a0a3a82fce5">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/0b1c0bac291d472d90ff34a59a45f53e/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 113
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5837b51f-8c25-4cbd-9eaa-f25515ccb7f0" testId="acd84668-2a4f-a78a-1230-79405821d790" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: &quot;spawn&quot;)" computerName="3a7834d0640d" duration="00:00:00.7640180" startTime="2026-10-05T15:42:59.5233441+00:00" endTime="2026-10-05T15:42:59.5233443+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5837b51f-8c25-4cbd-9eaa-f25515ccb7f0">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/02ef050712034bd3ae42625928ddc05a/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(String mode) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 40
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7760a776-56dc-4356-838e-1a6439cf3212" testId="4c04ad40-4edc-c994-41a5-0d4481752cec" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ObservedOutsideContractWork_IsVisibleAndRemainsUncertain" computerName="3a7834d0640d" duration="00:00:00.7689369" startTime="2026-10-05T15:43:04.1687936+00:00" endTime="2026-10-05T15:43:04.1687938+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7760a776-56dc-4356-838e-1a6439cf3212">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/75c7006d5a364cbc9d899fa6d02f29c8/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ObservedOutsideContractWork_IsVisibleAndRemainsUncertain() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 84
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="40729dfc-c192-4553-85ed-22735fd1ce58" testId="4c33af65-3cdc-4fb6-daab-d661bc55f403" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup(launched: False)" computerName="3a7834d0640d" duration="00:00:00.7441205" startTime="2026-10-05T15:43:07.1955616+00:00" endTime="2026-10-05T15:43:07.1955618+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="40729dfc-c192-4553-85ed-22735fd1ce58">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/d356396d1a674ccbb918f6d2b85d5d42/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup(Boolean launched) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1b8d73a7-9c96-4257-9dcb-f86cb5c8e570" testId="7a9e5bd8-461a-3639-165c-1e51f2e528ee" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.StalePidfdCannotSignalAnotherOwnedIncarnation" computerName="3a7834d0640d" duration="00:00:01.1175158" startTime="2026-10-05T15:43:09.9642076+00:00" endTime="2026-10-05T15:43:09.9642080+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1b8d73a7-9c96-4257-9dcb-f86cb5c8e570" />
+    <UnitTestResult executionId="f8d0de97-85b9-4085-bd50-68eb7939604a" testId="f02d0eaa-5950-f130-29f2-8a1a08750833" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit" computerName="3a7834d0640d" duration="00:00:00.7976058" startTime="2026-10-05T15:43:01.8517414+00:00" endTime="2026-10-05T15:43:01.8517416+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f8d0de97-85b9-4085-bd50-68eb7939604a">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/445ccedba2db4ae9a3949b2236aadeef/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 122
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8d2c6ac7-e452-40a9-9419-78a6c16521a1" testId="3cee0664-6a84-0c21-42cb-172258bf335d" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: &quot;root-first&quot;)" computerName="3a7834d0640d" duration="00:00:00.7762038" startTime="2026-10-05T15:43:00.3005710+00:00" endTime="2026-10-05T15:43:00.3005712+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8d2c6ac7-e452-40a9-9419-78a6c16521a1">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/e3e8c7af467048d6bb2c04ca4178f072/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(String mode) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 40
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b11a1f89-3b34-4b7b-9a89-dc5b18634efa" testId="1ca6806e-8c4a-8900-2132-9bd1e7d6fa12" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain(command: &quot;?&quot;)" computerName="3a7834d0640d" duration="00:00:00.7757560" startTime="2026-10-05T15:43:02.6286577+00:00" endTime="2026-10-05T15:43:02.6286580+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b11a1f89-3b34-4b7b-9a89-dc5b18634efa">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/d30129aad2f740d9b31f86506281070a/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain(String command) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 105
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="fc297199-1a30-4892-9847-581421234639" testId="8d44fe46-b085-f0f1-852e-f6eb4f35dfbe" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: &quot;ignore&quot;)" computerName="3a7834d0640d" duration="00:00:00.8204261" startTime="2026-10-05T15:42:57.8909522+00:00" endTime="2026-10-05T15:42:57.8909524+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fc297199-1a30-4892-9847-581421234639">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/84b5cf5aa8914de190bd671383b9c49b/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(String mode) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 40
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="84fa9bee-1649-404f-ab8f-2bb352a95e72" testId="faf86a98-a7b9-0f41-8124-96861c2a23f7" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: &quot;tree&quot;)" computerName="3a7834d0640d" duration="00:00:00.8683184" startTime="2026-10-05T15:42:58.7582274+00:00" endTime="2026-10-05T15:42:58.7582276+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="84fa9bee-1649-404f-ab8f-2bb352a95e72">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/761777babe2841d9b63a727b4f6f0f6c/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(String mode) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 40
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="98e326fb-3e13-461b-ab22-5b57cc9793df" testId="26bbc839-67b8-63d3-faad-068187e50861" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup(launched: True)" computerName="3a7834d0640d" duration="00:00:00.7656898" startTime="2026-10-05T15:43:06.4498984+00:00" endTime="2026-10-05T15:43:06.4498986+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="98e326fb-3e13-461b-ab22-5b57cc9793df">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/284ac29eaf7b4205a8eca5df64c3202e/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup(Boolean launched) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e6a2c363-b482-4f4b-bdd3-5702012f53dd" testId="42aa9402-1a81-1e39-9e20-cadcedab900a" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain(command: &quot;LL&quot;)" computerName="3a7834d0640d" duration="00:00:00.7690318" startTime="2026-10-05T15:43:03.3989169+00:00" endTime="2026-10-05T15:43:03.3989171+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e6a2c363-b482-4f4b-bdd3-5702012f53dd">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/30c72275789c4e76be138312e3a430fc/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain(String command) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 105
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f91de953-1136-43b3-a9c0-9e12b55d24de" testId="d1a84e9d-14d8-eabc-71ce-25f624f6184b" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.BeforeStart_SealPreventsAnyChild(command: &quot;S&quot;)" computerName="3a7834d0640d" duration="00:00:00.7714725" startTime="2026-10-05T15:43:04.9414559+00:00" endTime="2026-10-05T15:43:04.9414561+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f91de953-1136-43b3-a9c0-9e12b55d24de">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/4de848aa6e59452e941a5426cd28f168/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.BeforeStart_SealPreventsAnyChild(String command) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 21
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8df776ec-4225-4e16-be58-3e227e504426" testId="1341d195-c596-b734-b549-372ac2f2776f" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.BeforeStart_SealPreventsAnyChild(command: &quot;C&quot;)" computerName="3a7834d0640d" duration="00:00:00.7401297" startTime="2026-10-05T15:43:05.6824259+00:00" endTime="2026-10-05T15:43:05.6824261+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8df776ec-4225-4e16-be58-3e227e504426">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/5a4b7f7f19b64177985c7b31189c25b2/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.BeforeStart_SealPreventsAnyChild(String command) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 21
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e9193509-015c-470d-9d4f-23e1f6be98d5" testId="dff094e9-2727-8658-7af5-954ddfce8dcf" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.CancellationAfterStart_StopsActualChild" computerName="3a7834d0640d" duration="00:00:00.7494410" startTime="2026-10-05T15:43:01.0541087+00:00" endTime="2026-10-05T15:43:01.0541090+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e9193509-015c-470d-9d4f-23e1f6be98d5">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/af1504a3d6fc40d2bd1f07d1bf834776/guardian.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+   at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 247
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 285
+   at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.CancellationAfterStart_StopsActualChild() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs:line 49
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup(launched: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4c33af65-3cdc-4fb6-daab-d661bc55f403">
+      <Execution id="40729dfc-c192-4553-85ed-22735fd1ce58" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: &quot;ignore&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8d44fe46-b085-f0f1-852e-f6eb4f35dfbe">
+      <Execution id="fc297199-1a30-4892-9847-581421234639" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="NativeDescendants_RetireWithinDeclaredScope" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: &quot;doublefork&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="df72f9d5-a03f-b190-a864-ac92226735f7">
+      <Execution id="f096d789-3da8-411c-8e76-d67726fa3890" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="NativeDescendants_RetireWithinDeclaredScope" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain(command: &quot;LL&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="42aa9402-1a81-1e39-9e20-cadcedab900a">
+      <Execution id="e6a2c363-b482-4f4b-bdd3-5702012f53dd" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="MalformedOrRepeatedLaunch_SealsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: &quot;spawn&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="acd84668-2a4f-a78a-1230-79405821d790">
+      <Execution id="5837b51f-8c25-4cbd-9eaa-f25515ccb7f0" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="NativeDescendants_RetireWithinDeclaredScope" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: &quot;root-first&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3cee0664-6a84-0c21-42cb-172258bf335d">
+      <Execution id="8d2c6ac7-e452-40a9-9419-78a6c16521a1" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="NativeDescendants_RetireWithinDeclaredScope" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup(launched: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="26bbc839-67b8-63d3-faad-068187e50861">
+      <Execution id="98e326fb-3e13-461b-ab22-5b57cc9793df" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f02d0eaa-5950-f130-29f2-8a1a08750833">
+      <Execution id="f8d0de97-85b9-4085-bd50-68eb7939604a" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ObservedOutsideContractWork_IsVisibleAndRemainsUncertain" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4c04ad40-4edc-c994-41a5-0d4481752cec">
+      <Execution id="7760a776-56dc-4356-838e-1a6439cf3212" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="ObservedOutsideContractWork_IsVisibleAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.BeforeStart_SealPreventsAnyChild(command: &quot;C&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1341d195-c596-b734-b549-372ac2f2776f">
+      <Execution id="8df776ec-4225-4e16-be58-3e227e504426" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="BeforeStart_SealPreventsAnyChild" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Deadline_RetainsAuthorityAndUncertaintyThroughLateCleanup" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="54dfcd1e-f525-e5e0-1dab-c9f8e28589f3">
+      <Execution id="eddd8230-d278-4642-86eb-95c848decca5" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="Deadline_RetainsAuthorityAndUncertaintyThroughLateCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.StalePidfdCannotSignalAnotherOwnedIncarnation" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7a9e5bd8-461a-3639-165c-1e51f2e528ee">
+      <Execution id="1b8d73a7-9c96-4257-9dcb-f86cb5c8e570" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="StalePidfdCannotSignalAnotherOwnedIncarnation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.BeforeStart_SealPreventsAnyChild(command: &quot;S&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d1a84e9d-14d8-eabc-71ce-25f624f6184b">
+      <Execution id="f91de953-1136-43b3-a9c0-9e12b55d24de" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="BeforeStart_SealPreventsAnyChild" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2a2950c9-dca4-03d8-e4de-36b14a3b2829">
+      <Execution id="aa38e938-86d4-47d2-9314-9a0a3a82fce5" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.CancellationAfterStart_StopsActualChild" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="dff094e9-2727-8658-7af5-954ddfce8dcf">
+      <Execution id="e9193509-015c-470d-9d4f-23e1f6be98d5" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="CancellationAfterStart_StopsActualChild" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: &quot;tree&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="faf86a98-a7b9-0f41-8124-96861c2a23f7">
+      <Execution id="84fa9bee-1649-404f-ab8f-2bb352a95e72" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="NativeDescendants_RetireWithinDeclaredScope" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2ef0fabe-e4b9-c5fb-c430-91733958c386">
+      <Execution id="3bbb16c4-fae8-453c-a196-29fbd7e3f1d4" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="ExecFailure_DoesNotClaimStartedOrScopedSuccess" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.FullStatusPipe_BeforeReadyFailsClosedWithoutAnyLaunch" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d921c2ea-d871-198b-0ec4-fddf16ae9e44">
+      <Execution id="464387b8-cbe7-48f7-bacc-ffe0306977fb" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="FullStatusPipe_BeforeReadyFailsClosedWithoutAnyLaunch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain(command: &quot;?&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1ca6806e-8c4a-8900-2132-9bd1e7d6fa12">
+      <Execution id="b11a1f89-3b34-4b7b-9a89-dc5b18634efa" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="MalformedOrRepeatedLaunch_SealsUncertain" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="df72f9d5-a03f-b190-a864-ac92226735f7" executionId="f096d789-3da8-411c-8e76-d67726fa3890" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ef0fabe-e4b9-c5fb-c430-91733958c386" executionId="3bbb16c4-fae8-453c-a196-29fbd7e3f1d4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="54dfcd1e-f525-e5e0-1dab-c9f8e28589f3" executionId="eddd8230-d278-4642-86eb-95c848decca5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d921c2ea-d871-198b-0ec4-fddf16ae9e44" executionId="464387b8-cbe7-48f7-bacc-ffe0306977fb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2a2950c9-dca4-03d8-e4de-36b14a3b2829" executionId="aa38e938-86d4-47d2-9314-9a0a3a82fce5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="acd84668-2a4f-a78a-1230-79405821d790" executionId="5837b51f-8c25-4cbd-9eaa-f25515ccb7f0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4c04ad40-4edc-c994-41a5-0d4481752cec" executionId="7760a776-56dc-4356-838e-1a6439cf3212" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4c33af65-3cdc-4fb6-daab-d661bc55f403" executionId="40729dfc-c192-4553-85ed-22735fd1ce58" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7a9e5bd8-461a-3639-165c-1e51f2e528ee" executionId="1b8d73a7-9c96-4257-9dcb-f86cb5c8e570" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f02d0eaa-5950-f130-29f2-8a1a08750833" executionId="f8d0de97-85b9-4085-bd50-68eb7939604a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3cee0664-6a84-0c21-42cb-172258bf335d" executionId="8d2c6ac7-e452-40a9-9419-78a6c16521a1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1ca6806e-8c4a-8900-2132-9bd1e7d6fa12" executionId="b11a1f89-3b34-4b7b-9a89-dc5b18634efa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8d44fe46-b085-f0f1-852e-f6eb4f35dfbe" executionId="fc297199-1a30-4892-9847-581421234639" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="faf86a98-a7b9-0f41-8124-96861c2a23f7" executionId="84fa9bee-1649-404f-ab8f-2bb352a95e72" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="26bbc839-67b8-63d3-faad-068187e50861" executionId="98e326fb-3e13-461b-ab22-5b57cc9793df" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="42aa9402-1a81-1e39-9e20-cadcedab900a" executionId="e6a2c363-b482-4f4b-bdd3-5702012f53dd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d1a84e9d-14d8-eabc-71ce-25f624f6184b" executionId="f91de953-1136-43b3-a9c0-9e12b55d24de" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1341d195-c596-b734-b549-372ac2f2776f" executionId="8df776ec-4225-4e16-be58-3e227e504426" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dff094e9-2727-8658-7af5-954ddfce8dcf" executionId="e9193509-015c-470d-9d4f-23e1f6be98d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="19" executed="19" passed="1" failed="18" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.26]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:02.05]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:02.08]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:03.20]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/dc41f02b8e3f423fbc2bbdebe455733c/guardian.json'.
+[xUnit.net 00:00:03.21]       Stack Trace:
+[xUnit.net 00:00:03.21]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:03.21]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:03.21]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:03.21]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:03.21]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:03.21]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:03.21]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:03.21]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:03.21]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:03.21]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(40,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(String mode)
+[xUnit.net 00:00:03.21]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.03]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/84b5cf5aa8914de190bd671383b9c49b/guardian.json'.
+[xUnit.net 00:00:04.03]       Stack Trace:
+[xUnit.net 00:00:04.03]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:04.03]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:04.03]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:04.03]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:04.03]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:04.03]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:04.03]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:04.03]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:04.03]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:04.03]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(40,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(String mode)
+[xUnit.net 00:00:04.03]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.89]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/761777babe2841d9b63a727b4f6f0f6c/guardian.json'.
+[xUnit.net 00:00:04.89]       Stack Trace:
+[xUnit.net 00:00:04.89]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:04.89]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:04.89]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:04.89]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:04.89]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:04.89]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:04.89]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:04.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:04.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:04.89]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(40,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(String mode)
+[xUnit.net 00:00:04.89]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.66]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/02ef050712034bd3ae42625928ddc05a/guardian.json'.
+[xUnit.net 00:00:05.66]       Stack Trace:
+[xUnit.net 00:00:05.66]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:05.66]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String path, OpenFlags flags, Int32 mode, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:05.66]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:05.66]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:05.66]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:05.66]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:05.66]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:05.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:05.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:05.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(40,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(String mode)
+[xUnit.net 00:00:05.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.44]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/e3e8c7af467048d6bb2c04ca4178f072/guardian.json'.
+[xUnit.net 00:00:06.44]       Stack Trace:
+[xUnit.net 00:00:06.44]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:06.44]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:06.44]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:06.44]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:06.44]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:06.44]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:06.44]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:06.44]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:06.44]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(40,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(String mode)
+[xUnit.net 00:00:06.44]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:07.19]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/af1504a3d6fc40d2bd1f07d1bf834776/guardian.json'.
+[xUnit.net 00:00:07.19]       Stack Trace:
+[xUnit.net 00:00:07.19]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:07.19]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:07.19]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:07.19]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:07.19]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:07.19]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:07.19]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:07.19]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:07.19]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(49,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.CancellationAfterStart_StopsActualChild()
+[xUnit.net 00:00:07.19]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:07.99]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/445ccedba2db4ae9a3949b2236aadeef/guardian.json'.
+[xUnit.net 00:00:07.99]       Stack Trace:
+[xUnit.net 00:00:07.99]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:07.99]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:07.99]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:07.99]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:07.99]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:07.99]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:07.99]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:07.99]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:07.99]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(122,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit()
+[xUnit.net 00:00:07.99]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:08.76]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/d30129aad2f740d9b31f86506281070a/guardian.json'.
+[xUnit.net 00:00:08.76]       Stack Trace:
+[xUnit.net 00:00:08.76]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:08.76]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:08.76]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:08.76]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:08.76]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:08.76]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:08.76]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:08.76]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:08.76]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(105,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain(String command)
+[xUnit.net 00:00:08.76]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:09.53]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/30c72275789c4e76be138312e3a430fc/guardian.json'.
+[xUnit.net 00:00:09.53]       Stack Trace:
+[xUnit.net 00:00:09.53]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:09.53]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:09.53]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:09.53]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:09.53]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:09.53]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:09.54]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:09.54]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:09.54]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(105,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain(String command)
+[xUnit.net 00:00:09.54]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:10.30]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/75c7006d5a364cbc9d899fa6d02f29c8/guardian.json'.
+[xUnit.net 00:00:10.30]       Stack Trace:
+[xUnit.net 00:00:10.30]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:10.30]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:10.30]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:10.30]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:10.30]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:10.30]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:10.31]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:10.31]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:10.31]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(84,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ObservedOutsideContractWork_IsVisibleAndRemainsUncertain()
+[xUnit.net 00:00:10.31]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:11.08]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/4de848aa6e59452e941a5426cd28f168/guardian.json'.
+[xUnit.net 00:00:11.08]       Stack Trace:
+[xUnit.net 00:00:11.08]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:11.08]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:11.08]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.08]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:11.08]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:11.08]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:11.08]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:11.08]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:11.08]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(21,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.BeforeStart_SealPreventsAnyChild(String command)
+[xUnit.net 00:00:11.08]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:11.82]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/5a4b7f7f19b64177985c7b31189c25b2/guardian.json'.
+[xUnit.net 00:00:11.82]       Stack Trace:
+[xUnit.net 00:00:11.82]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:11.82]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:11.82]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:11.82]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:11.82]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:11.82]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:11.82]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:11.82]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:11.82]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(21,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.BeforeStart_SealPreventsAnyChild(String command)
+[xUnit.net 00:00:11.82]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:12.59]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/284ac29eaf7b4205a8eca5df64c3202e/guardian.json'.
+[xUnit.net 00:00:12.59]       Stack Trace:
+[xUnit.net 00:00:12.59]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:12.59]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:12.59]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:12.59]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:12.59]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:12.59]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:12.59]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:12.59]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:12.59]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(61,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup(Boolean launched)
+[xUnit.net 00:00:12.59]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:13.33]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/d356396d1a674ccbb918f6d2b85d5d42/guardian.json'.
+[xUnit.net 00:00:13.33]       Stack Trace:
+[xUnit.net 00:00:13.33]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:13.33]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:13.33]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:13.33]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:13.33]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:13.33]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:13.33]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:13.33]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:13.33]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(61,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup(Boolean launched)
+[xUnit.net 00:00:13.33]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:14.08]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/23a1bab2c54149f793162e48b60667d1/guardian.json'.
+[xUnit.net 00:00:14.08]       Stack Trace:
+[xUnit.net 00:00:14.08]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:14.08]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:14.08]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:14.08]            at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:14.08]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:14.08]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:14.08]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:14.08]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:14.08]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(132,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.FullStatusPipe_BeforeReadyFailsClosedWithoutAnyLaunch()
+[xUnit.net 00:00:14.08]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:14.98]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/9fe0e9b5642e454996c900bb506cd2db/guardian.json'.
+[xUnit.net 00:00:14.98]       Stack Trace:
+[xUnit.net 00:00:14.98]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:14.98]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:14.98]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:14.98]            at System.IO.File.AsyncStreamReader(String path, Encoding encoding)
+[xUnit.net 00:00:14.98]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:14.98]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:14.98]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:14.98]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(94,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess()
+[xUnit.net 00:00:14.98]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:16.88]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/ff1556a7dacf473ba030f130d5f68480/guardian.json'.
+[xUnit.net 00:00:16.88]       Stack Trace:
+[xUnit.net 00:00:16.88]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:16.88]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:16.88]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:16.88]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:16.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:16.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:16.88]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(74,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Deadline_RetainsAuthorityAndUncertaintyThroughLateCleanup()
+[xUnit.net 00:00:16.88]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:17.65]       System.IO.FileNotFoundException : Could not find file '/workspace/linux-1553-fallback-artifacts/red-native/0b1c0bac291d472d90ff34a59a45f53e/guardian.json'.
+[xUnit.net 00:00:17.65]       Stack Trace:
+[xUnit.net 00:00:17.65]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:17.65]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:17.65]            at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
+[xUnit.net 00:00:17.65]            at System.IO.File.InternalReadAllTextAsync(String path, Encoding encoding, CancellationToken cancellationToken)
+[xUnit.net 00:00:17.65]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(247,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.Finish()
+[xUnit.net 00:00:17.65]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(285,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeRun.DisposeAsync()
+[xUnit.net 00:00:17.65]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs(113,0): at BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd()
+[xUnit.net 00:00:17.65]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:17.66]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:42:57.0722486+00:00">
+        <Text>[xUnit.net 00:00:03.20]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: "doublefork") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:42:57.8910503+00:00">
+        <Text>[xUnit.net 00:00:04.03]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: "ignore") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:42:58.7592841+00:00">
+        <Text>[xUnit.net 00:00:04.89]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: "tree") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:42:59.5230931+00:00">
+        <Text>[xUnit.net 00:00:05.66]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: "spawn") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:43:00.3004747+00:00">
+        <Text>[xUnit.net 00:00:06.44]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.NativeDescendants_RetireWithinDeclaredScope(mode: "root-first") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:43:01.0553581+00:00">
+        <Text>[xUnit.net 00:00:07.19]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.CancellationAfterStart_StopsActualChild [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:43:01.8519385+00:00">
+        <Text>[xUnit.net 00:00:07.99]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:43:02.6288066+00:00">
+        <Text>[xUnit.net 00:00:08.76]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain(command: "?") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:43:03.3986527+00:00">
+        <Text>[xUnit.net 00:00:09.53]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain(command: "LL") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:43:04.1686014+00:00">
+        <Text>[xUnit.net 00:00:10.30]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ObservedOutsideContractWork_IsVisibleAndRemainsUncertain [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:43:04.9432358+00:00">
+        <Text>[xUnit.net 00:00:11.08]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.BeforeStart_SealPreventsAnyChild(command: "S") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:43:05.6835791+00:00">
+        <Text>[xUnit.net 00:00:11.82]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.BeforeStart_SealPreventsAnyChild(command: "C") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:43:06.4502020+00:00">
+        <Text>[xUnit.net 00:00:12.59]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup(launched: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:43:07.1955485+00:00">
+        <Text>[xUnit.net 00:00:13.33]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.OwnerChannelLoss_RetainsUncertaintyAfterActualCleanup(launched: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:43:07.9428687+00:00">
+        <Text>[xUnit.net 00:00:14.08]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.FullStatusPipe_BeforeReadyFailsClosedWithoutAnyLaunch [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:43:08.8470592+00:00">
+        <Text>[xUnit.net 00:00:14.98]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:43:10.7410706+00:00">
+        <Text>[xUnit.net 00:00:16.88]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Deadline_RetainsAuthorityAndUncertaintyThroughLateCleanup [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T15:43:11.5122877+00:00">
+        <Text>[xUnit.net 00:00:17.65]     BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

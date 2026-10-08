@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "worker-native-descriptor-transfer"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "f512b37f14711b2ed7e91438a8bd94911e643af2",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.6644918,
+  "Descriptors": [
+    {
+      "Name": "worker-native-descriptor-transfer-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-native-descriptor-transfer",
+      "Categories": [
+        "worker-native-descriptor-transfer"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.IdentityRejection_ClosesUnadmittedTransferredDescriptor|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.ReceivedRight_IsCloseOnExecAndHasOneDeterministicOwner|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.IdentityRejection_ClosesUnadmittedTransferredDescriptor",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.ReceivedRight_IsCloseOnExecAndHasOneDeterministicOwner",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerNativeDescriptorTests.RejectedEnvelope_ClosesEveryDeliveredDescriptor",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}

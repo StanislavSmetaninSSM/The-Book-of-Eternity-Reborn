@@ -1,0 +1,23 @@
+{
+  "recordedUtc": "2026-10-08T02:49:27.299291+00:00",
+  "attemptTimestamps": "Exact individual transfer-attempt timestamps not captured; parent tool receipts retain ordering",
+  "denials": [
+    {
+      "operation": "gh run view 37719162311 --log-failed",
+      "host": "results-receiver.actions.githubusercontent.com",
+      "response": "Forbidden",
+      "exit": 1
+    },
+    {
+      "operation": "gh run download 37719162311 --name dotnet-test-results-linux",
+      "host": "productionresultssa9.blob.core.windows.net",
+      "response": "Forbidden",
+      "exit": 1
+    }
+  ],
+  "signedUrlsStored": false,
+  "retries": 0,
+  "settingsChanged": false,
+  "diagnosticMeaning": "Access blocker to logs/results only; does not establish the causal test failure or counts/cleanup",
+  "nextRequirement": "Approved access to official diagnostic transfer hosts or independently provided original run results; no unchanged CI retry or guessed code fix"
+}

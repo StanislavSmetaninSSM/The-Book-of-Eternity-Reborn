@@ -9,15 +9,12 @@ if ([string]::IsNullOrWhiteSpace($GameSessionPath)) {
     $GameSessionPath = Join-Path $projectRoot "game_session"
 }
 
-if (!(Test-Path $GameSessionPath)) {
-    New-Item -ItemType Directory -Path $GameSessionPath -Force | Out-Null
-}
-$GameSessionPath = (Resolve-Path $GameSessionPath).Path
+ . (Join-Path $PSScriptRoot 'gm_main_operation.ps1')
+Invoke-GmParticipatingConsumer $GameSessionPath {
+$GameSessionPath = [IO.Path]::GetFullPath($GameSessionPath)
 
 $controlDir = Join-Path $GameSessionPath "game_state\control"
-if (!(Test-Path $controlDir)) {
-    New-Item -ItemType Directory -Path $controlDir -Force | Out-Null
-}
+Ensure-GmCanonicalDirectory $GameSessionPath $controlDir
 
 $bindingPath = Join-Path $controlDir "gm_cli_window_binding.json"
 
@@ -73,7 +70,7 @@ $binding = [ordered]@{
     note = "Registered from the current foreground window. Re-register if the CLI window is recreated."
 }
 
-$binding | ConvertTo-Json -Depth 4 | Set-Content -Path $bindingPath -Encoding UTF8
+Write-GmCanonicalText $GameSessionPath $bindingPath ($binding | ConvertTo-Json -Depth 4)
 
 Write-Host ""
 Write-Host "[OK] GM CLI window registered." -ForegroundColor Green
@@ -83,3 +80,5 @@ Write-Host "Window handle: $([int64]$foregroundWindow)" -ForegroundColor Gray
 Write-Host "Window title : $windowTitle" -ForegroundColor Gray
 Write-Host ""
 Write-Host "Now start your CLI in this same window, or keep using the current one if CLI is already running." -ForegroundColor Yellow
+
+}

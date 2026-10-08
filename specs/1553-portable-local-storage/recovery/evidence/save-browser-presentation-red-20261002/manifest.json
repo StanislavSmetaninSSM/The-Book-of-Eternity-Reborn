@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A3",
+  "sourceCommit": "427afdb534da0368f730e9696c07edd91520f6aa",
+  "status": "Frontend source unchanged427afdb5: compile succeeded; five explicit scenarios all failed causally. Runner records failedfile/no completed descriptor (0 formal cases), stdoutrecords0passed5failed. Backend/catalogWIP was unrelated; Linux/browserGUI notexecuted.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-browser-save-presentation"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:07.8750574",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 1,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-browser-save-presentation-frontend-001"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "8745BD335A43B61225727B18B5446F2451B9A72C281EF6F9F92305AB672922FB",
+      "sha256": "273869404211533864A634EBE7734885121C7100EE6AA1C6E43CFE23D50C432A"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "5E72C7188F5FF14D98D01DE8D0F212709BFD8319367997C616F55F95CDD9ECDB",
+      "sha256": "E1E60F4EBC9EE2B1144BF0702C451674514915F0D69203B3D8AFE4B114C41F45"
+    },
+    {
+      "path": "dotnet-test.log",
+      "originalSha256": "D8EBFCBCBBD8EB30F0A55537133D75A3E7C9513C67BDE95E551C3A2C708F1115",
+      "sha256": "7BC05E617EA327517C9609CB4B78A27E05CD807C66C1F5E49FA6230F03360892",
+      "transform": "sanitized paths and LF"
+    }
+  ]
+}

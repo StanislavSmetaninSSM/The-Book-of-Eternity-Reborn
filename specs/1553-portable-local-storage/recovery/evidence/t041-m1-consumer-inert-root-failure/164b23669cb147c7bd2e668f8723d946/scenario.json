@@ -1,0 +1,108 @@
+{
+  "Success": true,
+  "Mode": "launcher",
+  "CompilerAbsentAtPlayerStartup": true,
+  "Argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "/workspace/native-1553/TestResults/production-main/164b23669cb147c7bd2e668f8723d946/ship/BookOfEternityClient/Launcher/bookofeternity.ps1",
+    "start-bridge",
+    "visible",
+    "-SessionPath",
+    "/workspace/native-1553/TestResults/production-main/164b23669cb147c7bd2e668f8723d946/root/game_session"
+  ],
+  "OriginalStatus": {
+    "terminalRunId": "5063ffd420344682ab2f3bdb58193a3b",
+    "terminalGuarantee": "ordinary-same-namespace-lineage",
+    "terminalUncertain": false,
+    "terminalOwnerRetained": true,
+    "inputBindingId": "00824b8d16434b31b6aed0db77a2f637",
+    "backend": "native-lineage",
+    "state": "Ready",
+    "ready": true,
+    "helperPid": 451262,
+    "sessionPath": "/workspace/native-1553/TestResults/production-main/164b23669cb147c7bd2e668f8723d946/root/game_session",
+    "shellPid": 451278,
+    "pipeName": "m1-e1a05f76edda411dbf2dccff88c47dc2",
+    "cliLaunchCommand": "& '/workspace/native-1553/TestResults/production-main/164b23669cb147c7bd2e668f8723d946/package/configured-neutral-cli' '--model' 'gm-model-sentinel' '--arg' 'a b'",
+    "shellWorkingDirectory": "/workspace/native-1553/TestResults/production-main/164b23669cb147c7bd2e668f8723d946/root/work \u0416",
+    "lastPromptDispatchState": "None",
+    "startedAtUtc": "2026-10-06T20:19:55.7393817+00:00",
+    "updatedAtUtc": "2026-10-06T20:19:56.4699980+00:00",
+    "workerStatuses": [
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "validation_repair_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-06T20:19:56.1683897+00:00"
+      },
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "narrative_draft_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-06T20:19:56.1683897+00:00"
+      },
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "analysis_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-06T20:19:56.1683897+00:00"
+      },
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "guardian_abode_content_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-06T20:19:56.1683897+00:00"
+      },
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "soul_content_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-06T20:19:56.1683897+00:00"
+      },
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "inventory_content_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-06T20:19:56.1683897+00:00"
+      },
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "skill_content_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-06T20:19:56.1683897+00:00"
+      },
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "npc_content_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-06T20:19:56.1683897+00:00"
+      }
+    ]
+  },
+  "DurableRunning": true,
+  "ActualResize": true,
+  "CanonicalEofRootAlive": true,
+  "TwoInputsOneOriginal": true,
+  "DurableStopped": true,
+  "EntrypointExitCode": 0,
+  "ElapsedSeconds": 1.9405310599977383
+}

@@ -1,0 +1,89 @@
+{
+  "Categories": [
+    "portable-save-native-names",
+    "portable-load-native-names",
+    "portable-load-alias-admission"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-save-native-names",
+      "reason": "Causal producer and end-to-end case-pair roundtrip plus fixed authority collision negatives on actual Linux.",
+      "contracts": [
+        "#1553 T032-A4-NATIVE-NAMES FR-002/006/015 US3"
+      ]
+    },
+    {
+      "category": "portable-load-native-names",
+      "reason": "Affected archive boundary preserves original name/hash/manifest identity and rejects fixed aliases and invalid claims.",
+      "contracts": [
+        "#1553 T032-A4-NATIVE-NAMES LOAD-FS-001"
+      ]
+    },
+    {
+      "category": "portable-load-alias-admission",
+      "reason": "The producer reuses the finite fixed-authority registry; preserve exact mapping and trim/source/settings guards.",
+      "contracts": [
+        "#1553 T032-A4-NATIVE-NAMES LOAD-FS-001/004"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "ddd869229b79016b9b595f5eb21235c699927e6a",
+    "WorkingTreeFingerprint": "8BC0C1472968959B97578A4443C3C0E0A4CE05B457A8ED7C7865BE21DBFE4569",
+    "ChangedFiles": 13
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0501,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0169365,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0153063,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0045568,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 14,
+  "WallTime": "00:00:03.4589787",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 36,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-load-alias-admission-integration-001",
+      "portable-load-native-names-integration-002",
+      "portable-save-native-names-integration-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

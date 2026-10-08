@@ -1,0 +1,19 @@
+{
+  "StartedUtc": "2026-10-05T15:40:14.479695+00:00",
+  "EndedUtc": "2026-10-05T15:42:32.969733+00:00",
+  "Source": "8d9a3304d4f27fe60e9e2e0aaa6da4ae4aab59a4",
+  "Command": [
+    "pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "linux-fallback-supervisor",
+    "-Parallelism",
+    "1",
+    "-PlanOnly"
+  ],
+  "ExitCode": 0,
+  "DurationSeconds": 138.49010654800077,
+  "Log": "red-plan.log"
+}

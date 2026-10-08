@@ -1,0 +1,114 @@
+{
+  "Categories": [
+    "portable-coordinated-lease",
+    "portable-coordinated-publication",
+    "portable-coordinated-lease-consumers"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-coordinated-lease",
+      "reason": "T031 GREEN for observed invalid zero-write admission, real context-disposal lock leak and primary-failure masking; includes three passing controls.",
+      "contracts": [
+        "real lease admission",
+        "complete owned cleanup",
+        "primary failure precedence"
+      ]
+    },
+    {
+      "category": "portable-coordinated-publication",
+      "reason": "The owned wrapper/release routine changed after its initial four-case GREEN; recheck actual member-set rollback/uncertainty/committed cleanup once on the corrected path.",
+      "contracts": [
+        "complete declared member set",
+        "durable outcome preservation"
+      ]
+    },
+    {
+      "category": "portable-coordinated-lease-consumers",
+      "reason": "CanonicalWriteLease.DisposeAsync now closes every owned resource after external-context failure. Exact existing owning-lease, reader rejection, trade ordering and bound close consumers qualify this shared cleanup change without a broad category.",
+      "contracts": [
+        "canonical lease ownership",
+        "generation close fence",
+        "lock ordering"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "86eff080a2172cd53a53aef13538780e02ea1c6c",
+    "WorkingTreeFingerprint": "3F76CA48BDEBD0DCB4F87CB7F8316ECC58D1EFA6AA864F1A13DBD24B8D23A6A0",
+    "ChangedFiles": 3
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-coordinated-lease",
+      "Seconds": 4.630104,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-coordinated-lease-consumers",
+      "Seconds": 4.9733536,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-coordinated-publication",
+      "Seconds": 4.278021,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.1415384,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0322625,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.022628,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 203.8647018,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0049467,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 17,
+  "WallTime": "00:03:43.8105979",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 20,
+    "CompletedCases": 20,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 20,
+    "Executed": 20,
+    "Passed": 20,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -1,0 +1,56 @@
+{
+  "sourceCommit": "ed0cec422339228139cff8805b4d680fd0866129",
+  "sourceAppliedTree": "1dbcd747fd70680f3b06dc735ec12075e573c760",
+  "packetSha256": "73214196e9038dc988d6cf00ae51c8494e28e8bbf7bd575547a28e6d754bc661",
+  "kind": "coordinated-boundary-green; exact completed selected-run evidence",
+  "sanitization": "Repository/toolchain/isolated environment paths and TRX run user/computer/deployment identifiers replaced; original and sanitized hashes retained.",
+  "command": "DOTNET_PROCESSOR_COUNT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+  "environment": "Linux x64; SDK10.0.401, .NET8.0.31, PowerShell7.6.6; existing isolated homes/temp/cache; no app/provider execution",
+  "tests": {
+    "Total": 50,
+    "Executed": 50,
+    "Passed": 50,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 4,
+    "PlannedCases": 50,
+    "CompletedCases": 50,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "exitCode": 0,
+  "wallTime": "00:03:10.7882438",
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "4c699da1a06a1f907b5d2101ae2b4f73b521002787241123930ed33f15391070",
+      "sanitizedSha256": "4c699da1a06a1f907b5d2101ae2b4f73b521002787241123930ed33f15391070"
+    },
+    {
+      "path": "portable-coordinated-authority-unit-001.trx",
+      "originalSha256": "83f2866e1099ade96362540d62bebde2c776c9e7f6e92121de00f63174cb8e11",
+      "sanitizedSha256": "5fab929ee1b757c044e22171da42fbcb4f846fc33e1ce1670aea41f53230771b"
+    },
+    {
+      "path": "portable-coordinated-lease-unit-002.trx",
+      "originalSha256": "058f141ff545c138e6efefabc55345662c2404c03f142417a80039448242ca91",
+      "sanitizedSha256": "8cadcd91de2b8d6a508c9af67fa7880239cd0d97eeba163534b9aa597af02f83"
+    },
+    {
+      "path": "portable-coordinated-publication-unit-003.trx",
+      "originalSha256": "065f439e135b59b5ef80bb0c59eb77d13c275013fcbd15282a3eea7e5cc7cf88",
+      "sanitizedSha256": "84af8e73a5c428c94f6b0ce38afa2d9a887ed9ee1eb237a65d0aaffcdd7c735a"
+    },
+    {
+      "path": "portable-coordinated-recovery-unit-004.trx",
+      "originalSha256": "06bcc38cbd656f3f1bf3a43edb31a0b5fbd2ce49d54eb8ff4847a576f1b59cfb",
+      "sanitizedSha256": "bc2b4fa9614ecc02fb051ae21abdfe7071718efdda7358bf2f73471cf35af7d7"
+    }
+  ],
+  "scope": "50/50: authority 1, real lease 10, helper 27, actual-helper cold recovery 12. Every body executed on Linux. Windows-specific policy/host behavior remains unverified; original recovery absent-to-absent callback test establishes routing only."
+}

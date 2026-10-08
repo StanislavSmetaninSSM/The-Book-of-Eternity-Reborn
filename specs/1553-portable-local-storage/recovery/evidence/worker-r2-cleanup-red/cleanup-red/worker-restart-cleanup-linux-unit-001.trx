@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="13ddd3ed-7857-4cd1-bef8-9fdc6c5a154c" name="@c7669543e9c7 2026-10-06 03:29:09" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T03:29:09.0783439+00:00" queuing="2026-10-06T03:29:09.0783439+00:00" start="2026-10-06T03:29:05.6458836+00:00" finish="2026-10-06T03:29:15.7121177+00:00" />
+  <TestSettings name="default" id="cf85f785-cd4e-43df-af3c-ca8e2542d1f1">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_03_29_09" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="2ab98951-32a9-45be-9c4b-659f1894decc" testId="179809f2-6937-696e-af4f-f48016cfd206" testName="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: &quot;r1-abort&quot;)" computerName="c7669543e9c7" duration="00:00:01.3359411" startTime="2026-10-06T03:29:11.7505758+00:00" endTime="2026-10-06T03:29:11.7505760+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2ab98951-32a9-45be-9c4b-659f1894decc">
+      <Output>
+        <ErrorInfo>
+          <Message>Only original completed cleanup may retire or retry its plan: {"mode":"r1-abort","refused":false,"outcome":"Applied","error":null,"preserved":false,"workspaceRetained":true}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartCleanupTests.cs:line 28
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e74f1a25-8d2e-4510-badb-61f669bdbdf7" testId="744713e8-86a6-b0db-4080-aed14a5edbb2" testName="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: &quot;premature-retire&quot;)" computerName="c7669543e9c7" duration="00:00:01.3856523" startTime="2026-10-06T03:29:10.4053736+00:00" endTime="2026-10-06T03:29:10.4053737+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e74f1a25-8d2e-4510-badb-61f669bdbdf7">
+      <Output>
+        <ErrorInfo>
+          <Message>Only original completed cleanup may retire or retry its plan: {"mode":"premature-retire","refused":false,"outcome":null,"error":null,"preserved":false,"workspaceRetained":true}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartCleanupTests.cs:line 28
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="531d4aaa-79dd-469e-94cf-670b6e593615" testId="1915db2d-22b8-39fd-ead5-ee6bba065ece" testName="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: &quot;r1-live-retry&quot;)" computerName="c7669543e9c7" duration="00:00:01.7269504" startTime="2026-10-06T03:29:09.0232054+00:00" endTime="2026-10-06T03:29:09.0232251+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="531d4aaa-79dd-469e-94cf-670b6e593615">
+      <Output>
+        <ErrorInfo>
+          <Message>Only original completed cleanup may retire or retry its plan: {"mode":"r1-live-retry","refused":false,"outcome":"Applied","error":null,"preserved":true,"workspaceRetained":true}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartCleanupTests.cs:line 28
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="fea2726a-9ccf-40ae-9842-3568aca368c1" testId="aaa9f834-ee24-aa14-aaf1-fc03e70d8adc" testName="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: &quot;native-loss&quot;)" computerName="c7669543e9c7" duration="00:00:02.5255401" startTime="2026-10-06T03:29:15.6419482+00:00" endTime="2026-10-06T03:29:15.6419485+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fea2726a-9ccf-40ae-9842-3568aca368c1">
+      <Output>
+        <ErrorInfo>
+          <Message>Original cleanup must attempt bounded stop before refusing uncertain authority: {"mode":"uncertain-recovery","faults":0,"seeded":true,"lateOriginalStop":{"RunId":"ae838a7c31e24f57bf0ba01e6d321cb9","Backend":2,"Guarantee":"ordinary-same-namespace-lineage","State":1,"Reason":"status-invalid","CleanupComplete":false,"AuthorityRetained":false,"RootExitCode":null},"poolAttemptedStop":false,"beforeA":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"Uncertain","outputsSettled":false,"entries":1,"capacity":1,"active":2,"retired":0,"phases":["Uncertain","Published"],"workspaceExists":false,"lastError":"Worker root closed before canonical operation.","cleanupDeferred":true},"beforeB":{"accepted":true,"proposalConsumer":true,"repairConsumer":true,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":1,"capacity":1,"active":2,"retired":0,"phases":["Uncertain","Published"],"workspaceExists":false,"lastError":null,"cleanupDeferred":true},"afterA":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"Uncertain","outputsSettled":false,"entries":1,"capacity":1,"active":2,"retired":0,"phases":["Uncertain","Published"],"workspaceExists":false,"lastError":"Worker root closed before canonical operation.","cleanupDeferred":true},"afterB":{"accepted":true,"proposalConsumer":true,"repairConsumer":true,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":1,"capacity":1,"active":2,"retired":0,"phases":["Uncertain","Published"],"workspaceExists":false,"lastError":null,"cleanupDeferred":true},"recoveryWrites":0,"recoveryEvidencePreserved":true,"active":2,"retired":0,"distinctOriginalEpochs":false,"workerStarts":1}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartCleanupTests.cs:line 23
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1fa79abf-b669-440f-8a44-7e5f3096e47f" testId="73111e31-01f3-92a9-dfda-765af2bd23ca" testName="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: &quot;r1-start&quot;)" computerName="c7669543e9c7" duration="00:00:01.3653245" startTime="2026-10-06T03:29:13.1156968+00:00" endTime="2026-10-06T03:29:13.1156970+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1fa79abf-b669-440f-8a44-7e5f3096e47f">
+      <Output>
+        <ErrorInfo>
+          <Message>Only original completed cleanup may retire or retry its plan: {"mode":"r1-start","refused":false,"outcome":"Applied","error":null,"preserved":false,"workspaceRetained":true}</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartCleanupTests.cs:line 28
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: &quot;native-loss&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="aaa9f834-ee24-aa14-aaf1-fc03e70d8adc">
+      <Execution id="fea2726a-9ccf-40ae-9842-3568aca368c1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests" name="OriginalCleanup_CannotBeSkippedOrReplaced" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: &quot;r1-live-retry&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1915db2d-22b8-39fd-ead5-ee6bba065ece">
+      <Execution id="531d4aaa-79dd-469e-94cf-670b6e593615" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests" name="OriginalCleanup_CannotBeSkippedOrReplaced" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: &quot;premature-retire&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="744713e8-86a6-b0db-4080-aed14a5edbb2">
+      <Execution id="e74f1a25-8d2e-4510-badb-61f669bdbdf7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests" name="OriginalCleanup_CannotBeSkippedOrReplaced" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: &quot;r1-abort&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="179809f2-6937-696e-af4f-f48016cfd206">
+      <Execution id="2ab98951-32a9-45be-9c4b-659f1894decc" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests" name="OriginalCleanup_CannotBeSkippedOrReplaced" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: &quot;r1-start&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="73111e31-01f3-92a9-dfda-765af2bd23ca">
+      <Execution id="1fa79abf-b669-440f-8a44-7e5f3096e47f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRestartCleanupTests" name="OriginalCleanup_CannotBeSkippedOrReplaced" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="179809f2-6937-696e-af4f-f48016cfd206" executionId="2ab98951-32a9-45be-9c4b-659f1894decc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="744713e8-86a6-b0db-4080-aed14a5edbb2" executionId="e74f1a25-8d2e-4510-badb-61f669bdbdf7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1915db2d-22b8-39fd-ead5-ee6bba065ece" executionId="531d4aaa-79dd-469e-94cf-670b6e593615" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aaa9f834-ee24-aa14-aaf1-fc03e70d8adc" executionId="fea2726a-9ccf-40ae-9842-3568aca368c1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="73111e31-01f3-92a9-dfda-765af2bd23ca" executionId="1fa79abf-b669-440f-8a44-7e5f3096e47f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="5" executed="5" passed="0" failed="5" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.18]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.18]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.19]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.96]       Only original completed cleanup may retire or retry its plan: {"mode":"r1-live-retry","refused":false,"outcome":"Applied","error":null,"preserved":true,"workspaceRetained":true}
+[xUnit.net 00:00:02.96]       Stack Trace:
+[xUnit.net 00:00:02.96]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartCleanupTests.cs(28,0): at BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(String mode)
+[xUnit.net 00:00:02.97]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.35]       Only original completed cleanup may retire or retry its plan: {"mode":"premature-retire","refused":false,"outcome":null,"error":null,"preserved":false,"workspaceRetained":true}
+[xUnit.net 00:00:04.35]       Stack Trace:
+[xUnit.net 00:00:04.35]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartCleanupTests.cs(28,0): at BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(String mode)
+[xUnit.net 00:00:04.35]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.69]       Only original completed cleanup may retire or retry its plan: {"mode":"r1-abort","refused":false,"outcome":"Applied","error":null,"preserved":false,"workspaceRetained":true}
+[xUnit.net 00:00:05.69]       Stack Trace:
+[xUnit.net 00:00:05.69]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartCleanupTests.cs(28,0): at BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(String mode)
+[xUnit.net 00:00:05.69]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:07.06]       Only original completed cleanup may retire or retry its plan: {"mode":"r1-start","refused":false,"outcome":"Applied","error":null,"preserved":false,"workspaceRetained":true}
+[xUnit.net 00:00:07.06]       Stack Trace:
+[xUnit.net 00:00:07.06]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartCleanupTests.cs(28,0): at BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(String mode)
+[xUnit.net 00:00:07.06]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:09.58]       Original cleanup must attempt bounded stop before refusing uncertain authority: {"mode":"uncertain-recovery","faults":0,"seeded":true,"lateOriginalStop":{"RunId":"ae838a7c31e24f57bf0ba01e6d321cb9","Backend":2,"Guarantee":"ordinary-same-namespace-lineage","State":1,"Reason":"status-invalid","CleanupComplete":false,"AuthorityRetained":false,"RootExitCode":null},"poolAttemptedStop":false,"beforeA":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"Uncertain","outputsSettled":false,"entries":1,"capacity":1,"active":2,"retired":0,"phases":["Uncertain","Published"],"workspaceExists":false,"lastError":"Worker root closed before canonical operation.","cleanupDeferred":true},"beforeB":{"accepted":true,"proposalConsumer":true,"repairConsumer":true,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":1,"capacity":1,"active":2,"retired":0,"phases":["Uncertain","Published"],"workspaceExists":false,"lastError":null,"cleanupDeferred":true},"afterA":{"accepted":false,"proposalConsumer":false,"repairConsumer":false,"stopState":"Uncertain","outputsSettled":false,"entries":1,"capacity":1,"active":2,"retired":0,"phases":["Uncertain","Published"],"workspaceExists":false,"lastError":"Worker root closed before canonical operation.","cleanupDeferred":true},"afterB":{"accepted":true,"proposalConsumer":true,"repairConsumer":true,"stopState":"StoppedWithinScope","outputsSettled":true,"entries":1,"capacity":1,"active":2,"retired":0,"phases":["Uncertain","Published"],"workspaceExists":false,"lastError":null,"cleanupDeferred":true},"recoveryWrites":0,"recoveryEvidencePreserved":true,"active":2,"retired":0,"distinctOriginalEpochs":false,"workerStarts":1}
+[xUnit.net 00:00:09.58]       Stack Trace:
+[xUnit.net 00:00:09.58]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRestartCleanupTests.cs(23,0): at BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(String mode)
+[xUnit.net 00:00:09.58]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:09.59]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T03:29:09.0208596+00:00">
+        <Text>[xUnit.net 00:00:02.96]     BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: "r1-live-retry") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T03:29:10.4063356+00:00">
+        <Text>[xUnit.net 00:00:04.35]     BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: "premature-retire") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T03:29:11.7613845+00:00">
+        <Text>[xUnit.net 00:00:05.69]     BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: "r1-abort") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T03:29:13.1154323+00:00">
+        <Text>[xUnit.net 00:00:07.06]     BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: "r1-start") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T03:29:15.6420158+00:00">
+        <Text>[xUnit.net 00:00:09.58]     BookOfEternityClient.Tests.GmWorkerRestartCleanupTests.OriginalCleanup_CannotBeSkippedOrReplaced(mode: "native-loss") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

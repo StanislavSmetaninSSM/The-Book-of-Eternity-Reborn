@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "portable-load-resource-sampling"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "8b77c3578bcac7d5b272a5938fe7230357f0275e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 101.3266996,
+  "Descriptors": [
+    {
+      "Name": "portable-load-resource-sampling-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-load-resource-sampling",
+      "Categories": [
+        "portable-load-resource-sampling"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerRetainsExactStableByteCount|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerDistinguishesMissingCachedAttributes",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerRetainsExactStableByteCount",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadResourceTests.OwnedDiskSamplerStillRejectsNativeLinks",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

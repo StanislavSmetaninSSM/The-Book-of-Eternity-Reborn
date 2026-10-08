@@ -1,0 +1,107 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "6ab35591a83e1634eb969ac3222edf5481a56a1f",
+  "Commands": [
+    {
+      "Log": "record-green.log.gz",
+      "Entrypoint": "scripts/test-csharp.ps1; exact category/options and results in retained runner artifacts"
+    }
+  ],
+  "Inputs": [
+    {
+      "Path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+      "Sha256": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+      "GitBlob": "ddbbc890b30c53a35df72256552c195aa57f6b4c"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "Sha256": "e8e6b28583615031a4eda2978b16011d046cf05661f75331c54efb0bcc070ea5",
+      "GitBlob": "5226cdf71f1efb03b961880307a02448536d9864"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "GitBlob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerRunRecordTests.cs",
+      "Sha256": "19355b1ca1421e2f3a4b313d81baeb3bd6a7f7a3fb1fb91780a4ac459f27c091",
+      "GitBlob": "34fe03d012e5034b63b060be4987968f89e5a687"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Sha256": "009f4dbfe71f80887561227b708af0abb9a153a8de2a75c10af0be1487f6e4c6",
+      "GitBlob": "e6e78f3b5797ed6367763878790309e48041befe"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "Sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2",
+      "GitBlob": "c4c9d46904efd9361c02e690d6d142c799e9d672"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecord.cs",
+      "Sha256": "ec019c9cced3b59a853795aad95563f61e5984b1aa71cd85194d6fbaa4d96cf0",
+      "GitBlob": "730be8f08e19e15965d862736a2bf2df37cc1f9d"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunRecordCodec.cs",
+      "Sha256": "2a952f129e7de3cc1b06cf9c5326268eaf66b9b7ef602727cb6bf31b09332905",
+      "GitBlob": "4f0174ac8df9ad9c2701992b2c5d1e530296798d"
+    },
+    {
+      "Path": "scripts/test-csharp.ps1",
+      "Sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "GitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Sha256": "acc5b745f4212bdd2c58ce4f83495b7ebf4fa88197e95b5070508d121123a517",
+      "GitBlob": "5e9fcb4de97120c6baac8224caa18ef0a19dca9f"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Sha256": "f3b8d2f694d413338ff415b2acad7a47bb90ce4982cf2682b71fdaee89207412",
+      "GitBlob": "2b7742e8cb268e0d15cd54d618bb4c2649782679"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "record-green/Build-unit.log.gz",
+      "Bytes": 1341,
+      "Sha256": "4c12f1e41108ee6b84a93fad99888e66554a19578183928870a0869dd999f1d0",
+      "DecompressedSha256": "6e378a52b8b1fbe97ca71a6c76e7fbb8441bcebb49e7774524947eaf2742d6bb"
+    },
+    {
+      "Path": "record-green/dotnet-test.log.gz",
+      "Bytes": 168614,
+      "Sha256": "a786b92904532f1ddc694cb13b7e542a3c666c844889522e4659a9d88ffa6f8e",
+      "DecompressedSha256": "f1222d2afdf2f4188dc788d979de7b268f4291a5098eccbbcf79c122f7044446"
+    },
+    {
+      "Path": "record-green/plan.json",
+      "Bytes": 1683,
+      "Sha256": "d20c952790cc4ecb56531f24d50da1910590fd8ea28c0b31e8ac32f0100b2e61"
+    },
+    {
+      "Path": "record-green/summary.json",
+      "Bytes": 1552,
+      "Sha256": "c753aebc839e5ce4e9704d2dbfe57c98568be0d95b1b0db57b061ac553b92612"
+    },
+    {
+      "Path": "record-green/worker-run-ledger-record-unit-001.trx",
+      "Bytes": 66456,
+      "Sha256": "e1863083f6de804c213c592c7ed5a92727d38fa0f4178c1fcedfe06a861f56d1"
+    },
+    {
+      "Path": "record-green.log.gz",
+      "Bytes": 835,
+      "Sha256": "9191a085bd725dda6d797f37bd0293f4cb0e210faed114bf186243739b595435",
+      "DecompressedSha256": "1caaf7e9726f43557d082dca42f1732bf7f2e967288e65bb89d24004b9bb9fca"
+    },
+    {
+      "Path": "toolchain.txt",
+      "Bytes": 517,
+      "Sha256": "3998a0473eb80bc45bb32f5d7443d2e50b1322be2b2e8dead790ad1a29e2a9b2"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "Categories": [
+    "daren-standalone-linux-boundaries"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "f2a7e0e1564a1d127f52166ddfdafa668e95be72",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 53.4039396,
+  "Descriptors": [
+    {
+      "Name": "daren-standalone-linux-boundaries-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "daren-standalone-linux-boundaries",
+      "Categories": [
+        "daren-standalone-linux-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualOriginalMainFence_RefusesColdOrHeldLeaseBeforeProfilePreparation|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualOriginalPreparedWorker_RefusesStandaloneCompletion|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualStoreUnsupportedOriginalAuthority_RefusesBeforePreparation|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualUndeclaredBrowserProfile_RefusesWithoutStandaloneEscape|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.HeldRealProfileWrite_SerializesActualSessionReplacement|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalBoundGenerationRevokedBeforeWrite_RefusesBeforeIntent|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalCancellationAtProfileBoundary_DoesNotPublish|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalTaskPurpose_CannotWriteStandaloneProfile|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.PublicConsoleTerminalWriteFailure_DoesNotReportCompletionOrAward",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 16,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualOriginalMainFence_RefusesColdOrHeldLeaseBeforeProfilePreparation",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualOriginalPreparedWorker_RefusesStandaloneCompletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualStoreUnsupportedOriginalAuthority_RefusesBeforePreparation",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualUndeclaredBrowserProfile_RefusesWithoutStandaloneEscape",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.HeldRealProfileWrite_SerializesActualSessionReplacement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalBoundGenerationRevokedBeforeWrite_RefusesBeforeIntent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalCancellationAtProfileBoundary_DoesNotPublish",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalTaskPurpose_CannotWriteStandaloneProfile",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.PublicConsoleTerminalWriteFailure_DoesNotReportCompletionOrAward",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

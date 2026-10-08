@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "portable-backup-api"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "e26fa21e80c1c8234c2dd8585bb29dd5ce592e32",
+    "WorkingTreeFingerprint": "B76F0239394748C34BB8F60EBCC07006F435654167DE63FBA39389C01591DB37",
+    "ChangedFiles": 1
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-backup-api",
+      "Seconds": 3.9263859,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0773185,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.3939941,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0158466,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 151.3833458,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:02:39.7502995",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 6,
+    "CompletedCases": 6,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 6,
+    "Executed": 6,
+    "Passed": 0,
+    "Failed": 6
+  },
+  "DuplicateTests": []
+}

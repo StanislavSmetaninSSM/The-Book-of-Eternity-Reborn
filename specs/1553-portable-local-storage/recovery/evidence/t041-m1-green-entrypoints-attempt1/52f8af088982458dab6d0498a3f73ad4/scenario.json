@@ -1,0 +1,20 @@
+{
+  "Success": false,
+  "Mode": "daemon",
+  "Argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "/workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/ship/BookOfEternityClient/game_master_daemon.ps1",
+    "-GameSessionPath",
+    "/workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/root/game_session",
+    "-PollingInterval",
+    "50",
+    "-LogFile",
+    "/workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/daemon.log"
+  ],
+  "Failure": "RuntimeError: Entrypoint exited before b'Waiting for turns...'; \r\n  +===============================================+\r\n  |  Book of Eternity: Game Master Daemon         |\r\n  +===============================================+\r\n\r\n[19:49:54][INFO] Game Session : /workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/root/game_session\r\n[19:49:54][INFO] GM Backend   : OwnedTerminal\r\n[19:49:54][INFO] Bridge Status: bridge not started yet (fallbacks remain available)\r\n[19:49:54][INFO] Auto-Paste   : False\r\n[19:49:54][INFO] Timeout      : disabled (wait indefinitely)\r\n\r\n-ErrorAction: /workspace/native-1553/TestResults/production-main/52f8af088982458dab6d0498a3f73ad4/ship/BookOfEternityClient/game_master_daemon.ps1:5304\r\nLine |\r\n5304 |  } -ErrorAction SilentlyContinue\r\n     |    ~~~~~~~~~~~~\r\n     | The term '-ErrorAction' is not recognized as a name of a cmdlet,\r\n     | function, script file, or executable program. Check the spelling of the\r\n     | name, or if a path was included, verify that the path is correct and try\r\n     | again.\r\n",
+  "EntrypointExitCode": 1,
+  "ElapsedSeconds": 2.6843504489952466
+}

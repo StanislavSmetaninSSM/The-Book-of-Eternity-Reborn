@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "dafd37e589eaf6fd4e05a996fd3ecf00e74e4a97",
+  "status": "Frozen dafd37e5: integration compatibility 20/24 passed, four failures; unit3 unrun after integration failure, no timeout, complete owned cleanup.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-consumer-contracts"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:51.3880601",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 27,
+    "CompletedCases": 24,
+    "UnderfilledDescriptors": [
+      "portable-save-consumer-contracts-unit-002"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 24,
+    "Executed": 24,
+    "Passed": 20,
+    "Failed": 4
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "D760C220718EA0234FC5154611CF4B1EBA8B1133EE8D149F42B4FC9A230BFBA2",
+      "sha256": "5F8CBA6904DD9A3526584A4BAA3E7975321E3EDB43F6A4E48C736F53D767982B"
+    },
+    {
+      "path": "portable-save-consumer-contracts-integration-001.trx",
+      "originalSha256": "22495CD4A58D958153643E14F109D09ED1331276DBDD933A8AE11421B5E846C4",
+      "sha256": "B5156C3E251A2FD2E09177110E3CD037BB9BC79E7460EF3DFC6D5B2FB3A6941D"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "36BBFFAD5DEA0C3CDF9D6509A25B4290CD901EA48DDC776635BAB34CF9639A84",
+      "sha256": "2405A9B187C2CD9A6ADB6E29B8D3DD4DD51783EEF8224127F003BC8CAD4100D3"
+    }
+  ]
+}

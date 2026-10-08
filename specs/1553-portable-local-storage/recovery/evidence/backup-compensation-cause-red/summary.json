@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "portable-backup-compensation-cause"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "df602d2708010a965f004a73a1dc3b3e7a2eae4d",
+    "WorkingTreeFingerprint": "5F364B4F49AF098BF599E7E11EE19B555F0C52A52ACD67AB483DB944E1809DEC",
+    "ChangedFiles": 4
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-backup-compensation-cause",
+      "Seconds": 4.1659783,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.064344,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.014862,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0118066,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 148.5115108,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:02:36.0776127",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

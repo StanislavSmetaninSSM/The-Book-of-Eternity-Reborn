@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="0a118611-c791-4705-a02a-59c472546258" name="{USER}@{HOST} 2026-10-01 17:32:44" runUser="{HOST}\{USER}" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T17:32:44.6696588+10:00" queuing="2026-10-01T17:32:44.6696593+10:00" start="2026-10-01T17:32:31.5818283+10:00" finish="2026-10-01T17:33:39.0093132+10:00" />
+  <TestSettings name="default" id="448dc5ca-07ce-46e9-b270-88c4fa6baaa0">
+    <Deployment runDeploymentRoot="{USER}_{HOST}_2026-10-01_17_32_44" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="453f55d0-7faf-47e0-9326-fb686faaaf96" testId="5c08e586-846b-28e9-248a-97f5d4897701" testName="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_MainMenuExitScript_UsesSandboxAndEmitsObservationArtifacts" computerName="{HOST}" duration="00:00:06.4307250" startTime="2026-10-01T17:33:38.8982755+10:00" endTime="2026-10-01T17:33:38.8982758+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="453f55d0-7faf-47e0-9326-fb686faaaf96" />
+    <UnitTestResult executionId="3f23b9f4-8c60-4ee4-a3df-0929c57c2ed6" testId="82c79bdf-0169-16a9-8b43-c8cedd2209a8" testName="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_OptionsMenuScript_UsesScriptedInputAndEmitsMenuObservations" computerName="{HOST}" duration="00:00:09.6833618" startTime="2026-10-01T17:32:44.6317806+10:00" endTime="2026-10-01T17:32:44.6318078+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3f23b9f4-8c60-4ee4-a3df-0929c57c2ed6" />
+    <UnitTestResult executionId="254deb39-cfc8-4fc4-9e57-cc175fd13de2" testId="ca963fdd-7ceb-f09c-6ada-c8f0721cad8e" testName="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave(otherOwner: True)" computerName="{HOST}" duration="00:00:10.8511357" startTime="2026-10-01T17:33:22.1883503+10:00" endTime="2026-10-01T17:33:22.1883508+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="254deb39-cfc8-4fc4-9e57-cc175fd13de2" />
+    <UnitTestResult executionId="402a0311-5364-49fb-9a80-b53a3b0e12d5" testId="ddde6b86-e76f-d78d-f417-5de51de57d86" testName="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_ImmediateQteSaveSurvivesInterruptedMenuAndProcessRestart" computerName="{HOST}" duration="00:00:26.7027323" startTime="2026-10-01T17:33:11.3366277+10:00" endTime="2026-10-01T17:33:11.3366283+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="402a0311-5364-49fb-9a80-b53a3b0e12d5" />
+    <UnitTestResult executionId="3a554264-340e-42b1-824d-99988a70fe63" testId="0a3feb9e-032f-8110-65ff-2f80144e562a" testName="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave(otherOwner: False)" computerName="{HOST}" duration="00:00:10.2780584" startTime="2026-10-01T17:33:32.4670210+10:00" endTime="2026-10-01T17:33:32.4670213+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3a554264-340e-42b1-824d-99988a70fe63" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_ImmediateQteSaveSurvivesInterruptedMenuAndProcessRestart" storage="{SOURCE_ROOT}\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="ddde6b86-e76f-d78d-f417-5de51de57d86">
+      <Execution id="402a0311-5364-49fb-9a80-b53a3b0e12d5" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleE2ESmokeTests" name="ConsoleSettings_ImmediateQteSaveSurvivesInterruptedMenuAndProcessRestart" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_MainMenuExitScript_UsesSandboxAndEmitsObservationArtifacts" storage="{SOURCE_ROOT}\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="5c08e586-846b-28e9-248a-97f5d4897701">
+      <Execution id="453f55d0-7faf-47e0-9326-fb686faaaf96" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleE2ESmokeTests" name="ConsoleE2E_MainMenuExitScript_UsesSandboxAndEmitsObservationArtifacts" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_OptionsMenuScript_UsesScriptedInputAndEmitsMenuObservations" storage="{SOURCE_ROOT}\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="82c79bdf-0169-16a9-8b43-c8cedd2209a8">
+      <Execution id="3f23b9f4-8c60-4ee4-a3df-0929c57c2ed6" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleE2ESmokeTests" name="ConsoleE2E_OptionsMenuScript_UsesScriptedInputAndEmitsMenuObservations" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave(otherOwner: False)" storage="{SOURCE_ROOT}\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="0a3feb9e-032f-8110-65ff-2f80144e562a">
+      <Execution id="3a554264-340e-42b1-824d-99988a70fe63" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleE2ESmokeTests" name="ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave(otherOwner: True)" storage="{SOURCE_ROOT}\bookofeternityclient.integrationtests\bin\debug\net8.0\bookofeternityclient.integrationtests.dll" id="ca963fdd-7ceb-f09c-6ada-c8f0721cad8e">
+      <Execution id="254deb39-cfc8-4fc4-9e57-cc175fd13de2" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.ConsoleE2ESmokeTests" name="ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="5c08e586-846b-28e9-248a-97f5d4897701" executionId="453f55d0-7faf-47e0-9326-fb686faaaf96" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="82c79bdf-0169-16a9-8b43-c8cedd2209a8" executionId="3f23b9f4-8c60-4ee4-a3df-0929c57c2ed6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ca963fdd-7ceb-f09c-6ada-c8f0721cad8e" executionId="254deb39-cfc8-4fc4-9e57-cc175fd13de2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ddde6b86-e76f-d78d-f417-5de51de57d86" executionId="402a0311-5364-49fb-9a80-b53a3b0e12d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0a3feb9e-032f-8110-65ff-2f80144e562a" executionId="3a554264-340e-42b1-824d-99988a70fe63" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="5" executed="5" passed="5" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.52]   Discovering: BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:02.60]   Discovered:  BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:00:02.63]   Starting:    BookOfEternityClient.IntegrationTests&#xD;
+[xUnit.net 00:01:06.64]   Finished:    BookOfEternityClient.IntegrationTests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

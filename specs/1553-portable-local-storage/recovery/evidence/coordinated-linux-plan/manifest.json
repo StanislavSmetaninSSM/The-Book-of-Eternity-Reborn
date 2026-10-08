@@ -1,0 +1,56 @@
+{
+  "sourceCommit": "733c40fe862908616e2db3c4ea2b8d03bd273034",
+  "sourceAppliedTree": "cdf74a5d6d45f6135ee6c0c9c10264aab66ae75b",
+  "packetSha256": "730c0dd18dbe2d2b189e827e74f099e860842ee60158be7cfef2f3dfcc2a6f98",
+  "kind": "coordinated-linux-plan; exact completed selected-run evidence",
+  "sanitization": "Repository/toolchain/isolated environment paths and TRX run user/computer/deployment identifiers replaced; original and sanitized hashes retained.",
+  "command": "DOTNET_PROCESSOR_COUNT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -NoBuild -PlanOnly -Parallelism 1",
+  "environment": "Linux x64; SDK10.0.401, .NET8.0.31, PowerShell7.6.6; existing isolated homes/temp/cache; no app/provider execution",
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 13,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 110,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-coordinated-actual-consumers-integration-001",
+      "portable-coordinated-authority-unit-002",
+      "portable-coordinated-cleanup-integration-003",
+      "portable-coordinated-cleanup-resident-integration-004",
+      "portable-coordinated-cleanup-resident-unit-005",
+      "portable-coordinated-lease-unit-006",
+      "portable-coordinated-lease-consumers-unit-007",
+      "portable-coordinated-phase-consumers-integration-008",
+      "portable-coordinated-phase-consumers-unit-009",
+      "portable-coordinated-progression-unit-010",
+      "portable-coordinated-publication-unit-011",
+      "portable-coordinated-qte-outcome-integration-012",
+      "portable-coordinated-recovery-unit-013"
+    ],
+    "Complete": false
+  },
+  "exitCode": 0,
+  "wallTime": "00:00:08.6145800",
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "f5a28c926120fbf7040529b7b373c4f042abd128f85696fb2002b64b4a8c6013",
+      "sanitizedSha256": "f5a28c926120fbf7040529b7b373c4f042abd128f85696fb2002b64b4a8c6013"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "4825c8f32c88ed2648d4fa78e2d96874e62933b5b306306ac79f2f7a7e08ce7e",
+      "sanitizedSha256": "4825c8f32c88ed2648d4fa78e2d96874e62933b5b306306ac79f2f7a7e08ce7e"
+    }
+  ],
+  "scope": "Linux default plan: 13 descriptors, 110 cases. Zero executed; not an aggregate GREEN or repeated behavioral run.",
+  "expandedPlan": "Original generated plan.json preserved without rerunning: exact descriptor filters, method identities and planned case counts; paths sanitized with original/sanitized hashes."
+}

@@ -1,0 +1,151 @@
+{
+  "Categories": [
+    "gm-owned-terminal-session",
+    "gm-owned-terminal-native-linux",
+    "worker-pool-regression-host",
+    "worker-native-bootstrap-output",
+    "worker-native-owner-retention",
+    "worker-native-v1-transport-regression"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-owned-terminal-session",
+      "reason": "actual original session/view/keyboard/proof/timeout plus Windows source guard",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "gm-owned-terminal-native-linux",
+      "reason": "real fixed native PTY, actual bridge/T042 pipe, descendants/loss/partial startup/guardian",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-pool-regression-host",
+      "reason": "shared NativeLineageOwner extraction must preserve existing host-v2 typed owner and retire boundary",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-native-bootstrap-output",
+      "reason": "shared C descriptor-bootstrap branch and held child transports",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-native-owner-retention",
+      "reason": "shared original owner constructor/pidfd/disposal after loss",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    },
+    {
+      "category": "worker-native-v1-transport-regression",
+      "reason": "shared helper branch/version/argv/bootstrap must preserve legacy v1 discovery/stop",
+      "contracts": [
+        "#1553 T041-OWNED-MAIN-TERMINAL-NEUTRAL"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "6061df633091ce25cfa41183aa3d1b5938764a33",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-owned-terminal-native-linux",
+      "Seconds": 34.7269252,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-owned-terminal-session",
+      "Seconds": 10.3050514,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "worker-native-bootstrap-output",
+      "Seconds": 8.8603665,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "worker-native-owner-retention",
+      "Seconds": 5.1830107,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "worker-native-v1-transport-regression",
+      "Seconds": 11.4007045,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "worker-pool-regression-host",
+      "Seconds": 24.9234987,
+      "BudgetMinutes": 2,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0735887,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0605863,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0777791,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 41.4867609,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0054151,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:02:22.5733699",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 6,
+    "CompletedDescriptors": 6,
+    "PlannedCases": 44,
+    "CompletedCases": 44,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 44,
+    "Executed": 44,
+    "Passed": 44,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

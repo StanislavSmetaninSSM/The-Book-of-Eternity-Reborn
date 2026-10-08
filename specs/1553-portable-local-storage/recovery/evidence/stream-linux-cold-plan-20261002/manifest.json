@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A1 Linux prerequisite qualification",
+  "sourceCommit": "e5a009c3078934d7b7cd98d894c1fd4d2d3bab59",
+  "sourceTree": "b240460251ca3d463c8641a1b4bc27399b4f808f",
+  "entryCommit": "6161cfd6ad139fe91a3c28ee71bcda1b1e3e7162",
+  "command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"portable-storage-stream-cold-phases\",\"portable-storage-stream-cold-before\",\"portable-storage-stream-cold-conflicts\") -Parallelism 1 -PlanOnly'",
+  "workingDirectory": "/repo",
+  "platform": {
+    "system": "Linux",
+    "architecture": "x86_64",
+    "kernel": "6.18.44"
+  },
+  "toolchain": {
+    "sdk": "10.0.401",
+    "runtime": "8.0.31",
+    "powershell": "7.6.6",
+    "specify": "1.0.13",
+    "versionEvidence": "Completed setup-worker tool observations, described in toolchain-provenance.txt"
+  },
+  "environment": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1",
+    "DOTNET_GENERATE_ASPNET_CERTIFICATE": "false",
+    "DOTNET_PROCESSOR_COUNT": "1",
+    "HOME_CODEX_HOME": "unchanged",
+    "mutableState": "Unique /owned-run CLI/XDG/NuGet/temp, shared official binaries only"
+  },
+  "categories": [
+    "portable-storage-stream-cold-phases",
+    "portable-storage-stream-cold-before",
+    "portable-storage-stream-cold-conflicts"
+  ],
+  "planOnly": true,
+  "wallTime": "00:04:45.5768465",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 16,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-storage-stream-cold-before-unit-001",
+      "portable-storage-stream-cold-conflicts-unit-002",
+      "portable-storage-stream-cold-phases-unit-003"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "syntheticFixtureRemainders": [],
+  "sourceIdentities": [
+    {
+      "path": "scripts/test-csharp.ps1",
+      "sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "gitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    },
+    {
+      "path": "scripts/testing/TestCategoryCatalog.psm1",
+      "sha256": "865b7e528b48bca008524865abe6186d5c61f3e623f73f785ce1f41c3da53112",
+      "gitBlob": "eaee76832cb5fb99ea20598862ed6b4822532bcc"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "3b105a41c921a684c263eed826356c2b4fc954ab7149a9274f90372d05c53675",
+      "gitBlob": "17afadcd03badce4e5b4a78f322f1e4be4b6a2eb"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "73d7acb334a8eb1143f405ff38d218d4a6a7a68b79c51d35416f3a386a9ce2ea",
+      "gitBlob": "b28f52be6288204486fdedaca5c036f77f330b24"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "sha256": "a59d50fe221ee6dc170231551b6e5bb1652ae4575c9608a2a1dd08737a0436e0",
+      "gitBlob": "8f2cfc1eaed78460455f87c7e34620e6034acc40"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.ImagePublication.cs",
+      "sha256": "ae147b09feb7152aa7a7dfed8b0fc801119f5f7d366524bf1bdccd6825e55a94",
+      "gitBlob": "a8fe1ec081a6fcbf5a05170a8386e9fb7ee5a273"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "sha256": "6e4d11e939f4950431443d53d2516d6c8ac12a90ef0fd6046f882889f8676fce",
+      "gitBlob": "02ec111871e0905bd15c33abe7ed077a245ff91f"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "sha256": "a59b830016884e269e9732a26a0d1694d9e2f2b5e0026bdc976b57863afd5b09",
+      "gitBlob": "e87597b5e92c63a3fc343b2a612b788615039702"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+      "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9",
+      "gitBlob": "34bb94a325381be80eac63fee5caab9cbf128624"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "sha256": "07579b520a85952ec04e5df5b2a88a794ebaa8f318f2c10aa962bf821c02d1bd",
+      "gitBlob": "0edc3ca15878b1b879fdcaf1aaf90642718d4d76"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/TrustedLocalStreamRecoveryTests.cs",
+      "sha256": "fcb5b042f2e2c0f6342453ca5b63db3bea36c21111c3928c08459802e04ac4ba",
+      "gitBlob": "d9f81f801b4a816fbd189bf6b25c0187a50d6f3d"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/TrustedLocalStreamGenerationRecoveryTests.cs",
+      "sha256": "3a540dbe51bd40d8df3273ee66605a0334245582336fbefef6e10b3d94d06170",
+      "gitBlob": "fefab9acbf80fc517730b71f44390f1b1ca326bb"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/TrustedLocalImageAdapterAdmissionTests.cs",
+      "sha256": "247da2112fa72bdd7ada5247c8390af93aee87b6ad2b27991490d4c12fa65656",
+      "gitBlob": "a800aae46ecd264db9da4f351ec66be211161e9c"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/TrustedLocalStreamCrashFixture.cs",
+      "sha256": "be3c2a5e0f1465ffd5f21d92d8ae1bf36aafe89b4f43cdc73fcd5110e6a9211f",
+      "gitBlob": "24a28c1ce616d71d25e37b913dfcf797832a89c5"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/TrustedLocalStreamGenerationCrashFixture.cs",
+      "sha256": "6373951b50452e2fe8f3b5113a928ea59e16b0cad158d1f8d4375e7d9106fc76",
+      "gitBlob": "d3a84499735085d89796f9f712d597f8fa4f0c19"
+    },
+    {
+      "path": "tests/fixtures/PortableStorageCrashHost/Program.cs",
+      "sha256": "40cec505ac7d15172c37c4c5bfcb1f633c8878db7e568928b61d1bd9e215cc55",
+      "gitBlob": "8ba1acb12206f99bdc3df471a9cc2673c5569e0a"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "sha256": "a6d53b803f384018856f0ffe42b58fbfe335d954f474986ac9696e738739bbf7",
+      "gitBlob": "48fde8733d2f210c624adde08a068f414b7e0afd"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Images.cs",
+      "sha256": "7eceabdf8d76c6d0e7be69b3c6b715b9f53d1bada133e5e868bc8ce9045773c7",
+      "gitBlob": "c50cb063ebcb007fd25656a35e08c5ae4e9cb02c"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "sha256": "158838814f3d55c1669538e9bc0e4d2593b3d4adf356901007609d779fc68d9d",
+      "gitBlob": "69d480b2cc10c640dcf79cd906f8a59263eba4e3"
+    }
+  ],
+  "cases": [],
+  "artifacts": [
+    {
+      "path": "summary.json",
+      "originalSha256": "d3d7fd68dc00f1a8a1d811b1a11b2bf6d347ccc6506f3cb82638e45ed1bc82c8",
+      "sha256": "d3d7fd68dc00f1a8a1d811b1a11b2bf6d347ccc6506f3cb82638e45ed1bc82c8",
+      "originalBytes": 1682,
+      "storedBytes": 1682
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "00ca4c803b0652b88bfe1893f638ad38eab402c4d5eaff1719e3239c0ea68012",
+      "sha256": "00ca4c803b0652b88bfe1893f638ad38eab402c4d5eaff1719e3239c0ea68012",
+      "originalBytes": 3541,
+      "storedBytes": 3541
+    },
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "d17823c19edcf6e4cf89d3a394822bb1961403253573ca98b84c0ee8851626e0",
+      "sha256": "613c201d75ea7f9e74d08b3d312d3285a8c9291e66b2eb191a68ee233a0107ad",
+      "originalBytes": 9853,
+      "storedBytes": 7309
+    },
+    {
+      "path": "toolchain-provenance.txt",
+      "originalSha256": "f95a2af63b70928fe65954af7eafcd88bd4f4e5ad7f24cd95f4d5ff026271e58",
+      "sha256": "14a42350818b00736f400a745e13b9a1395bf8b30211f88123f6c4ba0a54b4d7",
+      "originalBytes": 3287,
+      "storedBytes": 3189
+    }
+  ],
+  "limits": "Synthetic native Linux storage prerequisites only. No full T032-A1 acceptance, caller/resource/live-client/GM/Load or wider platform claim."
+}

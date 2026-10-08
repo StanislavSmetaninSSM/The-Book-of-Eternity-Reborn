@@ -1,0 +1,96 @@
+{
+  "Categories": [
+    "portable-save-entry",
+    "portable-save-read-refresh",
+    "portable-save-outcomes",
+    "portable-save-retention-release",
+    "portable-save-bound-outcome"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "4e57bd58d05a6565853cf5f07a7e9b3402551e44",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-save-bound-outcome",
+      "Seconds": 3.8652128,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "portable-save-entry",
+      "Seconds": 3.4283284,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-save-outcomes",
+      "Seconds": 4.2419828,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-save-read-refresh",
+      "Seconds": 3.8522261,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-save-retention-release",
+      "Seconds": 3.8286288,
+      "BudgetMinutes": 2,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0872275,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0192469,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0174091,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0113113,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 18,
+  "WallTime": "00:00:23.3950927",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 5,
+    "PlannedCases": 33,
+    "CompletedCases": 33,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 33,
+    "Executed": 33,
+    "Passed": 33,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

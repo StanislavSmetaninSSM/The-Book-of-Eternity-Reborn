@@ -1,0 +1,79 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="cd8e4f7f-8f62-4a84-9ff3-ce013c2a71ad" name="coordinated-qte-outcome-red" runUser="$USER">
+  <ns0:Times creation="2026-10-01T13:18:15.1253237-04:00" queuing="2026-10-01T13:18:15.1253237-04:00" start="2026-10-01T13:18:08.5839154-04:00" finish="2026-10-01T13:18:15.1838946-04:00" />
+  <ns0:TestSettings name="default" id="1e0a5078-42c7-43f3-95f7-b0ac0907c0a0">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="85079516-58ed-4005-95ad-8d6ec3faea5d" testId="58d1d67d-783e-57d2-561a-0b82848b75c4" testName="BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.CoordinatedUncertaintyRetainsTheAcceptedMechanicsCutWithoutDomainCompensation" computerName="$HOST" duration="00:00:03.9177082" startTime="2026-10-01T13:18:15.0514642-04:00" endTime="2026-10-01T13:18:15.0514794-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="85079516-58ed-4005-95ad-8d6ec3faea5d">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Uncertain publication triggered 166 later canonical mutation attempts; propagated InvalidOperationException.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.CoordinatedUncertaintyRetainsTheAcceptedMechanicsCutWithoutDomainCompensation() in $REPO/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.CoordinatedOutcome.cs:line 72
+   at BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.CoordinatedUncertaintyRetainsTheAcceptedMechanicsCutWithoutDomainCompensation() in $REPO/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.CoordinatedOutcome.cs:line 74
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="6b7203c5-61a3-4cab-9202-ec5a7aeb343e" testId="c8cb61fb-9538-7c87-f4dc-d599f4fbeaae" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise" computerName="$HOST" duration="00:00:00.0394075" startTime="2026-10-01T13:18:15.0959330-04:00" endTime="2026-10-01T13:18:15.0959331-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6b7203c5-61a3-4cab-9202-ec5a7aeb343e">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Contains() Failure: Sub-string not found
+String:    "Действие не было применено. Мир не смог б"···
+Not found: "сохран"</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise() in $REPO/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.CoordinatedOutcome.cs:line 25
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c8cb61fb-9538-7c87-f4dc-d599f4fbeaae">
+      <ns0:Execution id="6b7203c5-61a3-4cab-9202-ec5a7aeb343e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.CoordinatedUncertaintyRetainsTheAcceptedMechanicsCutWithoutDomainCompensation" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="58d1d67d-783e-57d2-561a-0b82848b75c4">
+      <ns0:Execution id="85079516-58ed-4005-95ad-8d6ec3faea5d" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests" name="CoordinatedUncertaintyRetainsTheAcceptedMechanicsCutWithoutDomainCompensation" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="58d1d67d-783e-57d2-561a-0b82848b75c4" executionId="85079516-58ed-4005-95ad-8d6ec3faea5d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="c8cb61fb-9538-7c87-f4dc-d599f4fbeaae" executionId="6b7203c5-61a3-4cab-9202-ec5a7aeb343e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="2" executed="2" passed="0" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.50]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.90]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.93]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:05.93]       Uncertain publication triggered 166 later canonical mutation attempts; propagated InvalidOperationException.
+[xUnit.net 00:00:05.93]       Stack Trace:
+[xUnit.net 00:00:05.93]         $REPO/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.CoordinatedOutcome.cs(72,0): at BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.CoordinatedUncertaintyRetainsTheAcceptedMechanicsCutWithoutDomainCompensation()
+[xUnit.net 00:00:05.93]         $REPO/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.CoordinatedOutcome.cs(74,0): at BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.CoordinatedUncertaintyRetainsTheAcceptedMechanicsCutWithoutDomainCompensation()
+[xUnit.net 00:00:05.93]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.97]       Assert.Contains() Failure: Sub-string not found
+[xUnit.net 00:00:05.97]       String:    "Действие не было применено. Мир не смог б"···
+[xUnit.net 00:00:05.97]       Not found: "сохран"
+[xUnit.net 00:00:05.97]       Stack Trace:
+[xUnit.net 00:00:05.97]         $REPO/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.CoordinatedOutcome.cs(25,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise()
+[xUnit.net 00:00:05.97]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:05.97]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:05.98]   Finished:    BookOfEternityClient.IntegrationTests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T13:18:15.0518615-04:00">
+        <ns0:Text>[xUnit.net 00:00:05.92]     BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.CoordinatedUncertaintyRetainsTheAcceptedMechanicsCutWithoutDomainCompensation [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T13:18:15.1303945-04:00">
+        <ns0:Text>[xUnit.net 00:00:05.97]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

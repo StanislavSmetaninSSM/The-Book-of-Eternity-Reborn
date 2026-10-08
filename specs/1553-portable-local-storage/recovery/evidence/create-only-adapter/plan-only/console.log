@@ -1,0 +1,15 @@
+PLAN {"Name":"portable-save-create-only-adapter-unit-001","Project":"BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj","Category":"portable-save-create-only-adapter","Categories":["portable-save-create-only-adapter"],"Filter":"FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveCreateOnlyAdapterTests.SecondCreateOfIdenticalZipRejectsWithoutChangingArchiveGenerationOrLibrary","Adapter":"unit","Exclusive":false,"FrontendBuild":false,"BudgetMinutes":3,"EstimatedCases":1,"ExpectedMethodCounts":[{"Name":"BookOfEternityClient.Tests.PortableSaveCreateOnlyAdapterTests.SecondCreateOfIdenticalZipRejectsWithoutChangingArchiveGenerationOrLibrary","Cases":1}]}
+
+Category result
+  Categories: portable-save-create-only-adapter
+  Filter: <none>
+  Timeout: 8 minute(s)
+  Wall time: 00:03:50.9379247
+  Exit code: 0
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=1, cases=1; completed descriptors=0, cases=0, complete=False
+  Tests: total=0, executed=0, passed=0, failed=0
+  Duplicate test IDs: 0
+  Results: REPO_ROOT/TestResults/test-categories/20261002-041623-363-5-280c54fb823b43c09069cb3b8ab9e085-categories
+  Log: REPO_ROOT/TestResults/test-categories/20261002-041623-363-5-280c54fb823b43c09069cb3b8ab9e085-categories/dotnet-test.log

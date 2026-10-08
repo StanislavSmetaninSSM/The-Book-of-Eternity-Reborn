@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun>
+  <Results>
+    <UnitTestResult testId="665BF4F54446CE4FF20316690FF2E25C10C89E1D8810D2EF69A6530F2A056FE3" testName="BookOfEternityClient.WebFrontend/test/appRouteExtraction.test.ts(typecheck)" outcome="Passed" />
+    <UnitTestResult testId="A4D428A9721AA838F43A9BF3F062BDF386985FE1221EFCFB161F8A9C0DB27325" testName="BookOfEternityClient.WebFrontend/test/shellContextComponents.test.ts(typecheck)" outcome="Passed" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest id="665BF4F54446CE4FF20316690FF2E25C10C89E1D8810D2EF69A6530F2A056FE3" storage="category-typecheck" />
+    <UnitTest id="A4D428A9721AA838F43A9BF3F062BDF386985FE1221EFCFB161F8A9C0DB27325" storage="category-typecheck" />
+  </TestDefinitions>
+  <ResultSummary>
+    <Counters total="2" executed="2" passed="2" failed="0" />
+  </ResultSummary>
+</TestRun>

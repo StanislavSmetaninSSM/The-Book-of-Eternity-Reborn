@@ -1,0 +1,66 @@
+{
+  "Categories": [
+    "worker-host-environment"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e6b6436bf99440a5284815435c92010a90abd7a2",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 76.9573899,
+  "Descriptors": [
+    {
+      "Name": "worker-host-environment-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "worker-host-environment",
+      "Categories": [
+        "worker-host-environment"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Wire_CaseDistinctEnvironmentKeysRemainDistinct|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Wire_EnvironmentCaseAliasesDoNotRelaxEnvelopePropertyCasing|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Wire_ExactDuplicateEnvironmentKeysAreRejectedWithoutPayloadDiagnostics|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Wire_CaseDistinctEnvironmentKeysRemainDistinct",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Wire_EnvironmentCaseAliasesDoNotRelaxEnvelopePropertyCasing",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostEnvironmentTests.Wire_ExactDuplicateEnvironmentKeysAreRejectedWithoutPayloadDiagnostics",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProcessHostTests.Environment_ActualHostAdmitsCaseAliasesThenClosesWithoutRelease",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-host-environment-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-host-environment",
+      "Categories": [
+        "worker-host-environment"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

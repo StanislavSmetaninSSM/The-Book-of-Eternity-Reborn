@@ -1,0 +1,108 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="6698c2cc-36e9-4f91-bda5-8e7c334f3aa3" name="b2b-closing-red" runUser="$USER">
+  <ns0:Times creation="2026-09-30T20:39:34.9825324-04:00" queuing="2026-09-30T20:39:34.9825324-04:00" start="2026-09-30T20:39:32.9309293-04:00" finish="2026-09-30T20:39:35.2477010-04:00" />
+  <ns0:TestSettings name="default" id="b3b3f8e3-9f93-4442-8f03-59e36a0765e0">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="f6e34ef0-b89e-4869-8622-4899d94202c1" testId="ac3447c0-acb7-6a46-35bf-37d87880ec70" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;committed-cleanup&quot;)" computerName="$HOST" duration="00:00:00.0167073" startTime="2026-09-30T20:39:34.9704040-04:00" endTime="2026-09-30T20:39:34.9704042-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f6e34ef0-b89e-4869-8622-4899d94202c1" />
+    <ns0:UnitTestResult executionId="950d3f70-17f7-49ea-b19e-71a688c0612d" testId="000046b5-ade0-45fa-34e3-15cfbc826e84" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(failure: &quot;owner-cleanup&quot;)" computerName="$HOST" duration="00:00:00.0174077" startTime="2026-09-30T20:39:35.0568080-04:00" endTime="2026-09-30T20:39:35.0568082-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="950d3f70-17f7-49ea-b19e-71a688c0612d" />
+    <ns0:UnitTestResult executionId="d01f0b11-161d-4879-9fbd-91a99951bd86" testId="7a04f7d7-8141-d2bd-f48e-7b5e8f7e3195" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(blocker: &quot;owner&quot;)" computerName="$HOST" duration="00:00:00.0767548" startTime="2026-09-30T20:39:35.1498452-04:00" endTime="2026-09-30T20:39:35.1498454-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d01f0b11-161d-4879-9fbd-91a99951bd86" />
+    <ns0:UnitTestResult executionId="44e5f547-f9cf-4b21-ad5f-e032375bca50" testId="32acc2a0-b4b8-520b-2bc3-61a06f884e10" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(failure: &quot;runtime&quot;)" computerName="$HOST" duration="00:00:00.0232492" startTime="2026-09-30T20:39:35.0387298-04:00" endTime="2026-09-30T20:39:35.0387300-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="44e5f547-f9cf-4b21-ad5f-e032375bca50" />
+    <ns0:UnitTestResult executionId="e2400c04-8a35-4314-8eb9-37925ab40200" testId="85913866-a2ce-c4f0-76f2-e093dd2c76de" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings" computerName="$HOST" duration="00:00:00.0187283" startTime="2026-09-30T20:39:35.0150278-04:00" endTime="2026-09-30T20:39:35.0150280-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e2400c04-8a35-4314-8eb9-37925ab40200" />
+    <ns0:UnitTestResult executionId="7d2eb206-bd1e-46c1-82db-422bcff56db3" testId="0356992c-1dd1-0e29-fbd3-aa85d9fa3239" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;unknown-close&quot;)" computerName="$HOST" duration="00:00:00.0303453" startTime="2026-09-30T20:39:34.9398261-04:00" endTime="2026-09-30T20:39:34.9398263-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7d2eb206-bd1e-46c1-82db-422bcff56db3">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   Blocked</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(String cut) in $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs:line 127
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="13784810-dddf-4bdf-b7a5-d404d8f24ba9" testId="e58ae7d1-2533-a3d9-34cf-8843275a164a" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup" computerName="$HOST" duration="00:00:00.1769563" startTime="2026-09-30T20:39:34.8855538-04:00" endTime="2026-09-30T20:39:34.8855674-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="13784810-dddf-4bdf-b7a5-d404d8f24ba9" />
+    <ns0:UnitTestResult executionId="78440dd9-9bf5-4aa5-b216-965ab477073a" testId="25def16d-1ec7-a01a-566d-34d9eb59d2ed" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;unknown&quot;)" computerName="$HOST" duration="00:00:00.0246208" startTime="2026-09-30T20:39:34.9973677-04:00" endTime="2026-09-30T20:39:34.9973679-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="78440dd9-9bf5-4aa5-b216-965ab477073a" />
+    <ns0:UnitTestResult executionId="a8ca694c-85d0-4116-8f82-f97e42bee559" testId="ee3c022a-e6a8-14d5-d687-453e984ee313" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;rollback&quot;)" computerName="$HOST" duration="00:00:00.0193660" startTime="2026-09-30T20:39:34.9533643-04:00" endTime="2026-09-30T20:39:34.9533646-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a8ca694c-85d0-4116-8f82-f97e42bee559" />
+    <ns0:UnitTestResult executionId="adb58ecc-fcaf-441f-9332-6fb235f535cc" testId="ecc0dfe2-99b6-25ad-3aef-a382bbc77179" testName="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(blocker: &quot;pending&quot;)" computerName="$HOST" duration="00:00:00.0140310" startTime="2026-09-30T20:39:35.0720545-04:00" endTime="2026-09-30T20:39:35.0720547-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="adb58ecc-fcaf-441f-9332-6fb235f535cc" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;unknown-close&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0356992c-1dd1-0e29-fbd3-aa85d9fa3239">
+      <ns0:Execution id="7d2eb206-bd1e-46c1-82db-422bcff56db3" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;rollback&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ee3c022a-e6a8-14d5-d687-453e984ee313">
+      <ns0:Execution id="a8ca694c-85d0-4116-8f82-f97e42bee559" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;committed-cleanup&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ac3447c0-acb7-6a46-35bf-37d87880ec70">
+      <ns0:Execution id="f6e34ef0-b89e-4869-8622-4899d94202c1" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(blocker: &quot;owner&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7a04f7d7-8141-d2bd-f48e-7b5e8f7e3195">
+      <ns0:Execution id="d01f0b11-161d-4879-9fbd-91a99951bd86" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e58ae7d1-2533-a3d9-34cf-8843275a164a">
+      <ns0:Execution id="13784810-dddf-4bdf-b7a5-d404d8f24ba9" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner(blocker: &quot;pending&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ecc0dfe2-99b6-25ad-3aef-a382bbc77179">
+      <ns0:Execution id="adb58ecc-fcaf-441f-9332-6fb235f535cc" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(failure: &quot;runtime&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="32acc2a0-b4b8-520b-2bc3-61a06f884e10">
+      <ns0:Execution id="44e5f547-f9cf-4b21-ad5f-e032375bca50" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="85913866-a2ce-c4f0-76f2-e093dd2c76de">
+      <ns0:Execution id="e2400c04-8a35-4314-8eb9-37925ab40200" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles(failure: &quot;owner-cleanup&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="000046b5-ade0-45fa-34e3-15cfbc826e84">
+      <ns0:Execution id="950d3f70-17f7-49ea-b19e-71a688c0612d" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: &quot;unknown&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="25def16d-1ec7-a01a-566d-34d9eb59d2ed">
+      <ns0:Execution id="78440dd9-9bf5-4aa5-b216-965ab477073a" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortablePreparedSettingsTests" name="PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="ac3447c0-acb7-6a46-35bf-37d87880ec70" executionId="f6e34ef0-b89e-4869-8622-4899d94202c1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="000046b5-ade0-45fa-34e3-15cfbc826e84" executionId="950d3f70-17f7-49ea-b19e-71a688c0612d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="7a04f7d7-8141-d2bd-f48e-7b5e8f7e3195" executionId="d01f0b11-161d-4879-9fbd-91a99951bd86" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="32acc2a0-b4b8-520b-2bc3-61a06f884e10" executionId="44e5f547-f9cf-4b21-ad5f-e032375bca50" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="85913866-a2ce-c4f0-76f2-e093dd2c76de" executionId="e2400c04-8a35-4314-8eb9-37925ab40200" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="0356992c-1dd1-0e29-fbd3-aa85d9fa3239" executionId="7d2eb206-bd1e-46c1-82db-422bcff56db3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e58ae7d1-2533-a3d9-34cf-8843275a164a" executionId="13784810-dddf-4bdf-b7a5-d404d8f24ba9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="25def16d-1ec7-a01a-566d-34d9eb59d2ed" executionId="78440dd9-9bf5-4aa5-b216-965ab477073a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ee3c022a-e6a8-14d5-d687-453e984ee313" executionId="a8ca694c-85d0-4116-8f82-f97e42bee559" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ecc0dfe2-99b6-25ad-3aef-a382bbc77179" executionId="adb58ecc-fcaf-441f-9332-6fb235f535cc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="10" executed="10" passed="9" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.17]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.10]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.12]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.45]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.45]       Expected: Uncertain
+[xUnit.net 00:00:01.45]       Actual:   Blocked
+[xUnit.net 00:00:01.45]       Stack Trace:
+[xUnit.net 00:00:01.45]         $REPO/BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs(127,0): at BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(String cut)
+[xUnit.net 00:00:01.45]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.67]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T20:39:34.9384301-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.45]     BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence(cut: "unknown-close") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

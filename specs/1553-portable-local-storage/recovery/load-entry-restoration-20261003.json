@@ -1,0 +1,16 @@
+{
+  "sha": "3e07eabdf6c7ad5710745531016d52b42684d321",
+  "tree": "8beed8d2704a36e15b1747903910966da39f3d00",
+  "method": "fresh GitHub clone, no source/object copy",
+  "trackedFiles": 4393,
+  "clean": true,
+  "changedFiles": {
+    "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs": "716b6886a9575c64ee20e618de30393fb8f4cdd7256ddf4172f4928c690bb27d",
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs": "4d18ad304d1c33099e3b26c02db2d436c28483f14580c688643e3f2642a7dfbe",
+    "specs/1553-portable-local-storage/plan.md": "396f82c5b9c3fef4e9f6a3a14ae5c875e9b13890a7e8b04ba7fff45f7a9693df",
+    "specs/1553-portable-local-storage/tasks.md": "d22e49354f433c164d45d14325a1be7907516e1752c67d3501ccd7cc827cec23",
+    "tests/categories.json": "8f69eec53c04f5f39681a87bab9519046bd95c251a8dd3a3def42d93efc221c2",
+    "tests/selection.json": "357845126a4eb80ea1354e9921df00b03349ad8936a8d271602405245d43b9b8"
+  },
+  "testsExecuted": 0
+}

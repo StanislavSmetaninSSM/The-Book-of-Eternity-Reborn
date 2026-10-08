@@ -1,0 +1,314 @@
+{
+  "Categories": [
+    "portable-worker-consumers",
+    "portable-worker-docs",
+    "portable-storage-publication",
+    "portable-storage-stream-publication",
+    "portable-storage-original-v1-fixtures"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ce0d39f349982a44fde16bb6e85b6a499fc552b9",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 2.9742028,
+  "Descriptors": [
+    {
+      "Name": "portable-storage-original-v1-fixtures-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-original-v1-fixtures",
+      "Categories": [
+        "portable-storage-original-v1-fixtures"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalOriginalV1FixtureTests.NormalLeaseRecoversIndependentOriginalV1Decision",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-publication-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-publication",
+      "Categories": [
+        "portable-storage-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.AuthorityPathNormalization_MatchesScopeForExtendedWindowsComparisons|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_BootstrapGenerationIsAnExplicitJournalMember|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_ExactExternalGrantUsesOwnedSiblingStageWithoutGrantingOtherFiles|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_HardLinkedDestinationNeverChangesOutsideBytes|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_PreservesExactBytesAbsenceAndReturnsLogicalResult|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_PreservesTheExistingGenerationReadersCurrentSchemaContract|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RecoversPendingWorkBeforeStartingNextTransaction|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RejectsDuplicateAndReservedMembers|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RejectsDuplicateGenerationMemberAsInvalidData|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RejectsExpectedContentAndStaleGenerationBeforeAnyMutation|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RequiresItsOwnActiveCanonicalLease|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_SecondParticipatingProcessCannotAcquireHeldCanonicalLease|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_PreconditionConflictCannotClaimRestoredBeforeImages|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_SeparatesRollbackFromDurableCommitCleanupFailure|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_UnknownRollbackContentIsUncertainAndRetainsEvidence|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_AbruptColdProcessExitAndSeparateRecoveryProcess|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_CommittedUnknownMemberBlocksCleanupWithoutRollback|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_EveryPublishCutRestoresWholeSetOrKeepsCommitted|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_LinkInLaterMemberPreservesEarlierMemberAndOutsideSentinel|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_PartiallyWrittenPrivateScratchIsNotCanonicalAuthority|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_PreflightsEveryMemberBeforeRollbackAndRetainsUnknownContent|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_PreflightsInvalidJournalWithoutRestoringAnyMember|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_RejectsChangedGenerationWithoutTouchingMembersOrEvidence|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_RestartsAfterInterruptedRollback|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_RetainsInvalidJournalAndLeavesOldFormatSeparate",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 71,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.AuthorityPathNormalization_MatchesScopeForExtendedWindowsComparisons",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_BootstrapGenerationIsAnExplicitJournalMember",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_ExactExternalGrantUsesOwnedSiblingStageWithoutGrantingOtherFiles",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes",
+          "Cases": 15
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_HardLinkedDestinationNeverChangesOutsideBytes",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_PreservesExactBytesAbsenceAndReturnsLogicalResult",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_PreservesTheExistingGenerationReadersCurrentSchemaContract",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RecoversPendingWorkBeforeStartingNextTransaction",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RejectsDuplicateAndReservedMembers",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RejectsDuplicateGenerationMemberAsInvalidData",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RejectsExpectedContentAndStaleGenerationBeforeAnyMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_RequiresItsOwnActiveCanonicalLease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Publish_SecondParticipatingProcessCannotAcquireHeldCanonicalLease",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_PreconditionConflictCannotClaimRestoredBeforeImages",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_SeparatesRollbackFromDurableCommitCleanupFailure",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.PublishWithOutcome_UnknownRollbackContentIsUncertainAndRetainsEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_AbruptColdProcessExitAndSeparateRecoveryProcess",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_CommittedUnknownMemberBlocksCleanupWithoutRollback",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_EveryPublishCutRestoresWholeSetOrKeepsCommitted",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_LinkInLaterMemberPreservesEarlierMemberAndOutsideSentinel",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_PartiallyWrittenPrivateScratchIsNotCanonicalAuthority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_PreflightsEveryMemberBeforeRollbackAndRetainsUnknownContent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_PreflightsInvalidJournalWithoutRestoringAnyMember",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_RejectsChangedGenerationWithoutTouchingMembersOrEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_RestartsAfterInterruptedRollback",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.Recover_RetainsInvalidJournalAndLeavesOldFormatSeparate",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-stream-publication-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-publication",
+      "Categories": [
+        "portable-storage-stream-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.OriginalV1EvidenceKeepsItsOriginalPendingAndCommittedSemantics|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.UnknownLaterMemberPreventsEarlierRollbackAndRetainsV2Authority|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 29,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.CanonicalImageAdapterUsesOneDecisionIncludingAnyFreshGeneration",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.FileImagesBecomeSelfContainedBeforeDisposableSourcesAreRemoved",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.InvalidV2FrameRetainsAllEvidenceBeforeAnyRecoveryMutation",
+          "Cases": 14
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.OriginalV1EvidenceKeepsItsOriginalPendingAndCommittedSemantics",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.UnknownLaterMemberPreventsEarlierRollbackAndRetainsV2Authority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidActiveV2OwnsDecisionDespiteUnknownTemporaryContents",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.ValidFramedEvidenceRecoversThroughNormalCanonicalAcquisition",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamPublicationTests.WarmImageCutsPreserveTheCompleteDecision",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "portable-worker-consumers-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-consumers",
+      "Categories": [
+        "portable-worker-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_AcceptedCanonicalCommitSurvivesAuditPublicationFailure|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_AcceptsAllowedProposalAndWritesCanonicalFile|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ActorMaterializationRepairChangingOnlyNamedSection_IsAccepted|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_CanonicalMutationAfterContextReadWinsOverWorkerProposal|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_CharacteristicAuthorityMutationDuringValidationRejectsAndRollsBackTarget|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_CooperatingRealmAuthorityWriterWaitsUntilAcceptedLinearizationPoint|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ProductionValidationFailureRestoresOriginalBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_RealmAuthorityMutationDuringValidationRejectsAndRollsBackTarget|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_RollbackCasDoesNotOverwriteMutationAfterOwnershipRead|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_RollsBackAllowedProposalWhenValidationFails|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_StaleTaskContextWithBomOnlyByteDifference_IsRejectedWithoutChangingCanonicalFile|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_TaskFromPriorSessionGenerationIsRejectedEvenWhenProposalBytesAreRestored|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ValidationFailureDoesNotRollbackOverConcurrentCanonicalMutation|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_WhenAuditLogProvided_RecordsApplyDecision|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyReservedAsync_UsesCanonicalReservedTaskAsAuthority",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 15,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_AcceptedCanonicalCommitSurvivesAuditPublicationFailure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_AcceptsAllowedProposalAndWritesCanonicalFile",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ActorMaterializationRepairChangingOnlyNamedSection_IsAccepted",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_CanonicalMutationAfterContextReadWinsOverWorkerProposal",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_CharacteristicAuthorityMutationDuringValidationRejectsAndRollsBackTarget",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_CooperatingRealmAuthorityWriterWaitsUntilAcceptedLinearizationPoint",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ProductionValidationFailureRestoresOriginalBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_RealmAuthorityMutationDuringValidationRejectsAndRollsBackTarget",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_RollbackCasDoesNotOverwriteMutationAfterOwnershipRead",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_RollsBackAllowedProposalWhenValidationFails",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_StaleTaskContextWithBomOnlyByteDifference_IsRejectedWithoutChangingCanonicalFile",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_TaskFromPriorSessionGenerationIsRejectedEvenWhenProposalBytesAreRestored",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_ValidationFailureDoesNotRollbackOverConcurrentCanonicalMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_WhenAuditLogProvided_RecordsApplyDecision",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyReservedAsync_UsesCanonicalReservedTaskAsAuthority",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-worker-docs-unit-005",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-docs",
+      "Categories": [
+        "portable-worker-docs"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.DurableFileAuthoritySourceGuard_RejectsPathBasedRuntimeMutations|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.MainGmPrompt_DocumentsExplicitWorkerDelegationFlow|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentReservedAuthorityAndSessionReplacementAbort",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.DurableFileAuthoritySourceGuard_RejectsPathBasedRuntimeMutations",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.MainGmPrompt_DocumentsExplicitWorkerDelegationFlow",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentReservedAuthorityAndSessionReplacementAbort",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

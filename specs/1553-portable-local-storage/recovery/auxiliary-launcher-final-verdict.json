@@ -1,0 +1,23 @@
+{
+  "Task": "T050-AUXILIARY-LAUNCHER-PORTABLE",
+  "Verdict": "BOUNDED PASS subject to exact-tip writer closure",
+  "AcceptedBase": "0c526b3c2749a545fce9dc5ae41053d7045dbb5a",
+  "FrozenRuntimeTests": "39fb7534a8a492dbb22c9ee530d1b6a9397566e5",
+  "DistinctPASS": 21,
+  "NewCases": 20,
+  "AffectedPreexisting": 1,
+  "HistoricalExecuted": 42,
+  "HistoricalPASS": 37,
+  "HistoricalFAIL": 5,
+  "Reviews": {
+    "Design": "recovery/auxiliary-launcher-design-review.json",
+    "Source": "recovery/auxiliary-launcher-source-review.json",
+    "Evidence": "recovery/auxiliary-launcher-evidence-review.json",
+    "Metadata": "recovery/auxiliary-launcher-metadata-review.json",
+    "Models": "Actual independent gpt-6.1-sol/xhigh; all PASS"
+  },
+  "CandidateRestoration": "recovery/auxiliary-launcher-candidate-restoration.json",
+  "FinalCarrierSelfReference": "Final SHA and fresh GitHub-only proof are supplied after this commit push/readback; no circular commit claim.",
+  "StopBoundary": "Stop before desktop helpers/systemd/Q1Q2/live GM/native Windows or any next block; branch retained, no merge/force push",
+  "SourceIssue": 1553
+}

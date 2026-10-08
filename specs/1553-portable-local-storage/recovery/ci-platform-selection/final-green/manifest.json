@@ -1,0 +1,41 @@
+{
+  "sourceHead": "41128a392d7a779d3ad09ac3c60c4a60a71b7abf",
+  "command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1 -TimeoutMinutes 3",
+  "exitCode": 0,
+  "executed": 28,
+  "passed": 28,
+  "failed": 0,
+  "distinctAccepted": 28,
+  "cleanup": "complete",
+  "nativeWindowsExecuted": false,
+  "hostedActionsExecuted": false,
+  "sourcePins": {
+    ".github/workflows/dotnet-ci.yml": "9c7705dfccec01ea9dee6e8f262f804ca8ace1dd0f7a65bfd2af9ba1be8bcbd7",
+    "scripts/testing/TestCategoryCatalog.psm1": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d",
+    "scripts/plan-test-ci.ps1": "0a9e17c772688a6399c50363e5a36e061d820b14a6fef5ba5c350306b13dabc3",
+    "scripts/tests/test-ci-platform.tests.ps1": "3db421de04863a9f3a7cad48b96acb509edf12f3896eec2edf1c75a37b8d5969",
+    "scripts/tests/test-category-catalog.tests.ps1": "dd9eb69274233da75b3b7b48c7f86e209041509db3e9ffe4ad1b4ba55a68e35f",
+    "tests/categories.json": "9d50885413f4776c32ce9069c45b4d57a8b292550c3385d83aad340dc75376d5",
+    "tests/selection.json": "1e32f4d9324ed7d5bfc94b2d311bd74f573555ee601d5164f2da9d99338ae57d"
+  },
+  "artifacts": [
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/final-green/plan.json.gz",
+      "originalSize": 1942,
+      "originalSha256": "13a130239662355ccd013bbb04642f211c6c82f65d1e5b7e0809ab7371f8c8cd",
+      "storedSha256": "96b40adec185534fcd248cb253b860fecaad2e7b17421471f614162f5ba2f162"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/final-green/summary.json.gz",
+      "originalSize": 2791,
+      "originalSha256": "b37a33c2673b0a93af155b1a6c4ab4d9311e4250e4b6f75f599edc942bbb7183",
+      "storedSha256": "d9db1b3d004e823c465fb063431beef7429552daccb674174d935c8610bc5b4e"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/final-green/dotnet-test.log.gz",
+      "originalSize": 4530,
+      "originalSha256": "b2cb000f205bd7d0b8c4d5b3324ab963fcf46c7c1c06c573e31755eaa5dccbcf",
+      "storedSha256": "4379fcacf11451907944e4db59dfb9b229807eafc5f8c991374fd10772cc8dd3"
+    }
+  ]
+}

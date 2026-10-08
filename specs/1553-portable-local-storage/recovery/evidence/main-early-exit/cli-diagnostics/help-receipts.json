@@ -1,0 +1,24 @@
+[
+  {
+    "Argv": [
+      "/opt/codex/bin/codex",
+      "doctor",
+      "--help"
+    ],
+    "ExitCode": 0,
+    "StdoutBytes": 1217,
+    "StderrBytes": 103,
+    "StartupOrModelRequest": false
+  },
+  {
+    "Argv": [
+      "/opt/codex/bin/codex",
+      "exec",
+      "--help"
+    ],
+    "ExitCode": 0,
+    "StdoutBytes": 4031,
+    "StderrBytes": 103,
+    "StartupOrModelRequest": false
+  }
+]

@@ -1,0 +1,63 @@
+{
+  "Categories": [
+    "browser-direct-gacha-linux",
+    "browser-direct-gacha-linux-boundaries"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d47d3f16837f56f23e3254e30047dc71d3b3ee17",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 54.4876398,
+  "Descriptors": [
+    {
+      "Name": "browser-direct-gacha-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "browser-direct-gacha-linux",
+      "Categories": [
+        "browser-direct-gacha-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.FreshOriginalLeases_RetainPendingBackupAndBlockSecondPull|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_OriginalCaptureValidatedRollbackAndCleanup",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.FreshOriginalLeases_RetainPendingBackupAndBlockSecondPull",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_OriginalCaptureValidatedRollbackAndCleanup",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "browser-direct-gacha-linux-boundaries-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "browser-direct-gacha-linux-boundaries",
+      "Categories": [
+        "browser-direct-gacha-linux-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "portable-save-native-names"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "31c4e0353391c122ed5d8c1886f7c1fe0809c961",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.3360008,
+  "Descriptors": [
+    {
+      "Name": "portable-save-native-names-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-save-native-names",
+      "Categories": [
+        "portable-save-native-names"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerRejectsFixedAuthorityCaseCollision",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerNativeNamesSurviveSaveTypedLoadSave",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerRejectsFixedAuthorityCaseCollision",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

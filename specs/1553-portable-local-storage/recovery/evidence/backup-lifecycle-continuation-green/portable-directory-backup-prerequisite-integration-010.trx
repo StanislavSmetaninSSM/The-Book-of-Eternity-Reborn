@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="b8040c39-709f-4051-b2d3-c0fd168586d2" name="@ff00c3d48a40 2026-10-01 18:46:55" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T18:46:55.4124987-04:00" queuing="2026-10-01T18:46:55.4124987-04:00" start="2026-10-01T18:46:36.5486078-04:00" finish="2026-10-01T18:46:55.4176767-04:00" />
+  <TestSettings name="default" id="d05a0519-1966-46c7-858e-71b6792b5cde">
+    <Deployment runDeploymentRoot="_ff00c3d48a40_2026-10-01_18_46_55" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="603c8d18-6652-4997-912c-745036651d4d" testId="da34cf35-5687-779b-6d8d-757a53e9e2a1" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim" computerName="ff00c3d48a40" duration="00:00:16.6029105" startTime="2026-10-01T18:46:55.3109911-04:00" endTime="2026-10-01T18:46:55.3110224-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="603c8d18-6652-4997-912c-745036651d4d" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim" storage="SOURCE_ROOT/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="da34cf35-5687-779b-6d8d-757a53e9e2a1">
+      <Execution id="603c8d18-6652-4997-912c-745036651d4d" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="da34cf35-5687-779b-6d8d-757a53e9e2a1" executionId="603c8d18-6652-4997-912c-745036651d4d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="1" executed="1" passed="1" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.35]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.67]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.70]   Starting:    BookOfEternityClient.IntegrationTests
+⏳ Мир ещё не готов продолжить ход... (0с) (Escape = вернуться)
+⏹ Изменения мира не были приняты; состояние до хода будет восстановлено.
+procedure rollback oracle
+[xUnit.net 00:00:18.35]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

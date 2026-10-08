@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="ca322630-5edc-436d-a4d0-43388fcbde6c" name="@95e438a3e5cb 2026-10-05 03:15:33" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T03:15:33.1087056-04:00" queuing="2026-10-05T03:15:33.1087056-04:00" start="2026-10-05T03:15:31.1644449-04:00" finish="2026-10-05T03:15:33.1613025-04:00" />
+  <TestSettings name="default" id="8abe9c07-c1a2-49cd-83ab-f147fb6c23b3">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-05_03_15_33" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="b9f87e60-9b12-45a1-a693-8a3c9a706aa9" testId="1681055f-5f31-170a-9aeb-f4745dd39eca" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingKindCannotBecomeReadyByEnumDefault" computerName="95e438a3e5cb" duration="00:00:00.0004430" startTime="2026-10-05T03:15:33.0915416-04:00" endTime="2026-10-05T03:15:33.0915416-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b9f87e60-9b12-45a1-a693-8a3c9a706aa9" />
+    <UnitTestResult executionId="5dd93487-6d2e-4d3a-ab68-7d5fd92aa9a6" testId="b3294ff3-2752-ef34-be5f-539b32a4f3e9" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_ReadyFrameMustNotCarryError" computerName="95e438a3e5cb" duration="00:00:00.0002551" startTime="2026-10-05T03:15:33.0928667-04:00" endTime="2026-10-05T03:15:33.0928667-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5dd93487-6d2e-4d3a-ab68-7d5fd92aa9a6" />
+    <UnitTestResult executionId="56973bf8-91ad-4c21-a193-9cf85a3f5fb1" testId="b8dcd4b4-65e1-602f-0a08-2cef805cd844" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;outputDrained&quot;, missingProperty: &quot;exitCode&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0003229" startTime="2026-10-05T03:15:33.0804275-04:00" endTime="2026-10-05T03:15:33.0804275-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="56973bf8-91ad-4c21-a193-9cf85a3f5fb1" />
+    <UnitTestResult executionId="eb907d25-22d1-43f8-ba28-4ee42269babf" testId="62c4e2b7-6c2b-4470-4304-41ad50ec4a3d" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_CompletedFrameWithoutExitCodeIsRejected" computerName="95e438a3e5cb" duration="00:00:00.0122005" startTime="2026-10-05T03:15:33.0745141-04:00" endTime="2026-10-05T03:15:33.0745142-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eb907d25-22d1-43f8-ba28-4ee42269babf" />
+    <UnitTestResult executionId="ea4b45fc-cded-4802-869f-032b33d8680f" testId="7589959b-d6f5-f8f3-3fa2-7473f0612e01" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_WrongLaunchNonceCannotReleaseWorker" computerName="95e438a3e5cb" duration="00:00:00.0004582" startTime="2026-10-05T03:15:33.0935854-04:00" endTime="2026-10-05T03:15:33.0935855-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ea4b45fc-cded-4802-869f-032b33d8680f" />
+    <UnitTestResult executionId="1966b887-3375-4e68-a044-b0bbe73ca29b" testId="a02aedfb-58b3-b634-7b32-8e2fffcde2de" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ValidateLaunchNonce_MissingNonceProducesTypedProtocolFailure" computerName="95e438a3e5cb" duration="00:00:00.0003784" startTime="2026-10-05T03:15:33.0915705-04:00" endTime="2026-10-05T03:15:33.0915705-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1966b887-3375-4e68-a044-b0bbe73ca29b" />
+    <UnitTestResult executionId="f8960d6d-4cab-4f86-9bd5-f86bc904c0d4" testId="e27ce202-a5a9-7275-a7da-a46dc16e7a04" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected" computerName="95e438a3e5cb" duration="00:00:00.0007509" startTime="2026-10-05T03:15:33.1001562-04:00" endTime="2026-10-05T03:15:33.1001562-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f8960d6d-4cab-4f86-9bd5-f86bc904c0d4">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Net.Sockets.SocketException : Permission denied</Message>
+          <StackTrace>   at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithLocalPeerAsync(Func`6 body) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 548
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected() in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 128
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b9dcae55-d65d-47e7-bf95-2d70447a6322" testId="aced28f5-0ca7-f246-ce76-530e344bcf02" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;outputDrained&quot;, missingProperty: &quot;error&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0001269" startTime="2026-10-05T03:15:33.0901864-04:00" endTime="2026-10-05T03:15:33.0901865-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b9dcae55-d65d-47e7-bf95-2d70447a6322" />
+    <UnitTestResult executionId="d2877215-b97b-4b1f-9838-ea22b9897048" testId="ca8694f6-e7a7-132b-5257-d5b9cc639258" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: &quot;unknown&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0049702" startTime="2026-10-05T03:15:33.0612543-04:00" endTime="2026-10-05T03:15:33.0612545-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d2877215-b97b-4b1f-9838-ea22b9897048">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.DoesNotContain() Failure: Sub-string found
+                                ↓ (pos 99)
+String: ···" The JSON property 'SECRET_PAYLOAD_SENTIN"···
+Found:  "SECRET_PAYLOAD_SENTINEL"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(String shape) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 166
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="08b2ef92-6b3e-4ef0-9013-e35e2a040872" testId="f847d1f7-270c-6649-907b-d2f48ecf0993" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost" computerName="95e438a3e5cb" duration="00:00:00.0127475" startTime="2026-10-05T03:15:33.0304664-04:00" endTime="2026-10-05T03:15:33.0305100-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="08b2ef92-6b3e-4ef0-9013-e35e2a040872">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Net.Sockets.SocketException : Permission denied</Message>
+          <StackTrace>   at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 567
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 601
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3a69d5b5-f28c-4ed1-85ec-0067e8683457" testId="022feeb4-94fb-4ef2-d6be-cdeeda774bc1" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_MissingKindCannotReleaseWorkerByEnumDefault" computerName="95e438a3e5cb" duration="00:00:00.0005589" startTime="2026-10-05T03:15:33.0929455-04:00" endTime="2026-10-05T03:15:33.0929456-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3a69d5b5-f28c-4ed1-85ec-0067e8683457" />
+    <UnitTestResult executionId="662f2466-f131-4ae7-a89e-84ac6add76b2" testId="45fd5d1d-ba44-a612-84cf-782c3bf01509" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedDiagnosticNeverIncludesPeerText" computerName="95e438a3e5cb" duration="00:00:00.0004288" startTime="2026-10-05T03:15:33.0928064-04:00" endTime="2026-10-05T03:15:33.0928065-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="662f2466-f131-4ae7-a89e-84ac6add76b2">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.DoesNotContain() Failure: Sub-string found
+                                ↓ (pos 62)
+String: ···"rocess host failed: SECRET_ENVIRONMENT_SE"···
+Found:  "SECRET_ENVIRONMENT_SENTINEL"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedDiagnosticNeverIncludesPeerText() in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 177
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f51ab8c2-4f41-484c-8aad-b8d1b52b8021" testId="60aa339f-222f-7ed1-5cb2-b93e1fdedc3e" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost" computerName="95e438a3e5cb" duration="00:00:00.0003544" startTime="2026-10-05T03:15:33.0909504-04:00" endTime="2026-10-05T03:15:33.0909505-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f51ab8c2-4f41-484c-8aad-b8d1b52b8021">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Net.Sockets.SocketException : Permission denied</Message>
+          <StackTrace>   at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 567
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 601
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2558b566-d546-42c7-bfe9-a7eeca790c89" testId="a2da4aa1-078f-a59c-98ac-2aef43c06adc" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: &quot;malformed&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0009808" startTime="2026-10-05T03:15:33.0617788-04:00" endTime="2026-10-05T03:15:33.0617789-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2558b566-d546-42c7-bfe9-a7eeca790c89" />
+    <UnitTestResult executionId="9af37e93-f93d-4427-966d-aa3f2ca6ce78" testId="20af7b4c-93f6-6f2a-f14f-824dc8f64c98" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker" computerName="95e438a3e5cb" duration="00:00:00.0054366" startTime="2026-10-05T03:15:33.0992978-04:00" endTime="2026-10-05T03:15:33.0992978-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9af37e93-f93d-4427-966d-aa3f2ca6ce78">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Net.Sockets.SocketException : Permission denied</Message>
+          <StackTrace>   at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker() in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 84
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker() in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 102
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c73290fb-fabf-413f-a67e-1f01c3951762" testId="058fbeb3-a8b1-135d-a642-dd47d21cec30" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_ReleaseFrameMustNotCarryPayload" computerName="95e438a3e5cb" duration="00:00:00.0288460" startTime="2026-10-05T03:15:33.0558216-04:00" endTime="2026-10-05T03:15:33.0558217-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c73290fb-fabf-413f-a67e-1f01c3951762" />
+    <UnitTestResult executionId="3f9a6d60-816e-4ca1-b289-5847f6dda4d6" testId="5526ab85-5fe4-2df3-bc62-31dd201ecf08" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedFrameMustNotCarryExitCode" computerName="95e438a3e5cb" duration="00:00:00.0003063" startTime="2026-10-05T03:15:33.0928924-04:00" endTime="2026-10-05T03:15:33.0928924-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3f9a6d60-816e-4ca1-b289-5847f6dda4d6" />
+    <UnitTestResult executionId="12ff5c0c-c084-4b11-9cde-1a9147d36c8b" testId="227b6aad-9203-5363-1b39-9cca0225fec0" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_ReleaseFrameMissingRequiredPayloadFieldIsRejected" computerName="95e438a3e5cb" duration="00:00:00.0005227" startTime="2026-10-05T03:15:33.0906585-04:00" endTime="2026-10-05T03:15:33.0906585-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="12ff5c0c-c084-4b11-9cde-1a9147d36c8b" />
+    <UnitTestResult executionId="2d5d5657-e5d2-4b56-9176-8c5f98995c56" testId="2d637dc7-56fc-e37a-b60a-4d1f9ab2e57d" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths" computerName="95e438a3e5cb" duration="00:00:00.0017605" startTime="2026-10-05T03:15:33.0931452-04:00" endTime="2026-10-05T03:15:33.0931452-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2d5d5657-e5d2-4b56-9176-8c5f98995c56">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Net.Sockets.SocketException : Permission denied</Message>
+          <StackTrace>   at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths() in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 34
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b19c4b21-8bf5-447c-a5d5-7c66dfaaaa4c" testId="c2bf6b0f-75ad-b022-dbb4-cc9344df89e9" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_CompletedFrameMustNotCarryError" computerName="95e438a3e5cb" duration="00:00:00.0007278" startTime="2026-10-05T03:15:33.0928395-04:00" endTime="2026-10-05T03:15:33.0928395-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b19c4b21-8bf5-447c-a5d5-7c66dfaaaa4c" />
+    <UnitTestResult executionId="ff65a327-514b-4b44-b053-2c14f1bf5eff" testId="c8ecc4c2-86e2-013d-23a1-6210444a9d53" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing" computerName="95e438a3e5cb" duration="00:00:00.0006175" startTime="2026-10-05T03:15:33.1016688-04:00" endTime="2026-10-05T03:15:33.1016689-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ff65a327-514b-4b44-b053-2c14f1bf5eff">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Net.Sockets.SocketException : Permission denied</Message>
+          <StackTrace>   at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithLocalPeerAsync(Func`6 body) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 548
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing() in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 141
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="650b5e6d-e41d-4629-bbb8-14644497bc8e" testId="22b41e7b-9fff-cd7b-e54c-4a0c48a6f37a" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;ready&quot;, missingProperty: &quot;error&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0001274" startTime="2026-10-05T03:15:33.0806090-04:00" endTime="2026-10-05T03:15:33.0806091-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="650b5e6d-e41d-4629-bbb8-14644497bc8e" />
+    <UnitTestResult executionId="a868b8d6-2b5f-4aea-8d73-c3ea97810cde" testId="9c1ee164-cabd-4e22-4731-ae0551af99c4" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;completed&quot;, missingProperty: &quot;error&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0054132" startTime="2026-10-05T03:15:33.0800391-04:00" endTime="2026-10-05T03:15:33.0800392-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a868b8d6-2b5f-4aea-8d73-c3ea97810cde" />
+    <UnitTestResult executionId="04ab2160-a443-4bd6-8451-e2ce5c01a949" testId="cf359d68-d10b-6a08-786c-71d0d7c2e540" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_DuplicatePropertyIsRejected" computerName="95e438a3e5cb" duration="00:00:00.0002085" startTime="2026-10-05T03:15:33.1017151-04:00" endTime="2026-10-05T03:15:33.1017151-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="04ab2160-a443-4bd6-8451-e2ce5c01a949" />
+    <UnitTestResult executionId="fba3b383-d6c0-4ba6-a8b9-d02e0e7aa2ed" testId="ec36cd61-9bac-2c0f-352e-879ea802ee2a" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_OutputDrainedFrameMustNotCarryExitCode" computerName="95e438a3e5cb" duration="00:00:00.0003971" startTime="2026-10-05T03:15:33.1003866-04:00" endTime="2026-10-05T03:15:33.1003867-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fba3b383-d6c0-4ba6-a8b9-d02e0e7aa2ed" />
+    <UnitTestResult executionId="7c5d18f5-7608-4f8d-b0fa-49e167c44e33" testId="5feb58ad-402f-c71b-22ea-d6989188b4f4" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_UnknownPropertyIsRejected" computerName="95e438a3e5cb" duration="00:00:00.0004138" startTime="2026-10-05T03:15:33.0929163-04:00" endTime="2026-10-05T03:15:33.0929163-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7c5d18f5-7608-4f8d-b0fa-49e167c44e33" />
+    <UnitTestResult executionId="24172ccb-3c05-4446-b5c8-6050520d0955" testId="96bfe5ca-584d-ab8b-515c-29b9c23ea1d8" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: True)" computerName="95e438a3e5cb" duration="00:00:00.0015601" startTime="2026-10-05T03:15:33.0911949-04:00" endTime="2026-10-05T03:15:33.0911949-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="24172ccb-3c05-4446-b5c8-6050520d0955">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Net.Sockets.SocketException : Permission denied</Message>
+          <StackTrace>   at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithLocalPeerAsync(Func`6 body) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 548
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 111
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="da9c9311-c545-4526-a40a-7dbb7deb2aa6" testId="7a67044a-3784-2916-f33c-38be6332fdf8" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch" computerName="95e438a3e5cb" duration="00:00:00.0005594" startTime="2026-10-05T03:15:33.0906067-04:00" endTime="2026-10-05T03:15:33.0906068-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="da9c9311-c545-4526-a40a-7dbb7deb2aa6">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Net.Sockets.SocketException : Permission denied</Message>
+          <StackTrace>   at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 567
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 601
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b3867ee8-7e39-4a01-80a5-8f37dd07bc81" testId="4463484d-ca1b-0c4a-3653-6ccb5ed7d035" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: &quot;duplicate&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0001987" startTime="2026-10-05T03:15:33.0624526-04:00" endTime="2026-10-05T03:15:33.0624527-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b3867ee8-7e39-4a01-80a5-8f37dd07bc81">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.DoesNotContain() Failure: Sub-string found
+                                ↓ (pos 95)
+String: ···"duplicate property 'SECRET_PAYLOAD_SENTIN"···
+Found:  "SECRET_PAYLOAD_SENTINEL"</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(String shape) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 166
+   at InvokeStub_GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d8199c9f-5683-4e72-a000-5630dbd3bd7c" testId="d1fa634a-d69f-ca37-dc04-7ee0aaa98bf4" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: False)" computerName="95e438a3e5cb" duration="00:00:00.0004287" startTime="2026-10-05T03:15:33.0914956-04:00" endTime="2026-10-05T03:15:33.0914956-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d8199c9f-5683-4e72-a000-5630dbd3bd7c">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Net.Sockets.SocketException : Permission denied</Message>
+          <StackTrace>   at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+   at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+   at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+   at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+   at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory) in [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs:line 300
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithLocalPeerAsync(Func`6 body) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 548
+   at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized) in [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs:line 111
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="82f1f4cc-a52d-4560-8bd5-514c5d756a3b" testId="c9d07281-3de0-780e-39ac-32fff02dc11b" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_WrongLaunchNonceIsRejected" computerName="95e438a3e5cb" duration="00:00:00.0002545" startTime="2026-10-05T03:15:33.0926001-04:00" endTime="2026-10-05T03:15:33.0926002-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="82f1f4cc-a52d-4560-8bd5-514c5d756a3b" />
+    <UnitTestResult executionId="77947ace-963c-42ed-a96b-ae634fdeec5a" testId="0fc7c39a-10de-3db4-6ad8-68aa36a509a6" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_LaunchFrameRequiresPayload" computerName="95e438a3e5cb" duration="00:00:00.0002874" startTime="2026-10-05T03:15:33.0926365-04:00" endTime="2026-10-05T03:15:33.0926366-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="77947ace-963c-42ed-a96b-ae634fdeec5a" />
+    <UnitTestResult executionId="9a7d8e77-cab2-45bd-8f7f-a1fc9a016f78" testId="80a5df67-1037-6c9a-4c2b-2d2926248fa4" testName="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;ready&quot;, missingProperty: &quot;exitCode&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0000966" startTime="2026-10-05T03:15:33.0902220-04:00" endTime="2026-10-05T03:15:33.0902221-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a7d8e77-cab2-45bd-8f7f-a1fc9a016f78" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedFrameMustNotCarryExitCode" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5526ab85-5fe4-2df3-bc62-31dd201ecf08">
+      <Execution id="3f9a6d60-816e-4ca1-b289-5847f6dda4d6" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_FailedFrameMustNotCarryExitCode" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: True)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="96bfe5ca-584d-ab8b-515c-29b9c23ea1d8">
+      <Execution id="24172ccb-3c05-4446-b5c8-6050520d0955" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_StatusFrameByteLimitIsExact" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7a67044a-3784-2916-f33c-38be6332fdf8">
+      <Execution id="da9c9311-c545-4526-a40a-7dbb7deb2aa6" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;outputDrained&quot;, missingProperty: &quot;error&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="aced28f5-0ca7-f246-ce76-530e344bcf02">
+      <Execution id="b9dcae55-d65d-47e7-bf95-2d70447a6322" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_MissingRequiredNullableFieldIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_OutputDrainedFrameMustNotCarryExitCode" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ec36cd61-9bac-2c0f-352e-879ea802ee2a">
+      <Execution id="fba3b383-d6c0-4ba6-a8b9-d02e0e7aa2ed" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_OutputDrainedFrameMustNotCarryExitCode" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: False)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d1fa634a-d69f-ca37-dc04-7ee0aaa98bf4">
+      <Execution id="d8199c9f-5683-4e72-a000-5630dbd3bd7c" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_StatusFrameByteLimitIsExact" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_MissingKindCannotReleaseWorkerByEnumDefault" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="022feeb4-94fb-4ef2-d6be-cdeeda774bc1">
+      <Execution id="3a69d5b5-f28c-4ed1-85ec-0067e8683457" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_MissingKindCannotReleaseWorkerByEnumDefault" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2d637dc7-56fc-e37a-b60a-4d1f9ab2e57d">
+      <Execution id="2d5d5657-e5d2-4b56-9176-8c5f98995c56" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;outputDrained&quot;, missingProperty: &quot;exitCode&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b8dcd4b4-65e1-602f-0a08-2cef805cd844">
+      <Execution id="56973bf8-91ad-4c21-a193-9cf85a3f5fb1" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_MissingRequiredNullableFieldIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_CompletedFrameWithoutExitCodeIsRejected" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="62c4e2b7-6c2b-4470-4304-41ad50ec4a3d">
+      <Execution id="eb907d25-22d1-43f8-ba28-4ee42269babf" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_CompletedFrameWithoutExitCodeIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_ReleaseFrameMissingRequiredPayloadFieldIsRejected" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="227b6aad-9203-5363-1b39-9cca0225fec0">
+      <Execution id="12ff5c0c-c084-4b11-9cde-1a9147d36c8b" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_ReleaseFrameMissingRequiredPayloadFieldIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;ready&quot;, missingProperty: &quot;exitCode&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="80a5df67-1037-6c9a-4c2b-2d2926248fa4">
+      <Execution id="9a7d8e77-cab2-45bd-8f7f-a1fc9a016f78" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_MissingRequiredNullableFieldIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e27ce202-a5a9-7275-a7da-a46dc16e7a04">
+      <Execution id="f8960d6d-4cab-4f86-9bd5-f86bc904c0d4" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: &quot;malformed&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a2da4aa1-078f-a59c-98ac-2aef43c06adc">
+      <Execution id="2558b566-d546-42c7-bfe9-a7eeca790c89" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_DiagnosticsNeverIncludePayloadExcerpts" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;ready&quot;, missingProperty: &quot;error&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="22b41e7b-9fff-cd7b-e54c-4a0c48a6f37a">
+      <Execution id="650b5e6d-e41d-4629-bbb8-14644497bc8e" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_MissingRequiredNullableFieldIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_DuplicatePropertyIsRejected" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="cf359d68-d10b-6a08-786c-71d0d7c2e540">
+      <Execution id="04ab2160-a443-4bd6-8451-e2ce5c01a949" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_DuplicatePropertyIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: &quot;duplicate&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="4463484d-ca1b-0c4a-3653-6ccb5ed7d035">
+      <Execution id="b3867ee8-7e39-4a01-80a5-8f37dd07bc81" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_DiagnosticsNeverIncludePayloadExcerpts" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_WrongLaunchNonceCannotReleaseWorker" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7589959b-d6f5-f8f3-3fa2-7473f0612e01">
+      <Execution id="ea4b45fc-cded-4802-869f-032b33d8680f" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_WrongLaunchNonceCannotReleaseWorker" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_LaunchFrameRequiresPayload" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="0fc7c39a-10de-3db4-6ad8-68aa36a509a6">
+      <Execution id="77947ace-963c-42ed-a96b-ae634fdeec5a" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_LaunchFrameRequiresPayload" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ValidateLaunchNonce_MissingNonceProducesTypedProtocolFailure" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a02aedfb-58b3-b634-7b32-8e2fffcde2de">
+      <Execution id="1966b887-3375-4e68-a044-b0bbe73ca29b" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ValidateLaunchNonce_MissingNonceProducesTypedProtocolFailure" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c8ecc4c2-86e2-013d-23a1-6210444a9d53">
+      <Execution id="ff65a327-514b-4b44-b053-2c14f1bf5eff" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_ReadyFrameMustNotCarryError" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b3294ff3-2752-ef34-be5f-539b32a4f3e9">
+      <Execution id="5dd93487-6d2e-4d3a-ab68-7d5fd92aa9a6" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_ReadyFrameMustNotCarryError" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingRequiredNullableFieldIsRejected(kind: &quot;completed&quot;, missingProperty: &quot;error&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="9c1ee164-cabd-4e22-4731-ae0551af99c4">
+      <Execution id="a868b8d6-2b5f-4aea-8d73-c3ea97810cde" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_MissingRequiredNullableFieldIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_WrongLaunchNonceIsRejected" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c9d07281-3de0-780e-39ac-32fff02dc11b">
+      <Execution id="82f1f4cc-a52d-4560-8bd5-514c5d756a3b" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_WrongLaunchNonceIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_ReleaseFrameMustNotCarryPayload" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="058fbeb3-a8b1-135d-a642-dd47d21cec30">
+      <Execution id="c73290fb-fabf-413f-a67e-1f01c3951762" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_ReleaseFrameMustNotCarryPayload" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="20af7b4c-93f6-6f2a-f14f-824dc8f64c98">
+      <Execution id="9af37e93-f93d-4427-966d-aa3f2ca6ce78" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedDiagnosticNeverIncludesPeerText" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="45fd5d1d-ba44-a612-84cf-782c3bf01509">
+      <Execution id="662f2466-f131-4ae7-a89e-84ac6add76b2" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_FailedDiagnosticNeverIncludesPeerText" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="60aa339f-222f-7ed1-5cb2-b93e1fdedc3e">
+      <Execution id="f51ab8c2-4f41-484c-8aad-b8d1b52b8021" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_CompletedFrameMustNotCarryError" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c2bf6b0f-75ad-b022-dbb4-cc9344df89e9">
+      <Execution id="b19c4b21-8bf5-447c-a5d5-7c66dfaaaa4c" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_CompletedFrameMustNotCarryError" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_UnknownPropertyIsRejected" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5feb58ad-402f-c71b-22ea-d6989188b4f4">
+      <Execution id="7c5d18f5-7608-4f8d-b0fa-49e167c44e33" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_UnknownPropertyIsRejected" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: &quot;unknown&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ca8694f6-e7a7-132b-5257-d5b9cc639258">
+      <Execution id="d2877215-b97b-4b1f-9838-ea22b9897048" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseControl_DiagnosticsNeverIncludePayloadExcerpts" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f847d1f7-270c-6649-907b-d2f48ecf0993">
+      <Execution id="08b2ef92-6b3e-4ef0-9013-e35e2a040872" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_MissingKindCannotBecomeReadyByEnumDefault" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1681055f-5f31-170a-9aeb-f4745dd39eca">
+      <Execution id="b9f87e60-9b12-45a1-a693-8a3c9a706aa9" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessHostTests" name="ParseStatus_MissingKindCannotBecomeReadyByEnumDefault" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="1681055f-5f31-170a-9aeb-f4745dd39eca" executionId="b9f87e60-9b12-45a1-a693-8a3c9a706aa9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b3294ff3-2752-ef34-be5f-539b32a4f3e9" executionId="5dd93487-6d2e-4d3a-ab68-7d5fd92aa9a6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b8dcd4b4-65e1-602f-0a08-2cef805cd844" executionId="56973bf8-91ad-4c21-a193-9cf85a3f5fb1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="62c4e2b7-6c2b-4470-4304-41ad50ec4a3d" executionId="eb907d25-22d1-43f8-ba28-4ee42269babf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7589959b-d6f5-f8f3-3fa2-7473f0612e01" executionId="ea4b45fc-cded-4802-869f-032b33d8680f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a02aedfb-58b3-b634-7b32-8e2fffcde2de" executionId="1966b887-3375-4e68-a044-b0bbe73ca29b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e27ce202-a5a9-7275-a7da-a46dc16e7a04" executionId="f8960d6d-4cab-4f86-9bd5-f86bc904c0d4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aced28f5-0ca7-f246-ce76-530e344bcf02" executionId="b9dcae55-d65d-47e7-bf95-2d70447a6322" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ca8694f6-e7a7-132b-5257-d5b9cc639258" executionId="d2877215-b97b-4b1f-9838-ea22b9897048" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f847d1f7-270c-6649-907b-d2f48ecf0993" executionId="08b2ef92-6b3e-4ef0-9013-e35e2a040872" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="022feeb4-94fb-4ef2-d6be-cdeeda774bc1" executionId="3a69d5b5-f28c-4ed1-85ec-0067e8683457" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="45fd5d1d-ba44-a612-84cf-782c3bf01509" executionId="662f2466-f131-4ae7-a89e-84ac6add76b2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="60aa339f-222f-7ed1-5cb2-b93e1fdedc3e" executionId="f51ab8c2-4f41-484c-8aad-b8d1b52b8021" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a2da4aa1-078f-a59c-98ac-2aef43c06adc" executionId="2558b566-d546-42c7-bfe9-a7eeca790c89" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="20af7b4c-93f6-6f2a-f14f-824dc8f64c98" executionId="9af37e93-f93d-4427-966d-aa3f2ca6ce78" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="058fbeb3-a8b1-135d-a642-dd47d21cec30" executionId="c73290fb-fabf-413f-a67e-1f01c3951762" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5526ab85-5fe4-2df3-bc62-31dd201ecf08" executionId="3f9a6d60-816e-4ca1-b289-5847f6dda4d6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="227b6aad-9203-5363-1b39-9cca0225fec0" executionId="12ff5c0c-c084-4b11-9cde-1a9147d36c8b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2d637dc7-56fc-e37a-b60a-4d1f9ab2e57d" executionId="2d5d5657-e5d2-4b56-9176-8c5f98995c56" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c2bf6b0f-75ad-b022-dbb4-cc9344df89e9" executionId="b19c4b21-8bf5-447c-a5d5-7c66dfaaaa4c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c8ecc4c2-86e2-013d-23a1-6210444a9d53" executionId="ff65a327-514b-4b44-b053-2c14f1bf5eff" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="22b41e7b-9fff-cd7b-e54c-4a0c48a6f37a" executionId="650b5e6d-e41d-4629-bbb8-14644497bc8e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9c1ee164-cabd-4e22-4731-ae0551af99c4" executionId="a868b8d6-2b5f-4aea-8d73-c3ea97810cde" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cf359d68-d10b-6a08-786c-71d0d7c2e540" executionId="04ab2160-a443-4bd6-8451-e2ce5c01a949" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ec36cd61-9bac-2c0f-352e-879ea802ee2a" executionId="fba3b383-d6c0-4ba6-a8b9-d02e0e7aa2ed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5feb58ad-402f-c71b-22ea-d6989188b4f4" executionId="7c5d18f5-7608-4f8d-b0fa-49e167c44e33" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="96bfe5ca-584d-ab8b-515c-29b9c23ea1d8" executionId="24172ccb-3c05-4446-b5c8-6050520d0955" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7a67044a-3784-2916-f33c-38be6332fdf8" executionId="da9c9311-c545-4526-a40a-7dbb7deb2aa6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4463484d-ca1b-0c4a-3653-6ccb5ed7d035" executionId="b3867ee8-7e39-4a01-80a5-8f37dd07bc81" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d1fa634a-d69f-ca37-dc04-7ee0aaa98bf4" executionId="d8199c9f-5683-4e72-a000-5630dbd3bd7c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c9d07281-3de0-780e-39ac-32fff02dc11b" executionId="82f1f4cc-a52d-4560-8bd5-514c5d756a3b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0fc7c39a-10de-3db4-6ad8-68aa36a509a6" executionId="77947ace-963c-42ed-a96b-ae634fdeec5a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="80a5df67-1037-6c9a-4c2b-2d2926248fa4" executionId="9a7d8e77-cab2-45bd-8f7f-a1fc9a016f78" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="33" executed="33" passed="21" failed="12" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.34]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.36]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.39]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.45]       System.Net.Sockets.SocketException : Permission denied
+[xUnit.net 00:00:01.45]       Stack Trace:
+[xUnit.net 00:00:01.45]            at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+[xUnit.net 00:00:01.45]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.45]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.45]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.45]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.45]         [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.46]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(567,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:01.46]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(601,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:01.46]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.49]       Assert.DoesNotContain() Failure: Sub-string found
+[xUnit.net 00:00:01.49]                                       ↓ (pos 99)
+[xUnit.net 00:00:01.49]       String: ···" The JSON property 'SECRET_PAYLOAD_SENTIN"···
+[xUnit.net 00:00:01.49]       Found:  "SECRET_PAYLOAD_SENTINEL"
+[xUnit.net 00:00:01.49]       Stack Trace:
+[xUnit.net 00:00:01.49]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(166,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(String shape)
+[xUnit.net 00:00:01.49]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.49]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.49]       Assert.DoesNotContain() Failure: Sub-string found
+[xUnit.net 00:00:01.49]                                       ↓ (pos 95)
+[xUnit.net 00:00:01.49]       String: ···"duplicate property 'SECRET_PAYLOAD_SENTIN"···
+[xUnit.net 00:00:01.49]       Found:  "SECRET_PAYLOAD_SENTINEL"
+[xUnit.net 00:00:01.49]       Stack Trace:
+[xUnit.net 00:00:01.49]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(166,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(String shape)
+[xUnit.net 00:00:01.49]            at InvokeStub_GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(Object, Span`1)
+[xUnit.net 00:00:01.49]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.52]       System.Net.Sockets.SocketException : Permission denied
+[xUnit.net 00:00:01.52]       Stack Trace:
+[xUnit.net 00:00:01.52]            at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(567,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(601,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:01.52]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.52]       System.Net.Sockets.SocketException : Permission denied
+[xUnit.net 00:00:01.52]       Stack Trace:
+[xUnit.net 00:00:01.52]            at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(567,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(601,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.AssertForeignChannelsRejectedAsync(Boolean foreignControl, Boolean foreignStatus)
+[xUnit.net 00:00:01.52]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.52]       System.Net.Sockets.SocketException : Permission denied
+[xUnit.net 00:00:01.52]       Stack Trace:
+[xUnit.net 00:00:01.52]            at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(548,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithLocalPeerAsync(Func`6 body)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(111,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized)
+[xUnit.net 00:00:01.52]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.52]       System.Net.Sockets.SocketException : Permission denied
+[xUnit.net 00:00:01.52]       Stack Trace:
+[xUnit.net 00:00:01.52]            at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(548,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithLocalPeerAsync(Func`6 body)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(111,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(Boolean oversized)
+[xUnit.net 00:00:01.52]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.52]       Assert.DoesNotContain() Failure: Sub-string found
+[xUnit.net 00:00:01.52]                                       ↓ (pos 62)
+[xUnit.net 00:00:01.52]       String: ···"rocess host failed: SECRET_ENVIRONMENT_SE"···
+[xUnit.net 00:00:01.52]       Found:  "SECRET_ENVIRONMENT_SENTINEL"
+[xUnit.net 00:00:01.52]       Stack Trace:
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(177,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedDiagnosticNeverIncludesPeerText()
+[xUnit.net 00:00:01.52]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.52]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.52]       System.Net.Sockets.SocketException : Permission denied
+[xUnit.net 00:00:01.52]       Stack Trace:
+[xUnit.net 00:00:01.52]            at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(34,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths()
+[xUnit.net 00:00:01.52]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.52]       System.Net.Sockets.SocketException : Permission denied
+[xUnit.net 00:00:01.52]       Stack Trace:
+[xUnit.net 00:00:01.52]            at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.52]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(84,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker()
+[xUnit.net 00:00:01.52]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(102,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker()
+[xUnit.net 00:00:01.52]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.53]       System.Net.Sockets.SocketException : Permission denied
+[xUnit.net 00:00:01.53]       Stack Trace:
+[xUnit.net 00:00:01.53]            at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+[xUnit.net 00:00:01.53]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.53]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.53]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.53]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.53]         [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.53]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(548,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithLocalPeerAsync(Func`6 body)
+[xUnit.net 00:00:01.53]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(128,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected()
+[xUnit.net 00:00:01.53]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.53]       System.Net.Sockets.SocketException : Permission denied
+[xUnit.net 00:00:01.53]       Stack Trace:
+[xUnit.net 00:00:01.53]            at System.Net.Sockets.Socket..ctor(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
+[xUnit.net 00:00:01.53]            at System.IO.Pipes.NamedPipeServerStream.SharedServer..ctor(String path, Int32 maxCount, Boolean isFirstPipeInstance)
+[xUnit.net 00:00:01.53]            at System.IO.Pipes.NamedPipeServerStream.SharedServer.Get(String path, Int32 maxCount, PipeOptions pipeOptions)
+[xUnit.net 00:00:01.53]            at System.IO.Pipes.NamedPipeServerStream.Create(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options, Int32 inBufferSize, Int32 outBufferSize, HandleInheritability inheritability)
+[xUnit.net 00:00:01.53]            at System.IO.Pipes.NamedPipeServerStream..ctor(String pipeName, PipeDirection direction, Int32 maxNumberOfServerInstances, PipeTransmissionMode transmissionMode, PipeOptions options)
+[xUnit.net 00:00:01.53]         [checkout]/BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs(300,0): at BookOfEternityClient.Services.GmWorkers.GmWorkerProcessHostLaunch.Create(ProcessStartInfo workerStartInfo, String launchDirectory)
+[xUnit.net 00:00:01.53]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(548,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WithLocalPeerAsync(Func`6 body)
+[xUnit.net 00:00:01.53]         [checkout]/BookOfEternityClient.IntegrationTests/GmWorkerProcessHostTests.cs(141,0): at BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing()
+[xUnit.net 00:00:01.53]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.53]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:15:33.0602595-04:00">
+        <Text>[xUnit.net 00:00:01.45]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignStatusClientIsRejectedWhenControlClientMatchesHost [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:15:33.0612289-04:00">
+        <Text>[xUnit.net 00:00:01.49]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: "unknown") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:15:33.0626538-04:00">
+        <Text>[xUnit.net 00:00:01.49]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseControl_DiagnosticsNeverIncludePayloadExcerpts(shape: "duplicate") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:15:33.1143918-04:00">
+        <Text>[xUnit.net 00:00:01.52]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignNamedPipeClientIsRejectedBeforeLaunch [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:15:33.1144183-04:00">
+        <Text>[xUnit.net 00:00:01.52]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ForeignControlClientIsRejectedWhenStatusClientMatchesHost [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:15:33.1144361-04:00">
+        <Text>[xUnit.net 00:00:01.52]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:15:33.1144533-04:00">
+        <Text>[xUnit.net 00:00:01.52]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_StatusFrameByteLimitIsExact(oversized: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:15:33.1146447-04:00">
+        <Text>[xUnit.net 00:00:01.52]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.ParseStatus_FailedDiagnosticNeverIncludesPeerText [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:15:33.1146597-04:00">
+        <Text>[xUnit.net 00:00:01.52]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.Create_UsesPidAuthenticatedNamedChannelsInsteadOfInheritedHandlesOrMarkerPaths [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:15:33.1148104-04:00">
+        <Text>[xUnit.net 00:00:01.52]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_ActualHostReadyThenOwnerCloseNeverStartsWorker [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:15:33.1148348-04:00">
+        <Text>[xUnit.net 00:00:01.53]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_UnterminatedStatusAtEofIsRejected [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-05T03:15:33.1148511-04:00">
+        <Text>[xUnit.net 00:00:01.53]     BookOfEternityClient.Tests.GmWorkerProcessHostTests.WaitUntilReadyAsync_InvalidUtf8IsRejectedBeforeJsonParsing [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

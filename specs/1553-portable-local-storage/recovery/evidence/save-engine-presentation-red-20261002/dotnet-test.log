@@ -1,0 +1,52 @@
+===== portable-engine-save-presentation-integration-001: stdout =====
+Тестовый запуск для [WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll (.NETCoreApp,Version=v8.0)
+Общее количество тестовых файлов (1), соответствующих указанному шаблону.
+  Не пройден BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_CommittedDebtObservationDoesNotPromiseReplay [1 s]
+  Сообщение об ошибке:
+   Assert.Contains() Failure: Sub-string not found
+String:    "Действие не было применено. Мир не смог б"···
+Not found: "Сохранение создано"
+  Трассировка стека:
+     at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_CommittedDebtObservationDoesNotPromiseReplay() in [WORKTREE]\BookOfEternityClient.IntegrationTests\GameEngineTurnLifecycleTests.PortableSave.cs:line 107
+--- End of stack trace from previous location ---
+  Не пройден BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision(committed: True) [690 ms]
+  Сообщение об ошибке:
+   Assert.Contains() Failure: Sub-string not found
+String:    "──────────────────────────────── ⚙️ Игров"···
+Not found: "провер"
+  Трассировка стека:
+     at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision(Boolean committed) in [WORKTREE]\BookOfEternityClient.IntegrationTests\GameEngineTurnLifecycleTests.PortableSave.cs:line 64
+--- End of stack trace from previous location ---
+  Не пройден BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision(committed: False) [2 s]
+  Сообщение об ошибке:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   20
+  Трассировка стека:
+     at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision(Boolean committed) in [WORKTREE]\BookOfEternityClient.IntegrationTests\GameEngineTurnLifecycleTests.PortableSave.cs:line 59
+--- End of stack trace from previous location ---
+Файл результатов: [WORKTREE]\TestResults\test-categories\20261002-235939-552-13812-db50d922c2d34547b608cb110359e23e-categories\portable-engine-save-presentation-integration-001.trx
+
+Не пройден!: не пройдено     3, пройдено     1, пропущено     0, всего     4, длительность 4 s. - BookOfEternityClient.IntegrationTests.dll (net8.0)
+
+===== portable-engine-save-presentation-integration-001: stderr =====
+[xUnit.net 00:00:03.91]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_CommittedDebtObservationDoesNotPromiseReplay [FAIL]
+[xUnit.net 00:00:04.60]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision(committed: True) [FAIL]
+[xUnit.net 00:00:07.48]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision(committed: False) [FAIL]
+
+===== portable-engine-save-presentation-integration-001: exit 1 =====
+
+Category result
+  Categories: portable-engine-save-presentation
+  Filter: <none>
+  Timeout: 7 minute(s)
+  Wall time: 00:00:23.3376776
+  Exit code: 1
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=1, cases=4; completed descriptors=1, cases=4, complete=True
+  Tests: total=4, executed=4, passed=1, failed=3
+  Duplicate test IDs: 0
+  Results: [WORKTREE]\TestResults\test-categories\20261002-235939-552-13812-db50d922c2d34547b608cb110359e23e-categories
+  Log: [WORKTREE]\TestResults\test-categories\20261002-235939-552-13812-db50d922c2d34547b608cb110359e23e-categories\dotnet-test.log
+  Failure: Test run 'portable-engine-save-presentation-integration-001' failed with exit code 1.

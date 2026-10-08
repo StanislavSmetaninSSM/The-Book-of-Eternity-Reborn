@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "eaa7266d7b1ca9ef7e8601cfaf0c4697c5d63cc5",
+  "catalogBlobAfterPatch": "cf5fd01dbf31b48f7fbd74bdfc47808546681157",
+  "kind": "newly executed ordinary-readers-retry-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "b0336cd81525940bd286f7b1fe513b97f5cd11cd15716663ea1b49cdf0e79292",
+      "sanitizedSha256": "b0336cd81525940bd286f7b1fe513b97f5cd11cd15716663ea1b49cdf0e79292"
+    },
+    {
+      "path": "portable-ordinary-readers-integration-001.trx",
+      "originalSha256": "ca937a87b47937992b0929ff423559197ab5dfa8ba0dea2832bddfdf3bc94411",
+      "sanitizedSha256": "a152d995e56aeab7ac87ecfcc8c84e436554f832388a8f8c3bb65b67c7134b5f"
+    }
+  ],
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-ordinary-readers -Parallelism 1",
+  "sourceAppliedTree": "15c002aa8ee90269860e40aad9c5dcdfac49b825",
+  "environment": "Linux x64; existing isolated env and all three telemetry opt-outs",
+  "result": "One transient retry case executed and failed with actual IOException HResult 0x0000000B; fifteen unit cases unrun; exit 1, 5:29.5852359; both fresh builds and owned cleanup complete"
+}

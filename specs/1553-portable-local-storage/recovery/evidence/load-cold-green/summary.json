@@ -1,0 +1,109 @@
+{
+  "Categories": [
+    "portable-load-cold-decision",
+    "portable-load-cold-topology",
+    "portable-storage-stream-dispatch"
+  ],
+  "Reasons": [
+    {
+      "contracts": [
+        "LOAD-FS-002/003/004/006/007"
+      ],
+      "reason": "New actual current-producer typed-load process cuts and independent journal-only decisions/conflicts/scratch:19 isolatedcases, no extraction atfreshacquisition.",
+      "category": "portable-load-cold-decision"
+    },
+    {
+      "contracts": [
+        "LOAD-FS-002/003/006/007"
+      ],
+      "reason": "New actual forward and rollback structural/file/generation cuts followedbyfresh/repeated canonicalacquisition:10 isolatedcases.",
+      "category": "portable-load-cold-topology"
+    },
+    {
+      "contracts": [
+        "Preserved existing ownedhostdispatch and oldreaderauthority"
+      ],
+      "reason": "Owned child host dispatch adds distinct load modes; retain exact old stream-recover and bounded v1/v2/unknown framing consumers, without save/resource sweep.",
+      "category": "portable-storage-stream-dispatch"
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "e25591edea072aeeb65628718bf815f56e7dc06f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-load-cold-decision",
+      "Seconds": 77.1376076,
+      "BudgetMinutes": 8,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-cold-topology",
+      "Seconds": 45.217219,
+      "BudgetMinutes": 8,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-stream-dispatch",
+      "Seconds": 12.9845937,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.5160325,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.2222393,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.3007687,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 149.6353325,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0046317,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:04:57.6900655",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 33,
+    "CompletedCases": 33,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 33,
+    "Executed": 33,
+    "Passed": 33,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

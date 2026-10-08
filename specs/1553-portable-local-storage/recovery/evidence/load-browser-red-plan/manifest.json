@@ -1,0 +1,56 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "67212bd9f8ae398c755914734936ea9dee40cc40",
+  "SourceResultDirectory": "20261004-124110-712-34-58b40be187ea48b48e5e13d9b8f44d25-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "Build-unit.log",
+      "OriginalBytes": 10676,
+      "OriginalSha256": "2f6388ef2f009cfee2405f5fd3b44dbaaf3d54b093c049bd5271fd55bec72c2c",
+      "Embedded": true,
+      "StoredPath": "Build-unit.log",
+      "StoredBytes": 8659,
+      "StoredSha256": "324dfc5f7a55b801b8de8d711c5dba7ff67ebca6b5f78080748c075703cf851d"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 1469683,
+      "OriginalSha256": "ebc50cf4ac0ed9fbabaaad0c0c1f7617a02577fda3faf549cc10463442aa8d30",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 1041,
+      "OriginalSha256": "78e6138670d24aeb4c21cc30e8d857623c86f14957d0d69de308ff1323b7b01e",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 1041,
+      "StoredSha256": "78e6138670d24aeb4c21cc30e8d857623c86f14957d0d69de308ff1323b7b01e"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1451,
+      "OriginalSha256": "f676b48999769963e5bdf642d3eb292885074c347c1705d129860531dd887472",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 1451,
+      "StoredSha256": "f676b48999769963e5bdf642d3eb292885074c347c1705d129860531dd887472"
+    }
+  ],
+  "MeasuredChildren": 0
+}

@@ -1,0 +1,100 @@
+{
+  "Categories": [
+    "browser-rollback-linux",
+    "browser-rollback-linux-boundaries"
+  ],
+  "Reasons": [
+    {
+      "category": "browser-rollback-linux",
+      "reason": "T031 first causal RED against actual existing consumer, bootstrapped isolated Linux root. New positive oracles reach staging and record callback execution; no unrelated cohort.",
+      "contracts": [
+        "#1553 T031 trusted-local browser original main/worker/generation/UI lease rollback"
+      ]
+    },
+    {
+      "category": "browser-rollback-linux-boundaries",
+      "reason": "T031 connected trusted-local browser recorder/recovery/external participant and original outcome finalization. Include only independent-review-selected exact affected ordinary publication/admission/closing and both actual Browser Load full-bundle regressions, once after final source fixes; no old class/cohort reruns.",
+      "contracts": [
+        "#1553 T031 original browser record byte intent + scoped recovery + exact outcome retention"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "b08159ee8ea818c4339fc0554f24388a441c261d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "browser-rollback-linux",
+      "Seconds": 4.9648878,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "browser-rollback-linux-boundaries",
+      "Seconds": 22.0037572,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0701759,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0602577,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1144074,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 52.3340565,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 18.2385421,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0044028,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:01:48.9804658",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 71,
+    "CompletedCases": 71,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 71,
+    "Executed": 71,
+    "Passed": 71,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

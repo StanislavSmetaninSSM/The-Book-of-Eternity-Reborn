@@ -1,5 +1,6 @@
 using System.Text;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.Core;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -61,7 +62,17 @@ public sealed class ResourceMaterializationTestContextTests
     public async Task CoordinatedQuartetFailure_RestoresExactBytesAndPriorAbsence(
         int failAfterWriteIndex)
     {
-        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        var armed = false;
+        var applied = -1;
+        await using var context = await ResourceMaterializationTestContext.CreateAsync(new FileSystemManagerHooks
+        {
+            LocalPublicationObserver = (phase, index) =>
+            {
+                if (!armed || phase != TrustedLocalPublicationPhase.MemberPublished) return;
+                applied = index;
+                if (index == failAfterWriteIndex) throw new InvalidOperationException("injected quartet member failure");
+            }
+        });
         var initial = new Dictionary<string, string>(StringComparer.Ordinal)
         {
             [ResourceMaterializationTestContext.DefinitionsPath] =
@@ -94,14 +105,8 @@ public sealed class ResourceMaterializationTestContextTests
                     ? "{\"schemaVersion\":1,\"historicalOwners\":[],\"capacityDrafts\":[]}"
                     : initial[path].Replace("1", "2", StringComparison.Ordinal),
                 RequireCurrentBaseline: true)).ToArray();
-        var applied = -1;
-
-        var committed = await CoordinatedStateWriteHelper.TryCommitWithHookAsync(
-            context.FileSystem,
-            _ => ++applied == failAfterWriteIndex
-                ? Task.FromException(new IOException("injected quartet failure"))
-                : Task.CompletedTask,
-            writes);
+        armed = true;
+        var committed = await CoordinatedStateWriteHelper.TryCommitAsync(context.FileSystem, writes);
 
         Assert.False(committed);
         Assert.Equal(failAfterWriteIndex, applied);

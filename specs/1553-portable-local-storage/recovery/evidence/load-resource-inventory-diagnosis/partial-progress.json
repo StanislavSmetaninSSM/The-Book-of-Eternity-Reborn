@@ -1,0 +1,27 @@
+{
+  "Source": "97d683782beceb9851e691ef9e9630f0427c0fa9",
+  "Case": "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope",
+  "Outcome": "Failed",
+  "Partial": {
+    "Operation": "publication",
+    "Workload": "many",
+    "PhaseStarted": true,
+    "PhaseStopped": false,
+    "ParentMilliseconds": 180058.7771,
+    "SampledPeakWorkingSetBytes": 154697728,
+    "OwnedDiskPeakBytes": 13956817,
+    "Progress": [
+      {
+        "ParentMilliseconds": 76600.2299,
+        "Event": {
+          "Phase": "OperationProgress",
+          "Operation": "publication",
+          "HeapBytes": 805306368,
+          "Boundary": "CanonicalLockOpened",
+          "Index": 0
+        }
+      }
+    ],
+    "Failure": "Owned load-resource guard stop: RSS=154697728; disk=13956817; elapsed=00:03:00.0578790."
+  }
+}

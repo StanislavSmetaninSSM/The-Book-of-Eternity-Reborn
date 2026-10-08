@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="787b325f-2647-4d7a-a6e2-28ca9b006be9" name="@c7669543e9c7 2026-10-05 22:06:13" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T22:06:13.5407856+00:00" queuing="2026-10-05T22:06:13.5407856+00:00" start="2026-10-05T22:06:11.2629189+00:00" finish="2026-10-05T22:06:13.5466581+00:00" />
+  <TestSettings name="default" id="e9ad8b80-ad23-45a3-8fee-74e867c06500">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_22_06_13" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="e59ffb7e-8812-4612-b11b-4e4967d48309" testId="457278ba-1a0b-d2ca-36b7-df47b257180d" testName="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: False)" computerName="c7669543e9c7" duration="00:00:00.0005137" startTime="2026-10-05T22:06:13.3574741+00:00" endTime="2026-10-05T22:06:13.3574742+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e59ffb7e-8812-4612-b11b-4e4967d48309">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(Boolean repair) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerConsumerEvidenceTests.cs:line 15
+   at InvokeStub_GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="de7d148d-7f35-4295-83a8-d04838cc8520" testId="b7653ecf-d636-02eb-70e8-2504bcb89c2d" testName="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: True)" computerName="c7669543e9c7" duration="00:00:00.0077334" startTime="2026-10-05T22:06:13.3534168+00:00" endTime="2026-10-05T22:06:13.3534361+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="de7d148d-7f35-4295-83a8-d04838cc8520">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(Boolean repair) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerConsumerEvidenceTests.cs:line 15
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e656530d-508b-4236-85cc-8e2795d9a5b6" testId="c03965f8-84cd-0f5e-ee4a-11f9c3bcd5cc" testName="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: True)" computerName="c7669543e9c7" duration="00:00:00.1001481" startTime="2026-10-05T22:06:13.4379902+00:00" endTime="2026-10-05T22:06:13.4379903+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e656530d-508b-4236-85cc-8e2795d9a5b6">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(Boolean repair) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerConsumerEvidenceTests.cs:line 32
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1625f2df-a1bc-43e0-9185-afdec8a0be01" testId="511b228c-4db9-3afa-e18c-5f95809e7451" testName="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: False)" computerName="c7669543e9c7" duration="00:00:00.0007639" startTime="2026-10-05T22:06:13.4396982+00:00" endTime="2026-10-05T22:06:13.4396983+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1625f2df-a1bc-43e0-9185-afdec8a0be01">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(Boolean repair) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerConsumerEvidenceTests.cs:line 32
+   at InvokeStub_GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c03965f8-84cd-0f5e-ee4a-11f9c3bcd5cc">
+      <Execution id="e656530d-508b-4236-85cc-8e2795d9a5b6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests" name="FailedButStoppedWithCopy_CannotBorrowCleanupEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b7653ecf-d636-02eb-70e8-2504bcb89c2d">
+      <Execution id="de7d148d-7f35-4295-83a8-d04838cc8520" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests" name="LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="457278ba-1a0b-d2ca-36b7-df47b257180d">
+      <Execution id="e59ffb7e-8812-4612-b11b-4e4967d48309" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests" name="LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="511b228c-4db9-3afa-e18c-5f95809e7451">
+      <Execution id="1625f2df-a1bc-43e0-9185-afdec8a0be01" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests" name="FailedButStoppedWithCopy_CannotBorrowCleanupEvidence" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="457278ba-1a0b-d2ca-36b7-df47b257180d" executionId="e59ffb7e-8812-4612-b11b-4e4967d48309" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b7653ecf-d636-02eb-70e8-2504bcb89c2d" executionId="de7d148d-7f35-4295-83a8-d04838cc8520" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c03965f8-84cd-0f5e-ee4a-11f9c3bcd5cc" executionId="e656530d-508b-4236-85cc-8e2795d9a5b6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="511b228c-4db9-3afa-e18c-5f95809e7451" executionId="1625f2df-a1bc-43e0-9185-afdec8a0be01" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="4" executed="4" passed="0" failed="4" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.26]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.50]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.52]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.60]       Assert.False() Failure
+[xUnit.net 00:00:01.60]       Expected: False
+[xUnit.net 00:00:01.60]       Actual:   True
+[xUnit.net 00:00:01.60]       Stack Trace:
+[xUnit.net 00:00:01.60]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerConsumerEvidenceTests.cs(15,0): at BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(Boolean repair)
+[xUnit.net 00:00:01.60]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.60]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.60]       Assert.False() Failure
+[xUnit.net 00:00:01.60]       Expected: False
+[xUnit.net 00:00:01.60]       Actual:   True
+[xUnit.net 00:00:01.60]       Stack Trace:
+[xUnit.net 00:00:01.60]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerConsumerEvidenceTests.cs(15,0): at BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(Boolean repair)
+[xUnit.net 00:00:01.60]            at InvokeStub_GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(Object, Span`1)
+[xUnit.net 00:00:01.60]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.68]       Assert.False() Failure
+[xUnit.net 00:00:01.68]       Expected: False
+[xUnit.net 00:00:01.68]       Actual:   True
+[xUnit.net 00:00:01.68]       Stack Trace:
+[xUnit.net 00:00:01.68]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerConsumerEvidenceTests.cs(32,0): at BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(Boolean repair)
+[xUnit.net 00:00:01.68]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.68]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.69]       Assert.False() Failure
+[xUnit.net 00:00:01.69]       Expected: False
+[xUnit.net 00:00:01.69]       Actual:   True
+[xUnit.net 00:00:01.69]       Stack Trace:
+[xUnit.net 00:00:01.69]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerConsumerEvidenceTests.cs(32,0): at BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(Boolean repair)
+[xUnit.net 00:00:01.69]            at InvokeStub_GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(Object, Span`1)
+[xUnit.net 00:00:01.69]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.69]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T22:06:13.4261785+00:00">
+        <Text>[xUnit.net 00:00:01.60]     BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T22:06:13.4267376+00:00">
+        <Text>[xUnit.net 00:00:01.60]     BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.LegacySuccessShapedRecord_DoesNotAuthorizeEitherConsumer(repair: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T22:06:13.4380223+00:00">
+        <Text>[xUnit.net 00:00:01.68]     BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T22:06:13.4395879+00:00">
+        <Text>[xUnit.net 00:00:01.69]     BookOfEternityClient.Tests.GmWorkerConsumerEvidenceTests.FailedButStoppedWithCopy_CannotBorrowCleanupEvidence(repair: False) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

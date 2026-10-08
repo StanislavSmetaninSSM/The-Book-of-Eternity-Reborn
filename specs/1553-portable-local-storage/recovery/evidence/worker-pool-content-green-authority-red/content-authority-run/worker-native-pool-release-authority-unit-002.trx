@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="8e7a5b44-1348-46f0-b072-76dd0b22768a" name="@c7669543e9c7 2026-10-05 22:46:29" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T22:46:29.5243459+00:00" queuing="2026-10-05T22:46:29.5243460+00:00" start="2026-10-05T22:46:14.7884969+00:00" finish="2026-10-05T22:46:29.5311378+00:00" />
+  <TestSettings name="default" id="8a426ca1-e280-4a7f-9684-81ca139ffe86">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_22_46_29" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="e2b0ca0c-85bd-4546-94a6-778b53c3c1ab" testId="eb89418d-b980-cb8a-7638-4e64e4d8ac63" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker" computerName="c7669543e9c7" duration="00:00:12.6462289" startTime="2026-10-05T22:46:29.4222475+00:00" endTime="2026-10-05T22:46:29.4223495+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e2b0ca0c-85bd-4546-94a6-778b53c3c1ab">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerNativePoolTests.Faults.cs:line 20
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="eb89418d-b980-cb8a-7638-4e64e4d8ac63">
+      <Execution id="e2b0ca0c-85bd-4546-94a6-778b53c3c1ab" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_LostOriginalHelperCannotReleaseWorker" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="eb89418d-b980-cb8a-7638-4e64e4d8ac63" executionId="e2b0ca0c-85bd-4546-94a6-778b53c3c1ab" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.19]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.31]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.33]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:14.03]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:14.03]       Expected: 0
+[xUnit.net 00:00:14.03]       Actual:   1
+[xUnit.net 00:00:14.03]       Stack Trace:
+[xUnit.net 00:00:14.03]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerNativePoolTests.Faults.cs(20,0): at BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker()
+[xUnit.net 00:00:14.03]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:14.04]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T22:46:29.4243292+00:00">
+        <Text>[xUnit.net 00:00:14.03]     BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_LostOriginalHelperCannotReleaseWorker [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

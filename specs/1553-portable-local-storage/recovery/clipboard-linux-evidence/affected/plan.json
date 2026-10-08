@@ -1,0 +1,78 @@
+{
+  "Categories": [
+    "clipboard-affected-managed"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b5255b1fb96e405eb1ed195c6437b16ad5788246",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 5.0874263,
+  "Descriptors": [
+    {
+      "Name": "clipboard-affected-managed-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "clipboard-affected-managed",
+      "Categories": [
+        "clipboard-affected-managed"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BufferedConsolePasteCaptureTests.Drain_ReturnsBufferedMultilineTailAsSingleBlock|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardServiceTests.NormalizeClipboardText_PreservesParagraphsButTrimsTrailingNewlines|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineSourceGuardTests.FreeformGameEngineTextInputs_MustNotUseTextPromptStringDirectly|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineSourceGuardTests.MultilinePlayerInput_MustUseUnifiedTextComposerInsteadOfLegacyPasteSentinel|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineSourceGuardTests.PlayerInput_MustExposeClipboardPasteShortcut|FullyQualifiedName=BookOfEternityClient.Tests.TextComposerTests.ImmediateMode_CollapsesNewlines_ForSingleLinePrompts|FullyQualifiedName=BookOfEternityClient.Tests.TextComposerTests.ImmediateMode_PreservesNewlines_WhenConfiguredForMultilineContent|FullyQualifiedName=BookOfEternityClient.Tests.TextComposerTests.ImmediateMode_UsesClipboardShortcut_WhenClipboardServiceProvided|FullyQualifiedName=BookOfEternityClient.Tests.TextComposerTests.MultilineMode_ClearCommand_ReturnsEmptyString|FullyQualifiedName=BookOfEternityClient.Tests.TextComposerTests.MultilineMode_EmptyFirstSubmit_KeepsDefaultValue|FullyQualifiedName=BookOfEternityClient.Tests.TextComposerTests.MultilineMode_UsesDirectPasteBlockWithoutSpecialClipboardAction|FullyQualifiedName=BookOfEternityClient.Tests.TextComposerTests.MultilineMode_UsesDoubleBlankLineToSubmitManualText",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BufferedConsolePasteCaptureTests.Drain_ReturnsBufferedMultilineTailAsSingleBlock",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardServiceTests.NormalizeClipboardText_PreservesParagraphsButTrimsTrailingNewlines",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineSourceGuardTests.FreeformGameEngineTextInputs_MustNotUseTextPromptStringDirectly",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MultilinePlayerInput_MustUseUnifiedTextComposerInsteadOfLegacyPasteSentinel",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PlayerInput_MustExposeClipboardPasteShortcut",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TextComposerTests.ImmediateMode_CollapsesNewlines_ForSingleLinePrompts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TextComposerTests.ImmediateMode_PreservesNewlines_WhenConfiguredForMultilineContent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TextComposerTests.ImmediateMode_UsesClipboardShortcut_WhenClipboardServiceProvided",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TextComposerTests.MultilineMode_ClearCommand_ReturnsEmptyString",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TextComposerTests.MultilineMode_EmptyFirstSubmit_KeepsDefaultValue",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TextComposerTests.MultilineMode_UsesDirectPasteBlockWithoutSpecialClipboardAction",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TextComposerTests.MultilineMode_UsesDoubleBlankLineToSubmitManualText",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

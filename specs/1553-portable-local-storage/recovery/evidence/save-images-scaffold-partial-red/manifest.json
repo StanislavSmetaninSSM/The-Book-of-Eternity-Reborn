@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "Head": "22b486bc5448375f09ba09d27f3bfcd0f236509f",
+    "WorkingTreeFingerprint": "D8FABB04B9C94A5C764906C6B87FC65D1EC5699ACB17E42BA38A3725B32F178A",
+    "ChangedFiles": 1
+  },
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-storage-images -Parallelism 1",
+  "summary": {
+    "ExitCode": 1,
+    "WallTime": "00:02:32.3568850",
+    "Tests": {
+      "Total": 11,
+      "Executed": 11,
+      "Passed": 0,
+      "Failed": 11
+    },
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 11,
+      "CompletedCases": 11,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "DuplicateTests": []
+  },
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "50ca57c8c11a2a25d5d450a02b8179ebf8e2a2c42851000020ccb68149c7b453",
+      "sanitizedSha256": "50ca57c8c11a2a25d5d450a02b8179ebf8e2a2c42851000020ccb68149c7b453"
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "502f30117af9623fe4df9e9325b7e708f7ba1ff0c8c641cc0e05770070708d17",
+      "sanitizedSha256": "502f30117af9623fe4df9e9325b7e708f7ba1ff0c8c641cc0e05770070708d17"
+    },
+    {
+      "file": "portable-storage-images-unit-001.trx",
+      "originalSha256": "49a3606381f9e75283099965f5b16f2789f7706aa7370da32e0581eb926921c5",
+      "sanitizedSha256": "3ab0ee885a2f906374e42e46d197dd5789321e987173d6ff4cac0b1a1a055ca4"
+    }
+  ],
+  "sanitization": "Role-based path tokens without angle brackets; all sanitized TRX parsed as XML before publication. Raw hashes retain original provenance.",
+  "packet": {
+    "schemaVersion": 1,
+    "baseCommit": "7cd1985bae543d8b622e13ed5602c6062f0197cc",
+    "patchFile": "save-creation-pending.patch",
+    "patchBytes": 3234,
+    "patchSha256": "ea1ea13e74e9b9986a2674737d96436ed85351877f667bebaab8f13568c4c5ce",
+    "entries": [
+      {
+        "path": "tests/categories.json",
+        "beforeBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+        "afterBlob": "abe953acc624e868d37a88d6e13c5f66ef1b40ba",
+        "beforeSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08",
+        "afterSha256": "2524af667b5d2ff17904fc3e14682ae2b903642b6364ec81edd7a1baaa53f83a"
+      }
+    ],
+    "appliedSourceTree": "b1fb5de02d3689639796009b26136cd812b1c1c7",
+    "comparisonExcludes": [
+      "specs/1553-portable-local-storage/recovery/save-creation-pending.patch",
+      "specs/1553-portable-local-storage/recovery/save-creation-pending.json"
+    ],
+    "scope": "T032-A ordinary save creation; current plan records exact execution and remaining scope"
+  },
+  "interpretation": "11 executed/11 failed: one byte-image case reached NotImplementedException; ten file-image cases failed before the scaffold because raw TMPDIR retained parent traversal from the relative launcher path. Preserve this mixed result, not an all-causal image RED. Fix only owned run-root/test-root normalization and rerun the same selection."
+}

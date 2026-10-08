@@ -1,0 +1,111 @@
+{
+  "ObservedUtc": "2026-10-05T12:09:51.577766+00:00",
+  "Method": "Whitelisted read-only metadata, no environment values or credentials",
+  "Commands": {
+    "OS": {
+      "Command": [
+        "cat",
+        "/etc/os-release"
+      ],
+      "ExitCode": 0,
+      "Output": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n"
+    },
+    "Kernel": {
+      "Command": [
+        "uname",
+        "-srvmo"
+      ],
+      "ExitCode": 0,
+      "Output": "Linux 6.18.44 #1 SMP Sat Sep 26 20:02:31 UTC 2026 x86_64 GNU/Linux\n"
+    },
+    "Identity": {
+      "Command": [
+        "id"
+      ],
+      "ExitCode": 0,
+      "Output": "uid=1000(agent) gid=1000(agent) groups=1000(agent)\n"
+    },
+    "Compiler": {
+      "Command": [
+        "cc",
+        "--version"
+      ],
+      "ExitCode": 0,
+      "Output": "cc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+    },
+    "Libc": {
+      "Command": [
+        "ldd",
+        "--version"
+      ],
+      "ExitCode": 0,
+      "Output": "ldd (Debian GLIBC 2.41-12+deb13u3) 2.41\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\nWritten by Roland McGrath and Ulrich Drepper.\n"
+    },
+    "SDK": {
+      "Command": [
+        "dotnet",
+        "--version"
+      ],
+      "ExitCode": 0,
+      "Output": "10.0.401\n"
+    },
+    "Runtimes": {
+      "Command": [
+        "dotnet",
+        "--list-runtimes"
+      ],
+      "ExitCode": 0,
+      "Output": "Microsoft.AspNetCore.App 8.0.31 [/workspace/boe-linux-toolchain/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.AspNetCore.App 10.0.12 [/workspace/boe-linux-toolchain/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.NETCore.App 8.0.31 [/workspace/boe-linux-toolchain/dotnet/shared/Microsoft.NETCore.App]\nMicrosoft.NETCore.App 10.0.12 [/workspace/boe-linux-toolchain/dotnet/shared/Microsoft.NETCore.App]\n"
+    },
+    "PowerShell": {
+      "Command": [
+        "pwsh",
+        "-NoProfile",
+        "-Command",
+        "$PSVersionTable.PSVersion.ToString()"
+      ],
+      "ExitCode": 0,
+      "Output": "7.6.6\n"
+    },
+    "UidMapMount": {
+      "Command": [
+        "findmnt",
+        "-T",
+        "/proc/self/uid_map",
+        "-no",
+        "TARGET,FSTYPE,OPTIONS"
+      ],
+      "ExitCode": 0,
+      "Output": "/proc proc ro,nosuid,nodev,noexec,relatime\n"
+    },
+    "GidMapMount": {
+      "Command": [
+        "findmnt",
+        "-T",
+        "/proc/self/gid_map",
+        "-no",
+        "TARGET,FSTYPE,OPTIONS"
+      ],
+      "ExitCode": 0,
+      "Output": "/proc proc ro,nosuid,nodev,noexec,relatime\n"
+    },
+    "CgroupMount": {
+      "Command": [
+        "findmnt",
+        "-T",
+        "/sys/fs/cgroup",
+        "-no",
+        "TARGET,FSTYPE,OPTIONS"
+      ],
+      "ExitCode": 0,
+      "Output": "/sys/fs/cgroup cgroup2 ro,nosuid,nodev,noexec,relatime,nsdelegate\n"
+    }
+  },
+  "ProcessStatus": [
+    "CapEff:\t0000000000000000",
+    "CapBnd:\t0000000000000000",
+    "NoNewPrivs:\t1",
+    "Seccomp:\t2"
+  ],
+  "NoSettingsChanges": true
+}

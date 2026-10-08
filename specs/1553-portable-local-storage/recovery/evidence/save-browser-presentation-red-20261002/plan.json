@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-browser-save-presentation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "427afdb534da0368f730e9696c07edd91520f6aa",
+    "WorkingTreeFingerprint": "22C4B7D1020B79A6C4BF356770F29A8C24A4084E1BFB10458FC29CC06715573B",
+    "ChangedFiles": 7
+  },
+  "PreparationSeconds": 0.213224,
+  "Descriptors": [
+    {
+      "Name": "portable-browser-save-presentation-frontend-001",
+      "Project": "frontend",
+      "Category": "portable-browser-save-presentation",
+      "Categories": [
+        "portable-browser-save-presentation"
+      ],
+      "Filter": null,
+      "Adapter": "node",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/savePersistenceNotice.test.ts",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+{
+  "Source": "f7505d0df12965e1060b2d27a8aab458c3f32dd0",
+  "ProviderRequests": 0,
+  "GameTurns": 0,
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 88390,
+      "SHA256": "fa28837ac9f746e8fef8468e9a060e9e37140b4d2ec7510b3517c7694493ad2d"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "Bytes": 4225,
+      "SHA256": "937a3dd992ae6f96d19c3e7a37da6d3d620b4e8ca3b2774961c5c94a3f335a49"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+      "Bytes": 10626,
+      "SHA256": "107658ee8137eb6ce8cec4690da97f1852e554fc2ddf3d7aa392a72b97a686ca"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmSynchronizedTerminalPresentationTests.cs",
+      "Bytes": 12745,
+      "SHA256": "96563620411e7379a9cbf7d0fe351765f23d87f153711a0708f67ca0f0f0257c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs",
+      "Bytes": 12449,
+      "SHA256": "a0719afb67d9eba1f5d39aa13ac171b873d4d491d1de7ff71675e8faebeb8df9"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+      "Bytes": 6443,
+      "SHA256": "939e8b2454d39081947b6eae2a56304e72ffdad28a02d5034f8bac55d097ebae"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "Bytes": 30915,
+      "SHA256": "db2ae83a53e28f104a1a8166aec63e2a445cc01e2b4309de0b37c21685dfc926"
+    },
+    {
+      "Path": "tests/fixtures/LinuxTerminal/foreground.py",
+      "Bytes": 5372,
+      "SHA256": "655c94f24d786087beb8925ea20ce35737335e5c29830c3f9fe9f4da8c797766"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1161694,
+      "SHA256": "1bf0ac3a0f6d4cf5c7ec2dea8ee252dedfd0ca2308b571d0222257a184b0fbbe"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 366,
+      "SHA256": "9d68f75eefb1069be7eaab2b48c018b8432ad5e450139f366aa35ecce91477df"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmExternalDraftObservationTests.cs",
+      "Bytes": 7796,
+      "SHA256": "73b4b41e53939a15bc331f648c6a6f7b7ae1a1fb60a8a6dd423637ace9d29216"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
+      "Bytes": 2895,
+      "SHA256": "a07fa2ff57b1b34e0fc4863b7857b259eb3f966777e115cf3b455a3314a48d01"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "Bytes": 20049,
+      "SHA256": "e65306028ac6d3fe27f5376e696fd1b83ff6b03a9fed33af03f6d8089c1841c2"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+      "Bytes": 4058,
+      "SHA256": "7743047c5ca16fafa93cb8836595ba27973424ae1b38ccdf0f2c417ef1a7267b"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/DraftObservation.cs",
+      "Bytes": 7383,
+      "SHA256": "5c4a37e87d52d44b50e52a1a285af7021f93eeb98e3c1f68838090b9d0cf81e4"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.DraftObservation.cs",
+      "Bytes": 6973,
+      "SHA256": "019e640581da69256de05391d0054031e89169e0822567267e91e9eccdb347fb"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmConnectedMiniTransactionTests.cs",
+      "Bytes": 7429,
+      "SHA256": "ac2aac2fca70422da3eff84247291afeea7e2c64cd1d01cc064c188c68fcc2a7"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "Bytes": 22709,
+      "SHA256": "718f1948f7a35630a8a8245862bf7179de67e37922c3a8171483fd6baa37ca57"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
+      "Bytes": 3009,
+      "SHA256": "46b141084f32f109d9bf921a4f551c0ccd3bae4d557b4ec77d5f649bca07c34b"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/freshness-diagnostic-red/Build-unit.log.gz",
+      "Bytes": 24684,
+      "SHA256": "a8172ff72e495e51f8ed16b23197fb452595695227466eb919fd284125877abb",
+      "StoredSHA256": "a12d0e7d4fd5311d666c9e6bb8523a2e0afddd4999abaa3c1d2cd65ec760bbcd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/freshness-diagnostic-red/dotnet-test.log.gz",
+      "Bytes": 1633955,
+      "SHA256": "f8d5716a0f40e969766a155ae6cca54a5e92153a577ee477b7aae5ce25f827da",
+      "StoredSHA256": "f3e170092185b996a04899cab99161e1071bfbe711d88909f738f06d36ebbdde"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/freshness-diagnostic-red/summary.json.gz",
+      "Bytes": 1782,
+      "SHA256": "d3912c939a901f69d07380c4584a2b7db4b28d2b62e15ba13ff61242d182cd77",
+      "StoredSHA256": "841f5ca750d1fd93eb2438dcae7a6a5486e4c9087fbcbc3070f364041b7de0f0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/freshness-diagnostic-red/gm-connected-mini-transaction-unit-001.trx.gz",
+      "Bytes": 19213,
+      "SHA256": "d226e064071df45ac1ca2ad7dd34fb2f0cd8632ad0f97206567550a5c840b9bf",
+      "StoredSHA256": "7e5f118fb912d204e73383279925dad05291eb236b288081220faaff33ecd260"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/freshness-diagnostic-red/plan.json.gz",
+      "Bytes": 1417,
+      "SHA256": "8922893a80cd0babcc5ecb72c9c2c718cc909989e30499522b1b70a10292e24b",
+      "StoredSHA256": "26b13948fb40d4735f4bc1dcacad3beb6861a6cbcdc3360c7bf4143205e4b065"
+    }
+  ],
+  "RunSummary": {
+    "Categories": [
+      "gm-connected-mini-transaction"
+    ],
+    "Reasons": [
+      {
+        "category": "gm-connected-mini-transaction",
+        "reason": "Two current positive witness failures need diagnostics; two new causal restored-cursor/wrapped-edge cases; five unchanged refusals and passed native environment excluded",
+        "contracts": [
+          "T043-OPENCODE-LIVE-BOUNDED"
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "f7505d0df12965e1060b2d27a8aab458c3f32dd0",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "gm-connected-mini-transaction",
+        "Seconds": 7.0331239,
+        "BudgetMinutes": 4,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0721554,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.062537,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1185791,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 45.2603516,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 9,
+    "WallTime": "00:00:58.6179889",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 4,
+      "CompletedCases": 4,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 4,
+      "Executed": 4,
+      "Passed": 0,
+      "Failed": 4
+    },
+    "DuplicateTests": []
+  }
+}

@@ -1,0 +1,11 @@
+[
+  {
+    "SourceCommit": "fc37c051491410837c5deb348cf0df22669045d4",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category browser-rollback-linux,browser-rollback-linux-boundaries -Parallelism 1",
+    "ExitCode": 1,
+    "TestsExecuted": 0,
+    "Classification": "preparation/argument parsing; no workload started",
+    "ObservedError": "Unknown category 'browser-rollback-linux,browser-rollback-linux-boundaries'. Use -ListCategories; no workload started.",
+    "CorrectedCommand": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1"
+  }
+]

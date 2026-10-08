@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "gm-main-operation-native-linux",
+      "reason": "Explicit F2 Linux native neutral fixtures with independent guardian; separate from Windows backend qualification.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2 original owned terminal, typed retained operation and actual finalization"
+      ]
+    },
+    {
+      "category": "gm-main-status-retirement-linux",
+      "reason": "Explicit F2 Linux native neutral fixtures with independent guardian; separate from Windows backend qualification.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2 original owned terminal, typed retained operation and actual finalization"
+      ]
+    },
+    {
+      "category": "gm-main-helper-bounds-linux",
+      "reason": "Explicit F2 Linux native neutral fixtures with independent guardian; separate from Windows backend qualification.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2 original owned terminal, typed retained operation and actual finalization"
+      ]
+    },
+    {
+      "category": "gm-main-operation-closing-linux",
+      "reason": "Explicit F2 Linux native neutral fixtures with independent guardian; separate from Windows backend qualification.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2 original owned terminal, typed retained operation and actual finalization"
+      ]
+    },
+    {
+      "category": "gm-main-operation-followup-linux",
+      "reason": "Explicit F2 Linux native neutral fixtures with independent guardian; separate from Windows backend qualification.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2 original owned terminal, typed retained operation and actual finalization"
+      ]
+    },
+    {
+      "category": "gm-main-review-closing-linux",
+      "reason": "Explicit F2 Linux native neutral fixtures with independent guardian; separate from Windows backend qualification.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2 original owned terminal, typed retained operation and actual finalization"
+      ]
+    },
+    {
+      "category": "gm-main-helper-live-linux",
+      "reason": "Explicit F2 Linux native neutral fixtures with independent guardian; separate from Windows backend qualification.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2 original owned terminal, typed retained operation and actual finalization"
+      ]
+    },
+    {
+      "category": "gm-main-explicit-outcome-linux",
+      "reason": "Explicit F2 Linux native neutral fixtures with independent guardian; separate from Windows backend qualification.",
+      "contracts": [
+        "#1553 T041-RUN-FENCE-F2 original owned terminal, typed retained operation and actual finalization"
+      ]
+    }
+  ]
+}

@@ -10,6 +10,7 @@ using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmWorkers;
 using BookOfEternityClient.UI;
+using BookOfEternityClient.WebUi;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
 
@@ -312,6 +313,9 @@ public partial class GameEngine
             ? $"{_stateManager.Settings.SoundVolume}%"
             : _loc.T("disabled");
 
+        if (_audioService.Status.Message.Length > 0)
+            musicSummary += " · " + _audioService.Status.Message;
+
         if (layout == MainMenuLayoutMode.VeryCompact)
         {
             var compact = $"[grey]{Markup.Escape(_loc.T("opt_language"))}:[/] [yellow]{Markup.Escape(_stateManager.Settings.Language.ToUpperInvariant())}[/]  " +
@@ -372,6 +376,15 @@ public partial class GameEngine
 
     private async Task<List<MainMenuOption>> BuildMainMenuOptionsAsync()
     {
+        if (_blockedLoadContinuation is { } blocked)
+        {
+            _mainMenuSessionWarning = DescribeConsoleLoadOutcome(blocked);
+            return
+            [
+                new MainMenuOption("about", _loc.T("about"), _loc.T("main_menu_about_desc"), "blue", 1),
+                new MainMenuOption("exit", _loc.T("exit"), _loc.T("main_menu_exit_desc"), "red", 2)
+            ];
+        }
         _mainMenuSessionWarning = null;
         var options = new List<MainMenuOption>();
         var nextIndex = 1;
@@ -402,11 +415,23 @@ public partial class GameEngine
 
     private async Task<bool> HasCurrentSessionAsync()
     {
-        if (!_fs.FileExists("game_state/meta/soul_state.json"))
+        if (_blockedLoadContinuation is { } blocked)
+        {
+            _mainMenuSessionWarning = DescribeConsoleLoadOutcome(blocked);
             return false;
+        }
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+        {
+            if (!_fs.FileExists("game_state/meta/soul_state.json"))
+                return false;
+            return await HasCurrentSessionCoreAsync();
+        });
+    }
 
+    private async Task<bool> HasCurrentSessionCoreAsync()
+    {
         await NormalizeRuntimeUiArtifactsAsync();
-        await EnsureClientOwnedSystemFilesHealthyAsync();
+        await EnsureClientOwnedSystemFilesHealthyAsync(ordinaryEntry: true);
         var sessionHealth = await _criticalStateHealth.AssessCurrentSessionHealthAsync();
         if (sessionHealth.HasRecoverableSessionError)
         {
@@ -948,6 +973,7 @@ public partial class GameEngine
             pendingGuardianCreation = _systemGuardianLibraryService.BuildPendingGuardianCreationNode(selectedPreset, soulName);
         }
 
+        var initializationCompleted = false;
         try
         {
             // Step 3: Enter the Chaos Sea — NO character/world description at this point.
@@ -957,6 +983,7 @@ public partial class GameEngine
                 soulFormDescription,
                 pendingGuardianCreation,
                 selectedSystemGuardianPreset);
+            initializationCompleted = true;
             var initialTurnAccepted = await SessionOperationContext.RunBoundAsync(
                 _fs, sessionGeneration, WaitForGmResponse);
             if (!initialTurnAccepted)
@@ -968,6 +995,14 @@ public partial class GameEngine
                 ex,
                 "Начальная сессия была заменена во время GM repair; новая сессия сохранена без очистки и rollback старого запуска.");
             await RebindRuntimeAfterSessionReplacementAsync();
+            return;
+        }
+        catch (InvalidDataException ex) when (!initializationCompleted)
+        {
+            _logger.LogWarning(ex, "Fresh-game initialization was not confirmed; no initial GM wait was entered.");
+            AnsiConsole.MarkupLine("[yellow]Подготовка первого хода не завершена. Ожидание ответа не начато; проверьте состояние книги перед повторным запуском.[/]");
+            AnsiConsole.MarkupLine($"[dim]{Markup.Escape(_loc.T("press_any_key"))}[/]");
+            _inputSource.ReadKey(intercept: true);
             return;
         }
 
@@ -1072,6 +1107,15 @@ public partial class GameEngine
                         createdAtUtc: DateTimeOffset.UtcNow);
 
                 WriteInitialGuardianProjectTrackerStateAsync().Wait();
+
+                // Fresh generation has no accepted item/wound identities or history.
+                // Seed their current empty authorities before the first rollback baseline.
+                _fs.WriteFileAtomicAsync(MortalItemIdentityState.StatePath,
+                    MortalItemIdentityState.CreateEmptyRoot().ToJsonString(JsonOpts)).Wait();
+                _fs.WriteFileAtomicAsync(WoundIdentityState.StatePath,
+                    "{\"schemaVersion\":1,\"entries\":[]}").Wait();
+                _fs.WriteFileAtomicAsync(WoundHistoryState.HistoryPath,
+                    "{\"schemaVersion\":1,\"nextOrdinal\":1,\"transitions\":[]}").Wait();
 
                 // Initialize session
                 var chatLog = new
@@ -1212,8 +1256,8 @@ public partial class GameEngine
         _gameLoop.SetSession(sessionId, 0);
         await RefreshRuntimeStateAsync();
 
-        // Write game settings (difficulty flags) for GM
-        await WriteGameSettingsForGm();
+        // A failed settings outcome must leave the entire initialization scope.
+        await RequireInitialSettingsReadyAsync();
 
         var guardianRequestLabel =
             pendingGuardianCreation["presetDisplayName"]?.GetValue<string>() ??
@@ -1237,7 +1281,7 @@ public partial class GameEngine
             PlayerAction = firstAction,
             Timestamp = DateTime.UtcNow.ToString("o"),
             GameMode = "normal",
-            SystemReminder = await BuildTurnSystemReminderAsync()
+            SystemReminder = await BuildTurnSystemReminderAsync(maintainLegacyTurnSettings: false)
         };
         AttachFreshDiceAndGacha(request);
         request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
@@ -1273,9 +1317,9 @@ public partial class GameEngine
     /// </summary>
     private async Task HandleIncarnation()
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
         await InvokeSessionFinalizationCheckpointAsync(
             SessionFinalizationCheckpoint.IncarnationOperationBound);
         await _fs.VerifyCurrentSessionOperationAsync();
@@ -2143,24 +2187,11 @@ public partial class GameEngine
         });
     }
 
-    private static void OpenFolderOrPrintPath(string directoryPath, IConsoleInputSource inputSource)
+    private void OpenFolderOrPrintPath(string directoryPath, IConsoleInputSource inputSource)
     {
-        Directory.CreateDirectory(directoryPath);
-
-        try
-        {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = directoryPath,
-                UseShellExecute = true
-            });
-        }
-        catch
-        {
-            AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(directoryPath)}[/]");
-            AnsiConsole.MarkupLine("[dim]Не удалось открыть папку автоматически. Путь выведен выше.[/]");
-            inputSource.ReadKey(intercept: true);
-        }
+        var result = _desktopPathOpener.OpenFolder(directoryPath);
+        AnsiConsole.MarkupLine(result.ToMarkup());
+        if (result.Status != DesktopOpenStatus.Requested) inputSource.ReadKey(intercept: true);
     }
 
     /// <summary>
@@ -3264,18 +3295,94 @@ public partial class GameEngine
         return 0;
     }
 
-    /// <summary>
-    /// Builds a GameResponse by reading from the individual output files that the GM daemon writes.
-    /// Reads: output/narrative_response.json, output/interface_updates.json, output/debug_logs.json
-    /// </summary>
-
-    private async Task<bool> LoadSelectedSaveAndRebindRuntimeAsync(string saveFilePath)
+    /// <summary>Preserves the load decision while rebinding only its established generation.</summary>
+    /// <param name="saveFilePath">The selected archive, independent of save-list summary metadata.</param>
+    /// <returns>The typed decision; blocked continuation is retained for this process until restart.</returns>
+    private async Task<LoadReplacementResult> LoadSelectedSaveAndRebindRuntimeAsync(string saveFilePath)
     {
-        if (!await _saveLoad.LoadGameAsync(saveFilePath))
-            return false;
+        if (_blockedLoadContinuation is { } blocked) return blocked;
+        LoadReplacementResult result;
+        try
+        {
+            result = await _saveLoad.LoadGameWithAdmissionAsync(saveFilePath, async writeLease =>
+            {
+                if (BrowserPendingTurnInspector.Build(_fs, writeLease).HasActiveGmTurn)
+                    throw new InvalidOperationException("Загрузка недоступна до завершения текущего хода.");
+                var owner = await new LocalUiSessionLockService(_fs).InspectForSessionReplacementAsync(writeLease);
+                if (owner is { IsStale: false })
+                    throw new InvalidOperationException("Другой интерфейс занят текущей главой.");
+            });
+        }
+        catch (Exception failure)
+        {
+            result = new(LoadReplacementDisposition.Uncertain, null, null, true, failure, true);
+        }
+        if (result.Disposition == LoadReplacementDisposition.Committed && !result.ContinuationBlocked)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(result.EstablishedGeneration))
+                    throw new InvalidDataException("Committed load did not establish a generation.");
+                await RebindRuntimeAfterSessionReplacementAsync(result.EstablishedGeneration);
+            }
+            catch (Exception failure) { result = result.WithFollowUp(failure, blocksContinuation: true); }
+        }
+        RetainConsoleLoadBlock(result);
+        return result;
+    }
 
-        await RebindRuntimeAfterSessionReplacementAsync();
-        return true;
+    /// <summary>Stops both an existing loop and every new continuation after unresolved load follow-up.</summary>
+    /// <param name="result">The load decision whose identity must remain intact.</param>
+    private void RetainConsoleLoadBlock(LoadReplacementResult result)
+    {
+        if (!result.ContinuationBlocked && result.Disposition != LoadReplacementDisposition.Uncertain) return;
+        _blockedLoadContinuation = result;
+        _inGame = false;
+        _gameLoop.SetSession(string.Empty, 0);
+        _lastResponse = null;
+        _pendingImagePrompt = null;
+        _explorer.ForgetSessionTransientState();
+        _mainMenuSessionWarning = DescribeConsoleLoadOutcome(result);
+    }
+
+    /// <summary>Completes required console refresh without erasing an already confirmed replacement.</summary>
+    /// <param name="result">The established typed result after runtime rebind.</param>
+    /// <returns>The same decision with additional blocked follow-up if required refresh fails.</returns>
+    private async Task<LoadReplacementResult> PrepareLoadedConsoleContinuationAsync(LoadReplacementResult result)
+    {
+        if (result.Disposition != LoadReplacementDisposition.Committed || result.ContinuationBlocked) return result;
+        try
+        {
+            await SessionOperationContext.RunBoundAsync(_fs, result.EstablishedGeneration!, async () =>
+            {
+                if (!await WriteGameSettingsForGm())
+                    throw new InvalidOperationException("Loaded settings require follow-up.");
+                await NormalizeRuntimeUiArtifactsAsync();
+                _lastResponse = await BuildGameResponseFromFiles();
+                if (!await ValidateCurrentGameStateOrShowErrorsAsync("загрузки сохранения"))
+                    throw new InvalidOperationException("Loaded state requires follow-up.");
+            });
+        }
+        catch (Exception failure) { result = result.WithFollowUp(failure, blocksContinuation: true); }
+        RetainConsoleLoadBlock(result);
+        return result;
+    }
+
+    /// <summary>Describes commitment separately from safe continuation, without exposing diagnostic paths.</summary>
+    /// <param name="result">The exact load decision.</param>
+    /// <returns>Player-facing text that never promises a blind repeat of an uncertain load.</returns>
+    private static string DescribeConsoleLoadOutcome(LoadReplacementResult result)
+    {
+        var message = result.Disposition switch
+        {
+            LoadReplacementDisposition.Committed => "Сохранение загружено.",
+            LoadReplacementDisposition.RolledBack => "Загрузка отменена. Прежняя глава восстановлена.",
+            LoadReplacementDisposition.Uncertain => "Исход загрузки пока не подтверждён.",
+            _ => "Сохранение не загружено. Текущая глава не заменена."
+        };
+        if (result.ContinuationBlocked || result.Disposition == LoadReplacementDisposition.Uncertain)
+            return message + " Продолжение остановлено. Перезапустите игру для проверки состояния; не повторяйте загрузку вслепую.";
+        return result.NeedsFollowUp ? message + " Требуется служебная проверка завершения операции." : message;
     }
 
     private async Task LoadGameFlow()
@@ -3325,29 +3432,20 @@ public partial class GameEngine
 
         var saveInfo = allSaves[idx];
 
-        var success = await LoadSelectedSaveAndRebindRuntimeAsync(saveInfo.FileName);
-        if (success)
+        var result = await LoadSelectedSaveWithMainLifecycleAsync(saveInfo.FileName);
+        var color = result.ContinuationBlocked ? "yellow" :
+            result.Disposition == LoadReplacementDisposition.Committed ? "green" : "red";
+        AnsiConsole.MarkupLine($"[{color}]{Markup.Escape(DescribeConsoleLoadOutcome(result))}[/]");
+        if(_consoleLoadMainState is BookOfEternityClient.Services.GmRuntime.GmLoadMainState.Stopped or
+            BookOfEternityClient.Services.GmRuntime.GmLoadMainState.Uncertain or BookOfEternityClient.Services.GmRuntime.GmLoadMainState.StartedNotReady)
+            AnsiConsole.MarkupLine("[yellow]Запуск новой сессии ГМа не подтверждён. Продолжение остановлено.[/]");
+        if (result.Disposition == LoadReplacementDisposition.Committed && !result.ContinuationBlocked)
         {
-            AnsiConsole.MarkupLine($"[green]{_loc.T("load_success")}[/]");
-
             await Task.Delay(1000);
-
-            // Ensure game settings (difficulty) are synced to game_state for GM
-            await WriteGameSettingsForGm();
-            await NormalizeRuntimeUiArtifactsAsync();
-
-            // Build response from saved output files for initial display
-            _lastResponse = await BuildGameResponseFromFiles();
-            if (!await ValidateCurrentGameStateOrShowErrorsAsync("загрузки сохранения"))
-                return;
-
-            await EnterGameLoop();
+            // An in-game load resumes its existing loop, rather than nesting a second loop.
+            if (!_inGame) await EnterGameLoop();
         }
-        else
-        {
-            AnsiConsole.MarkupLine($"[red]{_loc.T("load_failed")}[/]");
-            _inputSource.ReadKey(intercept: true);
-        }
+        else _inputSource.ReadKey(intercept: true);
     }
 
 }

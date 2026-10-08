@@ -1,0 +1,79 @@
+{
+  "Categories": [
+    "auxiliary-launcher-portable",
+    "auxiliary-launcher-root-binding"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "721d54833bf879b18c29d5a1a83ba6b90654b6f5",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 43.3833616,
+  "Descriptors": [
+    {
+      "Name": "auxiliary-launcher-portable-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "auxiliary-launcher-portable",
+      "Categories": [
+        "auxiliary-launcher-portable"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.ExplicitSecondPreparation_ReplacesPendingSnapshotWithinExistingContract|FullyQualifiedName=BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges|FullyQualifiedName=BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.ObservationTimeout_RetainsOriginalGuardianUntilActualExclusiveReap|FullyQualifiedName=BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.OperationalPrepareInstructions_UseShippedLayoutAndCurrentBoundedLinks|FullyQualifiedName=BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.OrdinaryPositionalStatusSelector_PreservesExistingDispatcherBoundary|FullyQualifiedName=BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 17,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.ExplicitSecondPreparation_ReplacesPendingSnapshotWithinExistingContract",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.MissingCapabilityOrAuthority_RealRouteRefusesWithoutCanonicalChanges",
+          "Cases": 12
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.ObservationTimeout_RetainsOriginalGuardianUntilActualExclusiveReap",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.OperationalPrepareInstructions_UseShippedLayoutAndCurrentBoundedLinks",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.OrdinaryPositionalStatusSelector_PreservesExistingDispatcherBoundary",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "auxiliary-launcher-root-binding-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "auxiliary-launcher-root-binding",
+      "Categories": [
+        "auxiliary-launcher-root-binding"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.ExistingDirectoryAction_CannotRedirectExplicitSessionRoot|FullyQualifiedName=BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.MissingOrNonexistentFirstRoot_ActualEarlyModeRefusesBeforeWrites",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.ExistingDirectoryAction_CannotRedirectExplicitSessionRoot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AuxiliaryLauncherRootBindingTests.MissingOrNonexistentFirstRoot_ActualEarlyModeRefusesBeforeWrites",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

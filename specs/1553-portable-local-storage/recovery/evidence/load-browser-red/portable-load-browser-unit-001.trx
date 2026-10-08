@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="016b4a9b-68fa-4334-8e56-36006661f49c" name="@95e438a3e5cb 2026-10-04 12:43:11" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T12:43:11.5254739-04:00" queuing="2026-10-04T12:43:11.5254740-04:00" start="2026-10-04T12:43:07.8934996-04:00" finish="2026-10-04T12:43:13.6708853-04:00" />
+  <TestSettings name="default" id="37610433-ae0f-4867-aa65-2649e1a0fede">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-04_12_43_11" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="65573795-dd98-45f2-b0ee-41352008e7f7" testId="c455edab-e63c-98f4-487f-8db77fb0d5bb" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;newer-generation&quot;)" computerName="95e438a3e5cb" duration="00:00:00.3721877" startTime="2026-10-04T12:43:12.8422132-04:00" endTime="2026-10-04T12:43:12.8422134-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="65573795-dd98-45f2-b0ee-41352008e7f7">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+Expected: "Committed"
+Actual:   null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 97
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f1c930dc-aebd-44d7-b654-b4920854bb9f" testId="87ae5b29-39cf-a519-51fb-edeedb446181" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;uncertain&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0493011" startTime="2026-10-04T12:43:11.8247756-04:00" endTime="2026-10-04T12:43:11.8247757-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f1c930dc-aebd-44d7-b654-b4920854bb9f">
+      <Output>
+        <ErrorInfo>
+          <Message>System.InvalidOperationException : browser load publication cut</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBrowserLoadTests.&lt;&gt;c__DisplayClass1_0.&lt;BrowserLoadRetainsTypedDecisionAndAdmission&gt;b__0(TrustedLocalPublicationPhase phase, Int32 _) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 43
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 498
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 292
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 222
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass19_0.&lt;PublishWithOutcome&gt;b__0(PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 160
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 169
+--- End of stack trace from previous location ---
+   at BookOfEternityClient.Core.FileSystemManager.RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome) in [checkout]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 175
+   at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in [checkout]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 228
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 811
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicAsync(CanonicalWriteLease writeLease, String relativePath, String content) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 732
+   at BookOfEternityClient.Services.LocalUiSessionLockService.AcquireOrRefreshAsync(CanonicalWriteLease writeLease, LocalUiSessionLockOwner owner, String operationLabel) in [checkout]/BookOfEternityClient/Services/LocalUiSessionLockService.cs:line 75
+   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.&lt;&gt;c__DisplayClass9_1.&lt;&lt;ExecuteSessionReplacementAsync&gt;b__0&gt;d.MoveNext() in [checkout]/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 102
+--- End of stack trace from previous location ---
+   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs:line 258
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs:line 128
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs:line 190
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, CanonicalWriteLease writeLease, Func`1 operation) in [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs:line 61
+   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecuteSessionReplacementAsync(BrowserLocalWriteRequest request, Func`1 replacementOperation) in [checkout]/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 86
+   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecuteSessionReplacementAsync(BrowserLocalWriteRequest request, Func`1 replacementOperation) in [checkout]/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 111
+   at BookOfEternityClient.WebUi.LocalWebUiMainMenuService.LoadSaveAsync(BrowserLoadSaveRequest request) in [checkout]/BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs:line 79
+   at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 93
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8d9ca2cb-eac3-48a8-a2d5-e8c8936fa008" testId="1429792d-b3bd-e92e-5fda-2082f6266129" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;late-pending&quot;)" computerName="95e438a3e5cb" duration="00:00:01.1504861" startTime="2026-10-04T12:43:10.6785382-04:00" endTime="2026-10-04T12:43:10.6785509-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8d9ca2cb-eac3-48a8-a2d5-e8c8936fa008">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+Expected: "NotLoaded"
+Actual:   null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 97
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5b8e1a61-a9b3-458b-b0de-c6c4c02ed8ea" testId="7b995f5a-100c-cfe6-ee8e-f899dd425119" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;rollback&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0437263" startTime="2026-10-04T12:43:12.8880407-04:00" endTime="2026-10-04T12:43:12.8880409-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5b8e1a61-a9b3-458b-b0de-c6c4c02ed8ea">
+      <Output>
+        <ErrorInfo>
+          <Message>System.InvalidOperationException : browser load publication cut</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBrowserLoadTests.&lt;&gt;c__DisplayClass1_0.&lt;BrowserLoadRetainsTypedDecisionAndAdmission&gt;b__0(TrustedLocalPublicationPhase phase, Int32 _) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 43
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 498
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 292
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 222
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass19_0.&lt;PublishWithOutcome&gt;b__0(PublicationAttempt attempt) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 160
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 169
+--- End of stack trace from previous location ---
+   at BookOfEternityClient.Core.FileSystemManager.RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome) in [checkout]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 175
+   at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired) in [checkout]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 228
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 811
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicAsync(CanonicalWriteLease writeLease, String relativePath, String content) in [checkout]/BookOfEternityClient/Core/FileSystemManager.cs:line 732
+   at BookOfEternityClient.Services.LocalUiSessionLockService.AcquireOrRefreshAsync(CanonicalWriteLease writeLease, LocalUiSessionLockOwner owner, String operationLabel) in [checkout]/BookOfEternityClient/Services/LocalUiSessionLockService.cs:line 75
+   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.&lt;&gt;c__DisplayClass9_1.&lt;&lt;ExecuteSessionReplacementAsync&gt;b__0&gt;d.MoveNext() in [checkout]/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 102
+--- End of stack trace from previous location ---
+   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs:line 258
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs:line 128
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs:line 190
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, CanonicalWriteLease writeLease, Func`1 operation) in [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs:line 61
+   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecuteSessionReplacementAsync(BrowserLocalWriteRequest request, Func`1 replacementOperation) in [checkout]/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 86
+   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecuteSessionReplacementAsync(BrowserLocalWriteRequest request, Func`1 replacementOperation) in [checkout]/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 111
+   at BookOfEternityClient.WebUi.LocalWebUiMainMenuService.LoadSaveAsync(BrowserLoadSaveRequest request) in [checkout]/BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs:line 79
+   at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 93
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="bb1cd7af-7e7c-4f46-a0f7-1a1006f84810" testId="e682d0cf-81ca-10e6-a29c-bb0e96a04112" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;committed&quot;)" computerName="95e438a3e5cb" duration="00:00:00.3705727" startTime="2026-10-04T12:43:13.6146872-04:00" endTime="2026-10-04T12:43:13.6146874-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bb1cd7af-7e7c-4f46-a0f7-1a1006f84810">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+Expected: "Committed"
+Actual:   null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 97
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="adb64489-4423-4581-9288-8a758aa1f0ce" testId="b1f77714-2bc9-ce56-323f-93e7844d846f" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;service-refresh&quot;)" computerName="95e438a3e5cb" duration="00:00:01.0946791" startTime="2026-10-04T12:43:11.7737221-04:00" endTime="2026-10-04T12:43:11.7737223-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="adb64489-4423-4581-9288-8a758aa1f0ce">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+Expected: "Committed"
+Actual:   null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 97
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4f99193a-ef11-40c9-b5f4-3e6a8ff12cf5" testId="3fe33d81-7f11-9d4e-b8d6-924064bebe52" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;menu-refresh&quot;)" computerName="95e438a3e5cb" duration="00:00:00.3544793" startTime="2026-10-04T12:43:13.2431691-04:00" endTime="2026-10-04T12:43:13.2431693-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4f99193a-ef11-40c9-b5f4-3e6a8ff12cf5">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+Expected: "Committed"
+Actual:   null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 97
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="98a7fd5d-ff75-48b4-ade9-24948b26061d" testId="744f0ed0-458d-4f92-920e-e58e2ae7e855" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;late-token&quot;)" computerName="95e438a3e5cb" duration="00:00:00.3323310" startTime="2026-10-04T12:43:12.1596084-04:00" endTime="2026-10-04T12:43:12.1596086-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="98a7fd5d-ff75-48b4-ade9-24948b26061d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+Expected: "NotLoaded"
+Actual:   null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 97
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0ae2772e-e6ee-4fa0-b75e-9b9d8a7e7f24" testId="e78ceb70-1f0c-5bb6-d4ce-20e89289df8a" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;missing-source&quot;)" computerName="95e438a3e5cb" duration="00:00:00.3094129" startTime="2026-10-04T12:43:12.4686117-04:00" endTime="2026-10-04T12:43:12.4686119-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0ae2772e-e6ee-4fa0-b75e-9b9d8a7e7f24">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+Expected: "NotLoaded"
+Actual:   null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 97
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;committed&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e682d0cf-81ca-10e6-a29c-bb0e96a04112">
+      <Execution id="bb1cd7af-7e7c-4f46-a0f7-1a1006f84810" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;uncertain&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="87ae5b29-39cf-a519-51fb-edeedb446181">
+      <Execution id="f1c930dc-aebd-44d7-b654-b4920854bb9f" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;late-token&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="744f0ed0-458d-4f92-920e-e58e2ae7e855">
+      <Execution id="98a7fd5d-ff75-48b4-ade9-24948b26061d" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;service-refresh&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b1f77714-2bc9-ce56-323f-93e7844d846f">
+      <Execution id="adb64489-4423-4581-9288-8a758aa1f0ce" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;rollback&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7b995f5a-100c-cfe6-ee8e-f899dd425119">
+      <Execution id="5b8e1a61-a9b3-458b-b0de-c6c4c02ed8ea" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;late-pending&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1429792d-b3bd-e92e-5fda-2082f6266129">
+      <Execution id="8d9ca2cb-eac3-48a8-a2d5-e8c8936fa008" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;menu-refresh&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3fe33d81-7f11-9d4e-b8d6-924064bebe52">
+      <Execution id="4f99193a-ef11-40c9-b5f4-3e6a8ff12cf5" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;newer-generation&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c455edab-e63c-98f4-487f-8db77fb0d5bb">
+      <Execution id="65573795-dd98-45f2-b0ee-41352008e7f7" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;missing-source&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e78ceb70-1f0c-5bb6-d4ce-20e89289df8a">
+      <Execution id="0ae2772e-e6ee-4fa0-b75e-9b9d8a7e7f24" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c455edab-e63c-98f4-487f-8db77fb0d5bb" executionId="65573795-dd98-45f2-b0ee-41352008e7f7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="87ae5b29-39cf-a519-51fb-edeedb446181" executionId="f1c930dc-aebd-44d7-b654-b4920854bb9f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1429792d-b3bd-e92e-5fda-2082f6266129" executionId="8d9ca2cb-eac3-48a8-a2d5-e8c8936fa008" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7b995f5a-100c-cfe6-ee8e-f899dd425119" executionId="5b8e1a61-a9b3-458b-b0de-c6c4c02ed8ea" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e682d0cf-81ca-10e6-a29c-bb0e96a04112" executionId="bb1cd7af-7e7c-4f46-a0f7-1a1006f84810" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b1f77714-2bc9-ce56-323f-93e7844d846f" executionId="adb64489-4423-4581-9288-8a758aa1f0ce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3fe33d81-7f11-9d4e-b8d6-924064bebe52" executionId="4f99193a-ef11-40c9-b5f4-3e6a8ff12cf5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="744f0ed0-458d-4f92-920e-e58e2ae7e855" executionId="98a7fd5d-ff75-48b4-ade9-24948b26061d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e78ceb70-1f0c-5bb6-d4ce-20e89289df8a" executionId="0ae2772e-e6ee-4fa0-b75e-9b9d8a7e7f24" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="9" executed="9" passed="0" failed="9" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.13]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:00.96]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:00.97]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.44]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:02.44]       Expected: "NotLoaded"
+[xUnit.net 00:00:02.44]       Actual:   null
+[xUnit.net 00:00:02.44]       Stack Trace:
+[xUnit.net 00:00:02.44]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(97,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario)
+[xUnit.net 00:00:02.44]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.54]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:03.54]       Expected: "Committed"
+[xUnit.net 00:00:03.54]       Actual:   null
+[xUnit.net 00:00:03.54]       Stack Trace:
+[xUnit.net 00:00:03.54]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(97,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario)
+[xUnit.net 00:00:03.54]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.59]       System.InvalidOperationException : browser load publication cut
+[xUnit.net 00:00:03.59]       Stack Trace:
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(43,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.&lt;&gt;c__DisplayClass1_0.&lt;BrowserLoadRetainsTypedDecisionAndAdmission&gt;b__0(TrustedLocalPublicationPhase phase, Int32 _)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(498,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(292,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(222,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(160,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass19_0.&lt;PublishWithOutcome&gt;b__0(PublicationAttempt attempt)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(169,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish)
+[xUnit.net 00:00:03.59]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(175,0): at BookOfEternityClient.Core.FileSystemManager.RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(228,0): at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/Core/FileSystemManager.cs(811,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/Core/FileSystemManager.cs(732,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicAsync(CanonicalWriteLease writeLease, String relativePath, String content)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/Services/LocalUiSessionLockService.cs(75,0): at BookOfEternityClient.Services.LocalUiSessionLockService.AcquireOrRefreshAsync(CanonicalWriteLease writeLease, LocalUiSessionLockOwner owner, String operationLabel)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs(102,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.&lt;&gt;c__DisplayClass9_1.&lt;&lt;ExecuteSessionReplacementAsync&gt;b__0&gt;d.MoveNext()
+[xUnit.net 00:00:03.59]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs(258,0): at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs(128,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs(190,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs(61,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, CanonicalWriteLease writeLease, Func`1 operation)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs(86,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecuteSessionReplacementAsync(BrowserLocalWriteRequest request, Func`1 replacementOperation)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs(111,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecuteSessionReplacementAsync(BrowserLocalWriteRequest request, Func`1 replacementOperation)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs(79,0): at BookOfEternityClient.WebUi.LocalWebUiMainMenuService.LoadSaveAsync(BrowserLoadSaveRequest request)
+[xUnit.net 00:00:03.59]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(93,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario)
+[xUnit.net 00:00:03.59]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.92]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:03.92]       Expected: "NotLoaded"
+[xUnit.net 00:00:03.92]       Actual:   null
+[xUnit.net 00:00:03.92]       Stack Trace:
+[xUnit.net 00:00:03.92]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(97,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario)
+[xUnit.net 00:00:03.92]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.23]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:04.23]       Expected: "NotLoaded"
+[xUnit.net 00:00:04.23]       Actual:   null
+[xUnit.net 00:00:04.23]       Stack Trace:
+[xUnit.net 00:00:04.23]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(97,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario)
+[xUnit.net 00:00:04.23]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.61]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:04.61]       Expected: "Committed"
+[xUnit.net 00:00:04.61]       Actual:   null
+[xUnit.net 00:00:04.61]       Stack Trace:
+[xUnit.net 00:00:04.61]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(97,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario)
+[xUnit.net 00:00:04.61]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.65]       System.InvalidOperationException : browser load publication cut
+[xUnit.net 00:00:04.65]       Stack Trace:
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(43,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.&lt;&gt;c__DisplayClass1_0.&lt;BrowserLoadRetainsTypedDecisionAndAdmission&gt;b__0(TrustedLocalPublicationPhase phase, Int32 _)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(498,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(292,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(222,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(160,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.&lt;&gt;c__DisplayClass19_0.&lt;PublishWithOutcome&gt;b__0(PublicationAttempt attempt)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(169,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish)
+[xUnit.net 00:00:04.65]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(175,0): at BookOfEternityClient.Core.FileSystemManager.RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(228,0): at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/Core/FileSystemManager.cs(811,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/Core/FileSystemManager.cs(732,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicAsync(CanonicalWriteLease writeLease, String relativePath, String content)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/Services/LocalUiSessionLockService.cs(75,0): at BookOfEternityClient.Services.LocalUiSessionLockService.AcquireOrRefreshAsync(CanonicalWriteLease writeLease, LocalUiSessionLockOwner owner, String operationLabel)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs(102,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.&lt;&gt;c__DisplayClass9_1.&lt;&lt;ExecuteSessionReplacementAsync&gt;b__0&gt;d.MoveNext()
+[xUnit.net 00:00:04.65]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs(258,0): at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs(128,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs(190,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/Core/SessionOperationContext.cs(61,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, CanonicalWriteLease writeLease, Func`1 operation)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs(86,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecuteSessionReplacementAsync(BrowserLocalWriteRequest request, Func`1 replacementOperation)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs(111,0): at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecuteSessionReplacementAsync(BrowserLocalWriteRequest request, Func`1 replacementOperation)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient/WebUi/LocalWebUiMainMenuService.cs(79,0): at BookOfEternityClient.WebUi.LocalWebUiMainMenuService.LoadSaveAsync(BrowserLoadSaveRequest request)
+[xUnit.net 00:00:04.65]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(93,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario)
+[xUnit.net 00:00:04.65]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.01]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:05.01]       Expected: "Committed"
+[xUnit.net 00:00:05.01]       Actual:   null
+[xUnit.net 00:00:05.01]       Stack Trace:
+[xUnit.net 00:00:05.01]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(97,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario)
+[xUnit.net 00:00:05.01]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.38]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:05.38]       Expected: "Committed"
+[xUnit.net 00:00:05.38]       Actual:   null
+[xUnit.net 00:00:05.38]       Stack Trace:
+[xUnit.net 00:00:05.38]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(97,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario)
+[xUnit.net 00:00:05.38]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.39]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T12:43:10.6769900-04:00">
+        <Text>[xUnit.net 00:00:02.44]     BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: "late-pending") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T12:43:11.7736529-04:00">
+        <Text>[xUnit.net 00:00:03.54]     BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: "service-refresh") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T12:43:11.8246387-04:00">
+        <Text>[xUnit.net 00:00:03.59]     BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: "uncertain") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T12:43:12.1583225-04:00">
+        <Text>[xUnit.net 00:00:03.92]     BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: "late-token") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T12:43:12.4706448-04:00">
+        <Text>[xUnit.net 00:00:04.23]     BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: "missing-source") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T12:43:12.8424752-04:00">
+        <Text>[xUnit.net 00:00:04.61]     BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: "newer-generation") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T12:43:12.8895195-04:00">
+        <Text>[xUnit.net 00:00:04.65]     BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: "rollback") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T12:43:13.2454168-04:00">
+        <Text>[xUnit.net 00:00:05.01]     BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: "menu-refresh") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T12:43:13.6150612-04:00">
+        <Text>[xUnit.net 00:00:05.38]     BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: "committed") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

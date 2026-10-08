@@ -1,0 +1,28 @@
+{
+  "sourceCommit": "6075fac49f854626b9ff69eda4e17ae874146bf1",
+  "catalogBlobAfterPatch": "d5b80e196cef743e9815618a324210c54a293800",
+  "kind": "newly executed b2b-services-green; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "040445a0e1078b2d6cecc1c068104b9f39bd51faaf1369a9ce6220fbbe45c56a",
+      "sanitizedSha256": "040445a0e1078b2d6cecc1c068104b9f39bd51faaf1369a9ce6220fbbe45c56a"
+    },
+    {
+      "path": "portable-client-bootstrap-unit-001.trx",
+      "originalSha256": "f3a2c628ff4045fd110f3bab976d4e157f8bc019f2f0d14744a4e947921cf83d",
+      "sanitizedSha256": "d944b0ab7769dcdb8ace9bdaf40516a964ad00b465a063f389b36b3239b10c38"
+    },
+    {
+      "path": "portable-prepared-settings-unit-002.trx",
+      "originalSha256": "8a0643eb8a659b4e999ac5d7635cc7318572b0c9c1fef740431366af2b960cdc",
+      "sanitizedSha256": "884ab156032a69aa7a15ad860606a9ca77a84eb93da690f67bfcac316f7796b6"
+    },
+    {
+      "path": "portable-settings-endpoints-integration-003.trx",
+      "originalSha256": "bbe80b9e0bd37b86b1e165da6defdebb21fc9dd757751152f02809229d1afcf6",
+      "sanitizedSha256": "2d34ffddfab04c95301ecae9f4d45884406c9b7199a4cd2782b6e8ced9408b80"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "sourceCommit": "d23fb486a282346040e2c4b444390faa08743077",
+  "catalogBlobAfterPatch": "cbe81a68b4fbfda307c0471b8bd1aa4f2a673f48",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-console-settings",
+  "observedRunStartUtc": "2026-10-01T02:38:56.0745402Z",
+  "lastLocalPhase": "Build-unit start; no build completion, discovery, tests, summary or TRX captured",
+  "executionControlDenial": {
+    "observedUtc": "2026-10-01T02:40:33Z",
+    "action": "retrieve status/output of the known owned run",
+    "reportedReason": "The execution reviewer reported an outbound connection to an untrusted telemetry endpoint without authorization to disclose potentially sensitive test/repository data.",
+    "observedDestination": null,
+    "limit": "No destination or traffic record appears in local artifacts; the reviewer statement is not independently observed traffic evidence.",
+    "exactReason": "The test command triggered an outbound connection to an untrusted telemetry endpoint, and the transcript does not authorize disclosure of potentially sensitive test or repository data there."
+  },
+  "environmentInspection": {
+    "originalCommandAndSourcedFile": "DOTNET_CLI_TELEMETRY_OPTOUT=1 was explicitly configured; no POWERSHELL_TELEMETRY_OPTOUT declaration was present.",
+    "limit": "The original process environment was not accessible; an independent inspector has a separate process view."
+  },
+  "cleanupControl": {
+    "observedUtc": "2026-10-01T02:45:34Z",
+    "action": "One standard Ctrl+C to the exact owned run only",
+    "result": "write_stdin failed: Unknown process id 37599",
+    "limit": "No active recognized owned session, exit code or all-descendant cleanup proof supplied. No PID guesses or further polls."
+  },
+  "status": "Execution blocked before behavioral RED; no implementation followed the unresolved run.",
+  "proposedSaferInvocation": "POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-console-settings",
+  "retryLimit": "One safer same-category attempt only after coordinator confirms the owned-run boundary; no unknown telemetry authorization, global settings changes or alternate route.",
+  "sources": [
+    "https://learn.microsoft.com/en-us/dotnet/core/tools/telemetry",
+    "https://learn.microsoft.com/en-us/dotnet/core/testing/microsoft-testing-platform-telemetry",
+    "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_Environment_Variables"
+  ],
+  "runnerAdmissionInspection": {
+    "result": "No cross-invocation exclusive admission or lease protocol is present in the inspected canonical runner.",
+    "sources": [
+      "scripts/test-csharp.ps1: New-UniqueResultDirectory uses timestamp, namespace-local PID and GUID; Linux New-OwnedProcessContainment returns null.",
+      "scripts/testing/TestCategoryExecution.ps1: Exclusive only limits parallel capacity within the current invocation."
+    ],
+    "runMetadata": "Only the partial phase log exists; no lease/owner marker, summary or PID record was written. The directory embeds namespace-local PID 16, which cannot be safely targeted from a separate exec view.",
+    "decision": "No retry launched; isolated-checkout admission is a proposal awaiting coordinator assessment, not a workaround already used."
+  }
+}

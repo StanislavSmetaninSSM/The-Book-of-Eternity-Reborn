@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "portable-storage-stream-cold-before",
+    "portable-storage-stream-cold-conflicts",
+    "portable-storage-stream-cold-phases"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a340f5f7c8e6acf1d5ea5e1027dee35a54fefff7",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 157.8850161,
+  "Descriptors": [
+    {
+      "Name": "portable-storage-stream-cold-before-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-cold-before",
+      "Categories": [
+        "portable-storage-stream-cold-before"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.LargeBeforeRegionSurvivesInterruptedColdRollbackWithoutCallerSources",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-stream-cold-conflicts-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-cold-conflicts",
+      "Categories": [
+        "portable-storage-stream-cold-conflicts"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.ColdLaterMemberOrGenerationConflictRetainsEarlierImagesAndEvidence|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.CommittedColdCleanupCanBeInterruptedWithoutRestoringOldImages",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.ColdLaterMemberOrGenerationConflictRetainsEarlierImagesAndEvidence",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.CommittedColdCleanupCanBeInterruptedWithoutRestoringOldImages",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-stream-cold-phases-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-stream-cold-phases",
+      "Categories": [
+        "portable-storage-stream-cold-phases"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalStreamRecoveryTests.AbruptImagePublicationRecoversCompleteSetThroughSeparatePublicAcquisition",
+          "Cases": 9
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "00e2ce0b68394a3261bf2756f1f3e02b7118e81a",
+  "catalogBlobAfterPatch": "bfb8b0a8249766620d7b833b7fbca3670ec72f67",
+  "kind": "newly executed b3b-replacement-initial-green; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Isolated run-root paths replaced; LF/trailing whitespace normalized; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "1b8ed3c2d8507e610061035c1ff54666f3befa9cdc25e3ad011bc85c4c2af248",
+      "sanitizedSha256": "1b8ed3c2d8507e610061035c1ff54666f3befa9cdc25e3ad011bc85c4c2af248"
+    },
+    {
+      "path": "portable-session-replacement-unit-001.trx",
+      "originalSha256": "4b1d261213500b79f1310ab37a19db38775745ee597f3592c8d8289e4981dff3",
+      "sanitizedSha256": "3dbb95c3f68ec5c57e64df64ca7491d5cde07eb3a28c139a17b813005d421ca2"
+    }
+  ],
+  "appliedSourceTree": "5d051ca55eb240d5e7a76126b9f354cf167dc7f6",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-session-replacement -Parallelism 1",
+  "limits": "Initial 15-case implementation slice only; further cold-process, console/proposal and negative/consumer work remains unaccepted WIP."
+}

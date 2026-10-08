@@ -1,0 +1,11 @@
+[
+  {
+    "Case": "498c5b3bc84543b0b4bbcc604704a24e",
+    "RunId": "b991608cf02d4f9db6c5f4a93f504078",
+    "PrivateBootstrap": "/tmp/boe-native-b991608cf02d4f9db6c5f4a93f504078",
+    "Existed": true,
+    "Removed": true,
+    "GuardianEchild": true,
+    "LogicalDispositionUnchanged": "Prepared"
+  }
+]

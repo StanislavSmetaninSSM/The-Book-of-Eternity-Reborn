@@ -130,15 +130,27 @@ public partial class GameEngine
             "wound_acquisition_narration_missing" or
             "wound_acquisition_narration_contradiction";
 
-    private async Task EnsureClientOwnedSystemFilesHealthyAsync()
+    private Task EnsureClientOwnedSystemFilesHealthyAsync(bool ordinaryEntry = false)=>
+        SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,()=>EnsureClientOwnedSystemFilesHealthyCoreAsync(ordinaryEntry));
+    private async Task EnsureClientOwnedSystemFilesHealthyCoreAsync(bool ordinaryEntry)
     {
         await CleanupOrphanedTurnRequestBeforeValidationAsync();
         await _stateManager.RefreshGameStateAsync();
         var preserveControlFilesForTerminalValidation =
             await ShouldPreserveClientOwnedControlFilesForTerminalValidationAsync();
 
-        if (await _systemModService.WriteManifestForGmAsync())
-            await _stateManager.SaveSettingsAsync();
+        if (ordinaryEntry)
+        {
+            if (!await WriteGameSettingsForGm())
+                throw new InvalidDataException("Синхронизация настроек не подтверждена. Требуется завершить активную запись или восстановление перед продолжением.");
+        }
+        else
+        {
+            // B3: accepted-turn/repair receipt workflows retain their existing
+            // route until that whole publication boundary is migrated.
+            if (await _systemModService.WriteManifestForGmAsync())
+                await _stateManager.SaveSettingsAsync();
+        }
 
         await AfterlifeNotificationState.EnsureHealthyAsync(_fs);
         if (!preserveControlFilesForTerminalValidation)

@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "worker-restart-crash-launch-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e2cb68201ece9b4768375db56de8370b56b6af45",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 44.6028507,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-crash-launch-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-crash-launch-linux",
+      "Categories": [
+        "worker-restart-crash-launch-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartFenceTests.LaunchCrash_ActualCutNeverReconstructsAuthority",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.LaunchCrash_ActualCutNeverReconstructsAuthority",
+          "Cases": 8
+        }
+      ]
+    }
+  ]
+}

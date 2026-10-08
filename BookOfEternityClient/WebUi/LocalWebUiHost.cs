@@ -25,7 +25,10 @@ public static class LocalWebUiHost
         WriteIndented = true
     };
 
-    public static WebApplication Build(string[] args, LocalWebUiHostOptions options)
+    public static WebApplication Build(string[] args, LocalWebUiHostOptions options) => Build(args, options, hooks: null);
+
+    /// <summary>Builds the same host with controlled filesystem boundaries for isolated contract tests.</summary>
+    internal static WebApplication Build(string[] args, LocalWebUiHostOptions options, FileSystemManagerHooks? hooks)
     {
         if (!IsLocalUrl(options.Url))
             throw new InvalidOperationException("Local Web UI can only bind to localhost/loopback URLs.");
@@ -47,7 +50,8 @@ public static class LocalWebUiHost
         });
 
         builder.Services.AddSingleton(sp =>
-            new FileSystemManager(options.BasePath, sp.GetRequiredService<ILogger<FileSystemManager>>()));
+            new FileSystemManager(options.BasePath, sp.GetRequiredService<ILogger<FileSystemManager>>(),
+                PhysicalLoadTransactionOperations.Instance, hooks));
         builder.Services.AddSingleton(new GameSettings());
         builder.Services.AddSingleton(sp =>
             new StateManager(
@@ -60,7 +64,9 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<ImageService>();
         builder.Services.AddSingleton<BrowserMediaGenerationService>();
         builder.Services.AddSingleton<LocalMediaService>();
-        builder.Services.AddSingleton<AudioService>();
+        builder.Services.AddSingleton(sp => AudioService.CreateBrowserManaged(
+            sp.GetRequiredService<FileSystemManager>(), sp.GetRequiredService<GameSettings>(),
+            sp.GetRequiredService<ILogger<AudioService>>()));
         builder.Services.AddSingleton<BrowserAudioService>();
         builder.Services.AddSingleton<BrowserClientSettingsService>();
         builder.Services.AddSingleton<SaveLoadService>();
@@ -76,13 +82,22 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<BrowserGameScreenService>();
         builder.Services.AddSingleton<BrowserLifecycleDashboardService>();
         builder.Services.AddSingleton<LocalWebUiMainMenuService>();
+        builder.Services.AddSingleton<BrowserLoadStateService>();
         builder.Services.AddSingleton<ExplorerWebPromptSessionService>();
         builder.Services.AddSingleton<ExplorerWebCommandService>();
         builder.Services.AddSingleton<BrowserPlayerActionService>();
 
-        var app = builder.Build();
         var frontendAssets = LocalWebUiFrontendAssets.Resolve(options.FrontendAssetsPath);
-        app.Services.GetRequiredService<FileSystemManager>().EnsureDirectoryStructure();
+        var app = builder.Build();
+        try
+        {
+            app.Services.GetRequiredService<StateManager>().BootstrapLocalStorageAsync().GetAwaiter().GetResult();
+        }
+        catch
+        {
+            app.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            throw;
+        }
 
         app.UseStaticFiles(new StaticFileOptions
         {
@@ -98,16 +113,25 @@ public static class LocalWebUiHost
         app.MapPost("/api/saves/create", async (BrowserCreateSaveRequest request, LocalWebUiMainMenuService menu) =>
         {
             var result = await menu.CreateManualSaveAsync(request);
-            return result.Success
-                ? Results.Json(result, WebJsonOptions)
-                : Results.BadRequest(new { result.Error, result.CreatedSaveId, result.Menu });
+            return CreateSaveResponse(result);
         });
-        app.MapPost("/api/saves/load", async (BrowserLoadSaveRequest request, LocalWebUiMainMenuService menu) =>
+        app.MapPost("/api/saves/load", async (BrowserLoadSaveRequest request, LocalWebUiMainMenuService menu, BrowserLoadStateService state, HttpContext context) =>
         {
-            var result = await menu.LoadSaveAsync(request);
-            return result.Success
-                ? Results.Json(result, WebJsonOptions)
-                : Results.BadRequest(new { result.Error, result.LoadedSaveId, result.Menu });
+            var result = await menu.LoadSaveAsync(request, state.BuildAsync,context.RequestAborted);
+            return LoadSaveResponse(result);
+        });
+        app.MapPost("/api/saves/load-complete", async (BrowserLoadCompletionRequest request,LocalWebUiMainMenuService menu)=>
+            LoadSaveResponse(await menu.CompleteLoadAsync(request)));
+        app.MapPost("/api/saves/load-cancel", async (BrowserLoadCompletionRequest request,LocalWebUiMainMenuService menu)=>
+            LoadSaveResponse(await menu.CancelLoadAsync(request)));
+        app.MapPost("/api/saves/load-state", async (BrowserLoadStateRequest request, BrowserLoadStateService state) =>
+        {
+            try { return Results.Json(await state.BuildAsync(request), WebJsonOptions); }
+            catch (Exception)
+            {
+                return Results.Json(new { error = "Обновление текущего состояния книги не подтверждено. Продолжение остановлено." },
+                    WebJsonOptions, statusCode: StatusCodes.Status409Conflict);
+            }
         });
         // The unified map viewer is a single self-contained bundle (React + MapAtlas
         // + inlined CSS). It is the SAME renderer used by the standalone
@@ -127,16 +151,37 @@ public static class LocalWebUiHost
                 return Results.Json(new { error = ex.Message }, WebJsonOptions, statusCode: StatusCodes.Status404NotFound);
             }
         });
-        app.MapGet("/api/client/settings", async (BrowserClientSettingsService settings) => await settings.BuildAsync());
+        app.MapGet("/api/client/settings", async Task<IResult> (BrowserClientSettingsService settings) =>
+        {
+            try { return Results.Json(await settings.BuildAsync(), WebJsonOptions); }
+            catch (InvalidDataException)
+            {
+                return Results.Conflict(new { error = "Не удалось безопасно прочитать настройки. Сохранённое состояние требует проверки.", persistenceStatus = "blocked" });
+            }
+        });
         app.MapPost("/api/client/settings", async (BrowserClientSettingsUpdateRequest request, BrowserClientSettingsService settings) =>
         {
             var result = await settings.UpdateAsync(request);
             return result.Success
                 ? Results.Json(result.Settings, WebJsonOptions)
-                : Results.Conflict(new { error = result.Message });
+                : Results.Conflict(new { error = result.Message, persistenceStatus = result.Disposition.ToString().ToLowerInvariant() });
         });
-        app.MapGet("/api/audio/settings", async (BrowserAudioService audio) => await audio.BuildSettingsAsync());
-        app.MapPost("/api/audio/settings", async (BrowserAudioSettingsUpdateRequest request, BrowserAudioService audio) => await audio.UpdateSettingsAsync(request));
+        app.MapGet("/api/audio/settings", async Task<IResult> (BrowserAudioService audio) =>
+        {
+            try { return Results.Json(await audio.BuildSettingsAsync(), WebJsonOptions); }
+            catch (InvalidDataException)
+            {
+                return Results.Conflict(new { error = "Не удалось безопасно прочитать настройки. Сохранённое состояние требует проверки.", persistenceStatus = "blocked" });
+            }
+        });
+        app.MapPost("/api/audio/settings", async Task<IResult> (BrowserAudioSettingsUpdateRequest request, BrowserAudioService audio) =>
+        {
+            try { return Results.Json(await audio.UpdateSettingsAsync(request), WebJsonOptions); }
+            catch (BrowserSettingsWriteException ex)
+            {
+                return Results.Conflict(new { error = ex.Message, persistenceStatus = ex.Disposition.ToString().ToLowerInvariant() });
+            }
+        });
         app.MapGet("/api/audio/assets/{assetId}", (string assetId, BrowserAudioService audio) => audio.ServeAsset(assetId));
         app.MapGet("/api/lifecycle/dashboard", async (BrowserLifecycleDashboardService lifecycle) =>
             await lifecycle.BuildDashboardAsync());
@@ -205,6 +250,26 @@ public static class LocalWebUiHost
 
         return app;
     }
+
+    /// <summary>
+    /// Serializes the complete save decision for both successful and rejected browser requests.
+    /// </summary>
+    /// <param name="result">
+    /// The retained save outcome, including committed follow-up and unresolved uncertainty.
+    /// </param>
+    /// <returns>
+    /// A JSON response preserving disposition, exact identity and continuation fields at every status.
+    /// </returns>
+    internal static IResult CreateSaveResponse(BrowserCreateSaveResultDto result) =>
+        Results.Json(result, WebJsonOptions, statusCode: result.ContinuationBlocked
+            ? StatusCodes.Status409Conflict
+            : result.Success ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest);
+
+    /// <summary>Preserves the complete typed replacement result on successful and unsuccessful HTTP responses.</summary>
+    internal static IResult LoadSaveResponse(BrowserLoadSaveResultDto result) =>
+        Results.Json(result, WebJsonOptions, statusCode: result.ContinuationBlocked
+            ? StatusCodes.Status409Conflict
+            : result.Success ? StatusCodes.Status200OK : StatusCodes.Status400BadRequest);
 
     private static IResult ServeFrontendIndex(LocalWebUiFrontendAssets frontendAssets) =>
         Results.File(frontendAssets.IndexPath, "text/html; charset=utf-8");

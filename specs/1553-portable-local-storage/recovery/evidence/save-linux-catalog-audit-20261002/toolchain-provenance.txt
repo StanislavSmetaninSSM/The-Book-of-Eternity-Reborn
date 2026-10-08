@@ -1,0 +1,11 @@
+{
+  "OS": "Debian GNU/Linux 13 (trixie)",
+  "Architecture": "X64",
+  "PowerShell": "7.6.6",
+  "Temp": "/owned-run/temp/",
+  "DotnetSdk": "10.0.401"
+}
+Microsoft.AspNetCore.App 8.0.31 [/toolchain/dotnet/shared/Microsoft.AspNetCore.App]
+Microsoft.AspNetCore.App 10.0.12 [/toolchain/dotnet/shared/Microsoft.AspNetCore.App]
+Microsoft.NETCore.App 8.0.31 [/toolchain/dotnet/shared/Microsoft.NETCore.App]
+Microsoft.NETCore.App 10.0.12 [/toolchain/dotnet/shared/Microsoft.NETCore.App]

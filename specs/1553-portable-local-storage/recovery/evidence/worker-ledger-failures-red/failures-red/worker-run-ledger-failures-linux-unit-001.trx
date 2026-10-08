@@ -1,0 +1,902 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a655b8d2-44e0-41ff-a674-a8a70522a783" name="@c7669543e9c7 2026-10-06 00:53:17" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T00:53:17.4697169+00:00" queuing="2026-10-06T00:53:17.4697175+00:00" start="2026-10-06T00:53:15.4103627+00:00" finish="2026-10-06T00:53:21.0864933+00:00" />
+  <TestSettings name="default" id="d5bbdd05-4484-4716-8f47-61a2ebeb98c4">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_00_53_17" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="691f1c48-d728-416f-af08-f6d73fcf5de7" testId="99b17743-035f-688e-25d1-217dfcc4ad88" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent(corruption: &quot;epoch&quot;)" computerName="c7669543e9c7" duration="00:00:00.0118847" startTime="2026-10-06T00:53:20.7265591+00:00" endTime="2026-10-06T00:53:20.7265594+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="691f1c48-d728-416f-af08-f6d73fcf5de7" />
+    <UnitTestResult executionId="7a32bf54-8d66-486c-b55e-9a710a9a1489" testId="e2181681-eb3b-1d48-cd67-a5271635f7e5" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;uncertain&quot;, cut: &quot;StateDirectorySynced&quot;)" computerName="c7669543e9c7" duration="00:00:00.0083408" startTime="2026-10-06T00:53:17.4307474+00:00" endTime="2026-10-06T00:53:17.4307476+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7a32bf54-8d66-486c-b55e-9a710a9a1489">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9ed0a537-e798-4187-a565-60db5762e957" testId="d202df11-6711-497c-ceae-061d033fac40" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;uncertain&quot;, cut: &quot;StateFlushed&quot;)" computerName="c7669543e9c7" duration="00:00:00.0086268" startTime="2026-10-06T00:53:17.3934820+00:00" endTime="2026-10-06T00:53:17.3934822+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9ed0a537-e798-4187-a565-60db5762e957">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f1b30a9d-5c1c-4592-ba4c-4038fbaea1fe" testId="9610353e-2358-731c-b260-4372ce9816e4" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;initialize&quot;, cut: &quot;BeforeStateWrite&quot;)" computerName="c7669543e9c7" duration="00:00:00.0049167" startTime="2026-10-06T00:53:17.5134935+00:00" endTime="2026-10-06T00:53:17.5134937+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f1b30a9d-5c1c-4592-ba4c-4038fbaea1fe">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="720ee866-1d29-4785-826f-2bbb947627a8" testId="a48dbb75-aa18-0c01-0be1-2f49dd842d50" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;StateRenamed&quot;)" computerName="c7669543e9c7" duration="00:00:00.0120003" startTime="2026-10-06T00:53:17.4973405+00:00" endTime="2026-10-06T00:53:17.4973407+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="720ee866-1d29-4785-826f-2bbb947627a8">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b10a2a11-cd89-4d7e-a0af-6c2ac5006535" testId="8c90288d-7cdc-5ef2-4422-e978505283c6" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;prepare&quot;, cut: &quot;StateWritten&quot;)" computerName="c7669543e9c7" duration="00:00:00.0067334" startTime="2026-10-06T00:53:17.3844500+00:00" endTime="2026-10-06T00:53:17.3844502+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b10a2a11-cd89-4d7e-a0af-6c2ac5006535">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2e44723c-712f-436d-b34d-eb3d9cdba14c" testId="fdf30a3f-66bf-12d5-3697-3f6a541806a1" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CapacityAndTaskIdentityBounds_RefuseBeforeMutation" computerName="c7669543e9c7" duration="00:00:00.1661071" startTime="2026-10-06T00:53:21.0125970+00:00" endTime="2026-10-06T00:53:21.0125973+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2e44723c-712f-436d-b34d-eb3d9cdba14c" />
+    <UnitTestResult executionId="f5c3d98d-7c97-41fe-96b1-5473adda2d1e" testId="7e1de76c-6fea-b993-6e14-67e5e97d9d41" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;ArchiveDirectorySynced&quot;)" computerName="c7669543e9c7" duration="00:00:00.0114584" startTime="2026-10-06T00:53:17.4579518+00:00" endTime="2026-10-06T00:53:17.4579520+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f5c3d98d-7c97-41fe-96b1-5473adda2d1e">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c5dd7e19-20c2-481c-8b0f-18ed09a2ae55" testId="42eee02a-1b75-8881-973c-24fd3fbd9fc3" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;prepare&quot;, cut: &quot;StateRenamed&quot;)" computerName="c7669543e9c7" duration="00:00:00.0069086" startTime="2026-10-06T00:53:17.4652591+00:00" endTime="2026-10-06T00:53:17.4652593+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c5dd7e19-20c2-481c-8b0f-18ed09a2ae55">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ef918c49-0616-45bb-9b9e-c5ed853eb2f1" testId="398bc745-cafb-d8f5-21b3-d4d502f30427" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;BeforeArchiveWrite&quot;)" computerName="c7669543e9c7" duration="00:00:00.0106681" startTime="2026-10-06T00:53:17.5084068+00:00" endTime="2026-10-06T00:53:17.5084072+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ef918c49-0616-45bb-9b9e-c5ed853eb2f1">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="818e51da-3764-4287-b714-b0063004ad5f" testId="6a51abc5-e7c8-ffc1-eee8-651096d03bcc" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;ArchiveWritten&quot;)" computerName="c7669543e9c7" duration="00:00:00.0104184" startTime="2026-10-06T00:53:17.5375408+00:00" endTime="2026-10-06T00:53:17.5375410+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="818e51da-3764-4287-b714-b0063004ad5f">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cbed4e8f-6e30-4dc8-beee-9c9492e26c27" testId="18637cf8-0b4c-82d1-3388-7784c950aa8d" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;launch&quot;, cut: &quot;StateDirectorySynced&quot;)" computerName="c7669543e9c7" duration="00:00:00.0084975" startTime="2026-10-06T00:53:17.4219720+00:00" endTime="2026-10-06T00:53:17.4219722+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cbed4e8f-6e30-4dc8-beee-9c9492e26c27">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ec17f839-6634-4e4c-9caf-ff426bff015e" testId="77630146-df7d-75b1-734d-fa41d31a70b0" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;prepare&quot;, cut: &quot;BeforeStateWrite&quot;)" computerName="c7669543e9c7" duration="00:00:00.0069345" startTime="2026-10-06T00:53:17.5521942+00:00" endTime="2026-10-06T00:53:17.5521944+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ec17f839-6634-4e4c-9caf-ff426bff015e">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7a9fec75-344d-4d9e-b1dd-332df27f2332" testId="0d2e262f-aebe-43fa-1554-bc6bb66989c3" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;StateDirectorySynced&quot;)" computerName="c7669543e9c7" duration="00:00:00.0981335" startTime="2026-10-06T00:53:17.3715572+00:00" endTime="2026-10-06T00:53:17.3715710+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7a9fec75-344d-4d9e-b1dd-332df27f2332">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7cdbd9e6-9a40-49da-8a46-c4cd5fb8cf21" testId="3b41a835-034c-12be-86ae-1e055ebb43b9" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(conflict: &quot;journal.lock&quot;)" computerName="c7669543e9c7" duration="00:00:00.0092634" startTime="2026-10-06T00:53:20.8466278+00:00" endTime="2026-10-06T00:53:20.8466281+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7cdbd9e6-9a40-49da-8a46-c4cd5fb8cf21">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: CommitPending
+Actual:   Applied</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 75
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 82
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5c0b5063-f8d7-4223-af2f-aece043398d9" testId="0ca77acc-1c5b-00c0-e1b5-6d7a93a1735a" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;launch&quot;, cut: &quot;StateFlushed&quot;)" computerName="c7669543e9c7" duration="00:00:00.0104139" startTime="2026-10-06T00:53:17.6520619+00:00" endTime="2026-10-06T00:53:17.6520620+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5c0b5063-f8d7-4223-af2f-aece043398d9">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d21f6482-17a6-4353-9ea9-76891332dc53" testId="b89c9325-1a6e-e087-054e-89897e02927c" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;uncertain&quot;, cut: &quot;StateWritten&quot;)" computerName="c7669543e9c7" duration="00:00:00.0092712" startTime="2026-10-06T00:53:17.4133418+00:00" endTime="2026-10-06T00:53:17.4133421+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d21f6482-17a6-4353-9ea9-76891332dc53">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a30f7e29-7d25-42d2-92f4-021fc2c3ece0" testId="2bbe4cb9-c2bb-0c6d-915d-967c15766a0f" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;BeforeStateWrite&quot;)" computerName="c7669543e9c7" duration="00:00:00.0190164" startTime="2026-10-06T00:53:17.4849797+00:00" endTime="2026-10-06T00:53:17.4849799+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a30f7e29-7d25-42d2-92f4-021fc2c3ece0">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e598fddd-f505-4392-bd6d-34e1eead259e" testId="abcebf3c-450c-4745-5573-3f13c0cc0338" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent(corruption: &quot;missing&quot;)" computerName="c7669543e9c7" duration="00:00:00.0116733" startTime="2026-10-06T00:53:20.7384074+00:00" endTime="2026-10-06T00:53:20.7384076+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e598fddd-f505-4392-bd6d-34e1eead259e" />
+    <UnitTestResult executionId="1963fcd1-e59b-4168-853c-40278fb53ad2" testId="46e250d5-2b08-e797-7615-adee8e57ada3" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent(corruption: &quot;unknown&quot;)" computerName="c7669543e9c7" duration="00:00:00.0129618" startTime="2026-10-06T00:53:20.7650444+00:00" endTime="2026-10-06T00:53:20.7650446+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1963fcd1-e59b-4168-853c-40278fb53ad2" />
+    <UnitTestResult executionId="1568b850-4c98-44a4-b1fe-20b7351f3da7" testId="da2db6b5-2910-956e-9945-0c307f16f329" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;launch&quot;, cut: &quot;StateRenamed&quot;)" computerName="c7669543e9c7" duration="00:00:00.0089339" startTime="2026-10-06T00:53:17.6003657+00:00" endTime="2026-10-06T00:53:17.6003659+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1568b850-4c98-44a4-b1fe-20b7351f3da7">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9056ca94-c04f-44b0-8dfc-7735cb2157a2" testId="a2205e66-3cb8-324a-f77a-f494e083c28a" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(conflict: &quot;owner.lock&quot;)" computerName="c7669543e9c7" duration="00:00:00.0073799" startTime="2026-10-06T00:53:20.8369531+00:00" endTime="2026-10-06T00:53:20.8369546+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9056ca94-c04f-44b0-8dfc-7735cb2157a2">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: CommitPending
+Actual:   Applied</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 75
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 82
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9a9d5135-5109-44e8-b7b3-3b1f04db07b9" testId="1ab44f0b-79c1-490d-64ba-8afcf442ac13" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent(corruption: &quot;duplicate-reference&quot;)" computerName="c7669543e9c7" duration="00:00:00.0303258" startTime="2026-10-06T00:53:20.7158547+00:00" endTime="2026-10-06T00:53:20.7158549+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a9d5135-5109-44e8-b7b3-3b1f04db07b9" />
+    <UnitTestResult executionId="5e8cf032-f0c7-41f3-a07c-bdbf46cf361f" testId="852a16a7-8c26-7cf4-c18d-ea2b39bb0084" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;uncertain&quot;, cut: &quot;BeforeStateWrite&quot;)" computerName="c7669543e9c7" duration="00:00:00.0104356" startTime="2026-10-06T00:53:17.6264758+00:00" endTime="2026-10-06T00:53:17.6264760+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5e8cf032-f0c7-41f3-a07c-bdbf46cf361f">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="47f06106-0d02-411f-8856-089f7ab67e8c" testId="a9096310-a58d-198a-8b09-16b3e950dfb0" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;StateFlushed&quot;)" computerName="c7669543e9c7" duration="00:00:00.0099333" startTime="2026-10-06T00:53:17.3774202+00:00" endTime="2026-10-06T00:53:17.3774204+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="47f06106-0d02-411f-8856-089f7ab67e8c">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0fa3d693-2f6f-46b4-afd6-3ac730ea5f4f" testId="ad7de087-7673-a5df-87cd-386ec5b4ecec" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;prepare&quot;, cut: &quot;StateFlushed&quot;)" computerName="c7669543e9c7" duration="00:00:00.0259457" startTime="2026-10-06T00:53:17.5906212+00:00" endTime="2026-10-06T00:53:17.5906214+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0fa3d693-2f6f-46b4-afd6-3ac730ea5f4f">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f55b045e-190b-44e5-9f7a-eb8dafdb736b" testId="8c18098b-5244-2e58-7469-d33703ae1fff" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(conflict: &quot;state&quot;)" computerName="c7669543e9c7" duration="00:00:00.0093121" startTime="2026-10-06T00:53:20.8216438+00:00" endTime="2026-10-06T00:53:20.8216441+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f55b045e-190b-44e5-9f7a-eb8dafdb736b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: CommitPending
+Actual:   Applied</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 75
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 82
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="35f3f200-eae7-485d-a6eb-b56adfe08e73" testId="17d9ae85-f8be-8b0f-6ace-126e82418bb2" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;launch&quot;, cut: &quot;BeforeStateWrite&quot;)" computerName="c7669543e9c7" duration="00:00:00.0089254" startTime="2026-10-06T00:53:17.6095970+00:00" endTime="2026-10-06T00:53:17.6095972+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="35f3f200-eae7-485d-a6eb-b56adfe08e73">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6f3de2cc-634e-42ef-8ad5-c42f1c6167cc" testId="a5cb3d29-2d4e-2c5f-26f1-0018607ea16f" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InvalidPreparation_IsReadOnly(invalid: &quot;generation&quot;)" computerName="c7669543e9c7" duration="00:00:00.0052504" startTime="2026-10-06T00:53:20.8057435+00:00" endTime="2026-10-06T00:53:20.8057437+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6f3de2cc-634e-42ef-8ad5-c42f1c6167cc" />
+    <UnitTestResult executionId="624104d3-d3ee-4ddb-ba6f-288cc1e92714" testId="510191e2-12d4-7a42-8ca1-e0efe4fe8f79" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;initialize&quot;, cut: &quot;StateWritten&quot;)" computerName="c7669543e9c7" duration="00:00:00.0055253" startTime="2026-10-06T00:53:17.4534383+00:00" endTime="2026-10-06T00:53:17.4534385+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="624104d3-d3ee-4ddb-ba6f-288cc1e92714">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0331d81a-5d5d-4488-a805-3bdf5d760fee" testId="1afe89c5-e8bb-611f-7401-523434536bd5" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InvalidPreparation_IsReadOnly(invalid: &quot;backend-scope&quot;)" computerName="c7669543e9c7" duration="00:00:00.0048128" startTime="2026-10-06T00:53:20.8003815+00:00" endTime="2026-10-06T00:53:20.8003818+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0331d81a-5d5d-4488-a805-3bdf5d760fee" />
+    <UnitTestResult executionId="8de308c1-df6f-426c-9e97-259a2a72d9ad" testId="7bb00177-484e-92e9-e2a8-11d92d785252" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;StateWritten&quot;)" computerName="c7669543e9c7" duration="00:00:00.0115537" startTime="2026-10-06T00:53:17.5641846+00:00" endTime="2026-10-06T00:53:17.5641848+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8de308c1-df6f-426c-9e97-259a2a72d9ad">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0dc198e5-2e6c-4e94-a972-7c5890a605c5" testId="a91fe87a-e1b5-ca2e-c351-3d5c1492d384" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;prepare&quot;, cut: &quot;StateDirectorySynced&quot;)" computerName="c7669543e9c7" duration="00:00:00.0088840" startTime="2026-10-06T00:53:17.6363450+00:00" endTime="2026-10-06T00:53:17.6363452+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0dc198e5-2e6c-4e94-a972-7c5890a605c5">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="586b2606-dba6-4b7b-8d2d-4a52ad65aec5" testId="1dee17c8-09cc-f574-626c-6113691eee1b" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent(corruption: &quot;hash&quot;)" computerName="c7669543e9c7" duration="00:00:00.0116589" startTime="2026-10-06T00:53:20.7895257+00:00" endTime="2026-10-06T00:53:20.7895260+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="586b2606-dba6-4b7b-8d2d-4a52ad65aec5" />
+    <UnitTestResult executionId="f1ceb887-b2d4-4091-b17d-4579d930c205" testId="6cbbaa71-9b45-88a6-7d6b-eded8b55f6e7" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InvalidPreparation_IsReadOnly(invalid: &quot;digest&quot;)" computerName="c7669543e9c7" duration="00:00:00.0047459" startTime="2026-10-06T00:53:20.8106306+00:00" endTime="2026-10-06T00:53:20.8106308+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f1ceb887-b2d4-4091-b17d-4579d930c205" />
+    <UnitTestResult executionId="7866a27a-6b9b-4163-8b31-3919d2b1f812" testId="e40a8e33-0c2c-f58b-e895-4dae1e53ccc8" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;initialize&quot;, cut: &quot;StateRenamed&quot;)" computerName="c7669543e9c7" duration="00:00:00.0054282" startTime="2026-10-06T00:53:17.6412315+00:00" endTime="2026-10-06T00:53:17.6412317+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7866a27a-6b9b-4163-8b31-3919d2b1f812">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f2265487-ce0c-41c8-86e5-e110b8b51754" testId="4535dfa0-ff86-2863-386f-1a5ccfe85898" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;uncertain&quot;, cut: &quot;StateRenamed&quot;)" computerName="c7669543e9c7" duration="00:00:00.0091219" startTime="2026-10-06T00:53:17.4401583+00:00" endTime="2026-10-06T00:53:17.4401585+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f2265487-ce0c-41c8-86e5-e110b8b51754">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="66ca4df0-2416-468d-9332-06c051da045e" testId="954de1b5-6007-95d1-1c63-9e164e6a27d6" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent(corruption: &quot;corrupt&quot;)" computerName="c7669543e9c7" duration="00:00:00.0131912" startTime="2026-10-06T00:53:20.7517699+00:00" endTime="2026-10-06T00:53:20.7517703+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="66ca4df0-2416-468d-9332-06c051da045e" />
+    <UnitTestResult executionId="433c6d65-517f-473a-897e-e17951fd2854" testId="dcaddd8c-94b1-de1c-2d57-daaf71d29737" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock" computerName="c7669543e9c7" duration="00:00:03.0224327" startTime="2026-10-06T00:53:20.6845072+00:00" endTime="2026-10-06T00:53:20.6845074+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="433c6d65-517f-473a-897e-e17951fd2854">
+      <Output>
+        <ErrorInfo>
+          <Message>System.TimeoutException : The operation has timed out.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 101
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 106
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 109
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cee742f2-aab6-4f0a-8894-19718a603e9d" testId="ca7f78e8-b976-91d2-0781-056d7c825e23" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;initialize&quot;, cut: &quot;StateFlushed&quot;)" computerName="c7669543e9c7" duration="00:00:00.0071854" startTime="2026-10-06T00:53:17.5449481+00:00" endTime="2026-10-06T00:53:17.5449483+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cee742f2-aab6-4f0a-8894-19718a603e9d">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0ae25ec3-8ad5-4473-b190-3f08fb1beaf3" testId="d06ab854-623f-58ae-1f69-293eaea5aba5" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(conflict: &quot;temporary&quot;)" computerName="c7669543e9c7" duration="00:00:00.0075367" startTime="2026-10-06T00:53:20.8293886+00:00" endTime="2026-10-06T00:53:20.8293888+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0ae25ec3-8ad5-4473-b190-3f08fb1beaf3">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: CommitPending
+Actual:   Applied</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 75
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 82
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="903a8e23-9f47-40c3-93bb-671611ba8dbf" testId="e2e51562-69e7-7261-9432-580584cedb08" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InvalidPreparation_IsReadOnly(invalid: &quot;workspace&quot;)" computerName="c7669543e9c7" duration="00:00:00.0057888" startTime="2026-10-06T00:53:20.7954634+00:00" endTime="2026-10-06T00:53:20.7954636+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="903a8e23-9f47-40c3-93bb-671611ba8dbf" />
+    <UnitTestResult executionId="c7a8b791-3513-45b2-b366-4c374fc16710" testId="febd46cc-c3c4-43af-97c9-9c34e3a9a639" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;launch&quot;, cut: &quot;StateWritten&quot;)" computerName="c7669543e9c7" duration="00:00:00.0097150" startTime="2026-10-06T00:53:17.4040182+00:00" endTime="2026-10-06T00:53:17.4040184+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c7a8b791-3513-45b2-b366-4c374fc16710">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="625df46b-70f6-4a6d-836e-0f5b88a03d9e" testId="ebc42b7d-612d-95d4-d5b0-f8aa318f5b5e" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;ArchiveFlushed&quot;)" computerName="c7669543e9c7" duration="00:00:00.0127187" startTime="2026-10-06T00:53:17.5267236+00:00" endTime="2026-10-06T00:53:17.5267238+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="625df46b-70f6-4a6d-836e-0f5b88a03d9e">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4a34c96d-8661-4608-a00c-f7aa384a8090" testId="b0b237b2-e479-9cff-3903-233c7d9b9afd" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;initialize&quot;, cut: &quot;StateDirectorySynced&quot;)" computerName="c7669543e9c7" duration="00:00:00.0056009" startTime="2026-10-06T00:53:17.6155696+00:00" endTime="2026-10-06T00:53:17.6155701+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4a34c96d-8661-4608-a00c-f7aa384a8090">
+      <Output>
+        <ErrorInfo>
+          <Message>The actual I/O boundary must be exercised.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 41
+   at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs:line 61
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2f8f5fba-0ef5-483f-9d97-d775a8f24395" testId="9038da42-9739-506c-0a42-2600cd00ad95" testName="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent(corruption: &quot;symlink&quot;)" computerName="c7669543e9c7" duration="00:00:00.0126708" startTime="2026-10-06T00:53:20.7777255+00:00" endTime="2026-10-06T00:53:20.7777257+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2f8f5fba-0ef5-483f-9d97-d775a8f24395" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;launch&quot;, cut: &quot;StateRenamed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="da2db6b5-2910-956e-9945-0c307f16f329">
+      <Execution id="1568b850-4c98-44a4-b1fe-20b7351f3da7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent(corruption: &quot;unknown&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="46e250d5-2b08-e797-7615-adee8e57ada3">
+      <Execution id="1963fcd1-e59b-4168-853c-40278fb53ad2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="InconsistentArchiveIndex_NeverLooksQuiescent" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;initialize&quot;, cut: &quot;BeforeStateWrite&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9610353e-2358-731c-b260-4372ce9816e4">
+      <Execution id="f1b30a9d-5c1c-4592-ba4c-4038fbaea1fe" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;prepare&quot;, cut: &quot;StateWritten&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8c90288d-7cdc-5ef2-4422-e978505283c6">
+      <Execution id="b10a2a11-cd89-4d7e-a0af-6c2ac5006535" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent(corruption: &quot;missing&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="abcebf3c-450c-4745-5573-3f13c0cc0338">
+      <Execution id="e598fddd-f505-4392-bd6d-34e1eead259e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="InconsistentArchiveIndex_NeverLooksQuiescent" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;ArchiveFlushed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ebc42b7d-612d-95d4-d5b0-f8aa318f5b5e">
+      <Execution id="625df46b-70f6-4a6d-836e-0f5b88a03d9e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;prepare&quot;, cut: &quot;StateFlushed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ad7de087-7673-a5df-87cd-386ec5b4ecec">
+      <Execution id="0fa3d693-2f6f-46b4-afd6-3ac730ea5f4f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent(corruption: &quot;duplicate-reference&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1ab44f0b-79c1-490d-64ba-8afcf442ac13">
+      <Execution id="9a9d5135-5109-44e8-b7b3-3b1f04db07b9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="InconsistentArchiveIndex_NeverLooksQuiescent" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InvalidPreparation_IsReadOnly(invalid: &quot;digest&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6cbbaa71-9b45-88a6-7d6b-eded8b55f6e7">
+      <Execution id="f1ceb887-b2d4-4091-b17d-4579d930c205" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="InvalidPreparation_IsReadOnly" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;initialize&quot;, cut: &quot;StateWritten&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="510191e2-12d4-7a42-8ca1-e0efe4fe8f79">
+      <Execution id="624104d3-d3ee-4ddb-ba6f-288cc1e92714" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InvalidPreparation_IsReadOnly(invalid: &quot;generation&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a5cb3d29-2d4e-2c5f-26f1-0018607ea16f">
+      <Execution id="6f3de2cc-634e-42ef-8ad5-c42f1c6167cc" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="InvalidPreparation_IsReadOnly" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CapacityAndTaskIdentityBounds_RefuseBeforeMutation" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fdf30a3f-66bf-12d5-3697-3f6a541806a1">
+      <Execution id="2e44723c-712f-436d-b34d-eb3d9cdba14c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="CapacityAndTaskIdentityBounds_RefuseBeforeMutation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent(corruption: &quot;symlink&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9038da42-9739-506c-0a42-2600cd00ad95">
+      <Execution id="2f8f5fba-0ef5-483f-9d97-d775a8f24395" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="InconsistentArchiveIndex_NeverLooksQuiescent" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(conflict: &quot;journal.lock&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3b41a835-034c-12be-86ae-1e055ebb43b9">
+      <Execution id="7cdbd9e6-9a40-49da-8a46-c4cd5fb8cf21" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="PendingConflict_BlocksWithoutOverwritingEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;ArchiveWritten&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6a51abc5-e7c8-ffc1-eee8-651096d03bcc">
+      <Execution id="818e51da-3764-4287-b714-b0063004ad5f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;ArchiveDirectorySynced&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7e1de76c-6fea-b993-6e14-67e5e97d9d41">
+      <Execution id="f5c3d98d-7c97-41fe-96b1-5473adda2d1e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;uncertain&quot;, cut: &quot;StateFlushed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d202df11-6711-497c-ceae-061d033fac40">
+      <Execution id="9ed0a537-e798-4187-a565-60db5762e957" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;prepare&quot;, cut: &quot;BeforeStateWrite&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="77630146-df7d-75b1-734d-fa41d31a70b0">
+      <Execution id="ec17f839-6634-4e4c-9caf-ff426bff015e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;launch&quot;, cut: &quot;StateWritten&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="febd46cc-c3c4-43af-97c9-9c34e3a9a639">
+      <Execution id="c7a8b791-3513-45b2-b366-4c374fc16710" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="dcaddd8c-94b1-de1c-2d57-daaf71d29737">
+      <Execution id="433c6d65-517f-473a-897e-e17951fd2854" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InvalidPreparation_IsReadOnly(invalid: &quot;workspace&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e2e51562-69e7-7261-9432-580584cedb08">
+      <Execution id="903a8e23-9f47-40c3-93bb-671611ba8dbf" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="InvalidPreparation_IsReadOnly" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;StateDirectorySynced&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0d2e262f-aebe-43fa-1554-bc6bb66989c3">
+      <Execution id="7a9fec75-344d-4d9e-b1dd-332df27f2332" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent(corruption: &quot;hash&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1dee17c8-09cc-f574-626c-6113691eee1b">
+      <Execution id="586b2606-dba6-4b7b-8d2d-4a52ad65aec5" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="InconsistentArchiveIndex_NeverLooksQuiescent" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;uncertain&quot;, cut: &quot;StateRenamed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4535dfa0-ff86-2863-386f-1a5ccfe85898">
+      <Execution id="f2265487-ce0c-41c8-86e5-e110b8b51754" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(conflict: &quot;owner.lock&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a2205e66-3cb8-324a-f77a-f494e083c28a">
+      <Execution id="9056ca94-c04f-44b0-8dfc-7735cb2157a2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="PendingConflict_BlocksWithoutOverwritingEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;initialize&quot;, cut: &quot;StateRenamed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e40a8e33-0c2c-f58b-e895-4dae1e53ccc8">
+      <Execution id="7866a27a-6b9b-4163-8b31-3919d2b1f812" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;StateWritten&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7bb00177-484e-92e9-e2a8-11d92d785252">
+      <Execution id="8de308c1-df6f-426c-9e97-259a2a72d9ad" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent(corruption: &quot;corrupt&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="954de1b5-6007-95d1-1c63-9e164e6a27d6">
+      <Execution id="66ca4df0-2416-468d-9332-06c051da045e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="InconsistentArchiveIndex_NeverLooksQuiescent" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;BeforeArchiveWrite&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="398bc745-cafb-d8f5-21b3-d4d502f30427">
+      <Execution id="ef918c49-0616-45bb-9b9e-c5ed853eb2f1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;uncertain&quot;, cut: &quot;BeforeStateWrite&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="852a16a7-8c26-7cf4-c18d-ea2b39bb0084">
+      <Execution id="5e8cf032-f0c7-41f3-a07c-bdbf46cf361f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;initialize&quot;, cut: &quot;StateDirectorySynced&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b0b237b2-e479-9cff-3903-233c7d9b9afd">
+      <Execution id="4a34c96d-8661-4608-a00c-f7aa384a8090" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(conflict: &quot;temporary&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d06ab854-623f-58ae-1f69-293eaea5aba5">
+      <Execution id="0ae25ec3-8ad5-4473-b190-3f08fb1beaf3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="PendingConflict_BlocksWithoutOverwritingEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;launch&quot;, cut: &quot;StateDirectorySynced&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="18637cf8-0b4c-82d1-3388-7784c950aa8d">
+      <Execution id="cbed4e8f-6e30-4dc8-beee-9c9492e26c27" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InconsistentArchiveIndex_NeverLooksQuiescent(corruption: &quot;epoch&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="99b17743-035f-688e-25d1-217dfcc4ad88">
+      <Execution id="691f1c48-d728-416f-af08-f6d73fcf5de7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="InconsistentArchiveIndex_NeverLooksQuiescent" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;StateRenamed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a48dbb75-aa18-0c01-0be1-2f49dd842d50">
+      <Execution id="720ee866-1d29-4785-826f-2bbb947627a8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;BeforeStateWrite&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2bbe4cb9-c2bb-0c6d-915d-967c15766a0f">
+      <Execution id="a30f7e29-7d25-42d2-92f4-021fc2c3ece0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;launch&quot;, cut: &quot;BeforeStateWrite&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="17d9ae85-f8be-8b0f-6ace-126e82418bb2">
+      <Execution id="35f3f200-eae7-485d-a6eb-b56adfe08e73" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;abort&quot;, cut: &quot;StateFlushed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a9096310-a58d-198a-8b09-16b3e950dfb0">
+      <Execution id="47f06106-0d02-411f-8856-089f7ab67e8c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(conflict: &quot;state&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8c18098b-5244-2e58-7469-d33703ae1fff">
+      <Execution id="f55b045e-190b-44e5-9f7a-eb8dafdb736b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="PendingConflict_BlocksWithoutOverwritingEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;prepare&quot;, cut: &quot;StateRenamed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="42eee02a-1b75-8881-973c-24fd3fbd9fc3">
+      <Execution id="c5dd7e19-20c2-481c-8b0f-18ed09a2ae55" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;prepare&quot;, cut: &quot;StateDirectorySynced&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a91fe87a-e1b5-ca2e-c351-3d5c1492d384">
+      <Execution id="0dc198e5-2e6c-4e94-a972-7c5890a605c5" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;uncertain&quot;, cut: &quot;StateDirectorySynced&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e2181681-eb3b-1d48-cd67-a5271635f7e5">
+      <Execution id="7a32bf54-8d66-486c-b55e-9a710a9a1489" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;launch&quot;, cut: &quot;StateFlushed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0ca77acc-1c5b-00c0-e1b5-6d7a93a1735a">
+      <Execution id="5c0b5063-f8d7-4223-af2f-aece043398d9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;uncertain&quot;, cut: &quot;StateWritten&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b89c9325-1a6e-e087-054e-89897e02927c">
+      <Execution id="d21f6482-17a6-4353-9ea9-76891332dc53" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.InvalidPreparation_IsReadOnly(invalid: &quot;backend-scope&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1afe89c5-e8bb-611f-7401-523434536bd5">
+      <Execution id="0331d81a-5d5d-4488-a805-3bdf5d760fee" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="InvalidPreparation_IsReadOnly" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: &quot;initialize&quot;, cut: &quot;StateFlushed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ca7f78e8-b976-91d2-0781-056d7c825e23">
+      <Execution id="cee742f2-aab6-4f0a-8894-19718a603e9d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests" name="AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="99b17743-035f-688e-25d1-217dfcc4ad88" executionId="691f1c48-d728-416f-af08-f6d73fcf5de7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e2181681-eb3b-1d48-cd67-a5271635f7e5" executionId="7a32bf54-8d66-486c-b55e-9a710a9a1489" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d202df11-6711-497c-ceae-061d033fac40" executionId="9ed0a537-e798-4187-a565-60db5762e957" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9610353e-2358-731c-b260-4372ce9816e4" executionId="f1b30a9d-5c1c-4592-ba4c-4038fbaea1fe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a48dbb75-aa18-0c01-0be1-2f49dd842d50" executionId="720ee866-1d29-4785-826f-2bbb947627a8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8c90288d-7cdc-5ef2-4422-e978505283c6" executionId="b10a2a11-cd89-4d7e-a0af-6c2ac5006535" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fdf30a3f-66bf-12d5-3697-3f6a541806a1" executionId="2e44723c-712f-436d-b34d-eb3d9cdba14c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7e1de76c-6fea-b993-6e14-67e5e97d9d41" executionId="f5c3d98d-7c97-41fe-96b1-5473adda2d1e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="42eee02a-1b75-8881-973c-24fd3fbd9fc3" executionId="c5dd7e19-20c2-481c-8b0f-18ed09a2ae55" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="398bc745-cafb-d8f5-21b3-d4d502f30427" executionId="ef918c49-0616-45bb-9b9e-c5ed853eb2f1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6a51abc5-e7c8-ffc1-eee8-651096d03bcc" executionId="818e51da-3764-4287-b714-b0063004ad5f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="18637cf8-0b4c-82d1-3388-7784c950aa8d" executionId="cbed4e8f-6e30-4dc8-beee-9c9492e26c27" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="77630146-df7d-75b1-734d-fa41d31a70b0" executionId="ec17f839-6634-4e4c-9caf-ff426bff015e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0d2e262f-aebe-43fa-1554-bc6bb66989c3" executionId="7a9fec75-344d-4d9e-b1dd-332df27f2332" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3b41a835-034c-12be-86ae-1e055ebb43b9" executionId="7cdbd9e6-9a40-49da-8a46-c4cd5fb8cf21" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0ca77acc-1c5b-00c0-e1b5-6d7a93a1735a" executionId="5c0b5063-f8d7-4223-af2f-aece043398d9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b89c9325-1a6e-e087-054e-89897e02927c" executionId="d21f6482-17a6-4353-9ea9-76891332dc53" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2bbe4cb9-c2bb-0c6d-915d-967c15766a0f" executionId="a30f7e29-7d25-42d2-92f4-021fc2c3ece0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="abcebf3c-450c-4745-5573-3f13c0cc0338" executionId="e598fddd-f505-4392-bd6d-34e1eead259e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="46e250d5-2b08-e797-7615-adee8e57ada3" executionId="1963fcd1-e59b-4168-853c-40278fb53ad2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="da2db6b5-2910-956e-9945-0c307f16f329" executionId="1568b850-4c98-44a4-b1fe-20b7351f3da7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a2205e66-3cb8-324a-f77a-f494e083c28a" executionId="9056ca94-c04f-44b0-8dfc-7735cb2157a2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1ab44f0b-79c1-490d-64ba-8afcf442ac13" executionId="9a9d5135-5109-44e8-b7b3-3b1f04db07b9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="852a16a7-8c26-7cf4-c18d-ea2b39bb0084" executionId="5e8cf032-f0c7-41f3-a07c-bdbf46cf361f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a9096310-a58d-198a-8b09-16b3e950dfb0" executionId="47f06106-0d02-411f-8856-089f7ab67e8c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ad7de087-7673-a5df-87cd-386ec5b4ecec" executionId="0fa3d693-2f6f-46b4-afd6-3ac730ea5f4f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8c18098b-5244-2e58-7469-d33703ae1fff" executionId="f55b045e-190b-44e5-9f7a-eb8dafdb736b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="17d9ae85-f8be-8b0f-6ace-126e82418bb2" executionId="35f3f200-eae7-485d-a6eb-b56adfe08e73" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a5cb3d29-2d4e-2c5f-26f1-0018607ea16f" executionId="6f3de2cc-634e-42ef-8ad5-c42f1c6167cc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="510191e2-12d4-7a42-8ca1-e0efe4fe8f79" executionId="624104d3-d3ee-4ddb-ba6f-288cc1e92714" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1afe89c5-e8bb-611f-7401-523434536bd5" executionId="0331d81a-5d5d-4488-a805-3bdf5d760fee" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7bb00177-484e-92e9-e2a8-11d92d785252" executionId="8de308c1-df6f-426c-9e97-259a2a72d9ad" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a91fe87a-e1b5-ca2e-c351-3d5c1492d384" executionId="0dc198e5-2e6c-4e94-a972-7c5890a605c5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1dee17c8-09cc-f574-626c-6113691eee1b" executionId="586b2606-dba6-4b7b-8d2d-4a52ad65aec5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6cbbaa71-9b45-88a6-7d6b-eded8b55f6e7" executionId="f1ceb887-b2d4-4091-b17d-4579d930c205" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e40a8e33-0c2c-f58b-e895-4dae1e53ccc8" executionId="7866a27a-6b9b-4163-8b31-3919d2b1f812" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4535dfa0-ff86-2863-386f-1a5ccfe85898" executionId="f2265487-ce0c-41c8-86e5-e110b8b51754" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="954de1b5-6007-95d1-1c63-9e164e6a27d6" executionId="66ca4df0-2416-468d-9332-06c051da045e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dcaddd8c-94b1-de1c-2d57-daaf71d29737" executionId="433c6d65-517f-473a-897e-e17951fd2854" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ca7f78e8-b976-91d2-0781-056d7c825e23" executionId="cee742f2-aab6-4f0a-8894-19718a603e9d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d06ab854-623f-58ae-1f69-293eaea5aba5" executionId="0ae25ec3-8ad5-4473-b190-3f08fb1beaf3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e2e51562-69e7-7261-9432-580584cedb08" executionId="903a8e23-9f47-40c3-93bb-671611ba8dbf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="febd46cc-c3c4-43af-97c9-9c34e3a9a639" executionId="c7a8b791-3513-45b2-b366-4c374fc16710" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ebc42b7d-612d-95d4-d5b0-f8aa318f5b5e" executionId="625df46b-70f6-4a6d-836e-0f5b88a03d9e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b0b237b2-e479-9cff-3903-233c7d9b9afd" executionId="4a34c96d-8661-4608-a00c-f7aa384a8090" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9038da42-9739-506c-0a42-2600cd00ad95" executionId="2f8f5fba-0ef5-483f-9d97-d775a8f24395" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="46" executed="46" passed="12" failed="34" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.18]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.35]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.39]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.53]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.53]       Stack Trace:
+[xUnit.net 00:00:01.53]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.53]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.53]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.54]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.54]       Stack Trace:
+[xUnit.net 00:00:01.54]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.54]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.54]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.54]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.54]       Stack Trace:
+[xUnit.net 00:00:01.54]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.54]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.54]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.55]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.55]       Stack Trace:
+[xUnit.net 00:00:01.55]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.55]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.55]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.56]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.56]       Stack Trace:
+[xUnit.net 00:00:01.56]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.56]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.56]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.57]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.57]       Stack Trace:
+[xUnit.net 00:00:01.57]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.57]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.58]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.58]       Stack Trace:
+[xUnit.net 00:00:01.58]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.58]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.58]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.59]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.59]       Stack Trace:
+[xUnit.net 00:00:01.59]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.59]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.59]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.60]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.60]       Stack Trace:
+[xUnit.net 00:00:01.60]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.60]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.60]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.61]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.61]       Stack Trace:
+[xUnit.net 00:00:01.61]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.61]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.61]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.62]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.62]       Stack Trace:
+[xUnit.net 00:00:01.62]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.62]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.62]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.62]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.62]       Stack Trace:
+[xUnit.net 00:00:01.62]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.62]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.62]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.64]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.64]       Stack Trace:
+[xUnit.net 00:00:01.64]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.64]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.64]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.66]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.67]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.67]       Stack Trace:
+[xUnit.net 00:00:01.67]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.67]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.67]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.67]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.67]       Stack Trace:
+[xUnit.net 00:00:01.67]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.67]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.67]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.69]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.69]       Stack Trace:
+[xUnit.net 00:00:01.69]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.69]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.69]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.70]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.70]       Stack Trace:
+[xUnit.net 00:00:01.70]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.70]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.70]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.70]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.70]       Stack Trace:
+[xUnit.net 00:00:01.70]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.70]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.70]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.71]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.71]       Stack Trace:
+[xUnit.net 00:00:01.71]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.71]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.71]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.72]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.72]       Stack Trace:
+[xUnit.net 00:00:01.72]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.72]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.72]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.75]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.75]       Stack Trace:
+[xUnit.net 00:00:01.75]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.75]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.75]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.76]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.76]       Stack Trace:
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.76]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.76]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.77]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.77]       Stack Trace:
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.77]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.77]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.77]       Stack Trace:
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.77]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.77]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.79]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.79]       Stack Trace:
+[xUnit.net 00:00:01.79]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.79]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.79]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.79]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.80]       Stack Trace:
+[xUnit.net 00:00:01.80]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.80]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.80]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.80]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.80]       Stack Trace:
+[xUnit.net 00:00:01.80]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.80]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.80]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.81]       The actual I/O boundary must be exercised.
+[xUnit.net 00:00:01.81]       Stack Trace:
+[xUnit.net 00:00:01.81]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(41,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.81]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(61,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(String operation, String cut)
+[xUnit.net 00:00:01.81]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.84]       System.TimeoutException : The operation has timed out.
+[xUnit.net 00:00:04.84]       Stack Trace:
+[xUnit.net 00:00:04.84]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(101,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock()
+[xUnit.net 00:00:04.84]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(106,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock()
+[xUnit.net 00:00:04.84]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(109,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock()
+[xUnit.net 00:00:04.84]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.98]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:04.98]       Expected: CommitPending
+[xUnit.net 00:00:04.98]       Actual:   Applied
+[xUnit.net 00:00:04.98]       Stack Trace:
+[xUnit.net 00:00:04.98]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(75,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict)
+[xUnit.net 00:00:04.98]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(82,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict)
+[xUnit.net 00:00:04.98]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.99]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:04.99]       Expected: CommitPending
+[xUnit.net 00:00:04.99]       Actual:   Applied
+[xUnit.net 00:00:04.99]       Stack Trace:
+[xUnit.net 00:00:04.99]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(75,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict)
+[xUnit.net 00:00:04.99]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(82,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict)
+[xUnit.net 00:00:04.99]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.00]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:05.00]       Expected: CommitPending
+[xUnit.net 00:00:05.00]       Actual:   Applied
+[xUnit.net 00:00:05.00]       Stack Trace:
+[xUnit.net 00:00:05.00]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(75,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict)
+[xUnit.net 00:00:05.00]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(82,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict)
+[xUnit.net 00:00:05.00]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.01]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:05.01]       Expected: CommitPending
+[xUnit.net 00:00:05.01]       Actual:   Applied
+[xUnit.net 00:00:05.01]       Stack Trace:
+[xUnit.net 00:00:05.01]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(75,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict)
+[xUnit.net 00:00:05.01]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerRunLedgerFailureTests.cs(82,0): at BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(String conflict)
+[xUnit.net 00:00:05.01]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.18]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.3700665+00:00">
+        <Text>[xUnit.net 00:00:01.53]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "abort", cut: "StateDirectorySynced") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.3776302+00:00">
+        <Text>[xUnit.net 00:00:01.54]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "abort", cut: "StateFlushed") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.3845182+00:00">
+        <Text>[xUnit.net 00:00:01.54]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "prepare", cut: "StateWritten") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.3936436+00:00">
+        <Text>[xUnit.net 00:00:01.55]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "uncertain", cut: "StateFlushed") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.4040431+00:00">
+        <Text>[xUnit.net 00:00:01.56]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "launch", cut: "StateWritten") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.4135743+00:00">
+        <Text>[xUnit.net 00:00:01.57]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "uncertain", cut: "StateWritten") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.4221968+00:00">
+        <Text>[xUnit.net 00:00:01.58]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "launch", cut: "StateDirectorySynced") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.4308376+00:00">
+        <Text>[xUnit.net 00:00:01.59]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "uncertain", cut: "StateDirectorySynced") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.4403181+00:00">
+        <Text>[xUnit.net 00:00:01.60]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "uncertain", cut: "StateRenamed") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.4771411+00:00">
+        <Text>[xUnit.net 00:00:01.61]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "initialize", cut: "StateWritten") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.4772086+00:00">
+        <Text>[xUnit.net 00:00:01.62]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "abort", cut: "ArchiveDirectorySynced") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.4772364+00:00">
+        <Text>[xUnit.net 00:00:01.62]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "prepare", cut: "StateRenamed") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.4855635+00:00">
+        <Text>[xUnit.net 00:00:01.64]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "abort", cut: "BeforeStateWrite") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.4976969+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "abort", cut: "StateRenamed") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.5087533+00:00">
+        <Text>[xUnit.net 00:00:01.67]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "abort", cut: "BeforeArchiveWrite") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.5138577+00:00">
+        <Text>[xUnit.net 00:00:01.67]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "initialize", cut: "BeforeStateWrite") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.5268596+00:00">
+        <Text>[xUnit.net 00:00:01.69]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "abort", cut: "ArchiveFlushed") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.5379330+00:00">
+        <Text>[xUnit.net 00:00:01.70]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "abort", cut: "ArchiveWritten") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.5452473+00:00">
+        <Text>[xUnit.net 00:00:01.70]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "initialize", cut: "StateFlushed") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.5525085+00:00">
+        <Text>[xUnit.net 00:00:01.71]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "prepare", cut: "BeforeStateWrite") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.5645016+00:00">
+        <Text>[xUnit.net 00:00:01.72]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "abort", cut: "StateWritten") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.5910491+00:00">
+        <Text>[xUnit.net 00:00:01.75]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "prepare", cut: "StateFlushed") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.6007941+00:00">
+        <Text>[xUnit.net 00:00:01.76]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "launch", cut: "StateRenamed") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.6099880+00:00">
+        <Text>[xUnit.net 00:00:01.77]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "launch", cut: "BeforeStateWrite") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.6159388+00:00">
+        <Text>[xUnit.net 00:00:01.77]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "initialize", cut: "StateDirectorySynced") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.6268160+00:00">
+        <Text>[xUnit.net 00:00:01.79]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "uncertain", cut: "BeforeStateWrite") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.6359123+00:00">
+        <Text>[xUnit.net 00:00:01.79]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "prepare", cut: "StateDirectorySynced") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.6421502+00:00">
+        <Text>[xUnit.net 00:00:01.80]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "initialize", cut: "StateRenamed") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:17.6523281+00:00">
+        <Text>[xUnit.net 00:00:01.81]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.AmbiguousWrite_RetainsOriginalOwnerAndRetriesFrozenTransaction(operation: "launch", cut: "StateFlushed") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:20.6942883+00:00">
+        <Text>[xUnit.net 00:00:04.84]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.CancellationAndDisposeDuringWrite_WaitForOriginalIoAndRetainLock [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:20.8218490+00:00">
+        <Text>[xUnit.net 00:00:04.98]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(conflict: "state") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:20.8290549+00:00">
+        <Text>[xUnit.net 00:00:04.99]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(conflict: "temporary") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:20.8367531+00:00">
+        <Text>[xUnit.net 00:00:05.00]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(conflict: "owner.lock") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T00:53:20.8465373+00:00">
+        <Text>[xUnit.net 00:00:05.01]     BookOfEternityClient.Tests.GmWorkerRunLedgerFailureTests.PendingConflict_BlocksWithoutOverwritingEvidence(conflict: "journal.lock") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

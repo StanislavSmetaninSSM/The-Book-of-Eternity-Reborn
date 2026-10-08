@@ -1,0 +1,158 @@
+{
+  "Categories": [
+    "portable-directory-windows-boundaries",
+    "portable-directory-original-windows",
+    "portable-directory-backup-prerequisite"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-directory-windows-boundaries",
+      "reason": "Actual native links/hard links, case paths, repeated same-lease debt and cold whole-set recovery; no Linux early-return qualification.",
+      "contracts": [
+        "T030-F native ordinary tree deletion and original browser cleanup boundaries"
+      ]
+    },
+    {
+      "category": "portable-directory-original-windows",
+      "reason": "Actual extended-root deletion plus warm recorder-cleared and cold original browser cleanup with wrong-type negatives.",
+      "contracts": [
+        "T030-F native ordinary tree deletion and original browser cleanup boundaries"
+      ]
+    },
+    {
+      "category": "portable-directory-backup-prerequisite",
+      "reason": "Qualify the unchanged real quarantine body on this source; retain its distinct Linux backup failure and prior T031-A evidence.",
+      "contracts": [
+        "T030-F native ordinary tree deletion and original browser cleanup boundaries"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "29348885d890a9930914ca5a0dbc565f14fbf0fc",
+    "WorkingTreeFingerprint": "E554088E16DA53A941AAC99A95A88E8DFB85C34A3321C387B511A74B298F092E",
+    "ChangedFiles": 5
+  },
+  "PreparationSeconds": 7.6872408,
+  "Descriptors": [
+    {
+      "Name": "portable-directory-backup-prerequisite-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-directory-backup-prerequisite",
+      "Categories": [
+        "portable-directory-backup-prerequisite"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-directory-original-windows-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-directory-original-windows",
+      "Categories": [
+        "portable-directory-original-windows"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.BrowserRollback_CleanupDirectoryReplacedByFileBeforeDeletionRetainsEvidence|FullyQualifiedName=BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.BrowserRollback_RegularFileAtCleanupDirectoryRetainsEvidence|FullyQualifiedName=BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_WarmRollbackDynamicDirectoryUsesOriginalCleanupAfterRecorderCleared|FullyQualifiedName=BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.InterruptedStagedBrowserWrite_RemovesDeclaredRollbackCleanupDirectories",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.BrowserRollback_CleanupDirectoryReplacedByFileBeforeDeletionRetainsEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.BrowserRollback_RegularFileAtCleanupDirectoryRetainsEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_WarmRollbackDynamicDirectoryUsesOriginalCleanupAfterRecorderCleared",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.InterruptedStagedBrowserWrite_RemovesDeclaredRollbackCleanupDirectories",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-directory-original-windows-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-directory-original-windows",
+      "Categories": [
+        "portable-directory-original-windows"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionWindowsTests.ExtendedRootUsesNormalizedMembersAndCanonicalHookNames",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionWindowsTests.ExtendedRootUsesNormalizedMembersAndCanonicalHookNames",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-directory-windows-boundaries-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-directory-windows-boundaries",
+      "Categories": [
+        "portable-directory-windows-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.HardLinkedMemberDeletionPreservesTheOutsideName|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PlatformDistinctNamesRemainSeparateJournalMembers|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 24,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ActualDirectoryApiCrashRecoversExactWholeSetInSeparateProcess",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionRecoveryTests.ColdHardLinkOutsideBytesSurviveRollbackAndCommittedCleanup",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.EmptyOrAbsentTreeDoesNotPublishOrInventGeneration",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.HardLinkedMemberDeletionPreservesTheOutsideName",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.InvalidTreePreflightRetainsAllMembersAndOutsideBytes",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.NestedTreeDeletesEveryExactFileInOneDecisionAndPreservesSibling",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.PlatformDistinctNamesRemainSeparateJournalMembers",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionTests.SameLeaseRepeatedTreeOrAncestorResolvesDebtBeforePruning",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "head": "36c2bb2328862f85b9894f66d1a4fe8ea2322742",
+  "rawTree": "6afabd603ee9222f5835f8d2c480f575b3aae59e",
+  "trackedFiles": 3992,
+  "initialClean": true,
+  "connectivityOnlyFsck": true,
+  "retrieval": "Fresh depth-one single-branch clone from GitHub; no local source/object copy",
+  "patchBytes": 6073,
+  "patchSha256": "165a050ccb5a8dcf897818e830bb761875dba9543c6b86fe31b28d993cf84870",
+  "afterImages": [
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "beforeBlob": "4dc1ce302c9f0db8c167901f61c548513098d296",
+      "afterBlob": "36c3f76dac6b41de5be0d980d5054082b27ce311",
+      "beforeSha256": "764e3698d84bdeeffa372e0830b8b643373b14e5e963132fde88562c1ae5805f",
+      "afterSha256": "84384b25adaec172244296671706837217e815d7df19abf04c432d53b4250d0f"
+    },
+    {
+      "path": "tests/categories.json",
+      "beforeBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+      "afterBlob": "15baf6e54171ec75cba96caceffda864cbbe787a",
+      "beforeSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08",
+      "afterSha256": "67ce98b124c6bee052f099881681f4e8baa7e76084a7016678599f877c949f92"
+    }
+  ],
+  "appliedFullTree": "7ba4e69eedbd6d577561c6cf5ff31ee9c69e3492",
+  "appliedCarrierExcludedTree": "b3b49804dc1a43a1d9d8a9305222d865c055fee3",
+  "evidenceManifestSha256": "334dfbc945464e595435558c5b59180cc521a2b041c914c14787834d143684fc",
+  "evidenceArtifactsVerified": 3,
+  "allSanitizedTrxParsed": true,
+  "diffCheck": true,
+  "runtimeExecutions": 0,
+  "limits": "Restoration and existing artifact readback only; unrun WIP remains unrun and no restricted diagnostic was retried."
+}

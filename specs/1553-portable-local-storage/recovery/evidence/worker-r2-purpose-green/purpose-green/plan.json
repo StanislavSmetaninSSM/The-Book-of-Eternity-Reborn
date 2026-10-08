@@ -1,0 +1,84 @@
+{
+  "Categories": [
+    "worker-restart-purpose-linux",
+    "worker-restart-dispatch-linux",
+    "worker-restart-lifecycle-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "de7ca25588f0e1f7180e18b0246d3596877be14e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 44.9829878,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-dispatch-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-dispatch-linux",
+      "Categories": [
+        "worker-restart-dispatch-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartDispatchTests.ColdRetired_OnlyDistinctTaskMayRecoverAndDispatch|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartDispatchTests.GatedHost_ChangedOriginalBindingRefusesRelease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartDispatchTests.ColdRetired_OnlyDistinctTaskMayRecoverAndDispatch",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartDispatchTests.GatedHost_ChangedOriginalBindingRefusesRelease",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-lifecycle-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-lifecycle-linux",
+      "Categories": [
+        "worker-restart-lifecycle-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartLifecycleTests.ActualContentPool_PublishesAndCommitsBoundRetirementBeforeCapacityRelease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartLifecycleTests.ActualContentPool_PublishesAndCommitsBoundRetirementBeforeCapacityRelease",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-purpose-linux-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-purpose-linux",
+      "Categories": [
+        "worker-restart-purpose-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartPurposeTests.OriginalPurpose_RefusesForeignUnboundRootBeforeRecovery|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartPurposeTests.Release_RequiresOriginalTypedOperationLease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartPurposeTests.OriginalPurpose_RefusesForeignUnboundRootBeforeRecovery",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartPurposeTests.Release_RequiresOriginalTypedOperationLease",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

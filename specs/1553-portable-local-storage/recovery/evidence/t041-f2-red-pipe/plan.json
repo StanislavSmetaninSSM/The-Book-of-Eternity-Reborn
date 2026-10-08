@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-operation-native-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0b11f588f47cb75be6c429e688598e2e8a90aa13",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 186.974773,
+  "Descriptors": [
+    {
+      "Name": "gm-main-operation-native-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-operation-native-linux",
+      "Categories": [
+        "gm-main-operation-native-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

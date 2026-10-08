@@ -1,0 +1,810 @@
+{
+  "Task": "T041-SYSTEMD-S2A",
+  "SourceIssue": "#1553",
+  "Base": "db847f6abb672a5cdf8ff62bb63d88d1fe7510e8",
+  "FrozenRuntime": "b97b50a97123c5201f9022dba953e0396e1fa6d0",
+  "FinalTests": "2ad77e2906d9863c86c74711743dca9bf4d89fb9",
+  "Scope": "Concrete readonly source + controlled original terminal only; real manager S2/S3/public capability closed",
+  "ReadOnlyProbe": "recovery/systemd-s2-read-only-capabilities.json",
+  "DesignReview": {
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "SHA": "73d58e5e22438b18cc8fcbd7f3e7d68b81c2135d",
+    "Verdict": "PASS"
+  },
+  "SourceReview": {
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "SHA": "2ad77e2906d9863c86c74711743dca9bf4d89fb9",
+    "Verdict": "PASS; two P2 coverage requests closed; no runtime defect"
+  },
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/SystemdCgroupSource.cs",
+      "Bytes": 6343,
+      "SHA256": "58e721520b8b6c4754138d34bcedd6f5a007992f5188795dc388a8f8885c8ec5"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/LinuxSystemdCgroupFiles.cs",
+      "Bytes": 8299,
+      "SHA256": "daeb3e6ec5f37e1d53724ac54c4b8bc65b7a32a4636881ca5af9345303d5658e"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/SystemdControlledScenarioDriver.cs",
+      "Bytes": 15428,
+      "SHA256": "021e0f51762d9b0a4481a2a33562fc96ab5c0f9a6309ab8e69ccd68928eac930"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainSystemdCgroupSourceTests.cs",
+      "Bytes": 10621,
+      "SHA256": "d46eb1ca7b8d1485e8c191412cf2768e348cb9713683fda88b33888e2b14c6fe"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmMainSystemdCgroupConnectedTests.cs",
+      "Bytes": 535,
+      "SHA256": "8074d388beae5f725c0501ed894c41545ae37a47aee0274ea81cfadc9362a8c2"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1191675,
+      "SHA256": "4526b8a05c0fbcf2f20931b55206654c7289a4b93bd6c4b12b819d5f60fe7abc"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 831,
+      "SHA256": "e41eaaa453d91b065cb30404a9d217f25992ad9a9345c76f9be1b5e998bb67fe"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/SystemdScopeContracts.cs",
+      "Bytes": 2741,
+      "SHA256": "8e94176cce17c735bd55d8224bd894a85fd8e3ded6151103890b5955f5cb81f1"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/SystemdCgroupObservation.cs",
+      "Bytes": 1219,
+      "SHA256": "0b4243729b0eda83c587ecc68f3508933b6c8eb7b9824e5f25c5005620b77b7b"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/SystemdUserScopeOwner.cs",
+      "Bytes": 5104,
+      "SHA256": "1a2d1750e3fb08902c50652867a44d3a1caf977979ca72973000131a2582d31c"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/SystemdOwnedTerminalSession.cs",
+      "Bytes": 3485,
+      "SHA256": "c1b902543b297cdefdcd3e9d32047eb124531e7055dbd62e121a0a864679f91e"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/SystemdUserBus.cs",
+      "Bytes": 3516,
+      "SHA256": "89ae5b8ac08556ec8ee5716a91e4410b8161783ac5eee964244b5f4931c50d59"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/SystemdSdBusTransport.cs",
+      "Bytes": 15118,
+      "SHA256": "e347e655701605376353f8ff2caff2898d6d40f490dbada556b694758973bd07"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/OwnedTerminalSessionFactory.cs",
+      "Bytes": 4982,
+      "SHA256": "524f05673fd4b4f890896e43c06ed46fb11170e5112abcb214e1acecaeae07df"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "Bytes": 18135,
+      "SHA256": "07eb2a514a792e831c23d23444aec40b3239eb53b752b6a52d44e92b26fa719b"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
+      "Bytes": 3009,
+      "SHA256": "46b141084f32f109d9bf921a4f551c0ccd3bae4d557b4ec77d5f649bca07c34b"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/NativeHeldTerminalPidfd.cs",
+      "Bytes": 975,
+      "SHA256": "f28605ce42ef70daf610ff24c27a1a9c3d12b6d08a8e38429c4c30ea4ff61e91"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "Bytes": 23738,
+      "SHA256": "614a0a4549976569ef779465967c2da0ce0c1502d4d44e960f3ab94842f75d7f"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/baseline-scenarios/2884449737ca468681bcd5128972e00c/build.log.gz",
+      "Bytes": 112,
+      "SHA256": "bd91743ad1f1f02d06fbd8ea144d5a14256647ce9f10d4f78681eae08010a001",
+      "OriginalBytes": 106,
+      "OriginalSHA256": "66b9aed1381e2552574b83a07aca1a92e1bfd002b105379670e814f4e718ea7e"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/baseline-scenarios/2884449737ca468681bcd5128972e00c/guardian.json.gz",
+      "Bytes": 104,
+      "SHA256": "4a3b0059fa67390b10d972bcdc68fb8a39a3a11f5a922f20018e3c4660692a35",
+      "OriginalBytes": 97,
+      "OriginalSHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/baseline-scenarios/2884449737ca468681bcd5128972e00c/guardian.log.gz",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "OriginalBytes": 0,
+      "OriginalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/baseline-scenarios/2884449737ca468681bcd5128972e00c/scenario.json.gz",
+      "Bytes": 813,
+      "SHA256": "5cf4f1aef7f5ef85caf0edc2610b845b2531b9d426f0df1efcacbe39e1ef6f73",
+      "OriginalBytes": 3645,
+      "OriginalSHA256": "5f387cee4becee62a5540947e1d26bc74cca577616180679ec4eb289100699b0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/baseline-scenarios/735d89d7867c49909db99463ea678411/build.log.gz",
+      "Bytes": 112,
+      "SHA256": "5b8c02ac21ca6222c7c988a36aa1b73ada13aee3b66ccccad4df29623ab9db5a",
+      "OriginalBytes": 106,
+      "OriginalSHA256": "36be3dc2f7d8abc0e2bc007bda783830a27cf95f4854ea8885838abdcdd5ccbf"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/baseline-scenarios/735d89d7867c49909db99463ea678411/guardian.json.gz",
+      "Bytes": 104,
+      "SHA256": "4a3b0059fa67390b10d972bcdc68fb8a39a3a11f5a922f20018e3c4660692a35",
+      "OriginalBytes": 97,
+      "OriginalSHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/baseline-scenarios/735d89d7867c49909db99463ea678411/guardian.log.gz",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "OriginalBytes": 0,
+      "OriginalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/baseline-scenarios/735d89d7867c49909db99463ea678411/scenario.json.gz",
+      "Bytes": 331,
+      "SHA256": "ff6361bbacebd969754e6b7ee09851bacc613d5b30c533d6f09060a560a56c05",
+      "OriginalBytes": 656,
+      "OriginalSHA256": "eaddbc56630af570fbea24a7e184447906126242c7b0a508bc0c4ad6147190d7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/baseline-scenarios/ee771fdcb472440ebff30d796b744fb3/build.log.gz",
+      "Bytes": 113,
+      "SHA256": "f0085e86f4014aae411c50bd61c54b660afdb6cdb5f007c0acbea8ad8fd9dd87",
+      "OriginalBytes": 106,
+      "OriginalSHA256": "25174401d429c6ef85fdbf4a578de8145e0dc0b64b1db49a16c8ac2f7feca7ec"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/baseline-scenarios/ee771fdcb472440ebff30d796b744fb3/guardian.json.gz",
+      "Bytes": 104,
+      "SHA256": "4a3b0059fa67390b10d972bcdc68fb8a39a3a11f5a922f20018e3c4660692a35",
+      "OriginalBytes": 97,
+      "OriginalSHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/baseline-scenarios/ee771fdcb472440ebff30d796b744fb3/guardian.log.gz",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "OriginalBytes": 0,
+      "OriginalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/baseline-scenarios/ee771fdcb472440ebff30d796b744fb3/scenario.json.gz",
+      "Bytes": 334,
+      "SHA256": "57562456869c75b259f98ca64f31824d9e581a8f7844103969e5be74f22616bc",
+      "OriginalBytes": 657,
+      "OriginalSHA256": "0a3167005398f28123a6372e13ba6e90c06e092ccb3cf026c0b9c3364d91c8d1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/green1-scenario-index.json",
+      "Bytes": 2685,
+      "SHA256": "de40c04deea89c793681abba24f9804dd56c62c87947191ec74eab752479ede9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/green1-scenarios/6d1c3f5c1cc943ac979f0248579f5d92/build.log.gz",
+      "Bytes": 113,
+      "SHA256": "24766637bb83b4d72a5898918c981a72670447e89b2bb901cc4e8092011173c9",
+      "OriginalBytes": 106,
+      "OriginalSHA256": "dd9a98de1f23cc4d29f48904373f37d99797ab72af6f36ea27ed655fd43531b9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/green1-scenarios/6d1c3f5c1cc943ac979f0248579f5d92/guardian.json.gz",
+      "Bytes": 105,
+      "SHA256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af",
+      "OriginalBytes": 97,
+      "OriginalSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/green1-scenarios/6d1c3f5c1cc943ac979f0248579f5d92/guardian.log.gz",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "OriginalBytes": 0,
+      "OriginalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/green1-scenarios/6d1c3f5c1cc943ac979f0248579f5d92/scenario.json.gz",
+      "Bytes": 162,
+      "SHA256": "9559f28440c19bc41865ed78e81be69f9c78ec917333a1612023861d7c83ab06",
+      "OriginalBytes": 188,
+      "OriginalSHA256": "ba92cd5dc8ad305c957321ed2892ee17624a01bad16b0aaaa76dfea8b78f71fc"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/green1-scenarios/6f0cbe785414401bb8318d8eaa9f8e5e/build.log.gz",
+      "Bytes": 113,
+      "SHA256": "031fe4539c5886dbd5a1a9afc4d2e5f26573619ad46de7b15d16dae2d1744a8b",
+      "OriginalBytes": 106,
+      "OriginalSHA256": "691fa97dbb44b3fa616a42ce0684e23e65ce616f13e8fb04ce06a1e9be05c893"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/green1-scenarios/6f0cbe785414401bb8318d8eaa9f8e5e/guardian.json.gz",
+      "Bytes": 105,
+      "SHA256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af",
+      "OriginalBytes": 97,
+      "OriginalSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/green1-scenarios/6f0cbe785414401bb8318d8eaa9f8e5e/guardian.log.gz",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "OriginalBytes": 0,
+      "OriginalSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/green1-scenarios/6f0cbe785414401bb8318d8eaa9f8e5e/scenario.json.gz",
+      "Bytes": 160,
+      "SHA256": "1ad0cfbd6aba789559b63bec9f01f5012b881c535e9c86191807cb93660068e8",
+      "OriginalBytes": 187,
+      "OriginalSHA256": "01fe650365295cca67f532d2a8adf3e26cfd7b1b450ac2970e6553a0efb73059"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/green1-scenarios/98445c7fdffb4e4ba9bd3f92bc1395d9/build.log.gz",
+      "Bytes": 112,
+      "SHA256": "b9be51eb87d1d6da0d54a7089534f83f687b39ab81885763315f8137f8bfa26b",
+      "OriginalBytes": 106,
+      "OriginalSHA256": "105d7fb5b00311c1be00296b8a4cdde8f902c5a42afbfd40d637c8e1f6ffad22"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/green1-scenarios/98445c7fdffb4e4ba9bd3f92bc1395d9/guardian.json.gz",
+      "Bytes": 105,
+      "SHA256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af",
+      "OriginalBytes": 97,
+      "OriginalSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/green1-scenarios/98445c7fdffb4e4ba9bd3f92bc1395d9/guardian.log.gz",
+      "Bytes": 146,
+      "SHA256": "a670d4198426b8957c07a296f8498ac5a23076aaf4b956dce9bcbce9470edd34",
+      "OriginalBytes": 415,
+      "OriginalSHA256": "10b2681fadcb7c3c9a4f9ce89299213a162cfa4ae1a9f07ff40bbbbd3393a275"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/green1-scenarios/98445c7fdffb4e4ba9bd3f92bc1395d9/scenario.json.gz",
+      "Bytes": 629,
+      "SHA256": "028449992bfe5495629de1af04d8557b782877cd5d66ecfddea26a940e687013",
+      "OriginalBytes": 1118,
+      "OriginalSHA256": "a56eb4eec4c5287efd545e7db8cce36e2653eeea82bc0cffc6d31bf5fcb44248"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-000656-465-930006-588a58ab0c1e4ec0bbfdee8bf13841dc-categories/dotnet-test.log.gz",
+      "Bytes": 2271,
+      "SHA256": "35d43e189923cffd72b56a8c2eaa3aafb6b2b4431e4ce2f35702df201e25eae7",
+      "OriginalBytes": 17096,
+      "OriginalSHA256": "d158fe55f797ad738f70d5e0ee204bbee451c2dffea15a15b1aeb3beead6da3c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-000656-465-930006-588a58ab0c1e4ec0bbfdee8bf13841dc-categories/summary.json.gz",
+      "Bytes": 585,
+      "SHA256": "bd5e7b3a7c3d45df68c519aed3ae0d46469e9c554e970667fcda4ec100784fd1",
+      "OriginalBytes": 1318,
+      "OriginalSHA256": "0b66f9a9dd6cf082693f018dea44e933b54b4ca5eb86b4a72af7482e3675d9f6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001001-573-930432-feb48754e389444c9dd5fb6c87227fb5-categories/Build-unit.log.gz",
+      "Bytes": 1434,
+      "SHA256": "e1dc211f99a8adda7c1bf05360d0a3c4c07130e4aef09f565bd9eeca53205d28",
+      "OriginalBytes": 17864,
+      "OriginalSHA256": "2f17b2e7d84fe8f523b7428ca6197ec7fc82a4d54652bd55671dd1f915d551a1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001001-573-930432-feb48754e389444c9dd5fb6c87227fb5-categories/dotnet-test.log.gz",
+      "Bytes": 181855,
+      "SHA256": "f373a6d9743f239d032c057791d3e8ff2cfcd54b227d309d1a8ccf8ca73e946c",
+      "OriginalBytes": 1644457,
+      "OriginalSHA256": "55f8b5007008c09a313edda7176ff1962732a936ce217eb55235af08e275b6fe"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001001-573-930432-feb48754e389444c9dd5fb6c87227fb5-categories/gm-main-systemd-cgroup-connected-unit-001.trx.gz",
+      "Bytes": 2032,
+      "SHA256": "90e139de8d79fb814cc2be24fc3777b53b5aa133ccc5864ac1a5bea434cc7484",
+      "OriginalBytes": 11419,
+      "OriginalSHA256": "c9fe7a9a322bf34986bb7f2e920eba2312fe420cea0471ad78c1fdc8c0ced2aa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001001-573-930432-feb48754e389444c9dd5fb6c87227fb5-categories/plan.json.gz",
+      "Bytes": 943,
+      "SHA256": "2f9ee2ea5f4487ff1c165f36c9a4496828700c6311ddb28c197405a07961c112",
+      "OriginalBytes": 4583,
+      "OriginalSHA256": "9a48525e223a147313b451dea1c0c52dcbfb0970e3b04738367ef492e53f1864"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001001-573-930432-feb48754e389444c9dd5fb6c87227fb5-categories/summary.json.gz",
+      "Bytes": 643,
+      "SHA256": "bdfd6d4a2b3f3aa179c37c4c2716a8054bdd1a81ef47e7460792e4075c8325b7",
+      "OriginalBytes": 1560,
+      "OriginalSHA256": "2ab3efbb04d5504d210ccefe038ef28fd326fa413caf8f3f4aa77595961ddd6c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001055-425-931053-5a6fb1300b5c40f0b0fe3254408b0421-categories/dotnet-test.log.gz",
+      "Bytes": 181134,
+      "SHA256": "e6bc0a8e6fa89ccf64ff33a2d913727a1338521528dba46ca581f7865a1a4675",
+      "OriginalBytes": 1646150,
+      "OriginalSHA256": "da35eeb1b638d6a8156cfc693d70eee73b1a7fbd130ddd843ff31b9ea760dfc7"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001055-425-931053-5a6fb1300b5c40f0b0fe3254408b0421-categories/gm-main-systemd-cgroup-source-unit-001.trx.gz",
+      "Bytes": 6857,
+      "SHA256": "63e7d5447560a70cdf5be9911360d177c13b2d2d3b1886488913dc163dd22aa2",
+      "OriginalBytes": 89537,
+      "OriginalSHA256": "871a56c0b83c2a5e643680df9ff2ae577332789382c2d30cacbf0ce3136b180f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001055-425-931053-5a6fb1300b5c40f0b0fe3254408b0421-categories/plan.json.gz",
+      "Bytes": 813,
+      "SHA256": "df82ec8b91c28c25d3c2454fe2cdb3a3809b728b7741b5be91230a37e0cc3a32",
+      "OriginalBytes": 3449,
+      "OriginalSHA256": "41f2a1191395bbdf99dd435b91106af446263db6f9a884598850841aa473764a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001055-425-931053-5a6fb1300b5c40f0b0fe3254408b0421-categories/summary.json.gz",
+      "Bytes": 595,
+      "SHA256": "d573d2ac6f27f9f6ec92cc52cf0b2018b231d3f4a17c51a5a689c91efd5209f8",
+      "OriginalBytes": 1373,
+      "OriginalSHA256": "b52e1b8f76002671e96fe0608f2499ab60d0d3e62eea1790b486e3df7e69de2d"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001504-614-931298-3af3101a406246eca098b69948ca5ba2-categories/Build-unit.log.gz",
+      "Bytes": 2122,
+      "SHA256": "425cfad8c543044e6bb8c423c21941e3cc947086ff06ff743e8cf5177d67dd13",
+      "OriginalBytes": 27708,
+      "OriginalSHA256": "83753dc4a7a98fdf6e067b968d3cbb357d9f9baea301bbb2c44dab563d93215f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001504-614-931298-3af3101a406246eca098b69948ca5ba2-categories/dotnet-test.log.gz",
+      "Bytes": 182130,
+      "SHA256": "978cefc3a5b439c9fc4f6d96f18836eca17222a492696402a6790a4b13cfbd63",
+      "OriginalBytes": 1652956,
+      "OriginalSHA256": "79caf396218dfd8f777cfd1f53f93b0adfce927cf1ec6971212af640c36171c1"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001504-614-931298-3af3101a406246eca098b69948ca5ba2-categories/gm-main-systemd-cgroup-affected-unit-001.trx.gz",
+      "Bytes": 1894,
+      "SHA256": "f19f5f9e4e298407ffbef5c638ab3c86c2f663896018443df97a8da5447435ff",
+      "OriginalBytes": 10086,
+      "OriginalSHA256": "c4fedbf12847fad7fcb908b5c3f62399c3bdf06e62f58819a7030fc6f33d2b43"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001504-614-931298-3af3101a406246eca098b69948ca5ba2-categories/gm-main-systemd-cgroup-connected-unit-002.trx.gz",
+      "Bytes": 1533,
+      "SHA256": "fcc0de312b9880040fed4a4f285d55f93b6c061c41434fa63f71aa55a86020eb",
+      "OriginalBytes": 6073,
+      "OriginalSHA256": "735de9f40c47cdd1cdd77d6b7569577b1fcf4931c0538c20e8a6694a6ed9030b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001504-614-931298-3af3101a406246eca098b69948ca5ba2-categories/gm-main-systemd-cgroup-source-unit-003.trx.gz",
+      "Bytes": 4636,
+      "SHA256": "afd7ddd7a0513e42e87a5913deaa0037b37b5fe9cd60603b47a273112435fba2",
+      "OriginalBytes": 43319,
+      "OriginalSHA256": "a82edd2ebbb10f7d6f5fc0415f1c7aa00ab025c1bbcca9f4ee17e02770c91715"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001504-614-931298-3af3101a406246eca098b69948ca5ba2-categories/plan.json.gz",
+      "Bytes": 1109,
+      "SHA256": "211540800df2faa69bdec9a0393b31b4b0ad14bfc1014be3753aa5b69e4bc4bb",
+      "OriginalBytes": 6248,
+      "OriginalSHA256": "72a12aeaaab9a119114fe28a1f55794b535914f65688f7bd8ec03e6e8873a201"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001504-614-931298-3af3101a406246eca098b69948ca5ba2-categories/summary.json.gz",
+      "Bytes": 671,
+      "SHA256": "cfaf04193b982df323ae88ac2d4af539dde0f75195bda3683fafda053bcd9de2",
+      "OriginalBytes": 1933,
+      "OriginalSHA256": "ba76d389e513617646aabdc233a07e8dd949524e75c4e79eed73c8db5e0982e0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001645-415-932223-15763bb553e14f3b8a68dbc21ae5ce7c-categories/Build-integration.log.gz",
+      "Bytes": 1512,
+      "SHA256": "b816f940eb70836fb4f56df6779152fcb248c87683c84f9598a4232fe49d92ad",
+      "OriginalBytes": 16422,
+      "OriginalSHA256": "ca32e9690e7bb15f7abd9f2e4cdfa743e18a42c3b930c122eb22d04f002a1924"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001645-415-932223-15763bb553e14f3b8a68dbc21ae5ce7c-categories/Build-unit.log.gz",
+      "Bytes": 2118,
+      "SHA256": "40c5106619412c1caac7a3a653bbcf68b3643ae03d3e2ddeabdc8682d7b8134c",
+      "OriginalBytes": 27708,
+      "OriginalSHA256": "10bb1f57494944e00468563a2363bb269789c423b4415981d3c623cecf870669"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001645-415-932223-15763bb553e14f3b8a68dbc21ae5ce7c-categories/catalog-audit.json.gz",
+      "Bytes": 103,
+      "SHA256": "048e1371c000560fff669cb70d0d9c2ac56f356dec184a0a7dbb6f92366a1675",
+      "OriginalBytes": 103,
+      "OriginalSHA256": "bc822fe57eacb4211e0d5c02745ea110e51aa6efc3fca5add7febdb51884b57f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001645-415-932223-15763bb553e14f3b8a68dbc21ae5ce7c-categories/dotnet-test.log.gz",
+      "Bytes": 354580,
+      "SHA256": "dbd775d1a3e915f34c0c01c5d6b36fd4c1cf9a577f18ba0bf825e2b83fcbacae",
+      "OriginalBytes": 3186649,
+      "OriginalSHA256": "da652812b5615392cb03f907d02a8140602cb3c91b47b26cdb5a91632930d2aa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001645-415-932223-15763bb553e14f3b8a68dbc21ae5ce7c-categories/summary.json.gz",
+      "Bytes": 641,
+      "SHA256": "952ef8055d67253c4727db8c0251e4c1da78dffdec793b0d0f31a11a3544a579",
+      "OriginalBytes": 1599,
+      "OriginalSHA256": "69a0a19935dfd1844ec3bc97599794ea29b0733b7f1edc90cb8ff4e7398df845"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001933-388-932832-f2232e20e33240c5a3e277d355fe733a-categories/Build-unit.log.gz",
+      "Bytes": 1142,
+      "SHA256": "1929210f802114f1f8c2ec1d757449707322af3e4a341a47e75ed5c6e6de79f5",
+      "OriginalBytes": 14188,
+      "OriginalSHA256": "280ac15a912ca4c448288c786133383b07515f8e3657e9ce829d170b128e0221"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001933-388-932832-f2232e20e33240c5a3e277d355fe733a-categories/dotnet-test.log.gz",
+      "Bytes": 181126,
+      "SHA256": "fd1fe681005854ec28411dae0b3aaed6d8f4720ac2fd4dd7def275ad15adcb3e",
+      "OriginalBytes": 1638013,
+      "OriginalSHA256": "28678d287268dcac28106bfa7132b7d9decfcfb240271727012f0b939148dc48"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001933-388-932832-f2232e20e33240c5a3e277d355fe733a-categories/gm-main-systemd-cgroup-source-unit-001.trx.gz",
+      "Bytes": 5334,
+      "SHA256": "b2f42fe7402fad96209ce67ec63573dd205ebd2594b57c2414f6d470cb1f8bda",
+      "OriginalBytes": 49090,
+      "OriginalSHA256": "d0ee949094071ffd7e502bfbef2e74acca219fe7bb87e0f1d1675461643eeaaf"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001933-388-932832-f2232e20e33240c5a3e277d355fe733a-categories/plan.json.gz",
+      "Bytes": 899,
+      "SHA256": "50caa7052ec438761bd22055381b7f1e29173525b57ff1da2fc124467b59e036",
+      "OriginalBytes": 4359,
+      "OriginalSHA256": "ccea6356547ea8d3a54aa0f218e7b56bc29be91ff8ad5f7f840da1f72f85681f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-001933-388-932832-f2232e20e33240c5a3e277d355fe733a-categories/summary.json.gz",
+      "Bytes": 631,
+      "SHA256": "7c08c6b827002838f14d461ace1e6d63f1430a783d4d9171390420e395e8ba82",
+      "OriginalBytes": 1563,
+      "OriginalSHA256": "152264011c8f22259d62ed138e29959d5849fc7c7c112b8041b62e227f97e78f"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-002037-837-933263-51d1f4a72e734bff88688d197375d022-categories/catalog-audit.json.gz",
+      "Bytes": 102,
+      "SHA256": "083b0fb2c35722ba34e433dcc1483524bebb63b104620da642626bb839ea464d",
+      "OriginalBytes": 103,
+      "OriginalSHA256": "5e8a3e58599d0143b739009000b5b849128314c11f2a0f2649c02cb2b77a2b22"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-002037-837-933263-51d1f4a72e734bff88688d197375d022-categories/dotnet-test.log.gz",
+      "Bytes": 351069,
+      "SHA256": "5f6d09d93ae1a5ac0eaba280dfd0cccc2ba1f500059f44af18b7405cbb349877",
+      "OriginalBytes": 3142459,
+      "OriginalSHA256": "c6e5d60b189b37c55a1e7f8bd5bf05634f5f232247c050bb597157452ba6406b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-002037-837-933263-51d1f4a72e734bff88688d197375d022-categories/summary.json.gz",
+      "Bytes": 602,
+      "SHA256": "ecc1041b7129371668166a06bdf32e7137e961b4b11837798ec9fea7cabc63f3",
+      "OriginalBytes": 1403,
+      "OriginalSHA256": "91bdcfff4f5a8523ee7496edba6e95081f4ef0b639f6541528a4df3d583dcfc8"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-002050-715-933485-7ef0dc3e3d574fb397bfdaf8801ea779-categories/dotnet-test.log.gz",
+      "Bytes": 179750,
+      "SHA256": "ba0f084790e977e02104d112a727de82ef2fbda0afa9736e1e4144fb640868eb",
+      "OriginalBytes": 1622685,
+      "OriginalSHA256": "cbd0c466b2339bd0bb4aaff54dc997fca2fc717a7f3ee6b876c05f1a1b42ce5c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-002050-715-933485-7ef0dc3e3d574fb397bfdaf8801ea779-categories/plan.json.gz",
+      "Bytes": 1188,
+      "SHA256": "3341b6443c84fca747a78e97181b1eed832709664a0773808fb43250d01afa2e",
+      "OriginalBytes": 7157,
+      "OriginalSHA256": "a7f237e18a3e7c540f574c1ddcb780ab5a8da85eab9cc52694de759ccccbaa50"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/systemd-s2a/runs/20261008-002050-715-933485-7ef0dc3e3d574fb397bfdaf8801ea779-categories/summary.json.gz",
+      "Bytes": 630,
+      "SHA256": "d101f4dfc7e894524a9b928958ed3ba1682fff8035b9b36e1f4ea5b89fc79fe0",
+      "OriginalBytes": 1554,
+      "OriginalSHA256": "980c92beb17856048ddd2c4e5b82fb24712449a4827f6528ecd6b71366a5a624"
+    }
+  ],
+  "Runs": [
+    {
+      "Phase": "preparation",
+      "Folder": "20261008-000656-465-930006-588a58ab0c1e4ec0bbfdee8bf13841dc-categories",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-systemd-cgroup-source",
+      "Revision": {
+        "Head": "73d58e5e22438b18cc8fcbd7f3e7d68b81c2135d",
+        "WorkingTreeFingerprint": "A47F7963F042EB26C426EE48F5F894A84772D6CCCEC64B0565527E0B0352B557",
+        "ChangedFiles": 6
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "TimedOut": false,
+      "OwnedTreeCleanup": true,
+      "RuntimeCleanup": true,
+      "Catalog": null
+    },
+    {
+      "Phase": "red-connected",
+      "Folder": "20261008-001001-573-930432-feb48754e389444c9dd5fb6c87227fb5-categories",
+      "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-systemd-cgroup-source\",\"gm-main-systemd-cgroup-connected\")'",
+      "Revision": {
+        "Head": "73d58e5e22438b18cc8fcbd7f3e7d68b81c2135d",
+        "WorkingTreeFingerprint": "82FB730BC907E8CE4A1C0EE7A54994B382DD729EF142D2EB495545AE9A337134",
+        "ChangedFiles": 8
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 2,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 32,
+        "CompletedCases": 3,
+        "UnderfilledDescriptors": [
+          "gm-main-systemd-cgroup-source-unit-002"
+        ],
+        "Complete": false
+      },
+      "Tests": {
+        "Total": 3,
+        "Executed": 3,
+        "Passed": 0,
+        "Failed": 3
+      },
+      "TimedOut": false,
+      "OwnedTreeCleanup": true,
+      "RuntimeCleanup": true,
+      "Catalog": null
+    },
+    {
+      "Phase": "red-source",
+      "Folder": "20261008-001055-425-931053-5a6fb1300b5c40f0b0fe3254408b0421-categories",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-systemd-cgroup-source -NoBuild",
+      "Revision": {
+        "Head": "fc8a3f7c26a0a2c55dddeae961cbfe152a39be50",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "ExitCode": 1,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 29,
+        "CompletedCases": 29,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 29,
+        "Executed": 29,
+        "Passed": 10,
+        "Failed": 19
+      },
+      "TimedOut": false,
+      "OwnedTreeCleanup": true,
+      "RuntimeCleanup": true,
+      "Catalog": null
+    },
+    {
+      "Phase": "green-first",
+      "Folder": "20261008-001504-614-931298-3af3101a406246eca098b69948ca5ba2-categories",
+      "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-systemd-cgroup-source\",\"gm-main-systemd-cgroup-connected\",\"gm-main-systemd-cgroup-affected\")'",
+      "Revision": {
+        "Head": "fc8a3f7c26a0a2c55dddeae961cbfe152a39be50",
+        "WorkingTreeFingerprint": "F1581EBFF261C523E5D5936C245EDC244872071DE4F0FFF17F3736463AB1E439",
+        "ChangedFiles": 2
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 3,
+        "PlannedCases": 38,
+        "CompletedCases": 38,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 38,
+        "Executed": 38,
+        "Passed": 38,
+        "Failed": 0
+      },
+      "TimedOut": false,
+      "OwnedTreeCleanup": true,
+      "RuntimeCleanup": true,
+      "Catalog": null
+    },
+    {
+      "Phase": "catalog-first",
+      "Folder": "20261008-001645-415-932223-15763bb553e14f3b8a68dbc21ae5ce7c-categories",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+      "Revision": {
+        "Head": "b97b50a97123c5201f9022dba953e0396e1fa6d0",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "TimedOut": false,
+      "OwnedTreeCleanup": true,
+      "RuntimeCleanup": true,
+      "Catalog": {
+        "Valid": true,
+        "Methods": 11189,
+        "Categories": 432,
+        "Unmapped": [],
+        "StaleSelectors": []
+      }
+    },
+    {
+      "Phase": "green-native-coverage",
+      "Folder": "20261008-001933-388-932832-f2232e20e33240c5a3e277d355fe733a-categories",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-systemd-cgroup-source",
+      "Revision": {
+        "Head": "9de969a2f6c7dc9a0d66a1e1949d2282276f4b9c",
+        "WorkingTreeFingerprint": "8A4E5EF8E5A2C5102D746BA453A32E8455A5AF199B6014900B5FC5FA925A1188",
+        "ChangedFiles": 1
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 33,
+        "CompletedCases": 33,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 33,
+        "Executed": 33,
+        "Passed": 33,
+        "Failed": 0
+      },
+      "TimedOut": false,
+      "OwnedTreeCleanup": true,
+      "RuntimeCleanup": true,
+      "Catalog": null
+    },
+    {
+      "Phase": "catalog-final",
+      "Folder": "20261008-002037-837-933263-51d1f4a72e734bff88688d197375d022-categories",
+      "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild",
+      "Revision": {
+        "Head": "2ad77e2906d9863c86c74711743dca9bf4d89fb9",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "TimedOut": false,
+      "OwnedTreeCleanup": true,
+      "RuntimeCleanup": true,
+      "Catalog": {
+        "Valid": true,
+        "Methods": 11192,
+        "Categories": 432,
+        "Unmapped": [],
+        "StaleSelectors": []
+      }
+    },
+    {
+      "Phase": "plan-final",
+      "Folder": "20261008-002050-715-933485-7ef0dc3e3d574fb397bfdaf8801ea779-categories",
+      "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"gm-main-systemd-cgroup-source\",\"gm-main-systemd-cgroup-connected\",\"gm-main-systemd-cgroup-affected\") -PlanOnly -NoBuild'",
+      "Revision": {
+        "Head": "2ad77e2906d9863c86c74711743dca9bf4d89fb9",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "ExitCode": 0,
+      "Selection": {
+        "PlannedDescriptors": 3,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 42,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "gm-main-systemd-cgroup-affected-unit-001",
+          "gm-main-systemd-cgroup-connected-unit-002",
+          "gm-main-systemd-cgroup-source-unit-003"
+        ],
+        "Complete": false
+      },
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "TimedOut": false,
+      "OwnedTreeCleanup": true,
+      "RuntimeCleanup": true,
+      "Catalog": null
+    }
+  ],
+  "AcceptedUniqueCases": 42,
+  "AcceptedCoverage": "33 source at final native coverage +3 connected +6 affected at first GREEN; production/connected/affected bytes unchanged",
+  "TotalExecutedCases": 103,
+  "TotalPassedCases": 81,
+  "TotalFailedCases": 22,
+  "PreparationExecutedCases": 0,
+  "GreenFingerprintsReconstructedFromGitBlobs": true,
+  "GuardianInvocations": 6,
+  "GuardianECHILD": 6,
+  "GuardianEmergencySignals": 0,
+  "GuardianFailures": 0,
+  "GuardianDeadlines": 0,
+  "RealManagerQualified": false,
+  "PublicBackendEnabled": false,
+  "PruningQualified": false,
+  "NativeWindowsQualified": false,
+  "WindowsAfterMerge": true,
+  "GMRequests": 0,
+  "MergePerformed": false,
+  "EvidenceReview": {
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "SHA": "d99659fb49b9884e6743d4a7b036d5f6696a36f9",
+    "Verdict": "PASS:18pins/59artifacts/counts/fingerprints/42union/6guardians independently verified"
+  },
+  "MetadataReview": {
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "SHA": "481c6ff676e67b84fb536b53ccce8af457833bbd",
+    "Verdict": "PASS: counts/closed capability/historical context/post-merge Windows coherent; no actionable contradiction"
+  },
+  "FinalDelivery": "Writer final remote/readback and fresh GitHub-only restore required after metadata carrier"
+}

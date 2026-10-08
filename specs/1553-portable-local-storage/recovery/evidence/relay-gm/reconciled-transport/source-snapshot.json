@@ -1,0 +1,37 @@
+{
+  "Head": "172feb0f214e9e1479abab81fcbd30dbabb35ede",
+  "Files": [
+    {
+      "Path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "Bytes": 4389,
+      "SHA256": "437973f7adbe3ac6f1e0b5fa57d3d3091731dda2331d7aa51b3cebb03324527c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs",
+      "Bytes": 13388,
+      "SHA256": "cb35e082c270e2787d63eeecdc0f1959261ed67012468a44be4b51f74b26b634"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Bytes": 9633,
+      "SHA256": "1b6802637dc6ae2fc30df6f8fe82e0b1467c63f1ea3cf533e690a8ca691440e3"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/codex-gm-relay.py",
+      "Bytes": 8414,
+      "SHA256": "1ce9dc33b08ecbb8526be25deaf063132b7cfaf073b20cf65180defc504df97a"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/relay-apply-response.ps1",
+      "Bytes": 2072,
+      "SHA256": "95c9d0d829253bde36e48f5ba030acb599ce98dbc0cbf10bf740219788ba8050"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/live-game-one-turn.py",
+      "Bytes": 36230,
+      "SHA256": "667f4e737409de1e35ebf03c84368fbed3fb79f51d942dd5caf0e6e61b78d1fd"
+    }
+  ],
+  "RepositoryWritesPaused": true,
+  "CreationActorOfUnexpectedCommitsUnknown": true
+}

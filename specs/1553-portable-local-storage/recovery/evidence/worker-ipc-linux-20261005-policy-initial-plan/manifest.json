@@ -1,0 +1,55 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "b143eb1dce604ba6e63c8a95947d7f73f66d04ba",
+  "SourceResultDirectory": "20261005-101457-493-6478-ae6ce239ad18436294e280c16523af38-categories",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-host-ipc-admission -PlanOnly",
+  "Os": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Sdk": "10.0.401",
+  "Runtime": "8.0.31",
+  "PowerShell": "7.6.6",
+  "EffectiveUid": 1000,
+  "TMPDIR": "/workspace/ipc-tmp",
+  "DOTNET_PROCESSOR_COUNT": null,
+  "Artifacts": [
+    {
+      "Path": "Build-integration.log",
+      "OriginalBytes": 8838,
+      "OriginalSha256": "81ca72a0b387acc6eca93f2e5aded1dcdd489caaec81652b4a466d44178e8b2f",
+      "StoredPath": "Build-integration.log.gz",
+      "StoredBytes": 807,
+      "StoredSha256": "1fd4c923e09b926a942622bc3b14c2434bbdee75f812f6ad6e7276541bc9d37b"
+    },
+    {
+      "Path": "Build-unit.log",
+      "OriginalBytes": 8206,
+      "OriginalSha256": "5d921e09d86195f0a2ae978e9fba7e51a9f2f6b2cbaa6c5c79cf90b6b0ecbad7",
+      "StoredPath": "Build-unit.log.gz",
+      "StoredBytes": 703,
+      "StoredSha256": "97d3002001516ade6f43d14592297e63b6df7aad32bf5ad6bf0076d4ba626d02"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 2983224,
+      "OriginalSha256": "0b8ed701653d72b31b46c91a4935be85d89ba4d514a18a4a1ec5f5438b87a6a9",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 330827,
+      "StoredSha256": "46ea9c5b08522d5f2a2c808407918561deb5c103b207e1c02108a3cb633f3839"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 7535,
+      "OriginalSha256": "864a0353019d3b76971219c877d6f252ac4985a88f01af1f05b8198b6c0cc0d3",
+      "StoredPath": "plan.json",
+      "StoredBytes": 7535,
+      "StoredSha256": "864a0353019d3b76971219c877d6f252ac4985a88f01af1f05b8198b6c0cc0d3"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1612,
+      "OriginalSha256": "af20e1ae3d72b890c9f31a73ff7d8ab4c61fecdf2ddb97a09bff29dd44c3c8a7",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1612,
+      "StoredSha256": "af20e1ae3d72b890c9f31a73ff7d8ab4c61fecdf2ddb97a09bff29dd44c3c8a7"
+    }
+  ]
+}

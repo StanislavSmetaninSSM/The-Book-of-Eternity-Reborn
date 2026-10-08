@@ -1,0 +1,37 @@
+{
+  "phase": "causal documentation RED",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-linux-guide -TimeoutMinutes 2",
+  "revision": "20bdeb6c42a8729acbfdf39d55f758d3e746240f",
+  "internalCases": {
+    "passed": 2,
+    "failed": 1
+  },
+  "adapterAcceptedCases": 0,
+  "exitCode": 1,
+  "timedOut": false,
+  "cleanup": "complete",
+  "failure": "Installed Linux guide lacks executable configuration example; actual inert reader setup assertion",
+  "artifacts": [
+    {
+      "path": "recovery/final-readiness/guide-red-dotnet-test.log.gz",
+      "size": 1029,
+      "sha256": "61e7fc7f91405683e3ac652497209f261b6e420f059fb402501310c35dd735e7",
+      "rawSize": 2771,
+      "rawSha256": "4ead7710d8f1147c2df74f36341d0f069fe9c158ffc73f469dfc621c81427f70"
+    },
+    {
+      "path": "recovery/final-readiness/guide-red-plan.json.gz",
+      "size": 434,
+      "sha256": "f9c9ffc8c96bf5aef016cbb4c543539342fba824747b0990c2291f0f6e3cea27",
+      "rawSize": 827,
+      "rawSha256": "7511072293be350b288c355072bc8453d62263e91d07999b6a57a1a3bf4605fd"
+    },
+    {
+      "path": "recovery/final-readiness/guide-red-summary.json.gz",
+      "size": 612,
+      "sha256": "e40058e51fbb9b2060ea32d0e6f6830dbea34e1c45476a8a535571fad622ea12",
+      "rawSize": 1514,
+      "rawSha256": "faa5b0be3474c0cbffdefe99fe3be472ca7cb6b081f55b05ad9ffd2b14e42d99"
+    }
+  ]
+}

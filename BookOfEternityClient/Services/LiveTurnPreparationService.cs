@@ -59,14 +59,8 @@ internal sealed class LiveTurnPreparationService
         if (string.IsNullOrWhiteSpace(options.PlayerAction))
             throw new ArgumentException("Player action is required for prepare-turn.", nameof(options));
 
-        string generation;
-        await using (var generationLease = await _fs.AcquireCanonicalWriteLeaseAsync())
-            generation = _fs.GetOrCreateSessionGeneration(generationLease);
-
-        return await SessionOperationContext.RunBoundAsync(
-            _fs,
-            generation,
-            () => PrepareBoundAsync(options));
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(
+            _fs, () => PrepareBoundAsync(options));
     }
 
     private async Task<LiveTurnPreparationResult> PrepareBoundAsync(LiveTurnPreparationOptions options)

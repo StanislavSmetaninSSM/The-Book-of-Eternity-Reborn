@@ -1,0 +1,360 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="c4b9d7c3-aa3f-41a4-9074-743397e25a6d" name="@c7669543e9c7 2026-10-05 21:41:24" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T21:41:24.5311784+00:00" queuing="2026-10-05T21:41:24.5311794+00:00" start="2026-10-05T21:41:22.5911977+00:00" finish="2026-10-05T21:41:24.5868457+00:00" />
+  <TestSettings name="default" id="3d164d9f-542e-461d-b2b6-455d78734afa">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_21_41_24" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="08f07f03-2235-419a-bf6f-87f89e90ef49" testId="9692e202-b70a-29d8-5032-0161f82115bc" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop" computerName="c7669543e9c7" duration="00:00:00.0002316" startTime="2026-10-05T21:41:24.5170437+00:00" endTime="2026-10-05T21:41:24.5170438+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="08f07f03-2235-419a-bf6f-87f89e90ef49">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop() in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs:line 69
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cfcf0012-4465-41ca-9aa8-5774c2caa2eb" testId="7b74ce42-25c3-a125-9021-28914cdab2f9" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;wrong-scope&quot;)" computerName="c7669543e9c7" duration="00:00:00.0059585" startTime="2026-10-05T21:41:24.4947616+00:00" endTime="2026-10-05T21:41:24.4947828+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cfcf0012-4465-41ca-9aa8-5774c2caa2eb">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs:line 46
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="44f740ad-e8c7-44bb-9d15-a48f1da81506" testId="2ca070da-4dec-ee55-d633-656b5f3b26a9" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: True)" computerName="c7669543e9c7" duration="00:00:00.0003051" startTime="2026-10-05T21:41:24.5167965+00:00" endTime="2026-10-05T21:41:24.5167966+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="44f740ad-e8c7-44bb-9d15-a48f1da81506">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(Boolean cleaned) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs:line 60
+   at InvokeStub_GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ce7550e2-c98f-4a39-8712-4abb807e0e85" testId="807f43cb-e78d-babc-188c-df05e3983643" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;unknown-backend&quot;)" computerName="c7669543e9c7" duration="00:00:00.0001079" startTime="2026-10-05T21:41:24.5036831+00:00" endTime="2026-10-05T21:41:24.5036831+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ce7550e2-c98f-4a39-8712-4abb807e0e85">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs:line 46
+   at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a0f2fdd3-4743-4d21-ab57-1cfed8c3da10" testId="42b636a9-d8e0-0b60-e692-decc66f222a9" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;unknown-state&quot;)" computerName="c7669543e9c7" duration="00:00:00.0002882" startTime="2026-10-05T21:41:24.5043799+00:00" endTime="2026-10-05T21:41:24.5043799+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a0f2fdd3-4743-4d21-ab57-1cfed8c3da10">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs:line 47
+   at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4ca9c5ba-b90d-49fc-8ad3-b6fe5926fb25" testId="5c47542b-c421-fe5e-efb5-b274937f0a8b" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;empty-run&quot;)" computerName="c7669543e9c7" duration="00:00:00.0000988" startTime="2026-10-05T21:41:24.5041460+00:00" endTime="2026-10-05T21:41:24.5041461+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4ca9c5ba-b90d-49fc-8ad3-b6fe5926fb25">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs:line 46
+   at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9526a4fe-59e2-406f-a508-2944d0668961" testId="f130c381-176e-f461-7d5b-418b994710e2" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;not-cleaned&quot;)" computerName="c7669543e9c7" duration="00:00:00.0002021" startTime="2026-10-05T21:41:24.5046053+00:00" endTime="2026-10-05T21:41:24.5046054+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9526a4fe-59e2-406f-a508-2944d0668961">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs:line 47
+   at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="cf5b82fd-fe18-473f-9067-ac17a362790d" testId="44e48204-5c33-dc00-5643-987a6a328fa9" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: False)" computerName="c7669543e9c7" duration="00:00:00.0002536" startTime="2026-10-05T21:41:24.5165104+00:00" endTime="2026-10-05T21:41:24.5165106+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cf5b82fd-fe18-473f-9067-ac17a362790d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(Boolean cleaned) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs:line 60
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1a32f114-bcc7-4210-91b6-c242a487e8e8" testId="d48b30cc-90f0-b9ba-5d83-29aa368ffc40" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;still-authoritative&quot;)" computerName="c7669543e9c7" duration="00:00:00.0001596" startTime="2026-10-05T21:41:24.5038964+00:00" endTime="2026-10-05T21:41:24.5038965+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1a32f114-bcc7-4210-91b6-c242a487e8e8">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs:line 47
+   at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d9c10804-812e-4f98-b098-74032aa8d9d9" testId="a9b55e70-b02e-9dfa-5821-dbd17c26035c" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;wrong-run&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004047" startTime="2026-10-05T21:41:24.5021980+00:00" endTime="2026-10-05T21:41:24.5021982+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d9c10804-812e-4f98-b098-74032aa8d9d9">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs:line 46
+   at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b8b84a90-97cc-4dd6-bb07-625f72baeeb2" testId="58314348-2d31-e5ef-9a3e-d289f9fb9bb3" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;empty-scope&quot;)" computerName="c7669543e9c7" duration="00:00:00.0001357" startTime="2026-10-05T21:41:24.5034498+00:00" endTime="2026-10-05T21:41:24.5034499+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b8b84a90-97cc-4dd6-bb07-625f72baeeb2">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs:line 46
+   at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a9aa8422-4fd3-408e-ab77-2029c3de0251" testId="e04e5279-10f6-d39c-4226-834d96576c43" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence" computerName="c7669543e9c7" duration="00:00:00.0025293" startTime="2026-10-05T21:41:24.5160003+00:00" endTime="2026-10-05T21:41:24.5160005+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a9aa8422-4fd3-408e-ab77-2029c3de0251" />
+    <UnitTestResult executionId="f9816668-039c-42f3-8932-c0ebadfc59d9" testId="3788811a-3495-29e9-68e8-963624af468e" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;wrong-backend&quot;)" computerName="c7669543e9c7" duration="00:00:00.0001630" startTime="2026-10-05T21:41:24.5031457+00:00" endTime="2026-10-05T21:41:24.5031458+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f9816668-039c-42f3-8932-c0ebadfc59d9">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault) in /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs:line 46
+   at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9692e202-b70a-29d8-5032-0161f82115bc">
+      <Execution id="08f07f03-2235-419a-bf6f-87f89e90ef49" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="OutputObservationFailure_RevokesPreviouslyValidatedStop" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;unknown-state&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="42b636a9-d8e0-0b60-e692-decc66f222a9">
+      <Execution id="a0f2fdd3-4743-4d21-ab57-1cfed8c3da10" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;empty-scope&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="58314348-2d31-e5ef-9a3e-d289f9fb9bb3">
+      <Execution id="b8b84a90-97cc-4dd6-bb07-625f72baeeb2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2ca070da-4dec-ee55-d633-656b5f3b26a9">
+      <Execution id="44f740ad-e8c7-44bb-9d15-a48f1da81506" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;wrong-run&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a9b55e70-b02e-9dfa-5821-dbd17c26035c">
+      <Execution id="d9c10804-812e-4f98-b098-74032aa8d9d9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;empty-run&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5c47542b-c421-fe5e-efb5-b274937f0a8b">
+      <Execution id="4ca9c5ba-b90d-49fc-8ad3-b6fe5926fb25" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;not-cleaned&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f130c381-176e-f461-7d5b-418b994710e2">
+      <Execution id="9526a4fe-59e2-406f-a508-2944d0668961" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;still-authoritative&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d48b30cc-90f0-b9ba-5d83-29aa368ffc40">
+      <Execution id="1a32f114-bcc7-4210-91b6-c242a487e8e8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="44e48204-5c33-dc00-5643-987a6a328fa9">
+      <Execution id="cf5b82fd-fe18-473f-9067-ac17a362790d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;unknown-backend&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="807f43cb-e78d-babc-188c-df05e3983643">
+      <Execution id="ce7550e2-c98f-4a39-8712-4abb807e0e85" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;wrong-backend&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3788811a-3495-29e9-68e8-963624af468e">
+      <Execution id="f9816668-039c-42f3-8932-c0ebadfc59d9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e04e5279-10f6-d39c-4226-834d96576c43">
+      <Execution id="a9aa8422-4fd3-408e-ab77-2029c3de0251" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MatchingScopedStop_IsAcceptedAsCleanupEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;wrong-scope&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7b74ce42-25c3-a125-9021-28914cdab2f9">
+      <Execution id="cfcf0012-4465-41ca-9aa8-5774c2caa2eb" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="9692e202-b70a-29d8-5032-0161f82115bc" executionId="08f07f03-2235-419a-bf6f-87f89e90ef49" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7b74ce42-25c3-a125-9021-28914cdab2f9" executionId="cfcf0012-4465-41ca-9aa8-5774c2caa2eb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ca070da-4dec-ee55-d633-656b5f3b26a9" executionId="44f740ad-e8c7-44bb-9d15-a48f1da81506" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="807f43cb-e78d-babc-188c-df05e3983643" executionId="ce7550e2-c98f-4a39-8712-4abb807e0e85" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="42b636a9-d8e0-0b60-e692-decc66f222a9" executionId="a0f2fdd3-4743-4d21-ab57-1cfed8c3da10" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5c47542b-c421-fe5e-efb5-b274937f0a8b" executionId="4ca9c5ba-b90d-49fc-8ad3-b6fe5926fb25" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f130c381-176e-f461-7d5b-418b994710e2" executionId="9526a4fe-59e2-406f-a508-2944d0668961" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="44e48204-5c33-dc00-5643-987a6a328fa9" executionId="cf5b82fd-fe18-473f-9067-ac17a362790d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d48b30cc-90f0-b9ba-5d83-29aa368ffc40" executionId="1a32f114-bcc7-4210-91b6-c242a487e8e8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a9b55e70-b02e-9dfa-5821-dbd17c26035c" executionId="d9c10804-812e-4f98-b098-74032aa8d9d9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="58314348-2d31-e5ef-9a3e-d289f9fb9bb3" executionId="b8b84a90-97cc-4dd6-bb07-625f72baeeb2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e04e5279-10f6-d39c-4226-834d96576c43" executionId="a9aa8422-4fd3-408e-ab77-2029c3de0251" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3788811a-3495-29e9-68e8-963624af468e" executionId="f9816668-039c-42f3-8932-c0ebadfc59d9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="13" executed="13" passed="1" failed="12" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.19]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.35]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.36]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.42]       Assert.False() Failure
+[xUnit.net 00:00:01.42]       Expected: False
+[xUnit.net 00:00:01.42]       Actual:   True
+[xUnit.net 00:00:01.42]       Stack Trace:
+[xUnit.net 00:00:01.42]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs(46,0): at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault)
+[xUnit.net 00:00:01.42]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.42]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.43]       Assert.False() Failure
+[xUnit.net 00:00:01.43]       Expected: False
+[xUnit.net 00:00:01.43]       Actual:   True
+[xUnit.net 00:00:01.43]       Stack Trace:
+[xUnit.net 00:00:01.43]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs(46,0): at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault)
+[xUnit.net 00:00:01.43]            at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+[xUnit.net 00:00:01.43]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.43]       Assert.False() Failure
+[xUnit.net 00:00:01.43]       Expected: False
+[xUnit.net 00:00:01.43]       Actual:   True
+[xUnit.net 00:00:01.43]       Stack Trace:
+[xUnit.net 00:00:01.43]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs(46,0): at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault)
+[xUnit.net 00:00:01.43]            at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+[xUnit.net 00:00:01.43]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.43]       Assert.False() Failure
+[xUnit.net 00:00:01.43]       Expected: False
+[xUnit.net 00:00:01.43]       Actual:   True
+[xUnit.net 00:00:01.43]       Stack Trace:
+[xUnit.net 00:00:01.43]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs(46,0): at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault)
+[xUnit.net 00:00:01.43]            at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+[xUnit.net 00:00:01.43]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.43]       Assert.False() Failure
+[xUnit.net 00:00:01.43]       Expected: False
+[xUnit.net 00:00:01.43]       Actual:   True
+[xUnit.net 00:00:01.43]       Stack Trace:
+[xUnit.net 00:00:01.43]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs(46,0): at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault)
+[xUnit.net 00:00:01.43]            at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+[xUnit.net 00:00:01.43]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.43]       Assert.False() Failure
+[xUnit.net 00:00:01.43]       Expected: False
+[xUnit.net 00:00:01.43]       Actual:   True
+[xUnit.net 00:00:01.43]       Stack Trace:
+[xUnit.net 00:00:01.43]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs(47,0): at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault)
+[xUnit.net 00:00:01.43]            at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+[xUnit.net 00:00:01.43]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.43]       Assert.False() Failure
+[xUnit.net 00:00:01.43]       Expected: False
+[xUnit.net 00:00:01.43]       Actual:   True
+[xUnit.net 00:00:01.43]       Stack Trace:
+[xUnit.net 00:00:01.43]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs(46,0): at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault)
+[xUnit.net 00:00:01.43]            at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+[xUnit.net 00:00:01.43]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.43]       Assert.False() Failure
+[xUnit.net 00:00:01.43]       Expected: False
+[xUnit.net 00:00:01.43]       Actual:   True
+[xUnit.net 00:00:01.43]       Stack Trace:
+[xUnit.net 00:00:01.43]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs(47,0): at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault)
+[xUnit.net 00:00:01.43]            at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+[xUnit.net 00:00:01.43]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.43]       Assert.False() Failure
+[xUnit.net 00:00:01.43]       Expected: False
+[xUnit.net 00:00:01.43]       Actual:   True
+[xUnit.net 00:00:01.43]       Stack Trace:
+[xUnit.net 00:00:01.43]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs(47,0): at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(String fault)
+[xUnit.net 00:00:01.43]            at InvokeStub_GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(Object, Span`1)
+[xUnit.net 00:00:01.43]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.44]       Assert.False() Failure
+[xUnit.net 00:00:01.44]       Expected: False
+[xUnit.net 00:00:01.44]       Actual:   True
+[xUnit.net 00:00:01.44]       Stack Trace:
+[xUnit.net 00:00:01.44]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs(60,0): at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(Boolean cleaned)
+[xUnit.net 00:00:01.44]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.44]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.44]       Assert.False() Failure
+[xUnit.net 00:00:01.44]       Expected: False
+[xUnit.net 00:00:01.44]       Actual:   True
+[xUnit.net 00:00:01.44]       Stack Trace:
+[xUnit.net 00:00:01.44]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs(60,0): at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(Boolean cleaned)
+[xUnit.net 00:00:01.44]            at InvokeStub_GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(Object, Span`1)
+[xUnit.net 00:00:01.44]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.44]       Assert.False() Failure
+[xUnit.net 00:00:01.44]       Expected: False
+[xUnit.net 00:00:01.44]       Actual:   True
+[xUnit.net 00:00:01.44]       Stack Trace:
+[xUnit.net 00:00:01.44]         /workspace/native-1553/BookOfEternityClient.Tests/GmWorkerExecutionAuthorityTests.cs(69,0): at BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop()
+[xUnit.net 00:00:01.44]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.44]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.45]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T21:41:24.4930380+00:00">
+        <Text>[xUnit.net 00:00:01.42]     BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: "wrong-scope") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T21:41:24.5180586+00:00">
+        <Text>[xUnit.net 00:00:01.43]     BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: "wrong-run") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T21:41:24.5183462+00:00">
+        <Text>[xUnit.net 00:00:01.43]     BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: "wrong-backend") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T21:41:24.5192008+00:00">
+        <Text>[xUnit.net 00:00:01.43]     BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: "empty-scope") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T21:41:24.5194035+00:00">
+        <Text>[xUnit.net 00:00:01.43]     BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: "unknown-backend") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T21:41:24.5223511+00:00">
+        <Text>[xUnit.net 00:00:01.43]     BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: "still-authoritative") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T21:41:24.5223853+00:00">
+        <Text>[xUnit.net 00:00:01.43]     BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: "empty-run") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T21:41:24.5224479+00:00">
+        <Text>[xUnit.net 00:00:01.43]     BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: "unknown-state") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T21:41:24.5224673+00:00">
+        <Text>[xUnit.net 00:00:01.43]     BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: "not-cleaned") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T21:41:24.5401798+00:00">
+        <Text>[xUnit.net 00:00:01.44]     BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T21:41:24.5402387+00:00">
+        <Text>[xUnit.net 00:00:01.44]     BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-05T21:41:24.5402576+00:00">
+        <Text>[xUnit.net 00:00:01.44]     BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

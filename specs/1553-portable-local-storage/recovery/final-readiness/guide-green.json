@@ -1,0 +1,147 @@
+{
+  "phase": "guide-green",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-main-linux-guide -TimeoutMinutes 2",
+  "revision": "321d55b1e4cfb90500193a9f7a07f6c30870be6f",
+  "summary": {
+    "Categories": [
+      "gm-main-linux-guide"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "321d55b1e4cfb90500193a9f7a07f6c30870be6f",
+      "WorkingTreeFingerprint": "DCAD747D9994504CCAE498CB769A3696923D7D17943F4A66AEB93A475B6F589D",
+      "ChangedFiles": 2
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "gm-main-linux-guide",
+        "Seconds": 0.6969912,
+        "BudgetMinutes": 1,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [
+      {
+        "Descriptor": "gm-main-linux-guide-powershell-001",
+        "Adapter": "powershell",
+        "VerificationKind": "tests",
+        "Results": 3,
+        "Seconds": 0.6883005
+      }
+    ],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0654198,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0686223,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1538554,
+        "Completed": true
+      },
+      {
+        "Name": "gm-main-linux-guide-powershell-001",
+        "Seconds": 0.6473076,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0044441,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 2,
+    "WallTime": "00:00:01.2682933",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 3,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "sourcePins": [
+    {
+      "path": "README.md",
+      "size": 7769,
+      "sha256": "12882faa49e037e963b20eab56577119f3230747b560ebd9578e842533247832"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+      "size": 13657,
+      "sha256": "edd73ec994fb2eae95bbc441f50846b0655063cf2ece34e71d6300c8cf651edf"
+    },
+    {
+      "path": "scripts/tests/linux-main-guide.tests.ps1",
+      "size": 4747,
+      "sha256": "f54141319363ae46c39a72cdf90ab908aa07cda2eef1a3afd80cdafbb5570e2f"
+    },
+    {
+      "path": "tests/categories.json",
+      "size": 1194521,
+      "sha256": "46a1ea0725d7b6ac2583393d8ce1c0568e6cbbe118d7566f3ded067decaa8e7b"
+    },
+    {
+      "path": "tests/selection.json",
+      "size": 1404,
+      "sha256": "7654450596fab684974ca5f8491e461c5952642cd8560abf2e5d5d37b4f84ec6"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "recovery/final-readiness/guide-green-dotnet-test.log.gz",
+      "size": 911,
+      "sha256": "d791e0ec1bbcf174e67928320f7ea54d22153ef83423744aa9f4c7735de133f9",
+      "rawPath": "dotnet-test.log",
+      "rawSize": 2373,
+      "rawSha256": "b3e698f9cae2f03f8ded0ed78bf4cabd5910635fa408e08dd82632ac8bd50b67"
+    },
+    {
+      "path": "recovery/final-readiness/guide-green-gm-main-linux-guide-powershell-001.trx.gz",
+      "size": 430,
+      "sha256": "db4b8002421f880f4efb2e304ff70f838ad77da9f93bf56eea78300684303655",
+      "rawPath": "gm-main-linux-guide-powershell-001.trx",
+      "rawSize": 1082,
+      "rawSha256": "cee964da2f7d391787d150013a342da61c851a8d840ce036c22c319c2cc36d09"
+    },
+    {
+      "path": "recovery/final-readiness/guide-green-plan.json.gz",
+      "size": 432,
+      "sha256": "156f230875ea07b044b3c9d5e6f8b881ff23591bc36434935f1460d17759e5f9",
+      "rawPath": "plan.json",
+      "rawSize": 826,
+      "rawSha256": "1de044e74912cf4c786f3d9a7c55cc79099ef1b8fbe3906c32e7bb050fb3c084"
+    },
+    {
+      "path": "recovery/final-readiness/guide-green-summary.json.gz",
+      "size": 665,
+      "sha256": "a535dd5a6bae360e8edf296ac0d0742a9107e2fc349a5474637614d7c19d2d1b",
+      "rawPath": "summary.json",
+      "rawSize": 1748,
+      "rawSha256": "fa7fec82d827196d675761d8735d9d92b4cd7388ee55f0b024e54ad8d7904226"
+    }
+  ]
+}

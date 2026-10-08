@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-engine-save-waiting"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "7c52a5e6bc2165a0a1cc1179f89f43e6749dac56",
+    "WorkingTreeFingerprint": "ADB2B33EEB6A48B1A519EE45338B09AD2FE045CF2F4B0E0E32B37B0A2AD1FB6E",
+    "ChangedFiles": 25
+  },
+  "PreparationSeconds": 7.222628,
+  "Descriptors": [
+    {
+      "Name": "portable-engine-save-waiting-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-engine-save-waiting",
+      "Categories": [
+        "portable-engine-save-waiting"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_WaitingTurnRetainsAcceptedStateAndTerminalEvidence",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_WaitingTurnRetainsAcceptedStateAndTerminalEvidence",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="e8d09edf-ee17-40db-a845-b82d29dbff7d" name="@c7669543e9c7 2026-10-07 04:24:30" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-07T04:24:30.5769796+00:00" queuing="2026-10-07T04:24:30.5769796+00:00" start="2026-10-07T04:24:26.3507026+00:00" finish="2026-10-07T04:24:30.5831404+00:00" />
+  <TestSettings name="default" id="50c89440-64fc-4e26-81a5-a56eb66b8c6b">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-07_04_24_30" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="1ae26867-39cd-47df-860e-4c1e4291e7e8" testId="fa765402-07a1-b7b2-c9f5-961243a9f225" testName="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority" computerName="c7669543e9c7" duration="00:00:02.1489413" startTime="2026-10-07T04:24:30.4849616+00:00" endTime="2026-10-07T04:24:30.4849763+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1ae26867-39cd-47df-860e-4c1e4291e7e8">
+      <Output>
+        <ErrorInfo>
+          <Message>Causal route failure after successful package preparation: Exception: /tmp/boe-auxiliary-8545de6ee2c349f7a53dfd8240980fd6/relocated package Ж/BookOfEternityClient/Launcher/bookofeternity.ps1:887
+Line |
+ 887 |          throw "Client project not found: $clientProject"
+     |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Client project not found:
+     | /tmp/boe-auxiliary-8545de6ee2c349f7a53dfd8240980fd6/relocated package
+     | Ж/BookOfEternityClient/BookOfEternityClient.csproj
+</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority() in /workspace/native-1553/BookOfEternityClient.Tests/AuxiliaryLauncherPortableTests.cs:line 22
+   at BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority() in /workspace/native-1553/BookOfEternityClient.Tests/AuxiliaryLauncherPortableTests.cs:line 39
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fa765402-07a1-b7b2-c9f5-961243a9f225">
+      <Execution id="1ae26867-39cd-47df-860e-4c1e4291e7e8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests" name="RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="fa765402-07a1-b7b2-c9f5-961243a9f225" executionId="1ae26867-39cd-47df-860e-4c1e4291e7e8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.20]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.46]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.49]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:03.70]       Causal route failure after successful package preparation: Exception: /tmp/boe-auxiliary-8545de6ee2c349f7a53dfd8240980fd6/relocated package Ж/BookOfEternityClient/Launcher/bookofeternity.ps1:887
+[xUnit.net 00:00:03.70]       Line |
+[xUnit.net 00:00:03.70]        887 |          throw "Client project not found: $clientProject"
+[xUnit.net 00:00:03.70]            |          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[xUnit.net 00:00:03.70]            | Client project not found:
+[xUnit.net 00:00:03.70]            | /tmp/boe-auxiliary-8545de6ee2c349f7a53dfd8240980fd6/relocated package
+[xUnit.net 00:00:03.70]            | Ж/BookOfEternityClient/BookOfEternityClient.csproj
+[xUnit.net 00:00:03.70]       
+[xUnit.net 00:00:03.70]       Stack Trace:
+[xUnit.net 00:00:03.70]         /workspace/native-1553/BookOfEternityClient.Tests/AuxiliaryLauncherPortableTests.cs(22,0): at BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority()
+[xUnit.net 00:00:03.70]         /workspace/native-1553/BookOfEternityClient.Tests/AuxiliaryLauncherPortableTests.cs(39,0): at BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority()
+[xUnit.net 00:00:03.70]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.71]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T04:24:30.4836042+00:00">
+        <Text>[xUnit.net 00:00:03.70]     BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

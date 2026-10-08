@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A1-WIN",
+  "sourceCommit": "ecf0a923915ecb42ea4554e8d8a8d616f17848d1",
+  "status": "12 passed, 2 immutable-v1 fixture failures due to autocrlf byte changes, 29 unrun. NoBuild uses unchanged ecf0a923 binaries; unbuilt source additions excluded from this execution.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-storage-original-v1-fixtures",
+    "portable-save-create-only-adapter",
+    "portable-storage-stream-publication",
+    "portable-storage-images"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:28.2565732",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 43,
+    "CompletedCases": 14,
+    "UnderfilledDescriptors": [
+      "portable-storage-stream-publication-unit-004"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 14,
+    "Executed": 14,
+    "Passed": 12,
+    "Failed": 2
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "856CF35B63C001DB4E2F9CDCD878F4962B6DACAB548580D0A5474F90306DD88C",
+      "sha256": "049775991CB22FC3BD27B11040364E01358E7925467D0871A936E29A196AEBDB"
+    },
+    {
+      "path": "portable-save-create-only-adapter-unit-001.trx",
+      "originalSha256": "C69998C2563A5E158445A2BEBD5CDBAB4BA80E55FEF4E941CF7C4941D444B485",
+      "sha256": "02F193633F40FADE8B8CA1EB74C6B48CFD92D640858BA0962E59A964ECEB45B9"
+    },
+    {
+      "path": "portable-storage-images-unit-002.trx",
+      "originalSha256": "C48B8933190BAEB35118296FD30B64A3391ADA23BED04F175DC3B39656D578AB",
+      "sha256": "137D1FDD171A194F3917522E05679FE0D1487936D77D338004036FE7FC094FA1"
+    },
+    {
+      "path": "portable-storage-original-v1-fixtures-unit-003.trx",
+      "originalSha256": "9334D57628715DF51EB2DEAED5DE8AA128F5D5317D89B6E89362F3CBD398813E",
+      "sha256": "932AACF6D8E6BD13C842179FF7AED34A2A3952138EB6A7FF7BB15C441A74BC68"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "C29767A9C9A27942B5207445C551D422BF8B93D17D830A0946B38D4B7E70E79B",
+      "sha256": "4E2F6F132DA65709C481F3EB1D27E0EBB780C0D434EF604CDD4291EA1819019E"
+    }
+  ]
+}

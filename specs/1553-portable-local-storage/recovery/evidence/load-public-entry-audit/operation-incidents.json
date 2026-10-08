@@ -1,0 +1,63 @@
+{
+  "SchemaVersion": 1,
+  "GenericPlatformCybersecurityFlagObserved": false,
+  "ToolIncidents": [
+    {
+      "ObservedUtc": "2026-10-04T01:45:51Z",
+      "Tool": "exec_command / git commit",
+      "Operation": "Create first local public-load WIP commit",
+      "Target": "codex/1553-load-filesystem",
+      "ReturnedError": "Author identity unknown; fatal: unable to auto-detect email address",
+      "Category": "Local Git author identity unset",
+      "Outcome": "No local commit; existing authorized GitHub connector created and published the checkpoint. No credential or security setting changed."
+    },
+    {
+      "StartedUtc": "2026-10-04T01:46:21.059Z",
+      "CompletionObservedUtc": "2026-10-04T01:48:15Z",
+      "Tool": "GitHub create_blob",
+      "Operation": "Store category catalog",
+      "Target": "tests/categories.json",
+      "ReturnedError": null,
+      "Category": "Explicit connector approval then success",
+      "Outcome": "Original pending call completed as blob58a42ab39bdfdd5836169636518a48861135fb33. No denied-action retry or alternative route."
+    },
+    {
+      "ObservedUtc": "2026-10-04T02:14:31Z",
+      "Tool": "exec_command / local Python editing helper",
+      "Operation": "Prepare narrow worker category split in memory",
+      "Target": "tests/categories.json",
+      "ReturnedError": "json.decoder.JSONDecodeError: Extra data: line 173 column 2 (char 8665)",
+      "Category": "Local edit-helper validation failure",
+      "Outcome": "Validation failed before writing catalog; corrected JSON object boundary and validated before publication."
+    }
+  ],
+  "VerificationResults": [
+    {
+      "Evidence": "../load-public-entry-red/summary.json",
+      "Meaning": "Six executed; five intended failures and one control pass. Four runtime path failures plus one public visibility scaffold failure."
+    },
+    {
+      "Evidence": "../load-public-entry-fixture-failure/summary.json",
+      "Meaning": "Six executed; five passed and one fixture count failure due expected transient IOException retries. Production retry policy unchanged."
+    },
+    {
+      "Evidence": "../load-public-consumers-partial/summary.json",
+      "Meaning": "Seven of thirteen planned executed; six passed and worker pre-load validation wait timed out. Six entry cases unrun in that command."
+    },
+    {
+      "Evidence": "../load-public-entry-green/summary.json",
+      "Meaning": "Separate complete public-entry six/six passed."
+    },
+    {
+      "Evidence": "../load-public-worker-blocker/summary.json",
+      "Meaning": "One executed/failed before load; observed kernel32.dll failure in old worker-transaction cleanup. Earlier initiating failure remains unestablished. Not a platform security flag."
+    }
+  ],
+  "ParsedXmlAssemblies": [
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.xml",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml"
+  ],
+  "Limits": "No native Windows public-client execution or actual browser/console/GM interaction. Historical unchanged filesystem/resource evidence retained, not rerun."
+}

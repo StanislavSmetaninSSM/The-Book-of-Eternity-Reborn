@@ -27,6 +27,9 @@ public sealed class GmWorkerAuditLog
         _fs = fs;
     }
 
+    internal static string SerializeAppend(WorkerAuditEvent auditEvent) =>
+        JsonSerializer.Serialize(auditEvent, CompactJsonOptions) + Environment.NewLine;
+
     public async Task AppendEventAsync(WorkerAuditEvent auditEvent)
     {
         await AppendEventCoreAsync(auditEvent, writeLease: null);
@@ -71,14 +74,14 @@ public sealed class GmWorkerAuditLog
         AppendRequiredEventOnceIfCurrentSessionAsync(
             string expectedSessionGeneration,
             WorkerAuditEvent auditEvent,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default, GmWorkerDurableExecution? durableExecution = null)
     {
         ValidateAuditEvent(auditEvent);
         await using var admission = await _fs
             .CanonicalRootAuthorityIdentity
             .EnterGmWorkerAuditAppendAdmissionAsync(cancellationToken);
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
-            cancellationToken: cancellationToken);
+            cancellationToken: cancellationToken, workerPurpose: durableExecution?.CleanupPurpose(auditEvent));
         if (!_fs.IsCurrentSessionGeneration(
                 writeLease,
                 expectedSessionGeneration))
@@ -109,7 +112,7 @@ public sealed class GmWorkerAuditLog
     {
         ValidateAuditEvent(auditEvent);
 
-        var line = JsonSerializer.Serialize(auditEvent, CompactJsonOptions);
+        var line = SerializeAppend(auditEvent);
         try
         {
             if (writeLease == null)
@@ -119,14 +122,14 @@ public sealed class GmWorkerAuditLog
                     .EnterGmWorkerAuditAppendAdmissionAsync(cancellationToken);
                 await _fs.AppendFileAtomicAsync(
                     AuditLogPath,
-                    line + Environment.NewLine);
+                    line);
             }
             else
             {
                 await _fs.AppendFileAtomicAsync(
                     writeLease,
                     AuditLogPath,
-                    line + Environment.NewLine,
+                    line,
                     cancellationToken);
             }
         }

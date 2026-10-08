@@ -1,0 +1,71 @@
+{
+  "Categories": [
+    "gm-bridge-prompt-operation",
+    "gm-daemon-prompt-delivery"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "df21035c079fbfa09efea6e3770f805b882b6fac",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-bridge-prompt-operation",
+      "Seconds": 4.8749832,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0610483,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0339409,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0594715,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 88.5385043,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:01:38.3391903",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 18,
+    "CompletedCases": 16,
+    "UnderfilledDescriptors": [
+      "gm-daemon-prompt-delivery-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 16,
+    "Executed": 16,
+    "Passed": 15,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

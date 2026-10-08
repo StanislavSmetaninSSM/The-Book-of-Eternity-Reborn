@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "b674db67e4fce3c38b95a71d018b06a2f9142963",
+  "status": "Frozen b674db67: actual Node save8 and Vitest handler8 passed, shell types and settings consumer controls passed; formal38 cases across5 completed descriptors. Existing settings notice21/22 passed, brittle old direct-forward source guard failed; final settings Vitest unrun. NoBuild skipped frontend production build.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-browser-save-presentation",
+    "portable-settings-consumers",
+    "portable-settings-notices",
+    "frontend-shell-types"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:34.8482304",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 7,
+    "CompletedDescriptors": 5,
+    "PlannedCases": 10,
+    "CompletedCases": 38,
+    "UnderfilledDescriptors": [
+      "portable-settings-notices-frontend-006",
+      "portable-settings-notices-frontend-007"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 38,
+    "Executed": 38,
+    "Passed": 38,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "frontend-shell-types-frontend-001.trx",
+      "originalSha256": "B582BAE82184424CAF3467D4F4C98697659AA4F619CD1D09F02E088E4685E591",
+      "sha256": "DF23DBCD4837B83F65F9440B85C7233FAF3B0766FDEA96710A57B31427F3F203"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "A2714CE179860F21BE5D10EF09E976AFA942D08283B23B52522CAB9F17A83807",
+      "sha256": "5524EF33A4B360FC2F97B928A2922A70AF67FBFB217D56DD7F1940EBE6494F21"
+    },
+    {
+      "path": "portable-browser-save-presentation-frontend-002.trx",
+      "originalSha256": "59DB6A2A0C0F8F41157318836D15C116DDC99BE2A8BDF7A5557D26FCC47D1D3D",
+      "sha256": "2E883DD05C7D08204510C4A797FCA586C16284D073E176E9CCE6A7174EC67DB3"
+    },
+    {
+      "path": "portable-browser-save-presentation-frontend-003.trx",
+      "originalSha256": "019E1B4633E31DCB6E600F6C6B60CB3AE13EB1FF503C17E32C9A4EB46C6DB65E",
+      "sha256": "01BB40B319214C3C91D4207E63AED696500DB0F46DDEF401CA70D2C07737C300"
+    },
+    {
+      "path": "portable-browser-save-presentation-frontend-003.vitest.json",
+      "originalSha256": "73CB43214B56C34A63711872AAA1547505E4CF4504BB4CF1FECAE37D246863C3",
+      "sha256": "5DB347AA6DA8D055F335846C52CF9632CE71B9602422ACEB594CDEE212CE7425"
+    },
+    {
+      "path": "portable-settings-consumers-frontend-004.trx",
+      "originalSha256": "6DD231A38AF819FD8C8007216C5E22EFC526BEB71502EC471DC6D5E4633C129D",
+      "sha256": "E9338931EE56302BCB3985CC1B963280A5CBDFA2C25BC5F5ECF005A618102535"
+    },
+    {
+      "path": "portable-settings-consumers-frontend-005.trx",
+      "originalSha256": "1E8B939E8D27005025E815F90A953CDFE4B2BD40021293E32B6E1933414E5A70",
+      "sha256": "CC4D301AD1088B9780B45D558345684BFC0CAFE106EB8DC3C9E5D67C2405FD7D"
+    },
+    {
+      "path": "portable-settings-consumers-frontend-005.vitest.json",
+      "originalSha256": "53E979AC16798C15547A22DF2B034801099BD074BCED8B11C56B4356A22006DF",
+      "sha256": "FD89628E3022D7C4F492DAB8EB3884B1958C198280A2BEE6F45264543BBE2D6F"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "1159ECE3FEFF51BA1AB44BA30BFF9232CA628EB03E2E977CF612AC93F599391B",
+      "sha256": "9D6EC6E2A5E3868602D248E457D8D7B6921639CF7249F94AA6008B0182F9E479"
+    }
+  ]
+}

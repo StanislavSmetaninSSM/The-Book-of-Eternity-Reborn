@@ -1,0 +1,191 @@
+{
+  "SchemaVersion": 1,
+  "Status": "Bounded native prototype qualified with independent PASS and exact GitHub-only candidate restoration; production integration remains open",
+  "Task": "#1553 T041-FALLBACK-PROC / T041-FALLBACK-NATIVE",
+  "Branch": "codex/1553-load-filesystem",
+  "RestoredCommit": "3e1b11c220ea3286002ea78c90e4eb4498e887dd",
+  "OriginalWipCommit": "8339e9c25441465f767b870af413f5f57ce70b70",
+  "RestoredAndOriginalTree": "c8a6734e9ce467616449c32118ecd71b470afcd8",
+  "NativeRuntimeSourceCommit": "3e1b11c220ea3286002ea78c90e4eb4498e887dd",
+  "NativeSourceSha256": "1f12338f013eb54070a198d0dd4a5998bbb5a7f426249442db4dfe5653b0217c",
+  "FinalFixtureAndTestSourceCommit": "0f7b3ef366d16e40b1295ef22c6a24df04a65c4f",
+  "Scope": "Repo-built linux-x64/glibc native helper for ordinary same-PID-namespace lineage only. Existing systemd-user remains preferred primary by contract; no production backend selection/wiring added.",
+  "Environment": {
+    "Os": "Debian13.6",
+    "Kernel": "6.18.44",
+    "Architecture": "x86_64",
+    "Uid": 1000,
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31",
+    "PowerShell": "7.5.4",
+    "Compiler": "Debian GCC14.2.0-19",
+    "CompilerPath": "/usr/bin/x86_64-linux-gnu-gcc-14",
+    "CompilerSha256": "a23ecab8ff08f09ad8c80602c2c5df7f49e09c25905cb8975902e101bf72635f",
+    "Libc": "glibc2.41",
+    "Activation": "source /workspace/.onboarding/activate.sh",
+    "TemporaryDirectory": "/workspace/t1553",
+    "Notes": "Existing workspace toolchain/cache activated; no installation, network/security/credential modification."
+  },
+  "QualificationCases": [
+    {
+      "Category": "linux-fallback-proc-discovery",
+      "Cases": 1,
+      "SourceCommit": "3e1b11c220ea3286002ea78c90e4eb4498e887dd",
+      "Proof": "Single adopted-child GREEN after saved d57b4574 causal RED."
+    },
+    {
+      "Category": "linux-fallback-descendants",
+      "Cases": 4,
+      "SourceCommit": "f561a7854a91ebb1fcdcbf9348d4cfa019bfae93",
+      "Proof": "Retain doublefork/setsid, ignoredTERM, root-first23 and named stat cases from original5/5. Its old spawn row is superseded below."
+    },
+    {
+      "Category": "linux-fallback-control",
+      "Cases": 6,
+      "SourceCommit": "f561a7854a91ebb1fcdcbf9348d4cfa019bfae93",
+      "Proof": "Prestart stop/cancel, poststart cancel, owner loss before/after launch and timeout retaining authority/Uncertain."
+    },
+    {
+      "Category": "linux-fallback-authority",
+      "Cases": 7,
+      "SourceCommit": "f561a7854a91ebb1fcdcbf9348d4cfa019bfae93",
+      "Proof": "Scope notice/sentinel, exec error, malformed/repeated commands, private input/environment/cwd, closed/full status."
+    },
+    {
+      "Category": "linux-fallback-spawn-boundary",
+      "Cases": 2,
+      "SourceCommit": "0f7b3ef366d16e40b1295ef22c6a24df04a65c4f",
+      "Proof": "Normal spawn and deterministic signal-wait boundary; causal lost-wakeup RED fixed."
+    },
+    {
+      "Category": "linux-fallback-build-lifetime",
+      "Cases": 1,
+      "SourceCommit": "0f7b3ef366d16e40b1295ef22c6a24df04a65c4f",
+      "Proof": "Preparation-only finite direct process; causal abandonment RED fixed. Not a native worker case."
+    },
+    {
+      "Category": "linux-fallback-pidfd-identity",
+      "Cases": 1,
+      "SourceCommit": "0f7b3ef366d16e40b1295ef22c6a24df04a65c4f",
+      "Proof": "Current gated stale-pidfd primitive with exclusive ECHILD, after historic fixture source changed."
+    }
+  ],
+  "DistinctQualifiedCases": 22,
+  "CausalRed": {
+    "InheritedDescendant": {
+      "Source": "d57b4574d0dd3695e9cef084addc6bc80934b6d1",
+      "Passed": 0,
+      "Failed": 1,
+      "Replayed": false
+    },
+    "SpawnBoundary": {
+      "Source": "cd91d22dd5e32fba77c2931b3d65367c7b314e83",
+      "Passed": 1,
+      "Failed": 1
+    },
+    "PreparationLifetime": {
+      "Source": "c41dc9c107713d2dc919a02f4c550357b725bb52",
+      "Passed": 0,
+      "Failed": 1
+    }
+  },
+  "DiscoveryAudit": {
+    "SourceCommit": "0f7b3ef366d16e40b1295ef22c6a24df04a65c4f",
+    "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+    "Categories": 252,
+    "MethodsFiles": 10759,
+    "Executed": 0,
+    "Unmapped": 0,
+    "Stale": 0,
+    "WallSeconds": 40.5350942,
+    "FreshBuilds": [
+      "unit",
+      "integration"
+    ],
+    "ArtifactOnlyDirtyPaths": 29,
+    "Note": "Captured final-corrections evidence concurrently; source/catalog inputs match exact commit. No runtime source mutation during audit."
+  },
+  "Manifests": [
+    {
+      "Path": "evidence/linux-fallback-portable-bootstrap/manifest.json",
+      "Artifacts": 26,
+      "Sha256": "eb04d7722efae5f10c0dcad35c2dc1ed9babb18ca4da982824018a6666d4ae6b"
+    },
+    {
+      "Path": "evidence/linux-fallback-portable-descendant-red/manifest.json",
+      "Artifacts": 18,
+      "Sha256": "d01ffd5443defc0512b4d4fb6f9da6bb73e2db3382feb81c51a7ba912edacac6"
+    },
+    {
+      "Path": "evidence/linux-fallback-restored-descendant-green/manifest.json",
+      "Artifacts": 22,
+      "Sha256": "17607388674c124be510d364cc82b404bcb4343880b578e7c9571698dcf33ccd"
+    },
+    {
+      "Path": "evidence/linux-fallback-staged-descendants/manifest.json",
+      "Artifacts": 40,
+      "Sha256": "c9f40f7bb64ef52d79f228fd9e924b36f1701efe32af81e8d70b81f5d4a60a57"
+    },
+    {
+      "Path": "evidence/linux-fallback-staged-control/manifest.json",
+      "Artifacts": 42,
+      "Sha256": "a4dc2bac6f3928c467da19a55db83412e3a0604633035cb3749410a78a6981a9"
+    },
+    {
+      "Path": "evidence/linux-fallback-staged-authority/manifest.json",
+      "Artifacts": 46,
+      "Sha256": "cc8ef194262ac13f319d913a09f16f6d23d4a9dafffcb965119496e908c0c587"
+    },
+    {
+      "Path": "evidence/linux-fallback-spawn-red/manifest.json",
+      "Artifacts": 22,
+      "Sha256": "add6673479812baabf71dd1061c958922d874836f36289a73ccd2d3026ca0b5b"
+    },
+    {
+      "Path": "evidence/linux-fallback-build-lifetime-red/manifest.json",
+      "Artifacts": 11,
+      "Sha256": "51c368a1a15fcbdc5f73929fc35fb88e693931a0217d0967849233971834f16a"
+    },
+    {
+      "Path": "evidence/linux-fallback-final-corrections/manifest.json",
+      "Artifacts": 29,
+      "Sha256": "65357f740d6c55694fd37badd5483684bc21ac802fe8338735149283c4f4799d"
+    },
+    {
+      "Path": "evidence/linux-fallback-final-audit/manifest.json",
+      "Artifacts": 10,
+      "Sha256": "1c1cceafb29a7418820282f1ed8244d42efb5cd00ea9c5f46ebe2c484d364f09"
+    },
+    {
+      "Path": "evidence/linux-fallback-final-review/manifest.json",
+      "Artifacts": 2,
+      "Sha256": "a73e8e912f87bc6dda480e81c8ff378339692460f3cc9ef21cb9433999eebbdf"
+    }
+  ],
+  "VerifiedArtifacts": 268,
+  "ValidGzipFiles": 102,
+  "SourceBoundaries": "evidence/linux-fallback-final-audit/source-boundaries.json",
+  "Cleanup": "evidence/linux-fallback-final-audit/cleanup.json",
+  "RemainingLimits": [
+    "No positive systemd-user native qualification",
+    "No native Windows requalification or Job semantics change",
+    "No production pool/main Release, backend Auto wiring, PTY, live GM or canonical writes",
+    "No arbitrary external broker/service or outside-lineage/PID-namespace containment claim",
+    "No forced cleanup or bounded termination qualification for a permanently stalled compiler",
+    "Historical old-VM19 PID1 fixture zombies and current VM terminated tool zombies are not claimed reaped"
+  ],
+  "GmSynchronization": "Synthetic native helper/fixture qualification only; no GM-authored capability or gameplay contract changed, so no prompt/example migration.",
+  "PassingExecutionsInGreenRuns": 23,
+  "ExecutedThisContinuation": 26,
+  "PassedThisContinuation": 24,
+  "ExpectedCausalFailuresThisContinuation": 2,
+  "IndependentReview": {
+    "Verdict": "PASS",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "ReviewedCommit": "40deee8e829149f0018ec99d35cc1a19ff3ed792",
+    "Record": "evidence/linux-fallback-final-review/review.json"
+  },
+  "CandidateRestoration": "evidence/linux-fallback-final-review/restoration.json",
+  "FinalVerdictCarrier": "Ordinary non-force publication/readback and another fresh GitHub-only restoration; exact final SHA recorded in handoff to avoid self-reference."
+}

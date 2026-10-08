@@ -1,12 +1,13 @@
 param(
     [Parameter(Position = 0)]
-    [string]$Action = "",
+    [string]$Command = "",
     [Parameter(Position = 1, ValueFromRemainingArguments = $true)]
     [string[]]$Arguments = @(),
     [string]$SessionPath = ""
 )
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "gm_main_operation.ps1")
 
 function Get-ClientRoot {
     return (Split-Path $PSScriptRoot -Parent)
@@ -293,7 +294,7 @@ function Read-BridgeStatus {
     try {
         $status = Get-Content -Path $statusPath -Raw -Encoding UTF8 | ConvertFrom-Json
         if (-not (Test-BridgeHelperAlive $status)) {
-            Remove-Item $statusPath -Force -ErrorAction SilentlyContinue
+            # Stale PID is diagnostic only; retain the file.
             return $null
         }
         return $status
@@ -306,7 +307,8 @@ function Read-BridgeStatus {
 function Invoke-BridgeRequest {
     param(
         [string]$ResolvedSessionPath,
-        [hashtable]$Payload
+        [hashtable]$Payload,
+        [int]$ResponseTimeoutMilliseconds = 5000
     )
 
     $status = Read-BridgeStatus $ResolvedSessionPath
@@ -314,17 +316,20 @@ function Invoke-BridgeRequest {
         throw "GM bridge status file not found or pipeName is missing."
     }
 
-    $pipe = New-Object System.IO.Pipes.NamedPipeClientStream(".", [string]$status.pipeName, [System.IO.Pipes.PipeDirection]::InOut)
+    $pipe = New-Object System.IO.Pipes.NamedPipeClientStream(".", [string]$status.pipeName, [System.IO.Pipes.PipeDirection]::InOut, [System.IO.Pipes.PipeOptions]::Asynchronous)
+    $read=$null; $write=$null; $reader=$null
     try {
         $pipe.Connect(3000)
-        $writer = New-Object System.IO.StreamWriter($pipe, [System.Text.Encoding]::UTF8, 1024, $true)
-        $writer.AutoFlush = $true
         $json = $Payload | ConvertTo-Json -Depth 8 -Compress
-        $writer.WriteLine($json)
-        $writer.Flush()
+        $requestBytes = [Text.Encoding]::UTF8.GetBytes($json + "`n")
+        $write = $pipe.WriteAsync($requestBytes, 0, $requestBytes.Length)
+        if (-not $write.Wait($ResponseTimeoutMilliseconds)) { throw "Bridge request write timed out." }
+        $write.GetAwaiter().GetResult()
 
         $reader = New-Object System.IO.StreamReader($pipe, [System.Text.Encoding]::UTF8, $false, 1024, $true)
-        $responseJson = $reader.ReadLine()
+        $read = $reader.ReadLineAsync()
+        if (-not $read.Wait($ResponseTimeoutMilliseconds)) { throw "Bridge response timed out." }
+        $responseJson = $read.GetAwaiter().GetResult()
         if ([string]::IsNullOrWhiteSpace($responseJson)) {
             throw "Bridge returned an empty response."
         }
@@ -333,7 +338,52 @@ function Invoke-BridgeRequest {
     }
     finally {
         $pipe.Dispose()
+        foreach ($pending in @($write,$read)) {
+            if ($pending) { try { if ($pending.Wait(2000)) { $pending.GetAwaiter().GetResult() | Out-Null } } catch { } }
+        }
+        if ($reader) { $reader.Dispose() }
     }
+}
+
+function Get-BridgePromptContentHash {
+    param([object]$Payload)
+    $prefix = if ($Payload.appendEnter) { "1`n" } else { "0`n" }
+    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($prefix + [string]$Payload.text)))
+}
+
+function Invoke-BridgePromptDelivery {
+    param([string]$ResolvedSessionPath, [hashtable]$Payload)
+    Invoke-GmParticipatingConsumer $ResolvedSessionPath { Invoke-BridgePromptDeliveryCore -ResolvedSessionPath $ResolvedSessionPath -Payload $Payload }
+}
+
+function Invoke-BridgePromptDeliveryCore {
+    param([string]$ResolvedSessionPath, [hashtable]$Payload)
+    $original = $Payload.Clone()
+    function ConvertTo-UnknownDelivery {
+        [pscustomobject]@{ ok=$true; promptDelivery=[pscustomobject]@{
+            operationId=[string]$original.operationId; operationKind=[string]$original.operationKind;
+            operationRevision=[string]$original.operationRevision; inputBindingId=[string]$original.inputBindingId;
+            contentHash=(Get-BridgePromptContentHash $original); disposition='unknown-outcome'; phase='terminal'; reason='transport-or-response-ambiguous' } }
+    }
+    function Test-ReplyIdentity($response) {
+        $d = $response.promptDelivery
+        return $d -and $d.operationId -ceq $original.operationId -and $d.operationKind -ceq $original.operationKind -and
+            $d.operationRevision -ceq $original.operationRevision -and $d.inputBindingId -ceq $original.inputBindingId -and
+            $d.contentHash -ceq (Get-BridgePromptContentHash $original)
+    }
+    try {
+        $response = Invoke-BridgeRequest -ResolvedSessionPath $ResolvedSessionPath -Payload $original
+        if ((Test-ReplyIdentity $response) -and $response.promptDelivery.disposition) { return $response }
+    } catch { }
+    # A lost response may only query the original live identity. This never sends another paste/submit.
+    if ($original.command -eq 'dispatchPrompt') {
+        try {
+            $query = $original.Clone(); $query.command = 'promptStatus'
+            $response = Invoke-BridgeRequest -ResolvedSessionPath $ResolvedSessionPath -Payload $query
+            if ((Test-ReplyIdentity $response) -and $response.promptDelivery.disposition) { return $response }
+        } catch { }
+    }
+    return (ConvertTo-UnknownDelivery)
 }
 
 function Assert-BridgeResponseOk {
@@ -492,7 +542,7 @@ function Remove-BridgeStatusFileIfStopped {
     param([string]$ResolvedSessionPath)
 
     $statusPath = Get-BridgeStatusPath $ResolvedSessionPath
-    Remove-Item $statusPath -Force -ErrorAction SilentlyContinue
+    Remove-GmCanonicalFile -SessionPath $ResolvedSessionPath -Path $statusPath
 }
 
 function New-BridgeShutdownResult {
@@ -524,10 +574,47 @@ function New-BridgeShutdownResult {
     }
 }
 
+function Get-OriginalMainStopExpectation {
+    param([string]$SessionPath)
+    $root=[IO.Path]::GetDirectoryName([IO.Path]::GetFullPath($SessionPath).TrimEnd([IO.Path]::DirectorySeparatorChar))
+    $record=Join-Path $root '.boe_runtime/gm-runs/main.json'
+    $retained=$global:BoeMainOperationContext.originalClose
+    if(-not (Test-Path -LiteralPath $record) -and -not $retained){return $null}
+    $identity=if($retained){$retained.identity}else{
+        $stream=[IO.File]::Open($record,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite -bor [IO.FileShare]::Delete)
+        try {
+            $buffer=[byte[]]::new(65537);$count=0
+            while($count -lt $buffer.Length){$read=$stream.Read($buffer,$count,$buffer.Length-$count);if($read -eq 0){break};$count+=$read}
+            if($count -eq 0 -or $count -gt 65536){throw 'Original main record unavailable.'}
+            $bytes=$buffer[0..($count-1)]
+        } finally {$stream.Dispose()}
+        $decoded=([Text.UTF8Encoding]::new($false,$true).GetString($bytes) | ConvertFrom-Json -ErrorAction Stop)
+        if($decoded.SchemaVersion -ne 1 -or -not $decoded.Identity){throw 'Original main record unavailable.'}
+        $id=$decoded.Identity
+        $backend=switch -CaseSensitive ($id.Backend){'WindowsJob'{1};'LinuxSupervisor'{2};default{throw 'Original main backend unavailable.'}}
+        [pscustomobject]@{rootKey=$id.RootKey;runId=$id.RunId;generationId=$id.GenerationId;epoch=$id.Epoch;backend=$backend;hostInstanceId=$id.HostInstanceId;bootId=$id.BootId}
+    }
+    $comparison=if(([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)){[StringComparison]::OrdinalIgnoreCase}else{[StringComparison]::Ordinal}
+    if(-not [string]::Equals($identity.rootKey,$root,$comparison)){throw 'Original main root expectation does not match requested session.'}
+    return [pscustomobject]@{root=$root;identity=$identity}
+}
+
 function Invoke-BridgeShutdown {
     param([string]$ResolvedSessionPath)
 
+    try {$expected=Get-OriginalMainStopExpectation $ResolvedSessionPath}
+    catch {return New-BridgeShutdownResult $ResolvedSessionPath $false 'original-stop-unconfirmed' $false $null $null 'Original main expectation unavailable; no PID fallback.'}
+    if($expected) {
+        try {
+            $response=Invoke-BridgeRequest $ResolvedSessionPath @{command='shutdown';rootKey=$expected.root;expectedMainIdentity=$expected.identity}
+            Assert-BridgeResponseOk $response
+            return New-BridgeShutdownResult $ResolvedSessionPath $true 'original-scoped-stopped' $false $response $null
+        } catch {return New-BridgeShutdownResult $ResolvedSessionPath $false 'original-stop-unconfirmed' $false $null $null 'Original scoped stop is unconfirmed; no PID fallback or replay.'}
+    }
     $statusBefore = Read-BridgeStatus $ResolvedSessionPath
+    if($statusBefore -and $statusBefore.terminalRunId) {
+        return New-BridgeShutdownResult $ResolvedSessionPath $false 'original-stop-unconfirmed' $false $null $null 'Owned terminal expectation unavailable; no PID fallback.'
+    }
     if ($null -eq $statusBefore) {
         return New-BridgeShutdownResult `
             -ResolvedSessionPath $ResolvedSessionPath `
@@ -621,12 +708,20 @@ function Start-Bridge {
     }
 
     $repoRoot = Get-RepoRoot
+    if (-not ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)) {
+        if (-not $VisibleBridge -or [Console]::IsInputRedirected) { throw 'Linux owned main requires start-bridge visible in a caller-supplied foreground terminal.' }
+        $assembly = Join-Path $repoRoot 'BookOfEternityGMBridge/BookOfEternityGMBridge.dll'
+        if (-not (Test-Path -LiteralPath $assembly)) { throw 'Packaged bridge is unavailable; player startup does not compile it.' }
+        & dotnet $assembly --host --sessionPath $ResolvedSessionPath --pipeName $pipeName
+        if ($LASTEXITCODE -ne 0) { throw "Packaged bridge exited with code $LASTEXITCODE." }
+        return
+    }
     $projectPath = Join-Path $repoRoot "BookOfEternityGMBridge\BookOfEternityGMBridge.csproj"
     if (!(Test-Path $projectPath)) {
         throw "Bridge project not found: $projectPath"
     }
 
-    $bridgeExe = Join-Path $repoRoot "BookOfEternityGMBridge\bin\Debug\net8.0-windows\BookOfEternityGMBridge.exe"
+    $bridgeExe = Join-Path $repoRoot "BookOfEternityGMBridge\bin\Debug\net8.0\BookOfEternityGMBridge.exe"
     $bridgeCommand = if (Test-Path $bridgeExe) {
         'Set-Location "{0}"; & "{1}" --host --sessionPath "{2}" --pipeName "{3}"' -f $repoRoot, $bridgeExe, $ResolvedSessionPath, $pipeName
     }
@@ -734,6 +829,16 @@ function Start-Daemon {
         throw "GM daemon script not found: $daemonScript"
     }
 
+    if (-not ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)) {
+        if (-not $visibleDaemon -or [Console]::IsInputRedirected) { throw 'Linux daemon requires start-daemon visible in its own caller-supplied terminal.' }
+        # Foreground in this separate terminal; never share the bridge keyboard.
+        $daemonArgs = @('-NoLogo','-NoProfile','-File',$daemonScript,'-GameSessionPath',$ResolvedSessionPath,'-PasteMode',$pasteMode,'-TurnTimeout',[string]$turnTimeout,'-LogFile',$logFile)
+        if ($autoPaste) { $daemonArgs += '-AutoPaste' }
+        & pwsh @daemonArgs
+        if ($LASTEXITCODE -ne 0) { throw "Daemon exited with code $LASTEXITCODE." }
+        return
+    }
+
     $daemonInvocation = "& {0} -GameSessionPath {1} -PasteMode {2} -TurnTimeout {3} -LogFile {4}" -f `
         (ConvertTo-PowerShellSingleQuotedLiteral $daemonScript),
         (ConvertTo-PowerShellSingleQuotedLiteral $ResolvedSessionPath),
@@ -775,34 +880,37 @@ function Invoke-PrepareTurn {
         [string[]]$PrepareArguments
     )
 
-    $repoRoot = Get-RepoRoot
+    if ($PSVersionTable.PSVersion.Major -lt 7) {
+        throw 'prepare-turn requires PowerShell 7; player startup does not install it.'
+    }
     $clientRoot = Get-ClientRoot
-    $clientProject = Join-Path $clientRoot "BookOfEternityClient.csproj"
-    if (!(Test-Path $clientProject)) {
-        throw "Client project not found: $clientProject"
-    }
-
-    $basePath = Split-Path $ResolvedSessionPath -Parent
-    $clientExe = Join-Path $clientRoot "bin\Debug\net8.0\BookOfEternityClient.exe"
-    $clientArguments = @($basePath, "--prepare-live-turn") + $PrepareArguments
-
-    if (Test-Path $clientExe) {
-        & $clientExe @clientArguments
-        if ($LASTEXITCODE -ne 0) {
-            throw "prepare-turn failed with exit code $LASTEXITCODE."
+    foreach ($name in @('BookOfEternityClient.dll', 'BookOfEternityClient.deps.json', 'BookOfEternityClient.runtimeconfig.json')) {
+        if (-not (Test-Path -LiteralPath (Join-Path $clientRoot $name) -PathType Leaf)) {
+            throw "prepare-turn package resource unavailable: $name. Player startup does not compile or download it."
         }
-        return
     }
-
-    dotnet run --project $clientProject -- @clientArguments
+    $dotnet = Get-Command dotnet -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+    if (-not $dotnet) { throw 'prepare-turn dotnet executable is unavailable; requires the .NET 8 runtime.' }
+    $runtimes = @(& $dotnet.Source --list-runtimes)
+    if ($LASTEXITCODE -ne 0) { throw "prepare-turn runtime discovery failed with exit code $LASTEXITCODE." }
+    foreach ($framework in @('Microsoft.NETCore.App', 'Microsoft.AspNetCore.App')) {
+        $pattern = '^' + [regex]::Escape($framework) + ' 8\.'
+        if (-not ($runtimes | Where-Object { $_ -match $pattern })) {
+            throw "prepare-turn requires $framework 8; the existing packaged client runtime is unavailable."
+        }
+    }
+    $basePath = Split-Path $ResolvedSessionPath -Parent
+    $assembly = Join-Path $clientRoot 'BookOfEternityClient.dll'
+    $clientArguments = @($assembly, $basePath, '--prepare-live-turn') + $PrepareArguments
+    & $dotnet.Source @clientArguments
     if ($LASTEXITCODE -ne 0) {
-        throw "prepare-turn failed with exit code $LASTEXITCODE."
+        throw "prepare-turn failed with exit code $LASTEXITCODE; no automatic retry."
     }
 }
 
 $resolvedSessionPath = Resolve-SessionPath $SessionPath
 
-switch ($Action.ToLowerInvariant()) {
+switch ($Command.ToLowerInvariant()) {
     "prepare-turn" {
         Invoke-PrepareTurn -ResolvedSessionPath $resolvedSessionPath -PrepareArguments $Arguments
         break
@@ -848,12 +956,17 @@ switch ($Action.ToLowerInvariant()) {
         } | ConvertTo-Json -Depth 8
         break
     }
+    "dispatch-operation" {
+        $operation = ($Arguments -join " ") | ConvertFrom-Json -AsHashtable
+        Invoke-BridgePromptDelivery -ResolvedSessionPath $resolvedSessionPath -Payload $operation | ConvertTo-Json -Depth 8
+        break
+    }
     "dispatchprompt" {
-        $text = ($Arguments -join " ")
-        Invoke-BridgeRequestChecked -ResolvedSessionPath $resolvedSessionPath -Payload @{
-            command = "dispatchPrompt"
-            text = $text
-            appendEnter = $true
+        $status = Read-BridgeStatus $resolvedSessionPath
+        Invoke-BridgePromptDelivery -ResolvedSessionPath $resolvedSessionPath -Payload @{
+            command='dispatchPrompt'; text=($Arguments -join " "); appendEnter=$true;
+            operationId=[guid]::NewGuid().ToString('N'); operationKind='automatic'; operationRevision='live';
+            inputBindingId=[string]$status.inputBindingId
         } | ConvertTo-Json -Depth 8
         break
     }

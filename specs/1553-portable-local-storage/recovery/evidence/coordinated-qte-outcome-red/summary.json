@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "portable-coordinated-qte-outcome"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "9622195741164e122480c7ca46867a92812417e2",
+    "WorkingTreeFingerprint": "8EDD0343C4E985A716B451B6E235E9D8BFD98E6135E117F91EEFDD16CE7D1F32",
+    "ChangedFiles": 8
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-coordinated-qte-outcome",
+      "Seconds": 7.824857,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0927029,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0176669,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0167889,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 180.253398,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:03:12.8915488",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 0,
+    "Failed": 2
+  },
+  "DuplicateTests": []
+}

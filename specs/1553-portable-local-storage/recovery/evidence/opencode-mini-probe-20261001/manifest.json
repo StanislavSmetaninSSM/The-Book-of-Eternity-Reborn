@@ -1,0 +1,18 @@
+{
+  "kind": "Sanitized original read-only OpenCode probe evidence; not a game-bridge or B2 acceptance result",
+  "probeDateUtc": "2026-10-01",
+  "normalization": [
+    "Absolute disposable probe-directory prefix replaced with $PROBE_ROOT throughout paths/commands.",
+    "Owned persistent exec-session handle replaced with $OWNED_SESSION.",
+    "Generated test session/message identifiers consistently replaced with $TEST_SESSION_1 and $TEST_MESSAGE_1 through $TEST_MESSAGE_4.",
+    "JSON formatting normalized; all counts, prompts/responses, input framing, binary/package/version hashes, arguments, limitations and source links preserved.",
+    "Only the sanitized evidence JSON is published; no raw profile/database, dependencies or npm logs are copied."
+  ],
+  "files": [
+    {
+      "path": "evidence.json",
+      "originalSha256": "8f4dd2429482d2c81349dda03bb90ebbaf2e993dde39882e17e512301f0b5398",
+      "sanitizedSha256": "028b5197b7d7fc3e21e55d03c2583d75bd64e73e9eadb9cbf97fd3f378d04543"
+    }
+  ]
+}

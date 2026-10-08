@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="22ef916e-b821-462c-9620-cb09cc3a1c0c" name="@95e438a3e5cb 2026-10-04 13:21:27" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T13:21:27.2843471-04:00" queuing="2026-10-04T13:21:27.2843472-04:00" start="2026-10-04T13:21:23.9488355-04:00" finish="2026-10-04T13:21:33.0605994-04:00" />
+  <TestSettings name="default" id="d342b386-ffdd-4d40-b1bd-86d18bd125be">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-04_13_21_27" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="5c6d7891-ef9f-47d6-b4c2-0d4e9355d943" testId="66ce26cb-8ba4-5464-4cf3-51f0748216cc" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;game-read-failure&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0487336" startTime="2026-10-04T13:21:32.3929243-04:00" endTime="2026-10-04T13:21:32.3929245-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5c6d7891-ef9f-47d6-b4c2-0d4e9355d943">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 612
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 650
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6309930d-b090-4f68-9486-b4853ce21b13" testId="7ba741b3-4afc-0e31-206e-631b5be9624d" testName="BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock" computerName="95e438a3e5cb" duration="00:00:00.0408575" startTime="2026-10-04T13:21:25.7830819-04:00" endTime="2026-10-04T13:21:25.7831066-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6309930d-b090-4f68-9486-b4853ce21b13">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: Uncertain
+Actual:   NotLoaded</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock() in [checkout]/BookOfEternityClient.IntegrationTests/BrowserLocalWriteCoordinatorTests.cs:line 1267
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b7f770bf-568b-43b4-b463-f36066b241e4" testId="c2abbe74-fc25-0d70-bfbc-76b23d9a78d6" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;mixed-request&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0487231" startTime="2026-10-04T13:21:32.5489978-04:00" endTime="2026-10-04T13:21:32.5489980-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b7f770bf-568b-43b4-b463-f36066b241e4">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 612
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 650
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6e84568f-8a99-4124-851c-ae458d01d535" testId="cdde866c-d2cc-110e-eba2-25c5fc8268be" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked" computerName="95e438a3e5cb" duration="00:00:00.3962289" startTime="2026-10-04T13:21:32.9978922-04:00" endTime="2026-10-04T13:21:32.9978924-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6e84568f-8a99-4124-851c-ae458d01d535" />
+    <UnitTestResult executionId="347af8e5-cb3e-49ef-84e5-b7ebc1a3d9b0" testId="a3597419-6371-cfda-cddf-735f1a4007e5" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;absent-authority&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0504835" startTime="2026-10-04T13:21:32.3435264-04:00" endTime="2026-10-04T13:21:32.3435266-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="347af8e5-cb3e-49ef-84e5-b7ebc1a3d9b0">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 612
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 650
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6cfad57f-770c-4323-84a6-e3928fc0ba27" testId="e51d6f89-6558-59ac-c5d9-dfd56c9539b6" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;stale&quot;)" computerName="95e438a3e5cb" duration="00:00:00.7286127" startTime="2026-10-04T13:21:29.4408726-04:00" endTime="2026-10-04T13:21:29.4408728-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6cfad57f-770c-4323-84a6-e3928fc0ba27" />
+    <UnitTestResult executionId="8b0a43af-c8f7-43ce-b7d3-01c739656bce" testId="e71050f7-cdd4-e283-3993-2d811e1d9515" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-close&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0540658" startTime="2026-10-04T13:21:32.4992870-04:00" endTime="2026-10-04T13:21:32.4992872-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8b0a43af-c8f7-43ce-b7d3-01c739656bce">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 612
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 650
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="eaabc045-124f-47e5-ad67-460f2e9a0f55" testId="25dbd173-4106-8812-1996-8dce4e25b433" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;cached-settings&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0504639" startTime="2026-10-04T13:21:32.4449093-04:00" endTime="2026-10-04T13:21:32.4449095-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eaabc045-124f-47e5-ad67-460f2e9a0f55">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 612
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 650
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="06625d6c-1f25-44c5-8471-5206ad9e8054" testId="f2be7987-7f2a-5278-6122-e1b3eec93ac8" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-read&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0521286" startTime="2026-10-04T13:21:32.2920790-04:00" endTime="2026-10-04T13:21:32.2920791-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="06625d6c-1f25-44c5-8471-5206ad9e8054">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 612
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 650
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="12c1bacc-9d39-4d66-a228-4fbbb563e357" testId="b8e13f8c-bfed-b566-63c5-bd79e33a7aa9" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;missing&quot;)" computerName="95e438a3e5cb" duration="00:00:00.7613176" startTime="2026-10-04T13:21:30.2029266-04:00" endTime="2026-10-04T13:21:30.2029267-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="12c1bacc-9d39-4d66-a228-4fbbb563e357" />
+    <UnitTestResult executionId="b741a84c-031c-4c95-8a2f-6b29f4a024d0" testId="b0ba79f8-3854-dfe8-2daa-99d1d0d8ae87" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;settings-failure&quot;)" computerName="95e438a3e5cb" duration="00:00:01.3248484" startTime="2026-10-04T13:21:31.5283224-04:00" endTime="2026-10-04T13:21:31.5283226-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b741a84c-031c-4c95-8a2f-6b29f4a024d0" />
+    <UnitTestResult executionId="68ca8a92-e2d9-4d23-90bc-9aad7f0507f2" testId="c23ceb08-071e-d327-073d-7acd5441986f" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds" computerName="95e438a3e5cb" duration="00:00:00.7086383" startTime="2026-10-04T13:21:32.2382934-04:00" endTime="2026-10-04T13:21:32.2382936-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="68ca8a92-e2d9-4d23-90bc-9aad7f0507f2" />
+    <UnitTestResult executionId="773ede9a-2c97-43a1-b089-932793785292" testId="a8b54232-1c37-b614-b8c3-41f37c6d7471" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;current&quot;)" computerName="95e438a3e5cb" duration="00:00:02.9253177" startTime="2026-10-04T13:21:28.7119575-04:00" endTime="2026-10-04T13:21:28.7119577-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="773ede9a-2c97-43a1-b089-932793785292" />
+    <UnitTestResult executionId="5e9902fd-c042-44b3-be25-c7eb6184414a" testId="501fb15d-f298-9461-b36b-944e7aab3ddd" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;no-active&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0516696" startTime="2026-10-04T13:21:32.6014664-04:00" endTime="2026-10-04T13:21:32.6014666-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5e9902fd-c042-44b3-be25-c7eb6184414a">
+      <Output>
+        <ErrorInfo>
+          <Message>System.NullReferenceException : Object reference not set to an instance of an object.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 612
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario) in [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 650
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;stale&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e51d6f89-6558-59ac-c5d9-dfd56c9539b6">
+      <Execution id="6cfad57f-770c-4323-84a6-e3928fc0ba27" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;settings-failure&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b0ba79f8-3854-dfe8-2daa-99d1d0d8ae87">
+      <Execution id="b741a84c-031c-4c95-8a2f-6b29f4a024d0" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;absent-authority&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a3597419-6371-cfda-cddf-735f1a4007e5">
+      <Execution id="347af8e5-cb3e-49ef-84e5-b7ebc1a3d9b0" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;cached-settings&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="25dbd173-4106-8812-1996-8dce4e25b433">
+      <Execution id="eaabc045-124f-47e5-ad67-460f2e9a0f55" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;missing&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b8e13f8c-bfed-b566-63c5-bd79e33a7aa9">
+      <Execution id="12c1bacc-9d39-4d66-a228-4fbbb563e357" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c23ceb08-071e-d327-073d-7acd5441986f">
+      <Execution id="68ca8a92-e2d9-4d23-90bc-9aad7f0507f2" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-close&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e71050f7-cdd4-e283-3993-2d811e1d9515">
+      <Execution id="8b0a43af-c8f7-43ce-b7d3-01c739656bce" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7ba741b3-4afc-0e31-206e-631b5be9624d">
+      <Execution id="6309930d-b090-4f68-9486-b4853ce21b13" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests" name="ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;no-active&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="501fb15d-f298-9461-b36b-944e7aab3ddd">
+      <Execution id="5e9902fd-c042-44b3-be25-c7eb6184414a" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;mixed-request&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c2abbe74-fc25-0d70-bfbc-76b23d9a78d6">
+      <Execution id="b7f770bf-568b-43b4-b463-f36066b241e4" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="cdde866c-d2cc-110e-eba2-25c5fc8268be">
+      <Execution id="6e84568f-8a99-4124-851c-ae458d01d535" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;current&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a8b54232-1c37-b614-b8c3-41f37c6d7471">
+      <Execution id="773ede9a-2c97-43a1-b089-932793785292" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;game-read-failure&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="66ce26cb-8ba4-5464-4cf3-51f0748216cc">
+      <Execution id="5c6d7891-ef9f-47d6-b4c2-0d4e9355d943" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-read&quot;)" storage="[checkout]/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f2be7987-7f2a-5278-6122-e1b3eec93ac8">
+      <Execution id="06625d6c-1f25-44c5-8471-5206ad9e8054" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="66ce26cb-8ba4-5464-4cf3-51f0748216cc" executionId="5c6d7891-ef9f-47d6-b4c2-0d4e9355d943" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7ba741b3-4afc-0e31-206e-631b5be9624d" executionId="6309930d-b090-4f68-9486-b4853ce21b13" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c2abbe74-fc25-0d70-bfbc-76b23d9a78d6" executionId="b7f770bf-568b-43b4-b463-f36066b241e4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cdde866c-d2cc-110e-eba2-25c5fc8268be" executionId="6e84568f-8a99-4124-851c-ae458d01d535" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a3597419-6371-cfda-cddf-735f1a4007e5" executionId="347af8e5-cb3e-49ef-84e5-b7ebc1a3d9b0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e51d6f89-6558-59ac-c5d9-dfd56c9539b6" executionId="6cfad57f-770c-4323-84a6-e3928fc0ba27" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e71050f7-cdd4-e283-3993-2d811e1d9515" executionId="8b0a43af-c8f7-43ce-b7d3-01c739656bce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="25dbd173-4106-8812-1996-8dce4e25b433" executionId="eaabc045-124f-47e5-ad67-460f2e9a0f55" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f2be7987-7f2a-5278-6122-e1b3eec93ac8" executionId="06625d6c-1f25-44c5-8471-5206ad9e8054" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b8e13f8c-bfed-b566-63c5-bd79e33a7aa9" executionId="12c1bacc-9d39-4d66-a228-4fbbb563e357" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b0ba79f8-3854-dfe8-2daa-99d1d0d8ae87" executionId="b741a84c-031c-4c95-8a2f-6b29f4a024d0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c23ceb08-071e-d327-073d-7acd5441986f" executionId="68ca8a92-e2d9-4d23-90bc-9aad7f0507f2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a8b54232-1c37-b614-b8c3-41f37c6d7471" executionId="773ede9a-2c97-43a1-b089-932793785292" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="501fb15d-f298-9461-b36b-944e7aab3ddd" executionId="5e9902fd-c042-44b3-be25-c7eb6184414a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="14" executed="14" passed="6" failed="8" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.29]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.36]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.38]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.47]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:01.47]       Expected: Uncertain
+[xUnit.net 00:00:01.47]       Actual:   NotLoaded
+[xUnit.net 00:00:01.47]       Stack Trace:
+[xUnit.net 00:00:01.47]         [checkout]/BookOfEternityClient.IntegrationTests/BrowserLocalWriteCoordinatorTests.cs(1267,0): at BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock()
+[xUnit.net 00:00:01.47]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:07.98]       System.NullReferenceException : Object reference not set to an instance of an object.
+[xUnit.net 00:00:07.98]       Stack Trace:
+[xUnit.net 00:00:07.98]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(612,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario)
+[xUnit.net 00:00:07.98]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(650,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario)
+[xUnit.net 00:00:07.98]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:08.03]       System.NullReferenceException : Object reference not set to an instance of an object.
+[xUnit.net 00:00:08.03]       Stack Trace:
+[xUnit.net 00:00:08.03]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(612,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario)
+[xUnit.net 00:00:08.03]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(650,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario)
+[xUnit.net 00:00:08.03]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:08.08]       System.NullReferenceException : Object reference not set to an instance of an object.
+[xUnit.net 00:00:08.08]       Stack Trace:
+[xUnit.net 00:00:08.08]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(612,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario)
+[xUnit.net 00:00:08.08]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(650,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario)
+[xUnit.net 00:00:08.08]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:08.13]       System.NullReferenceException : Object reference not set to an instance of an object.
+[xUnit.net 00:00:08.13]       Stack Trace:
+[xUnit.net 00:00:08.13]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(612,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario)
+[xUnit.net 00:00:08.13]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(650,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario)
+[xUnit.net 00:00:08.13]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:08.19]       System.NullReferenceException : Object reference not set to an instance of an object.
+[xUnit.net 00:00:08.19]       Stack Trace:
+[xUnit.net 00:00:08.19]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(612,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario)
+[xUnit.net 00:00:08.19]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(650,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario)
+[xUnit.net 00:00:08.19]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:08.24]       System.NullReferenceException : Object reference not set to an instance of an object.
+[xUnit.net 00:00:08.24]       Stack Trace:
+[xUnit.net 00:00:08.24]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(612,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario)
+[xUnit.net 00:00:08.24]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(650,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario)
+[xUnit.net 00:00:08.24]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:08.29]       System.NullReferenceException : Object reference not set to an instance of an object.
+[xUnit.net 00:00:08.29]       Stack Trace:
+[xUnit.net 00:00:08.29]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(612,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario)
+[xUnit.net 00:00:08.29]         [checkout]/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(650,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(String scenario)
+[xUnit.net 00:00:08.29]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:08.69]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T13:21:25.7967450-04:00">
+        <Text>[xUnit.net 00:00:01.47]     BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T13:21:32.2926876-04:00">
+        <Text>[xUnit.net 00:00:07.98]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: "rotate-read") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T13:21:32.3437493-04:00">
+        <Text>[xUnit.net 00:00:08.03]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: "absent-authority") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T13:21:32.3931743-04:00">
+        <Text>[xUnit.net 00:00:08.08]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: "game-read-failure") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T13:21:32.4450916-04:00">
+        <Text>[xUnit.net 00:00:08.13]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: "cached-settings") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T13:21:32.4996796-04:00">
+        <Text>[xUnit.net 00:00:08.19]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: "rotate-close") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T13:21:32.5494059-04:00">
+        <Text>[xUnit.net 00:00:08.24]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: "mixed-request") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T13:21:32.6016970-04:00">
+        <Text>[xUnit.net 00:00:08.29]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: "no-active") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

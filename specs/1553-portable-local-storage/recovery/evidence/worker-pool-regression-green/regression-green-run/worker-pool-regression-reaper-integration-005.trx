@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a6002424-c103-4613-8e16-279db0d38667" name="@c7669543e9c7 2026-10-05 23:17:42" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T23:17:42.6353507+00:00" queuing="2026-10-05T23:17:42.6353508+00:00" start="2026-10-05T23:17:39.8000757+00:00" finish="2026-10-05T23:17:42.6424615+00:00" />
+  <TestSettings name="default" id="5372ef53-750e-49cc-84f8-bfe77f05bd5a">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_23_17_42" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="978f6262-cbeb-4714-8cd7-39fe4769629d" testId="b638925b-17c0-7e61-a636-ff5a8a71aa5d" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot" computerName="c7669543e9c7" duration="00:00:00.0144166" startTime="2026-10-05T23:17:42.5396798+00:00" endTime="2026-10-05T23:17:42.5396800+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="978f6262-cbeb-4714-8cd7-39fe4769629d" />
+    <UnitTestResult executionId="fd3c815b-8397-4e4d-afe8-b525281a936b" testId="b3862260-8fab-ce1f-c574-17af874bd709" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: True, afterPublication: False, canonicalUnavailable: True)" computerName="c7669543e9c7" duration="00:00:00.0139244" startTime="2026-10-05T23:17:42.4369605+00:00" endTime="2026-10-05T23:17:42.4369606+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fd3c815b-8397-4e4d-afe8-b525281a936b" />
+    <UnitTestResult executionId="ec008e75-e47a-4cac-8f81-3159a6f4a445" testId="1082c566-4b5c-a097-cb58-7301b8484093" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot" computerName="c7669543e9c7" duration="00:00:00.0421315" startTime="2026-10-05T23:17:42.5064549+00:00" endTime="2026-10-05T23:17:42.5064551+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ec008e75-e47a-4cac-8f81-3159a6f4a445" />
+    <UnitTestResult executionId="ba0e9265-c1f0-440b-a811-948111492c99" testId="bed85393-f306-34fa-2fa9-64e6fc6491f9" testName="BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_OverlappingPassesCleanAndReleaseCapacityExactlyOnce" computerName="c7669543e9c7" duration="00:00:00.0263323" startTime="2026-10-05T23:17:42.3139537+00:00" endTime="2026-10-05T23:17:42.3139680+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ba0e9265-c1f0-440b-a811-948111492c99" />
+    <UnitTestResult executionId="a5183360-0f46-4532-9e43-187befc7377a" testId="6b24d892-d343-c9dc-b484-1006331a89c4" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: True, afterPublication: True, canonicalUnavailable: False)" computerName="c7669543e9c7" duration="00:00:00.1453645" startTime="2026-10-05T23:17:42.4225384+00:00" endTime="2026-10-05T23:17:42.4225386+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a5183360-0f46-4532-9e43-187befc7377a" />
+    <UnitTestResult executionId="0698815c-be34-4900-a1de-c4b046d5b069" testId="e0bcfac4-f48c-ceea-8ef1-3cebb91d8822" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: False, afterPublication: True, canonicalUnavailable: True)" computerName="c7669543e9c7" duration="00:00:00.0112230" startTime="2026-10-05T23:17:42.4605065+00:00" endTime="2026-10-05T23:17:42.4605066+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0698815c-be34-4900-a1de-c4b046d5b069" />
+    <UnitTestResult executionId="bad814b7-0431-439c-a70d-84e083248dd4" testId="dcba2479-8332-02c7-ace8-bb456dcca14d" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce" computerName="c7669543e9c7" duration="00:00:00.0202219" startTime="2026-10-05T23:17:42.5248518+00:00" endTime="2026-10-05T23:17:42.5248520+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bad814b7-0431-439c-a70d-84e083248dd4" />
+    <UnitTestResult executionId="43cbb7e0-2a55-4fbf-8bc6-9b75293759db" testId="849b64b2-eea5-b88f-08a3-709b0b1f1962" testName="BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_UnconfirmedOwnerRetainsBoundedCapacityUntilLaterDeath" computerName="c7669543e9c7" duration="00:00:00.0076858" startTime="2026-10-05T23:17:42.3196293+00:00" endTime="2026-10-05T23:17:42.3196294+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="43cbb7e0-2a55-4fbf-8bc6-9b75293759db" />
+    <UnitTestResult executionId="679398af-ad1c-4c07-9a56-f55279ba2ee8" testId="c78d2e94-a378-41b3-1c2b-4db0f7a0b894" testName="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: False, afterPublication: False, canonicalUnavailable: False)" computerName="c7669543e9c7" duration="00:00:00.0114278" startTime="2026-10-05T23:17:42.4487897+00:00" endTime="2026-10-05T23:17:42.4487898+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="679398af-ad1c-4c07-9a56-f55279ba2ee8" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="dcba2479-8332-02c7-ace8-bb456dcca14d">
+      <Execution id="bad814b7-0431-439c-a70d-84e083248dd4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="CanonicalAppendSuccessNeedsNoFallbackAndReleasesExactlyOnce" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b638925b-17c0-7e61-a636-ff5a8a71aa5d">
+      <Execution id="978f6262-cbeb-4714-8cd7-39fe4769629d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="PublishedTamperRemainsConflictAndCannotReleaseRetainedSlot" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: False, afterPublication: True, canonicalUnavailable: True)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e0bcfac4-f48c-ceea-8ef1-3cebb91d8822">
+      <Execution id="0698815c-be34-4900-a1de-c4b046d5b069" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="1082c566-4b5c-a097-cb58-7301b8484093">
+      <Execution id="ec008e75-e47a-4cac-8f81-3159a6f4a445" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="UnconfirmedOwnerCannotCleanWorkspaceRecordReceiptOrReleaseSlot" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_OverlappingPassesCleanAndReleaseCapacityExactlyOnce" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="bed85393-f306-34fa-2fa9-64e6fc6491f9">
+      <Execution id="ba0e9265-c1f0-440b-a811-948111492c99" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessTreeTests" name="QuarantineReaper_OverlappingPassesCleanAndReleaseCapacityExactlyOnce" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: True, afterPublication: False, canonicalUnavailable: True)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b3862260-8fab-ce1f-c574-17af874bd709">
+      <Execution id="fd3c815b-8397-4e4d-afe8-b525281a936b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: True, afterPublication: True, canonicalUnavailable: False)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6b24d892-d343-c9dc-b484-1006331a89c4">
+      <Execution id="a5183360-0f46-4532-9e43-187befc7377a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerProcessTreeTests.QuarantineReaper_UnconfirmedOwnerRetainsBoundedCapacityUntilLaterDeath" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="849b64b2-eea5-b88f-08a3-709b0b1f1962">
+      <Execution id="43cbb7e0-2a55-4fbf-8bc6-9b75293759db" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerProcessTreeTests" name="QuarantineReaper_UnconfirmedOwnerRetainsBoundedCapacityUntilLaterDeath" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests.ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry(cancelled: False, afterPublication: False, canonicalUnavailable: False)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c78d2e94-a378-41b3-1c2b-4db0f7a0b894">
+      <Execution id="679398af-ad1c-4c07-9a56-f55279ba2ee8" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerQuarantineAuditReceiptTests" name="ReaperRetainsAuthorityCapacityAndSlotUntilExactTerminalReceiptRetry" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="b638925b-17c0-7e61-a636-ff5a8a71aa5d" executionId="978f6262-cbeb-4714-8cd7-39fe4769629d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b3862260-8fab-ce1f-c574-17af874bd709" executionId="fd3c815b-8397-4e4d-afe8-b525281a936b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1082c566-4b5c-a097-cb58-7301b8484093" executionId="ec008e75-e47a-4cac-8f81-3159a6f4a445" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bed85393-f306-34fa-2fa9-64e6fc6491f9" executionId="ba0e9265-c1f0-440b-a811-948111492c99" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6b24d892-d343-c9dc-b484-1006331a89c4" executionId="a5183360-0f46-4532-9e43-187befc7377a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e0bcfac4-f48c-ceea-8ef1-3cebb91d8822" executionId="0698815c-be34-4900-a1de-c4b046d5b069" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dcba2479-8332-02c7-ace8-bb456dcca14d" executionId="bad814b7-0431-439c-a70d-84e083248dd4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="849b64b2-eea5-b88f-08a3-709b0b1f1962" executionId="43cbb7e0-2a55-4fbf-8bc6-9b75293759db" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c78d2e94-a378-41b3-1c2b-4db0f7a0b894" executionId="679398af-ad1c-4c07-9a56-f55279ba2ee8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="9" executed="9" passed="9" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.38]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.93]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.96]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.27]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

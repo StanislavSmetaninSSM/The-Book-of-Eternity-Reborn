@@ -1,0 +1,92 @@
+{
+  "Categories": [
+    "gm-load-session-lifecycle",
+    "browser-load-session-lifecycle"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-load-session-lifecycle",
+      "reason": "T041 Load UX original production terminal stop/replacement/refresh/fresh epoch in isolated Linux roots and real entrypoints; new causal boundary only.",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction"
+      ]
+    },
+    {
+      "category": "browser-load-session-lifecycle",
+      "reason": "Actual launcher/settings Load handlers: immutable owner, complete refresh/fresh-launch receipt, stale/cancel/lost reply; new causal boundary only.",
+      "contracts": [
+        "#1553 accepted Load UX + original main/worker/storage generation conjunction"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "ed8aafb4e585affc0b9d06edd65f3ad2f0f3a5a5",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "browser-load-session-lifecycle",
+      "Seconds": 1.5731012,
+      "BudgetMinutes": 2,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0681155,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0521832,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0867043,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 91.2642225,
+      "Completed": true
+    },
+    {
+      "Name": "browser-load-session-lifecycle-frontend-001",
+      "Seconds": 1.5622975,
+      "Completed": false
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 12,
+  "WallTime": "00:01:38.0245434",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 2,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "browser-load-session-lifecycle-frontend-001",
+      "gm-load-session-lifecycle-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="27c9c757-2a58-41ab-a3c5-5932ef21fe19" name="@c7669543e9c7 2026-10-06 07:17:30" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T07:17:30.5291890+00:00" queuing="2026-10-06T07:17:30.5291890+00:00" start="2026-10-06T07:17:26.5510836+00:00" finish="2026-10-06T07:17:31.2958826+00:00" />
+  <TestSettings name="default" id="54557c9a-4361-47d4-a2db-a9fc88d1eb47">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_07_17_30" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="cfa71861-89b9-4fb5-82ac-15bc43390e2e" testId="48768043-53c1-bf62-cec2-6fc9d1f33fcd" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft" computerName="c7669543e9c7" duration="00:00:00.1908580" startTime="2026-10-06T07:17:29.1981600+00:00" endTime="2026-10-06T07:17:29.1982289+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cfa71861-89b9-4fb5-82ac-15bc43390e2e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: Collection was not empty
+Collection: [21]</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft() in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 28
+   at BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft() in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 28
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3373d16c-5fa9-4900-8e85-081f540fc190" testId="8a0f74c6-acd4-b104-a488-72cce4bc2952" testName="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus" computerName="c7669543e9c7" duration="00:00:02.0304068" startTime="2026-10-06T07:17:31.2236142+00:00" endTime="2026-10-06T07:17:31.2236145+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3373d16c-5fa9-4900-8e85-081f540fc190">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Null() Failure: Value is not null
+Expected: null
+Actual:   System.TimeoutException: The operation has timed out.
+   at BookOfEternityClient.Tests.GmBridgePromptOperationTests.&lt;&gt;c__DisplayClass1_0.&lt;&lt;ActualPipe_SlowPeerDoesNotBlockStatus&gt;b__0&gt;d.MoveNext() in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 39
+--- End of stack trace from previous location ---
+   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus() in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 40
+   at BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus() in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 41
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8a0f74c6-acd4-b104-a488-72cce4bc2952">
+      <Execution id="3373d16c-5fa9-4900-8e85-081f540fc190" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="ActualPipe_SlowPeerDoesNotBlockStatus" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="48768043-53c1-bf62-cec2-6fc9d1f33fcd">
+      <Execution id="cfa71861-89b9-4fb5-82ac-15bc43390e2e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgePromptOperationTests" name="AutomaticDispatch_DoesNotEraseManualDraft" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="48768043-53c1-bf62-cec2-6fc9d1f33fcd" executionId="cfa71861-89b9-4fb5-82ac-15bc43390e2e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8a0f74c6-acd4-b104-a488-72cce4bc2952" executionId="3373d16c-5fa9-4900-8e85-081f540fc190" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="2" executed="2" passed="0" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.32]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.85]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.87]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.13]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:02.13]       Collection: [21]
+[xUnit.net 00:00:02.13]       Stack Trace:
+[xUnit.net 00:00:02.13]         /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs(28,0): at BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft()
+[xUnit.net 00:00:02.14]         /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs(28,0): at BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft()
+[xUnit.net 00:00:02.14]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.16]       Assert.Null() Failure: Value is not null
+[xUnit.net 00:00:04.16]       Expected: null
+[xUnit.net 00:00:04.16]       Actual:   System.TimeoutException: The operation has timed out.
+[xUnit.net 00:00:04.16]          at BookOfEternityClient.Tests.GmBridgePromptOperationTests.&lt;&gt;c__DisplayClass1_0.&lt;&lt;ActualPipe_SlowPeerDoesNotBlockStatus&gt;b__0&gt;d.MoveNext() in /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs:line 39
+[xUnit.net 00:00:04.16]       --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.16]          at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76
+[xUnit.net 00:00:04.16]       Stack Trace:
+[xUnit.net 00:00:04.16]         /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs(40,0): at BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus()
+[xUnit.net 00:00:04.16]         /workspace/native-1553/BookOfEternityClient.Tests/GmBridgePromptOperationTests.cs(41,0): at BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus()
+[xUnit.net 00:00:04.16]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.17]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T07:17:29.1917371+00:00">
+        <Text>[xUnit.net 00:00:02.13]     BookOfEternityClient.Tests.GmBridgePromptOperationTests.AutomaticDispatch_DoesNotEraseManualDraft [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T07:17:31.2267165+00:00">
+        <Text>[xUnit.net 00:00:04.16]     BookOfEternityClient.Tests.GmBridgePromptOperationTests.ActualPipe_SlowPeerDoesNotBlockStatus [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

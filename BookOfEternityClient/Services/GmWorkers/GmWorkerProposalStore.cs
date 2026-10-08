@@ -9,6 +9,7 @@ public sealed class GmWorkerProposalStore
 
     private readonly FileSystemManager _fs;
     private readonly Func<FileSystemManager.CanonicalWriteLease, string, byte[], Task> _publishInboxAsync;
+    private readonly GmWorkerSyntheticBundlePublication? _syntheticPublication;
 
     public GmWorkerProposalStore(FileSystemManager fs)
         : this(fs, (lease, path, content) => fs.WriteFileAtomicBytesAsync(lease, path, content))
@@ -17,10 +18,12 @@ public sealed class GmWorkerProposalStore
 
     internal GmWorkerProposalStore(
         FileSystemManager fs,
-        Func<FileSystemManager.CanonicalWriteLease, string, byte[], Task> publishInboxAsync)
+        Func<FileSystemManager.CanonicalWriteLease, string, byte[], Task> publishInboxAsync,
+        GmWorkerSyntheticBundlePublication? syntheticPublication = null)
     {
         _fs = fs;
         _publishInboxAsync = publishInboxAsync ?? throw new ArgumentNullException(nameof(publishInboxAsync));
+        _syntheticPublication = syntheticPublication;
     }
 
     internal async Task<WorkerProposalPublicationResult> PublishBundleAsync(
@@ -32,7 +35,7 @@ public sealed class GmWorkerProposalStore
         string expectedSessionGeneration,
         string proposalInboxPath,
         Func<FileSystemManager.CanonicalWriteLease, Task>? publishDerivedAuditAsync = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default, GmWorkerDurableExecution? durableExecution = null)
     {
         if (!IsSafeId(proposal.ProposalId))
             return WorkerProposalPublicationResult.Rejected("Worker proposal id is unsafe.");
@@ -68,7 +71,7 @@ public sealed class GmWorkerProposalStore
             }
 
             await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
-                cancellationToken: cancellationToken);
+                cancellationToken: cancellationToken, workerPurpose: durableExecution?.PublicationPurpose());
             if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
             {
                 return WorkerProposalPublicationResult.SessionWasReplaced(
@@ -76,13 +79,15 @@ public sealed class GmWorkerProposalStore
             }
 
             var currentTaskBytes = await _fs.ReadFileBytesAsync(taskPath);
+            _fs.EnsureCanonicalWriteLeaseActive(writeLease);
             if (!ExactBytesEqual(currentTaskBytes, expectedTaskBytes))
             {
                 return WorkerProposalPublicationResult.Rejected(
                     "Worker task no longer belongs to the current game session generation.");
             }
 
-            if (Directory.Exists(finalBundleRoot) || _fs.FileExists(proposalInboxPath))
+            if (_fs.FileExists(proposalInboxPath) ||
+                !_fs.TryRemoveEmptyCanonicalDirectory(writeLease, finalBundleRelativePath))
             {
                 return WorkerProposalPublicationResult.Rejected(
                     $"Worker proposal id already exists and cannot be overwritten: {proposal.ProposalId}.");
@@ -91,12 +96,16 @@ public sealed class GmWorkerProposalStore
             if (!publicationAuthority.TryBeginPublication())
                 throw new OperationCanceledException(cancellationToken);
 
+            if (durableExecution != null) await durableExecution.BeginPublicationAsync(proposal, proposalBytes, importedContent);
+            _fs.EnsureCanonicalWriteLeaseActive(writeLease);
             try
             {
-                await _fs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
-                    writeLease,
-                    stagingBundleRoot,
-                    finalBundleRelativePath);
+                if (_syntheticPublication == null)
+                    await _fs.MoveRuntimeDirectoryIntoCanonicalSessionAsync(
+                        writeLease, stagingBundleRoot, finalBundleRelativePath);
+                else
+                    await _syntheticPublication.PublishAsync(_fs,
+                        writeLease, stagingBundleRoot, finalBundleRelativePath);
             }
             catch (IOException) when (Directory.Exists(finalBundleRoot))
             {
@@ -104,6 +113,7 @@ public sealed class GmWorkerProposalStore
                     $"Worker proposal id already exists and cannot be overwritten: {proposal.ProposalId}.");
             }
 
+            if (durableExecution != null) await durableExecution.AcknowledgePublicationAsync();
             string? warning = null;
             try
             {
@@ -137,9 +147,13 @@ public sealed class GmWorkerProposalStore
         }
         finally
         {
+            durableExecution?.HoldUnresolvedPublication();
             try
             {
-                _fs.DeleteRuntimeProposalStagingRoot(stagingRoot);
+                if (_syntheticPublication == null)
+                    _fs.DeleteRuntimeProposalStagingRoot(stagingRoot);
+                else
+                    _syntheticPublication.Cleanup(_fs, stagingRoot);
             }
             catch (Exception)
             {

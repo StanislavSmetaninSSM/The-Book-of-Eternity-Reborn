@@ -1,0 +1,149 @@
+{
+  "phase": "schema-managed-green",
+  "command": "pwsh -NoProfile -Command \"& ./scripts/test-csharp.ps1 -Category @(\\\"gm-load-ordinary-schema\\\",\\\"gm-main-affected-managed\\\") -NoBuild -Parallelism 1 -TimeoutMinutes 10\"",
+  "revision": "3f9c388e4fca9192e8246afbfed9461c972049b7",
+  "summary": {
+    "Categories": [
+      "gm-load-ordinary-schema",
+      "gm-main-affected-managed"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "3f9c388e4fca9192e8246afbfed9461c972049b7",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "gm-load-ordinary-schema",
+        "Seconds": 19.6860624,
+        "BudgetMinutes": 5,
+        "Completed": true
+      },
+      {
+        "Category": "gm-main-affected-managed",
+        "Seconds": 15.7291533,
+        "BudgetMinutes": 3,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0893376,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.172059,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.2761697,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0045498,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:47.4685460",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 2,
+      "PlannedCases": 18,
+      "CompletedCases": 18,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 18,
+      "Executed": 18,
+      "Passed": 18,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "sourcePins": [
+    {
+      "path": "README.md",
+      "size": 7769,
+      "sha256": "12882faa49e037e963b20eab56577119f3230747b560ebd9578e842533247832"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+      "size": 13657,
+      "sha256": "edd73ec994fb2eae95bbc441f50846b0655063cf2ece34e71d6300c8cf651edf"
+    },
+    {
+      "path": "scripts/tests/linux-main-guide.tests.ps1",
+      "size": 4747,
+      "sha256": "f54141319363ae46c39a72cdf90ab908aa07cda2eef1a3afd80cdafbb5570e2f"
+    },
+    {
+      "path": "tests/categories.json",
+      "size": 1194521,
+      "sha256": "46a1ea0725d7b6ac2583393d8ce1c0568e6cbbe118d7566f3ded067decaa8e7b"
+    },
+    {
+      "path": "tests/selection.json",
+      "size": 1404,
+      "sha256": "7654450596fab684974ca5f8491e461c5952642cd8560abf2e5d5d37b4f84ec6"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "recovery/final-readiness/schema-managed-green-dotnet-test.log.gz",
+      "size": 351427,
+      "sha256": "ac0ff790601a2ede5f6cda73ce8326c7b370c5c8c8e27ecd953273ab4b9840b4",
+      "rawPath": "dotnet-test.log",
+      "rawSize": 3144283,
+      "rawSha256": "be898b4baf215892fcd201e610182267c5c0f324dcf62f826b322080b6511b2d"
+    },
+    {
+      "path": "recovery/final-readiness/schema-managed-green-gm-load-ordinary-schema-integration-001.trx.gz",
+      "size": 2091,
+      "sha256": "4e4a03b7b578d96db41478a3c3b99878227b5ed3b70ee427141405463b98cdb9",
+      "rawPath": "gm-load-ordinary-schema-integration-001.trx",
+      "rawSize": 12149,
+      "rawSha256": "b5ca271c912bea42b93b7318a843d884d5535faf15ec9f95ea5c40bc4c58cfeb"
+    },
+    {
+      "path": "recovery/final-readiness/schema-managed-green-gm-main-affected-managed-unit-002.trx.gz",
+      "size": 2711,
+      "sha256": "80d52a8caa24a46a4acc7f0944758583ee116d9181d8d30fd0056ac85227e7a2",
+      "rawPath": "gm-main-affected-managed-unit-002.trx",
+      "rawSize": 17395,
+      "rawSha256": "54d7dc1eb7c0509c2a96e295effa2fb6b7335d5a73300af5300a6fe304b154b7"
+    },
+    {
+      "path": "recovery/final-readiness/schema-managed-green-plan.json.gz",
+      "size": 1079,
+      "sha256": "4f68586b165eca22df17ea5abb862e8d5a394e6458b304ceb0615f3d4b5e6e39",
+      "rawPath": "plan.json",
+      "rawSize": 4664,
+      "rawSha256": "fa5787cc2e1aa88c3f571fb6a2047ad338eb35b67744cc57e7956aa9d34bcd42"
+    },
+    {
+      "path": "recovery/final-readiness/schema-managed-green-summary.json.gz",
+      "size": 643,
+      "sha256": "a12897921ef7e111960633deaab242022d1330a0b8b708093268782a0b6fa7e0",
+      "rawPath": "summary.json",
+      "rawSize": 1629,
+      "rawSha256": "1fe3329278913cbfb97a9fcf42843239b26967f5172bbf4b4d698bb733d709c6"
+    }
+  ]
+}

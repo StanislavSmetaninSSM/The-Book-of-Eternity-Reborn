@@ -1,0 +1,311 @@
+{
+  "SchemaVersion": 1,
+  "Issue": "#1553",
+  "Task": "T041-WORKSPACE",
+  "Base": "b487526fc5f4d11a2c02816813f870f063e9fdc5",
+  "RuntimeSource": "f8c7eeae24cf702b87f581f442ea7c720264bc34",
+  "RuntimeTree": "864e680cab4958874f84e828a4c14b00c31dba75",
+  "Status": "PASS for the bounded process-free Linux T041-WORKSPACE component after independent source/runtime/final evidence review. Execution/lifecycle/native Windows remain unqualified; final verdict carrier is published and freshly restored after this record, identified in handoff.",
+  "Environment": {
+    "Os": "Debian GNU/Linux13.6",
+    "Kernel": "6.18.44",
+    "Architecture": "x86_64",
+    "EffectiveUid": 1000,
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31",
+    "PowerShell": "7.6.6",
+    "Permissions": "Normal; no escalation, credentials, security/network changes or new access",
+    "TMPDIR": "/workspace/ipc-tmp",
+    "DOTNET_PROCESSOR_COUNT": "unset"
+  },
+  "Scope": "Process-free detached workspace create/pinned byte staging/bounded proposal and contentRef byte reads/cancellation/partial-failure and disposal. Existing trusted-local namespace/image authority reused; no common storage/load edits.",
+  "PlatformSemantics": {
+    "Linux": "Trusted-local by-name ordinary file authority; regular hardlinks readable and owned names unlinkable without changing outside alias bytes/attributes. CreateNew never overwrites existing name. Whole cleanup tree preflight refuses symbolic links and special entries.",
+    "Windows": "Retained directory/file identity and single-link checks preserved. Exact expected supplied hash/length verified on the existing write handle; no incompatible second staging handle. Native execution unqualified.",
+    "TrustBoundary": "No hostile concurrent computer-owner race or inode-preserving save guarantee. Cleanup by exact owned workspace name; quiescent component only."
+  },
+  "VerificationInputs": {
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs": {
+      "GitBlob": "42e2446919116adc1a562684dd9ff678e473c99a",
+      "Sha256": "24024e137e3d262cd5d5be2857923e74580c28c173f81f14e3d82c196fcdfdfa"
+    },
+    "BookOfEternityClient.IntegrationTests/GmWorkerDetachedWorkspaceTests.cs": {
+      "GitBlob": "2fe5b8663c0cda10b14a2fd3fcee4a58936762c9",
+      "Sha256": "e72be1531e91320c2a9bcf38fcc90261c3ecc8e31580aa4b5d3b5f2dbdc02036"
+    },
+    "BookOfEternityClient.Tests/GmWorkerBridgeDocumentationTests.cs": {
+      "GitBlob": "bd9b183222f3dd8bee28c94420d381d78043ef8d",
+      "Sha256": "7e22cca7b4ad274a2fd4c4869936f9007050366ca349b20de95e24e9c684d0ac"
+    },
+    "BookOfEternityClient.Tests/GmWorkerBridgeSourceGuardTests.cs": {
+      "GitBlob": "4917dd1d77956c30acc794e44aa88e407c91ceaf",
+      "Sha256": "41fcafd661303d0a042b6514943c42d3bea549eace7334e8145a42d69ecce424"
+    },
+    "OtherGuides/GM_Worker_Bridges.md": {
+      "GitBlob": "980d647167c64eb3c1f79c2661b46703f76e4e9f",
+      "Sha256": "913a216f05a1d9d4f23576a7069fe5e117cbcc8900bd5081135e74e522607a7a"
+    },
+    "specs/1113-gm-worker-bridges/contracts/gm-worker-bridge-contract.md": {
+      "GitBlob": "33e3a1de78c5680176f1f57581c9efd037bf0d92",
+      "Sha256": "e568f868d56b17605ccbf42ea3c9a44c52692b9bd3dd7235ed0965e5a433a624"
+    },
+    "Examples/E_CLI_GM_Worker_Validation_Repair.txt": {
+      "GitBlob": "437b74b42692b140f0ca46eb6faa8730af0e3f38",
+      "Sha256": "b6d53829f5e006e38d8d7d1f96dca8fbf91e6e7e6a83ff3fe259722e4a919aa2"
+    },
+    "tests/categories.json": {
+      "GitBlob": "601d3a19dde083fb9f470439ea19dab3e0a3db6b",
+      "Sha256": "61d61585ac417df2faaa0179237f21164858f54af59fc5ae2d3e8e25bc2780e2"
+    },
+    "tests/selection.json": {
+      "GitBlob": "31cda12900a9c38079cada8c0d2043d1a3ff9fd1",
+      "Sha256": "f301e6065db1466882238432d82d87571597826c37ae5eba71cf9ed8b16c58aa"
+    }
+  },
+  "UnchangedFromBase": {
+    "BookOfEternityClient/Core/TrustedLocalFileScope.cs": {
+      "GitBlob": "c4c9d46904efd9361c02e690d6d142c799e9d672",
+      "Sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+    },
+    "BookOfEternityClient/Core/TrustedLocalFileImage.cs": {
+      "GitBlob": "34bb94a325381be80eac63fee5caab9cbf128624",
+      "Sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9"
+    },
+    "BookOfEternityClient/Core/PhysicalFileAuthority.cs": {
+      "GitBlob": "1445bf5f6cc3c3c5bb8145983974336446a53604",
+      "Sha256": "41028e4d984c06ff1ea5d77c060d590c3a060ce99ca73cf4d568ffff526cb5ea"
+    },
+    "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs": {
+      "GitBlob": "a00ebf479e94a0d47510908bd4f27f8f04a05487",
+      "Sha256": "a073221a7a6cb5214016d8c6b9019dc566a406df4bae18e1a708517570d0e720"
+    },
+    "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs": {
+      "GitBlob": "dce3adfdaa2107e47380cacdf6068602031c2836",
+      "Sha256": "0f282bc0e34742fc40749beb0eba523e7022398810f8278662c9a742ea1b6db8"
+    },
+    "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs": {
+      "GitBlob": "f55330f7d0b68f17585c8912c90054520e8e5b7c",
+      "Sha256": "a3c3125953985a95996c7eb21295f3e9f1daa8156e4b97150860854aa5e85941"
+    },
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs": {
+      "GitBlob": "1a5499d7dd65caf5aa04a4e6ed2ea4fcfc2e5675",
+      "Sha256": "87ef33e7bf8ae33b692148bd4a5b8023c3f470fe83561597dcdccad54c896473"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs": {
+      "GitBlob": "44ad2eec1427ff7256142804741ce3fdb8f4e658",
+      "Sha256": "3da5134089e1b3748a0525805c0e716f807dd64a78b2a9ff391b5187a3074cea"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs": {
+      "GitBlob": "ed9e24d1afd8c3e53d74e11260d862fd72b4874a",
+      "Sha256": "6817c1b4c76374fbfbd5d483394e059ed884e9297f6a6b51333fbea8635313c2"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostFrameChannel.cs": {
+      "GitBlob": "ab8002ba2ce4be75bbe383b72b4dd71a2863ecae",
+      "Sha256": "91527d69d2ec77494aba09fbf06c3c719d156e9b108dd6fb89a16052c6e09d29"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs": {
+      "GitBlob": "473abc4659edacfbedca584317077da1891bd7cd",
+      "Sha256": "3a1dac5619ee4c6bc1e0292a82476a2c6fe6bdb2b6c0c7e9868fefd2773e9d7f"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs": {
+      "GitBlob": "4c99db4f3b8770a660018135f9edade0747567a1",
+      "Sha256": "812c10afbef30f0117126e209dcb5b2926995a9afdec2d8d329b53a59eb0fa74"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs": {
+      "GitBlob": "877b16da222a4326d3228d08a1a253b0b81ecbbb",
+      "Sha256": "d31a714f9485647ab68b6ee7b7d07da852cb1e88edb3f0df7a1e6bf5ff9ec8c8"
+    },
+    "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecordCodec.cs": {
+      "GitBlob": "19f6293794a283e666c220912c2ea6cb47a535ab",
+      "Sha256": "7e269f884c4ca2dd9277d9b1e3813dc8f15d405bd163160d6fc671247849ad63"
+    }
+  },
+  "PreparationFailures": [],
+  "CausalRed": [
+    {
+      "Commit": "23dc6cbdecfeb3482ab79ceb6198416f0f005567",
+      "Planned": 46,
+      "Executed": 44,
+      "Passed": 2,
+      "Failed": 42,
+      "UnexecutedGuards": 2,
+      "Cause": "Actual production EnsureStableDirectory root trimming turns Linux / into empty path: ArgumentException before first staging file. Not a fixture/build failure.",
+      "Evidence": "evidence/worker-workspace-red/manifest.json"
+    },
+    {
+      "Commit": "0e71953b23d944f8d2e0afcd8f47378ce8de94c7",
+      "Planned": 46,
+      "Executed": 44,
+      "Passed": 4,
+      "Failed": 40,
+      "UnexecutedGuards": 2,
+      "Cause": "34 observed opened-file identity PNSE; six cleanup-remnant assertions. Source trace shows retained-parent deletion reaches Windows TryDeleteEntry; cleanup exception is swallowed by existing initiating-failure preservation.",
+      "Evidence": "evidence/worker-workspace-identity-red/manifest.json"
+    }
+  ],
+  "PriorGreen": {
+    "Commit": "770732a79866b87ed303b8b09bcbaae852883752",
+    "Passed": 47,
+    "Limit": "Precedes Windows sharing correction; not final source.",
+    "Evidence": "evidence/worker-workspace-first-green/manifest.json"
+  },
+  "Green": {
+    "Commit": "f8c7eeae24cf702b87f581f442ea7c720264bc34",
+    "Total": 47,
+    "Executed": 47,
+    "Passed": 47,
+    "Failed": 0,
+    "Planned": 47,
+    "Completed": 47,
+    "Skipped": 0,
+    "Duplicates": 0,
+    "FilesystemCases": 44,
+    "ExactGuards": 3,
+    "CompleteSelection": true,
+    "CompleteCleanup": true,
+    "WallTime": "00:00:14.7395883",
+    "FreshPlanBuildWallTime": "00:01:06.5602167",
+    "Evidence": "evidence/worker-workspace-final-green/manifest.json",
+    "PlanEvidence": "evidence/worker-workspace-final-plan/manifest.json"
+  },
+  "CatalogAudit": {
+    "Valid": true,
+    "Methods": 10690,
+    "Categories": 240,
+    "Unmapped": [],
+    "StaleSelectors": [],
+    "ExecutedTests": 0,
+    "WallTime": "00:00:09.2199320",
+    "Evidence": "evidence/worker-workspace-final-audit/manifest.json"
+  },
+  "IndependentDesignReview": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Result": "PASS",
+    "Commit": "20b1abde5ba1c2335e1b5ba3f158b9b7e5c27109",
+    "ParentCreationCorrectionReview": "PASS at0e71953b23d944f8d2e0afcd8f47378ce8de94c7"
+  },
+  "IndependentFinalReview": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Result": "PASS",
+    "ActionableFindings": 0,
+    "ReviewedRuntimeSource": "f8c7eeae24cf702b87f581f442ea7c720264bc34",
+    "ReviewedEvidenceCarrier": "7309ee4b37666a7c8f4b8b239946b04dc2cacf38",
+    "ResolvedFinding": "P1 Windows staging sharing conflict corrected; existing retained-handle expected-byte and single-link checks preserved.",
+    "VerifiedDistinctPasses": 47,
+    "VerifiedManifests": 9,
+    "VerifiedArtifactHashes": 41,
+    "VerifiedInputBlobs": 9,
+    "VerifiedUnchangedBoundaryBlobs": 14,
+    "VerifiedGeneratedXmlFiles": 9,
+    "RestoredTrackedFiles": 5312,
+    "RestoredChangedFileBlobs": 45,
+    "Scope": "Independent read-only design/source/test/selection/docs plus causal RED/GREEN, audit, exact hashes, publication/readback, clean source clone, cleanup and qualification boundaries. No reviewer build, test or workload process execution."
+  },
+  "SourceRestoration": {
+    "ObservedUtc": "2026-10-05T11:42:13.893939+00:00",
+    "Commit": "f8c7eeae24cf702b87f581f442ea7c720264bc34",
+    "Tree": "864e680cab4958874f84e828a4c14b00c31dba75",
+    "Method": "Fresh GitHub-only clone into a new empty directory; no local source/object cache",
+    "RestorationDirectory": "/workspace/linux-1553-workspace-candidate-restore",
+    "RemoteShaBeforeAndAfterVerified": true,
+    "Clean": true,
+    "TrackedFiles": 5312,
+    "ChangedFilesBytesVerified": 45,
+    "QualificationInputHashesVerified": 9,
+    "ConnectivityFsck": "PASS",
+    "SourceOnlyNoBuildOrExecution": true
+  },
+  "ArtifactIntegrity": {
+    "Manifests": 9,
+    "ArtifactHashes": 41,
+    "Evidence": [
+      "evidence/worker-workspace-final-audit/manifest.json",
+      "evidence/worker-workspace-final-green/manifest.json",
+      "evidence/worker-workspace-final-plan/manifest.json",
+      "evidence/worker-workspace-first-green/manifest.json",
+      "evidence/worker-workspace-first-green-plan/manifest.json",
+      "evidence/worker-workspace-identity-red/manifest.json",
+      "evidence/worker-workspace-identity-red-plan/manifest.json",
+      "evidence/worker-workspace-red/manifest.json",
+      "evidence/worker-workspace-red-plan/manifest.json"
+    ]
+  },
+  "GeneratedXmlValidation": [
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.xml"
+  ],
+  "Cleanup": {
+    "ObservedUtc": "2026-10-05T11:44:56.381940+00:00",
+    "OwnedFixtureDirectoriesRemaining": 0,
+    "ActiveTestWorkerBuildCommands": 0,
+    "BuildServerShutdown": "Succeeded",
+    "TerminatedZombiesParentedToPid1": [
+      {
+        "Pid": 4077,
+        "ParentPid": 1,
+        "State": "Z",
+        "Command": "dotnet"
+      },
+      {
+        "Pid": 4111,
+        "ParentPid": 1,
+        "State": "Z",
+        "Command": "VBCSCompiler"
+      },
+      {
+        "Pid": 4391,
+        "ParentPid": 1,
+        "State": "Z",
+        "Command": "dotnet"
+      },
+      {
+        "Pid": 11704,
+        "ParentPid": 1,
+        "State": "Z",
+        "Command": "dotnet"
+      },
+      {
+        "Pid": 12166,
+        "ParentPid": 1,
+        "State": "Z",
+        "Command": "dotnet"
+      },
+      {
+        "Pid": 15890,
+        "ParentPid": 1,
+        "State": "Z",
+        "Command": "dotnet"
+      },
+      {
+        "Pid": 16191,
+        "ParentPid": 1,
+        "State": "Z",
+        "Command": "dotnet"
+      }
+    ],
+    "Limit": "No claim PID1 reaped terminated children."
+  },
+  "NotQualified": [
+    "Native Windows filesystem regression; Windows conditional semantics/source preserved but not run",
+    "Successful worker Release, process-tree ownership, authenticated whole-scope stop, PTY or live GM",
+    "Quarantine audit receipt publication and connected worker artifact import/application",
+    "Canonical/main-run ownership fencing and whole #1553/B4 acceptance",
+    "Hostile concurrent owner namespace substitution defense; not the approved trusted-local contract"
+  ],
+  "NextLifecycleBlocker": {
+    "Source": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs:GmWorkerProcessTreeFactory.Attach",
+    "Cause": "Non-Windows throws PlatformNotSupportedException before Release; complete descendant ownership/confirmed-stop capability not implemented or qualified.",
+    "SecondaryBlocker": "GmWorkerExecutionWorkspace.PersistQuarantineAuditReceiptAsync still uses Windows handle rename/delete/capture; not exercised or modified.",
+    "RequiredNextStep": "Separate source/design review of complete-scope ownership and authenticated stop, process/cleanup/uncertainty contract and prerequisites before any execution qualification; retain production guards.",
+    "NoExecutionEnabled": true
+  }
+}

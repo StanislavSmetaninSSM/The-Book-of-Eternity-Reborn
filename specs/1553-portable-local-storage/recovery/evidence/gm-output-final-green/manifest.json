@@ -1,0 +1,55 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "ff7e5a2b08f8fde196151909487c1d94089ea91d",
+  "SourceResultDirectory": "20261005-133104-046-29893-5fef9c548cf941218c3f14edb15249d6-categories",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-bridge-output-stream -Parallelism 1",
+  "Os": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Sdk": "10.0.401",
+  "Runtime": "8.0.31",
+  "PowerShell": "7.6.6",
+  "EffectiveUid": 1000,
+  "TMPDIR": "/workspace/ipc-tmp",
+  "DOTNET_PROCESSOR_COUNT": null,
+  "Artifacts": [
+    {
+      "Path": "Build-unit.log",
+      "OriginalBytes": 9914,
+      "OriginalSha256": "92865fc2d972b11b6a809ac3d71ecf003ad640e463f46d1543044fdd11a20c75",
+      "StoredPath": "Build-unit.log.gz",
+      "StoredBytes": 881,
+      "StoredSha256": "c2fe3270c62730872c2fec72f358061c55db4ce37f7a60bdd8a5e6f49cc9efdb"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 1493621,
+      "OriginalSha256": "bfc311ac9e297bfaf024f9dd22c8fe55510daf32a6f4311af48a0cd48bc4e6d3",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 163716,
+      "StoredSha256": "a5960af5af7b7eecc5d6fbd92a41a090fd3302afd7ec24190964c69bdf51910a"
+    },
+    {
+      "Path": "gm-bridge-output-stream-unit-001.trx",
+      "OriginalBytes": 71386,
+      "OriginalSha256": "e469a834aeeb4f454fbae7a128776f6c988d0829661651909c47332fa4453c4c",
+      "StoredPath": "gm-bridge-output-stream-unit-001.trx",
+      "StoredBytes": 71386,
+      "StoredSha256": "e469a834aeeb4f454fbae7a128776f6c988d0829661651909c47332fa4453c4c"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 5560,
+      "OriginalSha256": "c42a09a8bc454a810f8bead6c545ddd24a17cbfb6eef4fd7a8427ed3cb381c30",
+      "StoredPath": "plan.json",
+      "StoredBytes": 5560,
+      "StoredSha256": "c42a09a8bc454a810f8bead6c545ddd24a17cbfb6eef4fd7a8427ed3cb381c30"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1552,
+      "OriginalSha256": "9453caae81f1bbd1921c1fecddc4ce3603a352d457754af17dbd638d108323df",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1552,
+      "StoredSha256": "9453caae81f1bbd1921c1fecddc4ce3603a352d457754af17dbd638d108323df"
+    }
+  ]
+}

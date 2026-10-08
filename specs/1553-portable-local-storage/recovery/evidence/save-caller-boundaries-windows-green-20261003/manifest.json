@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "dafd37e589eaf6fd4e05a996fd3ecf00e74e4a97",
+  "status": "Frozen dafd37e5 binaries: browser prepared+HTTP outcomes7, console presentation4 and public save entry2 all passed; engine continuation and frontend separate.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-browser-save-creation",
+    "portable-engine-save-presentation",
+    "portable-save-entry"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:01:03.5036384",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 13,
+    "CompletedCases": 13,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 13,
+    "Executed": 13,
+    "Passed": 13,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "17BF24D8918B963598B66076C82E77F74E848AD735DAE3EF4CF11AE256348827",
+      "sha256": "806C4BC57C8665C81311928584AC1BD4D809B7E2DCF696AC6E474E23012B78B9"
+    },
+    {
+      "path": "portable-browser-save-creation-unit-001.trx",
+      "originalSha256": "C217A11CD3F722DC0191712830E003CFB10AE92806E1DE96E824C31D5C816F67",
+      "sha256": "6C53FDC506DCF9504539B38A5D9953A4018C243F2C17AB082DECED028B1310CE"
+    },
+    {
+      "path": "portable-engine-save-presentation-integration-002.trx",
+      "originalSha256": "343290B66B8CD6225A3E210AAEB2B86E9147A59489B505217773A9B8F5770831",
+      "sha256": "A3DCA94699B5244813DCE0C47E44E4E24D8F17307D29FAEB3978F2EEF7955A21"
+    },
+    {
+      "path": "portable-save-entry-unit-003.trx",
+      "originalSha256": "91FDB02E1323C91CFE7878F8E134A63C7B5F042B68FC3AFBA9AE09BD4CE1F005",
+      "sha256": "3B471B49034CA62A0320332898245D65E8D8140AF52E2EC66BB6F1BD988F920F"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "DD73FCD7487C64EAF4E5A6769377A091B1C486009397E0A876FD60FB85094E28",
+      "sha256": "54C77FA8767A4EE56AAA1D35047B3A9ECEF949D1F3A3B15041F42158A2E8652A"
+    }
+  ]
+}

@@ -6,7 +6,7 @@ using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
-public static class ExplorerLocalTurnRollbackArtifacts
+public static partial class ExplorerLocalTurnRollbackArtifacts
 {
     public const string Root = "game_state/control/explorer_local_turn_rollback";
     internal const string DarenRewardProfileExternalFileId = "daren_reward_profile";
@@ -87,6 +87,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
             get;
             init;
         }
+
+        internal LocalBrowserTransaction? LocalTransaction { get; init; }
 
         internal int SchemaVersion
         {
@@ -321,10 +323,10 @@ public static class ExplorerLocalTurnRollbackArtifacts
             return null;
 
         await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        if (!fs.FileExists(writeLease, trackedFile))
+        if (!fs.OriginalFileExists(writeLease, trackedFile))
             return null;
 
-        var content = await fs.ReadFileBytesAsync(writeLease, trackedFile);
+        var content = await fs.ReadOriginalFileBytesAsync(writeLease, trackedFile);
         if (content == null)
             return null;
 
@@ -340,10 +342,10 @@ public static class ExplorerLocalTurnRollbackArtifacts
         string trackedFile,
         string scope)
     {
-        if (string.IsNullOrWhiteSpace(trackedFile) || !fs.FileExists(writeLease, trackedFile))
+        if (string.IsNullOrWhiteSpace(trackedFile) || !fs.OriginalFileExists(writeLease, trackedFile))
             return null;
 
-        var content = await fs.ReadFileBytesAsync(writeLease, trackedFile);
+        var content = await fs.ReadOriginalFileBytesAsync(writeLease, trackedFile);
         if (content == null)
             return null;
 
@@ -361,6 +363,9 @@ public static class ExplorerLocalTurnRollbackArtifacts
         IEnumerable<string>? rollbackCleanupDirectories = null,
         IEnumerable<string>? rollbackExternalFileIds = null)
     {
+        if (OperatingSystem.IsLinux())
+            return await StageLocalBrowserTransactionAsync(fs, writeLease, trackedFiles, scope,
+                rollbackCleanupDirectories, rollbackExternalFileIds);
         var normalizedPaths = trackedFiles
             .Where(static path => !string.IsNullOrWhiteSpace(path))
             .Select(static path => path.Replace('\\', '/').Trim())
@@ -410,7 +415,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
             for (var index = 0; index < normalizedPaths.Length; index++)
             {
                 var trackedFile = normalizedPaths[index];
-                var content = await fs.ReadFileBytesAsync(writeLease, trackedFile);
+                var content = await fs.ReadOriginalFileBytesAsync(writeLease, trackedFile);
                 if (content == null)
                 {
                     entries.Add(new BrowserWriteRollbackEntry(
@@ -569,7 +574,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
             {
                 try
                 {
-                    if (fs.FileExists(writeLease, path))
+                    if (fs.OriginalFileExists(writeLease, path))
                         fs.DeleteFile(writeLease, path);
                 }
                 catch
@@ -588,6 +593,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
         FileSystemManager.CanonicalWriteLease writeLease,
         BrowserWriteRollbackTransaction transaction)
     {
+        if (transaction.LocalTransaction != null)
+            return MarkLocalBrowserCommittedAsync(fs, writeLease, transaction);
         fs.EnsureCanonicalWriteLeaseActive(writeLease);
         var darenTransaction = transaction.DarenTransaction;
         try
@@ -631,7 +638,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
             manifestPaths.Length);
         foreach (var manifestPath in manifestPaths)
         {
-            var manifestBytes = await fs.ReadFileBytesAsync(writeLease, manifestPath) ??
+            var manifestBytes = await fs.ReadOriginalFileBytesAsync(writeLease, manifestPath) ??
                                 throw new FileNotFoundException(
                                     "Browser rollback manifest disappeared during recovery.",
                                     manifestPath);
@@ -706,7 +713,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         if (string.IsNullOrWhiteSpace(entry.BackupPath) || string.IsNullOrWhiteSpace(entry.Sha256))
             throw new InvalidDataException($"Rollback evidence for '{entry.TrackedFile}' is incomplete.");
 
-        var content = await fs.ReadFileBytesAsync(writeLease, entry.BackupPath);
+        var content = await fs.ReadOriginalFileBytesAsync(writeLease, entry.BackupPath);
         if (content == null)
             throw new FileNotFoundException(
                 $"Rollback evidence for '{entry.TrackedFile}' is missing.",
@@ -767,7 +774,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 $"Interrupted browser write '{entry.TrackedFile}' has an unsupported publication receipt.");
         }
 
-        var current = await fs.ReadFileBytesAsync(
+        var current = await fs.ReadOriginalFileBytesAsync(
             writeLease,
             entry.TrackedFile);
         if (current != null)
@@ -794,6 +801,8 @@ public static class ExplorerLocalTurnRollbackArtifacts
         BrowserWriteCleanupOutcome outcome,
         out Exception? failure)
     {
+        if (transaction.LocalTransaction != null)
+            return TryDeleteLocalBrowserTransaction(fs, writeLease, transaction, outcome, out failure);
         try
         {
             EnsureDarenPublicationResolvedForCleanup(
@@ -815,13 +824,13 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 .ToArray();
             foreach (var evidencePath in evidencePaths)
             {
-                if (fs.FileExists(writeLease, evidencePath))
+                if (fs.OriginalFileExists(writeLease, evidencePath))
                     fs.DeleteFile(writeLease, evidencePath);
             }
 
             var committedMarkerPath =
                 GetBrowserWriteCommittedMarkerPath(transaction);
-            if (fs.FileExists(writeLease, committedMarkerPath))
+            if (fs.OriginalFileExists(writeLease, committedMarkerPath))
                 fs.DeleteFile(writeLease, committedMarkerPath);
             fs.DeleteEmptyDirectories(writeLease, transaction.TransactionRoot);
             var transactionRoot = fs.ResolvePath(transaction.TransactionRoot);
@@ -850,9 +859,9 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 }
             }
 
-            if (fs.FileExists(writeLease, transaction.ManifestPath))
+            if (fs.OriginalFileExists(writeLease, transaction.ManifestPath))
                 fs.DeleteFile(writeLease, transaction.ManifestPath);
-            if (fs.FileExists(writeLease, cleanupIntentPath))
+            if (fs.OriginalFileExists(writeLease, cleanupIntentPath))
                 fs.DeleteFile(writeLease, cleanupIntentPath);
             fs.DeleteEmptyDirectories(writeLease, transaction.TransactionRoot);
             TryDeleteEmptyBrowserWriteParents(fs, writeLease, transaction.TransactionRoot);
@@ -1236,6 +1245,11 @@ public static class ExplorerLocalTurnRollbackArtifacts
         FileSystemManager.CanonicalWriteLease writeLease,
         BrowserWriteRollbackTransaction transaction)
     {
+        if (transaction.LocalTransaction != null)
+        {
+            await RestoreLocalBrowserTransactionAsync(fs, writeLease, transaction);
+            return;
+        }
         if (transaction.SchemaVersion <
             CurrentBrowserWriteManifestSchemaVersion)
         {
@@ -1333,7 +1347,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         {
             try
             {
-                fs.DeleteDirectoryTree(writeLease, cleanupDirectory);
+                fs.DeleteOriginalDirectoryTree(writeLease, cleanupDirectory);
             }
             catch (Exception ex)
             {
@@ -1440,12 +1454,12 @@ public static class ExplorerLocalTurnRollbackArtifacts
         BrowserWriteRollbackTransaction transaction,
         string manifestStatus)
     {
-        var committedCleanupIntent = await fs.ReadFileBytesAsync(
+        var committedCleanupIntent = await fs.ReadOriginalFileBytesAsync(
             writeLease,
             GetBrowserWriteCleanupIntentPath(
                 transaction,
                 BrowserWriteCleanupOutcome.Committed));
-        var restoredCleanupIntent = await fs.ReadFileBytesAsync(
+        var restoredCleanupIntent = await fs.ReadOriginalFileBytesAsync(
             writeLease,
             GetBrowserWriteCleanupIntentPath(
                 transaction,
@@ -1471,7 +1485,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
             return "restored";
         }
 
-        var marker = await fs.ReadFileBytesAsync(
+        var marker = await fs.ReadOriginalFileBytesAsync(
             writeLease,
             GetBrowserWriteCommittedMarkerPath(transaction));
         if (marker != null)
@@ -1590,7 +1604,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
 
         foreach (var intentPath in intentPaths)
         {
-            var content = await fs.ReadFileBytesAsync(writeLease, intentPath);
+            var content = await fs.ReadOriginalFileBytesAsync(writeLease, intentPath);
             if (content == null)
                 continue;
             EnsureEmptyBrowserWriteMarker(
@@ -1862,7 +1876,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
                 $"Rollback evidence for external file '{entry.FileId}' is incomplete.");
         }
 
-        var content = await fs.ReadFileBytesAsync(writeLease, entry.BackupPath);
+        var content = await fs.ReadOriginalFileBytesAsync(writeLease, entry.BackupPath);
         if (content == null)
         {
             throw new FileNotFoundException(
@@ -1929,14 +1943,14 @@ public static class ExplorerLocalTurnRollbackArtifacts
             if (Directory.Exists(scopeFullPath) &&
                 !Directory.EnumerateFileSystemEntries(scopeFullPath).Any())
             {
-                fs.DeleteDirectoryTree(writeLease, scopePath);
+                fs.DeleteOriginalDirectoryTree(writeLease, scopePath);
             }
 
             var rootFullPath = fs.ResolvePath(Root);
             if (Directory.Exists(rootFullPath) &&
                 !Directory.EnumerateFileSystemEntries(rootFullPath).Any())
             {
-                fs.DeleteDirectoryTree(writeLease, Root);
+                fs.DeleteOriginalDirectoryTree(writeLease, Root);
             }
         }
         catch
@@ -2000,8 +2014,13 @@ public static class ExplorerLocalTurnRollbackArtifacts
                      .Distinct(StringComparer.OrdinalIgnoreCase))
         {
             var safeName = CreateSafeBackupFileName(trackedFile);
-            var match = fs.EnumerateFiles(writeLease, $"{safeName}.rollback.*")
+            var candidates = fs.EnumerateFiles(writeLease, $"{safeName}.rollback.*")
                 .Where(path => path.StartsWith($"{Root}/", StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+            if (OperatingSystem.IsLinux())
+                foreach (var candidate in candidates.Where(IsLocalDirectGachaBackup))
+                    RequireCurrentDirectGachaAdoption(fs, writeLease, trackedFile, candidate);
+            var match = candidates
                 .OrderByDescending(GetTransactionTicks)
                 .ThenByDescending(static path => path, StringComparer.OrdinalIgnoreCase)
                 .FirstOrDefault();
@@ -2032,7 +2051,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
         FileSystemManager.CanonicalWriteLease writeLease,
         string? backupPath)
     {
-        if (!string.IsNullOrWhiteSpace(backupPath) && fs.FileExists(writeLease, backupPath))
+        if (!string.IsNullOrWhiteSpace(backupPath) && fs.OriginalFileExists(writeLease, backupPath))
             fs.DeleteFile(writeLease, backupPath);
 
         DeleteEmptyDirectories(fs, writeLease);

@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -15,6 +15,13 @@ using BookOfEternityClient.WebUi;
 // ═══════════════════════════════════════════════════
 // 📖 The Book of Eternity: Reborn - C# Client
 // ═══════════════════════════════════════════════════
+
+var participatingExitCode = await BookOfEternityClient.Services.GmRuntime.GmMainParticipatingControl.TryRunAsync(args);
+if (participatingExitCode.HasValue)
+{
+    Environment.ExitCode = participatingExitCode.Value;
+    return;
+}
 
 var workerProcessHostExitCode = await GmWorkerProcessHost.TryRunAsync(args);
 if (workerProcessHostExitCode.HasValue)
@@ -44,16 +51,24 @@ try
         if (!string.IsNullOrWhiteSpace(liveTurnPreparationError))
             throw new ArgumentException(liveTurnPreparationError);
 
-        var fs = new FileSystemManager(basePath, NullLogger<FileSystemManager>.Instance);
-        fs.EnsureDirectoryStructure();
-        var result = await new LiveTurnPreparationService(fs).PrepareAsync(liveTurnPreparationOptions);
+        // Auxiliary launch supplies its root first. Payload values (including an
+        // existing-directory player action) must never select the write root.
+        if (args.Length == 0 || args[0].StartsWith("--", StringComparison.Ordinal) || !Directory.Exists(args[0]))
+            throw new IOException("Participating preparation requires an existing explicit first root.");
+        var preparationBasePath = Path.GetFullPath(args[0]);
+        var fs = new FileSystemManager(preparationBasePath, NullLogger<FileSystemManager>.Instance);
+        var result = await SessionOperationContext.RunParticipatingCurrentSessionAsync(fs, async () =>
+        {
+            fs.EnsureDirectoryStructure();
+            return await new LiveTurnPreparationService(fs).PrepareAsync(liveTurnPreparationOptions);
+        });
         Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(
             result,
             SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         return;
     }
 }
-catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or IOException or UnauthorizedAccessException)
+catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or IOException or InvalidDataException or UnauthorizedAccessException)
 {
     Console.Error.WriteLine($"prepare-live-turn failed: {ex.Message}");
     Environment.ExitCode = 2;
@@ -313,6 +328,11 @@ try
     await engine.RunAsync();
     inputSource.AssertCompleted();
 }
+catch (InvalidDataException ex)
+{
+    Console.Error.WriteLine($"Local storage could not be initialized safely: {ex.Message}");
+    Environment.ExitCode = 2;
+}
 catch (ConsoleE2EScriptInputException ex)
 {
     Console.Error.WriteLine($"Console E2E scripted input failed at step {ex.NextStepIndex}: {ex.Message}");
@@ -321,6 +341,7 @@ catch (ConsoleE2EScriptInputException ex)
 }
 finally
 {
+    await host.Services.GetRequiredService<AudioService>().DisposeAsync();
     if (agentConsoleApp is not null)
         await agentConsoleApp.DisposeAsync();
     agentConsoleLiveInputSource?.Dispose();

@@ -1,0 +1,55 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "da35de5498d8edf2787c987bd5a45ea5aa39e988",
+  "SourceResultDirectory": "20261005-124749-635-24779-19cc14807e964b3780c20c10c5b7b8b0-categories",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-quarantine-audit-receipt -Parallelism 1 -NoBuild",
+  "Os": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Sdk": "10.0.401",
+  "Runtime": "8.0.31",
+  "PowerShell": "7.6.6",
+  "EffectiveUid": 1000,
+  "TMPDIR": "/workspace/ipc-tmp",
+  "DOTNET_PROCESSOR_COUNT": null,
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 2981197,
+      "OriginalSha256": "c639803c310fbf95bf242a97b82489e2563d05838b239d365c407fe4b1b4c5e5",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 331445,
+      "StoredSha256": "373769695fa4fe7c1515f79e618648f903069328cc1d1e1b5647e2fd565aa1ec"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 7435,
+      "OriginalSha256": "a49b2a166c94c47fae4e64ee8b7d70a92d501b95690eccd87b88ae95ab259afe",
+      "StoredPath": "plan.json",
+      "StoredBytes": 7435,
+      "StoredSha256": "a49b2a166c94c47fae4e64ee8b7d70a92d501b95690eccd87b88ae95ab259afe"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1474,
+      "OriginalSha256": "98fdd14bf299078b9c0c86d0e4c92e0aa34a20a37279aaf5709fc2df40250c33",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1474,
+      "StoredSha256": "98fdd14bf299078b9c0c86d0e4c92e0aa34a20a37279aaf5709fc2df40250c33"
+    },
+    {
+      "Path": "worker-quarantine-audit-receipt-integration-001.trx",
+      "OriginalBytes": 61783,
+      "OriginalSha256": "9fadca7de8b24e4927f00436f6bd5b309c00615ea2ca781695b2fb618e31858f",
+      "StoredPath": "worker-quarantine-audit-receipt-integration-001.trx",
+      "StoredBytes": 61783,
+      "StoredSha256": "9fadca7de8b24e4927f00436f6bd5b309c00615ea2ca781695b2fb618e31858f"
+    },
+    {
+      "Path": "worker-quarantine-audit-receipt-unit-002.trx",
+      "OriginalBytes": 4541,
+      "OriginalSha256": "21312e4346003dc56880a75e665c30f4a10362b109948fd9c8958330c8b60784",
+      "StoredPath": "worker-quarantine-audit-receipt-unit-002.trx",
+      "StoredBytes": 4541,
+      "StoredSha256": "21312e4346003dc56880a75e665c30f4a10362b109948fd9c8958330c8b60784"
+    }
+  ]
+}

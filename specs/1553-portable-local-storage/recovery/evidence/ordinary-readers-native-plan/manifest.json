@@ -1,0 +1,20 @@
+{
+  "sourceCommit": "4ea9b3b59e3d5b39f70422f5520cc9799757e346",
+  "sourceAppliedTree": "3e923b6e1b9b7f01364291b17310701219363940",
+  "sourceInputs": "Runtime/tests/catalog/selection identical to the fresh successful 76-case build at e688dfbe; checked against applied tree d5ed321e58a1c4085ba3793dc685a37ac9f4e858",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-ordinary-read-windows -PlanOnly -NoBuild -Parallelism 1",
+  "environment": "Existing isolated env.sh and all three telemetry opt-outs; Linux x64",
+  "kind": "discovery/planning only; zero tests executed, not behavioral GREEN",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "bb74e42fdabed9558c4930a3a8adc9d2c5d2d52fd5c07b368d1f3e25c2a4edd3",
+      "sanitizedSha256": "bb74e42fdabed9558c4930a3a8adc9d2c5d2d52fd5c07b368d1f3e25c2a4edd3"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "f04586b4efa9ec55b68abae182ce4ba8993e500f56d621fe07dc4395f7b59555",
+      "sanitizedSha256": "f04586b4efa9ec55b68abae182ce4ba8993e500f56d621fe07dc4395f7b59555"
+    }
+  ]
+}

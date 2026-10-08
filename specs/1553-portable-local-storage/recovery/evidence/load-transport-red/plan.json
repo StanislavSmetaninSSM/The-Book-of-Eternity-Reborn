@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "portable-load-metadata-transport"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a0cda0aa06f0d7b1e1265eff60c0e162c9135f47",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 155.8123968,
+  "Descriptors": [
+    {
+      "Name": "portable-load-metadata-transport-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-load-metadata-transport",
+      "Categories": [
+        "portable-load-metadata-transport"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LongEscapedTokenReleasesCarryBeforeLaterPathRefusal|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.WriterFlushesEachMemberWithoutWholeHeaderRetention",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.LongEscapedTokenReleasesCarryBeforeLaterPathRefusal",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalFrameMetadataTests.WriterFlushesEachMemberWithoutWholeHeaderRetention",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="dd833a63-798c-46d8-b48a-a01b15d19fc4" name="@c7669543e9c7 2026-10-05 22:55:51" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T22:55:51.6592600+00:00" queuing="2026-10-05T22:55:51.6592601+00:00" start="2026-10-05T22:55:47.7828032+00:00" finish="2026-10-05T22:56:00.7740342+00:00" />
+  <TestSettings name="default" id="377bfe9c-2aae-49c3-9dd8-3bcf38a7f983">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_22_55_51" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="d9fc9fa8-e49b-455e-b037-ec53fa5bc783" testId="c6ff99e8-824b-bbc4-6fde-82b175c58b8f" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: &quot;timeout-completed&quot;)" computerName="c7669543e9c7" duration="00:00:01.9077943" startTime="2026-10-05T22:55:58.7875073+00:00" endTime="2026-10-05T22:55:58.7875075+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d9fc9fa8-e49b-455e-b037-ec53fa5bc783" />
+    <UnitTestResult executionId="93b6d2c7-8830-44ee-bd1d-0a86cde44bf3" testId="9e38a4cc-f6b9-7f43-9d92-2d53c3a3ba88" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: &quot;cancel-output&quot;)" computerName="c7669543e9c7" duration="00:00:01.7341061" startTime="2026-10-05T22:55:55.0629765+00:00" endTime="2026-10-05T22:55:55.0629767+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="93b6d2c7-8830-44ee-bd1d-0a86cde44bf3" />
+    <UnitTestResult executionId="d1e6dc68-77e0-4d43-9825-9edc8db5c7e9" testId="40947b7b-e00f-2eb2-f59c-82a60d218890" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: &quot;cancel-completed&quot;)" computerName="c7669543e9c7" duration="00:00:01.8154617" startTime="2026-10-05T22:55:56.8789692+00:00" endTime="2026-10-05T22:55:56.8789693+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d1e6dc68-77e0-4d43-9825-9edc8db5c7e9" />
+    <UnitTestResult executionId="e853d250-2831-456e-9034-a4205e38645d" testId="9c1eab26-4df3-e9a7-b07a-25b9c2e2c30e" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: &quot;cancel-stop&quot;)" computerName="c7669543e9c7" duration="00:00:01.7198363" startTime="2026-10-05T22:55:53.3283102+00:00" endTime="2026-10-05T22:55:53.3283106+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e853d250-2831-456e-9034-a4205e38645d" />
+    <UnitTestResult executionId="5079b566-69d1-48e7-9a00-58f0a542e8b4" testId="e6f03b4b-e23a-a182-5b59-b5b0f9b1973b" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: &quot;timeout-output&quot;)" computerName="c7669543e9c7" duration="00:00:01.9636103" startTime="2026-10-05T22:55:51.6088897+00:00" endTime="2026-10-05T22:55:51.6089035+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5079b566-69d1-48e7-9a00-58f0a542e8b4" />
+    <UnitTestResult executionId="a7c93fcb-0c40-499c-82de-d623ad1405de" testId="5c792b68-f781-1e28-d980-454967da648d" testName="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: &quot;timeout-stop&quot;)" computerName="c7669543e9c7" duration="00:00:01.9239147" startTime="2026-10-05T22:56:00.7143917+00:00" endTime="2026-10-05T22:56:00.7143919+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a7c93fcb-0c40-499c-82de-d623ad1405de" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: &quot;cancel-completed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="40947b7b-e00f-2eb2-f59c-82a60d218890">
+      <Execution id="d1e6dc68-77e0-4d43-9825-9edc8db5c7e9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: &quot;cancel-output&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9e38a4cc-f6b9-7f43-9d92-2d53c3a3ba88">
+      <Execution id="93b6d2c7-8830-44ee-bd1d-0a86cde44bf3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: &quot;timeout-completed&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c6ff99e8-824b-bbc4-6fde-82b175c58b8f">
+      <Execution id="d9fc9fa8-e49b-455e-b037-ec53fa5bc783" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: &quot;timeout-output&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e6f03b4b-e23a-a182-5b59-b5b0f9b1973b">
+      <Execution id="5079b566-69d1-48e7-9a00-58f0a542e8b4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: &quot;cancel-stop&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9c1eab26-4df3-e9a7-b07a-25b9c2e2c30e">
+      <Execution id="e853d250-2831-456e-9034-a4205e38645d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerNativePoolTests.ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries(mode: &quot;timeout-stop&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5c792b68-f781-1e28-d980-454967da648d">
+      <Execution id="a7c93fcb-0c40-499c-82de-d623ad1405de" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerNativePoolTests" name="ActualPool_CancellationAndTimeoutWinAtOwnedCompletionBoundaries" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c6ff99e8-824b-bbc4-6fde-82b175c58b8f" executionId="d9fc9fa8-e49b-455e-b037-ec53fa5bc783" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9e38a4cc-f6b9-7f43-9d92-2d53c3a3ba88" executionId="93b6d2c7-8830-44ee-bd1d-0a86cde44bf3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="40947b7b-e00f-2eb2-f59c-82a60d218890" executionId="d1e6dc68-77e0-4d43-9825-9edc8db5c7e9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9c1eab26-4df3-e9a7-b07a-25b9c2e2c30e" executionId="e853d250-2831-456e-9034-a4205e38645d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e6f03b4b-e23a-a182-5b59-b5b0f9b1973b" executionId="5079b566-69d1-48e7-9a00-58f0a542e8b4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5c792b68-f781-1e28-d980-454967da648d" executionId="a7c93fcb-0c40-499c-82de-d623ad1405de" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="6" executed="6" passed="6" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.18]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.36]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.38]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:12.50]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,202 @@
+{
+  "Categories": [
+    "worker-restart-publication-races-linux",
+    "worker-restart-cleanup-loss-linux",
+    "worker-restart-boundaries-linux",
+    "worker-restart-root-linux",
+    "worker-restart-control-linux",
+    "worker-restart-launch-linux",
+    "worker-restart-lifecycle-linux",
+    "worker-restart-warm-linux",
+    "worker-restart-crash-retirement-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a7370fd0b7eb789079a307ee0c04538499bbfdc6",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 41.371228,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-boundaries-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-boundaries-linux",
+      "Categories": [
+        "worker-restart-boundaries-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-cleanup-loss-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-cleanup-loss-linux",
+      "Categories": [
+        "worker-restart-cleanup-loss-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.CleanupAuthorityLoss_CannotDeleteOrLoseStickyUncertainty",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-control-linux-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-control-linux",
+      "Categories": [
+        "worker-restart-control-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartControlTests.OriginalRelease_OneSendAndNoLateSuccessAfterAckLossOrCancellation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartControlTests.OriginalRelease_OneSendAndNoLateSuccessAfterAckLossOrCancellation",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-crash-retirement-linux-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-crash-retirement-linux",
+      "Categories": [
+        "worker-restart-crash-retirement-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.RetirementCrash_ExactTerminalCommitGatesNewTask",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-launch-linux-unit-005",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-launch-linux",
+      "Categories": [
+        "worker-restart-launch-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartLaunchTests.OriginalLaunch_RefusedIntentRetainsNeverStartAndHostRequiresOwnRelease",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-lifecycle-linux-unit-006",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-lifecycle-linux",
+      "Categories": [
+        "worker-restart-lifecycle-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartLifecycleTests.ActualContentPool_PublishesAndCommitsBoundRetirementBeforeCapacityRelease",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartLifecycleTests.ActualContentPool_PublishesAndCommitsBoundRetirementBeforeCapacityRelease",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-publication-races-linux-unit-007",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-publication-races-linux",
+      "Categories": [
+        "worker-restart-publication-races-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationRace_PreservesUnresolvedWorkspaceAndAuthority",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartFenceTests.PublicationRace_PreservesUnresolvedWorkspaceAndAuthority",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-root-linux-unit-008",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-root-linux",
+      "Categories": [
+        "worker-restart-root-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartRootTests.IndependentOriginalEpochs_DoNotBorrowJournalOrRecoveryAuthority",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartRootTests.IndependentOriginalEpochs_DoNotBorrowJournalOrRecoveryAuthority",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "worker-restart-warm-linux-unit-009",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-warm-linux",
+      "Categories": [
+        "worker-restart-warm-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartWarmTests.DetectedNativeLoss_ClosesSharedRootBeforeStopAndSurvivesFailedJournalAndClientDisposal",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartWarmTests.DetectedNativeLoss_ClosesSharedRootBeforeStopAndSurvivesFailedJournalAndClientDisposal",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

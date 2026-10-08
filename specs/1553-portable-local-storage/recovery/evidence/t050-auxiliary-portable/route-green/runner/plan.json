@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "auxiliary-launcher-portable"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "7f61f520a6490adebd6b2db43915fe001d1ea00d",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.6297972,
+  "Descriptors": [
+    {
+      "Name": "auxiliary-launcher-portable-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "auxiliary-launcher-portable",
+      "Categories": [
+        "auxiliary-launcher-portable"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AuxiliaryLauncherPortableTests.RelocatedRuntimeOnlyPackage_ActualPrepareTurnPublishesLinkedAuthority",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "Categories": [
+    "gm-load-rollback-cut",
+    "gm-load-storage-faults",
+    "gm-load-affected-backend"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "55ac46ac45249aadc9336d4e6d2547301978d9db",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-load-affected-backend",
+      "Seconds": 15.2201171,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0629975,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0571515,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1032082,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 49.5459269,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 12.0189385,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 16,
+  "WallTime": "00:01:26.0266924",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 29,
+    "CompletedCases": 15,
+    "UnderfilledDescriptors": [
+      "gm-load-affected-backend-unit-002",
+      "gm-load-rollback-cut-unit-003",
+      "gm-load-storage-faults-unit-004"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 15,
+    "Executed": 15,
+    "Passed": 8,
+    "Failed": 7
+  },
+  "DuplicateTests": []
+}

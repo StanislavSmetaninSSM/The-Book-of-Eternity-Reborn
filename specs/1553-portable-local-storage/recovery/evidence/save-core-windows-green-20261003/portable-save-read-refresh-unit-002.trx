@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="232277c9-c808-4afc-81f0-f8e7eaf4a949" name="Eja@[HOST] 2026-10-03 00:15:19" runUser="[HOST]\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-03T00:15:19.2742274+10:00" queuing="2026-10-03T00:15:19.2742278+10:00" start="2026-10-03T00:15:15.2191375+10:00" finish="2026-10-03T00:15:19.5631568+10:00" />
+  <TestSettings name="default" id="b3951df8-5a53-49d8-a683-a152d43c1880">
+    <Deployment runDeploymentRoot="Eja_[HOST]_2026-10-03_00_15_19" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="25e1d04e-10a7-4a09-805f-8280239bfd9a" testId="b5d8987e-6de2-9b5a-39f2-e8bb6e66f4f6" testName="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.ProfileRepairPublishesOneCommonDecisionOnTheSuppliedLease" computerName="[HOST]" duration="00:00:00.2433868" startTime="2026-10-03T00:15:18.9938185+10:00" endTime="2026-10-03T00:15:18.9938187+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="25e1d04e-10a7-4a09-805f-8280239bfd9a" />
+    <UnitTestResult executionId="5fc107cf-3131-481f-9f2c-3048cecd254b" testId="0dff9fa6-4330-e4e9-a9ec-b522072b9da4" testName="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamReadsFullFileAndAcceptsHardLinkedInput(hardLinked: True)" computerName="[HOST]" duration="00:00:00.1656084" startTime="2026-10-03T00:15:19.3184278+10:00" endTime="2026-10-03T00:15:19.3184280+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5fc107cf-3131-481f-9f2c-3048cecd254b" />
+    <UnitTestResult executionId="bf409cf6-68ee-4f7a-94e4-69c7dda7811f" testId="c23ca137-7755-d470-88cd-49d81f3362d8" testName="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.MatchingProfileRefreshPreservesExactBomBytesWithoutPublication" computerName="[HOST]" duration="00:00:00.1543383" startTime="2026-10-03T00:15:19.4731867+10:00" endTime="2026-10-03T00:15:19.4731870+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bf409cf6-68ee-4f7a-94e4-69c7dda7811f" />
+    <UnitTestResult executionId="0fab6e7f-79c7-415f-95a8-71038eb35790" testId="071a3634-4ad1-7e95-6c39-bd78b3cf844e" testName="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.UncertainMirrorRepairPropagatesWithoutRefreshingRuntime(suppliedLease: False)" computerName="[HOST]" duration="00:00:00.1422481" startTime="2026-10-03T00:15:18.1995339+10:00" endTime="2026-10-03T00:15:18.1995341+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0fab6e7f-79c7-415f-95a8-71038eb35790" />
+    <UnitTestResult executionId="3e363acd-d888-41af-9004-cdba85c9e6f2" testId="2256a10b-4625-980c-fc3e-a14b9d1f47d5" testName="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamReadsFullFileAndAcceptsHardLinkedInput(hardLinked: False)" computerName="[HOST]" duration="00:00:00.1586731" startTime="2026-10-03T00:15:19.1526786+10:00" endTime="2026-10-03T00:15:19.1526788+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3e363acd-d888-41af-9004-cdba85c9e6f2" />
+    <UnitTestResult executionId="a0ff7e10-eb17-43a3-b732-2cab30560025" testId="29b0283c-7b0c-7aa6-4295-4c4b54c4396e" testName="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.UncertainMirrorRepairPropagatesWithoutRefreshingRuntime(suppliedLease: True)" computerName="[HOST]" duration="00:00:00.3353335" startTime="2026-10-03T00:15:18.0566945+10:00" endTime="2026-10-03T00:15:18.0567209+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a0ff7e10-eb17-43a3-b732-2cab30560025" />
+    <UnitTestResult executionId="b0b84d75-143f-49ed-86ea-dde4ad86d876" testId="f56eb66f-3d44-e499-3aad-283e0a5906d9" testName="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.RetainedDebtBlocksStreamAndRefreshBeforeAnyReadOnTheSameLease" computerName="[HOST]" duration="00:00:00.1825767" startTime="2026-10-03T00:15:18.7499132+10:00" endTime="2026-10-03T00:15:18.7499135+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b0b84d75-143f-49ed-86ea-dde4ad86d876" />
+    <UnitTestResult executionId="0ac17f8d-5359-48f6-8d6e-d4e7fc485dfc" testId="1bd3c195-10cd-d12e-f039-409bcc2e2ef5" testName="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamCompletionRejectsLinkedOrWrongTypeName(linked: False)" computerName="[HOST]" duration="00:00:00.1447024" startTime="2026-10-03T00:15:18.3458293+10:00" endTime="2026-10-03T00:15:18.3458295+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0ac17f8d-5359-48f6-8d6e-d4e7fc485dfc" />
+    <UnitTestResult executionId="deb31c5e-d4c2-40de-8230-68cbd51a55eb" testId="166f8b8a-d0fc-2716-170a-9c29f881ba2d" testName="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamCompletionRejectsLinkedOrWrongTypeName(linked: True)" computerName="[HOST]" duration="00:00:00.2207353" startTime="2026-10-03T00:15:18.5671541+10:00" endTime="2026-10-03T00:15:18.5671544+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="deb31c5e-d4c2-40de-8230-68cbd51a55eb" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.UncertainMirrorRepairPropagatesWithoutRefreshingRuntime(suppliedLease: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="071a3634-4ad1-7e95-6c39-bd78b3cf844e">
+      <Execution id="0fab6e7f-79c7-415f-95a8-71038eb35790" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests" name="UncertainMirrorRepairPropagatesWithoutRefreshingRuntime" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.MatchingProfileRefreshPreservesExactBomBytesWithoutPublication" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="c23ca137-7755-d470-88cd-49d81f3362d8">
+      <Execution id="bf409cf6-68ee-4f7a-94e4-69c7dda7811f" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests" name="MatchingProfileRefreshPreservesExactBomBytesWithoutPublication" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamReadsFullFileAndAcceptsHardLinkedInput(hardLinked: True)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="0dff9fa6-4330-e4e9-a9ec-b522072b9da4">
+      <Execution id="5fc107cf-3131-481f-9f2c-3048cecd254b" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests" name="OrdinaryStreamReadsFullFileAndAcceptsHardLinkedInput" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamReadsFullFileAndAcceptsHardLinkedInput(hardLinked: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="2256a10b-4625-980c-fc3e-a14b9d1f47d5">
+      <Execution id="3e363acd-d888-41af-9004-cdba85c9e6f2" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests" name="OrdinaryStreamReadsFullFileAndAcceptsHardLinkedInput" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.RetainedDebtBlocksStreamAndRefreshBeforeAnyReadOnTheSameLease" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="f56eb66f-3d44-e499-3aad-283e0a5906d9">
+      <Execution id="b0b84d75-143f-49ed-86ea-dde4ad86d876" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests" name="RetainedDebtBlocksStreamAndRefreshBeforeAnyReadOnTheSameLease" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamCompletionRejectsLinkedOrWrongTypeName(linked: True)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="166f8b8a-d0fc-2716-170a-9c29f881ba2d">
+      <Execution id="deb31c5e-d4c2-40de-8230-68cbd51a55eb" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests" name="OrdinaryStreamCompletionRejectsLinkedOrWrongTypeName" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.OrdinaryStreamCompletionRejectsLinkedOrWrongTypeName(linked: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="1bd3c195-10cd-d12e-f039-409bcc2e2ef5">
+      <Execution id="0ac17f8d-5359-48f6-8d6e-d4e7fc485dfc" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests" name="OrdinaryStreamCompletionRejectsLinkedOrWrongTypeName" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.ProfileRepairPublishesOneCommonDecisionOnTheSuppliedLease" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="b5d8987e-6de2-9b5a-39f2-e8bb6e66f4f6">
+      <Execution id="25e1d04e-10a7-4a09-805f-8280239bfd9a" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests" name="ProfileRepairPublishesOneCommonDecisionOnTheSuppliedLease" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests.UncertainMirrorRepairPropagatesWithoutRefreshingRuntime(suppliedLease: True)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="29b0283c-7b0c-7aa6-4295-4c4b54c4396e">
+      <Execution id="a0ff7e10-eb17-43a3-b732-2cab30560025" />
+      <TestMethod codeBase="[WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.OrdinarySaveReadAndRefreshTests" name="UncertainMirrorRepairPropagatesWithoutRefreshingRuntime" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="b5d8987e-6de2-9b5a-39f2-e8bb6e66f4f6" executionId="25e1d04e-10a7-4a09-805f-8280239bfd9a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0dff9fa6-4330-e4e9-a9ec-b522072b9da4" executionId="5fc107cf-3131-481f-9f2c-3048cecd254b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c23ca137-7755-d470-88cd-49d81f3362d8" executionId="bf409cf6-68ee-4f7a-94e4-69c7dda7811f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="071a3634-4ad1-7e95-6c39-bd78b3cf844e" executionId="0fab6e7f-79c7-415f-95a8-71038eb35790" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2256a10b-4625-980c-fc3e-a14b9d1f47d5" executionId="3e363acd-d888-41af-9004-cdba85c9e6f2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="29b0283c-7b0c-7aa6-4295-4c4b54c4396e" executionId="a0ff7e10-eb17-43a3-b732-2cab30560025" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f56eb66f-3d44-e499-3aad-283e0a5906d9" executionId="b0b84d75-143f-49ed-86ea-dde4ad86d876" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1bd3c195-10cd-d12e-f039-409bcc2e2ef5" executionId="0ac17f8d-5359-48f6-8d6e-d4e7fc485dfc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="166f8b8a-d0fc-2716-170a-9c29f881ba2d" executionId="deb31c5e-d4c2-40de-8230-68cbd51a55eb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="9" executed="9" passed="9" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.25]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.79]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:01.82]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:03.64]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

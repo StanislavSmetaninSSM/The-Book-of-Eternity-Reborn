@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "console-audio-linux",
+    "browser-audio-isolation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "211e4f58d14a94ca1899472b8665401d8c23b297",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 94.1545596,
+  "Descriptors": [
+    {
+      "Name": "browser-audio-isolation-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "browser-audio-isolation",
+      "Categories": [
+        "browser-audio-isolation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserAudioIsolationTests.ActualHostRegistration_LeavesPlaybackInBrowserWithoutServerNativeCalls",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserAudioIsolationTests.ActualHostRegistration_LeavesPlaybackInBrowserWithoutServerNativeCalls",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "console-audio-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "console-audio-linux",
+      "Categories": [
+        "console-audio-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ConsoleAudioLinuxTests.PublicService_SelectsLinuxAndReportsUnavailableWithoutWindowsOrDeviceCalls",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ConsoleAudioLinuxTests.PublicService_SelectsLinuxAndReportsUnavailableWithoutWindowsOrDeviceCalls",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

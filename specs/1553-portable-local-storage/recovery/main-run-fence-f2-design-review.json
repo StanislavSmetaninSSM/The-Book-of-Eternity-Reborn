@@ -1,0 +1,21 @@
+{
+  "Task": "T041-RUN-FENCE-F2",
+  "Reviewer": "/root/f2_review",
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "ReviewedPlan": "4bf38010dd87e9f2a206bb955ea00864a8ea366f",
+  "Verdict": "Source-delta DESIGN PASS with explicit amendments",
+  "Amendments": [
+    "same-response browser complete bundle under original guard",
+    "outer participant before generation/directory preparation",
+    "all actual daemon canonical effects use adapter",
+    "irreversible same-context close before timeout/stall shutdown; volatile post-close diagnostics"
+  ],
+  "ImplementationConditions": [
+    "32 retained inventory separate from short request capacity; unresolved never evicted",
+    "one bounded retained reader",
+    "deep frozen status snapshot, captured original owner, serialized publication outside sync and actual task/lease disposal drain before retirement",
+    "close receipt retirement independent of reply write; no generic peer loss poisoning after ClosedObserved"
+  ],
+  "RuntimeEditsTestsBuildsProbesByReviewer": 0
+}

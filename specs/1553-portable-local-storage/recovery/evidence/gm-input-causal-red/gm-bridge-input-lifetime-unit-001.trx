@@ -1,0 +1,529 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="2a00dec8-b6db-4c30-a435-54ae34c7ce74" name="@3a7834d0640d 2026-10-05 14:17:12" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T14:17:12.3459697+00:00" queuing="2026-10-05T14:17:12.3459698+00:00" start="2026-10-05T14:17:10.2977872+00:00" finish="2026-10-05T14:17:12.4830106+00:00" />
+  <TestSettings name="default" id="96ef4a57-c21d-4961-9c43-d771550a5757">
+    <Deployment runDeploymentRoot="_3a7834d0640d_2026-10-05_14_17_12" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="6f9fac74-11c6-4292-9f8c-d558a86b4d3d" testId="978348af-ba21-dcde-94fa-296f02fb81a3" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_RefusesPromptDispatchWhileCodexCliIsWorking" computerName="3a7834d0640d" duration="00:00:00.0003789" startTime="2026-10-05T14:17:12.2741390+00:00" endTime="2026-10-05T14:17:12.2741391+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6f9fac74-11c6-4292-9f8c-d558a86b4d3d" />
+    <UnitTestResult executionId="caaeafc0-05c7-4f7c-82f4-1a8d7f3f4f47" testId="9d742c78-4d05-b719-56dc-c403d4804cd9" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_CancelBeforeEntryIsZeroBytesAndDoesNotPoisonActiveBinding" computerName="3a7834d0640d" duration="00:00:00.0014279" startTime="2026-10-05T14:17:12.4042879+00:00" endTime="2026-10-05T14:17:12.4042880+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="caaeafc0-05c7-4f7c-82f4-1a8d7f3f4f47">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_CancelBeforeEntryIsZeroBytesAndDoesNotPoisonActiveBinding() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 110
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_CancelBeforeEntryIsZeroBytesAndDoesNotPoisonActiveBinding() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 114
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="38ec8c41-6d78-4bec-932d-b08d7feec817" testId="c6bc03db-95df-5c3f-ecc9-eda1877861cb" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion" computerName="3a7834d0640d" duration="00:00:00.0056136" startTime="2026-10-05T14:17:12.3876065+00:00" endTime="2026-10-05T14:17:12.3876065+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="38ec8c41-6d78-4bec-932d-b08d7feec817">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.IsType() Failure: Value is null
+Expected: typeof(System.TimeoutException)
+Actual:   null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 161
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 165
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="76c7f620-219e-48c2-97ff-2db1fdc4a42e" testId="5d4c4008-6205-5c8e-3bc9-927572990467" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: 'a', key: A, control: False, expected: &quot;a&quot;)" computerName="3a7834d0640d" duration="00:00:00.0027046" startTime="2026-10-05T14:17:12.3567812+00:00" endTime="2026-10-05T14:17:12.3567813+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="76c7f620-219e-48c2-97ff-2db1fdc4a42e" />
+    <UnitTestResult executionId="70cd7022-9f94-413b-ad0f-62c7a7b4c90f" testId="f063ee4e-a422-5438-2150-9066a88ed7dd" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\0', key: UpArrow, control: False, expected: &quot;\x1b[A&quot;)" computerName="3a7834d0640d" duration="00:00:00.0017951" startTime="2026-10-05T14:17:12.3586730+00:00" endTime="2026-10-05T14:17:12.3586731+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="70cd7022-9f94-413b-ad0f-62c7a7b4c90f" />
+    <UnitTestResult executionId="c71ea519-505d-4896-8c52-84efc3e634db" testId="681e8165-8264-8bed-a759-0aae066d76aa" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: &quot;cancel-flush&quot;)" computerName="3a7834d0640d" duration="00:00:00.0007574" startTime="2026-10-05T14:17:12.3264095+00:00" endTime="2026-10-05T14:17:12.3264096+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c71ea519-505d-4896-8c52-84efc3e634db">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 91
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 99
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="ea51f4d4-1bf9-4583-9716-923186b4619d" testId="075cfaaf-8bbb-1e6b-6f10-29310934483f" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualAssemblyAndPortablePdbMatchProductionSource" computerName="3a7834d0640d" duration="00:00:00.0079706" startTime="2026-10-05T14:17:12.3785966+00:00" endTime="2026-10-05T14:17:12.3785967+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ea51f4d4-1bf9-4583-9716-923186b4619d" />
+    <UnitTestResult executionId="959f7602-b62a-4a14-a002-911b8e9257e8" testId="84fc3f31-b120-6439-7d5d-abf857ad0165" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: &quot;caller&quot;)" computerName="3a7834d0640d" duration="00:00:00.0071619" startTime="2026-10-05T14:17:12.3062500+00:00" endTime="2026-10-05T14:17:12.3062501+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="959f7602-b62a-4a14-a002-911b8e9257e8">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: Collection was not empty
+Collection: [110, 101, 118, 101, 114]</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 49
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 52
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c4f17a0a-9bd9-4687-bf99-44286f69b122" testId="db702672-dc77-1be9-a746-57e75ca53a04" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(reuse: True)" computerName="3a7834d0640d" duration="00:00:00.0008987" startTime="2026-10-05T14:17:12.3706445+00:00" endTime="2026-10-05T14:17:12.3706445+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c4f17a0a-9bd9-4687-bf99-44286f69b122">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(Boolean reuse) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 67
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(Boolean reuse) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 71
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="dd5a57da-7a9a-4564-9ddd-c43540abe85c" testId="16749874-6ed6-63c8-e87d-32d12dce1af2" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys" computerName="3a7834d0640d" duration="00:00:00.0048453" startTime="2026-10-05T14:17:12.3971988+00:00" endTime="2026-10-05T14:17:12.3971989+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dd5a57da-7a9a-4564-9ddd-c43540abe85c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.True() Failure
+Expected: True
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 257
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 274
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8601ea75-9348-4ac4-81f2-ed22eeafd0e0" testId="d22effea-b333-8ca7-09cf-36c1d4ad2b4b" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_PreservesUnicodeMultilineAndAppendEnter(append: True)" computerName="3a7834d0640d" duration="00:00:00.0011688" startTime="2026-10-05T14:17:12.3798190+00:00" endTime="2026-10-05T14:17:12.3798191+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8601ea75-9348-4ac4-81f2-ed22eeafd0e0" />
+    <UnitTestResult executionId="16aa61cb-a774-4483-a898-4d61932e30e2" testId="67dcc87e-7907-162b-48c4-165818f931f6" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: &quot;host&quot;)" computerName="3a7834d0640d" duration="00:00:00.0409557" startTime="2026-10-05T14:17:12.3028751+00:00" endTime="2026-10-05T14:17:12.3028753+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="16aa61cb-a774-4483-a898-4d61932e30e2">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: Collection was not empty
+Collection: [110, 101, 118, 101, 114]</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 49
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 52
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="da6eaa6f-7034-4f5b-b44f-f5f1167b6a1d" testId="f327c563-4bb9-17f6-269e-a97950245dd9" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispose_ClosesAdmissionAndDoesNotDisposeGateUnderUnsettledWrite" computerName="3a7834d0640d" duration="00:00:00.0053227" startTime="2026-10-05T14:17:12.3673913+00:00" endTime="2026-10-05T14:17:12.3673913+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="da6eaa6f-7034-4f5b-b44f-f5f1167b6a1d">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispose_ClosesAdmissionAndDoesNotDisposeGateUnderUnsettledWrite() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 182
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispose_ClosesAdmissionAndDoesNotDisposeGateUnderUnsettledWrite() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 186
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1ce7fbaa-9c76-4b64-b21d-1d4a9f5678b8" testId="41da4987-5452-6bcd-1c4a-8d4339e02a5d" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: &quot;cancel-write&quot;)" computerName="3a7834d0640d" duration="00:00:00.0044379" startTime="2026-10-05T14:17:12.3262699+00:00" endTime="2026-10-05T14:17:12.3262700+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1ce7fbaa-9c76-4b64-b21d-1d4a9f5678b8">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 91
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 99
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="353d75e0-339c-4180-aa21-45d6075ce29b" testId="fc98e1e7-d467-b68a-5bc6-b8c7d8f12d97" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(reuse: False)" computerName="3a7834d0640d" duration="00:00:00.0019633" startTime="2026-10-05T14:17:12.3695175+00:00" endTime="2026-10-05T14:17:12.3695176+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="353d75e0-339c-4180-aa21-45d6075ce29b">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(Boolean reuse) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 67
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(Boolean reuse) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 71
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="933f3ced-f552-4f9d-b461-e64f91ad16bf" testId="a776ccf4-018c-569b-281d-6559b712b1a2" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ConfirmsPromptLeavesInputAfterAppendEnter" computerName="3a7834d0640d" duration="00:00:00.0010796" startTime="2026-10-05T14:17:12.2740631+00:00" endTime="2026-10-05T14:17:12.2740633+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="933f3ced-f552-4f9d-b461-e64f91ad16bf" />
+    <UnitTestResult executionId="d72a459d-1aa9-47c5-896b-8cb7c55b6605" testId="fb50a5ad-78ce-abdd-a483-b0002e2f2bc7" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ClearsPendingCliInputBeforeDispatchPrompt" computerName="3a7834d0640d" duration="00:00:00.0072862" startTime="2026-10-05T14:17:12.2654363+00:00" endTime="2026-10-05T14:17:12.2654534+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d72a459d-1aa9-47c5-896b-8cb7c55b6605" />
+    <UnitTestResult executionId="f82b453e-7400-4cfe-8479-8850b69a958a" testId="51e52993-cce0-5f2f-5874-da59b4998677" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_ConcurrentStopsJoinOneRetiringLifetime" computerName="3a7834d0640d" duration="00:00:00.0039481" startTime="2026-10-05T14:17:12.4025546+00:00" endTime="2026-10-05T14:17:12.4025547+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f82b453e-7400-4cfe-8479-8850b69a958a">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.True() Failure
+Expected: True
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_ConcurrentStopsJoinOneRetiringLifetime() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 203
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_ConcurrentStopsJoinOneRetiringLifetime() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 204
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="bb3b39a5-cf72-42a5-b1b2-358918b742df" testId="17bea770-1747-a1a2-6f22-f81727d6bfa8" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: &quot;write&quot;)" computerName="3a7834d0640d" duration="00:00:00.0025116" startTime="2026-10-05T14:17:12.3265629+00:00" endTime="2026-10-05T14:17:12.3265630+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bb3b39a5-cf72-42a5-b1b2-358918b742df">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "PtyInputWriteException"
+Actual:   "IOException"
+           ↑ (pos 0)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 92
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 99
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c4aac95d-7dab-4ee5-b9a4-02e592072fd3" testId="17dc696d-51ae-dc3e-b7cd-242981ea40c2" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: &quot;revoke&quot;)" computerName="3a7834d0640d" duration="00:00:00.0042617" startTime="2026-10-05T14:17:12.3108533+00:00" endTime="2026-10-05T14:17:12.3108534+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c4aac95d-7dab-4ee5-b9a4-02e592072fd3">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: Collection was not empty
+Collection: [110, 101, 118, 101, 114]</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 49
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 52
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="362cd1a7-978f-4411-8ac1-8af64d49b69d" testId="447238c8-46f6-6d5c-b3e2-ace1b90ad6b3" testName="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ProductionStartAndDiagnosticsConsumeTheTestedMethods" computerName="3a7834d0640d" duration="00:00:00.0072922" startTime="2026-10-05T14:17:12.2713586+00:00" endTime="2026-10-05T14:17:12.2713588+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="362cd1a7-978f-4411-8ac1-8af64d49b69d" />
+    <UnitTestResult executionId="abcc38e5-6212-4d96-bc33-46469a601f98" testId="2b74bf3c-bed3-375c-82e0-57fa5edc2bc7" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding" computerName="3a7834d0640d" duration="00:00:00.0037292" startTime="2026-10-05T14:17:12.3916080+00:00" endTime="2026-10-05T14:17:12.3916081+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="abcc38e5-6212-4d96-bc33-46469a601f98">
+      <Output>
+        <ErrorInfo>
+          <Message>Stop must observe actual in-flight I/O even when native PTY is null.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 134
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 142
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="318e4fdf-ae43-4fda-8647-2aeb187d7be5" testId="f6c12789-23be-7cba-f77f-e43e1163ef25" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: &quot;flush&quot;)" computerName="3a7834d0640d" duration="00:00:00.0006126" startTime="2026-10-05T14:17:12.3266980+00:00" endTime="2026-10-05T14:17:12.3266981+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="318e4fdf-ae43-4fda-8647-2aeb187d7be5">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "PtyInputWriteException"
+Actual:   "IOException"
+           ↑ (pos 0)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 92
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 99
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="103349c0-6a4b-402a-8e2e-0135850f2828" testId="5d950953-e765-ea69-71c3-251d6f7b3ad4" testName="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_AutoSkipsCodexUpdatePromptWithoutMarkingReady" computerName="3a7834d0640d" duration="00:00:00.0004254" startTime="2026-10-05T14:17:12.2741071+00:00" endTime="2026-10-05T14:17:12.2741071+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="103349c0-6a4b-402a-8e2e-0135850f2828" />
+    <UnitTestResult executionId="d8685216-d465-476a-b384-9c46b91294f7" testId="fd4cec92-4e29-4e79-b982-cc6b4858d037" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_PreservesUnicodeMultilineAndAppendEnter(append: False)" computerName="3a7834d0640d" duration="00:00:00.0004477" startTime="2026-10-05T14:17:12.3803776+00:00" endTime="2026-10-05T14:17:12.3803776+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d8685216-d465-476a-b384-9c46b91294f7" />
+    <UnitTestResult executionId="be494df4-55b1-47e3-bfba-34633737ab82" testId="ac4216f9-16a6-8d0f-fdee-b64134216bf6" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\0', key: C, control: True, expected: &quot;\x03&quot;)" computerName="3a7834d0640d" duration="00:00:00.0101585" startTime="2026-10-05T14:17:12.3531752+00:00" endTime="2026-10-05T14:17:12.3531752+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="be494df4-55b1-47e3-bfba-34633737ab82" />
+    <UnitTestResult executionId="0c594764-aabe-4dde-aa0c-8b9641d71257" testId="7e3003b2-2a34-029e-24cb-ecd32b050b55" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: &quot;shell&quot;)" computerName="3a7834d0640d" duration="00:00:00.0026649" startTime="2026-10-05T14:17:12.3149203+00:00" endTime="2026-10-05T14:17:12.3149204+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0c594764-aabe-4dde-aa0c-8b9641d71257">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Empty() Failure: Collection was not empty
+Collection: [110, 101, 118, 101, 114]</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 49
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source) in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 52
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="09212e02-9bac-4588-b0d9-51f189c8feed" testId="f6bd1efe-637a-9202-2f50-67145d9363db" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops" computerName="3a7834d0640d" duration="00:00:00.0147580" startTime="2026-10-05T14:17:12.3424989+00:00" endTime="2026-10-05T14:17:12.3424990+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="09212e02-9bac-4588-b0d9-51f189c8feed">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotNull() Failure: Value is null</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 295
+   at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops() in /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs:line 296
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3ecd81c1-f592-4aab-879c-101f751a2cc4" testId="9b083a47-653f-8e31-3dd3-cd98bdb2c102" testName="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\r', key: Enter, control: False, expected: &quot;\r&quot;)" computerName="3a7834d0640d" duration="00:00:00.0019089" startTime="2026-10-05T14:17:12.3612152+00:00" endTime="2026-10-05T14:17:12.3612154+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3ecd81c1-f592-4aab-879c-101f751a2cc4" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(reuse: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="db702672-dc77-1be9-a746-57e75ca53a04">
+      <Execution id="c4f17a0a-9bd9-4687-bf99-44286f69b122" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_PreservesUnicodeMultilineAndAppendEnter(append: True)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d22effea-b333-8ca7-09cf-36c1d4ad2b4b">
+      <Execution id="8601ea75-9348-4ac4-81f2-ed22eeafd0e0" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualWriter_PreservesUnicodeMultilineAndAppendEnter" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_AutoSkipsCodexUpdatePromptWithoutMarkingReady" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5d950953-e765-ea69-71c3-251d6f7b3ad4">
+      <Execution id="103349c0-6a4b-402a-8e2e-0135850f2828" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_AutoSkipsCodexUpdatePromptWithoutMarkingReady" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: &quot;write&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="17bea770-1747-a1a2-6f22-f81727d6bfa8">
+      <Execution id="bb3b39a5-cf72-42a5-b1b2-358918b742df" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_ConcurrentStopsJoinOneRetiringLifetime" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="51e52993-cce0-5f2f-5874-da59b4998677">
+      <Execution id="f82b453e-7400-4cfe-8479-8850b69a958a" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualStop_ConcurrentStopsJoinOneRetiringLifetime" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: &quot;flush&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f6c12789-23be-7cba-f77f-e43e1163ef25">
+      <Execution id="318e4fdf-ae43-4fda-8647-2aeb187d7be5" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f6bd1efe-637a-9202-2f50-67145d9363db">
+      <Execution id="09212e02-9bac-4588-b0d9-51f189c8feed" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualKeyboard_WriteFailureIsRecordedAndPumpStops" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ClearsPendingCliInputBeforeDispatchPrompt" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fb50a5ad-78ce-abdd-a483-b0002e2f2bc7">
+      <Execution id="d72a459d-1aa9-47c5-896b-8cb7c55b6605" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_ClearsPendingCliInputBeforeDispatchPrompt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_RefusesPromptDispatchWhileCodexCliIsWorking" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="978348af-ba21-dcde-94fa-296f02fb81a3">
+      <Execution id="6f9fac74-11c6-4292-9f8c-d558a86b4d3d" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_RefusesPromptDispatchWhileCodexCliIsWorking" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_CancelBeforeEntryIsZeroBytesAndDoesNotPoisonActiveBinding" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9d742c78-4d05-b719-56dc-c403d4804cd9">
+      <Execution id="caaeafc0-05c7-4f7c-82f4-1a8d7f3f4f47" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualWriter_CancelBeforeEntryIsZeroBytesAndDoesNotPoisonActiveBinding" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: &quot;shell&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7e3003b2-2a34-029e-24cb-ecd32b050b55">
+      <Execution id="0c594764-aabe-4dde-aa0c-8b9641d71257" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualWriter_QueuedCancellationOrRevocationWritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_PreservesUnicodeMultilineAndAppendEnter(append: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fd4cec92-4e29-4e79-b982-cc6b4858d037">
+      <Execution id="d8685216-d465-476a-b384-9c46b91294f7" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualWriter_PreservesUnicodeMultilineAndAppendEnter" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(reuse: False)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fc98e1e7-d467-b68a-5bc6-b8c7d8f12d97">
+      <Execution id="353d75e0-339c-4180-aa21-45d6075ce29b" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: &quot;revoke&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="17dc696d-51ae-dc3e-b7cd-242981ea40c2">
+      <Execution id="c4aac95d-7dab-4ee5-b9a4-02e592072fd3" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualWriter_QueuedCancellationOrRevocationWritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_ConfirmsPromptLeavesInputAfterAppendEnter" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a776ccf4-018c-569b-281d-6559b712b1a2">
+      <Execution id="933f3ced-f552-4f9d-b461-e64f91ad16bf" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests" name="BridgeHost_ConfirmsPromptLeavesInputAfterAppendEnter" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c6bc03db-95df-5c3f-ecc9-eda1877861cb">
+      <Execution id="38ec8c41-6d78-4bec-932d-b08d7feec817" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\r', key: Enter, control: False, expected: &quot;\r&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9b083a47-653f-8e31-3dd3-cd98bdb2c102">
+      <Execution id="3ecd81c1-f592-4aab-879c-101f751a2cc4" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualKeyboard_PreservesExistingKeyBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\0', key: C, control: True, expected: &quot;\x03&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ac4216f9-16a6-8d0f-fdee-b64134216bf6">
+      <Execution id="be494df4-55b1-47e3-bfba-34633737ab82" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualKeyboard_PreservesExistingKeyBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: &quot;caller&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="84fc3f31-b120-6439-7d5d-abf857ad0165">
+      <Execution id="959f7602-b62a-4a14-a002-911b8e9257e8" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualWriter_QueuedCancellationOrRevocationWritesNothing" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: &quot;cancel-write&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="41da4987-5452-6bcd-1c4a-8d4339e02a5d">
+      <Execution id="1ce7fbaa-9c76-4b64-b21d-1d4a9f5678b8" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="16749874-6ed6-63c8-e87d-32d12dce1af2">
+      <Execution id="dd5a57da-7a9a-4564-9ddd-c43540abe85c" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2b74bf3c-bed3-375c-82e0-57fa5edc2bc7">
+      <Execution id="abcc38e5-6212-4d96-bc33-46469a601f98" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualAssemblyAndPortablePdbMatchProductionSource" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="075cfaaf-8bbb-1e6b-6f10-29310934483f">
+      <Execution id="ea51f4d4-1bf9-4583-9716-923186b4619d" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualAssemblyAndPortablePdbMatchProductionSource" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: 'a', key: A, control: False, expected: &quot;a&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5d4c4008-6205-5c8e-3bc9-927572990467">
+      <Execution id="76c7f620-219e-48c2-97ff-2db1fdc4a42e" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualKeyboard_PreservesExistingKeyBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_PreservesExistingKeyBytes(keyChar: '\0', key: UpArrow, control: False, expected: &quot;\x1b[A&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f063ee4e-a422-5438-2150-9066a88ed7dd">
+      <Execution id="70cd7022-9f94-413b-ad0f-62c7a7b4c90f" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualKeyboard_PreservesExistingKeyBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeOutputPumpTests.ProductionStartAndDiagnosticsConsumeTheTestedMethods" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="447238c8-46f6-6d5c-b3e2-ace1b90ad6b3">
+      <Execution id="362cd1a7-978f-4411-8ac1-8af64d49b69d" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeOutputPumpTests" name="ProductionStartAndDiagnosticsConsumeTheTestedMethods" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: &quot;cancel-flush&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="681e8165-8264-8bed-a759-0aae066d76aa">
+      <Execution id="c71ea519-505d-4896-8c52-84efc3e634db" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispose_ClosesAdmissionAndDoesNotDisposeGateUnderUnsettledWrite" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f327c563-4bb9-17f6-269e-a97950245dd9">
+      <Execution id="da6eaa6f-7034-4f5b-b44f-f5f1167b6a1d" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualDispose_ClosesAdmissionAndDoesNotDisposeGateUnderUnsettledWrite" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: &quot;host&quot;)" storage="/workspace/1553-linux-c706e2c3/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="67dcc87e-7907-162b-48c4-165818f931f6">
+      <Execution id="16aa61cb-a774-4483-a898-4d61932e30e2" />
+      <TestMethod codeBase="/workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmBridgeInputLifetimeTests" name="ActualWriter_QueuedCancellationOrRevocationWritesNothing" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="978348af-ba21-dcde-94fa-296f02fb81a3" executionId="6f9fac74-11c6-4292-9f8c-d558a86b4d3d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9d742c78-4d05-b719-56dc-c403d4804cd9" executionId="caaeafc0-05c7-4f7c-82f4-1a8d7f3f4f47" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c6bc03db-95df-5c3f-ecc9-eda1877861cb" executionId="38ec8c41-6d78-4bec-932d-b08d7feec817" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5d4c4008-6205-5c8e-3bc9-927572990467" executionId="76c7f620-219e-48c2-97ff-2db1fdc4a42e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f063ee4e-a422-5438-2150-9066a88ed7dd" executionId="70cd7022-9f94-413b-ad0f-62c7a7b4c90f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="681e8165-8264-8bed-a759-0aae066d76aa" executionId="c71ea519-505d-4896-8c52-84efc3e634db" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="075cfaaf-8bbb-1e6b-6f10-29310934483f" executionId="ea51f4d4-1bf9-4583-9716-923186b4619d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="84fc3f31-b120-6439-7d5d-abf857ad0165" executionId="959f7602-b62a-4a14-a002-911b8e9257e8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="db702672-dc77-1be9-a746-57e75ca53a04" executionId="c4f17a0a-9bd9-4687-bf99-44286f69b122" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="16749874-6ed6-63c8-e87d-32d12dce1af2" executionId="dd5a57da-7a9a-4564-9ddd-c43540abe85c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d22effea-b333-8ca7-09cf-36c1d4ad2b4b" executionId="8601ea75-9348-4ac4-81f2-ed22eeafd0e0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="67dcc87e-7907-162b-48c4-165818f931f6" executionId="16aa61cb-a774-4483-a898-4d61932e30e2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f327c563-4bb9-17f6-269e-a97950245dd9" executionId="da6eaa6f-7034-4f5b-b44f-f5f1167b6a1d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="41da4987-5452-6bcd-1c4a-8d4339e02a5d" executionId="1ce7fbaa-9c76-4b64-b21d-1d4a9f5678b8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fc98e1e7-d467-b68a-5bc6-b8c7d8f12d97" executionId="353d75e0-339c-4180-aa21-45d6075ce29b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a776ccf4-018c-569b-281d-6559b712b1a2" executionId="933f3ced-f552-4f9d-b461-e64f91ad16bf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fb50a5ad-78ce-abdd-a483-b0002e2f2bc7" executionId="d72a459d-1aa9-47c5-896b-8cb7c55b6605" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="51e52993-cce0-5f2f-5874-da59b4998677" executionId="f82b453e-7400-4cfe-8479-8850b69a958a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="17bea770-1747-a1a2-6f22-f81727d6bfa8" executionId="bb3b39a5-cf72-42a5-b1b2-358918b742df" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="17dc696d-51ae-dc3e-b7cd-242981ea40c2" executionId="c4aac95d-7dab-4ee5-b9a4-02e592072fd3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="447238c8-46f6-6d5c-b3e2-ace1b90ad6b3" executionId="362cd1a7-978f-4411-8ac1-8af64d49b69d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2b74bf3c-bed3-375c-82e0-57fa5edc2bc7" executionId="abcc38e5-6212-4d96-bc33-46469a601f98" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f6c12789-23be-7cba-f77f-e43e1163ef25" executionId="318e4fdf-ae43-4fda-8647-2aeb187d7be5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5d950953-e765-ea69-71c3-251d6f7b3ad4" executionId="103349c0-6a4b-402a-8e2e-0135850f2828" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fd4cec92-4e29-4e79-b982-cc6b4858d037" executionId="d8685216-d465-476a-b384-9c46b91294f7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ac4216f9-16a6-8d0f-fdee-b64134216bf6" executionId="be494df4-55b1-47e3-bfba-34633737ab82" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7e3003b2-2a34-029e-24cb-ecd32b050b55" executionId="0c594764-aabe-4dde-aa0c-8b9641d71257" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f6bd1efe-637a-9202-2f50-67145d9363db" executionId="09212e02-9bac-4588-b0d9-51f189c8feed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9b083a47-653f-8e31-3dd3-cd98bdb2c102" executionId="3ecd81c1-f592-4aab-879c-101f751a2cc4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="29" executed="29" passed="12" failed="17" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.17]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.41]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.43]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.56]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:01.56]       Collection: [110, 101, 118, 101, 114]
+[xUnit.net 00:00:01.56]       Stack Trace:
+[xUnit.net 00:00:01.56]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(49,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source)
+[xUnit.net 00:00:01.56]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(52,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source)
+[xUnit.net 00:00:01.56]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.56]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:01.56]       Collection: [110, 101, 118, 101, 114]
+[xUnit.net 00:00:01.56]       Stack Trace:
+[xUnit.net 00:00:01.56]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(49,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source)
+[xUnit.net 00:00:01.56]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(52,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source)
+[xUnit.net 00:00:01.56]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.57]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:01.57]       Collection: [110, 101, 118, 101, 114]
+[xUnit.net 00:00:01.57]       Stack Trace:
+[xUnit.net 00:00:01.57]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(49,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source)
+[xUnit.net 00:00:01.57]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(52,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source)
+[xUnit.net 00:00:01.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.57]       Assert.Empty() Failure: Collection was not empty
+[xUnit.net 00:00:01.57]       Collection: [110, 101, 118, 101, 114]
+[xUnit.net 00:00:01.57]       Stack Trace:
+[xUnit.net 00:00:01.57]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(49,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source)
+[xUnit.net 00:00:01.57]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(52,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(String source)
+[xUnit.net 00:00:01.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.58]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:01.58]       Stack Trace:
+[xUnit.net 00:00:01.58]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(91,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase)
+[xUnit.net 00:00:01.58]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(99,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase)
+[xUnit.net 00:00:01.58]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.58]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:01.58]       Stack Trace:
+[xUnit.net 00:00:01.58]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(91,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase)
+[xUnit.net 00:00:01.58]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(99,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase)
+[xUnit.net 00:00:01.58]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.58]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.58]                  ↓ (pos 0)
+[xUnit.net 00:00:01.58]       Expected: "PtyInputWriteException"
+[xUnit.net 00:00:01.58]       Actual:   "IOException"
+[xUnit.net 00:00:01.58]                  ↑ (pos 0)
+[xUnit.net 00:00:01.58]       Stack Trace:
+[xUnit.net 00:00:01.58]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(92,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase)
+[xUnit.net 00:00:01.58]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(99,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase)
+[xUnit.net 00:00:01.58]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.58]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:01.58]                  ↓ (pos 0)
+[xUnit.net 00:00:01.58]       Expected: "PtyInputWriteException"
+[xUnit.net 00:00:01.58]       Actual:   "IOException"
+[xUnit.net 00:00:01.58]                  ↑ (pos 0)
+[xUnit.net 00:00:01.58]       Stack Trace:
+[xUnit.net 00:00:01.58]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(92,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase)
+[xUnit.net 00:00:01.58]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(99,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(String phase)
+[xUnit.net 00:00:01.58]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.60]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:01.60]       Stack Trace:
+[xUnit.net 00:00:01.60]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(295,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops()
+[xUnit.net 00:00:01.60]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(296,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops()
+[xUnit.net 00:00:01.60]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.62]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:01.62]       Stack Trace:
+[xUnit.net 00:00:01.62]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(182,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispose_ClosesAdmissionAndDoesNotDisposeGateUnderUnsettledWrite()
+[xUnit.net 00:00:01.62]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(186,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispose_ClosesAdmissionAndDoesNotDisposeGateUnderUnsettledWrite()
+[xUnit.net 00:00:01.62]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.63]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(67,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(Boolean reuse)
+[xUnit.net 00:00:01.63]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(71,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(Boolean reuse)
+[xUnit.net 00:00:01.63]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.63]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(67,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(Boolean reuse)
+[xUnit.net 00:00:01.63]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(71,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(Boolean reuse)
+[xUnit.net 00:00:01.63]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.64]       Assert.IsType() Failure: Value is null
+[xUnit.net 00:00:01.64]       Expected: typeof(System.TimeoutException)
+[xUnit.net 00:00:01.64]       Actual:   null
+[xUnit.net 00:00:01.64]       Stack Trace:
+[xUnit.net 00:00:01.64]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(161,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion()
+[xUnit.net 00:00:01.64]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(165,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion()
+[xUnit.net 00:00:01.64]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.65]       Stop must observe actual in-flight I/O even when native PTY is null.
+[xUnit.net 00:00:01.65]       Stack Trace:
+[xUnit.net 00:00:01.65]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(134,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding()
+[xUnit.net 00:00:01.65]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(142,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding()
+[xUnit.net 00:00:01.65]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.65]       Assert.True() Failure
+[xUnit.net 00:00:01.65]       Expected: True
+[xUnit.net 00:00:01.65]       Actual:   False
+[xUnit.net 00:00:01.65]       Stack Trace:
+[xUnit.net 00:00:01.65]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(257,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys()
+[xUnit.net 00:00:01.65]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(274,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys()
+[xUnit.net 00:00:01.65]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.True() Failure
+[xUnit.net 00:00:01.66]       Expected: True
+[xUnit.net 00:00:01.66]       Actual:   False
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(203,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_ConcurrentStopsJoinOneRetiringLifetime()
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(204,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_ConcurrentStopsJoinOneRetiringLifetime()
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.66]       Assert.NotNull() Failure: Value is null
+[xUnit.net 00:00:01.66]       Stack Trace:
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(110,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_CancelBeforeEntryIsZeroBytesAndDoesNotPoisonActiveBinding()
+[xUnit.net 00:00:01.66]         /workspace/1553-linux-c706e2c3/BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs(114,0): at BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_CancelBeforeEntryIsZeroBytesAndDoesNotPoisonActiveBinding()
+[xUnit.net 00:00:01.66]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.67]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3075801+00:00">
+        <Text>[xUnit.net 00:00:01.55]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: "host") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3085522+00:00">
+        <Text>[xUnit.net 00:00:01.56]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: "caller") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3113402+00:00">
+        <Text>[xUnit.net 00:00:01.57]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: "revoke") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3150223+00:00">
+        <Text>[xUnit.net 00:00:01.57]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_QueuedCancellationOrRevocationWritesNothing(source: "shell") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3541053+00:00">
+        <Text>[xUnit.net 00:00:01.58]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: "cancel-write") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3541242+00:00">
+        <Text>[xUnit.net 00:00:01.58]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: "cancel-flush") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3541526+00:00">
+        <Text>[xUnit.net 00:00:01.58]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: "write") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3541958+00:00">
+        <Text>[xUnit.net 00:00:01.58]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StartedFaultOrIgnoredCancellationRetainsUncertainty(phase: "flush") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3542166+00:00">
+        <Text>[xUnit.net 00:00:01.60]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_WriteFailureIsRecordedAndPumpStops [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3675986+00:00">
+        <Text>[xUnit.net 00:00:01.62]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualDispose_ClosesAdmissionAndDoesNotDisposeGateUnderUnsettledWrite [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3696465+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(reuse: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3707873+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_StaleOriginCannotWriteToReplacementEvenWithReusedStream(reuse: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3877545+00:00">
+        <Text>[xUnit.net 00:00:01.64]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_TimeoutRetainsSameDrainAndBlocksReplacementUntilLateCompletion [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3917221+00:00">
+        <Text>[xUnit.net 00:00:01.65]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_RetainsStartedAndQueuedWritesUntilSettledBeforeNewBinding [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.3991585+00:00">
+        <Text>[xUnit.net 00:00:01.65]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualKeyboard_NullPtyStopWaitsForLateKeyReadBeforeReplacementConsumesKeys [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.4031447+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualStop_ConcurrentStopsJoinOneRetiringLifetime [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="3a7834d0640d" outcome="Error" timestamp="2026-10-05T14:17:12.4044450+00:00">
+        <Text>[xUnit.net 00:00:01.66]     BookOfEternityClient.Tests.GmBridgeInputLifetimeTests.ActualWriter_CancelBeforeEntryIsZeroBytesAndDoesNotPoisonActiveBinding [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

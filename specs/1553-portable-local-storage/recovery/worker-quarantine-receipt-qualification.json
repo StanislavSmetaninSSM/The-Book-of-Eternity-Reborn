@@ -1,0 +1,296 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-QUARANTINE-RECEIPT",
+  "Date": "2026-10-05",
+  "BaseCommit": "c815c4fd3890871c95355c42546a3bd88df65867",
+  "SourceCommit": "da35de5498d8edf2787c987bd5a45ea5aa39e988",
+  "SourceTree": "fedb6445a40b4f486d4101e20bc67e52ee99cc5d",
+  "Status": "Bounded native Linux receipt implementation and evidence PASS; production execution remains closed",
+  "Environment": {
+    "OS": "Debian13.6",
+    "Kernel": "6.18.44",
+    "Architecture": "x86_64",
+    "SDK": "10.0.401",
+    "Runtime": "8.0.31",
+    "PowerShell": "7.6.6",
+    "Permissions": "normal; no security/settings/access changes",
+    "TMPDIR": "/workspace/ipc-tmp",
+    "DOTNET_PROCESSOR_COUNT": "unset"
+  },
+  "Scope": "Existing private create-only quarantine audit receipt, exact bytes/EventId/generation, trusted-local admission, owned temp cleanup and actual no-process owner/reaper failure retention/idempotent release. No common accepted storage changes.",
+  "Commands": {
+    "Plan": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-quarantine-audit-receipt -Parallelism 1 -PlanOnly",
+    "Run": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-quarantine-audit-receipt -Parallelism 1 -NoBuild",
+    "Audit": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild"
+  },
+  "VerificationInputs": {
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs": {
+      "Sha256": "412f1f3c5560ebd5f114aa160e6ba9cc4610ec873bfdf72d5b324a02ded927c9",
+      "GitBlob": "a46f14becab9acf68275e788d2b749dbb081896b"
+    },
+    "BookOfEternityClient.IntegrationTests/GmWorkerQuarantineAuditReceiptTests.cs": {
+      "Sha256": "4e584571e6c290507a15009deef937f75ebfff43aa972375059b0c2513a92d55",
+      "GitBlob": "19ddf9945648b8ebcf5f9ffdd72892e1605c2b97"
+    },
+    "BookOfEternityClient.Tests/GmWorkerBridgeDocumentationTests.cs": {
+      "Sha256": "a0df42a65f29985c2335048a776626f6e71fd483910d942638f0a9e5f6da3785",
+      "GitBlob": "62fce772e5829a4b8cf2666403aa7813db8782c7"
+    },
+    "BookOfEternityClient.Tests/GmWorkerBridgeSourceGuardTests.cs": {
+      "Sha256": "41fcafd661303d0a042b6514943c42d3bea549eace7334e8145a42d69ecce424",
+      "GitBlob": "4917dd1d77956c30acc794e44aa88e407c91ceaf"
+    },
+    "tests/categories.json": {
+      "Sha256": "c631db84d8b1982c4e1afab4fb77b64f613d03c6e558bdc9687d88916929b6ee",
+      "GitBlob": "4fa82620127ad1e308bec7e198d27481ef76f45d"
+    },
+    "tests/selection.json": {
+      "Sha256": "66b5e7befe4dfb411d05e17367e7cf6becc33236abe57ec79d28b8d18e75edf2",
+      "GitBlob": "672c9362d6c57b328965b682d5e1864d155349e6"
+    },
+    "OtherGuides/GM_Worker_Bridges.md": {
+      "Sha256": "423e1cb93b65bbf8911578625e38bcb1791d8faba1c4257987995a3e1b7bda05",
+      "GitBlob": "86a3f343d5bf69e72c6c4d50c09792154e076895"
+    },
+    "OtherGuides/Afterlife_Contract_Matrix.md": {
+      "Sha256": "dd912adc192cd7ed024487e337e135cab721af836d76832cef7429e54d1dfd4e",
+      "GitBlob": "5023fbedeb3223b6e2a140b9cbbdb0f6b3ddcdfc"
+    },
+    "BookOfEternityClient/Launcher/CLI_Launch_Script.md": {
+      "Sha256": "e6c2896edf4b227db6742d7d91e26eda3ec1c47fdb3a145b1faa9a8b9d448d39",
+      "GitBlob": "b541cd90bf0129848f473b896645cad8e96fc974"
+    }
+  },
+  "UnchangedFromBase": {
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs": {
+      "Sha256": "c1f32c968ca6f8ff8e9b0358a8721f813a8a54688e48dc87e6080480dec60507",
+      "GitBlob": "8919337e8bbe25fb7d6af799bfd10d8c2a9da78c"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs": {
+      "Sha256": "812c10afbef30f0117126e209dcb5b2926995a9afdec2d8d329b53a59eb0fa74",
+      "GitBlob": "4c99db4f3b8770a660018135f9edade0747567a1"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs": {
+      "Sha256": "3a1dac5619ee4c6bc1e0292a82476a2c6fe6bdb2b6c0c7e9868fefd2773e9d7f",
+      "GitBlob": "473abc4659edacfbedca584317077da1891bd7cd"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs": {
+      "Sha256": "3da5134089e1b3748a0525805c0e716f807dd64a78b2a9ff391b5187a3074cea",
+      "GitBlob": "44ad2eec1427ff7256142804741ce3fdb8f4e658"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs": {
+      "Sha256": "6817c1b4c76374fbfbd5d483394e059ed884e9297f6a6b51333fbea8635313c2",
+      "GitBlob": "ed9e24d1afd8c3e53d74e11260d862fd72b4874a"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs": {
+      "Sha256": "4343d8e45cf865fb05594d186e741a3447163a2b445911a8b26ce084b37ab6e4",
+      "GitBlob": "63d2a6111e2c544350840c3d8d71ae9d5df3c914"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerModels.cs": {
+      "Sha256": "17735c610793f28dc8769109d750e898bdec7b0b15ba42931b6fcde03abf3d93",
+      "GitBlob": "ac09cb63b00b88685325ab0dcd9f9b73a2fa68da"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerJson.cs": {
+      "Sha256": "f33387bea8124a10ab220d09e2e0b29adbc9d3a7af1a56fd62370efa5e6e1c6a",
+      "GitBlob": "85921f5cd9a9e3b5bf5421ea43dd0d75e96c8e26"
+    },
+    "BookOfEternityClient/Core/TrustedLocalFileScope.cs": {
+      "Sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2",
+      "GitBlob": "c4c9d46904efd9361c02e690d6d142c799e9d672"
+    },
+    "BookOfEternityClient/Core/TrustedLocalFileImage.cs": {
+      "Sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9",
+      "GitBlob": "34bb94a325381be80eac63fee5caab9cbf128624"
+    },
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.cs": {
+      "Sha256": "377358571d39cf91509ab51eda0a406715abe4e9f93859d552f7528c94b15456",
+      "GitBlob": "952cbf00417fb461cc9f3cedda12b916e117e74b"
+    },
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs": {
+      "Sha256": "edd68fc1c8adf6dbab2d55ed9e41ad9f66ee5357b4d7b9c8eaa66f3b04218d3a",
+      "GitBlob": "803669af1b7f5f2c18b84fcae474940792ecf0a2"
+    },
+    "BookOfEternityClient/Core/PhysicalFileAuthority.cs": {
+      "Sha256": "41028e4d984c06ff1ea5d77c060d590c3a060ce99ca73cf4d568ffff526cb5ea",
+      "GitBlob": "1445bf5f6cc3c3c5bb8145983974336446a53604"
+    },
+    "BookOfEternityClient/Core/FileSystemManager.cs": {
+      "Sha256": "c000d3cd16fb0d01bb00003326e58e38f8ae144eb41475802ed22ea36ae5ecc3",
+      "GitBlob": "a6e27695d6069bf939745e431f2babf57de61a14"
+    },
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs": {
+      "Sha256": "87ef33e7bf8ae33b692148bd4a5b8023c3f470fe83561597dcdccad54c896473",
+      "GitBlob": "1a5499d7dd65caf5aa04a4e6ed2ea4fcfc2e5675"
+    }
+  },
+  "SourcePreservation": {
+    "WindowsReceiptBodyByteEquivalent": true,
+    "AllExistingWorkspaceMethodsAfterReceiptByteEquivalent": true,
+    "NoReaperPoolProcessHostOrStopGuardChange": true
+  },
+  "PreparationFailures": [],
+  "CausalRed": {
+    "Commit": "d74aca1678c05d48f10e828407e2e33d6ec1d852",
+    "Total": 39,
+    "Executed": 39,
+    "Passed": 16,
+    "Failed": 23,
+    "Planned": 41,
+    "UnexecutedGuards": 2,
+    "WallTime": "00:00:13.1848174",
+    "Timeout": false,
+    "CleanupComplete": true,
+    "Causes": {
+      "OpenedIdentityWindowsOnly": 17,
+      "UnpublishedTempResidue": 4,
+      "WrongKindOpened": 2
+    },
+    "Evidence": "evidence/worker-receipt-red/manifest.json",
+    "BuildEvidence": "evidence/worker-receipt-red-plan/manifest.json"
+  },
+  "Green": {
+    "Commit": "da35de5498d8edf2787c987bd5a45ea5aa39e988",
+    "Total": 41,
+    "Executed": 41,
+    "Passed": 41,
+    "Failed": 0,
+    "Planned": 41,
+    "Completed": 41,
+    "Skipped": 0,
+    "DuplicateTests": 0,
+    "IntegrationCases": 39,
+    "ExactGuards": 2,
+    "AllLinuxConditionalBodiesApplicable": true,
+    "CompleteSelection": true,
+    "CleanupComplete": true,
+    "WallTime": "00:00:17.1044034",
+    "FreshPlanBuildWallTime": "00:01:12.9412242",
+    "Evidence": "evidence/worker-receipt-green/manifest.json",
+    "BuildEvidence": "evidence/worker-receipt-green-plan/manifest.json"
+  },
+  "CatalogAudit": {
+    "Valid": true,
+    "Methods": 10707,
+    "Categories": 241,
+    "Unmapped": [],
+    "StaleSelectors": [],
+    "ExecutedTests": 0,
+    "WallTime": "00:00:11.2998644",
+    "Evidence": "evidence/worker-receipt-audit/manifest.json"
+  },
+  "IndependentDesignReview": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Result": "PASS",
+    "Commit": "959eda3eedfa0e3f7e9f7ea247b79ecc2e2f457b",
+    "Agent": "/root/receipt_design_review"
+  },
+  "IndependentFinalReview": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Agent": "/root/receipt_final_review",
+    "Result": "PASS",
+    "ReviewedRuntimeSource": "da35de5498d8edf2787c987bd5a45ea5aa39e988",
+    "ReviewedEvidenceCarrier": "fb0a9d76db116ce605a52cd7a8a241fcd450ee17",
+    "UnresolvedActionableFindings": [],
+    "ClosedFinding": "Plan now describes the actual direct unconfirmed cleanup guard, not a refusing ConfirmDeath stub.",
+    "Verified": {
+      "GreenDistinctPasses": 41,
+      "CausalRed": {
+        "Executed": 39,
+        "Passed": 16,
+        "Failed": 23
+      },
+      "FreshSelectedBuilds": true,
+      "CatalogCategories": 241,
+      "CatalogMethods": 10707,
+      "CatalogExecution": 0,
+      "CompleteCleanup": true,
+      "Manifests": 5,
+      "ArtifactHashes": 22,
+      "Inputs": 9,
+      "UnchangedBoundaryFiles": 15,
+      "GeneratedXmlParses": 9,
+      "RestoredTrackedFiles": 5376,
+      "RestoredChangedFileBytes": 40,
+      "RestoredInputHashes": 9,
+      "WindowsReceiptBodyAndWorkspaceSuffixByteEquivalent": true
+    },
+    "ReviewerExecution": "read-only, no builds/tests/probes rerun",
+    "ScopeLimits": [
+      "Native Windows",
+      "native complete process stop and Release",
+      "live canonical append/replacement",
+      "cold process crash/restart and power-loss",
+      "PTY and live GM"
+    ],
+    "ObservedUtc": "2026-10-05T12:56:07.555208+00:00"
+  },
+  "ArtifactIntegrity": {
+    "Manifests": 6,
+    "ArtifactHashes": 27,
+    "Evidence": [
+      "evidence/worker-receipt-red/manifest.json",
+      "evidence/worker-receipt-green/manifest.json",
+      "evidence/worker-receipt-red-plan/manifest.json",
+      "evidence/worker-receipt-audit/manifest.json",
+      "evidence/worker-receipt-green-plan/manifest.json",
+      "evidence/worker-receipt-review/manifest.json"
+    ]
+  },
+  "GeneratedXmlValidation": [
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.xml"
+  ],
+  "Cleanup": {
+    "ObservedUtc": "2026-10-05T12:51:48.196015+00:00",
+    "OwnedFixturesRemaining": 0,
+    "ActiveRuntimeBuildTestCommands": 0,
+    "BuildServerShutdown": "Succeeded",
+    "TerminatedPid1ZombiesNotClaimedReaped": [
+      "4077       1 Z    dotnet",
+      "4111       1 Z    VBCSCompiler",
+      "4391       1 Z    dotnet",
+      "11704       1 Z    dotnet",
+      "12166       1 Z    dotnet",
+      "15890       1 Z    dotnet",
+      "16191       1 Z    dotnet",
+      "23280       1 Z    dotnet",
+      "23305       1 Z    VBCSCompiler",
+      "23516       1 Z    dotnet",
+      "23520       1 Z    dotnet"
+    ]
+  },
+  "SourceRestoration": {
+    "ObservedUtc": "2026-10-05T12:52:57.056433+00:00",
+    "Commit": "fb0a9d76db116ce605a52cd7a8a241fcd450ee17",
+    "Tree": "5d48e492fcf97a8a5dccf10a0ce5ee50de3d42ac",
+    "Method": "Fresh GitHub-only clone into a new empty directory; no local source/object cache",
+    "RestorationDirectory": "/workspace/linux-1553-receipt-review-restore",
+    "RemoteShaBeforeAndAfterVerified": true,
+    "Clean": true,
+    "TrackedFiles": 5376,
+    "ChangedFilesBytesVerified": 40,
+    "QualificationInputHashesVerified": 9,
+    "ConnectivityFsck": "PASS",
+    "SourceOnlyNoBuildOrExecution": true
+  },
+  "NotQualified": [
+    "Native Windows execution; body preserved only",
+    "Native process/host/worker/GM execution, Release, ownership stop or PTY",
+    "Live canonical generation replacement or canonical audit append; dispositions simulated through actual reaper",
+    "Actual cancellation of live execution; receipt OCE/fault injected at deterministic phases",
+    "Cold process-crash/restart receipts or power-loss durability",
+    "Hostile concurrent computer-owner substitution resistance; trusted local by-name model",
+    "Whole #1553/B4/platform acceptance"
+  ],
+  "NextWork": "Ownership backend remains pending comparison and compatibility resolution. No namespace bootstrap now; no negative-only backend work as readiness evidence. Parent selects next bounded prerequisite; new CLI restrictions/system dependencies require owner decision.",
+  "FinalCarrier": "Final verdict carrier is published/read back and restored separately; exact SHA in handoff to avoid self-reference."
+}

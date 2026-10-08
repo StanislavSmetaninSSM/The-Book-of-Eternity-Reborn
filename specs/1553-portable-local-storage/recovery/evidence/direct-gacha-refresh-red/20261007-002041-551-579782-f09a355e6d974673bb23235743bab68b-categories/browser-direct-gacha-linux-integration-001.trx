@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="f011c052-3f83-4a8f-9800-1d53971bbc72" name="@c7669543e9c7 2026-10-07 00:21:43" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-07T00:21:43.6711482+00:00" queuing="2026-10-07T00:21:43.6711482+00:00" start="2026-10-07T00:21:40.0148359+00:00" finish="2026-10-07T00:21:43.6789141+00:00" />
+  <TestSettings name="default" id="e12acb5c-ce5a-4cac-87af-4b7fe7a40064">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-07_00_21_43" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="ffaead62-986d-4708-9715-164c75c5de0d" testId="f41af748-80db-f816-3ab4-d0227ff3dd24" testName="BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn" computerName="c7669543e9c7" duration="00:00:01.1098005" startTime="2026-10-07T00:21:43.5712001+00:00" endTime="2026-10-07T00:21:43.5712152+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ffaead62-986d-4708-9715-164c75c5de0d">
+      <Output>
+        <StdOut>Локальная запись не выполнена, состояние восстановлено: действие временно ждёт проверки ГМ. Завершите или обновите текущий запрос, затем повторите действие.
+OriginalConsumerFailure=System.IO.InvalidDataException: Unresolved legacy storage evidence requires its original supported recovery handler: /tmp/boe-direct-gacha-linux-63ce1d740e7348aebd0d6e820156f2f6/game_session/game_state/control/explorer_local_turn_rollback
+   at BookOfEternityClient.Core.FileSystemManager.EnsureNoLegacyStorageEvidence(CanonicalWriteLease ownedBrowser, Boolean allowPortableBrowser) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 57
+   at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 40
+   at BookOfEternityClient.Services.AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthorityForRefreshAsync(FileSystemManager fs, CanonicalWriteLease writeLease, Func`1 afterInputsReadAsync) in /workspace/native-1553/BookOfEternityClient/Services/AfterlifeEntityProfileState.cs:line 432
+   at BookOfEternityClient.Core.StateManager.RefreshGameStateAsync(CanonicalWriteLease writeLease) in /workspace/native-1553/BookOfEternityClient/Core/StateManager.cs:line 147
+   at BookOfEternityClient.WebUi.BrowserAfterlifeWriteService.&lt;&gt;c__DisplayClass49_0.&lt;&lt;ApplyGachaPullAsync&gt;b__0&gt;d.MoveNext() in /workspace/native-1553/BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs:line 2212
+--- End of stack trace from previous location ---
+   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecuteAtomicCoreAsync(CanonicalWriteLease writeLease, BrowserLocalWriteRequest request, IReadOnlyCollection`1 rollbackPaths, Func`2 writeOperation, Func`1 prepareAfterRollback, IReadOnlyCollection`1 rollbackCleanupDirectories, IReadOnlyCollection`1 rollbackExternalFileIds) in /workspace/native-1553/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 299
+FixtureCleanup root=/tmp/boe-direct-gacha-linux-63ce1d740e7348aebd0d6e820156f2f6 rootRemoved=True</StdOut>
+        <ErrorInfo>
+          <Message>Локальная запись не выполнена, состояние восстановлено: действие временно ждёт проверки ГМ. Завершите или обновите текущий запрос, затем повторите действие.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn() in /workspace/native-1553/BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxTests.cs:line 20
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f41af748-80db-f816-3ab4-d0227ff3dd24">
+      <Execution id="ffaead62-986d-4708-9715-164c75c5de0d" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests" name="RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="f41af748-80db-f816-3ab4-d0227ff3dd24" executionId="ffaead62-986d-4708-9715-164c75c5de0d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.41]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.75]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.78]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.94]       Локальная запись не выполнена, состояние восстановлено: действие временно ждёт проверки ГМ. Завершите или обновите текущий запрос, затем повторите действие.
+[xUnit.net 00:00:02.94]       Stack Trace:
+[xUnit.net 00:00:02.94]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxTests.cs(20,0): at BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn()
+[xUnit.net 00:00:02.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.94]       Output:
+[xUnit.net 00:00:02.94]         Локальная запись не выполнена, состояние восстановлено: действие временно ждёт проверки ГМ. Завершите или обновите текущий запрос, затем повторите действие.
+[xUnit.net 00:00:02.94]         OriginalConsumerFailure=System.IO.InvalidDataException: Unresolved legacy storage evidence requires its original supported recovery handler: /tmp/boe-direct-gacha-linux-63ce1d740e7348aebd0d6e820156f2f6/game_session/game_state/control/explorer_local_turn_rollback
+[xUnit.net 00:00:02.94]            at BookOfEternityClient.Core.FileSystemManager.EnsureNoLegacyStorageEvidence(CanonicalWriteLease ownedBrowser, Boolean allowPortableBrowser) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 57
+[xUnit.net 00:00:02.94]            at BookOfEternityClient.Core.FileSystemManager.ResolveBackupPublicationRecovery(CanonicalWriteLease lease) in /workspace/native-1553/BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs:line 40
+[xUnit.net 00:00:02.94]            at BookOfEternityClient.Services.AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthorityForRefreshAsync(FileSystemManager fs, CanonicalWriteLease writeLease, Func`1 afterInputsReadAsync) in /workspace/native-1553/BookOfEternityClient/Services/AfterlifeEntityProfileState.cs:line 432
+[xUnit.net 00:00:02.94]            at BookOfEternityClient.Core.StateManager.RefreshGameStateAsync(CanonicalWriteLease writeLease) in /workspace/native-1553/BookOfEternityClient/Core/StateManager.cs:line 147
+[xUnit.net 00:00:02.94]            at BookOfEternityClient.WebUi.BrowserAfterlifeWriteService.&lt;&gt;c__DisplayClass49_0.&lt;&lt;ApplyGachaPullAsync&gt;b__0&gt;d.MoveNext() in /workspace/native-1553/BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs:line 2212
+[xUnit.net 00:00:02.94]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.94]            at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.ExecuteAtomicCoreAsync(CanonicalWriteLease writeLease, BrowserLocalWriteRequest request, IReadOnlyCollection`1 rollbackPaths, Func`2 writeOperation, Func`1 prepareAfterRollback, IReadOnlyCollection`1 rollbackCleanupDirectories, IReadOnlyCollection`1 rollbackExternalFileIds) in /workspace/native-1553/BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs:line 299
+[xUnit.net 00:00:02.94]         FixtureCleanup root=/tmp/boe-direct-gacha-linux-63ce1d740e7348aebd0d6e820156f2f6 rootRemoved=True
+[xUnit.net 00:00:02.95]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-07T00:21:43.5684663+00:00">
+        <Text>[xUnit.net 00:00:02.94]     BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

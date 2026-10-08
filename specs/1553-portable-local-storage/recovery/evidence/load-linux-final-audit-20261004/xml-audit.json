@@ -1,0 +1,63 @@
+{
+  "CSharpSourceClosure": "eed0ca99e7ad8ef8306c6f4758ed55cce722fd46",
+  "ChangedSourceFiles": [
+    "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.NativeNames.cs",
+    "BookOfEternityClient.Tests/PortableLoadResourceTests.cs",
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+    "BookOfEternityClient/Services/SaveLoadService.cs"
+  ],
+  "Assemblies": [
+    {
+      "Path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.xml",
+      "Bytes": 1518949,
+      "Sha256": "f1e5380c3b7cdc30abdcdd258035fc174ba10f7a08e3f306463595b19a8ad271",
+      "Assembly": "BookOfEternityClient",
+      "Members": 2423,
+      "Parsed": true,
+      "Embedded": false
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.xml",
+      "Bytes": 332257,
+      "Sha256": "a2e14261356e51b2ab34b85103df3ab4527bd1932f8ab90d4a824443ba99d4e3",
+      "Assembly": "BookOfEternityClient.Tests",
+      "Members": 751,
+      "Parsed": true,
+      "Embedded": false
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.xml",
+      "Bytes": 568820,
+      "Sha256": "38803b5d90354888ba704923c131b0f658fea0e6f6e856aca68c2c779ff5cffa",
+      "Assembly": "BookOfEternityClient.IntegrationTests",
+      "Members": 975,
+      "Parsed": true,
+      "Embedded": false
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+      "Bytes": 31405,
+      "Sha256": "c60876c29c87549f498a32462baa096a570faeefe471a90b36eb1e1d49df5f5a",
+      "Assembly": "BookOfEternityClient.TestSupport",
+      "Members": 58,
+      "Parsed": true,
+      "Embedded": false
+    },
+    {
+      "Path": "tests/fixtures/PortableStorageCrashHost/bin/Debug/net8.0/PortableStorageCrashHost.xml",
+      "Bytes": 873,
+      "Sha256": "9ebe7de820340f1c69e1182c313baad68c2d32a6f59e660875ae5e7186688936",
+      "Assembly": "PortableStorageCrashHost",
+      "Members": 2,
+      "Parsed": true,
+      "Embedded": false
+    }
+  ],
+  "TouchedFileXmlCompilerWarnings": [],
+  "OtherXmlCompilerWarnings": [
+    "[checkout]/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]",
+    "[checkout]/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]",
+    "[checkout]/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]"
+  ],
+  "Scope": "Actual generated XML parsed from fresh selected integration and unit builds. Generated full XML files are hash-recorded, not embedded; original build diagnostics are in the named GREEN bundles."
+}

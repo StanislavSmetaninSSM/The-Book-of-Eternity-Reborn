@@ -1,0 +1,327 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="fc8c98b1-e9e7-445e-84fd-d1f77815ab56" name="b2c-prepare-isolated-red" runUser="$USER">
+  <ns0:Times creation="2026-09-30T23:00:26.8198722-04:00" queuing="2026-09-30T23:00:26.8198723-04:00" start="2026-09-30T23:00:24.7219861-04:00" finish="2026-09-30T23:00:26.8749982-04:00" />
+  <ns0:TestSettings name="default" id="9431fa04-f6a7-4e93-83c9-1a663254e553">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="3af4a7c9-3cb0-4e4c-8260-6abf717e94d5" testId="bfec7ade-6041-ee83-82bc-aaf95bbca5c3" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparationDeclaresThreeExactMembersWithoutFilesOrRuntimeMutation" computerName="$HOST" duration="00:00:00.0077104" startTime="2026-09-30T23:00:26.7757749-04:00" endTime="2026-09-30T23:00:26.7757751-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3af4a7c9-3cb0-4e4c-8260-6abf717e94d5">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : Complete local settings preparation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested) in $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs:line 26
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparationDeclaresThreeExactMembersWithoutFilesOrRuntimeMutation() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 71
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparationDeclaresThreeExactMembersWithoutFilesOrRuntimeMutation() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 77
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="eb8c5d85-0aa9-428d-a5e0-170f2b30809f" testId="9defe9b0-697a-6a9e-3ae1-c6ab0d622662" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.LinkedModInputIsRejectedInsteadOfFollowingItsTarget" computerName="$HOST" duration="00:00:00.0100711" startTime="2026-09-30T23:00:26.7250746-04:00" endTime="2026-09-30T23:00:26.7250747-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eb8c5d85-0aa9-428d-a5e0-170f2b30809f">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Complete local settings preparation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.LinkedModInputIsRejectedInsteadOfFollowingItsTarget() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 181
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.LinkedModInputIsRejectedInsteadOfFollowingItsTarget() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 182
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested) in $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs:line 26
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.&lt;&gt;c__DisplayClass23_0.&lt;LinkedModInputIsRejectedInsteadOfFollowingItsTarget&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 181</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="2a104af7-e28d-406d-9cc1-6afe3a9ebb46" testId="8c1bdd8e-4dbb-436b-14c5-2b23f3893cbd" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.MissingModsDirectoryIsNotCreatedDuringPreparation" computerName="$HOST" duration="00:00:00.0099950" startTime="2026-09-30T23:00:26.8012662-04:00" endTime="2026-09-30T23:00:26.8012664-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2a104af7-e28d-406d-9cc1-6afe3a9ebb46">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : Complete local settings preparation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested) in $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs:line 26
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.MissingModsDirectoryIsNotCreatedDuringPreparation() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 169
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.MissingModsDirectoryIsNotCreatedDuringPreparation() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 171
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="8365d1c3-26fb-4164-9924-b1eefd09dbdb" testId="df26a52c-80ca-00bb-b650-6289dc80e6ec" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.EquivalentProjectionAndManifestRetainExactUtf16BytesAndWhitespace" computerName="$HOST" duration="00:00:00.0084780" startTime="2026-09-30T23:00:26.7579064-04:00" endTime="2026-09-30T23:00:26.7579068-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8365d1c3-26fb-4164-9924-b1eefd09dbdb">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : Complete local settings preparation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested) in $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs:line 26
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.EquivalentProjectionAndManifestRetainExactUtf16BytesAndWhitespace() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 117
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.EquivalentProjectionAndManifestRetainExactUtf16BytesAndWhitespace() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 125
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="7b25137f-3196-4ce2-b34f-e4a6d8e4945f" testId="084ef64c-9120-43b6-eeb8-ebc0ff5dd6ae" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(absent: True)" computerName="$HOST" duration="00:00:00.0178320" startTime="2026-09-30T23:00:26.7004571-04:00" endTime="2026-09-30T23:00:26.7004573-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7b25137f-3196-4ce2-b34f-e4a6d8e4945f">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(BookOfEternityClient.Core.SessionReplacedException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Complete local settings preparation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(Boolean absent) in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 149
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(Boolean absent) in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 151
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested) in $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs:line 26
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.&lt;&gt;c__DisplayClass20_0.&lt;ChangedOrAbsentGenerationIsRejectedWithoutBootstrap&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 149</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="7a8babbf-67e0-4968-8547-10c98d1c526c" testId="1e6b8af1-3439-6396-6db4-11e92a4e918a" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ReleasedLeaseCannotPrepareMemberImages" computerName="$HOST" duration="00:00:00.0091570" startTime="2026-09-30T23:00:26.7677596-04:00" endTime="2026-09-30T23:00:26.7677598-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7a8babbf-67e0-4968-8547-10c98d1c526c">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.InvalidOperationException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Complete local settings preparation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ReleasedLeaseCannotPrepareMemberImages() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 159
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested) in $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs:line 26
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.&lt;&gt;c__DisplayClass21_0.&lt;ReleasedLeaseCannotPrepareMemberImages&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 159</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="6053f060-2b79-44d7-a081-0e800536f0f5" testId="0a549c7d-9c72-7d8c-4c90-b0ed1e2185db" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedConfigBaselineIsRejectedBeforePreparation" computerName="$HOST" duration="00:00:00.0108143" startTime="2026-09-30T23:00:26.7873128-04:00" endTime="2026-09-30T23:00:26.7873129-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6053f060-2b79-44d7-a081-0e800536f0f5">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.IOException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Complete local settings preparation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedConfigBaselineIsRejectedBeforePreparation() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 134
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedConfigBaselineIsRejectedBeforePreparation() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 136
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested) in $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs:line 26
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.&lt;&gt;c__DisplayClass19_0.&lt;ChangedConfigBaselineIsRejectedBeforePreparation&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 134</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="baa8fab4-a473-450a-aef6-d48c282822d4" testId="2ec0f112-1fdc-68ec-444d-b4ea6b8c2b13" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparedSetPublishesThroughTheExistingCommonJournal" computerName="$HOST" duration="00:00:00.1607709" startTime="2026-09-30T23:00:26.6841618-04:00" endTime="2026-09-30T23:00:26.6841860-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="baa8fab4-a473-450a-aef6-d48c282822d4">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : Complete local settings preparation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested) in $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs:line 26
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparedSetPublishesThroughTheExistingCommonJournal() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 105
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparedSetPublishesThroughTheExistingCommonJournal() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 109
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="792fbe5b-51ad-4dac-a1ca-560865954b8b" testId="e0ec5fb5-6949-ca93-888f-4937a0bb0f2d" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.OneModSnapshotNormalizesDetachedCandidateAndProjectionWithoutMutatingDraft" computerName="$HOST" duration="00:00:00.0235128" startTime="2026-09-30T23:00:26.7496142-04:00" endTime="2026-09-30T23:00:26.7496144-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="792fbe5b-51ad-4dac-a1ca-560865954b8b">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : Complete local settings preparation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested) in $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs:line 26
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.OneModSnapshotNormalizesDetachedCandidateAndProjectionWithoutMutatingDraft() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 85
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.OneModSnapshotNormalizesDetachedCandidateAndProjectionWithoutMutatingDraft() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 97
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="75ecccd7-7b23-45de-b8bf-6ffa706f1722" testId="db75ac65-f350-d4a7-9ee2-0d101fdc14b4" testName="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(absent: False)" computerName="$HOST" duration="00:00:00.0132384" startTime="2026-09-30T23:00:26.7143859-04:00" endTime="2026-09-30T23:00:26.7143861-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="75ecccd7-7b23-45de-b8bf-6ffa706f1722">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(BookOfEternityClient.Core.SessionReplacedException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : Complete local settings preparation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(Boolean absent) in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 149
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(Boolean absent) in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 151
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested) in $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs:line 26
+   at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.&lt;&gt;c__DisplayClass20_0.&lt;ChangedOrAbsentGenerationIsRejectedWithoutBootstrap&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs:line 149</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparationDeclaresThreeExactMembersWithoutFilesOrRuntimeMutation" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bfec7ade-6041-ee83-82bc-aaf95bbca5c3">
+      <ns0:Execution id="3af4a7c9-3cb0-4e4c-8260-6abf717e94d5" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="PreparationDeclaresThreeExactMembersWithoutFilesOrRuntimeMutation" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.EquivalentProjectionAndManifestRetainExactUtf16BytesAndWhitespace" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="df26a52c-80ca-00bb-b650-6289dc80e6ec">
+      <ns0:Execution id="8365d1c3-26fb-4164-9924-b1eefd09dbdb" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="EquivalentProjectionAndManifestRetainExactUtf16BytesAndWhitespace" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedConfigBaselineIsRejectedBeforePreparation" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0a549c7d-9c72-7d8c-4c90-b0ed1e2185db">
+      <ns0:Execution id="6053f060-2b79-44d7-a081-0e800536f0f5" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="ChangedConfigBaselineIsRejectedBeforePreparation" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.OneModSnapshotNormalizesDetachedCandidateAndProjectionWithoutMutatingDraft" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e0ec5fb5-6949-ca93-888f-4937a0bb0f2d">
+      <ns0:Execution id="792fbe5b-51ad-4dac-a1ca-560865954b8b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="OneModSnapshotNormalizesDetachedCandidateAndProjectionWithoutMutatingDraft" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparedSetPublishesThroughTheExistingCommonJournal" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2ec0f112-1fdc-68ec-444d-b4ea6b8c2b13">
+      <ns0:Execution id="baa8fab4-a473-450a-aef6-d48c282822d4" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="PreparedSetPublishesThroughTheExistingCommonJournal" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(absent: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="db75ac65-f350-d4a7-9ee2-0d101fdc14b4">
+      <ns0:Execution id="75ecccd7-7b23-45de-b8bf-6ffa706f1722" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="ChangedOrAbsentGenerationIsRejectedWithoutBootstrap" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.LinkedModInputIsRejectedInsteadOfFollowingItsTarget" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9defe9b0-697a-6a9e-3ae1-c6ab0d622662">
+      <ns0:Execution id="eb8c5d85-0aa9-428d-a5e0-170f2b30809f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="LinkedModInputIsRejectedInsteadOfFollowingItsTarget" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(absent: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="084ef64c-9120-43b6-eeb8-ebc0ff5dd6ae">
+      <ns0:Execution id="7b25137f-3196-4ce2-b34f-e4a6d8e4945f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="ChangedOrAbsentGenerationIsRejectedWithoutBootstrap" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.MissingModsDirectoryIsNotCreatedDuringPreparation" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8c1bdd8e-4dbb-436b-14c5-2b23f3893cbd">
+      <ns0:Execution id="2a104af7-e28d-406d-9cc1-6afe3a9ebb46" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="MissingModsDirectoryIsNotCreatedDuringPreparation" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ReleasedLeaseCannotPrepareMemberImages" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1e6b8af1-3439-6396-6db4-11e92a4e918a">
+      <ns0:Execution id="7a8babbf-67e0-4968-8547-10c98d1c526c" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests" name="ReleasedLeaseCannotPrepareMemberImages" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="bfec7ade-6041-ee83-82bc-aaf95bbca5c3" executionId="3af4a7c9-3cb0-4e4c-8260-6abf717e94d5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="9defe9b0-697a-6a9e-3ae1-c6ab0d622662" executionId="eb8c5d85-0aa9-428d-a5e0-170f2b30809f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="8c1bdd8e-4dbb-436b-14c5-2b23f3893cbd" executionId="2a104af7-e28d-406d-9cc1-6afe3a9ebb46" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="df26a52c-80ca-00bb-b650-6289dc80e6ec" executionId="8365d1c3-26fb-4164-9924-b1eefd09dbdb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="084ef64c-9120-43b6-eeb8-ebc0ff5dd6ae" executionId="7b25137f-3196-4ce2-b34f-e4a6d8e4945f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="1e6b8af1-3439-6396-6db4-11e92a4e918a" executionId="7a8babbf-67e0-4968-8547-10c98d1c526c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="0a549c7d-9c72-7d8c-4c90-b0ed1e2185db" executionId="6053f060-2b79-44d7-a081-0e800536f0f5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="2ec0f112-1fdc-68ec-444d-b4ea6b8c2b13" executionId="baa8fab4-a473-450a-aef6-d48c282822d4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e0ec5fb5-6949-ca93-888f-4937a0bb0f2d" executionId="792fbe5b-51ad-4dac-a1ca-560865954b8b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="db75ac65-f350-d4a7-9ee2-0d101fdc14b4" executionId="75ecccd7-7b23-45de-b8bf-6ffa706f1722" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="10" executed="10" passed="0" failed="10" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.17]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.25]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.28]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.50]       System.NotImplementedException : Complete local settings preparation is not implemented.
+[xUnit.net 00:00:01.50]       Stack Trace:
+[xUnit.net 00:00:01.50]         $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs(26,0): at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested)
+[xUnit.net 00:00:01.50]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(105,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparedSetPublishesThroughTheExistingCommonJournal()
+[xUnit.net 00:00:01.50]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(109,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparedSetPublishesThroughTheExistingCommonJournal()
+[xUnit.net 00:00:01.50]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.52]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.52]       Expected: typeof(BookOfEternityClient.Core.SessionReplacedException)
+[xUnit.net 00:00:01.52]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.52]       ---- System.NotImplementedException : Complete local settings preparation is not implemented.
+[xUnit.net 00:00:01.52]       Stack Trace:
+[xUnit.net 00:00:01.52]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(149,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(Boolean absent)
+[xUnit.net 00:00:01.52]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(151,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(Boolean absent)
+[xUnit.net 00:00:01.52]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.52]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.52]         $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs(26,0): at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested)
+[xUnit.net 00:00:01.52]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(149,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.&lt;&gt;c__DisplayClass20_0.&lt;ChangedOrAbsentGenerationIsRejectedWithoutBootstrap&gt;b__0()
+[xUnit.net 00:00:01.53]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.53]       Expected: typeof(BookOfEternityClient.Core.SessionReplacedException)
+[xUnit.net 00:00:01.53]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.53]       ---- System.NotImplementedException : Complete local settings preparation is not implemented.
+[xUnit.net 00:00:01.53]       Stack Trace:
+[xUnit.net 00:00:01.53]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(149,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(Boolean absent)
+[xUnit.net 00:00:01.53]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(151,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(Boolean absent)
+[xUnit.net 00:00:01.53]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.53]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.53]         $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs(26,0): at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested)
+[xUnit.net 00:00:01.53]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(149,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.&lt;&gt;c__DisplayClass20_0.&lt;ChangedOrAbsentGenerationIsRejectedWithoutBootstrap&gt;b__0()
+[xUnit.net 00:00:01.54]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.54]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.54]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.54]       ---- System.NotImplementedException : Complete local settings preparation is not implemented.
+[xUnit.net 00:00:01.54]       Stack Trace:
+[xUnit.net 00:00:01.54]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(181,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.LinkedModInputIsRejectedInsteadOfFollowingItsTarget()
+[xUnit.net 00:00:01.54]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(182,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.LinkedModInputIsRejectedInsteadOfFollowingItsTarget()
+[xUnit.net 00:00:01.54]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.54]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.54]         $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs(26,0): at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested)
+[xUnit.net 00:00:01.54]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(181,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.&lt;&gt;c__DisplayClass23_0.&lt;LinkedModInputIsRejectedInsteadOfFollowingItsTarget&gt;b__0()
+[xUnit.net 00:00:01.57]       System.NotImplementedException : Complete local settings preparation is not implemented.
+[xUnit.net 00:00:01.57]       Stack Trace:
+[xUnit.net 00:00:01.57]         $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs(26,0): at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested)
+[xUnit.net 00:00:01.57]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(85,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.OneModSnapshotNormalizesDetachedCandidateAndProjectionWithoutMutatingDraft()
+[xUnit.net 00:00:01.57]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(97,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.OneModSnapshotNormalizesDetachedCandidateAndProjectionWithoutMutatingDraft()
+[xUnit.net 00:00:01.57]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.58]       System.NotImplementedException : Complete local settings preparation is not implemented.
+[xUnit.net 00:00:01.58]       Stack Trace:
+[xUnit.net 00:00:01.58]         $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs(26,0): at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested)
+[xUnit.net 00:00:01.58]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(117,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.EquivalentProjectionAndManifestRetainExactUtf16BytesAndWhitespace()
+[xUnit.net 00:00:01.58]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(125,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.EquivalentProjectionAndManifestRetainExactUtf16BytesAndWhitespace()
+[xUnit.net 00:00:01.58]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.59]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.59]       Expected: typeof(System.InvalidOperationException)
+[xUnit.net 00:00:01.59]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.59]       ---- System.NotImplementedException : Complete local settings preparation is not implemented.
+[xUnit.net 00:00:01.59]       Stack Trace:
+[xUnit.net 00:00:01.59]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(159,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ReleasedLeaseCannotPrepareMemberImages()
+[xUnit.net 00:00:01.59]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.59]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.59]         $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs(26,0): at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested)
+[xUnit.net 00:00:01.59]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(159,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.&lt;&gt;c__DisplayClass21_0.&lt;ReleasedLeaseCannotPrepareMemberImages&gt;b__0()
+[xUnit.net 00:00:01.59]       System.NotImplementedException : Complete local settings preparation is not implemented.
+[xUnit.net 00:00:01.59]       Stack Trace:
+[xUnit.net 00:00:01.59]         $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs(26,0): at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested)
+[xUnit.net 00:00:01.59]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(71,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparationDeclaresThreeExactMembersWithoutFilesOrRuntimeMutation()
+[xUnit.net 00:00:01.59]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(77,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparationDeclaresThreeExactMembersWithoutFilesOrRuntimeMutation()
+[xUnit.net 00:00:01.59]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.61]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.61]       Expected: typeof(System.IO.IOException)
+[xUnit.net 00:00:01.61]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:01.61]       ---- System.NotImplementedException : Complete local settings preparation is not implemented.
+[xUnit.net 00:00:01.61]       Stack Trace:
+[xUnit.net 00:00:01.61]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(134,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedConfigBaselineIsRejectedBeforePreparation()
+[xUnit.net 00:00:01.61]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(136,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedConfigBaselineIsRejectedBeforePreparation()
+[xUnit.net 00:00:01.61]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.61]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.61]         $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs(26,0): at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested)
+[xUnit.net 00:00:01.61]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(134,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.&lt;&gt;c__DisplayClass19_0.&lt;ChangedConfigBaselineIsRejectedBeforePreparation&gt;b__0()
+[xUnit.net 00:00:01.62]       System.NotImplementedException : Complete local settings preparation is not implemented.
+[xUnit.net 00:00:01.62]       Stack Trace:
+[xUnit.net 00:00:01.62]         $REPO/BookOfEternityClient/Core/LocalSettingsPreparation.cs(26,0): at BookOfEternityClient.Core.LocalSettingsPreparation.PrepareAsync(CanonicalWriteLease lease, LocalSettingsBaseline baseline, GameSettings requested)
+[xUnit.net 00:00:01.62]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(169,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.MissingModsDirectoryIsNotCreatedDuringPreparation()
+[xUnit.net 00:00:01.62]         $REPO/BookOfEternityClient.Tests/PortableConsoleSettingsPreparationTests.cs(171,0): at BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.MissingModsDirectoryIsNotCreatedDuringPreparation()
+[xUnit.net 00:00:01.62]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.62]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T23:00:26.6826202-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.50]     BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparedSetPublishesThroughTheExistingCommonJournal [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T23:00:26.7004369-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.52]     BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(absent: True) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T23:00:26.7145054-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.53]     BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedOrAbsentGenerationIsRejectedWithoutBootstrap(absent: False) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T23:00:26.7252941-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.54]     BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.LinkedModInputIsRejectedInsteadOfFollowingItsTarget [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T23:00:26.7494470-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.57]     BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.OneModSnapshotNormalizesDetachedCandidateAndProjectionWithoutMutatingDraft [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T23:00:26.7580377-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.58]     BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.EquivalentProjectionAndManifestRetainExactUtf16BytesAndWhitespace [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T23:00:26.7680127-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.59]     BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ReleasedLeaseCannotPrepareMemberImages [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T23:00:26.7759469-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.59]     BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.PreparationDeclaresThreeExactMembersWithoutFilesOrRuntimeMutation [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T23:00:26.7874797-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.61]     BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.ChangedConfigBaselineIsRejectedBeforePreparation [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-09-30T23:00:26.8272587-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.62]     BookOfEternityClient.Tests.PortableConsoleSettingsPreparationTests.MissingModsDirectoryIsNotCreatedDuringPreparation [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

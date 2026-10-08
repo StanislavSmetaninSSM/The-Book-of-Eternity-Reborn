@@ -1,0 +1,32 @@
+{
+  "source": "e25591edea072aeeb65628718bf815f56e7dc06f",
+  "xml": [
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.xml",
+      "validXml": true,
+      "members": 2415
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+      "validXml": true,
+      "members": 42
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.xml",
+      "validXml": true,
+      "members": 708
+    },
+    {
+      "path": "tests/fixtures/PortableStorageCrashHost/bin/Debug/net8.0/PortableStorageCrashHost.xml",
+      "validXml": true,
+      "members": 2
+    }
+  ],
+  "referenceWarningsInTouchedFiles": 0,
+  "preExistingCs1587Files": [
+    "Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+    "UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs",
+    "UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs"
+  ],
+  "buildEvidence": "20261004-044844-202-13532-94621882441444a2a52f618701e894f4-categories/Build-unit.log"
+}

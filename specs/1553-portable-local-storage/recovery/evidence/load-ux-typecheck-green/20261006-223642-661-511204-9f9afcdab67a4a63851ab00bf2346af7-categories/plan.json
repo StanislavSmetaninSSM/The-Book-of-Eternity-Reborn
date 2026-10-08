@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "frontend-shell-types"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4c5431ad49b9e468d931b1f374f3fb4b2a80cb63",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 0.1581349,
+  "Descriptors": [
+    {
+      "Name": "frontend-shell-types-frontend-001",
+      "Project": "frontend",
+      "Category": "frontend-shell-types",
+      "Categories": [
+        "frontend-shell-types"
+      ],
+      "Filter": null,
+      "Adapter": "typecheck",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/appRouteExtraction.test.ts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.WebFrontend/test/shellContextComponents.test.ts",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

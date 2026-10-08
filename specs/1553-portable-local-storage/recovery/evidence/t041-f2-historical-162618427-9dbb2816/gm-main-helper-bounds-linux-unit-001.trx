@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="7d45fd02-00e8-42dc-8565-b4f9d87a5ed4" name="@c7669543e9c7 2026-10-06 16:26:34" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T16:26:34.7763343+00:00" queuing="2026-10-06T16:26:34.7763343+00:00" start="2026-10-06T16:26:27.4859536+00:00" finish="2026-10-06T16:26:34.7847489+00:00" />
+  <TestSettings name="default" id="4489e415-47dc-4545-ac78-9e0d3d14982d">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_16_26_34" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="0308b468-f635-41da-b5cc-54f755269d3e" testId="567cd7a8-d563-285a-6303-3d96692661e5" testName="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose" computerName="c7669543e9c7" duration="00:00:04.1879112" startTime="2026-10-06T16:26:34.6426695+00:00" endTime="2026-10-06T16:26:34.6426856+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0308b468-f635-41da-b5cc-54f755269d3e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs:line 61
+   at BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose() in /workspace/native-1553/BookOfEternityClient.Tests/GmMainOperationLinuxTests.cs:line 17
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="567cd7a8-d563-285a-6303-3d96692661e5">
+      <Execution id="0308b468-f635-41da-b5cc-54f755269d3e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainOperationLinuxTests" name="OriginalHelper_UnsentOversizedCommandCanClose" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="567cd7a8-d563-285a-6303-3d96692661e5" executionId="0308b468-f635-41da-b5cc-54f755269d3e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" passed="0" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.27]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:02.19]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:02.21]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:06.48]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:06.48]       Expected: 0
+[xUnit.net 00:00:06.48]       Actual:   1
+[xUnit.net 00:00:06.48]       Stack Trace:
+[xUnit.net 00:00:06.48]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs(61,0): at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode)
+[xUnit.net 00:00:06.48]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainOperationLinuxTests.cs(17,0): at BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose()
+[xUnit.net 00:00:06.48]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.49]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T16:26:34.6404015+00:00">
+        <Text>[xUnit.net 00:00:06.47]     BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

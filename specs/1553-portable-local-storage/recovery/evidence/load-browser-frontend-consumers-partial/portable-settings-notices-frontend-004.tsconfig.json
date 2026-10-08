@@ -1,0 +1,12 @@
+{
+  "exclude": [],
+  "extends": "[checkout]/BookOfEternityClient.WebFrontend/tsconfig.player-facing-tests.json",
+  "include": [
+    "[checkout]/BookOfEternityClient.WebFrontend/test/settingsPersistenceNotice.test.ts"
+  ],
+  "compilerOptions": {
+    "outDir": "[checkout]/TestResults/test-categories/20261004-131118-677-17-e5a7532276394f91be7981e66ff95559-categories/portable-settings-notices-frontend-004-compiled",
+    "rootDir": "[checkout]/BookOfEternityClient.WebFrontend",
+    "noEmit": false
+  }
+}

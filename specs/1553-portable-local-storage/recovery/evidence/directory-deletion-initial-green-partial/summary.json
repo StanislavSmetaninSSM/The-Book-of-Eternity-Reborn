@@ -1,0 +1,73 @@
+{
+  "Categories": [
+    "portable-directory-deletion",
+    "portable-directory-recovery",
+    "portable-directory-linux-special"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "52edf8596812294243e415bb332863eabc5a9c08",
+    "WorkingTreeFingerprint": "95CF2CC2875E7427B1D1BB8F549447C18235785AF35A2BE8933AAAE9DDE3BD65",
+    "ChangedFiles": 5
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-directory-deletion",
+      "Seconds": 3.8877405,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0568427,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0212911,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0163043,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 131.8155779,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:02:19.3382008",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 46,
+    "CompletedCases": 32,
+    "UnderfilledDescriptors": [
+      "portable-directory-linux-special-unit-002",
+      "portable-directory-recovery-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 32,
+    "Executed": 32,
+    "Passed": 30,
+    "Failed": 2
+  },
+  "DuplicateTests": []
+}

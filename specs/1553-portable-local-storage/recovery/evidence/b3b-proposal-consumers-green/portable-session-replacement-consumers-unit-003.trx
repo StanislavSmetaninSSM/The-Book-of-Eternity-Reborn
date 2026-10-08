@@ -1,0 +1,81 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="de517012-1ba6-48de-b215-d977a1245329" name="b3b-proposal-consumers-green" runUser="$USER">
+  <ns0:Times creation="2026-10-01T06:29:56.0167605-04:00" queuing="2026-10-01T06:29:56.0167606-04:00" start="2026-10-01T06:29:54.0968179-04:00" finish="2026-10-01T06:29:56.4060390-04:00" />
+  <ns0:TestSettings name="default" id="924f1d5a-e0ab-4a47-9e56-ab95616ad344">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="c6f11e76-4f1b-4c7a-92f0-96c7d0e19221" testId="5748ed84-bdcb-0a6a-bb19-d3ea540445f9" testName="BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback" computerName="$HOST" duration="00:00:00.0062511" startTime="2026-10-01T06:29:55.8428151-04:00" endTime="2026-10-01T06:29:55.8428410-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c6f11e76-4f1b-4c7a-92f0-96c7d0e19221" />
+    <ns0:UnitTestResult executionId="ea566e34-93f5-4699-9a4a-0844c07f804e" testId="e19044ad-979f-06c0-e0f5-b906aa8703ef" testName="BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.ReleaseAsync_OldSameOwnerLeaseDoesNotDeleteReplacementGenerationLock" computerName="$HOST" duration="00:00:00.0695659" startTime="2026-10-01T06:29:56.2241911-04:00" endTime="2026-10-01T06:29:56.2241913-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ea566e34-93f5-4699-9a4a-0844c07f804e" />
+    <ns0:UnitTestResult executionId="98f421bc-8f51-4017-b08c-6e7703fc23b0" testId="d2fe18a7-d3fc-6e0f-b93e-cf1b3d01823a" testName="BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions" computerName="$HOST" duration="00:00:00.0291232" startTime="2026-10-01T06:29:55.8746364-04:00" endTime="2026-10-01T06:29:55.8746366-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="98f421bc-8f51-4017-b08c-6e7703fc23b0" />
+    <ns0:UnitTestResult executionId="95450862-4f04-44ad-aeec-5817f1800f27" testId="c38fb71a-086d-46b2-2e74-f62fcb9d1b6c" testName="BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_RotatedGenerationRejectsOldPreparedHandoff" computerName="$HOST" duration="00:00:00.2503539" startTime="2026-10-01T06:29:56.1258098-04:00" endTime="2026-10-01T06:29:56.1258100-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="95450862-4f04-44ad-aeec-5817f1800f27" />
+    <ns0:UnitTestResult executionId="b8bf092e-1771-4aba-bd47-cd6213453e69" testId="21ac49cb-4665-121a-e34a-332bc46e2e32" testName="BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ReplacementWithoutLaterWrite_FinalCheckStillThrows" computerName="$HOST" duration="00:00:00.0242438" startTime="2026-10-01T06:29:56.2515463-04:00" endTime="2026-10-01T06:29:56.2515465-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b8bf092e-1771-4aba-bd47-cd6213453e69" />
+    <ns0:UnitTestResult executionId="4146868e-f248-4792-aeeb-136c9fed5a28" testId="ae8acdd9-c039-ef62-32ed-6a8b2934e02f" testName="BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_LeafSwallowsWriteFailure_OuterBoundaryStillThrows" computerName="$HOST" duration="00:00:00.0254284" startTime="2026-10-01T06:29:56.3327955-04:00" endTime="2026-10-01T06:29:56.3327957-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4146868e-f248-4792-aeeb-136c9fed5a28" />
+    <ns0:UnitTestResult executionId="97fde80e-76ca-4be2-ad8a-4df1949562b0" testId="043efe1e-8305-4331-4b5a-cf7a82e0047f" testName="BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_SameGenerationNewRevisionRejectsOldPreparedHandoff" computerName="$HOST" duration="00:00:00.0251824" startTime="2026-10-01T06:29:56.1511599-04:00" endTime="2026-10-01T06:29:56.1511601-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="97fde80e-76ca-4be2-ad8a-4df1949562b0" />
+    <ns0:UnitTestResult executionId="0f33073d-d4e7-42e6-8e83-b46f5a4f166f" testId="ac22ec94-b7d0-254d-c405-32f58ebcf2f2" testName="BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ClearRotatesGeneration_ThrowsBeforeReplacementMutation" computerName="$HOST" duration="00:00:00.0257305" startTime="2026-10-01T06:29:56.2779828-04:00" endTime="2026-10-01T06:29:56.2779830-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0f33073d-d4e7-42e6-8e83-b46f5a4f166f" />
+    <ns0:UnitTestResult executionId="7f33a087-6506-4aba-b56f-e5226838819c" testId="b20613a1-aadd-d3e9-4be9-bb39a9d86c90" testName="BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_FenceAppliesAcrossFileSystemManagerInstancesForSameRoot" computerName="$HOST" duration="00:00:00.0278518" startTime="2026-10-01T06:29:56.3067529-04:00" endTime="2026-10-01T06:29:56.3067531-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7f33a087-6506-4aba-b56f-e5226838819c" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_ClearRotatesGeneration_ThrowsBeforeReplacementMutation" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ac22ec94-b7d0-254d-c405-32f58ebcf2f2">
+      <ns0:Execution id="0f33073d-d4e7-42e6-8e83-b46f5a4f166f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SessionOperationContextTests" name="BoundWriter_ClearRotatesGeneration_ThrowsBeforeReplacementMutation" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_SameGenerationNewRevisionRejectsOldPreparedHandoff" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="043efe1e-8305-4331-4b5a-cf7a82e0047f">
+      <ns0:Execution id="97fde80e-76ca-4be2-ad8a-4df1949562b0" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests" name="WoundRegistry_SameGenerationNewRevisionRejectsOldPreparedHandoff" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRegistry_RotatedGenerationRejectsOldPreparedHandoff" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c38fb71a-086d-46b2-2e74-f62fcb9d1b6c">
+      <ns0:Execution id="95450862-4f04-44ad-aeec-5817f1800f27" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests" name="WoundRegistry_RotatedGenerationRejectsOldPreparedHandoff" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ReplacementWithoutLaterWrite_FinalCheckStillThrows" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="21ac49cb-4665-121a-e34a-332bc46e2e32">
+      <ns0:Execution id="b8bf092e-1771-4aba-bd47-cd6213453e69" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SessionOperationContextTests" name="BoundOperation_ReplacementWithoutLaterWrite_FinalCheckStillThrows" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_LeafSwallowsWriteFailure_OuterBoundaryStillThrows" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ae8acdd9-c039-ef62-32ed-6a8b2934e02f">
+      <ns0:Execution id="4146868e-f248-4792-aeeb-136c9fed5a28" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SessionOperationContextTests" name="BoundOperation_LeafSwallowsWriteFailure_OuterBoundaryStillThrows" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d2fe18a7-d3fc-6e0f-b93e-cf1b3d01823a">
+      <ns0:Execution id="98f421bc-8f51-4017-b08c-6e7703fc23b0" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests" name="ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.ReleaseAsync_OldSameOwnerLeaseDoesNotDeleteReplacementGenerationLock" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e19044ad-979f-06c0-e0f5-b906aa8703ef">
+      <ns0:Execution id="ea566e34-93f5-4699-9a4a-0844c07f804e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalUiSessionLockServiceTests" name="ReleaseAsync_OldSameOwnerLeaseDoesNotDeleteReplacementGenerationLock" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_FenceAppliesAcrossFileSystemManagerInstancesForSameRoot" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b20613a1-aadd-d3e9-4be9-bb39a9d86c90">
+      <ns0:Execution id="7f33a087-6506-4aba-b56f-e5226838819c" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.SessionOperationContextTests" name="BoundWriter_FenceAppliesAcrossFileSystemManagerInstancesForSameRoot" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5748ed84-bdcb-0a6a-bb19-d3ea540445f9">
+      <ns0:Execution id="c6f11e76-4f1b-4c7a-92f0-96c7d0e19221" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests" name="BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="5748ed84-bdcb-0a6a-bb19-d3ea540445f9" executionId="c6f11e76-4f1b-4c7a-92f0-96c7d0e19221" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e19044ad-979f-06c0-e0f5-b906aa8703ef" executionId="ea566e34-93f5-4699-9a4a-0844c07f804e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d2fe18a7-d3fc-6e0f-b93e-cf1b3d01823a" executionId="98f421bc-8f51-4017-b08c-6e7703fc23b0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="c38fb71a-086d-46b2-2e74-f62fcb9d1b6c" executionId="95450862-4f04-44ad-aeec-5817f1800f27" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="21ac49cb-4665-121a-e34a-332bc46e2e32" executionId="b8bf092e-1771-4aba-bd47-cd6213453e69" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ae8acdd9-c039-ef62-32ed-6a8b2934e02f" executionId="4146868e-f248-4792-aeeb-136c9fed5a28" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="043efe1e-8305-4331-4b5a-cf7a82e0047f" executionId="97fde80e-76ca-4be2-ad8a-4df1949562b0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ac22ec94-b7d0-254d-c405-32f58ebcf2f2" executionId="0f33073d-d4e7-42e6-8e83-b46f5a4f166f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="b20613a1-aadd-d3e9-4be9-bb39a9d86c90" executionId="7f33a087-6506-4aba-b56f-e5226838819c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="9" executed="9" passed="9" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.16]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.25]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.28]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.82]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>

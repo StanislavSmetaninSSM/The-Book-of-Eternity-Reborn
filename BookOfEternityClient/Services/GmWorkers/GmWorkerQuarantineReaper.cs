@@ -1,217 +1,180 @@
 using System.Collections.Concurrent;
-using System.Diagnostics;
+using System.Runtime.ExceptionServices;
 
 namespace BookOfEternityClient.Services.GmWorkers;
 
 internal interface IGmWorkerQuarantineOwner
 {
     string Identity { get; }
-    Task ConfirmDeathAsync();
+    Task<GmWorkerCleanupEvidence> ConfirmDeathAsync();
     Task CleanupConfirmedAsync();
     Task RecordReaperFailureAsync(Exception failure);
 }
 
+// The same phase state handles ordinary cleanup and is transferred intact when
+// any remaining stop/output/disposal/filesystem/receipt operation fails.
 internal sealed class GmWorkerQuarantinedExecution : IGmWorkerQuarantineOwner
 {
     private readonly SemaphoreSlim _confirmationGate = new(1, 1);
     private readonly SemaphoreSlim _cleanupGate = new(1, 1);
+    private readonly GmWorkerExecutionAuthority _authority;
+    private readonly GmWorkerDurableExecution? _durable;
+    private readonly GmWorkerRootExecutionLease? _rootLease;
+    private readonly Action? _afterRetirementAcknowledged;
     private readonly Func<string, Task>? _beforeWorkspaceCleanupAsync;
-    private readonly Func<Task<GmWorkerAuditAppendDisposition>>
-        _recordCleanupConfirmedAsync;
+    private readonly Func<Task<GmWorkerAuditAppendDisposition>> _recordCleanupConfirmedAsync;
     private readonly Func<Exception, Task> _recordFailureAsync;
     private readonly string _sessionGeneration;
     private readonly WorkerAuditEvent _cleanupConfirmedAuditEvent;
-    private IGmWorkerProcessTree? _processTree;
-    private Process? _process;
+    private GmWorkerOwnedLaunch? _owner;
     private GmWorkerProcessHostLaunch? _processHostLaunch;
     private GmWorkerExecutionWorkspace? _workspace;
+    private readonly GmWorkerExecutionWorkspace? _originalWorkspace;
+    private CleanupCompletion? _completion;
+    private bool _workspaceDeletionCompleted;
     private IDisposable? _workerSlot;
     private Task<int>? _workerCompletionTask;
-    private Task<string>? _outputCaptureTask;
-    private Task<string>? _errorCaptureTask;
-    private int _deathConfirmed;
     private int _cleanupCompleted;
-    private bool _workspaceHookCompleted;
-    private bool _terminalAuditRecorded;
+    private bool _workspaceHookCompleted, _terminalAuditRecorded, _quarantined;
 
     internal GmWorkerQuarantinedExecution(
-        string identity,
-        bool deathConfirmed,
-        IGmWorkerProcessTree? processTree,
-        Process? process,
-        GmWorkerProcessHostLaunch? processHostLaunch,
-        GmWorkerExecutionWorkspace? workspace,
-        IDisposable workerSlot,
-        Task<int>? workerCompletionTask,
-        Task<string>? outputCaptureTask,
-        Task<string>? errorCaptureTask,
-        Func<string, Task>? beforeWorkspaceCleanupAsync,
-        string sessionGeneration,
+        string identity, GmWorkerExecutionAuthority authority, GmWorkerOwnedLaunch? owner,
+        GmWorkerProcessHostLaunch? processHostLaunch, GmWorkerExecutionWorkspace? workspace,
+        IDisposable workerSlot, Task<int>? workerCompletionTask,
+        Func<string, Task>? beforeWorkspaceCleanupAsync, string sessionGeneration,
         WorkerAuditEvent cleanupConfirmedAuditEvent,
-        Func<Task<GmWorkerAuditAppendDisposition>>
-            recordCleanupConfirmedAsync,
-        Func<Exception, Task> recordFailureAsync)
+        Func<Task<GmWorkerAuditAppendDisposition>> recordCleanupConfirmedAsync,
+        Func<Exception, Task> recordFailureAsync, bool quarantined = true,
+        GmWorkerDurableExecution? durable = null, GmWorkerRootExecutionLease? rootLease = null,
+        Action? afterRetirementAcknowledged = null)
     {
-        Identity = identity;
-        _processTree = processTree;
-        _process = process;
-        _processHostLaunch = processHostLaunch;
-        _workspace = workspace;
-        _workerSlot = workerSlot;
-        _workerCompletionTask = workerCompletionTask;
-        _outputCaptureTask = outputCaptureTask;
-        _errorCaptureTask = errorCaptureTask;
-        _beforeWorkspaceCleanupAsync = beforeWorkspaceCleanupAsync;
-        _sessionGeneration = sessionGeneration;
-        _cleanupConfirmedAuditEvent = cleanupConfirmedAuditEvent;
-        _recordCleanupConfirmedAsync = recordCleanupConfirmedAsync;
-        _recordFailureAsync = recordFailureAsync;
-        _deathConfirmed = deathConfirmed
-            ? 1
-            : 0;
+        Identity = identity; _authority = authority; _owner = owner;
+        _processHostLaunch = processHostLaunch; _workspace = workspace; _workerSlot = workerSlot;
+        _workerCompletionTask = workerCompletionTask; _beforeWorkspaceCleanupAsync = beforeWorkspaceCleanupAsync;
+        _sessionGeneration = sessionGeneration; _cleanupConfirmedAuditEvent = cleanupConfirmedAuditEvent;
+        _recordCleanupConfirmedAsync = recordCleanupConfirmedAsync; _recordFailureAsync = recordFailureAsync;
+        _quarantined = quarantined; _durable = durable; _rootLease = rootLease;
+        _originalWorkspace = workspace; _afterRetirementAcknowledged = afterRetirementAcknowledged;
+        durable?.BindCleanupOwner(this, workspace, authority);
     }
 
     public string Identity { get; }
-
-    public async Task ConfirmDeathAsync()
+    internal void RetainForRetry()
     {
-        if (Volatile.Read(ref _deathConfirmed) != 0)
-            return;
+        _durable?.MarkCleanupDeferred();
+        if (_completion == null && _durable?.TerminalPlanFrozen != true) _quarantined = true;
+    }
 
+    public async Task<GmWorkerCleanupEvidence> ConfirmDeathAsync()
+    {
         await _confirmationGate.WaitAsync();
         try
         {
-            if (Volatile.Read(ref _deathConfirmed) != 0)
-                return;
-
-            if (_processTree != null)
+            GmWorkerCleanupEvidence? evidence = null;
+            Exception? stopFailure = null;
+            try { evidence = await _authority.StopForCleanupAsync(_owner); }
+            catch (Exception failure) { stopFailure = failure; }
+            // Even sticky uncertainty permits an original bounded stop attempt.
+            // Metadata validation/persistence still runs when that attempt fails.
+            try { if (_durable != null) await _durable.RequireCleanupAuthorityAsync(); }
+            catch (Exception metadataFailure)
             {
-                await _processTree.StopAndWaitAsync();
+                if (stopFailure != null) throw new AggregateException(stopFailure, metadataFailure);
+                throw;
             }
-            else if (_process != null)
-            {
-                await GmWorkerBridgePool.StopUnattachedProcessTreeAsync(
-                    _process);
-            }
-
-            Volatile.Write(ref _deathConfirmed, 1);
+            if (stopFailure != null) ExceptionDispatchInfo.Capture(stopFailure).Throw();
+            if (evidence == null) throw new InvalidOperationException("Original stop did not return evidence.");
+            if (!evidence.NoLaunch && !_authority.OutputsSettled)
+                await _authority.SettleOutputsAsync(_owner ?? throw new InvalidOperationException("Original output owner is missing."));
+            return _authority.RequireCleanupEvidence();
         }
-        finally
-        {
-            _confirmationGate.Release();
-        }
+        finally { _confirmationGate.Release(); }
     }
 
     public async Task CleanupConfirmedAsync()
     {
-        if (Volatile.Read(ref _cleanupCompleted) != 0)
-            return;
-
+        if (Volatile.Read(ref _cleanupCompleted) != 0) return;
         await _cleanupGate.WaitAsync();
         try
         {
-            if (Volatile.Read(ref _cleanupCompleted) != 0)
-                return;
-            if (Volatile.Read(ref _deathConfirmed) == 0)
+            if (Volatile.Read(ref _cleanupCompleted) != 0) return;
+            if (_durable != null) await _durable.RequireCleanupAuthorityAsync();
+            _ = _authority.RequireCleanupEvidence();
+            if (_owner != null) { await _owner.DisposeAsync(); _owner = null; }
+
+            // The pool canceled this original waiter. Observe its actual settlement
+            // before disposing the named-channel gates it may still be using.
+            if (_workerCompletionTask != null)
             {
-                throw new InvalidOperationException(
-                    "Quarantined worker cleanup requires confirmed process-tree death.");
+                try { await _workerCompletionTask.WaitAsync(TimeSpan.FromSeconds(5)); }
+                catch when (_workerCompletionTask.IsCompleted) { }
+                _workerCompletionTask = null;
             }
-
-            if (_processTree != null)
-            {
-                await _processTree.DisposeAsync();
-                _processTree = null;
-            }
-
-            ObserveFault(_workerCompletionTask);
-            ObserveFault(_outputCaptureTask);
-            ObserveFault(_errorCaptureTask);
-            _workerCompletionTask = null;
-            _outputCaptureTask = null;
-            _errorCaptureTask = null;
-
-            if (_process != null)
-            {
-                _process.Dispose();
-                _process = null;
-            }
-
             if (_processHostLaunch != null)
             {
                 await _processHostLaunch.DisposeAsync();
                 _processHostLaunch = null;
             }
-
-            if (_workspace != null &&
-                !_workspaceHookCompleted)
+            if (_workspace != null && !_workspaceHookCompleted)
             {
-                if (_beforeWorkspaceCleanupAsync != null)
-                {
-                    await _beforeWorkspaceCleanupAsync(
-                        _workspace.GameSessionPath);
-                }
-
+                if (_beforeWorkspaceCleanupAsync != null) await _beforeWorkspaceCleanupAsync(_workspace.GameSessionPath);
                 _workspaceHookCompleted = true;
             }
-
             if (_workspace != null)
             {
-                await _workspace
-                    .DeleteDetachedSessionRetainingRuntimeAuthorityAsync();
-            }
-
-            if (!_terminalAuditRecorded)
-            {
-                var disposition =
-                    await _recordCleanupConfirmedAsync();
-                if (disposition !=
-                    GmWorkerAuditAppendDisposition.Appended)
+                // The awaited hook cannot carry earlier authority into deletion.
+                if (_durable != null)
                 {
-                    if (_workspace == null)
-                    {
-                        throw new InvalidOperationException(
-                            "Quarantine terminal audit fallback requires retained workspace authority.");
-                    }
-
-                    await _workspace.PersistQuarantineAuditReceiptAsync(
-                        _sessionGeneration,
-                        _cleanupConfirmedAuditEvent);
+                    await _durable.RequireCleanupAuthorityAsync();
+                    _ = _authority.RequireCleanupEvidence();
                 }
-
+                await _workspace.DeleteDetachedSessionRetainingRuntimeAuthorityAsync();
+            }
+            _workspaceDeletionCompleted = true;
+            if (_quarantined && !_terminalAuditRecorded)
+            {
+                var disposition = await _recordCleanupConfirmedAsync();
+                if (disposition != GmWorkerAuditAppendDisposition.Appended)
+                {
+                    if (_workspace == null) throw new InvalidOperationException("Quarantine terminal audit fallback requires retained workspace authority.");
+                    await _workspace.PersistQuarantineAuditReceiptAsync(_sessionGeneration, _cleanupConfirmedAuditEvent);
+                }
                 _terminalAuditRecorded = true;
             }
-
-            if (_workspace != null)
+            if (_durable != null)
             {
-                await _workspace.DisposeAsync();
-                _workspace = null;
+                _completion ??= new(this);
+                await _durable.RetireAsync(_completion);
+                // Negative/observation only: actual original retirement has returned.
+                _afterRetirementAcknowledged?.Invoke();
             }
-
-            _workerSlot?.Dispose();
-            _workerSlot = null;
+            if (_workspace != null) { await _workspace.DisposeAsync(); _workspace = null; }
+            if (_durable != null) _durable.ReleaseRootAfterCleanup(); else _rootLease?.ReleaseAfterCleanup();
+            _workerSlot?.Dispose(); _workerSlot = null;
             Volatile.Write(ref _cleanupCompleted, 1);
         }
-        finally
-        {
-            _cleanupGate.Release();
-        }
+        finally { _cleanupGate.Release(); }
     }
 
-    public Task RecordReaperFailureAsync(Exception failure) =>
-        _recordFailureAsync(failure);
+    public Task RecordReaperFailureAsync(Exception failure) => _recordFailureAsync(failure);
 
-    private static void ObserveFault(Task? task)
+    // Constructor visibility does not grant authority: the completion must be
+    // this original owner's one private, phase-checked retained instance.
+    internal sealed class CleanupCompletion
     {
-        if (task == null)
-            return;
-
-        _ = task.ContinueWith(
-            completed => _ = completed.Exception,
-            CancellationToken.None,
-            TaskContinuationOptions.OnlyOnFaulted |
-            TaskContinuationOptions.ExecuteSynchronously,
-            TaskScheduler.Default);
+        private readonly GmWorkerQuarantinedExecution _owner;
+        internal WorkerRunCleanup Facts { get; }
+        internal CleanupCompletion(GmWorkerQuarantinedExecution owner)
+        {
+            _owner = owner;
+            Facts = owner._quarantined ? GmWorkerDurableExecution.AuditFacts(owner._cleanupConfirmedAuditEvent) : new(false, null, null);
+        }
+        internal bool BelongsTo(GmWorkerQuarantinedExecution owner, GmWorkerDurableExecution execution,
+            GmWorkerExecutionWorkspace workspace) =>
+            ReferenceEquals(_owner, owner) && ReferenceEquals(owner._completion, this) && ReferenceEquals(owner._durable, execution) &&
+            ReferenceEquals(owner._originalWorkspace, workspace) && owner._workspaceDeletionCompleted &&
+            owner._owner == null && owner._processHostLaunch == null && owner._workerCompletionTask == null &&
+            (!Facts.RequiredAudit || owner._terminalAuditRecorded);
     }
 }
 

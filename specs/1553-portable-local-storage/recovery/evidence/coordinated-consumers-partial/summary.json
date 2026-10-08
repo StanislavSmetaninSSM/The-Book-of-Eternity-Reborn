@@ -1,0 +1,112 @@
+{
+  "Categories": [
+    "portable-coordinated-qte-outcome",
+    "portable-coordinated-phase-consumers",
+    "portable-coordinated-actual-consumers"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-coordinated-qte-outcome",
+      "reason": "Cover the two causal QTE compensation/Russian projection fixes after the reached RED.",
+      "contracts": [
+        "no follow-up mutation after unresolved helper publication",
+        "exact evidence retained",
+        "safe Russian uncertainty projection"
+      ]
+    },
+    {
+      "category": "portable-coordinated-phase-consumers",
+      "reason": "Migrate old apply/boundary fault fixtures to actual B1 member publication while preserving service acknowledgments, real lease contention and later QTE post-commit/domain-compensation controls.",
+      "contracts": [
+        "complete B1 rollback",
+        "ordinary fault phase is pre-decision",
+        "later known-outcome compensation retained"
+      ]
+    },
+    {
+      "category": "portable-coordinated-actual-consumers",
+      "reason": "Select only the approved concrete helper consumers and privacy control; no broad category traversal or repetition of completed helper/caller cohorts.",
+      "contracts": [
+        "guard-only and guard/write interaction",
+        "carrier/identity/resource settlement",
+        "owner/quartet and blessing overlap",
+        "progression exact mutation",
+        "wound authority quarantine",
+        "QTE success and stale sealed input",
+        "ordinary private error projection"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "5cc0bc984e31c0606097c2100aa9e8d0afc5f17b",
+    "WorkingTreeFingerprint": "B10FFF4ED8AD7D9E8EE4D6F864ECCA3C08C0A14DBCE0DFA6281E2B4348260B61",
+    "ChangedFiles": 9
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-coordinated-actual-consumers",
+      "Seconds": 9.0671879,
+      "BudgetMinutes": 6,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0746838,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0180692,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0183482,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 222.830585,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 40.3287974,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 22,
+  "WallTime": "00:04:41.0285665",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 35,
+    "CompletedCases": 9,
+    "UnderfilledDescriptors": [
+      "portable-coordinated-actual-consumers-unit-002",
+      "portable-coordinated-phase-consumers-integration-003",
+      "portable-coordinated-phase-consumers-unit-004",
+      "portable-coordinated-qte-outcome-integration-005"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 9,
+    "Executed": 9,
+    "Passed": 8,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

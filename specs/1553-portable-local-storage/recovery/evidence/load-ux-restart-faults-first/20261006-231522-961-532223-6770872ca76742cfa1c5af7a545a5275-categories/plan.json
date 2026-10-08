@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "gm-load-restart-faults",
+    "gm-load-cleanup-debt",
+    "gm-load-console-entry"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "8aa961659233929a5f5dd8ebd94e19ebe8a31f59",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 43.4515808,
+  "Descriptors": [
+    {
+      "Name": "gm-load-cleanup-debt-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-cleanup-debt",
+      "Categories": [
+        "gm-load-cleanup-debt"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_CommittedCleanupDebtCannotLaunchFresh",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_CommittedCleanupDebtCannotLaunchFresh",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-console-entry-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-console-entry",
+      "Categories": [
+        "gm-load-console-entry"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.ConsoleLoad_OriginalLiveOwnerStopsBeforeRealReplacement",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-load-restart-faults-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-restart-faults",
+      "Categories": [
+        "gm-load-restart-faults"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalRestartFaults",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalRestartFaults",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

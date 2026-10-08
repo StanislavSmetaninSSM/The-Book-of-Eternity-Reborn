@@ -1,0 +1,171 @@
+{
+  "report_version": 1,
+  "probe_date_utc": "2026-10-01",
+  "result": "PASS: bounded two-turn persistent interactive OpenCode mini-mode probe; NOT a game-bridge or arbitrary-CLI compatibility claim",
+  "scope": "User-authorized OpenCode alternative service test in empty disposable workspace; no game or repository changes",
+  "environment": {
+    "surface": "Current cloud exec environment; native desktop was not used",
+    "platform": "Linux x86_64",
+    "TERM": "dumb, inherited unchanged",
+    "pty_creation": "Succeeded",
+    "pty_geometry": {
+      "rows": 40,
+      "columns": 120
+    },
+    "cwd": "$PROBE_ROOT/empty-project",
+    "profile": "New initially empty test-only per-process XDG data/config/cache/state; HOME unchanged; no existing configuration or credentials copied"
+  },
+  "install": {
+    "vendor_doc": "https://opencode.ai/docs/",
+    "official_wrapper_package": "opencode-ai@1.18.34",
+    "wrapper_outcome": "postinstall failed after selecting unsupported musl optional binaries on glibc; no force/platform override used",
+    "verified_declared_dependency": "opencode-linux-x64@1.18.34, confirmed in official wrapper optionalDependencies",
+    "dependency_outcome": "Installed normally with npm to test-only prefix",
+    "registry_tarball": "https://registry.npmjs.org/opencode-linux-x64/-/opencode-linux-x64-1.18.34.tgz",
+    "binary_sha256": "9ca0b9953d49997601655e54f846a3efa464f237e47c6f1b04716d0f2e64c4c2",
+    "cli_version_observed": "1.18.34"
+  },
+  "initial_runtime_boundary": {
+    "error": "EROFS: read-only file system, mkdir '/home/agent/.local/share/opencode'",
+    "phase": "Both --version and --help before application profile setup",
+    "resolution": "Official source uses xdg-basedir; provided fresh writable per-process XDG directories, with no existing credential/configuration relocation and no write to denied default path",
+    "source": "https://github.com/anomalyco/opencode/blob/dev/packages/core/src/global.ts"
+  },
+  "providers_list": "0 credentials in the fresh test profile before startup",
+  "invocation": {
+    "binary": "$PROBE_ROOT/tool/node_modules/opencode-linux-x64/bin/opencode",
+    "arguments": [
+      "--mini",
+      "--pure"
+    ],
+    "working_directory": "$PROBE_ROOT/empty-project",
+    "external_plugins": "--pure disables external plugins, as documented by installed help",
+    "auto_approval_enabled": false,
+    "shell_fallthrough_prevention": "Launched using shell exec, so model text cannot become a shell command after CLI exit",
+    "persistent_exec_session_handle": "$OWNED_SESSION"
+  },
+  "observed_terminal_protocol": {
+    "startup": "Became interactive without login, trust, permission or terminal-compatibility prompt",
+    "bracketed_paste_requested_by_app": "ESC [ ? 2004 h",
+    "bracketed_paste_begin": "ESC [ 200 ~",
+    "bracketed_paste_end": "ESC [ 201 ~",
+    "submit": "Separate carriage-return byte after rendered input was observed",
+    "first_prompt": "Reply only PINE. Do not use tools.",
+    "first_response": "PINE",
+    "second_prompt": "Reply only OAK.\nDo not use tools.",
+    "second_response": "OAK",
+    "multiline_behavior": "Both lines remained in the composer until separate Enter; no premature submission observed",
+    "process_lifetime": "Same persistent exec session for both prompts; no restart/resume between them"
+  },
+  "test_only_database_verification": {
+    "method": "Read-only SQLite connection to this newly-created isolated test database; only allowlisted session/message metadata and text parts inspected",
+    "sessions": [
+      {
+        "id": "$TEST_SESSION_1",
+        "directory": "$PROBE_ROOT/empty-project",
+        "version": "1.18.34",
+        "shared": false
+      }
+    ],
+    "messages": [
+      {
+        "id": "$TEST_MESSAGE_1",
+        "role": "user"
+      },
+      {
+        "id": "$TEST_MESSAGE_2",
+        "role": "assistant",
+        "modelID": "big-pickle",
+        "providerID": "opencode",
+        "finish": "stop"
+      },
+      {
+        "id": "$TEST_MESSAGE_3",
+        "role": "user"
+      },
+      {
+        "id": "$TEST_MESSAGE_4",
+        "role": "assistant",
+        "modelID": "big-pickle",
+        "providerID": "opencode",
+        "finish": "stop"
+      }
+    ],
+    "parts": [
+      {
+        "type": "text",
+        "text": "Reply only PINE. Do not use tools."
+      },
+      {
+        "type": "step-start"
+      },
+      {
+        "type": "text",
+        "text": "PINE"
+      },
+      {
+        "type": "step-finish"
+      },
+      {
+        "type": "text",
+        "text": "Reply only OAK.\nDo not use tools."
+      },
+      {
+        "type": "step-start"
+      },
+      {
+        "type": "text",
+        "text": "OAK"
+      },
+      {
+        "type": "step-finish"
+      }
+    ],
+    "tool_call_part_count": 0,
+    "provider_model_limit": "Stored provider/model identity is opencode/big-pickle; no inference about underlying model provider or infrastructure"
+  },
+  "cleanup": {
+    "ctrl_d": "Did not exit observed mini-mode process",
+    "slash_exit": "Exited successfully with process exit code 0",
+    "native_ui": "Not acquired or used; implementation coordinator notified surfaces free",
+    "process_cleanup_evidence": "write_stdin completed owned persistent process with exit code 0",
+    "process_inventory_limit": "Separate exec ps views did not expose the ongoing PTY process; no all-system descendant claim",
+    "test_artifacts": "Retained under the named disposable probe directory; no third-party sharing"
+  },
+  "documentation_findings": [
+    {
+      "source": "https://opencode.ai/docs/keybinds/",
+      "finding": "OpenCode exposes configurable input_paste (default Ctrl+V), input_submit (Enter), and input_newline (modified Enter or Ctrl+J) separately. Some terminals require explicit modified-Enter encoding."
+    },
+    {
+      "source": "https://invisible-island.net/xterm/ctlseqs/ctlseqs.html",
+      "finding": "Bracketed paste is a terminal protocol requested by the application using mode 2004, with distinct begin/end markers around pasted input."
+    },
+    {
+      "source": "https://docs.xfce.org/apps/xfce4-terminal/usage",
+      "finding": "Terminal-emulator paste/selection handling is separate from the application. Xfce distinguishes selected text from explicitly copied clipboard text."
+    }
+  ],
+  "bridge_recommendations_inferred_from_docs_and_probe": [
+    "Model terminal clipboard gesture, PTY text transport/framing, newline, submit, interrupt and exit as separate profile fields; do not equate Shift+Insert or Shift+RightClick with an application-level command.",
+    "For direct PTY mode, honor observed bracketed-paste negotiation and send the separate configured submission key only after complete input delivery; no OS clipboard gesture is required by this tested route.",
+    "A native-window backend can expose configurable OS key/mouse paste chords, including the user-mentioned Shift+Insert or Shift+RightClick, but those gestures were not tested here.",
+    "Test stable readiness, process liveness and asynchronous startup errors before dispatch; the prior Codex transient composer was insufficient.",
+    "Cover Unicode/multiline/large text, payloads containing escape or bracketed-paste marker bytes, prompt rejection and permission states, shell fallback prevention, cancellation and repeated dispatch before claiming broader compatibility.",
+    "OpenCode mini mode is an observed working profile; full-screen OpenCode TUI, other versions, other platforms, game turn acceptance and the existing bridge implementation remain unverified."
+  ],
+  "safety": {
+    "repository_edits": false,
+    "game_state_touched": false,
+    "existing_secrets_read": false,
+    "credentials_copied": false,
+    "login_started": false,
+    "new_credentials_saved": false,
+    "security_or_permission_changes": false,
+    "HOME_overridden": false,
+    "TERM_overridden": false,
+    "sandbox_or_approval_bypass": false,
+    "session_shared": false,
+    "model_tools_invoked": false
+  }
+}

@@ -8,7 +8,7 @@ namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "ProcessIntegration")]
 [Trait("Category", "E2E")]
-public sealed class ConsoleE2ESmokeTests : IDisposable
+public sealed partial class ConsoleE2ESmokeTests : IDisposable
 {
 #if DEBUG
     private const string TestBuildConfiguration = "Debug";

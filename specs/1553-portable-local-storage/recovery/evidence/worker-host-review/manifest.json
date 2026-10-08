@@ -1,0 +1,23 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "b45d6f32467ef9e099fb16f84b0617bea68c523b",
+  "Inputs": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/worker-host-qualification.json",
+      "Sha256": "d0d6605c604175f170e7ddedc049b948955c58f542266b06b50463704e33a8f1",
+      "GitBlob": "3e69776d3b8d433af5d62a7b9747de416b4da1ca"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "candidate-restoration.json",
+      "Bytes": 620,
+      "Sha256": "09b260288415b0de3a99203d8a83538fc244956a59198896ee7b92356039a386"
+    },
+    {
+      "Path": "review.json",
+      "Bytes": 1988,
+      "Sha256": "99f128ca331cf1520d8b513b9f550e90c8ed78976051c650f70de68f960c5e33"
+    }
+  ]
+}

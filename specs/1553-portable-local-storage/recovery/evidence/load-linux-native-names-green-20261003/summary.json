@@ -1,0 +1,137 @@
+{
+  "Categories": [
+    "portable-load-native-names",
+    "portable-load-alias-admission",
+    "portable-load-original-admission",
+    "portable-load-entry",
+    "portable-load-outcomes"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-load-native-names",
+      "reason": "Causal LOAD-FS-001 Linux pair correction; current selection lacks simultaneous arbitrary names distinct only by case. Native decision and exact original hash/collision refusals.",
+      "contracts": [
+        "#1553 LOAD-FS-001/002/003/008; T032-B5-FS"
+      ]
+    },
+    {
+      "category": "portable-load-alias-admission",
+      "reason": "Original inventory comparer and original lookup changed; preserve fixed-name aliases and independent original hashes before materialization.",
+      "contracts": [
+        "#1553 LOAD-FS-001/003/004/008; T032-B5-FS native original-name correction"
+      ]
+    },
+    {
+      "category": "portable-load-original-admission",
+      "reason": "Original schema/manifest/hash and raw archive admission remain strict under typed native-name handling.",
+      "contracts": [
+        "#1553 LOAD-FS-001/003/004/008; T032-B5-FS native original-name correction"
+      ]
+    },
+    {
+      "category": "portable-load-entry",
+      "reason": "Actual typed-load producer entry, exact rollback, source/library/config and binding consume changed preparation.",
+      "contracts": [
+        "#1553 LOAD-FS-001/003/004/008; T032-B5-FS native original-name correction"
+      ]
+    },
+    {
+      "category": "portable-load-outcomes",
+      "reason": "Preparation failures and the established typed outcomes must remain truthful after original name admission changes.",
+      "contracts": [
+        "#1553 LOAD-FS-001/003/004/008; T032-B5-FS native original-name correction"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "2da4d545c9398ab1db019609d14429f9480574c2",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-load-alias-admission",
+      "Seconds": 5.4643966,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-entry",
+      "Seconds": 3.4180132,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-native-names",
+      "Seconds": 3.8140755,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-original-admission",
+      "Seconds": 4.0168423,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-load-outcomes",
+      "Seconds": 3.2111361,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0554344,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.00913,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0115696,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 132.8585046,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0041583,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:02:35.9764482",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 5,
+    "PlannedCases": 52,
+    "CompletedCases": 52,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 52,
+    "Executed": 52,
+    "Passed": 52,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

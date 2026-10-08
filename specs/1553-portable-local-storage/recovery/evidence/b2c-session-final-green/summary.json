@@ -1,0 +1,98 @@
+{
+  "Categories": [
+    "portable-console-settings-session",
+    "portable-console-settings"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-console-settings-session",
+      "reason": "Retryable preparation failure now remains distinct from explicit baseline conflict; cover all console session admission, reload and outcome consumers.",
+      "contracts": [
+        "console settings admission",
+        "draft discard and confirmed reload",
+        "portable mod listing"
+      ]
+    },
+    {
+      "category": "portable-console-settings",
+      "reason": "The preparation API now exposes its confirmed exact-baseline conflict as a specific IOException subtype; retain the direct contract and member preparation consumers.",
+      "contracts": [
+        "exact settings baseline conflict",
+        "three-member preparation"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "05ab90a5d268056730755563e073e9277877d9df",
+    "WorkingTreeFingerprint": "AF83B214C96264CA9EFB80E7CA633C1EB121A3F4198F9E1365F136B11AC947B5",
+    "ChangedFiles": 1
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-console-settings",
+      "Seconds": 3.332802,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-console-settings-session",
+      "Seconds": 5.2004008,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0640834,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0125872,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0162555,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 135.5762634,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0053224,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 13,
+  "WallTime": "00:02:28.1500644",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 30,
+    "CompletedCases": 30,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 30,
+    "Executed": 30,
+    "Passed": 30,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

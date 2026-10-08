@@ -1,0 +1,31 @@
+{
+  "sourceCommit": "cd90edb926c57d58f2de0c9ee7d745c2471c9c79",
+  "catalogBlobAfterPatch": "6112bdef8abdbc9f2f6cbdf59290dec2cf267963",
+  "kind": "newly executed b3-generation-source-guard-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Run root replaced; LF/trailing-line normalization; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "5e01a3bd0285680d5860c75175c4ce2a103b0d4d83702187b92f0f1f897d5e17",
+      "sanitizedSha256": "5e01a3bd0285680d5860c75175c4ce2a103b0d4d83702187b92f0f1f897d5e17"
+    },
+    {
+      "path": "portable-session-generation-source-unit-001.trx",
+      "originalSha256": "2509f8f5de2c89f9e21cc78cc13461559fb5a327a81b5508be101934de6d65cf",
+      "sanitizedSha256": "58fb39719e7a7e55ff14b3c8592fac3d1f1695c7085d87966157810ee90950e6"
+    }
+  ],
+  "appliedSourceTree": "372d4bdaf0e83b2fc90360546c7ce2bcf72a1dca",
+  "noBuildReason": "Only catalog/selection/evidence metadata changed after both test projects were freshly built at the prior shared-core correction.",
+  "temporaryCategory": "portable-session-generation-source",
+  "patches": [
+    {
+      "path": "generation-reader-source.pending.patch",
+      "sha256": "bba0455efb3cb515315830f828c5ac0171157cefd2f3e6c6f846f63c1571b62a"
+    },
+    {
+      "path": "categories-pending.patch",
+      "sha256": "378c1feb628bf72ca13505b15e9889cbbcac5be8150ea1c8a330196d968c3000"
+    }
+  ]
+}

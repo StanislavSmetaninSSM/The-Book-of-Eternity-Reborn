@@ -5231,8 +5231,7 @@ public static partial class ExplorerLifecycleLocalTurnCommandResultBuilder
 
     private static bool DirectoryHasContent(FileSystemManager fs, string path)
     {
-        var fullPath = fs.ResolvePath(path);
-        return Directory.Exists(fullPath) && Directory.EnumerateFileSystemEntries(fullPath, "*", SearchOption.AllDirectories).Any();
+        return fs.DirectoryHasContent(path);
     }
 
     private static string FormatRealmForPlayer(string? realm)

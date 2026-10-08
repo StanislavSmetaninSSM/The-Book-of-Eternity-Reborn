@@ -1,0 +1,90 @@
+{
+  "Categories": [
+    "portable-load-topology",
+    "portable-storage-namespace"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-load-topology",
+      "reason": "T032-B2 connects complete namespace replacement to actual ordinary load: conversion directions, retained empty directories and structural/file/commit-stage rollback.",
+      "contracts": [
+        "#1553 LOAD-FS-001/002/003/004/006"
+      ]
+    },
+    {
+      "category": "portable-storage-namespace",
+      "reason": "New v3 evidence must admit independent pending/committed decisions, reject strict late damage and unknown children/authority grants before any earlier restoration.",
+      "contracts": [
+        "#1553 LOAD-FS-002/003/005/006"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "e343e19c1f5c8e366307a9996fe62b6c01ab7604",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 243.1891553,
+  "Descriptors": [
+    {
+      "Name": "portable-load-topology-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-topology",
+      "Categories": [
+        "portable-load-topology"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace|FullyQualifiedName=BookOfEternityClient.Tests.PortableLoadReplacementTests.InterruptedTopologyRestoresExactBeforeNamespace",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.CurrentProducerLoadReconcilesCompleteNamespace",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.InterruptedTopologyRestoresExactBeforeNamespace",
+          "Cases": 8
+        }
+      ]
+    },
+    {
+      "Name": "portable-storage-namespace-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-storage-namespace",
+      "Categories": [
+        "portable-storage-namespace"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.EveryV3FieldRejectsOmissionWrongTypeAndForbiddenNull|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.LateInvalidV3MetadataRetainsEveryEarlierMemberAndEvidence|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnknownLaterChildRetainsEveryEarlierAfterImage|FullyQualifiedName=BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnsupportedNamespaceAuthorityRetainsExactEvidence",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 33,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.EveryV3FieldRejectsOmissionWrongTypeAndForbiddenNull",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentV3FrameKeepsCompletePendingOrCommittedDecision",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.LateInvalidV3MetadataRetainsEveryEarlierMemberAndEvidence",
+          "Cases": 18
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnknownLaterChildRetainsEveryEarlierAfterImage",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.UnsupportedNamespaceAuthorityRetainsExactEvidence",
+          "Cases": 6
+        }
+      ]
+    }
+  ]
+}

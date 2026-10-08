@@ -1,0 +1,109 @@
+{
+  "Categories": [
+    "portable-backup-api",
+    "portable-backup-boundaries",
+    "portable-backup-publication"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-backup-api",
+      "reason": "Public ordinary sync/async backup creation, independently seeded restore and cleanup with exact bytes and B1 decision semantics on Linux/Windows.",
+      "contracts": [
+        "FR-002 through FR-007; ordinary backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-boundaries",
+      "reason": "Ordinary backup path/type/link, exact absence/empty/hard-link, real lease/generation and same-lease recovery boundaries. Each test has isolated mutable state.",
+      "contracts": [
+        "FR-002 through FR-007; ordinary backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-publication",
+      "reason": "Nontransient warm backup lifecycle faults, complete restore membership, exact rollback/committed outcomes, unknown bytes and postcommit logger failure.",
+      "contracts": [
+        "FR-002 through FR-007; ordinary backup lifecycle"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "261bda1b92fdca3bcb992008a7eeec822799f139",
+    "WorkingTreeFingerprint": "87EA4AE9E609E8D4C3F35ECBAABE889F1BF45BD38B5ED2A38F281119D92D7C9F",
+    "ChangedFiles": 3
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-backup-api",
+      "Seconds": 3.7606505,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-backup-boundaries",
+      "Seconds": 2.8254736,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-backup-publication",
+      "Seconds": 3.0363451,
+      "BudgetMinutes": 5,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0581103,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.01474,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0228967,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 118.2465148,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0046848,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:02:11.8504756",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 43,
+    "CompletedCases": 43,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 43,
+    "Executed": 43,
+    "Passed": 43,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

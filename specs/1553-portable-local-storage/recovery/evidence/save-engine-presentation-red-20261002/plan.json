@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "portable-engine-save-presentation"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "427afdb534da0368f730e9696c07edd91520f6aa",
+    "WorkingTreeFingerprint": "65DAD213CF5CAEF3E046CF938E3A081634C4A51F5C417234F22DAD0EC900C697",
+    "ChangedFiles": 10
+  },
+  "PreparationSeconds": 7.1329843,
+  "Descriptors": [
+    {
+      "Name": "portable-engine-save-presentation-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-engine-save-presentation",
+      "Categories": [
+        "portable-engine-save-presentation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_CommittedDebtObservationDoesNotPromiseReplay|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CoordinatedPublication_UncertainOutcomeUsesRussianRecoveryNoticeWithoutRetryPromise",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_CommittedDebtObservationDoesNotPromiseReplay",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableManualSave_ConsoleMenuReportsActualDecision",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+RequestedLane: Categories
+EffectiveLane: Categories
+Filter: <pending validation>
+TimeoutMinutes: 8
+StartedUtc: 2026-10-01T01:55:48.6182004Z
+Owned process 'Revision': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Revision: stdout =====
+c3db14108e17e1ac7ad5a0cfbb1ee95b7744fe55
+
+===== Revision: stderr =====
+
+===== Revision: exit 0 =====
+Owned process 'Changed-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Changed-paths: stdout =====
+tests/categories.json
+
+===== Changed-paths: stderr =====
+
+===== Changed-paths: exit 0 =====
+Owned process 'New-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== New-paths: stdout =====
+
+===== New-paths: stderr =====
+
+===== New-paths: exit 0 =====
+Owned process 'portable-settings-consumers-frontend-001-compile': FileName=node; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=node
+
+===== portable-settings-consumers-frontend-001-compile: stdout =====
+
+===== portable-settings-consumers-frontend-001-compile: stderr =====
+
+===== portable-settings-consumers-frontend-001-compile: exit 0 =====
+Owned process 'portable-settings-consumers-frontend-001-audioPanelCatalogVisibility.test.js': FileName=node; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=node
+
+===== portable-settings-consumers-frontend-001-audioPanelCatalogVisibility.test.js: stdout =====
+
+===== portable-settings-consumers-frontend-001-audioPanelCatalogVisibility.test.js: stderr =====
+
+===== portable-settings-consumers-frontend-001-audioPanelCatalogVisibility.test.js: exit 0 =====
+Owned process 'portable-settings-consumers-frontend-001-gracefulDegradation.test.js': FileName=node; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=node
+
+===== portable-settings-consumers-frontend-001-gracefulDegradation.test.js: stdout =====
+
+===== portable-settings-consumers-frontend-001-gracefulDegradation.test.js: stderr =====
+file://$REPO/TestResults/test-categories/20260930-215548-604-16-c11ab54736ab4bc1902178cec04740d9-categories/portable-settings-consumers-frontend-001-compiled/test/gracefulDegradation.test.js:14
+        throw new Error(message);
+              ^
+
+Error: useShellState should use Promise.allSettled.
+    at assert (file://$REPO/TestResults/test-categories/20260930-215548-604-16-c11ab54736ab4bc1902178cec04740d9-categories/portable-settings-consumers-frontend-001-compiled/test/gracefulDegradation.test.js:14:15)
+    at file://$REPO/TestResults/test-categories/20260930-215548-604-16-c11ab54736ab4bc1902178cec04740d9-categories/portable-settings-consumers-frontend-001-compiled/test/gracefulDegradation.test.js:18:1
+
+Node.js v24.19.0
+
+===== portable-settings-consumers-frontend-001-gracefulDegradation.test.js: exit 1 =====
+
+Category result
+  Categories: portable-settings-consumers
+  Filter: <none>
+  Timeout: 8 minute(s)
+  Wall time: 00:00:01.6437545
+  Exit code: 1
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=2, cases=4; completed descriptors=0, cases=0, complete=False
+  Tests: total=0, executed=0, passed=0, failed=0
+  Duplicate test IDs: 0
+  Results: $REPO/TestResults/test-categories/20260930-215548-604-16-c11ab54736ab4bc1902178cec04740d9-categories
+  Log: $REPO/TestResults/test-categories/20260930-215548-604-16-c11ab54736ab4bc1902178cec04740d9-categories/dotnet-test.log
+  Failure: portable-settings-consumers-frontend-001-gracefulDegradation.test.js failed with exit code 1.

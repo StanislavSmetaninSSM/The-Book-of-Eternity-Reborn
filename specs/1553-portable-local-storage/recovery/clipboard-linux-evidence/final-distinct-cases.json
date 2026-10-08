@@ -1,0 +1,302 @@
+[
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_SelectsOneReadOnlyToolBeforeLaunch(wayland: \"fixture\", display: \"fixture\", tools: \"xclip,xsel\", expected: \"xclip\", args: \"-selection clipboard -out -target UTF8_STRING\")",
+    "Id": "d21b0208-d2f4-8f19-908c-d3b5150872b7",
+    "Duration": "00:00:00.2248562"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_FailureIsTypedBoundedAndDoesNotFallback(mode: \"invalid\", outcome: \"Error\")",
+    "Id": "c97f2885-9918-e129-dbc5-bc0f8648719e",
+    "Duration": "00:00:00.2193068"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_FailureIsTypedBoundedAndDoesNotFallback(mode: \"text\", outcome: \"Empty\")",
+    "Id": "f920d283-8677-ca97-243d-956bd6e2d828",
+    "Duration": "00:00:00.1783648"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_SelectsOneReadOnlyToolBeforeLaunch(wayland: \"fixture\", display: \"fixture\", tools: \"wl-paste,xclip,xsel\", expected: \"wl-paste\", args: \"--no-newline --type text\")",
+    "Id": "054ae97e-7a50-4b5b-29b6-a47dd173b3ec",
+    "Duration": "00:00:00.1606340"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_UnavailableDoesNotStartReader(wayland: null, display: null, tools: \"wl-paste,xclip,xsel\")",
+    "Id": "5d0ce041-e79c-b002-c1f8-f9e16648f796",
+    "Duration": "00:00:00.1327220"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_AcceptsExactStderrLimitWithoutExposingIt",
+    "Id": "48f798dc-6ea3-da6c-7ce1-1879872cae15",
+    "Duration": "00:00:00.2196427"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_LimitCountsUtf8BytesRatherThanCharacters",
+    "Id": "61392d33-4293-ba59-03e1-5fe8907cdd0a",
+    "Duration": "00:00:00.3773307"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_ReadsSyntheticUnicodeAndParagraphs",
+    "Id": "4695e334-a59b-d96b-ad04-d6f151baac43",
+    "Duration": "00:00:00.1950435"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_AcceptsExactStdoutLimit",
+    "Id": "de7539f9-33f7-5c7c-bbbd-e896dbce91e4",
+    "Duration": "00:00:00.2808624"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_FailureIsTypedBoundedAndDoesNotFallback(mode: \"stdout-flood\", outcome: \"TooLarge\")",
+    "Id": "d9b3b100-a297-ba12-5e2c-89442a8824fd",
+    "Duration": "00:00:00.3057919"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_FailureIsTypedBoundedAndDoesNotFallback(mode: \"stderr-flood\", outcome: \"TooLarge\")",
+    "Id": "d41c67a7-c08a-7f5f-8f89-e5c1a364eb57",
+    "Duration": "00:00:00.1834937"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_UnavailableDoesNotStartReader(wayland: \"fixture\", display: \"fixture\", tools: \"\")",
+    "Id": "8da17440-c964-ef7e-96e5-081afcca723b",
+    "Duration": "00:00:00.1320914"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_FailureIsTypedBoundedAndDoesNotFallback(mode: \"timeout\", outcome: \"Timeout\")",
+    "Id": "b1918945-74a7-8e74-3f58-8a8289ddaae7",
+    "Duration": "00:00:02.1417228"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.RealService_CaptureDebtRetainsOriginalAndRefusesUntilActualExit",
+    "Id": "c7b8d34f-7000-d448-0919-d44514b9b4f5",
+    "Duration": "00:00:04.7764369"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_StartupFailureIsErrorWithoutFallback",
+    "Id": "456a2831-d7d6-4781-5941-01bea9e969ed",
+    "Duration": "00:00:00.1509372"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_SelectsOneReadOnlyToolBeforeLaunch(wayland: null, display: \"fixture\", tools: \"xsel\", expected: \"xsel\", args: \"--clipboard --output\")",
+    "Id": "c0707008-9b3e-9654-8a6d-790d95bc3c54",
+    "Duration": "00:00:00.1675329"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_FailureIsTypedBoundedAndDoesNotFallback(mode: \"error\", outcome: \"Error\")",
+    "Id": "ae9f2d82-e873-914e-5077-ea84a022d5ca",
+    "Duration": "00:00:00.1805252"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_SelectsOneReadOnlyToolBeforeLaunch(wayland: null, display: \"fixture\", tools: \"wl-paste,xclip,xsel\", expected: \"xclip\", args: \"-selection clipboard -out -target UTF8_STRING\")",
+    "Id": "39400e93-954d-aff4-702a-044cd5e8011e",
+    "Duration": "00:00:00.1676513"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_PreviewIsBoundedEscapedAndDoesNotAlterDraft",
+    "Id": "1aa58376-3680-e1e2-5231-440d22f41974",
+    "Duration": "00:00:00.3219621"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_EofCannotAcceptClipboardDraft(mode: \"ask\")",
+    "Id": "071c3546-b09b-2c75-082d-631f2f1fa699",
+    "Duration": "00:00:00.2689415"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_ManualReplacementDoesNotReplayClipboard(mode: \"turn\", replacement: \"Новое ручное действие\")",
+    "Id": "8434531f-f16a-5280-38e5-9acc9c96d7d8",
+    "Duration": "00:00:00.2338803"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_ReadOneRealSyntheticReaderThenAcceptManually(mode: \"ask\", gesture: \"\\\\p\", text: \"/вставить\", expected: \"/вставить\")",
+    "Id": "e5e71d74-41f0-1275-7603-63a8aa051615",
+    "Duration": "00:00:00.2603508"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_EofCannotAcceptClipboardDraft(mode: \"multiline\")",
+    "Id": "958084c3-7c69-ad7c-a3e5-5e5dded25bd9",
+    "Duration": "00:00:00.2439893"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_ReadOneRealSyntheticReaderThenAcceptManually(mode: \"turn\", gesture: \"/paste\", text: \"\\\\p\", expected: \"\\\\p\")",
+    "Id": "ac58093a-8943-ccbc-88cb-d1a8beb064d4",
+    "Duration": "00:00:00.2271765"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_ErrorThenEofPreservesDefaultWithoutAccepting(mode: \"multiline\")",
+    "Id": "86b9f6ff-cfc5-a94e-d0bb-a27e3f2a966c",
+    "Duration": "00:00:00.3482306"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_FailureShowsEscapedMessageAndRetainsDefaultUntilManualAcceptance",
+    "Id": "b2343e4a-b815-1e03-85ee-77c5615f1347",
+    "Duration": "00:00:00.2189783"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_ManualReplacementDoesNotReplayClipboard(mode: \"ask\", replacement: \"Новая ручная строка\")",
+    "Id": "14d27753-8eb4-7bde-6155-b6e136eab725",
+    "Duration": "00:00:00.2089344"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_ReadOneRealSyntheticReaderThenAcceptManually(mode: \"ask\", gesture: \"/вставить\", text: \"Первый \\ud83c\\udf0c\\n\\nВторой\", expected: \"Первый \\ud83c\\udf0c Второй\")",
+    "Id": "09d896db-9b80-1528-c2a4-9137666cb80d",
+    "Duration": "00:00:00.2331823"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_ReadOneRealSyntheticReaderThenAcceptManually(mode: \"turn\", gesture: \"\\\\p\", text: \"Первый \\ud83c\\udf0c\\n\\nВторой\", expected: \"Первый \\ud83c\\udf0c\\n\\nВторой\")",
+    "Id": "5241ab03-3e4e-941a-4f48-856a02c307ee",
+    "Duration": "00:00:00.2495013"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_TimeoutPreservesDefaultAndDoesNotShowReaderStderr",
+    "Id": "33f1cc40-a4be-f47e-c150-7ef67101544e",
+    "Duration": "00:00:02.1911710"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_ErrorThenEofPreservesDefaultWithoutAccepting(mode: \"ask\")",
+    "Id": "63f19d08-8ba9-2c73-b88f-5447f37a7fcd",
+    "Duration": "00:00:00.2168362"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_EofCannotAcceptClipboardDraft(mode: \"turn\")",
+    "Id": "caf87fcd-cc82-7388-ece4-60eaaaf0574a",
+    "Duration": "00:00:00.2928306"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_OnlyNewGestureCanRetryAfterError",
+    "Id": "d9ac1213-40b7-719f-b026-03561fecdadd",
+    "Duration": "00:00:00.3116233"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealGetPlayerInput_LiteralShortcutIsOneReadAndRequiresManualAcceptance",
+    "Id": "2d457774-a8b4-0106-8c18-cf1906719172",
+    "Duration": "00:00:00.2620677"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealMultiline_FailedReadPreservesManualParagraphs",
+    "Id": "91b8024a-9a02-01f4-4a39-c9aaea1cb52a",
+    "Duration": "00:00:00.2107270"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealMultiline_ClipboardDraftRequiresTwoExplicitBlankLines",
+    "Id": "949afd23-3ea9-8842-3c73-7a2a2ff5a541",
+    "Duration": "00:00:00.2344598"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_UnavailableKeepsDefaultWithoutReader",
+    "Id": "1aa88eff-0a39-2883-6f3a-2c2d0463bb87",
+    "Duration": "00:00:00.1774272"
+  },
+  {
+    "Run": "identity-green",
+    "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealGetPlayerInput_MultilineRouteUsesSameClipboardAndManualTerminator",
+    "Id": "ee2e8be3-5f91-6df6-43f6-3c6b98f19fb4",
+    "Duration": "00:00:00.2241454"
+  },
+  {
+    "Run": "affected",
+    "Name": "BookOfEternityClient.Tests.TextComposerTests.ImmediateMode_CollapsesNewlines_ForSingleLinePrompts",
+    "Id": "e81d1ef5-d32d-7a3c-7843-305fc5bf8d63",
+    "Duration": "00:00:00.0439377"
+  },
+  {
+    "Run": "affected",
+    "Name": "BookOfEternityClient.Tests.GameEngineSourceGuardTests.MultilinePlayerInput_MustUseUnifiedTextComposerInsteadOfLegacyPasteSentinel",
+    "Id": "a4b44f8f-2333-0d11-c3e2-900f1d085226",
+    "Duration": "00:00:00.0215874"
+  },
+  {
+    "Run": "affected",
+    "Name": "BookOfEternityClient.Tests.GameEngineSourceGuardTests.FreeformGameEngineTextInputs_MustNotUseTextPromptStringDirectly",
+    "Id": "d0147851-e13d-bce8-5b8f-318df1844557",
+    "Duration": "00:00:00.0094348"
+  },
+  {
+    "Run": "affected",
+    "Name": "BookOfEternityClient.Tests.GameEngineSourceGuardTests.PlayerInput_MustExposeClipboardPasteShortcut",
+    "Id": "48b545a1-82ca-d27a-3b8c-12f7a6940ee1",
+    "Duration": "00:00:00.0177346"
+  },
+  {
+    "Run": "affected",
+    "Name": "BookOfEternityClient.Tests.BufferedConsolePasteCaptureTests.Drain_ReturnsBufferedMultilineTailAsSingleBlock",
+    "Id": "b92df18e-2641-1839-3b59-9ab0fb6c90bf",
+    "Duration": "00:00:00.0147900"
+  },
+  {
+    "Run": "affected",
+    "Name": "BookOfEternityClient.Tests.ClipboardServiceTests.NormalizeClipboardText_PreservesParagraphsButTrimsTrailingNewlines",
+    "Id": "da883db9-ae6f-452c-48c0-3de3a7ac161c",
+    "Duration": "00:00:00.0068799"
+  },
+  {
+    "Run": "affected",
+    "Name": "BookOfEternityClient.Tests.TextComposerTests.ImmediateMode_PreservesNewlines_WhenConfiguredForMultilineContent",
+    "Id": "d5d7f275-b6bd-eb4d-0d51-71f8829a65e2",
+    "Duration": "00:00:00.0407605"
+  },
+  {
+    "Run": "affected",
+    "Name": "BookOfEternityClient.Tests.TextComposerTests.MultilineMode_UsesDoubleBlankLineToSubmitManualText",
+    "Id": "0ce33ee2-2f39-72d5-3267-6e8f4ed96da6",
+    "Duration": "00:00:00.0002069"
+  },
+  {
+    "Run": "affected",
+    "Name": "BookOfEternityClient.Tests.TextComposerTests.ImmediateMode_UsesClipboardShortcut_WhenClipboardServiceProvided",
+    "Id": "e6a03567-2119-03d1-4bc3-0089a7cf64dd",
+    "Duration": "00:00:00.0095266"
+  },
+  {
+    "Run": "affected",
+    "Name": "BookOfEternityClient.Tests.TextComposerTests.MultilineMode_ClearCommand_ReturnsEmptyString",
+    "Id": "c3b7712c-12fc-f0d6-a574-fbb2e9630e7e",
+    "Duration": "00:00:00.0004549"
+  },
+  {
+    "Run": "affected",
+    "Name": "BookOfEternityClient.Tests.TextComposerTests.MultilineMode_EmptyFirstSubmit_KeepsDefaultValue",
+    "Id": "e2be08cb-f687-c2bc-7238-2377d5d0488f",
+    "Duration": "00:00:00.0076979"
+  },
+  {
+    "Run": "affected",
+    "Name": "BookOfEternityClient.Tests.TextComposerTests.MultilineMode_UsesDirectPasteBlockWithoutSpecialClipboardAction",
+    "Id": "0656a597-6df5-8726-9676-fb9c2ae48332",
+    "Duration": "00:00:00.0431710"
+  }
+]

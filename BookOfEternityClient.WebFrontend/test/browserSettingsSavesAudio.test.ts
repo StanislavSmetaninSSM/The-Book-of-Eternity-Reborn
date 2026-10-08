@@ -26,7 +26,7 @@ describe('browser settings saves and audio surfaces #1186 #1187', () => {
     const audioPanel = readSource('src', 'components', 'AudioPanel.tsx');
 
     expect(settingsView).toContain("import { AudioPanel } from './AudioPanel';");
-    expect(settingsView).toContain('<AudioPanel />');
+    expect(settingsView).toContain('<AudioPanel writeScope={writeScope.current} />');
     expect(audioPanel).toContain('async function unlockBrowserMusic()');
     expect(audioPanel).toContain('await element.play();');
     expect(audioPanel).toContain('Вкладка пока не разрешила запустить музыку');

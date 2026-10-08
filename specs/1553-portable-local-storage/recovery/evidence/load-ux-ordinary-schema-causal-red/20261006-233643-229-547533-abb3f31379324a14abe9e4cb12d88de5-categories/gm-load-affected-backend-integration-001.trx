@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="ad5b15c7-662e-49ec-9d4c-8794de45d1e1" name="@c7669543e9c7 2026-10-06 23:37:59" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T23:37:59.7374786+00:00" queuing="2026-10-06T23:37:59.7374786+00:00" start="2026-10-06T23:37:54.8040509+00:00" finish="2026-10-06T23:38:09.1419709+00:00" />
+  <TestSettings name="default" id="2c9e5f74-564d-4e5b-a847-51ac41222d2a">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_23_37_59" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="e26f5895-be3e-4112-bd6f-ae9a36323be3" testId="e71050f7-cdd4-e283-3993-2d811e1d9515" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-close&quot;)" computerName="c7669543e9c7" duration="00:00:00.9719696" startTime="2026-10-06T23:38:06.7104068+00:00" endTime="2026-10-06T23:38:06.7104070+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e26f5895-be3e-4112-bd6f-ae9a36323be3" />
+    <UnitTestResult executionId="a432d502-826c-43f0-a9a6-b79ce4343e84" testId="2c0dd7b4-8d95-5dbd-a21c-a2731b645bf4" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh(failRefresh: False)" computerName="c7669543e9c7" duration="00:00:00.0740300" startTime="2026-10-06T23:38:08.8491550+00:00" endTime="2026-10-06T23:38:08.8491553+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a432d502-826c-43f0-a9a6-b79ce4343e84">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: True
+Actual:   False</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh(Boolean failRefresh) in /workspace/native-1553/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs:line 278
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4733c705-f878-4aa3-aa9c-c2fd31412c3a" testId="c2abbe74-fc25-0d70-bfbc-76b23d9a78d6" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;mixed-request&quot;)" computerName="c7669543e9c7" duration="00:00:00.1475534" startTime="2026-10-06T23:38:06.8555699+00:00" endTime="2026-10-06T23:38:06.8555702+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4733c705-f878-4aa3-aa9c-c2fd31412c3a" />
+    <UnitTestResult executionId="999925c5-8fa4-4baf-9bcf-de471cfa80c2" testId="f2be7987-7f2a-5278-6122-e1b3eec93ac8" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-read&quot;)" computerName="c7669543e9c7" duration="00:00:00.1972770" startTime="2026-10-06T23:38:02.1712564+00:00" endTime="2026-10-06T23:38:02.1712570+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="999925c5-8fa4-4baf-9bcf-de471cfa80c2" />
+    <UnitTestResult executionId="b92dbdd8-7f1e-4e91-a0cb-fc1f303c1681" testId="25dbd173-4106-8812-1996-8dce4e25b433" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;cached-settings&quot;)" computerName="c7669543e9c7" duration="00:00:01.6795089" startTime="2026-10-06T23:38:05.7341868+00:00" endTime="2026-10-06T23:38:05.7341871+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b92dbdd8-7f1e-4e91-a0cb-fc1f303c1681" />
+    <UnitTestResult executionId="553ce651-5627-43f7-bb19-8be560dbccaf" testId="f734fcd4-50a7-91e6-cf3d-5780a3f1b65c" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh(failRefresh: True)" computerName="c7669543e9c7" duration="00:00:00.2620149" startTime="2026-10-06T23:38:08.7710354+00:00" endTime="2026-10-06T23:38:08.7710356+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="553ce651-5627-43f7-bb19-8be560dbccaf">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.NotEqual() Failure: Collections are equal
+Expected: Not [123, 34, 83, 99, 104, ···]
+Actual:       [123, 34, 83, 99, 104, ···]</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh(Boolean failRefresh) in /workspace/native-1553/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs:line 280
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b6fec0d8-66bb-42d0-a938-ebb369c14734" testId="b0ba79f8-3854-dfe8-2daa-99d1d0d8ae87" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;settings-failure&quot;)" computerName="c7669543e9c7" duration="00:00:00.9008394" startTime="2026-10-06T23:38:01.9750010+00:00" endTime="2026-10-06T23:38:01.9750013+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b6fec0d8-66bb-42d0-a938-ebb369c14734">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Net.Http.HttpRequestException : Response status code does not indicate success: 409 (Conflict).</Message>
+          <StackTrace>   at System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 565
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 583
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="208555ed-4f8b-4545-833c-08b88a8e0ce4" testId="b8e13f8c-bfed-b566-63c5-bd79e33a7aa9" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;missing&quot;)" computerName="c7669543e9c7" duration="00:00:00.6752724" startTime="2026-10-06T23:38:01.0699767+00:00" endTime="2026-10-06T23:38:01.0699771+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="208555ed-4f8b-4545-833c-08b88a8e0ce4">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Net.Http.HttpRequestException : Response status code does not indicate success: 409 (Conflict).</Message>
+          <StackTrace>   at System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 565
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 583
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="fc84a27c-9d6c-46a2-9739-fcbfeffe12ef" testId="66ce26cb-8ba4-5464-4cf3-51f0748216cc" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;game-read-failure&quot;)" computerName="c7669543e9c7" duration="00:00:01.7264178" startTime="2026-10-06T23:38:04.0538061+00:00" endTime="2026-10-06T23:38:04.0538065+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fc84a27c-9d6c-46a2-9739-fcbfeffe12ef" />
+    <UnitTestResult executionId="5667dfa8-c2c4-40a8-8f57-a1cde1e6d1c1" testId="a8b54232-1c37-b614-b8c3-41f37c6d7471" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;current&quot;)" computerName="c7669543e9c7" duration="00:00:02.4051376" startTime="2026-10-06T23:37:59.6943875+00:00" endTime="2026-10-06T23:37:59.6944038+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5667dfa8-c2c4-40a8-8f57-a1cde1e6d1c1">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Net.Http.HttpRequestException : Response status code does not indicate success: 409 (Conflict).</Message>
+          <StackTrace>   at System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 565
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 583
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="28b0274e-eca5-4b1a-87fa-9dc06b6a80bc" testId="a3597419-6371-cfda-cddf-735f1a4007e5" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;absent-authority&quot;)" computerName="c7669543e9c7" duration="00:00:00.1548023" startTime="2026-10-06T23:38:02.3260306+00:00" endTime="2026-10-06T23:38:02.3260310+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="28b0274e-eca5-4b1a-87fa-9dc06b6a80bc" />
+    <UnitTestResult executionId="778d3a99-f924-43f7-ab58-edf2be7e7cc0" testId="501fb15d-f298-9461-b36b-944e7aab3ddd" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;no-active&quot;)" computerName="c7669543e9c7" duration="00:00:01.0117385" startTime="2026-10-06T23:38:07.8680307+00:00" endTime="2026-10-06T23:38:07.8680310+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="778d3a99-f924-43f7-ab58-edf2be7e7cc0" />
+    <UnitTestResult executionId="e36c3d65-47f0-419b-88ac-0b269746e9df" testId="e51d6f89-6558-59ac-c5d9-dfd56c9539b6" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;stale&quot;)" computerName="c7669543e9c7" duration="00:00:00.7021868" startTime="2026-10-06T23:38:00.3935479+00:00" endTime="2026-10-06T23:38:00.3935483+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e36c3d65-47f0-419b-88ac-0b269746e9df">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Net.Http.HttpRequestException : Response status code does not indicate success: 409 (Conflict).</Message>
+          <StackTrace>   at System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 565
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario) in /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 583
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="59404f5b-a1e5-4dd4-bf52-8784725a1683" testId="d9b79e5d-630a-469a-a8ba-a7450c8a34c4" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit" computerName="c7669543e9c7" duration="00:00:00.2202676" startTime="2026-10-06T23:38:09.0703948+00:00" endTime="2026-10-06T23:38:09.0703950+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="59404f5b-a1e5-4dd4-bf52-8784725a1683" />
+    <UnitTestResult executionId="26377ceb-39d5-476d-81ef-cdf762468004" testId="ea00a853-b796-e66b-f7d4-de278c7ad3a5" testName="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard" computerName="c7669543e9c7" duration="00:00:00.6306161" startTime="2026-10-06T23:38:08.5012896+00:00" endTime="2026-10-06T23:38:08.5012899+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="26377ceb-39d5-476d-81ef-cdf762468004">
+      <Output>
+        <ErrorInfo>
+          <Message>System.Net.Http.HttpRequestException : Response status code does not indicate success: 409 (Conflict).</Message>
+          <StackTrace>   at System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard() in /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 540
+   at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard() in /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs:line 544
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;stale&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e51d6f89-6558-59ac-c5d9-dfd56c9539b6">
+      <Execution id="e36c3d65-47f0-419b-88ac-0b269746e9df" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;settings-failure&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b0ba79f8-3854-dfe8-2daa-99d1d0d8ae87">
+      <Execution id="b6fec0d8-66bb-42d0-a938-ebb369c14734" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;absent-authority&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a3597419-6371-cfda-cddf-735f1a4007e5">
+      <Execution id="28b0274e-eca5-4b1a-87fa-9dc06b6a80bc" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;cached-settings&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="25dbd173-4106-8812-1996-8dce4e25b433">
+      <Execution id="b92dbdd8-7f1e-4e91-a0cb-fc1f303c1681" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;missing&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b8e13f8c-bfed-b566-63c5-bd79e33a7aa9">
+      <Execution id="208555ed-4f8b-4545-833c-08b88a8e0ce4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-close&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e71050f7-cdd4-e283-3993-2d811e1d9515">
+      <Execution id="e26f5895-be3e-4112-bd6f-ae9a36323be3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d9b79e5d-630a-469a-a8ba-a7450c8a34c4">
+      <Execution id="59404f5b-a1e5-4dd4-bf52-8784725a1683" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_RequiredUiRefreshFailureCannotEraseCommit" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;no-active&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="501fb15d-f298-9461-b36b-944e7aab3ddd">
+      <Execution id="778d3a99-f924-43f7-ab58-edf2be7e7cc0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh(failRefresh: False)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2c0dd7b4-8d95-5dbd-a21c-a2731b645bf4">
+      <Execution id="a432d502-826c-43f0-a9a6-b79ce4343e84" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;mixed-request&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c2abbe74-fc25-0d70-bfbc-76b23d9a78d6">
+      <Execution id="4733c705-f878-4aa3-aa9c-c2fd31412c3a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh(failRefresh: True)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f734fcd4-50a7-91e6-cf3d-5780a3f1b65c">
+      <Execution id="553ce651-5627-43f7-bb19-8be560dbccaf" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: &quot;current&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a8b54232-1c37-b614-b8c3-41f37c6d7471">
+      <Execution id="5667dfa8-c2c4-40a8-8f57-a1cde1e6d1c1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_RequiresCompleteEstablishedGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;game-read-failure&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="66ce26cb-8ba4-5464-4cf3-51f0748216cc">
+      <Execution id="fc84a27c-9d6c-46a2-9739-fcbfeffe12ef" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: &quot;rotate-read&quot;)" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f2be7987-7f2a-5278-6122-e1b3eec93ac8">
+      <Execution id="999925c5-8fa4-4baf-9bcf-de471cfa80c2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ea00a853-b796-e66b-f7d4-de278c7ad3a5">
+      <Execution id="26377ceb-39d5-476d-81ef-cdf762468004" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LocalWebUiHostTests" name="LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="e71050f7-cdd4-e283-3993-2d811e1d9515" executionId="e26f5895-be3e-4112-bd6f-ae9a36323be3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2c0dd7b4-8d95-5dbd-a21c-a2731b645bf4" executionId="a432d502-826c-43f0-a9a6-b79ce4343e84" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c2abbe74-fc25-0d70-bfbc-76b23d9a78d6" executionId="4733c705-f878-4aa3-aa9c-c2fd31412c3a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f2be7987-7f2a-5278-6122-e1b3eec93ac8" executionId="999925c5-8fa4-4baf-9bcf-de471cfa80c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="25dbd173-4106-8812-1996-8dce4e25b433" executionId="b92dbdd8-7f1e-4e91-a0cb-fc1f303c1681" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f734fcd4-50a7-91e6-cf3d-5780a3f1b65c" executionId="553ce651-5627-43f7-bb19-8be560dbccaf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b0ba79f8-3854-dfe8-2daa-99d1d0d8ae87" executionId="b6fec0d8-66bb-42d0-a938-ebb369c14734" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b8e13f8c-bfed-b566-63c5-bd79e33a7aa9" executionId="208555ed-4f8b-4545-833c-08b88a8e0ce4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="66ce26cb-8ba4-5464-4cf3-51f0748216cc" executionId="fc84a27c-9d6c-46a2-9739-fcbfeffe12ef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a8b54232-1c37-b614-b8c3-41f37c6d7471" executionId="5667dfa8-c2c4-40a8-8f57-a1cde1e6d1c1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a3597419-6371-cfda-cddf-735f1a4007e5" executionId="28b0274e-eca5-4b1a-87fa-9dc06b6a80bc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="501fb15d-f298-9461-b36b-944e7aab3ddd" executionId="778d3a99-f924-43f7-ab58-edf2be7e7cc0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e51d6f89-6558-59ac-c5d9-dfd56c9539b6" executionId="e36c3d65-47f0-419b-88ac-0b269746e9df" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d9b79e5d-630a-469a-a8ba-a7450c8a34c4" executionId="59404f5b-a1e5-4dd4-bf52-8784725a1683" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ea00a853-b796-e66b-f7d4-de278c7ad3a5" executionId="26377ceb-39d5-476d-81ef-cdf762468004" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="15" executed="15" passed="8" failed="7" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.34]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.89]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.94]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:04.41]       System.Net.Http.HttpRequestException : Response status code does not indicate success: 409 (Conflict).
+[xUnit.net 00:00:04.41]       Stack Trace:
+[xUnit.net 00:00:04.41]            at System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()
+[xUnit.net 00:00:04.41]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(565,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:04.41]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(583,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:04.41]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.11]       System.Net.Http.HttpRequestException : Response status code does not indicate success: 409 (Conflict).
+[xUnit.net 00:00:05.11]       Stack Trace:
+[xUnit.net 00:00:05.11]            at System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()
+[xUnit.net 00:00:05.11]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(565,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:05.11]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(583,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:05.11]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:05.78]       System.Net.Http.HttpRequestException : Response status code does not indicate success: 409 (Conflict).
+[xUnit.net 00:00:05.78]       Stack Trace:
+[xUnit.net 00:00:05.78]            at System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()
+[xUnit.net 00:00:05.78]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(565,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:05.78]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(583,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:05.78]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.69]       System.Net.Http.HttpRequestException : Response status code does not indicate success: 409 (Conflict).
+[xUnit.net 00:00:06.69]       Stack Trace:
+[xUnit.net 00:00:06.69]            at System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()
+[xUnit.net 00:00:06.69]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(565,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:06.69]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(583,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(String scenario)
+[xUnit.net 00:00:06.69]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:13.22]       System.Net.Http.HttpRequestException : Response status code does not indicate success: 409 (Conflict).
+[xUnit.net 00:00:13.22]       Stack Trace:
+[xUnit.net 00:00:13.22]            at System.Net.Http.HttpResponseMessage.EnsureSuccessStatusCode()
+[xUnit.net 00:00:13.22]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(540,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard()
+[xUnit.net 00:00:13.22]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/LocalWebUiHostTests.cs(544,0): at BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard()
+[xUnit.net 00:00:13.22]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:13.49]       Assert.NotEqual() Failure: Collections are equal
+[xUnit.net 00:00:13.49]       Expected: Not [123, 34, 83, 99, 104, ···]
+[xUnit.net 00:00:13.49]       Actual:       [123, 34, 83, 99, 104, ···]
+[xUnit.net 00:00:13.49]       Stack Trace:
+[xUnit.net 00:00:13.49]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs(280,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh(Boolean failRefresh)
+[xUnit.net 00:00:13.49]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:13.56]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:13.56]       Expected: True
+[xUnit.net 00:00:13.56]       Actual:   False
+[xUnit.net 00:00:13.56]       Stack Trace:
+[xUnit.net 00:00:13.56]         /workspace/native-1553/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs(278,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh(Boolean failRefresh)
+[xUnit.net 00:00:13.56]         --- End of stack trace from previous location ---
+Не удалось безопасно подготовить новую запись настроек.
+[xUnit.net 00:00:13.79]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T23:37:59.6973903+00:00">
+        <Text>[xUnit.net 00:00:04.40]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: "current") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T23:38:00.3933555+00:00">
+        <Text>[xUnit.net 00:00:05.11]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: "stale") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T23:38:01.0706384+00:00">
+        <Text>[xUnit.net 00:00:05.78]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: "missing") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T23:38:01.9750841+00:00">
+        <Text>[xUnit.net 00:00:06.69]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: "settings-failure") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T23:38:08.5024250+00:00">
+        <Text>[xUnit.net 00:00:13.21]     BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T23:38:08.7711485+00:00">
+        <Text>[xUnit.net 00:00:13.49]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh(failRefresh: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T23:38:08.8486726+00:00">
+        <Text>[xUnit.net 00:00:13.56]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh(failRefresh: False) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

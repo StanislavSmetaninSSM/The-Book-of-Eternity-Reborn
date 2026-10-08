@@ -1,0 +1,58 @@
+{
+  "Categories": [
+    "portable-load-console"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "f5cd839e26571ad0d43de5980d09f2ffbddb3028",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.1083688,
+  "Descriptors": [
+    {
+      "Name": "portable-load-console-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-load-console",
+      "Categories": [
+        "portable-load-console"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InvalidSourceRetainsOldRuntime|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RebindUsesEstablishedGeneration|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_EmptyReplacementReturnsToMenu",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InvalidSourceRetainsOldRuntime",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_LatePendingOrOwnerRefusesBeforeMutation",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RebindUsesEstablishedGeneration",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_RequiredRefreshFailureRetainsCommitAndStopsContinuation",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_EmptyReplacementReturnsToMenu",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

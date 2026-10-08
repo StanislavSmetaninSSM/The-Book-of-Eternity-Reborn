@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "portable-storage-stream-publication"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "00dc36cdf387f3bdb7190f65fc1a92cdccbcc3a0",
+    "WorkingTreeFingerprint": "D0B85313F09236A987A82F717F73297584D9B15CC539872427C805715BF5FBD4",
+    "ChangedFiles": 2
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-storage-stream-publication",
+      "Seconds": 2.922076,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0677476,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0215374,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0152729,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 136.1508882,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 8,
+  "WallTime": "00:02:22.8546310",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 29,
+    "CompletedCases": 29,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 29,
+    "Executed": 29,
+    "Passed": 2,
+    "Failed": 27
+  },
+  "DuplicateTests": []
+}

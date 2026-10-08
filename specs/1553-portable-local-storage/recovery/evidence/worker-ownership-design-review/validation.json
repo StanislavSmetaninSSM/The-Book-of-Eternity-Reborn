@@ -1,0 +1,23 @@
+{
+  "ObservedUtc": "2026-10-05T12:16:17.901711+00:00",
+  "Commit": "39df05024cecefe7266f41cec1b772895155e576",
+  "EvidenceArtifactsVerified": 10,
+  "SourceInputHashesVerified": 11,
+  "AllChangedFilesInSpecSubtree": true,
+  "ChangedFiles": 16,
+  "BothProbeLogsMatchResultRows": true,
+  "ProbeSourcesMatchRecordedHashes": true,
+  "DesignLocalLinksExist": true,
+  "OriginalCheckoutCleanAt": "f6dc2a1ce3e73f5e6940f686c97b863c9f7a8173",
+  "RuntimeProcesses": [
+    "4077       1 Z    dotnet",
+    "4391       1 Z    dotnet",
+    "11704       1 Z    dotnet",
+    "12166       1 Z    dotnet",
+    "15890       1 Z    dotnet",
+    "16191       1 Z    dotnet"
+  ],
+  "NoActiveDotnetPwshOrProbe": true,
+  "TerminatedPid1ZombiesNotClaimedReaped": true,
+  "ApplicationTestsExecuted": 0
+}

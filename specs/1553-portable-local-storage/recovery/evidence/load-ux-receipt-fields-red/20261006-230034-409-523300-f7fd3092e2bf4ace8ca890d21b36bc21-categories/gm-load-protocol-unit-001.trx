@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="080026f0-29b9-46a4-be25-21c73c22ca06" name="@c7669543e9c7 2026-10-06 23:00:42" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T23:00:42.6823607+00:00" queuing="2026-10-06T23:00:42.6823608+00:00" start="2026-10-06T23:00:40.5269784+00:00" finish="2026-10-06T23:00:42.6908006+00:00" />
+  <TestSettings name="default" id="397892fb-a0f5-476e-a48f-c4cab34d91ad">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_23_00_42" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="5947f858-2bbc-4ee6-b974-f7a21ae15d06" testId="9e81c8d9-1793-e1ae-688b-f34a031cb693" testName="BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(missing: &quot;operationId&quot;)" computerName="c7669543e9c7" duration="00:00:00.0602843" startTime="2026-10-06T23:00:42.5727694+00:00" endTime="2026-10-06T23:00:42.5727848+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5947f858-2bbc-4ee6-b974-f7a21ae15d06">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.Text.Json.JsonException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(String missing) in /workspace/native-1553/BookOfEternityClient.Tests/GmLoadSessionProtocolTests.cs:line 15
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1111597e-f228-4662-a1c4-da8e126f2300" testId="9aaf2e48-b77c-8cfd-b623-b1e289f9031e" testName="BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(missing: &quot;state&quot;)" computerName="c7669543e9c7" duration="00:00:00.0001239" startTime="2026-10-06T23:00:42.5768335+00:00" endTime="2026-10-06T23:00:42.5768335+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1111597e-f228-4662-a1c4-da8e126f2300">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.Text.Json.JsonException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(String missing) in /workspace/native-1553/BookOfEternityClient.Tests/GmLoadSessionProtocolTests.cs:line 15
+   at InvokeStub_GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1982669d-ad32-4728-9233-bb6b39b922b1" testId="f879bafa-38c0-fdc2-a749-45146853af20" testName="BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(missing: &quot;ok&quot;)" computerName="c7669543e9c7" duration="00:00:00.0012900" startTime="2026-10-06T23:00:42.5759361+00:00" endTime="2026-10-06T23:00:42.5759363+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1982669d-ad32-4728-9233-bb6b39b922b1">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: No exception was thrown
+Expected: typeof(System.Text.Json.JsonException)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(String missing) in /workspace/native-1553/BookOfEternityClient.Tests/GmLoadSessionProtocolTests.cs:line 15
+   at InvokeStub_GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(Object, Span`1)
+   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(missing: &quot;ok&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f879bafa-38c0-fdc2-a749-45146853af20">
+      <Execution id="1982669d-ad32-4728-9233-bb6b39b922b1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmLoadSessionProtocolTests" name="OriginalReplyRequiresExplicitReceiptFields" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(missing: &quot;state&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9aaf2e48-b77c-8cfd-b623-b1e289f9031e">
+      <Execution id="1111597e-f228-4662-a1c4-da8e126f2300" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmLoadSessionProtocolTests" name="OriginalReplyRequiresExplicitReceiptFields" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(missing: &quot;operationId&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9e81c8d9-1793-e1ae-688b-f34a031cb693">
+      <Execution id="5947f858-2bbc-4ee6-b974-f7a21ae15d06" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmLoadSessionProtocolTests" name="OriginalReplyRequiresExplicitReceiptFields" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="9e81c8d9-1793-e1ae-688b-f34a031cb693" executionId="5947f858-2bbc-4ee6-b974-f7a21ae15d06" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9aaf2e48-b77c-8cfd-b623-b1e289f9031e" executionId="1111597e-f228-4662-a1c4-da8e126f2300" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f879bafa-38c0-fdc2-a749-45146853af20" executionId="1982669d-ad32-4728-9233-bb6b39b922b1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="3" executed="3" passed="0" failed="3" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.19]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.46]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.51]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.62]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:01.62]       Expected: typeof(System.Text.Json.JsonException)
+[xUnit.net 00:00:01.62]       Stack Trace:
+[xUnit.net 00:00:01.62]         /workspace/native-1553/BookOfEternityClient.Tests/GmLoadSessionProtocolTests.cs(15,0): at BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(String missing)
+[xUnit.net 00:00:01.62]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.62]            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.63]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:01.63]       Expected: typeof(System.Text.Json.JsonException)
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/native-1553/BookOfEternityClient.Tests/GmLoadSessionProtocolTests.cs(15,0): at BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(String missing)
+[xUnit.net 00:00:01.63]            at InvokeStub_GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(Object, Span`1)
+[xUnit.net 00:00:01.63]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.63]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:01.63]       Expected: typeof(System.Text.Json.JsonException)
+[xUnit.net 00:00:01.63]       Stack Trace:
+[xUnit.net 00:00:01.63]         /workspace/native-1553/BookOfEternityClient.Tests/GmLoadSessionProtocolTests.cs(15,0): at BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(String missing)
+[xUnit.net 00:00:01.63]            at InvokeStub_GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(Object, Span`1)
+[xUnit.net 00:00:01.63]            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+[xUnit.net 00:00:01.63]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T23:00:42.5708237+00:00">
+        <Text>[xUnit.net 00:00:01.62]     BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(missing: "operationId") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T23:00:42.5758006+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(missing: "ok") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T23:00:42.5766112+00:00">
+        <Text>[xUnit.net 00:00:01.63]     BookOfEternityClient.Tests.GmLoadSessionProtocolTests.OriginalReplyRequiresExplicitReceiptFields(missing: "state") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

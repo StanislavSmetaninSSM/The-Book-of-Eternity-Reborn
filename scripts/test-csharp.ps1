@@ -433,8 +433,9 @@ function Get-ProjectDisplayPath {
 }
 
 function Resolve-NpmCommandPath {
+    $npmName = if ($IsWindows) { "npm.cmd" } else { "npm" }
     $npmCommands = @(
-        Get-Command -Name "npm.cmd" -CommandType Application -ErrorAction Stop
+        Get-Command -Name $npmName -CommandType Application -ErrorAction Stop
     )
     foreach ($npmCommand in $npmCommands) {
         $candidate = $npmCommand.Path
@@ -444,7 +445,7 @@ function Resolve-NpmCommandPath {
         }
     }
 
-    throw "Could not resolve npm.cmd to an absolute application path."
+    throw "Could not resolve $npmName to an absolute application path."
 }
 
 function New-OwnedProcessContainment {
@@ -526,6 +527,9 @@ function Start-OwnedProcess {
     # Keep child workspaces outside virtualized AppData and canonical fixtures.
     # Only owned children inherit this setting; the caller's environment is unchanged.
     $startInfo.Environment["BOE_WORKER_RUNTIME_BASE_PATH"] = $testWorkerRuntimeBase
+    # VSTest host base directories need not be inside this checkout. Fixture
+    # consumers validate this exact source root; do not inherit a foreign root.
+    $startInfo.Environment["BOE_REPO_ROOT"] = $repoRoot
     $process = [System.Diagnostics.Process]::new()
     $started = $false
     try {

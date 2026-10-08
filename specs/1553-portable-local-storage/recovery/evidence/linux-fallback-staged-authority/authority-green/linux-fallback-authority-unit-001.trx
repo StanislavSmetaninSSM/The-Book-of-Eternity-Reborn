@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="dfe34686-20e8-4edf-b951-f7e63bd37477" name="@c7669543e9c7 2026-10-05 18:42:11" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-05T18:42:11.0902452+00:00" queuing="2026-10-05T18:42:11.0902453+00:00" start="2026-10-05T18:42:07.2290791+00:00" finish="2026-10-05T18:42:16.5177134+00:00" />
+  <TestSettings name="default" id="0ff6b4e3-3a26-42aa-a330-60b1d3e88e6e">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-05_18_42_11" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="c97dc6d7-7dc4-4515-b7a2-dbeb8acf433e" testId="2a2950c9-dca4-03d8-e4de-36b14a3b2829" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd" computerName="c7669543e9c7" duration="00:00:00.9346269" startTime="2026-10-05T18:42:16.4414632+00:00" endTime="2026-10-05T18:42:16.4414636+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c97dc6d7-7dc4-4515-b7a2-dbeb8acf433e" />
+    <UnitTestResult executionId="25394bfb-d9b3-4448-aa58-9db1ebc26aac" testId="f02d0eaa-5950-f130-29f2-8a1a08750833" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit" computerName="c7669543e9c7" duration="00:00:01.3254941" startTime="2026-10-05T18:42:10.8552672+00:00" endTime="2026-10-05T18:42:10.8552817+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="25394bfb-d9b3-4448-aa58-9db1ebc26aac" />
+    <UnitTestResult executionId="59f0c7a9-0a44-4ca8-8b8a-3b3e832dff1a" testId="2ef0fabe-e4b9-c5fb-c430-91733958c386" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess" computerName="c7669543e9c7" duration="00:00:00.8231274" startTime="2026-10-05T18:42:15.5057649+00:00" endTime="2026-10-05T18:42:15.5057651+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="59f0c7a9-0a44-4ca8-8b8a-3b3e832dff1a" />
+    <UnitTestResult executionId="9358c6e5-d30d-4a57-aa53-de3e791fac6a" testId="4c04ad40-4edc-c994-41a5-0d4481752cec" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ObservedOutsideContractWork_IsVisibleAndRemainsUncertain" computerName="c7669543e9c7" duration="00:00:01.0227342" startTime="2026-10-05T18:42:13.7420484+00:00" endTime="2026-10-05T18:42:13.7420487+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9358c6e5-d30d-4a57-aa53-de3e791fac6a" />
+    <UnitTestResult executionId="98b0fc55-9fb3-4b8f-803f-b6cbe5c13a3f" testId="42aa9402-1a81-1e39-9e20-cadcedab900a" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain(command: &quot;LL&quot;)" computerName="c7669543e9c7" duration="00:00:00.9463146" startTime="2026-10-05T18:42:12.7186925+00:00" endTime="2026-10-05T18:42:12.7186928+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="98b0fc55-9fb3-4b8f-803f-b6cbe5c13a3f" />
+    <UnitTestResult executionId="a4f339d0-3a97-4e09-9801-d57a11590618" testId="d921c2ea-d871-198b-0ec4-fddf16ae9e44" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.FullStatusPipe_BeforeReadyFailsClosedWithoutAnyLaunch" computerName="c7669543e9c7" duration="00:00:00.9393743" startTime="2026-10-05T18:42:14.6821708+00:00" endTime="2026-10-05T18:42:14.6821711+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a4f339d0-3a97-4e09-9801-d57a11590618" />
+    <UnitTestResult executionId="1e73652a-bf7b-42b9-907b-5a3efe6a41b4" testId="1ca6806e-8c4a-8900-2132-9bd1e7d6fa12" testName="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain(command: &quot;?&quot;)" computerName="c7669543e9c7" duration="00:00:00.9156560" startTime="2026-10-05T18:42:11.7717331+00:00" endTime="2026-10-05T18:42:11.7717334+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1e73652a-bf7b-42b9-907b-5a3efe6a41b4" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain(command: &quot;LL&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="42aa9402-1a81-1e39-9e20-cadcedab900a">
+      <Execution id="98b0fc55-9fb3-4b8f-803f-b6cbe5c13a3f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="MalformedOrRepeatedLaunch_SealsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f02d0eaa-5950-f130-29f2-8a1a08750833">
+      <Execution id="25394bfb-d9b3-4448-aa58-9db1ebc26aac" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="ClosedStatusAfterStart_RetiresOwnedChildrenWithoutBlockingOrSigpipeExit" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ObservedOutsideContractWork_IsVisibleAndRemainsUncertain" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4c04ad40-4edc-c994-41a5-0d4481752cec">
+      <Execution id="9358c6e5-d30d-4a57-aa53-de3e791fac6a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="ObservedOutsideContractWork_IsVisibleAndRemainsUncertain" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2a2950c9-dca4-03d8-e4de-36b14a3b2829">
+      <Execution id="c97dc6d7-7dc4-4515-b7a2-dbeb8acf433e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="Child_DoesNotInheritOwnerInput_AndPreservesSyntheticEnvironmentAndCwd" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.ExecFailure_DoesNotClaimStartedOrScopedSuccess" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2ef0fabe-e4b9-c5fb-c430-91733958c386">
+      <Execution id="59f0c7a9-0a44-4ca8-8b8a-3b3e832dff1a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="ExecFailure_DoesNotClaimStartedOrScopedSuccess" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.FullStatusPipe_BeforeReadyFailsClosedWithoutAnyLaunch" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d921c2ea-d871-198b-0ec4-fddf16ae9e44">
+      <Execution id="a4f339d0-3a97-4e09-9801-d57a11590618" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="FullStatusPipe_BeforeReadyFailsClosedWithoutAnyLaunch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests.MalformedOrRepeatedLaunch_SealsUncertain(command: &quot;?&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1ca6806e-8c4a-8900-2132-9bd1e7d6fa12">
+      <Execution id="1e73652a-bf7b-42b9-907b-5a3efe6a41b4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LinuxFallbackSupervisorTests" name="MalformedOrRepeatedLaunch_SealsUncertain" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="2a2950c9-dca4-03d8-e4de-36b14a3b2829" executionId="c97dc6d7-7dc4-4515-b7a2-dbeb8acf433e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f02d0eaa-5950-f130-29f2-8a1a08750833" executionId="25394bfb-d9b3-4448-aa58-9db1ebc26aac" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ef0fabe-e4b9-c5fb-c430-91733958c386" executionId="59f0c7a9-0a44-4ca8-8b8a-3b3e832dff1a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4c04ad40-4edc-c994-41a5-0d4481752cec" executionId="9358c6e5-d30d-4a57-aa53-de3e791fac6a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="42aa9402-1a81-1e39-9e20-cadcedab900a" executionId="98b0fc55-9fb3-4b8f-803f-b6cbe5c13a3f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d921c2ea-d871-198b-0ec4-fddf16ae9e44" executionId="a4f339d0-3a97-4e09-9801-d57a11590618" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1ca6806e-8c4a-8900-2132-9bd1e7d6fa12" executionId="1e73652a-bf7b-42b9-907b-5a3efe6a41b4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="7" executed="7" passed="7" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.21]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.68]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.70]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:08.68]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

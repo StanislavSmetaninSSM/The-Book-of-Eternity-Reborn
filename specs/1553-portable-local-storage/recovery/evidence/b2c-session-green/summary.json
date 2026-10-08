@@ -1,0 +1,98 @@
+{
+  "Categories": [
+    "portable-console-settings-session",
+    "portable-prepared-settings"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-console-settings-session",
+      "reason": "Eight console draft/controller and audio-preview cases cover the new outcome consumer and source restoration. No full menu wiring yet.",
+      "contracts": [
+        "console settings draft lifecycle",
+        "publication outcome consumption",
+        "temporary audio settings source"
+      ]
+    },
+    {
+      "category": "portable-prepared-settings",
+      "reason": "Shared coordinator now uses an explicit console owner kind while keeping the browser default; retain its exact admission/outcome/late-close consumers.",
+      "contracts": [
+        "prepared local owner admission",
+        "explicit publication outcomes"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "c0f1ab67f5b4a4c3fb01134b10702ba347b493ab",
+    "WorkingTreeFingerprint": "AF83B214C96264CA9EFB80E7CA633C1EB121A3F4198F9E1365F136B11AC947B5",
+    "ChangedFiles": 1
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-console-settings-session",
+      "Seconds": 3.9687393,
+      "BudgetMinutes": 4,
+      "Completed": true
+    },
+    {
+      "Category": "portable-prepared-settings",
+      "Seconds": 4.3400476,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.055426,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0189578,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0189329,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 150.3529294,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0049552,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 13,
+  "WallTime": "00:02:42.6409090",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 32,
+    "CompletedCases": 32,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 32,
+    "Executed": 32,
+    "Passed": 32,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

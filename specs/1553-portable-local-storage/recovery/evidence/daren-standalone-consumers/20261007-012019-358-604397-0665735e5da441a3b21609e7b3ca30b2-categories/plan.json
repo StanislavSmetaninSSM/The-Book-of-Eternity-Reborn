@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "daren-standalone-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "9dbc67e8f4b0f6d1483650165af92491fb78094a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 58.4021288,
+  "Descriptors": [
+    {
+      "Name": "daren-standalone-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "daren-standalone-linux",
+      "Categories": [
+        "daren-standalone-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExistingProfileRead_NormalizesThroughRealStore|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxTests.PublicConsoleQte_CompletesOriginalStandaloneRouteWithoutBootstrap|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxTests.SupportedCheckAbsentRestoreAndPreCancel_HaveNoPreparationEffects",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExistingProfileRead_NormalizesThroughRealStore",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.PublicConsoleQte_CompletesOriginalStandaloneRouteWithoutBootstrap",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.SupportedCheckAbsentRestoreAndPreCancel_HaveNoPreparationEffects",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

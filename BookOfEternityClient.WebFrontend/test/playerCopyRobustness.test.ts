@@ -209,6 +209,8 @@ describe('playerCopy robustness', () => {
       ['BookOfEternityClient.WebFrontend/src/api/contract-fixtures/client-settings.json', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'api', 'contract-fixtures', 'client-settings.json')],
       ['BookOfEternityClient.WebFrontend/src/App.tsx', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'App.tsx')],
       ['BookOfEternityClient.WebFrontend/src/hooks/useShellState.ts', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'hooks', 'useShellState.ts')],
+      ['BookOfEternityClient.WebFrontend/src/hooks/loadShellState.ts', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'hooks', 'loadShellState.ts')],
+      ['BookOfEternityClient.WebFrontend/src/utils/settingsPersistenceNotice.ts', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'utils', 'settingsPersistenceNotice.ts')],
       ['BookOfEternityClient.WebFrontend/src/context/ShellContext.tsx', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'context', 'ShellContext.tsx')],
       ['BookOfEternityClient.WebFrontend/src/components/CommandResultView.tsx', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'components', 'CommandResultView.tsx')],
       ['BookOfEternityClient.WebFrontend/src/components/BlockRenderer.tsx', readRepoSource('BookOfEternityClient.WebFrontend', 'src', 'components', 'BlockRenderer.tsx')],
@@ -249,7 +251,7 @@ describe('playerCopy robustness', () => {
 
   it('loads command coverage for Help while keeping advanced commands behind opt-in', () => {
     const helpView = readSource('src', 'components', 'HelpView.tsx');
-    const shellState = readSource('src', 'hooks', 'useShellState.ts');
+    const shellState = readSource('src', 'hooks', 'loadShellState.ts');
 
     expect(shellState).not.toContain('const coverageResult = await Promise.allSettled([browserApi.getCommandCoverage()]);');
     expect(shellState).toContain('browserApi.getCommandCoverage()');

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "finding": "P3: three committed-publication failure strings contained fifteen absolute checkout prefixes instead of the preserved sanitized TRX /repo prefix",
+  "baseCommit": "cd7055512b4c476050fc4b3024bb9a0d67a35e03",
+  "artifactPath": "specs/1553-portable-local-storage/recovery/evidence/save-linux-resource-green-20261002/child-measurements.json",
+  "changedJsonPaths": [
+    "/3/report/failure",
+    "/8/report/failure",
+    "/13/report/failure"
+  ],
+  "prefixesNormalized": 15,
+  "beforeStoredSha256": "20ab86b3f3f1463373119131904c078a675328a455ff9e530ca33431644b0961",
+  "afterStoredSha256": "d99400718cc2aa637a81c9bbc3a684a315927d9ca2901574fcd688db09cd0b91",
+  "beforeBytes": 30671,
+  "afterBytes": 29876,
+  "afterGitBlob": "51b4521d02919da3be12a9ff02eadff507fefff0",
+  "manifestAfterSha256": "9c7736f14f1f3b6f11e8befda1d7994d58ae301bc9c28bcad9d73ddb45e6bf50",
+  "manifestAfterGitBlob": "7427ba56e724d40b645947606996f192b7df650f",
+  "validatedReports": 15,
+  "literalMatchToPreservedTrx": true,
+  "allOtherReportValuesUnchanged": true,
+  "originalHashAndBytesRetained": true,
+  "historicalRestorationProof": "specs/1553-portable-local-storage/recovery/save-linux-caller-restoration-20261002.json",
+  "historicalRestorationCommit": "3f50036ce07b8406ac5fd50fe23d666100785c23",
+  "historicalProofByteIdentical": true,
+  "scope": "Only artifact sanitization and associated integrity metadata. Historical restoration proof still describes its original immutable bytes and is not proof of these corrected bytes. No runtime/test/build/discovery execution or acceptance relabeling."
+}

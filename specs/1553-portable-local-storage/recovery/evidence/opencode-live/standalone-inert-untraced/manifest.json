@@ -1,0 +1,95 @@
+{
+  "Source": "d3a8630f1c04844f683abfc8680be2bc3451052a",
+  "DiagnosticOnly": true,
+  "ActualStandaloneBridge": true,
+  "ExactBt1RuntimeBytesReused": true,
+  "Rebuild": false,
+  "PackageFileCount": 677,
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-untraced/bridge.raw.gz",
+      "Bytes": 624,
+      "SHA256": "fa7f2c8598b16035ef68a3cd3db0045873e2c1119f4c3a1090de72528bfe825d",
+      "StoredSHA256": "d8f545fecdbc9a39bd1ab64d98fbe5f83b4bcfcc80858f3cf56d2c92b92016c6"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-untraced/client.raw.gz",
+      "Bytes": 3934,
+      "SHA256": "a1afd142d33d05c2d8928fa7181651cde87cc05ea28955c2233a6adabc58d89e",
+      "StoredSHA256": "355bcb942bb89aa7b7c7215310ce0d60746509061ce95adeb92004e243054e03"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-untraced/client-echo.raw.gz",
+      "Bytes": 2,
+      "SHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "StoredSHA256": "3827170a82238309b60bbe54f61f44a944267563d05ea7b34f44afe350742c00"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-untraced/probe-result.json.gz",
+      "Bytes": 70286,
+      "SHA256": "9c193515faeb0585e52c8ebcc1b1596c9cee329ad054c128f3d7cfe24da859ac",
+      "StoredSHA256": "2a6867e0f2288b1094f4ab662642eb8821dd419f05389111906fc083906a7b68"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-untraced/rpc-journal.json.gz",
+      "Bytes": 12464,
+      "SHA256": "e98f88abbf9b56747aab52ea254b1e83a9dd425d62c8d75a07c295a70e98dc9a",
+      "StoredSHA256": "92e5c6aec5f289e5395be745ca180c98d1a2d637ab3de9e95a406173ab9e29ea"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-untraced/guardian.json.gz",
+      "Bytes": 97,
+      "SHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "StoredSHA256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-untraced/guardian.log.gz",
+      "Bytes": 133,
+      "SHA256": "24016b0ef04a151266a1fff8fc85540ecc842857f5174735d683b17bc8bb2587",
+      "StoredSHA256": "f198ce90cc3440886e618b9b1f72e50f22c1c3919605ece958ac032f9cfd3fbb"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-untraced/package-manifest.json.gz",
+      "Bytes": 143728,
+      "SHA256": "abae1f50206620ee84f4e2b468c8471a8e7ed2fc7f02ed747fcf2002bf1267a0",
+      "StoredSHA256": "548fe5725ca2cf43883f866d4194867a3d6eaf409648e07bdcfec1c839c7d5aa"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-live/standalone-inert-untraced/play/.boe_runtime/gm-runs/main.json.gz",
+      "Bytes": 693,
+      "SHA256": "6d9f60f7b8e32ee19a2cf33a45cabf4cfe36e2e9c261191bf52617c93189a285",
+      "StoredSHA256": "6a5c68eb3b0c295a4f171d152f679a1cb6c82ebfd5b886c5cd0974c2def5f450"
+    }
+  ],
+  "OriginalIdentity": {
+    "RootKey": "/workspace/bt2/play",
+    "RunId": "71cacfeaa433498b81884cd8abca3c05",
+    "GenerationId": "f605542d0b05480aa4ee6e73f56fd3c0",
+    "Epoch": 1,
+    "Backend": "LinuxSupervisor",
+    "HostInstanceId": "c48dd459b08b4052a6bb553205e415b2",
+    "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+  },
+  "LogicalLifecycleVerified": true,
+  "FullExceptionOccurred": false,
+  "CauseProven": false,
+  "Verdict": "Second inert execution healthy without ptrace; historical bootstrap-lost not reproduced, no causal RED/fix/live qualification",
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 1,
+    "failures": 0,
+    "deadline": false
+  },
+  "ElapsedSeconds": 7.069,
+  "ProviderRequests": 0,
+  "AcceptedGameTurns": 0,
+  "HistoricalUncertainRetained": true,
+  "RepeatPolicy": "Stop identical retries after this single untraced contrast",
+  "EvidenceLimitations": [
+    "No initiating exception occurred to capture",
+    "Fresh own root/path/new game identifiers differ from first trace",
+    "Inert neutral command; OpenCode not executed"
+  ]
+}

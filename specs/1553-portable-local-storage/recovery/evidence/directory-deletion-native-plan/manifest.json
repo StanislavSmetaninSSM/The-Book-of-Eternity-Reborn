@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "29348885d890a9930914ca5a0dbc565f14fbf0fc",
+  "sourceFingerprint": "E554088E16DA53A941AAC99A95A88E8DFB85C34A3321C387B511A74B298F092E",
+  "patchSha256": "95646e45277e0d3fd913ac610d2412381e8aefec5692c532a90f41d643e46f0f",
+  "appliedSourceTree": "958f624aa501feb2e0ac6be73aa7e264072868b9",
+  "platform": "Linux x64",
+  "toolchain": {
+    "sdk": "10.0.401",
+    "runtime": "8.0.31",
+    "powershell": "7.6.6"
+  },
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile specs/1553-portable-local-storage/recovery/directory-windows-selection.json -PlanOnly -NoBuild -Parallelism 1",
+  "scope": "Discovery-only native intended 30-case plan. Zero Windows or other behavioral tests executed by this command.",
+  "categories": [
+    "portable-directory-windows-boundaries",
+    "portable-directory-original-windows",
+    "portable-directory-backup-prerequisite"
+  ],
+  "selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 30,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-directory-backup-prerequisite-integration-001",
+      "portable-directory-original-windows-integration-002",
+      "portable-directory-original-windows-unit-003",
+      "portable-directory-windows-boundaries-unit-004"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "duration": "00:00:07.9827260",
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "49c2fb324c4844186a945856dbd027eae03270b05e9a2cf0a785105d5d80ed99",
+      "sanitizedSha256": "49c2fb324c4844186a945856dbd027eae03270b05e9a2cf0a785105d5d80ed99",
+      "sanitizedBytes": 2661
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "cf8421fcdbbe02126d4ad8827cb6bcc3900cea99a786f9a882d69c246da0c919",
+      "sanitizedSha256": "cf8421fcdbbe02126d4ad8827cb6bcc3900cea99a786f9a882d69c246da0c919",
+      "sanitizedBytes": 8029
+    }
+  ]
+}

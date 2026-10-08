@@ -1,0 +1,31 @@
+{
+  "sourceCommit": "642f58285f8927cdbac8dbd8a341654e1927a43c",
+  "catalogBlobAfterPatch": "dbfe038bca16726f42bc74fdb9d13cbf095aa079",
+  "kind": "newly executed ordinary-readers-covering-failure; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "3a2132064b912058e270d2fc150e83b26213be571a9af7026c62a977a242cacb",
+      "sanitizedSha256": "3a2132064b912058e270d2fc150e83b26213be571a9af7026c62a977a242cacb"
+    },
+    {
+      "path": "portable-ordinary-read-consumers-integration-001.trx",
+      "originalSha256": "ac9d3c34d97adbfc69afbeb05f14958912d8f17a035f7dc6b3f892efb379396a",
+      "sanitizedSha256": "2a40fb000cad58fb6721c1dc5dcbbe7654cbb63f4c42cfa76bac6dd80d2b1a24"
+    }
+  ],
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+  "sourceAppliedTree": "dab089e9c80fcf485ac2b734ff317313858b08b2",
+  "environment": "Linux x64; existing isolated env and all three telemetry opt-outs",
+  "result": "9 of 44 planned cases executed: 8 passed, one transient sharing failure; 35 cases unrun, exit 1; 5:08.1639347; both project builds and owned cleanup complete",
+  "earlierLaunch": "A bash comma-combined -Category argument was rejected before workload startup; corrected to saved SelectionFile; no tests ran in that invalid launch",
+  "restoreProof": {
+    "commit": "642f58285f8927cdbac8dbd8a341654e1927a43c",
+    "trackedFiles": 3665,
+    "cleanBeforePatch": true,
+    "connectivityFsck": "passed",
+    "fourAfterBlobs": "verified",
+    "appliedTree": "dab089e9c80fcf485ac2b734ff317313858b08b2"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "observedAtUtc": "2026-10-01T05:00:42.850260+00:00",
+  "sourceCommit": "e7aefef310c36359c5a271f63d5c12d808f27124",
+  "lastVerifiedRemoteCommit": "e7aefef310c36359c5a271f63d5c12d808f27124",
+  "sourceState": "Ten-file untested menu delta is preserved by menu-implementation-pending.patch; catalog is the exact applied recovery patch.",
+  "pathRoles": [
+    {
+      "role": "taskScratch",
+      "exists": true,
+      "fileSystemKind": "overlayfs",
+      "device": 27,
+      "inode": 1049413,
+      "modifiedUtc": "2026-10-01T05:00:42.825707+00:00",
+      "changedUtc": "2026-10-01T05:00:42.825707+00:00",
+      "birthTimeReported": "2026-09-30 13:50:13.189856064 -0400"
+    },
+    {
+      "role": "activeCheckout",
+      "exists": true,
+      "fileSystemKind": "overlayfs",
+      "device": 27,
+      "inode": 1063521,
+      "modifiedUtc": "2026-10-01T02:56:33.542552+00:00",
+      "changedUtc": "2026-10-01T02:56:33.542552+00:00",
+      "birthTimeReported": "2026-09-30 22:55:03.255010358 -0400"
+    },
+    {
+      "role": "toolchain",
+      "exists": true,
+      "fileSystemKind": "overlayfs",
+      "device": 27,
+      "inode": 1441799,
+      "modifiedUtc": "2026-10-01T01:25:17.013600+00:00",
+      "changedUtc": "2026-10-01T01:25:17.013600+00:00",
+      "birthTimeReported": "2026-09-30 19:36:54.461247724 -0400"
+    },
+    {
+      "role": "taskTemp",
+      "exists": true,
+      "fileSystemKind": "overlayfs",
+      "device": 27,
+      "inode": 1063169,
+      "modifiedUtc": "2026-10-01T04:49:37.300970+00:00",
+      "changedUtc": "2026-10-01T04:49:37.300970+00:00",
+      "birthTimeReported": "2026-09-30 22:55:03.251010378 -0400"
+    },
+    {
+      "role": "canary",
+      "exists": true,
+      "fileSystemKind": "overlayfs",
+      "device": 27,
+      "inode": 1077312,
+      "modifiedUtc": "2026-10-01T05:00:42.829550+00:00",
+      "changedUtc": "2026-10-01T05:00:42.829550+00:00",
+      "birthTimeReported": "2026-10-01 01:00:42.825707198 -0400"
+    },
+    {
+      "role": "formerSharedRoot",
+      "exists": false
+    }
+  ],
+  "canarySha256": "82eb13dcd20584648c3da0e85ae58b2f0ff0b8b6d16b0be5c4c9527a29f53722",
+  "limits": "Role labels omit private absolute paths/hostnames/environment IDs. Current stat values are observations, not uninterrupted environment identity or retention guarantees."
+}

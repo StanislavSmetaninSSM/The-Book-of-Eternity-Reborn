@@ -1,0 +1,72 @@
+{
+  "Categories": [
+    "worker-native-descriptor-transfer",
+    "worker-native-transfer-consumers",
+    "worker-native-bootstrap-output"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "d691cd08ce4c0a1ae41337eb004b560081a49d1a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0682629,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0228365,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0178793,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 40.8534257,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0075327,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:45.7612827",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 13,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "worker-native-bootstrap-output-unit-001",
+      "worker-native-descriptor-transfer-unit-002",
+      "worker-native-transfer-consumers-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

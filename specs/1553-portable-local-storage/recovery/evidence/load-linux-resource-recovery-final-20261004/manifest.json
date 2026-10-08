@@ -1,0 +1,56 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "ce20e028a01a3ad0c9a7478ee8efb078840ff6d6",
+  "SourceResultDirectory": "20261003-204750-560-2-83d55dbd9a06442890eb56ec5112ed53-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 1458554,
+      "OriginalSha256": "08feeb491cd258aca731bda0a31addd5e8f88ce5e1bd773fd8e2fbb017e09d03",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 1096,
+      "OriginalSha256": "499daac962aed0021deb551e0ec14634a01da44a58dd1a894c0470e989b0ee61",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 1096,
+      "StoredSha256": "499daac962aed0021deb551e0ec14634a01da44a58dd1a894c0470e989b0ee61"
+    },
+    {
+      "Path": "portable-load-resource-recovery-unit-001.trx",
+      "OriginalBytes": 52988,
+      "OriginalSha256": "373f79b4bb7457941e8d4f893396c78fad51d9061299498bc0a455ebb699459d",
+      "Embedded": true,
+      "StoredPath": "portable-load-resource-recovery-unit-001.trx",
+      "StoredBytes": 52554,
+      "StoredSha256": "dbe7eb5dc5e8e75df348a62482e605f5c4805db6acac41efe0a681d6bc801ae9"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1471,
+      "OriginalSha256": "6229a6def9c620f29c9ab6cab6a6b7793112647932e49160f0480d2a870f80ec",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 1471,
+      "StoredSha256": "6229a6def9c620f29c9ab6cab6a6b7793112647932e49160f0480d2a870f80ec"
+    }
+  ],
+  "MeasuredChildren": 9
+}

@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="f4b7bc42-325f-44d2-889f-312a242642dd" name="@c7669543e9c7 2026-10-06 15:16:26" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T15:16:26.1040782+00:00" queuing="2026-10-06T15:16:26.1040783+00:00" start="2026-10-06T15:16:20.4978730+00:00" finish="2026-10-06T15:17:05.8342413+00:00" />
+  <TestSettings name="default" id="cfd14871-8833-4f4c-bc7b-175100a186d5">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_15_16_26" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="99bd1b67-0f23-47af-98e2-5fa672e50bc9" testId="465659f1-ffb2-b0f2-8800-2f27a172da3d" testName="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: &quot;terminal-main-operation-omitted-close&quot;)" computerName="c7669543e9c7" duration="00:00:13.4214848" startTime="2026-10-06T15:16:54.5432755+00:00" endTime="2026-10-06T15:16:54.5432758+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="99bd1b67-0f23-47af-98e2-5fa672e50bc9" />
+    <UnitTestResult executionId="b13afc85-f72e-4a8b-9688-10b2e8b34ca9" testId="c6af369d-ff00-f21f-cb34-aae454f0baa5" testName="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: &quot;terminal-main-operation-activation-exit&quot;)" computerName="c7669543e9c7" duration="00:00:12.4551016" startTime="2026-10-06T15:16:41.1192434+00:00" endTime="2026-10-06T15:16:41.1192437+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b13afc85-f72e-4a8b-9688-10b2e8b34ca9" />
+    <UnitTestResult executionId="61547e22-b425-4788-860d-a54f1f5540a2" testId="bc263ff6-81d3-efef-d6d5-eac308670741" testName="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: &quot;terminal-main-operation-client-positive&quot;)" computerName="c7669543e9c7" duration="00:00:03.4944966" startTime="2026-10-06T15:16:58.0416858+00:00" endTime="2026-10-06T15:16:58.0416860+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="61547e22-b425-4788-860d-a54f1f5540a2" />
+    <UnitTestResult executionId="680ecd94-e253-4084-b562-6cc8315f359c" testId="0cbdfa2a-41f9-8e57-3ac0-b385b9df1770" testName="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: &quot;terminal-main-operation-status-admission&quot;)" computerName="c7669543e9c7" duration="00:00:03.4901035" startTime="2026-10-06T15:17:01.5889345+00:00" endTime="2026-10-06T15:17:01.5889349+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="680ecd94-e253-4084-b562-6cc8315f359c">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 0
+Actual:   1</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs:line 61
+   at BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/GmMainOperationLinuxTests.cs:line 14
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2fe75296-4fbc-4607-9331-981e61dfd06b" testId="ee62a1b9-2c6c-6b20-81cb-3d12908fecd5" testName="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: &quot;terminal-main-operation-query&quot;)" computerName="c7669543e9c7" duration="00:00:02.5906815" startTime="2026-10-06T15:16:28.6616471+00:00" endTime="2026-10-06T15:16:28.6616476+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2fe75296-4fbc-4607-9331-981e61dfd06b" />
+    <UnitTestResult executionId="9daa67e7-e354-4697-81e6-5b18373b0c60" testId="3284f0a6-a506-eb1a-d259-613f73f830fa" testName="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation" computerName="c7669543e9c7" duration="00:00:03.6987123" startTime="2026-10-06T15:17:05.2806229+00:00" endTime="2026-10-06T15:17:05.2806233+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9daa67e7-e354-4697-81e6-5b18373b0c60" />
+    <UnitTestResult executionId="4ed0e99d-c104-4ffc-a3c1-9786ca08c436" testId="ba0a8f21-85e4-dd65-1272-9700a3e54007" testName="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: &quot;terminal-main-operation-shutdown&quot;)" computerName="c7669543e9c7" duration="00:00:02.6974575" startTime="2026-10-06T15:16:26.0695058+00:00" endTime="2026-10-06T15:16:26.0695193+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4ed0e99d-c104-4ffc-a3c1-9786ca08c436" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: &quot;terminal-main-operation-status-admission&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0cbdfa2a-41f9-8e57-3ac0-b385b9df1770">
+      <Execution id="680ecd94-e253-4084-b562-6cc8315f359c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainOperationLinuxTests" name="OriginalOwner_ActualParticipatingBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: &quot;terminal-main-operation-client-positive&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bc263ff6-81d3-efef-d6d5-eac308670741">
+      <Execution id="61547e22-b425-4788-860d-a54f1f5540a2" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainOperationLinuxTests" name="OriginalOwner_ActualParticipatingBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: &quot;terminal-main-operation-shutdown&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ba0a8f21-85e4-dd65-1272-9700a3e54007">
+      <Execution id="4ed0e99d-c104-4ffc-a3c1-9786ca08c436" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainOperationLinuxTests" name="OriginalOwner_ActualParticipatingBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3284f0a6-a506-eb1a-d259-613f73f830fa">
+      <Execution id="9daa67e7-e354-4697-81e6-5b18373b0c60" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainOperationLinuxTests" name="OriginalOwner_ActualPipeRetainsParticipatingOperation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: &quot;terminal-main-operation-omitted-close&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="465659f1-ffb2-b0f2-8800-2f27a172da3d">
+      <Execution id="99bd1b67-0f23-47af-98e2-5fa672e50bc9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainOperationLinuxTests" name="OriginalOwner_ActualParticipatingBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: &quot;terminal-main-operation-activation-exit&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c6af369d-ff00-f21f-cb34-aae454f0baa5">
+      <Execution id="b13afc85-f72e-4a8b-9688-10b2e8b34ca9" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainOperationLinuxTests" name="OriginalOwner_ActualParticipatingBoundary" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: &quot;terminal-main-operation-query&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ee62a1b9-2c6c-6b20-81cb-3d12908fecd5">
+      <Execution id="2fe75296-4fbc-4607-9331-981e61dfd06b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainOperationLinuxTests" name="OriginalOwner_ActualParticipatingBoundary" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="465659f1-ffb2-b0f2-8800-2f27a172da3d" executionId="99bd1b67-0f23-47af-98e2-5fa672e50bc9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c6af369d-ff00-f21f-cb34-aae454f0baa5" executionId="b13afc85-f72e-4a8b-9688-10b2e8b34ca9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bc263ff6-81d3-efef-d6d5-eac308670741" executionId="61547e22-b425-4788-860d-a54f1f5540a2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0cbdfa2a-41f9-8e57-3ac0-b385b9df1770" executionId="680ecd94-e253-4084-b562-6cc8315f359c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ee62a1b9-2c6c-6b20-81cb-3d12908fecd5" executionId="2fe75296-4fbc-4607-9331-981e61dfd06b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3284f0a6-a506-eb1a-d259-613f73f830fa" executionId="9daa67e7-e354-4697-81e6-5b18373b0c60" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ba0a8f21-85e4-dd65-1272-9700a3e54007" executionId="4ed0e99d-c104-4ffc-a3c1-9786ca08c436" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="7" executed="7" passed="6" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.28]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:02.15]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:02.19]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:40.49]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:40.49]       Expected: 0
+[xUnit.net 00:00:40.49]       Actual:   1
+[xUnit.net 00:00:40.49]       Stack Trace:
+[xUnit.net 00:00:40.49]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs(61,0): at BookOfEternityClient.Tests.GmOwnedTerminalLinuxTests.RunAsync(String mode)
+[xUnit.net 00:00:40.49]         /workspace/native-1553/BookOfEternityClient.Tests/GmMainOperationLinuxTests.cs(14,0): at BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(String mode)
+[xUnit.net 00:00:40.49]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:44.20]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T15:17:01.5983656+00:00">
+        <Text>[xUnit.net 00:00:40.48]     BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary(mode: "terminal-main-operation-status-admission") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

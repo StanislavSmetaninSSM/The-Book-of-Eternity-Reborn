@@ -1,0 +1,4 @@
+# Preserve immutable fixture and evidence hashes in Windows and Unix checkouts.
+fixtures/** -text
+evidence/** -text
+*.patch -text

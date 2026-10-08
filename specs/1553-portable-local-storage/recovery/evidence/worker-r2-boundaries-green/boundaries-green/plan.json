@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "worker-restart-boundaries-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "2b681548f7a9a1193da20a4edfc22b80097ddc2b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 40.4672591,
+  "Descriptors": [
+    {
+      "Name": "worker-restart-boundaries-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-restart-boundaries-linux",
+      "Categories": [
+        "worker-restart-boundaries-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerRestartBoundaryTests.OriginalAuthorityAndCapacity_SurviveUnresolvedBoundary",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}

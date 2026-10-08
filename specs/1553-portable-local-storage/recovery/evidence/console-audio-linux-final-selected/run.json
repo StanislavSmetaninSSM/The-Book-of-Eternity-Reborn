@@ -1,0 +1,19 @@
+{
+  "Run": "final-selected",
+  "Source": "cf787a8f7873e83e7c02e96504ad8e7ff2d9870c",
+  "Command": "pwsh -NoProfile -Command \"& ./scripts/test-csharp.ps1 -Category @('console-audio-linux','browser-audio-isolation')\"",
+  "Result": "27PASS=20new+7preciselyaffected",
+  "EvidenceDirectory": "recovery/evidence/console-audio-linux-final-selected",
+  "Tests": {
+    "Total": 27,
+    "Executed": 27,
+    "Passed": 27,
+    "Failed": 0
+  },
+  "ExitCode": 0,
+  "OwnedTreeCleanupSucceeded": true,
+  "Environment": {
+    "Activation": "source /workspace/.onboarding/activate.sh",
+    "AudioEvidence": "Own per-run BOE_AUDIO_EVIDENCE root; synthetic data only"
+  }
+}

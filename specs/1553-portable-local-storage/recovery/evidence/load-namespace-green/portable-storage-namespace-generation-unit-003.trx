@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="e9e7cb40-d249-4cdb-86d7-ef10793858cd" name="Eja@HOME-PC 2026-10-04 04:26:04" runUser="HOME-PC\Eja" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T04:26:04.7123516+10:00" queuing="2026-10-04T04:26:04.7123519+10:00" start="2026-10-04T04:26:00.8141662+10:00" finish="2026-10-04T04:26:04.7217259+10:00" />
+  <TestSettings name="default" id="1ae150d9-03cf-4130-a710-65ba46c836f6">
+    <Deployment runDeploymentRoot="Eja_HOME-PC_2026-10-04_04_26_04" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="a801b2af-f533-434e-83b6-0a369a12b05d" testId="0677159c-2d54-e060-f8d8-1b883532e119" testName="BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentNewGenerationFramePreservesExactAbsence(committed: False)" computerName="HOME-PC" duration="00:00:00.5632247" startTime="2026-10-04T04:26:04.2313317+10:00" endTime="2026-10-04T04:26:04.2313656+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a801b2af-f533-434e-83b6-0a369a12b05d" />
+    <UnitTestResult executionId="2162bb56-a039-4460-959c-f503048542c4" testId="6761f862-5fd1-0f25-d8a7-6272f3887030" testName="BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentNewGenerationFramePreservesExactAbsence(committed: True)" computerName="HOME-PC" duration="00:00:00.3259995" startTime="2026-10-04T04:26:04.5567620+10:00" endTime="2026-10-04T04:26:04.5567623+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2162bb56-a039-4460-959c-f503048542c4" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentNewGenerationFramePreservesExactAbsence(committed: True)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="6761f862-5fd1-0f25-d8a7-6272f3887030">
+      <Execution id="2162bb56-a039-4460-959c-f503048542c4" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests" name="IndependentNewGenerationFramePreservesExactAbsence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests.IndependentNewGenerationFramePreservesExactAbsence(committed: False)" storage="c:\users\eja\.codex\worktrees\portable-save-windows\the book of eternity reborn\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="0677159c-2d54-e060-f8d8-1b883532e119">
+      <Execution id="a801b2af-f533-434e-83b6-0a369a12b05d" />
+      <TestMethod codeBase="C:\Users\Eja\.codex\worktrees\portable-save-windows\The Book of Eternity Reborn\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.TrustedLocalNamespaceJournalTests" name="IndependentNewGenerationFramePreservesExactAbsence" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="0677159c-2d54-e060-f8d8-1b883532e119" executionId="a801b2af-f533-434e-83b6-0a369a12b05d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6761f862-5fd1-0f25-d8a7-6272f3887030" executionId="2162bb56-a039-4460-959c-f503048542c4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.25]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.12]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.14]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:03.11]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

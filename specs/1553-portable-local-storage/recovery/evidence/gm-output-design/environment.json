@@ -1,0 +1,30 @@
+{
+  "ObservedUtc": "2026-10-05T13:06:53.265466+00:00",
+  "SourceCommit": "08e9805d10237d3bc50438e67b58fd33c5509c42",
+  "Method": "Read-only /proc, mountinfo, path presence/access and process-name inspection; no capability probe or service connection",
+  "Facts": {
+    "Uid": 1000,
+    "SystemctlExecutable": "/usr/bin/systemctl",
+    "SystemdOnPATH": false,
+    "Pid1": "tail",
+    "SystemdOrDbusProcesses": [],
+    "XdgRuntimeDir": null,
+    "DbusSessionBusAddressPresent": false,
+    "AbsentPaths": [
+      "/run/systemd/system",
+      "/run/user/1000",
+      "/run/user/1000/systemd/private",
+      "/run/user/1000/bus"
+    ],
+    "SelfCgroup": "0::/",
+    "CgroupMountInfo": "90 89 0:24 /.. /sys/fs/cgroup ro,nosuid,nodev,noexec,relatime master:8 - cgroup2 cgroup2 rw,nsdelegate",
+    "Controllers": "cpuset cpu io memory hugetlb pids",
+    "SubtreeControl": "cpuset cpu io memory hugetlb pids",
+    "Type": "domain",
+    "Events": "populated 1; frozen 0",
+    "WritableAccessCgroupProcs": false,
+    "WritableAccessSubtreeControl": false,
+    "Conclusion": "No existing usable systemd user manager or writable cgroup delegation is exposed here. nsdelegate superblock flag does not override the read-only mount. No systemctl connection attempt, service startup, unit creation, write/probe/remount or alternate route was attempted."
+  },
+  "Scope": "Selected saved environment only; not a Linux-wide backend impossibility"
+}

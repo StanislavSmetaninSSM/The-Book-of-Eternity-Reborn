@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="ea9d77f6-aa19-43d4-ba1f-eaae5dc89e04" name="@c7669543e9c7 2026-10-06 05:05:27" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T05:05:27.2016162+00:00" queuing="2026-10-06T05:05:27.2016163+00:00" start="2026-10-06T05:05:25.2185036+00:00" finish="2026-10-06T05:05:27.2495890+00:00" />
+  <TestSettings name="default" id="59862250-ffe2-49c7-968f-b35a5e6d2280">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_05_05_27" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="f973bfb3-9e0e-43bc-9ec8-6d94cf07361a" testId="42b636a9-d8e0-0b60-e692-decc66f222a9" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;unknown-state&quot;)" computerName="c7669543e9c7" duration="00:00:00.0000480" startTime="2026-10-06T05:05:27.1780700+00:00" endTime="2026-10-06T05:05:27.1780701+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f973bfb3-9e0e-43bc-9ec8-6d94cf07361a" />
+    <UnitTestResult executionId="7c04f745-15b6-4c76-9efe-a41cd6401fa3" testId="a9b55e70-b02e-9dfa-5821-dbd17c26035c" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;wrong-run&quot;)" computerName="c7669543e9c7" duration="00:00:00.0004358" startTime="2026-10-06T05:05:27.1765754+00:00" endTime="2026-10-06T05:05:27.1765755+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7c04f745-15b6-4c76-9efe-a41cd6401fa3" />
+    <UnitTestResult executionId="5e6fae95-bf17-4f75-a090-d2d0e47e36d3" testId="9692e202-b70a-29d8-5032-0161f82115bc" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop" computerName="c7669543e9c7" duration="00:00:00.0002578" startTime="2026-10-06T05:05:27.1881305+00:00" endTime="2026-10-06T05:05:27.1881306+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5e6fae95-bf17-4f75-a090-d2d0e47e36d3" />
+    <UnitTestResult executionId="282d59b5-3596-47b5-b65d-3b6f1d58be1e" testId="807f43cb-e78d-babc-188c-df05e3983643" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;unknown-backend&quot;)" computerName="c7669543e9c7" duration="00:00:00.0000225" startTime="2026-10-06T05:05:27.1778955+00:00" endTime="2026-10-06T05:05:27.1778956+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="282d59b5-3596-47b5-b65d-3b6f1d58be1e" />
+    <UnitTestResult executionId="42475b12-99a7-4459-9c12-62f941d2bab3" testId="44e48204-5c33-dc00-5643-987a6a328fa9" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: False)" computerName="c7669543e9c7" duration="00:00:00.0001600" startTime="2026-10-06T05:05:27.1879742+00:00" endTime="2026-10-06T05:05:27.1879742+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="42475b12-99a7-4459-9c12-62f941d2bab3" />
+    <UnitTestResult executionId="86c642d9-f919-441a-9c8a-091a08ff6520" testId="58314348-2d31-e5ef-9a3e-d289f9fb9bb3" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;empty-scope&quot;)" computerName="c7669543e9c7" duration="00:00:00.0000244" startTime="2026-10-06T05:05:27.1778700+00:00" endTime="2026-10-06T05:05:27.1778700+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="86c642d9-f919-441a-9c8a-091a08ff6520" />
+    <UnitTestResult executionId="cd4fa0ce-cd62-4292-bdd7-40ce493057fb" testId="5c47542b-c421-fe5e-efb5-b274937f0a8b" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;empty-run&quot;)" computerName="c7669543e9c7" duration="00:00:00.0000377" startTime="2026-10-06T05:05:27.1780433+00:00" endTime="2026-10-06T05:05:27.1780433+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cd4fa0ce-cd62-4292-bdd7-40ce493057fb" />
+    <UnitTestResult executionId="78ffe8b2-2c85-454a-a730-3518f0c44db4" testId="e04e5279-10f6-d39c-4226-834d96576c43" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence" computerName="c7669543e9c7" duration="00:00:00.0002719" startTime="2026-10-06T05:05:27.1879301+00:00" endTime="2026-10-06T05:05:27.1879301+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="78ffe8b2-2c85-454a-a730-3518f0c44db4" />
+    <UnitTestResult executionId="82c53ba0-6feb-425c-89ce-bbc0365dbd50" testId="f130c381-176e-f461-7d5b-418b994710e2" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;not-cleaned&quot;)" computerName="c7669543e9c7" duration="00:00:00.0000583" startTime="2026-10-06T05:05:27.1781320+00:00" endTime="2026-10-06T05:05:27.1781321+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="82c53ba0-6feb-425c-89ce-bbc0365dbd50" />
+    <UnitTestResult executionId="df40afea-31fb-422e-8dbc-fb630a3325be" testId="7b74ce42-25c3-a125-9021-28914cdab2f9" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;wrong-scope&quot;)" computerName="c7669543e9c7" duration="00:00:00.0706090" startTime="2026-10-06T05:05:27.1734940+00:00" endTime="2026-10-06T05:05:27.1735090+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="df40afea-31fb-422e-8dbc-fb630a3325be" />
+    <UnitTestResult executionId="5105c5d9-8869-4efb-9c78-3fc9ac5f1558" testId="2ca070da-4dec-ee55-d633-656b5f3b26a9" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: True)" computerName="c7669543e9c7" duration="00:00:00.0002834" startTime="2026-10-06T05:05:27.1880693+00:00" endTime="2026-10-06T05:05:27.1880694+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5105c5d9-8869-4efb-9c78-3fc9ac5f1558" />
+    <UnitTestResult executionId="b6fa2e35-e7d3-418f-813a-e17a39ec3812" testId="d48b30cc-90f0-b9ba-5d83-29aa368ffc40" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;still-authoritative&quot;)" computerName="c7669543e9c7" duration="00:00:00.0001599" startTime="2026-10-06T05:05:27.1780184+00:00" endTime="2026-10-06T05:05:27.1780184+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b6fa2e35-e7d3-418f-813a-e17a39ec3812" />
+    <UnitTestResult executionId="b42c8e2b-2dd7-48d6-a949-4168bff9c2ae" testId="3788811a-3495-29e9-68e8-963624af468e" testName="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;wrong-backend&quot;)" computerName="c7669543e9c7" duration="00:00:00.0000839" startTime="2026-10-06T05:05:27.1778217+00:00" endTime="2026-10-06T05:05:27.1778217+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b42c8e2b-2dd7-48d6-a949-4168bff9c2ae" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.OutputObservationFailure_RevokesPreviouslyValidatedStop" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9692e202-b70a-29d8-5032-0161f82115bc">
+      <Execution id="5e6fae95-bf17-4f75-a090-d2d0e47e36d3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="OutputObservationFailure_RevokesPreviouslyValidatedStop" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;unknown-state&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="42b636a9-d8e0-0b60-e692-decc66f222a9">
+      <Execution id="f973bfb3-9e0e-43bc-9ec8-6d94cf07361a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;empty-scope&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="58314348-2d31-e5ef-9a3e-d289f9fb9bb3">
+      <Execution id="86c642d9-f919-441a-9c8a-091a08ff6520" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: True)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2ca070da-4dec-ee55-d633-656b5f3b26a9">
+      <Execution id="5105c5d9-8869-4efb-9c78-3fc9ac5f1558" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;wrong-run&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a9b55e70-b02e-9dfa-5821-dbd17c26035c">
+      <Execution id="7c04f745-15b6-4c76-9efe-a41cd6401fa3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;empty-run&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5c47542b-c421-fe5e-efb5-b274937f0a8b">
+      <Execution id="cd4fa0ce-cd62-4292-bdd7-40ce493057fb" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;not-cleaned&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f130c381-176e-f461-7d5b-418b994710e2">
+      <Execution id="82c53ba0-6feb-425c-89ce-bbc0365dbd50" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;still-authoritative&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d48b30cc-90f0-b9ba-5d83-29aa368ffc40">
+      <Execution id="b6fa2e35-e7d3-418f-813a-e17a39ec3812" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup(cleaned: False)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="44e48204-5c33-dc00-5643-987a6a328fa9">
+      <Execution id="42475b12-99a7-4459-9c12-62f941d2bab3" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="ExplicitUncertain_RemainsStickyAfterLatePhysicalCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;unknown-backend&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="807f43cb-e78d-babc-188c-df05e3983643">
+      <Execution id="282d59b5-3596-47b5-b65d-3b6f1d58be1e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;wrong-backend&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3788811a-3495-29e9-68e8-963624af468e">
+      <Execution id="b42c8e2b-2dd7-48d6-a949-4168bff9c2ae" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MatchingScopedStop_IsAcceptedAsCleanupEvidence" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e04e5279-10f6-d39c-4226-834d96576c43">
+      <Execution id="78ffe8b2-2c85-454a-a730-3518f0c44db4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MatchingScopedStop_IsAcceptedAsCleanupEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests.MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord(fault: &quot;wrong-scope&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7b74ce42-25c3-a125-9021-28914cdab2f9">
+      <Execution id="df40afea-31fb-422e-8dbc-fb630a3325be" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmWorkerExecutionAuthorityTests" name="MismatchedOrMalformedStop_CannotBeUsedOrRevivedByLaterMatchingRecord" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="42b636a9-d8e0-0b60-e692-decc66f222a9" executionId="f973bfb3-9e0e-43bc-9ec8-6d94cf07361a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a9b55e70-b02e-9dfa-5821-dbd17c26035c" executionId="7c04f745-15b6-4c76-9efe-a41cd6401fa3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9692e202-b70a-29d8-5032-0161f82115bc" executionId="5e6fae95-bf17-4f75-a090-d2d0e47e36d3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="807f43cb-e78d-babc-188c-df05e3983643" executionId="282d59b5-3596-47b5-b65d-3b6f1d58be1e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="44e48204-5c33-dc00-5643-987a6a328fa9" executionId="42475b12-99a7-4459-9c12-62f941d2bab3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="58314348-2d31-e5ef-9a3e-d289f9fb9bb3" executionId="86c642d9-f919-441a-9c8a-091a08ff6520" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5c47542b-c421-fe5e-efb5-b274937f0a8b" executionId="cd4fa0ce-cd62-4292-bdd7-40ce493057fb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e04e5279-10f6-d39c-4226-834d96576c43" executionId="78ffe8b2-2c85-454a-a730-3518f0c44db4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f130c381-176e-f461-7d5b-418b994710e2" executionId="82c53ba0-6feb-425c-89ce-bbc0365dbd50" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7b74ce42-25c3-a125-9021-28914cdab2f9" executionId="df40afea-31fb-422e-8dbc-fb630a3325be" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ca070da-4dec-ee55-d633-656b5f3b26a9" executionId="5105c5d9-8869-4efb-9c78-3fc9ac5f1558" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d48b30cc-90f0-b9ba-5d83-29aa368ffc40" executionId="b6fa2e35-e7d3-418f-813a-e17a39ec3812" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3788811a-3495-29e9-68e8-963624af468e" executionId="b42c8e2b-2dd7-48d6-a949-4168bff9c2ae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="13" executed="13" passed="13" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.17]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.42]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.44]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.57]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

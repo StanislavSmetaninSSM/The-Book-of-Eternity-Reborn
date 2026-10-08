@@ -1,0 +1,336 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T041-OUTPUT-UTF8",
+  "BaseCommit": "08e9805d10237d3bc50438e67b58fd33c5509c42",
+  "SourceCommit": "ff7e5a2b08f8fde196151909487c1d94089ea91d",
+  "SourceTree": "2c6b270cbf69cd031658bc48e9aa036541ac0306",
+  "RuntimeImplementationCommit": "a9472a35ebcc0e3fc0f09c168c49cef0a2629402",
+  "Status": "PASS for the bounded actual managed production output pump on Linux; native terminal/lifecycle qualification remains open",
+  "Environment": {
+    "OS": "Debian13.6",
+    "Kernel": "6.18.44",
+    "Architecture": "x86_64",
+    "SDK": "10.0.401",
+    "Runtime": "8.0.31",
+    "PowerShell": "7.6.6",
+    "WindowsTargetReferencePack": "8.0.31, normal SDK/NuGet restore for existing target only",
+    "Permissions": "normal; no security/settings/access changes"
+  },
+  "Commands": {
+    "FreshPlan": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-bridge-output-stream -Parallelism 1 -PlanOnly",
+    "RedAndFirstGreen": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-bridge-output-stream -Parallelism 1 -NoBuild",
+    "FinalFreshBuildAndGreen": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category gm-bridge-output-stream -Parallelism 1",
+    "DiscoveryAudit": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild"
+  },
+  "VerificationInputs": {
+    "BookOfEternityGMBridge/Program.cs": {
+      "Sha256": "35f5bf8beefc35843f4bb73c75a1201ad2b802c8b096e463f9eec0edfc017946",
+      "GitBlob": "33801bcc5b33de0059c944e7b48833338a23e1c4"
+    },
+    "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj": {
+      "Sha256": "aea4e886f3f2209b32e3f79ab37b62793567d6e7510109a6622be31f2af9de4d",
+      "GitBlob": "603f4886992cc8326a72d4249e9042390cf539f4"
+    },
+    "BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs": {
+      "Sha256": "9d80d10d64adfc441cf273fa49bca8e608ebd584de2da19a7f36048e987625c5",
+      "GitBlob": "7419793968666b50bfcb3fdf0b6dae7a8ab240d6"
+    },
+    "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj": {
+      "Sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "GitBlob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18"
+    },
+    "tests/categories.json": {
+      "Sha256": "a7a5fa516a7a838148e763bb99e34af38a49e14325061311a77538247e605779",
+      "GitBlob": "66933055ec1739280ed329b3666d62489556f314"
+    },
+    "tests/selection.json": {
+      "Sha256": "8cf0610877f03b9b8f1bac8ed5f3d8477955de3ecf1631e56f6f2b8051c1057f",
+      "GitBlob": "d71e1d31eec0559df0ca9b09050d13531b7eb484"
+    }
+  },
+  "UnchangedFromBase": {
+    "BookOfEternityGMBridge/ConPtySession.cs": {
+      "Sha256": "8c609242e9c9f6fe2e29526184c7350058a959b56bf02852826572b762d152c7",
+      "GitBlob": "9f23aba595233798908a1f211c05534574c2f293"
+    },
+    "BookOfEternityClient/game_master_daemon.ps1": {
+      "Sha256": "7750da7af9eb5eed8b588bf3bcac401ba01347f6895f059aa848d845c1d123e5",
+      "GitBlob": "366487c52a8b564c2e4d90a5cb41b91d2c0199c6"
+    },
+    "BookOfEternityClient/Launcher/bookofeternity.ps1": {
+      "Sha256": "868aa1bb6bb61c974287b2f65217e2c12eb7a5347fb9a6522d19977215fbb26e",
+      "GitBlob": "3c5081c3a275b3faacab837a9efc63479e704ae2"
+    },
+    "BookOfEternityClient/Launcher/Start_GM_Daemon.ps1": {
+      "Sha256": "cc91d89c18a144987442ee09f03c062d6d01311961d44713db5593eb5f6d128e",
+      "GitBlob": "754ff59125dbdf0d197a01afc1f959fe89e2b402"
+    },
+    "BookOfEternityClient/Configuration/GameSettings.cs": {
+      "Sha256": "aac28c5567f221ea91dee7cc1c50170175d72224546cae5696546ebcf21a3ca3",
+      "GitBlob": "23fa4c947e29e74db80ad87fb7e438891cb7bf94"
+    },
+    "BookOfEternityClient/Configuration/GmBridgePasteVisibilityPolicy.cs": {
+      "Sha256": "6a48253700cef39107255460fa420c44f4ad7d7919949906e8ad048330a7b8d3",
+      "GitBlob": "c10c273d95cbf206c85cab86934084a3c9bf5290"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs": {
+      "Sha256": "812c10afbef30f0117126e209dcb5b2926995a9afdec2d8d329b53a59eb0fa74",
+      "GitBlob": "4c99db4f3b8770a660018135f9edade0747567a1"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs": {
+      "Sha256": "3a1dac5619ee4c6bc1e0292a82476a2c6fe6bdb2b6c0c7e9868fefd2773e9d7f",
+      "GitBlob": "473abc4659edacfbedca584317077da1891bd7cd"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs": {
+      "Sha256": "3da5134089e1b3748a0525805c0e716f807dd64a78b2a9ff391b5187a3074cea",
+      "GitBlob": "44ad2eec1427ff7256142804741ce3fdb8f4e658"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs": {
+      "Sha256": "412f1f3c5560ebd5f114aa160e6ba9cc4610ec873bfdf72d5b324a02ded927c9",
+      "GitBlob": "a46f14becab9acf68275e788d2b749dbb081896b"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs": {
+      "Sha256": "c1f32c968ca6f8ff8e9b0358a8721f813a8a54688e48dc87e6080480dec60507",
+      "GitBlob": "8919337e8bbe25fb7d6af799bfd10d8c2a9da78c"
+    },
+    "BookOfEternityClient/Core/FileSystemManager.cs": {
+      "Sha256": "c000d3cd16fb0d01bb00003326e58e38f8ae144eb41475802ed22ea36ae5ecc3",
+      "GitBlob": "a6e27695d6069bf939745e431f2babf57de61a14"
+    },
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs": {
+      "Sha256": "87ef33e7bf8ae33b692148bd4a5b8023c3f470fe83561597dcdccad54c896473",
+      "GitBlob": "1a5499d7dd65caf5aa04a4e6ed2ea4fcfc2e5675"
+    },
+    "BookOfEternityClient/BookOfEternityClient.csproj": {
+      "Sha256": "ea910c91fd881982c532adf5091250b3a2e67158159bd3a46fc6e5974f2c4198",
+      "GitBlob": "6c8d0723b2f13753475c19bf37903ae39067b4db"
+    }
+  },
+  "SourcePreservation": {
+    "ProgramPrefixBeforePumpByteEquivalent": true,
+    "ProgramKeyboardToDiagnosticsByteEquivalent": true,
+    "ProgramWorkerNativeSuffixByteEquivalent": true,
+    "OnlyOutputPumpAndDiagnosticSuffixRuntimeRegionsChanged": true
+  },
+  "PreparationIncidents": [
+    {
+      "Commit": "ae2084a0757c54d15e535771962a8858b61521c3",
+      "Kind": "Build preparation",
+      "Error": "NETSDK1073 transitive WindowsForms reference pack unavailable before EnableWindowsTargeting",
+      "ExecutedTests": 0,
+      "Resolution": "Standard existing-target cross-build property enabled; no runtime/backend change",
+      "Evidence": "evidence/gm-output-preparation/manifest.json"
+    },
+    {
+      "Commit": "a0eb13b46f7f6a63beadf2a46c6b1933e4274fe5",
+      "Kind": "Test fixture initialization",
+      "Error": "Root lookup expected nonexistent root .sln;48initializer failures,0pump invocations",
+      "Resolution": "Locate two actual csproj paths; no product change",
+      "Evidence": "evidence/gm-output-fixture-preparation/manifest.json"
+    }
+  ],
+  "CausalRed": {
+    "Commit": "a729f4142779041f4633298c2ab9cc749004d05b",
+    "Total": 48,
+    "Executed": 48,
+    "Passed": 19,
+    "Failed": 29,
+    "WallTime": "00:00:07.9919576",
+    "CompleteSelection": true,
+    "CleanupComplete": true,
+    "FixtureOrBuildFailures": false,
+    "ActualDllPdbAndWiringChecksPassed": true,
+    "Causes": [
+      "Premature replacement/loss across fragmented UTF-8",
+      "Surrogate pair bisected by either tail cut",
+      "Pre/between/canceled-zero-read cancellation silently successful"
+    ],
+    "Evidence": "evidence/gm-output-red/manifest.json",
+    "FreshBuildEvidence": "evidence/gm-output-red-plan/manifest.json"
+  },
+  "FirstGreen": {
+    "Commit": "a9472a35ebcc0e3fc0f09c168c49cef0a2629402",
+    "Total": 48,
+    "Executed": 48,
+    "Passed": 48,
+    "Failed": 0,
+    "WallTime": "00:00:07.7003966",
+    "Evidence": "evidence/gm-output-first-green/manifest.json"
+  },
+  "Green": {
+    "Commit": "ff7e5a2b08f8fde196151909487c1d94089ea91d",
+    "Total": 48,
+    "Executed": 48,
+    "Passed": 48,
+    "Failed": 0,
+    "DistinctPassedCases": 48,
+    "Methods": 16,
+    "Skipped": 0,
+    "DuplicateTests": 0,
+    "CompleteSelection": true,
+    "CleanupComplete": true,
+    "TimedOut": false,
+    "FreshBuildAndRunWallTime": "00:00:47.1556430",
+    "Evidence": "evidence/gm-output-final-green/manifest.json",
+    "WhyRepeated": "Equivalent PDB Assert.Single predicate overload removes one new analyzer warning; unchanged runtime, final test source verified. No old cohort repeated."
+  },
+  "ActualProductionConsumerProof": {
+    "BuildOnlyProjectReference": true,
+    "ExistingTarget": "net8.0-windows",
+    "TargetUnchanged": true,
+    "NativeStartupExecuted": false,
+    "RealBridgeAssemblyReflection": true,
+    "NormalHostConstructorAndDispose": true,
+    "ProductionPumpInvoked": true,
+    "ProductionDiagnosticSuffixInvoked": true,
+    "PdbCurrentProgramSha256AssertionPassed": true,
+    "CallSiteWiringGuardPassed": true,
+    "ArtifactHashes": {
+      "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityGMBridge.dll": "dd3f7e2b9cedfc08cccbb692af8311325e8fa7d3cdb1fa3fab724ccfb25a4fb7",
+      "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityGMBridge.pdb": "ecc4971c76d5b99d4661f98cdca3dff908544884af0e06d88ecf912a9812f72f"
+    },
+    "Warnings": "13 warnings at unchanged source locations; new fixture warning removed;0errors"
+  },
+  "CatalogAudit": {
+    "AtCommit": "a9472a35ebcc0e3fc0f09c168c49cef0a2629402",
+    "Valid": true,
+    "Methods": 10723,
+    "Categories": 242,
+    "Unmapped": [],
+    "StaleSelectors": [],
+    "ExecutedTests": 0,
+    "WallTime": "00:00:09.1747857",
+    "Evidence": "evidence/gm-output-audit/manifest.json",
+    "ReuseAfterFixtureSyntaxOnlyChange": "Selectors/catalog/method inventory unchanged; independent reviewer confirmed no second discovery needed",
+    "UnchangedFreshIntegrationClosureFromReceiptSource": "da35de5498d8edf2787c987bd5a45ea5aa39e988",
+    "UnchangedClosureTrees": {
+      "BookOfEternityClient": "a93898d54f57faa9aca87ab94c21a61585f5ba29",
+      "BookOfEternityClient.IntegrationTests": "848726ebc39dbdb590ac9552a27f98e430be9ddb",
+      "BookOfEternityClient.TestSupport": "4dfc534ed1f73399d034a2e1bc8e1820f76d1994"
+    }
+  },
+  "IndependentDesignReview": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Agent": "/root/output_design_review",
+    "Commit": "9b0efe286600647cfc9f623a20657e5d0e220a5f",
+    "Verdict": "PASS",
+    "Findings": [],
+    "ImplementationNote": "Use GetMaxCharCount(4096), cover pending malformed prefix then full ASCII chunk; prove actual consumer build before causal RED."
+  },
+  "IndependentFinalReview": {
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Agent": "/root/output_final_review",
+    "Result": "PASS",
+    "ReviewedEvidenceCarrier": "426b16807cd86efda3ed4d9b7e7acc77435cbc45",
+    "VerifiedTestSource": "ff7e5a2b08f8fde196151909487c1d94089ea91d",
+    "RuntimeImplementationSource": "a9472a35ebcc0e3fc0f09c168c49cef0a2629402",
+    "UnresolvedActionableFindings": [],
+    "ObservedUtc": "2026-10-05T13:38:32.168110+00:00",
+    "Verified": {
+      "CausalRedPassed": 19,
+      "CausalRedExecuted": 48,
+      "DistinctGreenPasses": 48,
+      "FreshActualConsumerBuild": true,
+      "CompleteCleanup": true,
+      "SkipsDuplicatesTimeouts": 0,
+      "CatalogCategories": 242,
+      "CatalogMethods": 10723,
+      "CatalogExecution": 0,
+      "Artifacts": 34,
+      "Manifests": 9,
+      "Inputs": 6,
+      "UnchangedFiles": 14,
+      "ClosureTrees": 3,
+      "GeneratedXmlParses": 11,
+      "RestoredTrackedFiles": 5427,
+      "RestoredChangedFileBytes": 53,
+      "RestoredQualificationInputs": 6,
+      "NonOutputProgramRegionsByteEquivalent": true
+    },
+    "ReviewExecution": "Read-only; no builds/tests/native probes rerun",
+    "Limits": [
+      "Native Windows",
+      "Terminal/CLI/GM",
+      "Readiness/autotrust/manual input",
+      "Ownership/stop/Release/lifecycle"
+    ]
+  },
+  "ArtifactIntegrity": {
+    "Manifests": 10,
+    "Artifacts": 37,
+    "Evidence": [
+      "evidence/gm-output-audit/manifest.json",
+      "evidence/gm-output-design/manifest.json",
+      "evidence/gm-output-final-green/manifest.json",
+      "evidence/gm-output-first-green/manifest.json",
+      "evidence/gm-output-first-green-plan/manifest.json",
+      "evidence/gm-output-fixture-preparation/manifest.json",
+      "evidence/gm-output-preparation/manifest.json",
+      "evidence/gm-output-red/manifest.json",
+      "evidence/gm-output-red-plan/manifest.json",
+      "evidence/gm-output-review/manifest.json"
+    ]
+  },
+  "GeneratedXmlValidation": [
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityGMBridge.xml",
+    "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityClient.xml"
+  ],
+  "Cleanup": {
+    "ObservedUtc": "2026-10-05T13:34:28.359073+00:00",
+    "OwnFixturesRemaining": [],
+    "ActiveRuntimeBuildTestProcesses": 0,
+    "BuildServersShutdown": "Succeeded",
+    "TerminatedPid1ZombiesNotClaimedReaped": [
+      "4077       1 Z dotnet",
+      "4111       1 Z VBCSCompiler",
+      "4391       1 Z dotnet",
+      "11704       1 Z dotnet",
+      "12166       1 Z dotnet",
+      "15890       1 Z dotnet",
+      "16191       1 Z dotnet",
+      "23280       1 Z dotnet",
+      "23305       1 Z VBCSCompiler",
+      "23516       1 Z dotnet",
+      "23520       1 Z dotnet",
+      "27695       1 Z dotnet",
+      "27696       1 Z dotnet",
+      "27697       1 Z dotnet"
+    ]
+  },
+  "ReadOnlySystemdEnvironmentEvidence": "evidence/gm-output-design/environment.json",
+  "SystemdFindingScope": "No existing usable user manager or writable cgroup delegation exposed in this selected environment only; not Linux-wide impossibility. No start/enable/configuration/unit creation/probe or alternate route.",
+  "NotQualified": [
+    "Native Windows execution",
+    "ConPTY/Linux PTY/real CLI/live GM",
+    "Readiness/autotrust/manual-input/automatic submit policies",
+    "Process ownership, complete stop, Release or lifecycle safety",
+    "Full B4/#1553/platform acceptance"
+  ],
+  "NextWork": "Stop at handoff. Parent selects next connected prerequisite; namespace remains pending and backend choice deferred.",
+  "SourceRestoration": {
+    "ObservedUtc": "2026-10-05T13:35:33.688593+00:00",
+    "Commit": "426b16807cd86efda3ed4d9b7e7acc77435cbc45",
+    "Tree": "2fee13c0cf0df1773a09186b1f99bc11e07b1792",
+    "Method": "Fresh GitHub-only clone into a new empty directory; no local source/object cache",
+    "RestorationDirectory": "/workspace/linux-1553-output-review-restore",
+    "RemoteShaBeforeAndAfterVerified": true,
+    "Clean": true,
+    "TrackedFiles": 5427,
+    "ChangedFilesBytesVerified": 53,
+    "QualificationInputHashesVerified": 6,
+    "ConnectivityFsck": "PASS",
+    "SourceOnlyNoBuildOrExecution": true
+  },
+  "FinalCarrier": "Final verdict metadata is published/read back and source-restored separately; exact final SHA and restoration result are recorded in local handoff to avoid self-reference."
+}

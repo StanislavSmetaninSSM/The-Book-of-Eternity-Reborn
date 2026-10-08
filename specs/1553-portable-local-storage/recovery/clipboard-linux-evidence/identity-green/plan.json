@@ -1,0 +1,135 @@
+{
+  "Categories": [
+    "clipboard-linux-adapter",
+    "clipboard-console-consumers"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "b5255b1fb96e405eb1ed195c6437b16ad5788246",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 42.8795109,
+  "Descriptors": [
+    {
+      "Name": "clipboard-console-consumers-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "clipboard-console-consumers",
+      "Categories": [
+        "clipboard-console-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_EofCannotAcceptClipboardDraft|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_ErrorThenEofPreservesDefaultWithoutAccepting|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_ManualReplacementDoesNotReplayClipboard|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_ReadOneRealSyntheticReaderThenAcceptManually|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_FailureShowsEscapedMessageAndRetainsDefaultUntilManualAcceptance|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_OnlyNewGestureCanRetryAfterError|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_PreviewIsBoundedEscapedAndDoesNotAlterDraft|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_TimeoutPreservesDefaultAndDoesNotShowReaderStderr|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_UnavailableKeepsDefaultWithoutReader|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealGetPlayerInput_LiteralShortcutIsOneReadAndRequiresManualAcceptance|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealGetPlayerInput_MultilineRouteUsesSameClipboardAndManualTerminator|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealMultiline_ClipboardDraftRequiresTwoExplicitBlankLines|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealMultiline_FailedReadPreservesManualParagraphs",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 20,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_EofCannotAcceptClipboardDraft",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_ErrorThenEofPreservesDefaultWithoutAccepting",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_ManualReplacementDoesNotReplayClipboard",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.ActualConsumers_ReadOneRealSyntheticReaderThenAcceptManually",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_FailureShowsEscapedMessageAndRetainsDefaultUntilManualAcceptance",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_OnlyNewGestureCanRetryAfterError",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_PreviewIsBoundedEscapedAndDoesNotAlterDraft",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_TimeoutPreservesDefaultAndDoesNotShowReaderStderr",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealAsk_UnavailableKeepsDefaultWithoutReader",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealGetPlayerInput_LiteralShortcutIsOneReadAndRequiresManualAcceptance",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealGetPlayerInput_MultilineRouteUsesSameClipboardAndManualTerminator",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealMultiline_ClipboardDraftRequiresTwoExplicitBlankLines",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardConsoleConsumerTests.RealMultiline_FailedReadPreservesManualParagraphs",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "clipboard-linux-adapter-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "clipboard-linux-adapter",
+      "Categories": [
+        "clipboard-linux-adapter"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_AcceptsExactStderrLimitWithoutExposingIt|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_AcceptsExactStdoutLimit|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_FailureIsTypedBoundedAndDoesNotFallback|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_LimitCountsUtf8BytesRatherThanCharacters|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_ReadsSyntheticUnicodeAndParagraphs|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_SelectsOneReadOnlyToolBeforeLaunch|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_StartupFailureIsErrorWithoutFallback|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_UnavailableDoesNotStartReader|FullyQualifiedName=BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.RealService_CaptureDebtRetainsOriginalAndRefusesUntilActualExit",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 18,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_AcceptsExactStderrLimitWithoutExposingIt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_AcceptsExactStdoutLimit",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_FailureIsTypedBoundedAndDoesNotFallback",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_LimitCountsUtf8BytesRatherThanCharacters",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_ReadsSyntheticUnicodeAndParagraphs",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_SelectsOneReadOnlyToolBeforeLaunch",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_StartupFailureIsErrorWithoutFallback",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.PublicService_UnavailableDoesNotStartReader",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ClipboardLinuxAdapterTests.RealService_CaptureDebtRetainsOriginalAndRefusesUntilActualExit",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

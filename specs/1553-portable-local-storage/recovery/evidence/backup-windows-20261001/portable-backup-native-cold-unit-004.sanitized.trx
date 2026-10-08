@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="ae934b19-0e51-4c43-87d1-e7cb0e94f24a" name="{USER}@{HOST} 2026-10-02 09:40:27" runUser="{HOST}\{USER}" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-02T09:40:27.5269188+10:00" queuing="2026-10-02T09:40:27.5269192+10:00" start="2026-10-02T09:40:23.0893976+10:00" finish="2026-10-02T09:40:27.5925214+10:00" />
+  <TestSettings name="default" id="50d59b44-cbee-47c2-8e36-c6a218f385ec">
+    <Deployment runDeploymentRoot="{USER}_{HOST}_2026-10-02_09_40_27" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="a2d9cdfa-4c31-4a55-b93e-af208e0f1492" testId="b60f164a-365f-b5ae-8284-e9fa91d913d2" testName="BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames(cut: &quot;cleanup-debt&quot;, committed: True)" computerName="{HOST}" duration="00:00:00.7432101" startTime="2026-10-02T09:40:27.4892824+10:00" endTime="2026-10-02T09:40:27.4892828+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a2d9cdfa-4c31-4a55-b93e-af208e0f1492" />
+    <UnitTestResult executionId="f0beb182-80b7-4ea0-91b2-f932890314b9" testId="0a5e4822-4c8a-2d34-8fe3-ccdc0b1a8538" testName="BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames(cut: &quot;last-member&quot;, committed: False)" computerName="{HOST}" duration="00:00:00.7733205" startTime="2026-10-02T09:40:26.7454026+10:00" endTime="2026-10-02T09:40:26.7454279+10:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f0beb182-80b7-4ea0-91b2-f932890314b9" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames(cut: &quot;cleanup-debt&quot;, committed: True)" storage="{SOURCE_ROOT}\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="b60f164a-365f-b5ae-8284-e9fa91d913d2">
+      <Execution id="a2d9cdfa-4c31-4a55-b93e-af208e0f1492" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupRecoveryTests" name="ColdRestoreAndCleanupPreserveExternalHardLinkNames" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames(cut: &quot;last-member&quot;, committed: False)" storage="{SOURCE_ROOT}\bookofeternityclient.tests\bin\debug\net8.0\bookofeternityclient.tests.dll" id="0a5e4822-4c8a-2d34-8fe3-ccdc0b1a8538">
+      <Execution id="f0beb182-80b7-4ea0-91b2-f932890314b9" />
+      <TestMethod codeBase="{SOURCE_ROOT}\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupRecoveryTests" name="ColdRestoreAndCleanupPreserveExternalHardLinkNames" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="b60f164a-365f-b5ae-8284-e9fa91d913d2" executionId="a2d9cdfa-4c31-4a55-b93e-af208e0f1492" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0a5e4822-4c8a-2d34-8fe3-ccdc0b1a8538" executionId="f0beb182-80b7-4ea0-91b2-f932890314b9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Список результатов" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="Все загруженные результаты" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)&#xD;
+[xUnit.net 00:00:00.29]   Discovering: BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.09]   Discovered:  BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:02.11]   Starting:    BookOfEternityClient.Tests&#xD;
+[xUnit.net 00:00:03.71]   Finished:    BookOfEternityClient.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

@@ -1,0 +1,47 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "0e71953b23d944f8d2e0afcd8f47378ce8de94c7",
+  "SourceResultDirectory": "20261005-113610-358-17016-d84f093e514a4918916193d7ff37d11d-categories",
+  "Command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category worker-detached-workspace -Parallelism 1 -NoBuild",
+  "Os": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Sdk": "10.0.401",
+  "Runtime": "8.0.31",
+  "PowerShell": "7.6.6",
+  "EffectiveUid": 1000,
+  "TMPDIR": "/workspace/ipc-tmp",
+  "DOTNET_PROCESSOR_COUNT": null,
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 3081429,
+      "OriginalSha256": "137f0dab5ea94b71d4400e137a7c77df8e7bffc318d2515179acac7c684ae9bf",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 334247,
+      "StoredSha256": "b2deefdca1a7424ed66422461c4e2db3df183082a549974438d6f9878dbc14b7"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 8100,
+      "OriginalSha256": "8d11aa8eaf27cef27f8394f19e26deb67495ed9c4b87992472c8b6adc8fed49a",
+      "StoredPath": "plan.json",
+      "StoredBytes": 8100,
+      "StoredSha256": "8d11aa8eaf27cef27f8394f19e26deb67495ed9c4b87992472c8b6adc8fed49a"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1414,
+      "OriginalSha256": "3447a3236d7d059e48bbf42cda3a53e6627eff93ced34322c9924badd02fea1e",
+      "StoredPath": "summary.json",
+      "StoredBytes": 1414,
+      "StoredSha256": "3447a3236d7d059e48bbf42cda3a53e6627eff93ced34322c9924badd02fea1e"
+    },
+    {
+      "Path": "worker-detached-workspace-integration-001.trx",
+      "OriginalBytes": 286049,
+      "OriginalSha256": "fec4fe6c08cc2baca1a2af84ec5cd03ae6ac4dfacb354a70c79bd757228f1839",
+      "StoredPath": "worker-detached-workspace-integration-001.trx",
+      "StoredBytes": 286049,
+      "StoredSha256": "fec4fe6c08cc2baca1a2af84ec5cd03ae6ac4dfacb354a70c79bd757228f1839"
+    }
+  ]
+}

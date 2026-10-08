@@ -1,0 +1,104 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="c2f05934-e9f9-4bfd-b591-cd2c09869391" name="b3-legacy-generation-gate-red" runUser="$USER">
+  <ns0:Times creation="2026-10-01T03:55:04.7792070-04:00" queuing="2026-10-01T03:55:04.7792071-04:00" start="2026-10-01T03:55:02.0959113-04:00" finish="2026-10-01T03:55:04.7864862-04:00" />
+  <ns0:TestSettings name="default" id="e1bce980-38c9-4d7a-8cb3-225ebb339247">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="523a3bed-3b5a-4b4c-9ccf-305bec136517" testId="6fa42029-a86e-9ed3-7e5a-350bddf95c24" testName="BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_GenerationLinkAddedAfterInitialValidationFailsClosed" computerName="$HOST" duration="00:00:00.0033232" startTime="2026-10-01T03:55:04.5948613-04:00" endTime="2026-10-01T03:55:04.5948614-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="523a3bed-3b5a-4b4c-9ccf-305bec136517" />
+    <ns0:UnitTestResult executionId="2cfb906f-a932-49d7-8a22-105b9b8704ed" testId="44ab5711-99fd-5e2f-9750-430dd61d5a40" testName="BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_SwapBackReadCannotAuthorizeExternalGeneration" computerName="$HOST" duration="00:00:00.0463116" startTime="2026-10-01T03:55:04.5530262-04:00" endTime="2026-10-01T03:55:04.5530411-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2cfb906f-a932-49d7-8a22-105b9b8704ed" />
+    <ns0:UnitTestResult executionId="eb6ecfb1-ea9f-4c55-9789-af37b9e7903b" testId="74e0b772-7458-1252-079a-6cdbdfbc6149" testName="BookOfEternityClient.Tests.PortableLegacyGenerationTests.CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal" computerName="$HOST" duration="00:00:00.0576728" startTime="2026-10-01T03:55:04.6835476-04:00" endTime="2026-10-01T03:55:04.6835478-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="eb6ecfb1-ea9f-4c55-9789-af37b9e7903b">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>The original generation read boundary was bypassed. Observed: System.PlatformNotSupportedException: Runtime authority overwrite requires a reversible opened-handle replacement backend.
+   at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 3815
+   at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeBytesAtomicCoreAsync(String path, Byte[] content, CancellationToken cancellationToken, String authorityName) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5399
+   at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeTextAtomic(String path, String content) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5184
+   at BookOfEternityClient.Core.FileSystemManager.WriteLoadTransactionJournal(LoadTransactionJournal journal) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 4452
+   at BookOfEternityClient.Core.FileSystemManager.CommitLoadTransaction(CanonicalWriteLease writeLease, String transactionId) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 4047
+   at BookOfEternityClient.Tests.PortableLegacyGenerationTests.&lt;&gt;c__DisplayClass1_0.&lt;CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal&gt;b__1() in $REPO/BookOfEternityClient.IntegrationTests/PortableLegacyGenerationTests.cs:line 52
+   at Xunit.Record.Exception(Action testCode) in /_/src/xunit.core/Record.cs:line 25</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableLegacyGenerationTests.CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal() in $REPO/BookOfEternityClient.IntegrationTests/PortableLegacyGenerationTests.cs:line 53
+   at BookOfEternityClient.Tests.PortableLegacyGenerationTests.CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal() in $REPO/BookOfEternityClient.IntegrationTests/PortableLegacyGenerationTests.cs:line 56
+   at BookOfEternityClient.Tests.PortableLegacyGenerationTests.CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal() in $REPO/BookOfEternityClient.IntegrationTests/PortableLegacyGenerationTests.cs:line 56
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="2546d018-3111-48b1-ad85-97ea4209e0a3" testId="3b9872ff-5f01-ba78-cbe4-4b498d17b82c" testName="BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_RejectsUppercaseNonCanonicalGuidText" computerName="$HOST" duration="00:00:00.0281943" startTime="2026-10-01T03:55:04.5901721-04:00" endTime="2026-10-01T03:55:04.5901724-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2546d018-3111-48b1-ad85-97ea4209e0a3" />
+    <ns0:UnitTestResult executionId="8229a2b5-d668-4055-a331-a7a2e456666b" testId="ba4d5022-9461-8e7d-102b-a015a25dafbe" testName="BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_DuplicateGenerationPropertyFailsClosed" computerName="$HOST" duration="00:00:00.0076375" startTime="2026-10-01T03:55:04.6128648-04:00" endTime="2026-10-01T03:55:04.6128651-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8229a2b5-d668-4055-a331-a7a2e456666b" />
+    <ns0:UnitTestResult executionId="9b8331ad-dac1-487c-8f2e-6b554f3065b7" testId="f48fce56-f864-5c22-b606-5a0adef0b092" testName="BookOfEternityClient.Tests.FileSystemManagerTests.RuntimeAtomicWrite_DirectoryDestinationFailsBeforeMutationHook" computerName="$HOST" duration="00:00:00.0096653" startTime="2026-10-01T03:55:04.6046784-04:00" endTime="2026-10-01T03:55:04.6046787-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9b8331ad-dac1-487c-8f2e-6b554f3065b7" />
+    <ns0:UnitTestResult executionId="7fa5f443-d227-413a-83fa-1db5b3e0f4e1" testId="5e899ead-066a-8ba7-117e-11f94643c998" testName="BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_RejectsHardLinkedGenerationAuthorityFile" computerName="$HOST" duration="00:00:00.0058243" startTime="2026-10-01T03:55:04.5583718-04:00" endTime="2026-10-01T03:55:04.5583721-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7fa5f443-d227-413a-83fa-1db5b3e0f4e1" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_RejectsHardLinkedGenerationAuthorityFile" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5e899ead-066a-8ba7-117e-11f94643c998">
+      <ns0:Execution id="7fa5f443-d227-413a-83fa-1db5b3e0f4e1" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="LegacyLoadBegin_RejectsHardLinkedGenerationAuthorityFile" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.RuntimeAtomicWrite_DirectoryDestinationFailsBeforeMutationHook" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f48fce56-f864-5c22-b606-5a0adef0b092">
+      <ns0:Execution id="9b8331ad-dac1-487c-8f2e-6b554f3065b7" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="RuntimeAtomicWrite_DirectoryDestinationFailsBeforeMutationHook" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_RejectsUppercaseNonCanonicalGuidText" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3b9872ff-5f01-ba78-cbe4-4b498d17b82c">
+      <ns0:Execution id="2546d018-3111-48b1-ad85-97ea4209e0a3" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="SessionGeneration_RejectsUppercaseNonCanonicalGuidText" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableLegacyGenerationTests.CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="74e0b772-7458-1252-079a-6cdbdfbc6149">
+      <ns0:Execution id="eb6ecfb1-ea9f-4c55-9789-af37b9e7903b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLegacyGenerationTests" name="CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_DuplicateGenerationPropertyFailsClosed" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ba4d5022-9461-8e7d-102b-a015a25dafbe">
+      <ns0:Execution id="8229a2b5-d668-4055-a331-a7a2e456666b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="SessionGeneration_DuplicateGenerationPropertyFailsClosed" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_SwapBackReadCannotAuthorizeExternalGeneration" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="44ab5711-99fd-5e2f-9750-430dd61d5a40">
+      <ns0:Execution id="2cfb906f-a932-49d7-8a22-105b9b8704ed" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="LegacyLoadBegin_SwapBackReadCannotAuthorizeExternalGeneration" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_GenerationLinkAddedAfterInitialValidationFailsClosed" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6fa42029-a86e-9ed3-7e5a-350bddf95c24">
+      <ns0:Execution id="523a3bed-3b5a-4b4c-9ccf-305bec136517" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="LegacyLoadBegin_GenerationLinkAddedAfterInitialValidationFailsClosed" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="6fa42029-a86e-9ed3-7e5a-350bddf95c24" executionId="523a3bed-3b5a-4b4c-9ccf-305bec136517" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="44ab5711-99fd-5e2f-9750-430dd61d5a40" executionId="2cfb906f-a932-49d7-8a22-105b9b8704ed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="74e0b772-7458-1252-079a-6cdbdfbc6149" executionId="eb6ecfb1-ea9f-4c55-9789-af37b9e7903b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3b9872ff-5f01-ba78-cbe4-4b498d17b82c" executionId="2546d018-3111-48b1-ad85-97ea4209e0a3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ba4d5022-9461-8e7d-102b-a015a25dafbe" executionId="8229a2b5-d668-4055-a331-a7a2e456666b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="f48fce56-f864-5c22-b606-5a0adef0b092" executionId="9b8331ad-dac1-487c-8f2e-6b554f3065b7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="5e899ead-066a-8ba7-117e-11f94643c998" executionId="7fa5f443-d227-413a-83fa-1db5b3e0f4e1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="7" executed="7" passed="6" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.55]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.88]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.90]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.12]       The original generation read boundary was bypassed. Observed: System.PlatformNotSupportedException: Runtime authority overwrite requires a reversible opened-handle replacement backend.
+[xUnit.net 00:00:02.12]          at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 3815
+[xUnit.net 00:00:02.12]          at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeBytesAtomicCoreAsync(String path, Byte[] content, CancellationToken cancellationToken, String authorityName) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5399
+[xUnit.net 00:00:02.12]          at BookOfEternityClient.Core.FileSystemManager.WriteRuntimeTextAtomic(String path, String content) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 5184
+[xUnit.net 00:00:02.12]          at BookOfEternityClient.Core.FileSystemManager.WriteLoadTransactionJournal(LoadTransactionJournal journal) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 4452
+[xUnit.net 00:00:02.12]          at BookOfEternityClient.Core.FileSystemManager.CommitLoadTransaction(CanonicalWriteLease writeLease, String transactionId) in $REPO/BookOfEternityClient/Core/FileSystemManager.cs:line 4047
+[xUnit.net 00:00:02.12]          at BookOfEternityClient.Tests.PortableLegacyGenerationTests.&lt;&gt;c__DisplayClass1_0.&lt;CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal&gt;b__1() in $REPO/BookOfEternityClient.IntegrationTests/PortableLegacyGenerationTests.cs:line 52
+[xUnit.net 00:00:02.12]          at Xunit.Record.Exception(Action testCode) in /_/src/xunit.core/Record.cs:line 25
+[xUnit.net 00:00:02.13]       Stack Trace:
+[xUnit.net 00:00:02.13]         $REPO/BookOfEternityClient.IntegrationTests/PortableLegacyGenerationTests.cs(53,0): at BookOfEternityClient.Tests.PortableLegacyGenerationTests.CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal()
+[xUnit.net 00:00:02.13]         $REPO/BookOfEternityClient.IntegrationTests/PortableLegacyGenerationTests.cs(56,0): at BookOfEternityClient.Tests.PortableLegacyGenerationTests.CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal()
+[xUnit.net 00:00:02.13]         $REPO/BookOfEternityClient.IntegrationTests/PortableLegacyGenerationTests.cs(56,0): at BookOfEternityClient.Tests.PortableLegacyGenerationTests.CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal()
+[xUnit.net 00:00:02.13]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.13]   Finished:    BookOfEternityClient.IntegrationTests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:55:04.6832462-04:00">
+        <ns0:Text>[xUnit.net 00:00:02.12]     BookOfEternityClient.Tests.PortableLegacyGenerationTests.CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

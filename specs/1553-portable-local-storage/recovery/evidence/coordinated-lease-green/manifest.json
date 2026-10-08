@@ -1,0 +1,51 @@
+{
+  "sourceCommit": "86eff080a2172cd53a53aef13538780e02ea1c6c",
+  "sourceAppliedTree": "067e2e48556e34c3132b2ecc014fedc48343e665",
+  "packetSha256": "f4630246139ccb057f7cd883fe7a1d06964ad820da455769abc0f641abd8c32b",
+  "kind": "coordinated-lease-green; exact completed selected-run evidence",
+  "sanitization": "Repository/toolchain/isolated environment paths and TRX run user/computer/deployment identifiers replaced; original and sanitized hashes retained.",
+  "command": "DOTNET_PROCESSOR_COUNT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+  "environment": "Linux x64; SDK10.0.401, .NET8.0.31, PowerShell7.6.6; existing isolated homes/temp/cache; no app/provider execution",
+  "tests": {
+    "Total": 20,
+    "Executed": 20,
+    "Passed": 20,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 20,
+    "CompletedCases": 20,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "exitCode": 0,
+  "wallTime": "00:03:43.8105979",
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "a81d74a8eb7c8bf1c0295f3a254b3c12fae4c65cd0d3b216548fb94e558edb21",
+      "sanitizedSha256": "a81d74a8eb7c8bf1c0295f3a254b3c12fae4c65cd0d3b216548fb94e558edb21"
+    },
+    {
+      "path": "portable-coordinated-lease-consumers-unit-002.trx",
+      "originalSha256": "fb100f158f43716f5c3b1d1c6f739d858cc7fcb01b06a32429404d4988f8b8c8",
+      "sanitizedSha256": "cd717246e7117407d48c0883c5ac3cf2864ce2d9cc51b19c5eb2c338a40bf1a2"
+    },
+    {
+      "path": "portable-coordinated-lease-unit-001.trx",
+      "originalSha256": "a99c13471790d0fe19017636e1b6e42ac02ac169218c5901d8c01241d311909d",
+      "sanitizedSha256": "accb5040fa2073a7941292adec306292507d0409650f0fd39878098c5601037b"
+    },
+    {
+      "path": "portable-coordinated-publication-unit-003.trx",
+      "originalSha256": "a809dee666099bde50fb85ca7682d59d4d8efc47c1ba13c765c84d78b4666da4",
+      "sanitizedSha256": "a390273b322207eb87cffe19386fb399c4de6b541d160263f3ca8fbe20daef78"
+    }
+  ],
+  "scope": "20/20: ten real-lease admission/disposal cases, four actual helper publication cases, six exact existing owning-lease/reader/trade-ordering/bound-close cases. Intermediate GREEN; guard/duplicate/preflight/caller/QTE/cold-process proof and independent review remain pending."
+}

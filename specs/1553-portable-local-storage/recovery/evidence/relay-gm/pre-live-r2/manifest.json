@@ -1,0 +1,44 @@
+{
+  "SourceReview": "relay_repair_source_review independent Sol6.1/xhigh PASS e42b7050;12artifacts/3currentSourcePins verified; narrow7cases sufficient",
+  "Catalog": {
+    "Valid": true,
+    "Categories": 423,
+    "Methods": 11161,
+    "TestsExecuted": 0
+  },
+  "Package": {
+    "Root": "/tmp/relay-live-r2",
+    "Files": 678,
+    "Bytes": 99051904,
+    "FreshUnseededGame": true,
+    "CurrentDaemonExact": true,
+    "OriginalPrebuiltHelperUnchanged": true,
+    "CLIOrProviderStarted": false
+  },
+  "Artifacts": [
+    {
+      "Path": "catalog-audit.json",
+      "Bytes": 103,
+      "SHA256": "31fd0d21ff14da33bce05c26f70fd389f18d73b36729f296e54055fa3b436973",
+      "StoredPath": "catalog-audit.json.gz",
+      "StoredBytes": 103,
+      "StoredSHA256": "7978d2d305daf6a786fd1ed4aeb6b72ba75364873615a8e7c8014ae2a1baeed1"
+    },
+    {
+      "Path": "catalog-summary.json",
+      "Bytes": 1405,
+      "SHA256": "d7ab369578e9cdf03fb0ed3a8118a8435e70ee9a348289d752869b22c321f537",
+      "StoredPath": "catalog-summary.json.gz",
+      "StoredBytes": 600,
+      "StoredSHA256": "413a2d9738ccfa1792f46a1a152d7eb0510176ea395305c74f871a2d47240fb0"
+    },
+    {
+      "Path": "package-manifest.json",
+      "Bytes": 143613,
+      "SHA256": "866c25593f9f36c38ea143f807b000cbac560de951a059231b018c5ea2c79537",
+      "StoredPath": "package-manifest.json.gz",
+      "StoredBytes": 37938,
+      "StoredSHA256": "68b3aa32311eacd043a158be93806eba1a3244f506148e771dd0867b90c87356"
+    }
+  ]
+}

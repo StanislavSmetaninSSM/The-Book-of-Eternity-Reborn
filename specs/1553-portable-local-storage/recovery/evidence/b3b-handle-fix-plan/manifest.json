@@ -1,0 +1,23 @@
+{
+  "sourceCommit": "82e30691d4c197fb560033b2f057bb622912bb0a",
+  "catalogBlobAfterPatch": "dd51f5e50a73baeed77ac23c29895b7f5a0cb7a1",
+  "kind": "newly executed b3b-handle-fix-plan; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "bd42e52dbae2080008b4691637227a6ba84eff27b4a6355d95e1ec6e58fdfdb2",
+      "sanitizedSha256": "bd42e52dbae2080008b4691637227a6ba84eff27b4a6355d95e1ec6e58fdfdb2"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "f9d1a39a5991e7bd8a3e43e9e81fc340b6e1230f442fd57a21c36d2235bde06a",
+      "sanitizedSha256": "f9d1a39a5991e7bd8a3e43e9e81fc340b6e1230f442fd57a21c36d2235bde06a"
+    }
+  ],
+  "sourceAppliedTree": "368ec7c2806fddb71c0e009823cb709673bf0a9b",
+  "selectionBlob": "7ae4542ff8b8b9833fd6817730f5ff24737db068",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly -NoBuild -Parallelism 1",
+  "platform": "Linux x64",
+  "result": "Exactly two descriptors / seven native Windows cases planned, zero tests executed on Linux. Both selected projects were freshly built by the preceding audit."
+}

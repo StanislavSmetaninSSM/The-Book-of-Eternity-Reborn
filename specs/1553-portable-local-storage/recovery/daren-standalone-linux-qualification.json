@@ -1,0 +1,633 @@
+{
+  "Task": "T031-DAREN-STANDALONE-LINUX",
+  "Status": "PASS: bounded standalone Daren Linux; final-carrier exact-tip remote/readback/restoration remain pending writer closure",
+  "AcceptedBase": "953c48f81f06ef78010bf668133e2b974934e142",
+  "DesignReview": {
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "Agent": "/root/daren_standalone_design_review",
+    "Verdict": "PASS",
+    "ReviewedCommit": "6565a441ad43a2339a75722375e103c4d3ee5ce3",
+    "ResolvedFinding": "Original absent->absent restore must not create generation/parent/journal/hooks"
+  },
+  "SourceReview": {
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "Agent": "/root/daren_standalone_source_review",
+    "Verdict": "PASS",
+    "ReviewedCommit": "f2a7e0e1564a1d127f52166ddfdafa668e95be72",
+    "ResolvedFindings": [
+      "Dispose unexpectedly acquired recovery-probe lease and assert exact InvalidDataException",
+      "Pin original early-stale SessionReplacedException expected/actual generation"
+    ]
+  },
+  "RuntimeCommit": "ac01f7733761e74daa258de3528f835963735016",
+  "LatestTestSourceCommit": "f2a7e0e1564a1d127f52166ddfdafa668e95be72",
+  "RuntimeFiles": [
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs",
+      "Bytes": 1787,
+      "Sha256": "4b41101fba008170640edcb82fce1a3a0ae36769c899335e36be2f811236bbb7",
+      "GitBlob": "a622ff4100e93ac242f9f9dbe2f8f5964492ecaf"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "Bytes": 15258,
+      "Sha256": "b93ba7fb3c4349ef73eda1136738ef9c67effffcd174d9d9988d3b05b996b325",
+      "GitBlob": "8c1d34e728eafd36d7cc6d2789d64018729bc614"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
+      "Bytes": 9852,
+      "Sha256": "04e73dcd304197c578349d22487d1e90a17fcb0675e9958c94c07fdb7a853be8",
+      "GitBlob": "192208308f48a8fbd259e3251336867e00a12db4"
+    }
+  ],
+  "ExecutedDistinctCases": 41,
+  "NewCases": 37,
+  "AffectedCases": 4,
+  "ExecutionTotalsIncludingHistoricalCausalRed": {
+    "Executed": 44,
+    "Passed": 43,
+    "Failed": 1
+  },
+  "EvidenceAudit": {
+    "Task": "T031-DAREN-STANDALONE-LINUX",
+    "ManifestSets": 8,
+    "DiscoveryOnlyInventories": [
+      {
+        "Mode": "PlanOnly",
+        "Source": "b1dc3e46cd618b90f2b496640aa753245bdfb0a7",
+        "PlannedCases": 41,
+        "PlannedDescriptors": 3,
+        "TestsExecuted": 0,
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-final-inventory/manifest.json"
+      },
+      {
+        "Mode": "ValidateCatalog",
+        "Source": "b97157ef6154bb9b85d69176ab0674f63b9d10ba",
+        "PlannedCases": 0,
+        "PlannedDescriptors": 0,
+        "TestsExecuted": 0,
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-catalog-validation/manifest.json"
+      }
+    ],
+    "ZeroWorkloadPreparationRefusals": 0,
+    "SourcePinsVerified": 391,
+    "ArtifactsVerified": 37,
+    "GzipArtifactsVerified": 15,
+    "DistinctRemovedFixtureRoots": 44,
+    "GenericRemovedFixtureReceiptsWithoutPath": 4,
+    "ExecutionTotalsIncludingSupersededFailures": {
+      "Executed": 44,
+      "Passed": 43,
+      "Failed": 1
+    },
+    "LatestDistinctCases": 41,
+    "LatestDistinctPassedCases": 41,
+    "Runs": [
+      {
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-first-red/manifest.json",
+        "Source": "00ce5557b743cb8779923c93ea120b006fa25d00",
+        "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category daren-standalone-linux",
+        "Tests": {
+          "Total": 1,
+          "Executed": 1,
+          "Passed": 0,
+          "Failed": 1
+        },
+        "Complete": true,
+        "NewRootCount": 1
+      },
+      {
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-first-green/manifest.json",
+        "Source": "ac01f7733761e74daa258de3528f835963735016",
+        "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category daren-standalone-linux",
+        "Tests": {
+          "Total": 1,
+          "Executed": 1,
+          "Passed": 1,
+          "Failed": 0
+        },
+        "Complete": true,
+        "NewRootCount": 1
+      },
+      {
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-consumers/manifest.json",
+        "Source": "9dbc67e8f4b0f6d1483650165af92491fb78094a",
+        "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category daren-standalone-linux",
+        "Tests": {
+          "Total": 6,
+          "Executed": 6,
+          "Passed": 6,
+          "Failed": 0
+        },
+        "Complete": true,
+        "NewRootCount": 6
+      },
+      {
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6",
+        "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category daren-standalone-linux-boundaries",
+        "Tests": {
+          "Total": 16,
+          "Executed": 16,
+          "Passed": 16,
+          "Failed": 0
+        },
+        "Complete": true,
+        "NewRootCount": 16
+      },
+      {
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72",
+        "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category daren-standalone-linux-boundaries",
+        "Tests": {
+          "Total": 16,
+          "Executed": 16,
+          "Passed": 16,
+          "Failed": 0
+        },
+        "Complete": true,
+        "NewRootCount": 20
+      },
+      {
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-browser-dispatch/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72",
+        "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category daren-standalone-browser-dispatch -NoBuild",
+        "Tests": {
+          "Total": 4,
+          "Executed": 4,
+          "Passed": 4,
+          "Failed": 0
+        },
+        "Complete": true,
+        "NewRootCount": 0
+      }
+    ],
+    "LatestCaseOutcomes": {
+      "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: False, fail: False)": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-browser-dispatch/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: False, fail: True)": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-browser-dispatch/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: True, fail: False)": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-browser-dispatch/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline(existed: True, fail: True)": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-browser-dispatch/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualOriginalMainFence_RefusesColdOrHeldLeaseBeforeProfilePreparation(state: 2, held: False)": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualOriginalMainFence_RefusesColdOrHeldLeaseBeforeProfilePreparation(state: 3, held: False)": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualOriginalMainFence_RefusesColdOrHeldLeaseBeforeProfilePreparation(state: 3, held: True)": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualOriginalPreparedWorker_RefusesStandaloneCompletion": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery(generationLoss: False)": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery(generationLoss: True)": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence(existed: False, phase: -1)": {
+        "When": 1791336132,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence(existed: False, phase: 0)": {
+        "When": 1791336132,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence(existed: False, phase: 1)": {
+        "When": 1791336132,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence(existed: False, phase: 2)": {
+        "When": 1791336132,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence(existed: False, phase: 3)": {
+        "When": 1791336132,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence(existed: False, phase: 4)": {
+        "When": 1791336132,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence(existed: True, phase: -1)": {
+        "When": 1791336132,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence(existed: True, phase: 0)": {
+        "When": 1791336132,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence(existed: True, phase: 1)": {
+        "When": 1791336132,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence(existed: True, phase: 2)": {
+        "When": 1791336132,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence(existed: True, phase: 3)": {
+        "When": 1791336132,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence(existed: True, phase: 4)": {
+        "When": 1791336132,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualStoreUnsupportedOriginalAuthority_RefusesBeforePreparation(mode: \"external\")": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualStoreUnsupportedOriginalAuthority_RefusesBeforePreparation(mode: \"foreign\")": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualStoreUnsupportedOriginalAuthority_RefusesBeforePreparation(mode: \"inactive\")": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualStoreUnsupportedOriginalAuthority_RefusesBeforePreparation(mode: \"pending\")": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualUndeclaredBrowserProfile_RefusesWithoutStandaloneEscape": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.HeldRealProfileWrite_SerializesActualSessionReplacement": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalBoundGenerationRevokedBeforeWrite_RefusesBeforeIntent": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalCancellationAtProfileBoundary_DoesNotPublish": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.OriginalTaskPurpose_CannotWriteStandaloneProfile": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.PublicConsoleTerminalWriteFailure_DoesNotReportCompletionOrAward": {
+        "When": 1791336295,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-admission-boundaries/manifest.json",
+        "Source": "f2a7e0e1564a1d127f52166ddfdafa668e95be72"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.RealCompletionCommittedDebt_FreshOriginalRecoveryKeepsReward(phase: 5)": {
+        "When": 1791336132,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.RealCompletionCommittedDebt_FreshOriginalRecoveryKeepsReward(phase: 8)": {
+        "When": 1791336132,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-publication-boundaries/manifest.json",
+        "Source": "dae98f3e3b8be34fbfa4620f46249c8db12524e6"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence(existed: False)": {
+        "When": 1791336003,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-consumers/manifest.json",
+        "Source": "9dbc67e8f4b0f6d1483650165af92491fb78094a"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence(existed: True)": {
+        "When": 1791336003,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-consumers/manifest.json",
+        "Source": "9dbc67e8f4b0f6d1483650165af92491fb78094a"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExistingProfileRead_NormalizesThroughRealStore(corrupt: False)": {
+        "When": 1791336003,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-consumers/manifest.json",
+        "Source": "9dbc67e8f4b0f6d1483650165af92491fb78094a"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExistingProfileRead_NormalizesThroughRealStore(corrupt: True)": {
+        "When": 1791336003,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-consumers/manifest.json",
+        "Source": "9dbc67e8f4b0f6d1483650165af92491fb78094a"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.PublicConsoleQte_CompletesOriginalStandaloneRouteWithoutBootstrap": {
+        "When": 1791336003,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-consumers/manifest.json",
+        "Source": "9dbc67e8f4b0f6d1483650165af92491fb78094a"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant": {
+        "When": 1791335800,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-first-green/manifest.json",
+        "Source": "ac01f7733761e74daa258de3528f835963735016"
+      },
+      "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.SupportedCheckAbsentRestoreAndPreCancel_HaveNoPreparationEffects": {
+        "When": 1791336003,
+        "Outcome": "Passed",
+        "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-consumers/manifest.json",
+        "Source": "9dbc67e8f4b0f6d1483650165af92491fb78094a"
+      }
+    },
+    "HistoricalWindowsChecksIncluded": 0,
+    "TestsExecutedByAudit": 0
+  },
+  "Provenance": {
+    "sdk": {
+      "Command": [
+        "dotnet",
+        "--version"
+      ],
+      "ExitCode": 0,
+      "Output": "10.0.401"
+    },
+    "runtimes": {
+      "Command": [
+        "dotnet",
+        "--list-runtimes"
+      ],
+      "ExitCode": 0,
+      "Output": "Microsoft.AspNetCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.AspNetCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.AspNetCore.App]\nMicrosoft.NETCore.App 8.0.31 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]\nMicrosoft.NETCore.App 10.0.12 [/workspace/.onboarding/tools/dotnet/shared/Microsoft.NETCore.App]"
+    },
+    "powershell": {
+      "Command": [
+        "pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-Command",
+        "$PSVersionTable.PSVersion.ToString()"
+      ],
+      "ExitCode": 0,
+      "Output": "7.5.4"
+    },
+    "compiler": {
+      "Command": [
+        "gcc",
+        "--version"
+      ],
+      "ExitCode": 0,
+      "Output": "gcc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+    },
+    "arch": {
+      "Command": [
+        "uname",
+        "-m"
+      ],
+      "ExitCode": 0,
+      "Output": "x86_64"
+    },
+    "dotnetExecutable": {
+      "Path": "/workspace/.onboarding/tools/dotnet/dotnet",
+      "Sha256": "7dda7a639bc35fba05c40d308b0296450aa4e628d109245a6312c385da9b0931"
+    },
+    "pwshExecutable": {
+      "Path": "/workspace/.onboarding/tools/pwsh/pwsh",
+      "Sha256": "e0c6c82153c6655a842602be4ea7607d4e3a137b1956668ef44d1b1b7bf939b8"
+    },
+    "gccExecutable": {
+      "Path": "/usr/bin/x86_64-linux-gnu-gcc-14",
+      "Sha256": "a23ecab8ff08f09ad8c80602c2c5df7f49e09c25905cb8975902e101bf72635f"
+    },
+    "NativeCompilationExecutedForThisSlice": false,
+    "EnvironmentChanges": false
+  },
+  "ConsoleSuccessActions": 15,
+  "PreparationFailures": 0,
+  "RepeatedSuccessfulCasesReason": "Only2 post-intent rows rerun after strengthened test assertions; first oracle RED1\u2192GREEN1. No unchanged old cohorts.",
+  "NoBuildAffectedRun": "Fresh integration build/source f2a7e0e1 immediately before4 affected rows; no code changes between runs",
+  "NoFrontendRunReason": "No frontend/protocol/handler delta",
+  "GmDocsUnchangedReason": "Existing client-owned fixed-profile storage port; reward rules/economy/fields/messages/model unchanged",
+  "HistoricalWindowsChecks": [
+    {
+      "Id": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_SessionReplacementWaitsForWholeLegacyTransaction",
+      "OriginalReason": "F2 Linux timeout before callback in legacy transaction fixture",
+      "ExecutedInThisSlice": 0,
+      "Qualified": false,
+      "Scope": "Historical legacy fixtures; actual coordinator/store consumers separately qualified by accepted T031 and this bounded path"
+    },
+    {
+      "Id": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
+      "OriginalReason": "F2 Linux timeout before callback in legacy transaction fixture",
+      "ExecutedInThisSlice": 0,
+      "Qualified": false,
+      "Scope": "Historical legacy fixtures; actual coordinator/store consumers separately qualified by accepted T031 and this bounded path"
+    },
+    {
+      "Id": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_LockReleaseFailureDoesNotRollbackCommittedMutation",
+      "OriginalReason": "F2 descriptor-bound create-only publication refused during legacy fixture preparation",
+      "ExecutedInThisSlice": 0,
+      "Qualified": false,
+      "Scope": "Historical legacy fixtures; actual coordinator/store consumers separately qualified by accepted T031 and this bounded path"
+    },
+    {
+      "Id": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ExplicitLeaseWritesWithoutAmbientAuthority",
+      "OriginalReason": "F2 descriptor-bound create-only publication refused during legacy fixture preparation",
+      "ExecutedInThisSlice": 0,
+      "Qualified": false,
+      "Scope": "Historical legacy fixtures; actual coordinator/store consumers separately qualified by accepted T031 and this bounded path"
+    }
+  ],
+  "NotQualified": [
+    "native Windows",
+    "live console/browser/game/GM/provider/model requests or real saves",
+    "systemd-user backend/setup",
+    "Codex Q1/Q2",
+    "full T031/T041/full cross-platform game",
+    "power loss/reboot salvage/cold exactly-once"
+  ],
+  "NextSliceAuthorized": false,
+  "FinalInventory": {
+    "Source": "b1dc3e46cd618b90f2b496640aa753245bdfb0a7",
+    "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-final-inventory/manifest.json",
+    "Descriptors": 3,
+    "Cases": 41,
+    "TestsExecuted": 0,
+    "Mode": "PlanOnly/NoBuild, discovery only; completed0 is intentional"
+  },
+  "CatalogValidation": {
+    "Source": "b97157ef6154bb9b85d69176ab0674f63b9d10ba",
+    "Manifest": "specs/1553-portable-local-storage/recovery/evidence/daren-standalone-catalog-validation/manifest.json",
+    "Valid": true,
+    "MethodsInventoried": 11050,
+    "Categories": 378,
+    "Unmapped": [],
+    "StaleSelectors": [],
+    "TestsExecuted": 0,
+    "FreshBuild": true,
+    "Mode": "ValidateCatalog discovery only; no full suite or other test execution",
+    "InventoryEntryMeaning": "11,050 discovered methods/files; discovery is not test qualification"
+  },
+  "CandidateRestoration": {
+    "Commit": "b97157ef6154bb9b85d69176ab0674f63b9d10ba",
+    "Tree": "98726b17b8677b7d2ae0f8d560334b5b35f8ae57",
+    "Parent": "b1dc3e46cd618b90f2b496640aa753245bdfb0a7",
+    "RestoredDirectory": "/workspace/qualification-1553-daren-standalone/candidate-github-restore",
+    "Transport": "fresh clone from GitHub HTTPS only; no local source/object/cache reuse",
+    "Clean": true,
+    "TrackedFilesByteCompared": 20686,
+    "Comparison": "each restored and writer checkout file byte-identical to independent GitHub-fetched blob",
+    "FullFsck": true,
+    "RemoteAfterRestoration": "b97157ef6154bb9b85d69176ab0674f63b9d10ba",
+    "TestsExecutedForRestoration": 0,
+    "AcceptedR3T042TerminalF1F2AndAcceptedF3Ancestry": true,
+    "AcceptedProductionMainDesignAncestry": true,
+    "AcceptedM1AndBrowserPlanAncestry": true,
+    "AcceptedT031Ancestry": true,
+    "AcceptedLoadUxAncestry": true,
+    "RestoredDarenPlan": true,
+    "RestoredDarenQualification": true,
+    "RestoredDarenHandoff": true,
+    "AcceptedDirectGachaAncestry": true,
+    "RestoredDirectGachaPlan": true,
+    "RestoredDirectGachaQualification": true,
+    "RestoredDirectGachaHandoff": true,
+    "RestoredLoadLifecyclePlan": true,
+    "RestoredLoadLifecycleQualification": true,
+    "RestoredLoadLifecycleHandoff": true,
+    "RestoredBrowserQualification": true,
+    "RestoredBrowserPlan": true,
+    "RestoredM1Qualification": true,
+    "RestoredProductionMainDesign": true,
+    "GitAlternatesPresent": false,
+    "Origin": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git"
+  },
+  "CandidateRestorationIndependentReview": {
+    "Agent": "/root/daren_standalone_final_evidence_review",
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "Verdict": "PASS",
+    "Commit": "b97157ef6154bb9b85d69176ab0674f63b9d10ba",
+    "TrackedFilesByteCompared": 20686,
+    "ReadOnlyFullFsck": true
+  },
+  "FinalEvidenceReview": {
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "Agent": "/root/daren_standalone_final_evidence_review",
+    "Verdict": "PASS",
+    "ReviewedCommit": "399564194f11e2ad336023fedceb971c2f5fa699",
+    "Findings": [],
+    "IndependentlyVerifiedManifestSets": 8,
+    "IndependentlyVerifiedSourcePins": 391,
+    "IndependentlyVerifiedArtifacts": 37,
+    "IndependentlyVerifiedGzipPayloads": 15,
+    "DistinctLatestPassedCases": 41,
+    "CandidateRestorationFilesCompared": 20686,
+    "CatalogValidationConfirmed": true
+  },
+  "FinalCarrierPolicy": {
+    "RuntimeAndTestsUnchanged": true,
+    "NormalNonForcePush": true,
+    "ExactRemoteShaAndIndependentChangedFileReadbackRequired": true,
+    "FreshGitHubOnlyExactTipRestoreRequired": true,
+    "PostPushProofLocation": "Owned host scratch and final writer response; no recursive self-SHA commit",
+    "NoTestsRepeatedForRestoration": true
+  },
+  "ProductOrAccessBlockers": [],
+  "FinalCarrier": {
+    "Changes": "Verdict/task/status/handoff metadata only; no production/test/catalog delta",
+    "ExactTipClosure": "After ordinary non-force push, require remote HEAD equality, independent changed-file byte readback, fresh GitHub-only clone and all tracked bytes/tree/parent/ancestry/clean/fsck. Exact self-referential tip proof belongs to writer final response/owned host proof, not a recursive commit.",
+    "ReviewedBase": "399564194f11e2ad336023fedceb971c2f5fa699"
+  },
+  "FinalMetadataReview": {
+    "Agent": "/root/daren_standalone_metadata_review",
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "ReviewedCommit": "cc84b7e99956a66b390f30d279788a015bd6cd1b",
+    "CorrectionsApplied": [
+      "ReviewedParent renamed ReviewedBase, preserving actual reviewed ancestor39956419",
+      "Candidate metric is20686trackedfiles byte-compared, not20686bytes",
+      "Status explicitly leaves exact-tip writer closure pending"
+    ],
+    "PreservedAdditionalMetadataAncestor": {
+      "Commit": "5be3aa31805537b88872b7b2a0a77f0162f8745e",
+      "Actor": "undetermined",
+      "ProductionTestCatalogChanges": 0
+    },
+    "CodeEvidenceVerdictUnaffected": "PASS at399564194f11e2ad336023fedceb971c2f5fa699"
+  }
+}

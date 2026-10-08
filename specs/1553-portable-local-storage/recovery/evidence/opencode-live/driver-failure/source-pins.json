@@ -1,0 +1,121 @@
+{
+  "AcceptedBase": "174761a17f1caf8bb277f5dfe8933bd6c4b92d44",
+  "FirstCorrectedCandidate": "502db8e6d298fe48e1c70affeec88bf815b10e86",
+  "FirstCorrectedSourcePins": [
+    {
+      "Path": "tests/fixtures/ProductionMain/live-game-one-turn.py",
+      "Bytes": 31449,
+      "SHA256": "ef4d9a5d8e2f2ebef415e30493286a6c88b9589d7b4f64fc4bfcc20f7692a8a0"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/driver-failure-checks.py",
+      "Bytes": 6385,
+      "SHA256": "07a53cb2255ed5695753b241fc678f165afe5befe78e73410d280d2b010be1c5"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/configured-neutral-cli.c",
+      "Bytes": 4877,
+      "SHA256": "b6fe081dd23f54df320875a9e86d01c8536ae40bd85bf1d6d726630bb6e551b4"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmLiveDriverFailureTests.cs",
+      "Bytes": 1342,
+      "SHA256": "a537e79f1779cf520f074420ebd097d1a2a97320c7f2dc6543ce98995a8d123d"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs",
+      "Bytes": 17083,
+      "SHA256": "d426256fc6602867585b82bf1941ab02c5b08b7037649224fd659a6600475632"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "Bytes": 32144,
+      "SHA256": "e9c62f8554676cffa6301a146b604ab04c75e0da5ac6229ca195b457f5e86a85"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.DriverStop.cs",
+      "Bytes": 3278,
+      "SHA256": "fda243bbf285fabb9d6dc73b952c362659bd32e94f8ec40d4ae2d5725b729b40"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1177079,
+      "SHA256": "39dc6afd8ee4902e712c905353e2dd69bd87680e2f3c299c7e58b8a88ede81f2"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 313,
+      "SHA256": "2a8f7a6579f5c073593ddd520863b51d525115a0e4bdfb41c3b03598eacaa264"
+    }
+  ],
+  "FinalSource": "0a3d963ff942244eaddd596d475025126697efc1",
+  "FinalSourcePins": [
+    {
+      "Path": "tests/fixtures/ProductionMain/live-game-one-turn.py",
+      "Bytes": 32782,
+      "SHA256": "ec98b32c64ec57bcea57f19360f02ea5c63cd0144bc3a2817080573e727fac5b"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/driver-failure-checks.py",
+      "Bytes": 9021,
+      "SHA256": "a66ed8e7e757efb03e162877df142c3fce47b9868a82a296c200ebbc0197bb57"
+    },
+    {
+      "Path": "tests/fixtures/ProductionMain/configured-neutral-cli.c",
+      "Bytes": 4877,
+      "SHA256": "b6fe081dd23f54df320875a9e86d01c8536ae40bd85bf1d6d726630bb6e551b4"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmLiveDriverFailureTests.cs",
+      "Bytes": 1712,
+      "SHA256": "ba0679c54e57b2dfdaff7e87e9ab4c1eaa61073cabf09575d70368cbae8a1f0a"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs",
+      "Bytes": 17615,
+      "SHA256": "47f4096e6c0a8aa6a5f4f3744337b5e250f554d4bd8049f649e8b0babaf91256"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "Bytes": 32144,
+      "SHA256": "e9c62f8554676cffa6301a146b604ab04c75e0da5ac6229ca195b457f5e86a85"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.DriverStop.cs",
+      "Bytes": 4405,
+      "SHA256": "a065f05e48e132e061a816f21522aa2d38945fb7e7fda997d80e8fe58350f266"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1178174,
+      "SHA256": "c6ca6030a8f2911daec131f56946ef29471a49df8fde214707d7e8df907802b7"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 594,
+      "SHA256": "21d6efb62f915b2cb672db8277024c0c78dea363f04ab0ac2f5380c307920a7b"
+    }
+  ],
+  "Environment": {
+    "SDK": "10.0.401",
+    "Net8Runtime": "8.0.31",
+    "PowerShell": "7.5.4",
+    "Compiler": "cc (Debian 14.2.0-19) 14.2.0",
+    "CompilerProvenance": "Each controlled fixture carries actual compiler path/hash/version and native package build provenance; compiler remains publisher-only"
+  },
+  "HistoricalOg10MetadataVerifiedUnchanged": [
+    "play/.boe_runtime/gm-runs/main.json",
+    "play/game_session/game_state/control/pending_turn_snapshot.authority.json",
+    "play/game_session/game_state/control/pending_turn_snapshot.json"
+  ],
+  "ProviderCallsThisBlock": 0,
+  "AcceptedAppliedTurnsThisBlock": 0,
+  "ProductionRuntimeChanged": false,
+  "NoNewNetworkAuthSettings": true,
+  "HistoricalOg10RequestVerifiedUnchanged": {
+    "Path": "/workspace/og10/play/game_session/input/turn_request.json",
+    "Bytes": 59172,
+    "SHA256": "5bc0f6ed8a9cd58455f72617bc5b7a2df56acc1060208ef828f3ac20e8c3af3e",
+    "EqualAcceptedCapturedActualRequest": true
+  }
+}

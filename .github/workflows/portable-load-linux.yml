@@ -1,0 +1,98 @@
+name: Portable load selected Linux qualification
+
+# Deliberately trigger only an edited filesystem selection or this workflow.
+# The repository permits only the three actions referenced below.
+
+on:
+  push:
+    branches:
+      - codex/1553-load-filesystem
+    paths:
+      - .github/workflows/portable-load-linux.yml
+      - tests/selections/1553-load-linux.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: portable-load-linux-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  selected-filesystem:
+    name: Selected load filesystem contracts
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      POWERSHELL_TELEMETRY_OPTOUT: '1'
+      TESTINGPLATFORM_TELEMETRY_OPTOUT: '1'
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'
+      DOTNET_GENERATE_ASPNET_CERTIFICATE: 'false'
+      DOTNET_PROCESSOR_COUNT: '1'
+      GenerateDocumentationFile: 'true'
+      NoWarn: '1591'
+
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@v4
+
+      - name: Setup compiler and target runtime
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Validate selection and record native environment
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not [OperatingSystem]::IsLinux()) { throw 'Native Linux qualification requires Linux.' }
+          $revision = git rev-parse HEAD
+          if ($LASTEXITCODE -ne 0 -or $revision -cne $env:GITHUB_SHA) { throw 'Checkout source differs from run SHA.' }
+          Import-Module ./scripts/testing/TestCategoryCatalog.psm1
+          $catalog = Read-TestCategoryCatalog ./tests/categories.json
+          $selection = Get-Content ./tests/selections/1553-load-linux.json -Raw | ConvertFrom-Json
+          if (@($selection.selections).Count -eq 0) { throw 'An explicit nonempty selection is required.' }
+          foreach ($entry in $selection.selections) {
+            $category = @($catalog.categories | Where-Object id -CEQ $entry.category)
+            if ($category.Count -ne 1) { throw "Unknown selected category: $($entry.category)" }
+            if ($category[0].requirements.frontendBuild -or @($category[0].selectors | Where-Object project -EQ frontend).Count) {
+              throw 'This filesystem qualification job does not prepare frontend artifacts.'
+            }
+          }
+          New-Item -ItemType Directory -Path TestResults -Force | Out-Null
+          @(
+            "source=$revision"
+            "os=$([Runtime.InteropServices.RuntimeInformation]::OSDescription)"
+            "architecture=$([Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)"
+            "powershell=$($PSVersionTable.PSVersion)"
+            "selection=tests/selections/1553-load-linux.json"
+            "categories=$(@($selection.selections.category) -join ',')"
+          ) | Set-Content TestResults/portable-load-linux-environment.txt
+          dotnet --info | Tee-Object -FilePath TestResults/portable-load-linux-dotnet.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build and inspect selected discovery
+        shell: pwsh
+        run: |
+          ./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-load-linux.json -PlanOnly -Parallelism 1 -TimeoutMinutes 15
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Execute only selected contracts
+        shell: pwsh
+        run: |
+          ./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-load-linux.json -NoBuild -Parallelism 1 -TimeoutMinutes 15
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Preserve source-specific results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portable-load-linux-${{ github.sha }}
+          path: |
+            TestResults/test-categories/
+            TestResults/portable-load-linux-*.txt
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,0 +1,45 @@
+{
+  "sourceHead": "195343bf955b81a1b1e225ec910940c4dc38c560",
+  "command": "source /workspace/.onboarding/activate.sh; pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1 -TimeoutMinutes 3",
+  "exitCode": 0,
+  "executed": 25,
+  "passed": 25,
+  "failed": 0,
+  "nativeWindowsExecuted": false,
+  "hostedActionsExecuted": false,
+  "cleanup": "complete",
+  "sourcePins": {
+    ".github/workflows/dotnet-ci.yml": "9c7705dfccec01ea9dee6e8f262f804ca8ace1dd0f7a65bfd2af9ba1be8bcbd7",
+    "scripts/testing/TestCategoryCatalog.psm1": "4fc817a6bd8aa32e34cf6bb7f1ff9e3557abe3e287ed1974c726f6f9a27df2d3",
+    "scripts/plan-test-ci.ps1": "0a9e17c772688a6399c50363e5a36e061d820b14a6fef5ba5c350306b13dabc3",
+    "scripts/tests/test-ci-platform.tests.ps1": "ee547224cfaf5df661cd9109ccec135d459f32ae7a9c6d49091fbc44394f8f5f",
+    "scripts/tests/test-category-catalog.tests.ps1": "dd9eb69274233da75b3b7b48c7f86e209041509db3e9ffe4ad1b4ba55a68e35f",
+    "tests/categories.json": "9d50885413f4776c32ce9069c45b4d57a8b292550c3385d83aad340dc75376d5",
+    "tests/selection.json": "1e32f4d9324ed7d5bfc94b2d311bd74f573555ee601d5164f2da9d99338ae57d"
+  },
+  "artifacts": [
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/green1/plan.json.gz",
+      "originalSize": 1942,
+      "originalSha256": "c0d62dba1488da3cf4c0e5ed30e126f9404b43e82571896fc6bc19c8f12c1e4f",
+      "storedSha256": "d380565e9c7e3d7d5c6a42d9bbb1c1858cdf544e255a51fa2e7e98b4d217abc2"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/green1/summary.json.gz",
+      "originalSize": 2793,
+      "originalSha256": "56ae5ec50acb1b0279e0a8ad9458b997e1377e0bf89e0ded0a48d7381b17bcfa",
+      "storedSha256": "bfc568f5a55926fe4dee7fae6779fd2090104e3985986a7aff7555d64bac4929"
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/ci-platform-selection/green1/dotnet-test.log.gz",
+      "originalSize": 4367,
+      "originalSha256": "7530e5f2233b7d959e6c092612f253f0091b51c103162f8264e73cb1a77f493a",
+      "storedSha256": "09c51f7ed95bd693f0eaad5207a6010ee4722f85447754bf97ea3adfc2cbe9d9"
+    }
+  ],
+  "toolchain": {
+    "PowerShell": "7.5.4",
+    "SDK": "10.0.401",
+    "NET8runtime": "8.0.31"
+  }
+}

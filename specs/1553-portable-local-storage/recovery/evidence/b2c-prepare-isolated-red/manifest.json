@@ -1,0 +1,34 @@
+{
+  "sourceCommit": "92feaddc0f7ccea7e9761e0b4bd8903d17dd3f80",
+  "catalogBlobAfterPatch": "cbe81a68b4fbfda307c0471b8bd1aa4f2a673f48",
+  "kind": "newly executed b2c-prepare-isolated-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Isolated run-root paths replaced with $RUN_ROOT; outer log LF/trailing whitespace normalized; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "670ee0a5890fc188043a2eb86ff9008c5cbaea6a44820e9ca948cf9890410993",
+      "sanitizedSha256": "670ee0a5890fc188043a2eb86ff9008c5cbaea6a44820e9ca948cf9890410993"
+    },
+    {
+      "path": "portable-console-settings-unit-001.trx",
+      "originalSha256": "c7e5f00c6d6d3adf005059eef965a748c1e958604f9982b7032436aa736e70ee",
+      "sanitizedSha256": "4c9cd258e5c7915c9bba610619c60fdb0531d6c229d011c951213d60e43de3c7"
+    },
+    {
+      "path": "invocation.log",
+      "originalSha256": "946b318d2110f7456944c9f6c248ed82b7d136cabe017cd2074c27a16cbb22e8",
+      "sanitizedSha256": "95679501b8b1217a235e988f25106e1ff95cd48deabd8e3b627c640afae32ba6"
+    }
+  ],
+  "isolation": {
+    "checkout": "Fresh verified remote checkout at sourceCommit with exact catalog patch applied once",
+    "mutableState": "Fresh independent HOME, DOTNET_CLI_HOME, NuGet caches, XDG paths, TMPDIR/TMP/TEMP and checkout build/results outputs; shared official tool binaries only",
+    "preflight": "The one pwsh process checked its actual .NET GetTempPath against the isolated TMPDIR and all three telemetry opt-outs before invoking the canonical runner",
+    "optOutsBeforeStartup": [
+      "DOTNET_CLI_TELEMETRY_OPTOUT=1",
+      "POWERSHELL_TELEMETRY_OPTOUT=1",
+      "TESTINGPLATFORM_TELEMETRY_OPTOUT=1"
+    ],
+    "originalRun": "The earlier denied/vanished run remains inconclusive; this completion does not assert its exit/cleanup."
+  }
+}

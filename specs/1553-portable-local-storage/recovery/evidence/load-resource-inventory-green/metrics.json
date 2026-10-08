@@ -1,0 +1,1459 @@
+{
+  "Source": "e593bcfa5e45502de9eb6d6b3949565f7c7881b2",
+  "Tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 1,
+    "Failed": 0
+  },
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Measurements": [
+    {
+      "Case": "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope",
+      "Outcome": "Passed",
+      "Child": {
+        "Operation": "seed",
+        "Workload": "many",
+        "HeapBytes": 805306368,
+        "Completed": true,
+        "Os": "Microsoft Windows 10.0.26200",
+        "BaselineEntryCount": 13,
+        "AdditionalIncomingCount": 8179,
+        "ArchiveEntries": 8192,
+        "ArchiveNameBytes": 2096128,
+        "ExpandedBytes": 4297369,
+        "ManifestBytes": 3242911,
+        "ArchiveBytes": 6293210,
+        "IncomingFileCount": 8191,
+        "RequestedBulkPayloadBytes": 0,
+        "OldAdditionalFileCount": 9216,
+        "OldAdditionalBytes": 1179648,
+        "PredictedPayloadFootprintBytes": 89833125,
+        "PhaseMilliseconds": 100674.3979,
+        "PhaseAllocatedBytes": 1703970576,
+        "ProcessPeakWorkingSetBytes": 122683392,
+        "Phase": "SeedCompleted"
+      },
+      "Parent": {
+        "Operation": "seed",
+        "Workload": "many",
+        "ParentTerminated": false,
+        "SampleCount": 853,
+        "SampledPeakWorkingSetBytes": 121659392,
+        "OwnedDiskPeakBytes": 12902037,
+        "PhaseSampleCount": 850,
+        "SampledPhasePeakWorkingSetBytes": 121548800,
+        "OwnedPhaseDiskPeakBytes": 12901465,
+        "ParentMilliseconds": 101802.3949,
+        "OwnedProcessExited": true,
+        "Progress": [],
+        "ChildCeilingSeconds": 180,
+        "OriginalQualification": true,
+        "DeclaredResourceQualification": true,
+        "DiagnosticOnly": false,
+        "DiskSamplingIntervalMilliseconds": 1000,
+        "DiskSampleCount": 92,
+        "PhaseDiskSampleCount": 90,
+        "PhaseStartedParentMilliseconds": 838.7814,
+        "PhaseStoppedParentMilliseconds": 101670.6947,
+        "DiskSampleMilliseconds": 5022.0823,
+        "MaximumDiskSampleMilliseconds": 80.8211
+      },
+      "Stderr": ""
+    },
+    {
+      "Case": "BookOfEternityClient.Tests.PortableLoadResourceTests.ActualManyMemberPublicationFitsDeclaredLoadResourceEnvelope",
+      "Outcome": "Passed",
+      "Child": {
+        "Operation": "publication",
+        "Workload": "many",
+        "HeapBytes": 805306368,
+        "Completed": true,
+        "Os": "Microsoft Windows 10.0.26200",
+        "Seed": {
+          "Operation": "seed",
+          "Workload": "many",
+          "HeapBytes": 805306368,
+          "Completed": true,
+          "Os": "Microsoft Windows 10.0.26200",
+          "BaselineEntryCount": 13,
+          "AdditionalIncomingCount": 8179,
+          "ArchiveEntries": 8192,
+          "ArchiveNameBytes": 2096128,
+          "ExpandedBytes": 4297369,
+          "ManifestBytes": 3242911,
+          "ArchiveBytes": 6293210,
+          "IncomingFileCount": 8191,
+          "RequestedBulkPayloadBytes": 0,
+          "OldAdditionalFileCount": 9216,
+          "OldAdditionalBytes": 1179648,
+          "PredictedPayloadFootprintBytes": 89833125,
+          "PhaseMilliseconds": 100674.3979,
+          "PhaseAllocatedBytes": 1703970576,
+          "ProcessPeakWorkingSetBytes": 122044416,
+          "Phase": "SeedCompleted"
+        },
+        "MetadataLength": 9194739,
+        "FrameBytes": 11436329,
+        "MemberCount": 17441,
+        "TransactionId": "00acdd55dcca45e1862a6c46119ec664",
+        "CommittedInput": true,
+        "GenerationBefore": "//57ACAAIgBzAEMAaABlAG0AYQBWAGUAcgBzAGkAbwBuACIAOgAxACwAIAAiAGcARQBuAGUAcgBhAHQAaQBvAG4ASQBkACIAOgAiADAAMQAyADMANAA1ADYANwA4ADkAYQBiAGMAZABlAGYAMAAxADIAMwA0ADUANgA3ADgAOQBhAGIAYwBkAGUAZgAiACwAIAAiAGUAeAB0AGUAbgBzAGkAbwBuACIAOgB7ACIAYwBvAGwAZAAiADoAIgBvAGwAZAAiAH0AIAB9AA==",
+        "GenerationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJiZDkwYjc3ODZlZTg0Njc1ODVlMDM5Mzc0OGQ4NzMzMiJ9",
+        "GenerationAfterId": "bd90b7786ee8467585e0393748d87332",
+        "PhaseMilliseconds": 393583.1432,
+        "PhaseAllocatedBytes": 20120516992,
+        "ProcessPeakWorkingSetBytes": 260673536,
+        "Disposition": "Committed",
+        "NeedsFollowUp": false,
+        "ContinuationBlocked": false,
+        "EstablishedGeneration": "bd90b7786ee8467585e0393748d87332",
+        "CommittedObserverCount": 1,
+        "PublicationObserverCount": 43022,
+        "PreparedBoundaryObserved": true,
+        "VerifiedNamespace": true,
+        "VerifiedGeneration": true,
+        "VerifiedProtected": true,
+        "VerifiedFiles": 8195,
+        "VerifiedDirectories": 35,
+        "GenerationBytes": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJiZDkwYjc3ODZlZTg0Njc1ODVlMDM5Mzc0OGQ4NzMzMiJ9",
+        "SourceSha256": "22AD9D7C4A5D318FBB3FCA6DF78B2293786615C40BD92B8E3A327B400353FEF9",
+        "ConfigSha256": "84C2B85DD71ED29220710D89A43ABC7D4EB28A2B278E02AA13C27F4146EFC6C4",
+        "HistorySha256": "AE1BD317C783ECCA1D8F1A5B54F481379D8D144BC4370AECB16803DA43CA89E4",
+        "SoulSha256": "2BEE4900F50939CA4C730E4826BC5A7CD0E27388C8F1C9DA476A9B587A54C613",
+        "After": true,
+        "Phase": "TypedLoadCommitted"
+      },
+      "Parent": {
+        "Operation": "publication",
+        "Workload": "many",
+        "ParentTerminated": false,
+        "SampleCount": 4351,
+        "SampledPeakWorkingSetBytes": 260251648,
+        "OwnedDiskPeakBytes": 36697323,
+        "PhaseSampleCount": 3228,
+        "SampledPhasePeakWorkingSetBytes": 224178176,
+        "OwnedPhaseDiskPeakBytes": 36697323,
+        "ParentMilliseconds": 530955.412,
+        "OwnedProcessExited": true,
+        "Progress": [
+          {
+            "ParentMilliseconds": 55363.6087,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "PreparedRevalidationBeforeLeaseStarted",
+              "Index": 0,
+              "ChildMilliseconds": 55109.44,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 74377.0584,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "PreparedRevalidationBeforeLeaseCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 74148.6409,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 74486.0948,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "LeaseAcquisitionStarted",
+              "Index": 0,
+              "ChildMilliseconds": 74148.8649,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 74486.2471,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CanonicalLockOpened",
+              "Index": 0,
+              "ChildMilliseconds": 74162.2384,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 74610.2592,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "LeaseAcquisitionCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 74250.8919,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 74610.3125,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "PreparedRevalidationAfterLeaseStarted",
+              "Index": 0,
+              "ChildMilliseconds": 74260.6243,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 93220.0814,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "PreparedRevalidationAfterLeaseCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 93019.0869,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 93330.0185,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "LiveCaptureStarted",
+              "Index": 0,
+              "ChildMilliseconds": 93023.1121,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 108799.7406,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "LiveCaptureCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 108639.8595,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 108909.23,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "PlanCreationStarted",
+              "Index": 0,
+              "ChildMilliseconds": 108640.0557,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 111008.9243,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "PlanCreationCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 110855.4242,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 111120.0064,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberMappingStarted",
+              "Index": 0,
+              "ChildMilliseconds": 110857.7145,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 115578.2399,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberMappingCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 115379.2386,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 115687.8716,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "ManagerRevalidationStarted",
+              "Index": 0,
+              "ChildMilliseconds": 115381.8923,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 134120.1208,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "ManagerCandidateRevalidated",
+              "Index": 0,
+              "ChildMilliseconds": 133974.7793,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 134229.5902,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespaceJournalValidationStarted",
+              "Index": 0,
+              "ChildMilliseconds": 133981.6895,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 153814.1191,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespaceJournalValidationCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 153624.5375,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 154017.715,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightStarted",
+              "Index": 0,
+              "ChildMilliseconds": 153625.4858,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 175295.8292,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 175122.4743,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 175418.8597,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "ManagerAdmissionCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 175122.6401,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 175543.4794,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 1,
+              "ChildMilliseconds": 175194.3738,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 175652.0605,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 1000,
+              "ChildMilliseconds": 175472.4785,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 175980.1622,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 2000,
+              "ChildMilliseconds": 175718.2038,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 176198.676,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 3000,
+              "ChildMilliseconds": 175987.6809,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 176416.7031,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 4000,
+              "ChildMilliseconds": 176241.7901,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 176741.7881,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 5000,
+              "ChildMilliseconds": 176509.481,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 176974.5865,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 6000,
+              "ChildMilliseconds": 176748.5045,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 177178.0211,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 7000,
+              "ChildMilliseconds": 177029.2169,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 177505.2686,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 8000,
+              "ChildMilliseconds": 177254.5909,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 177722.8673,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 9000,
+              "ChildMilliseconds": 177485.934,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 177940.1762,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 10000,
+              "ChildMilliseconds": 177750.152,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 178393.6758,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 11000,
+              "ChildMilliseconds": 178017.2172,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 178502.4846,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 12000,
+              "ChildMilliseconds": 178296.5274,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 178719.5389,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 13000,
+              "ChildMilliseconds": 178538.9832,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 179047.9816,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 14000,
+              "ChildMilliseconds": 178833.4687,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 179268.8864,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 15000,
+              "ChildMilliseconds": 179088.6843,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 179595.5378,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 16000,
+              "ChildMilliseconds": 179363.1676,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 179827.0492,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MutationAdmission",
+              "Index": 17000,
+              "ChildMilliseconds": 179643.7154,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 179935.191,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "ManagerRevalidationStarted",
+              "Index": 0,
+              "ChildMilliseconds": 179746.7872,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 198841.0804,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "ManagerCandidateRevalidated",
+              "Index": 0,
+              "ChildMilliseconds": 198655.0407,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 198965.1866,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespaceJournalValidationStarted",
+              "Index": 0,
+              "ChildMilliseconds": 198657.378,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 217925.7299,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespaceJournalValidationCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 217633.1792,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 218036.3385,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightStarted",
+              "Index": 0,
+              "ChildMilliseconds": 217633.2318,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 239531.231,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 239333.4644,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 239640.2715,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "ManagerAdmissionCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 239333.5194,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 239640.2981,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespaceJournalValidationStarted",
+              "Index": 0,
+              "ChildMilliseconds": 239341.1857,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 259081.9715,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespaceJournalValidationCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 258915.8979,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 259191.2923,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightStarted",
+              "Index": 0,
+              "ChildMilliseconds": 258915.9609,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 281243.4236,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 281011.0202,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 285013.6371,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "IntentFrameWriteStarted",
+              "Index": 0,
+              "ChildMilliseconds": 284854.9566,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 303542.4845,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "IntentFrameWriteCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 303295.8387,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 303651.4978,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "IntentStaged",
+              "Index": -1,
+              "ChildMilliseconds": 303297.9258,
+              "RequiresDiskSample": true
+            }
+          },
+          {
+            "ParentMilliseconds": 303853.5298,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "IntentPublished",
+              "Index": -1,
+              "ChildMilliseconds": 303598.9854,
+              "RequiresDiskSample": true
+            }
+          },
+          {
+            "ParentMilliseconds": 304380.9717,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightStarted",
+              "Index": 0,
+              "ChildMilliseconds": 304187.0561,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 325388.6601,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 325160.7974,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 327321.4561,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 9000,
+              "ChildMilliseconds": 327137.3469,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 329247.0729,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 10000,
+              "ChildMilliseconds": 329071.2715,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 331354.6075,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 11000,
+              "ChildMilliseconds": 331149.249,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 333285.6871,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 12000,
+              "ChildMilliseconds": 333117.3561,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 335526.1385,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 13000,
+              "ChildMilliseconds": 335245.3586,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 337375.868,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 14000,
+              "ChildMilliseconds": 337173.5139,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 339971.0309,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 15000,
+              "ChildMilliseconds": 339665.1849,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 342120.1091,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 16000,
+              "ChildMilliseconds": 341924.339,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 344251.3301,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 17000,
+              "ChildMilliseconds": 344057.9333,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 356266.3823,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberStaged",
+              "Index": 1000,
+              "ChildMilliseconds": 355969.2965,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 356376.3422,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 1000,
+              "ChildMilliseconds": 355971.8101,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 360934.9423,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberStaged",
+              "Index": 2000,
+              "ChildMilliseconds": 360749.8229,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 361044.9815,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 2000,
+              "ChildMilliseconds": 360751.338,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 365531.7847,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberStaged",
+              "Index": 3000,
+              "ChildMilliseconds": 365381.0289,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 365701.76,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 3000,
+              "ChildMilliseconds": 365382.7939,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 370382.9293,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberStaged",
+              "Index": 4000,
+              "ChildMilliseconds": 370171.8373,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 370492.0205,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 4000,
+              "ChildMilliseconds": 370173.3812,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 375144.2871,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberStaged",
+              "Index": 5000,
+              "ChildMilliseconds": 374893.4937,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 375254.1071,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 5000,
+              "ChildMilliseconds": 374897.8033,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 379874.1961,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberStaged",
+              "Index": 6000,
+              "ChildMilliseconds": 379641.0435,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 379981.5547,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 6000,
+              "ChildMilliseconds": 379642.5071,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 385076.8672,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberStaged",
+              "Index": 7000,
+              "ChildMilliseconds": 384856.8721,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 385186.5849,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 7000,
+              "ChildMilliseconds": 384859.4794,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 391020.2123,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberStaged",
+              "Index": 8000,
+              "ChildMilliseconds": 390776.5853,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 391129.0293,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "MemberPublished",
+              "Index": 8000,
+              "ChildMilliseconds": 390779.2811,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 392313.1978,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightStarted",
+              "Index": 0,
+              "ChildMilliseconds": 392120.3242,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 413364.4067,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 413117.1805,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 428045.5733,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CommitStaged",
+              "Index": -1,
+              "ChildMilliseconds": 427881.4688,
+              "RequiresDiskSample": true
+            }
+          },
+          {
+            "ParentMilliseconds": 428264.9156,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightStarted",
+              "Index": 0,
+              "ChildMilliseconds": 428007.2885,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 448579.5788,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 448350.7817,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 448687.3752,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "Committed",
+              "Index": -1,
+              "ChildMilliseconds": 448361.467,
+              "RequiresDiskSample": true
+            }
+          },
+          {
+            "ParentMilliseconds": 449510.3043,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightStarted",
+              "Index": 0,
+              "ChildMilliseconds": 449300.1517,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 470552.0462,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 470396.2042,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 472356.9124,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 1000,
+              "ChildMilliseconds": 472104.7559,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 474071.7724,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 2000,
+              "ChildMilliseconds": 473879.9291,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 475844.8858,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 3000,
+              "ChildMilliseconds": 475654.0752,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 477603.8464,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 4000,
+              "ChildMilliseconds": 477403.5098,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 479238.3788,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 5000,
+              "ChildMilliseconds": 479040.8567,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 480976.3202,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 6000,
+              "ChildMilliseconds": 480740.0922,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 482721.2839,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 7000,
+              "ChildMilliseconds": 482542.7056,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 484622.728,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 8000,
+              "ChildMilliseconds": 484390.1453,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 486314.6374,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 9000,
+              "ChildMilliseconds": 486120.7628,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 487827.6235,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 10000,
+              "ChildMilliseconds": 487676.1183,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 489474.4493,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 11000,
+              "ChildMilliseconds": 489250.4697,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 490745.9078,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 12000,
+              "ChildMilliseconds": 490584.5702,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 492367.1917,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 13000,
+              "ChildMilliseconds": 492180.5822,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 494014.5032,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 14000,
+              "ChildMilliseconds": 493828.4907,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 495746.7315,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 15000,
+              "ChildMilliseconds": 495537.2008,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 497285.5035,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 16000,
+              "ChildMilliseconds": 497129.0481,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 498917.879,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupMember",
+              "Index": 17000,
+              "ChildMilliseconds": 498721.0325,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 499557.2097,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightStarted",
+              "Index": 0,
+              "ChildMilliseconds": 499382.0033,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 517852.0295,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "NamespacePreflightCompleted",
+              "Index": 0,
+              "ChildMilliseconds": 517704.4035,
+              "RequiresDiskSample": false
+            }
+          },
+          {
+            "ParentMilliseconds": 517961.7019,
+            "Event": {
+              "Phase": "OperationProgress",
+              "Operation": "publication",
+              "HeapBytes": 805306368,
+              "Boundary": "CleanupComplete",
+              "Index": -1,
+              "ChildMilliseconds": 517709.3747,
+              "RequiresDiskSample": true
+            }
+          }
+        ],
+        "ChildCeilingSeconds": 600,
+        "OriginalQualification": false,
+        "DeclaredResourceQualification": true,
+        "DiagnosticOnly": false,
+        "DiskSamplingIntervalMilliseconds": 1000,
+        "DiskSampleCount": 459,
+        "PhaseDiskSampleCount": 340,
+        "PhaseStartedParentMilliseconds": 55129.5683,
+        "PhaseStoppedParentMilliseconds": 449052.6165,
+        "DiskSampleMilliseconds": 42974.330500000025,
+        "MaximumDiskSampleMilliseconds": 138.4864
+      },
+      "Stderr": ""
+    }
+  ]
+}

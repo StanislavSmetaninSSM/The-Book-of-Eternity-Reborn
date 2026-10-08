@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "2bc28a21734ef504f4e485c1f4bfbfb51100000f",
+  "catalogBlobAfterPatch": "a290e401e39ab1bc4fa8460114c21634c4bba455",
+  "kind": "newly executed b3b-proposal-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Isolated run-root paths replaced; LF/trailing whitespace normalized; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "ead2d6ec9cffe93df5b9614eac6417434acfd62ecbd6bf9846793f92f7206b40",
+      "sanitizedSha256": "ead2d6ec9cffe93df5b9614eac6417434acfd62ecbd6bf9846793f92f7206b40"
+    },
+    {
+      "path": "portable-proposal-admission-unit-001.trx",
+      "originalSha256": "c363d8ba0f9417e86914c626da60325018568a8bdaf62bfd4481dcf0b49cea9e",
+      "sanitizedSha256": "ffa1ae0080d814d796275545f08fa3f6b82de9d626ba8e1a95318087b05a98ef"
+    }
+  ],
+  "appliedSourceTree": "d842e0ca660782dc4d30858821d4138130ab3a96",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-proposal-admission -Parallelism 1",
+  "interpretation": "8 executed, 5 passes and 3 intended failures on the actual store path: empty/nested destinations were rejected before reaching the backend; a regular file destination reached the unsupported Linux directory backend. No successful Linux proposal publication or Windows execution is claimed."
+}

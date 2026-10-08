@@ -1,0 +1,58 @@
+{
+  "Categories": [
+    "portable-worker-transaction"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "de31cc57056fcc114f75b1c4f0a4a302579a4fcd",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 115.7001689,
+  "Descriptors": [
+    {
+      "Name": "portable-worker-transaction-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-transaction",
+      "Categories": [
+        "portable-worker-transaction"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.CommitCleanupFailurePreservesCommitForNextWriter|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.CompleteSetRemainsPendingUntilExplicitDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.LateBaselineMismatchRefusesWholeSetWithoutMutation|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.MissingGenerationIsNotInventedByWorkerAdmission|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.OldHandleCannotCommitOrRollbackNewerDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDecisionRefusesNestedPublicationAndRecoveryWithoutUndo|FullyQualifiedName=BookOfEternityClient.Tests.PortableWorkerTransactionTests.RollbackPreflightsLateUnknownMemberAndGenerationBeforeAnyRestore",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 15,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.CommitCleanupFailurePreservesCommitForNextWriter",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.CompleteSetRemainsPendingUntilExplicitDecision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.LateBaselineMismatchRefusesWholeSetWithoutMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.MissingGenerationIsNotInventedByWorkerAdmission",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.OldHandleCannotCommitOrRollbackNewerDecision",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.PendingDecisionRefusesNestedPublicationAndRecoveryWithoutUndo",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableWorkerTransactionTests.RollbackPreflightsLateUnknownMemberAndGenerationBeforeAnyRestore",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

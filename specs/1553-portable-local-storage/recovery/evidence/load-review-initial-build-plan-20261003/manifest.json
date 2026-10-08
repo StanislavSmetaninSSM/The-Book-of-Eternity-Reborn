@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-B1 connected ordinary load entry",
+  "sourceCommit": "654a1bdcc9e63d4ab036b5d70cc32951c54d4052",
+  "sourceTree": "c800a5dcb5f7a866fb262e699fe5a62e09680bab",
+  "sourceWorkingTree": {
+    "Head": "654a1bdcc9e63d4ab036b5d70cc32951c54d4052",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly",
+  "workingDirectory": "/repo",
+  "platform": {
+    "os": "Debian 13 Linux",
+    "architecture": "x64",
+    "dotnetSdk": "10.0.401",
+    "targetRuntime": "8.0.31",
+    "pwsh": "7.6.6"
+  },
+  "environment": {
+    "telemetry": "off",
+    "certificateGeneration": false,
+    "DOTNET_PROCESSOR_COUNT": 1,
+    "HOME_CODEX_HOME": "unchanged",
+    "mutableState": "owned CLI/XDG/HTTP/plugin/scratch/temp, reused immutable package cache"
+  },
+  "planOnly": true,
+  "wallTime": "00:03:49.4131828",
+  "exitCode": 0,
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 16,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-load-alias-admission-integration-001",
+      "portable-load-outcomes-integration-002"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "cases": [],
+  "sourceIdentities": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/PortableLoadReplacementTests.cs",
+      "sha256": "eb8dfdffe41b857daf09e9323b5cde7cfc931afbf88e608069570bfa76489032",
+      "gitBlob": "fc2779db3dce872dcfabeb35fa1093cdf6f2eef8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.Loading.cs",
+      "sha256": "2fb12e210050bbd7293b9abbd1ec0e45fbd0a916648e526abff5def43a40a7fa",
+      "gitBlob": "8c2e799c07e4e17bab8d8d2fb62f7f79400adec4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "sha256": "30f0446f53bd74e385f712909e3253737ff30c3a63cbf881b7118fcca2ef0c5a",
+      "gitBlob": "b174e752492c12cdeb4cee1bdb144692d27dd815"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+      "sha256": "a3c3125953985a95996c7eb21295f3e9f1daa8156e4b97150860854aa5e85941",
+      "gitBlob": "f55330f7d0b68f17585c8912c90054520e8e5b7c"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StateManager.LocalSettings.cs",
+      "sha256": "4c8b6defec4d8ba56be1e78769c72da9706ef6fdf437f5d44adfe469dd782403",
+      "gitBlob": "111ff18c46a5d0613db57545f191896ca4f4e710"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+      "sha256": "13b716101e4f111435e5a7bf5fe5fa0083b4904b60a0cec920d9512b6efcc885",
+      "gitBlob": "86c82a62e138164a7e8158b9aa7adef0fe742916"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "sha256": "158838814f3d55c1669538e9bc0e4d2593b3d4adf356901007609d779fc68d9d",
+      "gitBlob": "69d480b2cc10c640dcf79cd906f8a59263eba4e3"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "ad100bb828af55c77244b883f59dc5d1b060b419943d1e2280fc533b7e3e673b",
+      "gitBlob": "6793a786382513f3940ff5f2c389f8f1e5116ea7"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "c2851b69e81a1bc2ed54451b5654278944f441c8dba99950daf3a245de936356",
+      "gitBlob": "7d4d0bd2727493f07be976560ceb78e156d63771"
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "sha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "gitBlob": "0576b2e34e5c0c5d164c173a9961a67c965c5509"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "Build-integration.log",
+      "originalSha256": "d32b16bb167fead776b93007ccb448053f26d44ff51aba9b97eaf44df3bb9781",
+      "originalBytes": 6259,
+      "embedded": true,
+      "sha256": "906b7034ba29c3784507c6436d1545b55e0d0b689b3272e85f6786e776aa99c0"
+    },
+    {
+      "name": "dotnet-test.log",
+      "originalSha256": "6960b88bc50e0b3dce817fc54c8eb70f9b401f16db82f48da5b2d8c56a5a5b3a",
+      "originalBytes": 1479580,
+      "embedded": false,
+      "reason": "Oversized discovery log; exact hash retained, causal TRX, build, plan and summary embedded"
+    },
+    {
+      "name": "plan.json",
+      "originalSha256": "0a29e587a689c95a23d1d79ea6cd11b6405ae8b49105932687f1a4f608ca1114",
+      "originalBytes": 4245,
+      "embedded": true,
+      "sha256": "0a29e587a689c95a23d1d79ea6cd11b6405ae8b49105932687f1a4f608ca1114"
+    },
+    {
+      "name": "summary.json",
+      "originalSha256": "f0c35ac0311ce78ee88076b92fbc23b881e00015849bd04cbb034aaf1398e0cb",
+      "originalBytes": 2565,
+      "embedded": true,
+      "sha256": "f0c35ac0311ce78ee88076b92fbc23b881e00015849bd04cbb034aaf1398e0cb"
+    }
+  ],
+  "interpretation": "Fresh build succeeded and discovered sixteen cases; no tests executed. The eight blanket case-refusal expectations were corrected after producer source verification before their runtime execution."
+}

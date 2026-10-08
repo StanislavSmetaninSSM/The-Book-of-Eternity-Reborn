@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "6f2e95e356e977199717fef57863b4dcf288720f",
+  "kind": "newly executed b3-generation-reader-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained. Run-root paths replaced; line endings LF and trailing line whitespace stripped; original hashes retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "65c11332afdb84a104b30ce0d02e5bf05dff10bc869083cec4545ff0acc7edc6",
+      "sanitizedSha256": "65c11332afdb84a104b30ce0d02e5bf05dff10bc869083cec4545ff0acc7edc6"
+    },
+    {
+      "path": "portable-session-generation-unit-001.trx",
+      "originalSha256": "fac3e8e8bc0ed8ddf0b7ef847879794bf02b5b96c71d41afb41ea92ea60a710a",
+      "sanitizedSha256": "5ec684201bd1326d796489e3ef400f3f9fe477e90d0f2e927c1d5d6ffca6f7cf"
+    }
+  ],
+  "catalogBlob": "e69c166820095b9b42140ab9ce78b3f848cd076d",
+  "failureClasses": {
+    "snapshotStub": 20,
+    "boundedExistingReaderFifoTimeout": 4
+  }
+}

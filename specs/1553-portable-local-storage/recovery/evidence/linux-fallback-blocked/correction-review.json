@@ -1,0 +1,10 @@
+{
+  "Model": "gpt-6.1-sol",
+  "Effort": "xhigh",
+  "Agent": "/root/fallback_design_review",
+  "Source": "04fd23f5dec35cfd447b05787129faab88d535bd",
+  "Verdict": "P1 guardian preflight/reap and P2 clock-abort fixes PASS on read-only review",
+  "RuntimeByReviewer": false,
+  "NativeBackendQualified": false,
+  "CompleteEvidenceReview": "Pending; owner requested immediate disconnect handoff"
+}

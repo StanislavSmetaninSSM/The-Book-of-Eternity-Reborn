@@ -1,0 +1,109 @@
+{
+  "Categories": [
+    "portable-storage-stream-cold-conflicts",
+    "portable-storage-image-admission",
+    "portable-storage-stream-generation"
+  ],
+  "Reasons": [
+    {
+      "contracts": [
+        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+      ],
+      "reason": "T032-A1 remaining bounded prerequisites: corrected negative fixture, actual pre-intent fences and generation/empty cold ordering. Prior format/resource GREEN retained; Linux FIFO has a separate unexecuted owner.",
+      "category": "portable-storage-stream-cold-conflicts"
+    },
+    {
+      "contracts": [
+        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+      ],
+      "reason": "T032-A1 remaining bounded prerequisites: corrected negative fixture, actual pre-intent fences and generation/empty cold ordering. Prior format/resource GREEN retained; Linux FIFO has a separate unexecuted owner.",
+      "category": "portable-storage-image-admission"
+    },
+    {
+      "contracts": [
+        "#1553 FR-004/005/006/007; save-resource-gate.md prerequisite"
+      ],
+      "reason": "T032-A1 remaining bounded prerequisites: corrected negative fixture, actual pre-intent fences and generation/empty cold ordering. Prior format/resource GREEN retained; Linux FIFO has a separate unexecuted owner.",
+      "category": "portable-storage-stream-generation"
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "23d94fb711b262eb024dfa6a028e190fbaa4ec17",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-storage-image-admission",
+      "Seconds": 5.95865,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-stream-cold-conflicts",
+      "Seconds": 10.4598959,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-storage-stream-generation",
+      "Seconds": 11.1494751,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.4556194,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.0270096,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.1129636,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 144.4030439,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0132372,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 13,
+  "WallTime": "00:03:03.3904084",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 14,
+    "CompletedCases": 14,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 14,
+    "Executed": 14,
+    "Passed": 14,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

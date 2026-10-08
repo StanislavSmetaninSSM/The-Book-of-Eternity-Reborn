@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="3c9dad9c-7444-498c-bb3c-aeffcd674d31" name="@c7669543e9c7 2026-10-06 08:16:45" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T08:16:45.1011498+00:00" queuing="2026-10-06T08:16:45.1011499+00:00" start="2026-10-06T08:16:42.2033628+00:00" finish="2026-10-06T08:16:45.1081398+00:00" />
+  <TestSettings name="default" id="6c074412-d144-4f4c-9677-db68c5cb651c">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_08_16_45" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="54e4e8bc-a353-4ca1-9e94-dd4caedef387" testId="4d977c4e-2329-2753-cc93-e46471de87f9" testName="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_EmitsTerminalErrorWhenBridgeReturnsIdleWithoutTerminalSignal" computerName="c7669543e9c7" duration="00:00:00.0077252" startTime="2026-10-06T08:16:44.9547119+00:00" endTime="2026-10-06T08:16:44.9547120+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="54e4e8bc-a353-4ca1-9e94-dd4caedef387" />
+    <UnitTestResult executionId="84430329-7d23-48e0-8c88-92cbaa39ac24" testId="2ee40af5-08d5-529a-da50-c818ab59efe3" testName="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_RetriesWhenGmBridgeIsBusy" computerName="c7669543e9c7" duration="00:00:00.0013150" startTime="2026-10-06T08:16:44.9560643+00:00" endTime="2026-10-06T08:16:44.9560644+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="84430329-7d23-48e0-8c88-92cbaa39ac24" />
+    <UnitTestResult executionId="b84a6c91-8528-4e03-aa11-b55f8f55c158" testId="95e0a01c-1a65-6eb0-9fab-8599af802611" testName="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnTimeout_ShutsDownBridgeBeforeWritingTimeoutTerminalError" computerName="c7669543e9c7" duration="00:00:00.0343120" startTime="2026-10-06T08:16:44.9906175+00:00" endTime="2026-10-06T08:16:44.9906177+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b84a6c91-8528-4e03-aa11-b55f8f55c158" />
+    <UnitTestResult executionId="49518331-2e36-4ce2-b372-f0fd9767d773" testId="6beb005c-0d4d-cc1e-058e-5704236dd4c6" testName="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_EmitsEarlyTerminalErrorWhenBridgeStallsWhilePreparingArtifacts" computerName="c7669543e9c7" duration="00:00:00.0093601" startTime="2026-10-06T08:16:44.9552599+00:00" endTime="2026-10-06T08:16:44.9552600+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="49518331-2e36-4ce2-b372-f0fd9767d773" />
+    <UnitTestResult executionId="91acb98a-e356-406f-acfc-eacbd55a7bfe" testId="bd6dff3b-8dae-3f71-b2f9-164511c1ce99" testName="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTerminalProtocolDispatch_RetriesWhenGmBridgeIsBusy" computerName="c7669543e9c7" duration="00:00:00.0093582" startTime="2026-10-06T08:16:44.9506037+00:00" endTime="2026-10-06T08:16:44.9506191+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="91acb98a-e356-406f-acfc-eacbd55a7bfe" />
+    <UnitTestResult executionId="c792b8d4-ab61-4fb3-873e-f36fed64a2b0" testId="29ae6847-5531-fd6a-2908-52e8d9e862ca" testName="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnDispatch_EmitsTerminalErrorWhenBridgePipeNeverAcceptsDispatch" computerName="c7669543e9c7" duration="00:00:00.0043543" startTime="2026-10-06T08:16:45.0036515+00:00" endTime="2026-10-06T08:16:45.0036516+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c792b8d4-ab61-4fb3-873e-f36fed64a2b0" />
+    <UnitTestResult executionId="a31a2b6d-6123-46c3-8843-20b8fe7b2a7b" testId="3e5e2b2b-4094-344a-fe38-8357581a3990" testName="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_TimesOutAndPublishesStallReportWhenBridgeNeverAcceptsPrompt" computerName="c7669543e9c7" duration="00:00:00.0062002" startTime="2026-10-06T08:16:44.9550823+00:00" endTime="2026-10-06T08:16:44.9550824+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a31a2b6d-6123-46c3-8843-20b8fe7b2a7b" />
+    <UnitTestResult executionId="53871e4e-eb23-4c2b-b99c-65aa6471093b" testId="7a2809be-7e0a-669f-a072-cc035b707001" testName="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_StopsWhenClientClosedPendingSnapshotContext" computerName="c7669543e9c7" duration="00:00:00.0032516" startTime="2026-10-06T08:16:44.9991818+00:00" endTime="2026-10-06T08:16:44.9991819+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="53871e4e-eb23-4c2b-b99c-65aa6471093b" />
+    <UnitTestResult executionId="cee59800-4ad3-420f-ba01-06e8ed58dcf0" testId="c1af1379-9924-0623-2ca2-1c2f59662ee0" testName="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_EmitsEarlyTerminalErrorWhenGmWritesPayloadWithoutTerminalSignal" computerName="c7669543e9c7" duration="00:00:00.0049882" startTime="2026-10-06T08:16:44.9957394+00:00" endTime="2026-10-06T08:16:44.9957396+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cee59800-4ad3-420f-ba01-06e8ed58dcf0" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_EmitsEarlyTerminalErrorWhenGmWritesPayloadWithoutTerminalSignal" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c1af1379-9924-0623-2ca2-1c2f59662ee0">
+      <Execution id="cee59800-4ad3-420f-ba01-06e8ed58dcf0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmTurnHelperContractTests" name="DaemonTurnWait_EmitsEarlyTerminalErrorWhenGmWritesPayloadWithoutTerminalSignal" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_EmitsEarlyTerminalErrorWhenBridgeStallsWhilePreparingArtifacts" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6beb005c-0d4d-cc1e-058e-5704236dd4c6">
+      <Execution id="49518331-2e36-4ce2-b372-f0fd9767d773" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmTurnHelperContractTests" name="DaemonTurnWait_EmitsEarlyTerminalErrorWhenBridgeStallsWhilePreparingArtifacts" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnTimeout_ShutsDownBridgeBeforeWritingTimeoutTerminalError" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="95e0a01c-1a65-6eb0-9fab-8599af802611">
+      <Execution id="b84a6c91-8528-4e03-aa11-b55f8f55c158" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmTurnHelperContractTests" name="DaemonTurnTimeout_ShutsDownBridgeBeforeWritingTimeoutTerminalError" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_StopsWhenClientClosedPendingSnapshotContext" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="7a2809be-7e0a-669f-a072-cc035b707001">
+      <Execution id="53871e4e-eb23-4c2b-b99c-65aa6471093b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmTurnHelperContractTests" name="DaemonTurnWait_StopsWhenClientClosedPendingSnapshotContext" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_RetriesWhenGmBridgeIsBusy" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2ee40af5-08d5-529a-da50-c818ab59efe3">
+      <Execution id="84430329-7d23-48e0-8c88-92cbaa39ac24" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmTurnHelperContractTests" name="DaemonRepairDispatch_RetriesWhenGmBridgeIsBusy" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonRepairDispatch_TimesOutAndPublishesStallReportWhenBridgeNeverAcceptsPrompt" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3e5e2b2b-4094-344a-fe38-8357581a3990">
+      <Execution id="a31a2b6d-6123-46c3-8843-20b8fe7b2a7b" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmTurnHelperContractTests" name="DaemonRepairDispatch_TimesOutAndPublishesStallReportWhenBridgeNeverAcceptsPrompt" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnDispatch_EmitsTerminalErrorWhenBridgePipeNeverAcceptsDispatch" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="29ae6847-5531-fd6a-2908-52e8d9e862ca">
+      <Execution id="c792b8d4-ab61-4fb3-873e-f36fed64a2b0" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmTurnHelperContractTests" name="DaemonTurnDispatch_EmitsTerminalErrorWhenBridgePipeNeverAcceptsDispatch" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTerminalProtocolDispatch_RetriesWhenGmBridgeIsBusy" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="bd6dff3b-8dae-3f71-b2f9-164511c1ce99">
+      <Execution id="91acb98a-e356-406f-acfc-eacbd55a7bfe" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmTurnHelperContractTests" name="DaemonTerminalProtocolDispatch_RetriesWhenGmBridgeIsBusy" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmTurnHelperContractTests.DaemonTurnWait_EmitsTerminalErrorWhenBridgeReturnsIdleWithoutTerminalSignal" storage="/workspace/native-1553/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="4d977c4e-2329-2753-cc93-e46471de87f9">
+      <Execution id="54e4e8bc-a353-4ca1-9e94-dd4caedef387" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmTurnHelperContractTests" name="DaemonTurnWait_EmitsTerminalErrorWhenBridgeReturnsIdleWithoutTerminalSignal" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="4d977c4e-2329-2753-cc93-e46471de87f9" executionId="54e4e8bc-a353-4ca1-9e94-dd4caedef387" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ee40af5-08d5-529a-da50-c818ab59efe3" executionId="84430329-7d23-48e0-8c88-92cbaa39ac24" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="95e0a01c-1a65-6eb0-9fab-8599af802611" executionId="b84a6c91-8528-4e03-aa11-b55f8f55c158" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6beb005c-0d4d-cc1e-058e-5704236dd4c6" executionId="49518331-2e36-4ce2-b372-f0fd9767d773" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bd6dff3b-8dae-3f71-b2f9-164511c1ce99" executionId="91acb98a-e356-406f-acfc-eacbd55a7bfe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="29ae6847-5531-fd6a-2908-52e8d9e862ca" executionId="c792b8d4-ab61-4fb3-873e-f36fed64a2b0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3e5e2b2b-4094-344a-fe38-8357581a3990" executionId="a31a2b6d-6123-46c3-8843-20b8fe7b2a7b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7a2809be-7e0a-669f-a072-cc035b707001" executionId="53871e4e-eb23-4c2b-b99c-65aa6471093b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c1af1379-9924-0623-2ca2-1c2f59662ee0" executionId="cee59800-4ad3-420f-ba01-06e8ed58dcf0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="9" executed="9" passed="9" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.45]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.14]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.18]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.31]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

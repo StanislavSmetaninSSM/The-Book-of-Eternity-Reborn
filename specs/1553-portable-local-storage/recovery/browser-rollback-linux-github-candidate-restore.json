@@ -1,0 +1,22 @@
+{
+  "Commit": "09dd0af58cbbcd2e45258ebabd67c74b1d6de34e",
+  "Tree": "0d046a3b4a4861a83403ab24d1a8fd38b2e8a389",
+  "Parent": "b08159ee8ea818c4339fc0554f24388a441c261d",
+  "RestoredDirectory": "/workspace/qualification-1553-browser-t031/github-candidate",
+  "Transport": "fresh clone from GitHub HTTPS only; no local source/object/cache reuse",
+  "Clean": true,
+  "TrackedFilesByteCompared": 19804,
+  "Comparison": "each restored and writer checkout file byte-identical to independent GitHub-fetched blob",
+  "FullFsck": true,
+  "RemoteAfterRestoration": "09dd0af58cbbcd2e45258ebabd67c74b1d6de34e",
+  "TestsExecutedForRestoration": 0,
+  "AcceptedR3T042TerminalF1F2AndAcceptedF3Ancestry": true,
+  "AcceptedProductionMainDesignAncestry": true,
+  "AcceptedM1AndBrowserPlanAncestry": true,
+  "RestoredBrowserQualification": true,
+  "RestoredBrowserPlan": true,
+  "RestoredM1Qualification": true,
+  "RestoredProductionMainDesign": true,
+  "GitAlternatesPresent": false,
+  "Origin": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git"
+}

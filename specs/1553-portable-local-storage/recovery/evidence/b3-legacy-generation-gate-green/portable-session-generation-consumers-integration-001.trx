@@ -1,0 +1,69 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="1f2cfa7d-3570-4778-b70c-d65691592493" name="b3-legacy-generation-gate-green" runUser="$USER">
+  <ns0:Times creation="2026-10-01T04:05:22.6388472-04:00" queuing="2026-10-01T04:05:22.6388472-04:00" start="2026-10-01T04:05:20.0969279-04:00" finish="2026-10-01T04:05:22.6467528-04:00" />
+  <ns0:TestSettings name="default" id="43d5f97b-29b9-43b5-b166-ccef843c6ac0">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="e672143b-5415-4e86-8d46-65e44405f5ef" testId="ba4d5022-9461-8e7d-102b-a015a25dafbe" testName="BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_DuplicateGenerationPropertyFailsClosed" computerName="$HOST" duration="00:00:00.0081822" startTime="2026-10-01T04:05:22.5161618-04:00" endTime="2026-10-01T04:05:22.5161621-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e672143b-5415-4e86-8d46-65e44405f5ef" />
+    <ns0:UnitTestResult executionId="c41cfb2c-3671-475d-9f9c-aba1a115a0fa" testId="74e0b772-7458-1252-079a-6cdbdfbc6149" testName="BookOfEternityClient.Tests.PortableLegacyGenerationTests.CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal" computerName="$HOST" duration="00:00:00.1174507" startTime="2026-10-01T04:05:22.4574680-04:00" endTime="2026-10-01T04:05:22.4574820-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c41cfb2c-3671-475d-9f9c-aba1a115a0fa" />
+    <ns0:UnitTestResult executionId="29e486d5-d24c-477b-bc41-9ebe85928d97" testId="5e899ead-066a-8ba7-117e-11f94643c998" testName="BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_RejectsHardLinkedGenerationAuthorityFile" computerName="$HOST" duration="00:00:00.0045423" startTime="2026-10-01T04:05:22.4726575-04:00" endTime="2026-10-01T04:05:22.4726576-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="29e486d5-d24c-477b-bc41-9ebe85928d97" />
+    <ns0:UnitTestResult executionId="e51bdc6a-7305-4474-aba8-d50c57c00a55" testId="6fa42029-a86e-9ed3-7e5a-350bddf95c24" testName="BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_GenerationLinkAddedAfterInitialValidationFailsClosed" computerName="$HOST" duration="00:00:00.0049369" startTime="2026-10-01T04:05:22.4941342-04:00" endTime="2026-10-01T04:05:22.4941344-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e51bdc6a-7305-4474-aba8-d50c57c00a55" />
+    <ns0:UnitTestResult executionId="cdf6244e-5646-447d-ac36-f03098f1c775" testId="3b9872ff-5f01-ba78-cbe4-4b498d17b82c" testName="BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_RejectsUppercaseNonCanonicalGuidText" computerName="$HOST" duration="00:00:00.0116267" startTime="2026-10-01T04:05:22.4893555-04:00" endTime="2026-10-01T04:05:22.4893557-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cdf6244e-5646-447d-ac36-f03098f1c775" />
+    <ns0:UnitTestResult executionId="f6e28338-98ce-4b8a-8a88-d69c7bf03be8" testId="f48fce56-f864-5c22-b606-5a0adef0b092" testName="BookOfEternityClient.Tests.FileSystemManagerTests.RuntimeAtomicWrite_DirectoryDestinationFailsBeforeMutationHook" computerName="$HOST" duration="00:00:00.0122212" startTime="2026-10-01T04:05:22.5067736-04:00" endTime="2026-10-01T04:05:22.5067738-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f6e28338-98ce-4b8a-8a88-d69c7bf03be8" />
+    <ns0:UnitTestResult executionId="e7688430-bbfd-4f93-823e-09b40114ac48" testId="44ab5711-99fd-5e2f-9750-430dd61d5a40" testName="BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_SwapBackReadCannotAuthorizeExternalGeneration" computerName="$HOST" duration="00:00:00.0070121" startTime="2026-10-01T04:05:22.4680561-04:00" endTime="2026-10-01T04:05:22.4680563-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e7688430-bbfd-4f93-823e-09b40114ac48" />
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_RejectsHardLinkedGenerationAuthorityFile" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5e899ead-066a-8ba7-117e-11f94643c998">
+      <ns0:Execution id="29e486d5-d24c-477b-bc41-9ebe85928d97" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="LegacyLoadBegin_RejectsHardLinkedGenerationAuthorityFile" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.RuntimeAtomicWrite_DirectoryDestinationFailsBeforeMutationHook" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f48fce56-f864-5c22-b606-5a0adef0b092">
+      <ns0:Execution id="f6e28338-98ce-4b8a-8a88-d69c7bf03be8" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="RuntimeAtomicWrite_DirectoryDestinationFailsBeforeMutationHook" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_RejectsUppercaseNonCanonicalGuidText" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="3b9872ff-5f01-ba78-cbe4-4b498d17b82c">
+      <ns0:Execution id="cdf6244e-5646-447d-ac36-f03098f1c775" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="SessionGeneration_RejectsUppercaseNonCanonicalGuidText" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_DuplicateGenerationPropertyFailsClosed" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="ba4d5022-9461-8e7d-102b-a015a25dafbe">
+      <ns0:Execution id="e672143b-5415-4e86-8d46-65e44405f5ef" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="SessionGeneration_DuplicateGenerationPropertyFailsClosed" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableLegacyGenerationTests.CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="74e0b772-7458-1252-079a-6cdbdfbc6149">
+      <ns0:Execution id="c41cfb2c-3671-475d-9f9c-aba1a115a0fa" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableLegacyGenerationTests" name="CommitLoadTransaction_UsesOriginalGenerationReadBoundaryBeforeCommittingJournal" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_SwapBackReadCannotAuthorizeExternalGeneration" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="44ab5711-99fd-5e2f-9750-430dd61d5a40">
+      <ns0:Execution id="e7688430-bbfd-4f93-823e-09b40114ac48" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="LegacyLoadBegin_SwapBackReadCannotAuthorizeExternalGeneration" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_GenerationLinkAddedAfterInitialValidationFailsClosed" storage="$REPO/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="6fa42029-a86e-9ed3-7e5a-350bddf95c24">
+      <ns0:Execution id="e51bdc6a-7305-4474-aba8-d50c57c00a55" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.FileSystemManagerTests" name="LegacyLoadBegin_GenerationLinkAddedAfterInitialValidationFailsClosed" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="ba4d5022-9461-8e7d-102b-a015a25dafbe" executionId="e672143b-5415-4e86-8d46-65e44405f5ef" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="74e0b772-7458-1252-079a-6cdbdfbc6149" executionId="c41cfb2c-3671-475d-9f9c-aba1a115a0fa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="5e899ead-066a-8ba7-117e-11f94643c998" executionId="29e486d5-d24c-477b-bc41-9ebe85928d97" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="6fa42029-a86e-9ed3-7e5a-350bddf95c24" executionId="e51bdc6a-7305-4474-aba8-d50c57c00a55" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3b9872ff-5f01-ba78-cbe4-4b498d17b82c" executionId="cdf6244e-5646-447d-ac36-f03098f1c775" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="f48fce56-f864-5c22-b606-5a0adef0b092" executionId="f6e28338-98ce-4b8a-8a88-d69c7bf03be8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="44ab5711-99fd-5e2f-9750-430dd61d5a40" executionId="e7688430-bbfd-4f93-823e-09b40114ac48" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Completed">
+    <ns0:Counters total="7" executed="7" passed="7" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.39]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.74]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.77]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:02.00]   Finished:    BookOfEternityClient.IntegrationTests
+</ns0:StdOut>
+    </ns0:Output>
+  </ns0:ResultSummary>
+</ns0:TestRun>

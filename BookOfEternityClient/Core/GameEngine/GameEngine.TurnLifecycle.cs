@@ -70,9 +70,9 @@ public partial class GameEngine
 
     private async Task<bool> WaitForGmResponse()
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
         var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
         var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
@@ -89,6 +89,7 @@ public partial class GameEngine
             if (HasRollbackCapability(rollbackSnapshot))
             {
                 await RestorePreTurnBackup(rollbackSnapshot!);
+                await CleanupPendingTurnSnapshotAsync();
                 CleanupBackup(rollbackSnapshot!);
                 AnsiConsole.MarkupLine("[dim]Переходный ход отменён. Мир вернулся к состоянию до этого действия; позднее завершение событий останется отложенным.[/]");
             }
@@ -256,9 +257,9 @@ public partial class GameEngine
     /// </summary>
     private async Task<bool> WaitForGmResponseRaw()
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
         var manifest = await LoadPendingTurnSnapshotManifestAsync();
         var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
         var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
@@ -565,10 +566,7 @@ public partial class GameEngine
 
     private async Task<int?> TryReadActiveDaemonTurnTimeoutSecondsAsync()
     {
-        if (!_fs.FileExists(GmDaemonStatusPath))
-            return null;
-
-        var statusJson = await _fs.ReadFileAsync(GmDaemonStatusPath);
+        var statusJson = await _fs.ReadDiagnosticStatusAsync(GmDaemonStatusPath);
         if (string.IsNullOrWhiteSpace(statusJson))
             return null;
 
@@ -620,18 +618,15 @@ public partial class GameEngine
     }
 
     private bool IsConPtyBridgeRuntimeExpected() =>
-        _stateManager.Settings.GmBridgeEnabled &&
-        string.Equals(_stateManager.Settings.GmBridgeBackend, "ConPTYBridge", StringComparison.OrdinalIgnoreCase);
+        _stateManager.Settings.UsesOwnedGmBridge;
 
     private async Task<string?> DetectUnavailableRuntimeProcessAsync(
         string statusPath,
         string pidPropertyName,
         string displayName)
     {
-        if (!_fs.FileExists(statusPath))
-            return null;
-
-        var statusJson = await _fs.ReadFileAsync(statusPath);
+        var statusJson = await _fs.ReadDiagnosticStatusAsync(statusPath);
+        if (statusJson == null) return null;
         if (string.IsNullOrWhiteSpace(statusJson))
             return $"{displayName} status file is empty ({statusPath}).";
 
@@ -787,9 +782,9 @@ public partial class GameEngine
 
     private async Task<bool> ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync()
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
             await InvokeSessionFinalizationCheckpointAsync(
                 SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound);
 
@@ -1026,8 +1021,15 @@ public partial class GameEngine
         });
     }
 
+    /// <summary>
+    /// Processes session actions and reports stopped storage continuation without promising a replay of committed work.
+    /// </summary>
+    /// <returns>
+    /// A task completing when the player leaves the active game loop.
+    /// </returns>
     private async Task EnterGameLoop()
     {
+        if (_blockedLoadContinuation != null) return;
         _inGame = true;
         await _audioService.PlayInGameMusicAsync();
         await NormalizePendingRepairArtifactsAsync();
@@ -1039,7 +1041,7 @@ public partial class GameEngine
             await RefreshRuntimeStateAsync();
         }
 
-        while (_inGame)
+        while (_inGame && _blockedLoadContinuation == null)
         {
             try
             {
@@ -1047,19 +1049,23 @@ public partial class GameEngine
                 continue;
 
             // Detect console resize — if width changed, just re-render (loop continues)
+            int? currentWidth = null;
             try
             {
-                var currentWidth = Console.WindowWidth;
-                if (_lastConsoleWidth > 0 && currentWidth != _lastConsoleWidth)
-                {
-                    await NormalizeRuntimeUiArtifactsAsync();
-                    await RefreshRuntimeStateAsync();
-                }
-                _lastConsoleWidth = currentWidth;
+                currentWidth = Console.WindowWidth;
             }
             catch (Exception ex) when (ex is IOException or InvalidOperationException or PlatformNotSupportedException)
             {
                 // Some console hosts cannot report window size reliably; resize detection is best-effort.
+            }
+            if (currentWidth is { } width)
+            {
+                if (_lastConsoleWidth > 0 && width != _lastConsoleWidth)
+                {
+                    await NormalizeRuntimeUiArtifactsAsync();
+                    await RefreshRuntimeStateAsync();
+                }
+                _lastConsoleWidth = width;
             }
 
             // Render current state (preserve last response for dialogue options etc.)
@@ -1203,8 +1209,19 @@ public partial class GameEngine
             catch (Exception ex)
             {
                 LogError(ex);
-                AnsiConsole.MarkupLine("\n[red]❌ Мир не смог безопасно завершить действие. Подробности сохранены для диагностики.[/]");
-                AnsiConsole.MarkupLine("[dim]Вернитесь к последнему доступному состоянию и повторите действие позже.[/]");
+                if (ex is CoordinatedStatePublicationUncertainException)
+                {
+                    AnsiConsole.MarkupLine($"\n[red]❌ {Markup.Escape(CoordinatedStatePublicationUncertainException.PlayerMessage)}[/]");
+                }
+                else if (ex is CommittedSaveContinuationException)
+                {
+                    AnsiConsole.MarkupLine($"\n[yellow]⚠ {Markup.Escape(CommittedSaveContinuationException.PlayerMessage)}[/]");
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine("\n[red]❌ Мир не смог безопасно завершить действие. Подробности сохранены для диагностики.[/]");
+                    AnsiConsole.MarkupLine("[dim]Вернитесь к последнему доступному состоянию и повторите действие позже.[/]");
+                }
                 AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
                 RecordGameLoopErrorObservation(ex);
                 _inputSource.ReadKey(intercept: true);
@@ -1251,9 +1268,9 @@ public partial class GameEngine
         string? waitingText = null,
         bool playerFacingTurn = true)
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
         if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
             return;
 
@@ -1389,6 +1406,7 @@ public partial class GameEngine
             _fs.DeleteFile("output/ink_feather_action_result.json");
             _qteSceneService.ClearOfferFile();
             await RestorePreTurnBackup(backedUpFiles);
+            await CleanupPendingTurnSnapshotAsync();
             CleanupAfterCancelledChaosSeaMarkerTurn(action);
             AnsiConsole.MarkupLine("[dim]Изменения отменены, прежнее состояние восстановлено. Позднее завершение событий останется отложенным.[/]");
             CleanupBackup(backedUpFiles);
@@ -2123,9 +2141,9 @@ public partial class GameEngine
     /// </summary>
     private async Task<bool> CheckLifeTransitions(ValidatedPendingTurnSnapshotContext? acceptedTurnSnapshotContext = null)
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
         var transJson = await _fs.ReadFileAsync("game_state/control/life_transitions.json");
         if (transJson == null) return false;
 
@@ -2558,9 +2576,9 @@ public partial class GameEngine
     /// </summary>
     private async Task<bool> CheckGmIncarnationTrigger(ValidatedPendingTurnSnapshotContext? acceptedTurnSnapshotContext = null)
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        return await SessionOperationContext.RunBoundAsync(_fs, sessionGeneration, async () =>
+        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
         var triggerJson = await _fs.ReadFileAsync("game_state/control/incarnation_trigger.json");
         if (triggerJson == null) return false;
         var isShiningBootstrapHandoff = _stateManager.CurrentState.IsInShiningAbodePendingBootstrap;
@@ -3964,9 +3982,6 @@ public partial class GameEngine
                 PreserveNewlines = true
             });
 
-        if (IsClipboardPasteShortcut(firstLine))
-            return ResolveClipboardPlayerInput();
-
         // Check for slash commands — always single-line, send immediately
         if (!firstLine.Contains('\n') && firstLine.TrimStart().StartsWith('/'))
             return firstLine.Trim();
@@ -4019,25 +4034,6 @@ public partial class GameEngine
         return Task.FromResult(value);
     }
 
-    private static bool IsClipboardPasteShortcut(string input)
-    {
-        var trimmed = input.Trim();
-        return trimmed.Equals("\\p", StringComparison.OrdinalIgnoreCase) ||
-               trimmed.Equals("/paste", StringComparison.OrdinalIgnoreCase) ||
-               trimmed.Equals("/вставить", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private string ResolveClipboardPlayerInput()
-    {
-        var result = _clipboardService.TryReadText();
-        if (!result.Success || string.IsNullOrWhiteSpace(result.Text))
-        {
-            AnsiConsole.MarkupLine($"[yellow]{GameInterface.EscapeMarkup(result.Error ?? "Не удалось прочитать буфер обмена.")}[/]");
-            return string.Empty;
-        }
-
-        return result.Text!;
-    }
     private static int[] GenerateSecureDice() => GameLoop.GenerateSecureRandomDice();
 
     /// <summary>
@@ -4451,9 +4447,11 @@ The client owns the guarded quartet game_state/resources/resource_definitions.js
 " + _storyService.BuildStoryContext();
     }
 
-    private async Task<string> BuildTurnSystemReminderAsync(string? extraReminder = null)
+    private async Task<string> BuildTurnSystemReminderAsync(string? extraReminder = null, bool maintainLegacyTurnSettings = true)
     {
-        if (await _systemModService.WriteManifestForGmAsync())
+        // B3 owns the active turn/snapshot/receipt migration. The fresh-game
+        // caller has already completed the ordinary prepared settings operation.
+        if (maintainLegacyTurnSettings && await _systemModService.WriteManifestForGmAsync())
             await _stateManager.SaveSettingsAsync();
 
         if (_fs.FileExists(WorldDirectiveService.PendingSetupPath))

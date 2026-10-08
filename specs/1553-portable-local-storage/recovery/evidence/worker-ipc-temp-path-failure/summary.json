@@ -1,0 +1,65 @@
+{
+  "Categories": [
+    "worker-host-ipc-admission"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "a1ac8c215c21caf2f579c78b01d530cedb574332",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "worker-host-ipc-admission",
+      "Seconds": 3.4607747,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0682068,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0120369,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0143646,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:00:12.4407118",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 16,
+    "CompletedCases": 15,
+    "UnderfilledDescriptors": [
+      "worker-host-ipc-admission-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 15,
+    "Executed": 15,
+    "Passed": 0,
+    "Failed": 15
+  },
+  "DuplicateTests": []
+}

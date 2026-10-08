@@ -1,0 +1,198 @@
+{
+  "SchemaVersion": 1,
+  "SourceCommit": "510156d07dd9599bca12ef568a2fe05eb86d51ad",
+  "Inputs": [
+    {
+      "Path": "native/linux/boe-lineage-supervisor.c",
+      "Sha256": "b8b6ed123ca2b437713e51e022f9fe943d0d762967e6d7388f040e2ae68f8b9a",
+      "GitBlob": "beeb7e12a25ffb7f3874db41b17b8d6f46836702"
+    },
+    {
+      "Path": "scripts/build-linux-supervisor.ps1",
+      "Sha256": "14a665eb1734e3d4cca3607efc69c1b37ef3a355dd94d93487989d2fd6882485",
+      "GitBlob": "f0bde0ae108612a995ecab179ad655cb3d3747a9"
+    },
+    {
+      "Path": "tests/fixtures/LinuxLineage/lineage-fixture.c",
+      "Sha256": "49861138606b63e591e5768276b291f2f6b2fa2791252001543a4f2b937164ea",
+      "GitBlob": "65dc5adefda6742b1122f9ffbac97f8b44393609"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/LinuxFallbackSupervisorTests.cs",
+      "Sha256": "5d2499a966de61ead072aead6b72a0d32ba1e354c3519653c0ac04adaeee0bca",
+      "GitBlob": "e19014edd1382362120ed836d100878d421134d6"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Sha256": "72a817b9425c8067b571dd8b76c3d7177eb755264c29a11427d87389dba2b905",
+      "GitBlob": "d7496535dc9baba92e791f6d1300f8fb35f2cc99"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Sha256": "f791d6a16bb2eb94e1985444e0688f65fd5447319f4f6f5fdabf6d0989cd004d",
+      "GitBlob": "ded0c181feb96d99f88b27bfdeebaf1cbdb6c3df"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs",
+      "Sha256": "305be9e8bdb3ff1b9e746e1f658a00daa37e89082acb6a0e2dd13efb7c8b94b0",
+      "GitBlob": "2aa8074ce650664693ea2c5bbd3d1bc933c1d5e8"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerBackendSelectionTests.cs",
+      "Sha256": "c02d231ecc979f76c08a2eb8ae1c1300b14728821081f28cae5bf4a81bb312de",
+      "GitBlob": "1b63f80616e77137c71425f0ab0af7f43154bd16"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativePackageTests.cs",
+      "Sha256": "2254d97ddcbdcb32031849e7f612ee6336d73271d19d235740c77b134652dea5",
+      "GitBlob": "01b54ed03506e7ce7a94616fb2636b4eb5543dc0"
+    },
+    {
+      "Path": "BookOfEternityClient/BookOfEternityClient.csproj",
+      "Sha256": "009f4dbfe71f80887561227b708af0abb9a153a8de2a75c10af0be1487f6e4c6",
+      "GitBlob": "e6e78f3b5797ed6367763878790309e48041befe"
+    },
+    {
+      "Path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "Sha256": "c84fc6eb14dd0495ca64b6bf7f8aa5e8298dbd4bf3f14ca2ef799f8b9cc386a4",
+      "GitBlob": "60504f3b44d02923bf940df7a979c87a49a4a934"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativeGuardianTests.cs",
+      "Sha256": "c5cb165f3a054b57f05c1be9ac6082187905c37c8c007f859fa583e913577370",
+      "GitBlob": "5c598f0c56d9b34735adbdafc947decf87482a64"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerOwnedLaunch.cs",
+      "Sha256": "f490080021c9c64db9aef5df31a8ff7b35afdd650380f86ca33a32f388405eb8",
+      "GitBlob": "97331c22b35d40a1b7059d38d73301a5b2a428f6"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs",
+      "Sha256": "9e5947339ba6615113de03ab5032805a4157152ba4737b0f31b7f563f5fb0c52",
+      "GitBlob": "84017e11b4880297039bcddea09ba25feb9d1037"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "Sha256": "e179a0dea8ea8fa08fcdf88af0f63368b0b6309b4609cbf86d5e4dc50551b82c",
+      "GitBlob": "65612d29102134a1b9efe599e3d67ddc0d129a60"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+      "Sha256": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+      "GitBlob": "ddbbc890b30c53a35df72256552c195aa57f6b4c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativeHostTests.cs",
+      "Sha256": "15375281677bb6047101fee1b1e1de174ef2932c056dc001f3a47958f7d332f1",
+      "GitBlob": "245522c3f206e4609ae7e934035b93a61889b659"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePackage.cs",
+      "Sha256": "20fcd945a355ab36c09ea1aecc7c3438a2eaa93fe65fe73b4eab1c0d5525a9c4",
+      "GitBlob": "ff2ad06c6c5e57fc55b2fd249f600822bf34a676"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeDescriptors.cs",
+      "Sha256": "59540c43658b8a079ae842eb252196ad3878c3912a3726a4a6b2c1a1f8a62160",
+      "GitBlob": "0d889a1d4cc5f1048c50122feebb85082d119808"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerHostIdentity.cs",
+      "Sha256": "3608c00268e73f5cf67a4ce56e1e0b9f3837886bf989603cf3fcda6648ea205b",
+      "GitBlob": "b5dfc87649a40de2d633ac956d6fe1254d91d948"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativeLineageLaunch.cs",
+      "Sha256": "43c6b29411d62588b0d682cbbad2a4083c307c1917bbe707fe41bcd36beb4d8b",
+      "GitBlob": "864c2f56140b37dab5c01e6986500c0f23799872"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs",
+      "Sha256": "8bd8b3103b6c09f2dd375480d910ca8515018c291963681901edd7896e0fa58c",
+      "GitBlob": "c38e4115e90dc24a68ea496e7bcbb6fec8ee15db"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "Sha256": "5b97c9e1c7288a190abcfb52d19a39142226d98891a1d64d7e16d92f187c74d2",
+      "GitBlob": "e64044a3428d91ef8c667471ef67702cb5ab8531"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerNativeAdmissionTests.cs",
+      "Sha256": "22bd95ffbe8389bc49657fdb55ee63b5dcee93bede34cabd8ea9571542b05db5",
+      "GitBlob": "c98566e0ba9d6c6a267b56d2a8a7cc5302971d19"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmWorkerBridgeDocumentationTests.cs",
+      "Sha256": "ba7f1ea1b585efe0c52e559ffa566921ee41466fb82d2ed6d7ac03e2656c9c95",
+      "GitBlob": "b795576d852d1b7a3333c8ed4a70e8353cabd43d"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerWindowsOwnedLaunch.cs",
+      "Sha256": "9b8396fce7e3a1bf1b0ffc2b51a51cdff335bb3371ee82bc86112e159fbaaba2",
+      "GitBlob": "af5cc09e981bc13c467c7c23cf3873cfb324209a"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "admission-green/dotnet-test.log.gz",
+      "Bytes": 164936,
+      "Sha256": "4d1291d22c16ac6983e061e7e02d1b820b93eed94ca888c1ae30a1de7f225e26",
+      "DecompressedSha256": "2de417f6cbb766d4eeeb98e40d5b7340861aefa1bd503006e40e81a3d1ddbb47"
+    },
+    {
+      "Path": "admission-green/plan.json",
+      "Bytes": 2331,
+      "Sha256": "dbcb0ba10f78850d5fa5a4a7ff34f470a022eae3342b5fbb92ec3bc60c29b3dd"
+    },
+    {
+      "Path": "admission-green/summary.json",
+      "Bytes": 1556,
+      "Sha256": "9f847ee07fa811d4b5d59566cd613d945a2c8927c7a1b32f5257c354337292ba"
+    },
+    {
+      "Path": "admission-green/worker-native-admission-unit-001.trx",
+      "Bytes": 7506,
+      "Sha256": "c6d0e7e890af1d3068a28cb2280a6ad97a49fd64eae57459e18df5af70c153ea"
+    },
+    {
+      "Path": "admission-green/worker-owned-preparation-source-contract-unit-002.trx",
+      "Bytes": 4983,
+      "Sha256": "28a7bd3278fc1be7eaf3a86416ca7aebb9346f5af04150f8b324a5e2551a7e4c"
+    },
+    {
+      "Path": "admission-green-plan/Build-unit.log.gz",
+      "Bytes": 1194,
+      "Sha256": "3cf29bcb4da0210b0ff12bb2955a4357f04b35f76116161325a75685714bdcbd",
+      "DecompressedSha256": "690b29124ece1763f50f89b9676bdf9abcc368a61be409c178519e89f7d268c3"
+    },
+    {
+      "Path": "admission-green-plan/dotnet-test.log.gz",
+      "Bytes": 165396,
+      "Sha256": "7f528a488cf91ffd27f28e7ed63307ca3032bb9b09db9f45784e259603fef2e5",
+      "DecompressedSha256": "36ec667328a86aa72e7792ecbd73562ee7af70cf67299e268b593ed8d93ca5f1"
+    },
+    {
+      "Path": "admission-green-plan/plan.json",
+      "Bytes": 2332,
+      "Sha256": "234a78370872753125137533f54431847dca7906bba3c5e518003d6e28f42573"
+    },
+    {
+      "Path": "admission-green-plan/summary.json",
+      "Bytes": 1562,
+      "Sha256": "fbd22fb633240df28966929d1201f276643a62fd0d2ae6f8d620ab4f5813dd5a"
+    },
+    {
+      "Path": "admission-green-plan.log.gz",
+      "Bytes": 764,
+      "Sha256": "69460813a93648db500a9bcbb36dc75625976adbdcb356b7cb2cf6046dd4663a",
+      "DecompressedSha256": "84f7351ccce8ede8ab1cd20afa3bd5359bd241e52be55641a9b86f2aab2a46be"
+    },
+    {
+      "Path": "admission-green.log.gz",
+      "Bytes": 1268,
+      "Sha256": "eff31935781e545177649eda382cea8d9159f734f8686830a736fa4bab1bc963",
+      "DecompressedSha256": "2d224a29199c1646667990ea052bf35898346843de1e6bd6a505fe71feaf7fa8"
+    }
+  ]
+}

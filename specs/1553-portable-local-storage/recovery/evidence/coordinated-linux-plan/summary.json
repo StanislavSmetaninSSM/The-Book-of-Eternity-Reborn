@@ -1,0 +1,163 @@
+{
+  "Categories": [
+    "portable-coordinated-publication",
+    "portable-coordinated-authority",
+    "portable-coordinated-lease",
+    "portable-coordinated-lease-consumers",
+    "portable-coordinated-recovery",
+    "portable-coordinated-cleanup",
+    "portable-coordinated-cleanup-resident",
+    "portable-coordinated-phase-consumers",
+    "portable-coordinated-actual-consumers",
+    "portable-coordinated-progression",
+    "portable-coordinated-qte-outcome"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-coordinated-publication",
+      "reason": "Bounded Linux T031 default/reproduction selection. Complete member-set helper, all initial guards, platform destinations/bytes and durable outcomes. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Complete member-set helper, all initial guards, platform destinations/bytes and durable outcomes."
+      ]
+    },
+    {
+      "category": "portable-coordinated-authority",
+      "reason": "Bounded Linux T031 default/reproduction selection. Actual authority factory initial guard preservation. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Actual authority factory initial guard preservation."
+      ]
+    },
+    {
+      "category": "portable-coordinated-lease",
+      "reason": "Bounded Linux T031 default/reproduction selection. Real owning/supplied lease admission, release precedence and actual reacquisition. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Real owning/supplied lease admission, release precedence and actual reacquisition."
+      ]
+    },
+    {
+      "category": "portable-coordinated-lease-consumers",
+      "reason": "Bounded Linux T031 default/reproduction selection. Six exact existing lease consumers for the necessary shared disposal correction. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Six exact existing lease consumers for the necessary shared disposal correction."
+      ]
+    },
+    {
+      "category": "portable-coordinated-recovery",
+      "reason": "Bounded Linux T031 default/reproduction selection. Actual-helper abrupt-process whole-set recovery, unknown/generation conflicts and outside hard links. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Actual-helper abrupt-process whole-set recovery, unknown/generation conflicts and outside hard links."
+      ]
+    },
+    {
+      "category": "portable-coordinated-cleanup",
+      "reason": "Bounded Linux T031 default/reproduction selection. Actual NPC/Guardian/Shining cleanup outcome/admission propagation and ordinary QTE acceptance. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Actual NPC/Guardian/Shining cleanup outcome/admission propagation and ordinary QTE acceptance."
+      ]
+    },
+    {
+      "category": "portable-coordinated-cleanup-resident",
+      "reason": "Bounded Linux T031 default/reproduction selection. Resident target helper, independent preamble, retained-read admission and existing semantics. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Resident target helper, independent preamble, retained-read admission and existing semantics."
+      ]
+    },
+    {
+      "category": "portable-coordinated-phase-consumers",
+      "reason": "Bounded Linux T031 default/reproduction selection. Deterministic pre-decision faults and separate later QTE domain/cleanup controls. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Deterministic pre-decision faults and separate later QTE domain/cleanup controls."
+      ]
+    },
+    {
+      "category": "portable-coordinated-actual-consumers",
+      "reason": "Bounded Linux T031 default/reproduction selection. Eight actual Linux consumers; the unchanged Windows-only wound preparation is separately natively owned. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Eight actual Linux consumers; the unchanged Windows-only wound preparation is separately natively owned."
+      ]
+    },
+    {
+      "category": "portable-coordinated-progression",
+      "reason": "Bounded Linux T031 default/reproduction selection. Exact progression accepted-turn schedule/report mutation. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Exact progression accepted-turn schedule/report mutation."
+      ]
+    },
+    {
+      "category": "portable-coordinated-qte-outcome",
+      "reason": "Bounded Linux T031 default/reproduction selection. Actual uncertainty compensation boundary and private Russian recovery notice. Final checkpoint uses PlanOnly; completed behavioral cohorts are not repeated.",
+      "contracts": [
+        "Actual uncertainty compensation boundary and private Russian recovery notice."
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "733c40fe862908616e2db3c4ea2b8d03bd273034",
+    "WorkingTreeFingerprint": "9035B29521E94B1D8D892F14E3BF662B1444D3DA1D739EA6EC64B4CC38B0C1E5",
+    "ChangedFiles": 9
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0753007,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0135728,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0129665,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0082462,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:00:08.6145800",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 13,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 110,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-coordinated-actual-consumers-integration-001",
+      "portable-coordinated-authority-unit-002",
+      "portable-coordinated-cleanup-integration-003",
+      "portable-coordinated-cleanup-resident-integration-004",
+      "portable-coordinated-cleanup-resident-unit-005",
+      "portable-coordinated-lease-unit-006",
+      "portable-coordinated-lease-consumers-unit-007",
+      "portable-coordinated-phase-consumers-integration-008",
+      "portable-coordinated-phase-consumers-unit-009",
+      "portable-coordinated-progression-unit-010",
+      "portable-coordinated-publication-unit-011",
+      "portable-coordinated-qte-outcome-integration-012",
+      "portable-coordinated-recovery-unit-013"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -1,0 +1,1 @@
+{"Failure":"System.InvalidOperationException: Causal RED: actual released terminal has no durable main record.\n   at BookOfEternityClient.Tests.OwnedTerminalScenarioDriver.RunBridgeAsync(String mode, String package, String folder) in /workspace/native-1553/BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs:line 123","ScopedRetired":true}

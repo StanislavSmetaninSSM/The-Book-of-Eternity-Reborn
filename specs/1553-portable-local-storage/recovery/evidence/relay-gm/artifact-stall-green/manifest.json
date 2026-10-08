@@ -1,0 +1,55 @@
+{
+  "Outcome": "GREEN pending independent source/evidence review",
+  "Executed": 7,
+  "Passed": 7,
+  "Failed": 0,
+  "Cleanup": "complete",
+  "ModelCalls": 0,
+  "SourcePins": {
+    "BookOfEternityClient/game_master_daemon.ps1": "dfcc191569760be0f5fca3cb2ae08ad6bdec2c14e83262a83fc6791827267fbf",
+    "tests/fixtures/ProductionMain/daemon-artifact-stall.ps1": "fa325d452c9f4684cdae78c42e74b787af3972b39eb97264583c550a02a30bd2",
+    "BookOfEternityClient.Tests/GmDaemonArtifactStallTests.cs": "0784eac13b77892c123362347d89a719bb5386b50bb44987a88eda429e0b4513"
+  },
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 3130633,
+      "SHA256": "6334f454155a2b2e4696c54fab516b3043643c1b989486da4216985bd514b812",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 350020,
+      "StoredSHA256": "7c89839d2161c7a853e9b6e85a8ed3cb89678a125f8741596d23a0ae99bd2810"
+    },
+    {
+      "Path": "gm-daemon-artifact-stall-integration-001.trx",
+      "Bytes": 3121,
+      "SHA256": "eedc031559bfad47af934a960c3b80601fc99d41b705e93b07dcf43de13a47fd",
+      "StoredPath": "gm-daemon-artifact-stall-integration-001.trx.gz",
+      "StoredBytes": 1227,
+      "StoredSHA256": "ec134b4be814a8eebf073fd616577e5248d3f1a06ce09d397c1223675584a522"
+    },
+    {
+      "Path": "gm-daemon-artifact-stall-unit-002.trx",
+      "Bytes": 10062,
+      "SHA256": "b20cb3bf43c3f2552323e1fe09b769c3c1b0125194620c0b99fc3d377f14ef77",
+      "StoredPath": "gm-daemon-artifact-stall-unit-002.trx.gz",
+      "StoredBytes": 1843,
+      "StoredSHA256": "ddcdd5eb3c161ea753249e9e3d50e2508a71033034470072cf0f882f9cff8579"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 1866,
+      "SHA256": "f5063c0e65c4b5adea28a7a33480c18ffee02076d0cb6b967d327248eb622883",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 608,
+      "StoredSHA256": "6484bfe7502ada20c70fcb52a34e4edc32f2948d09bb0924d922f55d1da81602"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1455,
+      "SHA256": "7a3efbc4715ba8e38bab25ed1bb48ecb0ca1e3f9a426220be4bfbb9e66c29896",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 600,
+      "StoredSHA256": "8a0177982013e3c4da8f892f2893590b41c6bcdcce076d3de030e6568f9182dd"
+    }
+  ]
+}

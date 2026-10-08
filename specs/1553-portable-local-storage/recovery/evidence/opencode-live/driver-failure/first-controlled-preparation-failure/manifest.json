@@ -1,0 +1,45 @@
+{
+  "RunDirectory": "TestResults/test-categories/20261007-162856-195-847575-4eb72de9e1d04a9fbbb82ecdbdbdcea8-categories",
+  "Artifacts": [
+    {
+      "Path": "Build-unit.log",
+      "Bytes": 17864,
+      "SHA256": "8d1e79e1f9daae63fc8656167a61757702905ba65886bce2438acdb7a79bf7a4",
+      "StoredPath": "Build-unit.log.gz",
+      "StoredBytes": 1436,
+      "StoredSHA256": "71abc4d8147b49e65023ae489374f88ba2261fffa88889267ff6fe6daef647cb"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 1686154,
+      "SHA256": "91a46fe700b0e1cbeb77446c54c96982a7a6af4ab61e64b3b62cef8a28413784",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 198403,
+      "StoredSHA256": "e1e9b31e7f6ebd4537ed65510d903a6befc70326287057d056c4b5d1afe84127"
+    },
+    {
+      "Path": "gm-live-driver-failure-unit-001.trx",
+      "Bytes": 138684,
+      "SHA256": "677104deb5d70e7d09c0704e580da1862dd4633ba02c079a49109495f07039ab",
+      "StoredPath": "gm-live-driver-failure-unit-001.trx.gz",
+      "StoredBytes": 39780,
+      "StoredSHA256": "436880242e5e53b93268646b6239163fc8d22cc00dc70089489a8fcd59809f32"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 1868,
+      "SHA256": "d7f159dcdcd006c6485ae537d1cd172625982a807888e985bfee9958a5a63413",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 703,
+      "StoredSHA256": "bcd1d6225bfed8138f3ee1e367ba18bc39343414ff67fc1bef0f6240e9a4bff7"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 1717,
+      "SHA256": "3b7a7c9bb4e50c1b0b5668a1060fdf7f37ca19c28d757d550f5471c03596661c",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 736,
+      "StoredSHA256": "db21f5a7779cb433c6e50ff520ee9dca3014acd2cfa8d6c7eabb5ab104f21093"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "Categories": [
+    "portable-storage-windows-paths"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "bcecdd3aa7b1e8f53b7fdd43441724c65cf658a1",
+    "WorkingTreeFingerprint": "824AE4948B2D2F157E1A9E69925DD96B12E2FC7A58F02BEB76ADB335F258DC52",
+    "ChangedFiles": 4
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0866676,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0169484,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0167552,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0120401,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 9,
+  "WallTime": "00:00:09.8191505",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 6,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-storage-windows-paths-integration-001",
+      "portable-storage-windows-paths-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

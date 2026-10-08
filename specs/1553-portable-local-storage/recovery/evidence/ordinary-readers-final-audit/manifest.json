@@ -1,0 +1,20 @@
+{
+  "sourceCommit": "4ea9b3b59e3d5b39f70422f5520cc9799757e346",
+  "sourceAppliedTree": "3e923b6e1b9b7f01364291b17310701219363940",
+  "sourceInputs": "Runtime/tests/catalog/selection identical to the fresh successful 76-case build at e688dfbe; checked against applied tree d5ed321e58a1c4085ba3793dc685a37ac9f4e858",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild",
+  "environment": "Existing isolated env.sh and all three telemetry opt-outs; Linux x64",
+  "kind": "discovery/planning only; zero tests executed, not behavioral GREEN",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "eb6bd43b749e77d672533dc4a6a1cac2ba98b115ab13a277d6e0e1d8bd744dbb",
+      "sanitizedSha256": "eb6bd43b749e77d672533dc4a6a1cac2ba98b115ab13a277d6e0e1d8bd744dbb"
+    },
+    {
+      "path": "catalog-audit.json",
+      "originalSha256": "33d9b072d612ca3b5d3c3554e16e9504d5fae413757f0e8f36434408bb1dedc3",
+      "sanitizedSha256": "33d9b072d612ca3b5d3c3554e16e9504d5fae413757f0e8f36434408bb1dedc3"
+    }
+  ]
+}

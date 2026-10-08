@@ -1,0 +1,430 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="21b3378e-138f-42ce-aa1e-2fd4f92d4b5d" name="@c7669543e9c7 2026-10-06 19:59:01" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-06T19:59:01.0995930+00:00" queuing="2026-10-06T19:59:01.0995931+00:00" start="2026-10-06T19:58:57.9283547+00:00" finish="2026-10-06T19:59:44.2727934+00:00" />
+  <TestSettings name="default" id="7ca4e5ca-edb2-4f84-8eb9-2509a97c7722">
+    <Deployment runDeploymentRoot="_c7669543e9c7_2026-10-06_19_59_01" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="1b76132c-8eba-450e-854e-dbb8a77e8508" testId="07bc4195-fe2c-07b6-eceb-f9825429a46c" testName="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: &quot;uncertain&quot;)" computerName="c7669543e9c7" duration="00:00:00.0304126" startTime="2026-10-06T19:59:00.5489354+00:00" endTime="2026-10-06T19:59:00.5489357+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1b76132c-8eba-450e-854e-dbb8a77e8508">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.DirectoryNotFoundException : Could not find a part of the path '/tmp/neutral-controlled-a5c251a1e5324615b017ebf0f264e64a'.</Message>
+          <StackTrace>   at System.IO.FileSystem.RemoveEmptyDirectory(String fullPath, Boolean topLevel, Boolean throwWhenNotEmpty)
+   at System.IO.Directory.Delete(String path, Boolean recursive)
+   at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.OwnedHost.DisposeAsync() in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs:line 148
+   at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(String kind) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs:line 98
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e1fc2245-2027-48c7-8e89-bc8a5b831be6" testId="bc61197e-d193-b96e-2260-27b12ed21d71" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-auto&quot;)" computerName="c7669543e9c7" duration="00:00:04.1886051" startTime="2026-10-06T19:59:14.1980800+00:00" endTime="2026-10-06T19:59:14.1980803+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e1fc2245-2027-48c7-8e89-bc8a5b831be6" />
+    <UnitTestResult executionId="36510ea6-5cf1-4128-b45e-d9cc88cf481c" testId="bd6bf7bb-6fc7-2284-8ba1-f45493d01662" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute" computerName="c7669543e9c7" duration="00:00:05.5101927" startTime="2026-10-06T19:59:44.1933988+00:00" endTime="2026-10-06T19:59:44.1933990+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="36510ea6-5cf1-4128-b45e-d9cc88cf481c" />
+    <UnitTestResult executionId="9c6bea94-c666-4324-af58-512c46bfc21c" testId="2db5d628-a267-c6a6-353a-0638e377e1c1" testName="BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite" computerName="c7669543e9c7" duration="00:00:00.1730537" startTime="2026-10-06T19:59:00.5969643+00:00" endTime="2026-10-06T19:59:00.5969645+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9c6bea94-c666-4324-af58-512c46bfc21c" />
+    <UnitTestResult executionId="c1ae9555-08a4-4246-91c2-90d8dcb11420" testId="37856566-80e2-93a1-cd42-8d0397737e4a" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: &quot;load-transactions&quot;)" computerName="c7669543e9c7" duration="00:00:00.0018067" startTime="2026-10-06T19:59:01.0715732+00:00" endTime="2026-10-06T19:59:01.0715735+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c1ae9555-08a4-4246-91c2-90d8dcb11420" />
+    <UnitTestResult executionId="acfddc90-0ab2-4f64-8f47-54e44bf5c230" testId="bdd2472e-2914-dc83-1783-0ce92391b980" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory" computerName="c7669543e9c7" duration="00:00:05.4655925" startTime="2026-10-06T19:59:05.8951521+00:00" endTime="2026-10-06T19:59:05.8951523+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="acfddc90-0ab2-4f64-8f47-54e44bf5c230">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/native-1553/TestResults/production-main/1eb7ce1f9e5c4e87ac35780692834177/scenario.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+   at System.IO.File.ReadAllBytes(String path)
+   at BookOfEternityClient.Tests.ProductionMainLinuxFixture.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs:line 60
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="0e971d39-eed7-44de-9aee-3b13dcdfc01e" testId="21c9433e-941c-d4cc-225a-2c12617c486f" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;[]&quot;)" computerName="c7669543e9c7" duration="00:00:00.0268204" startTime="2026-10-06T19:59:01.1951813+00:00" endTime="2026-10-06T19:59:01.1951814+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0e971d39-eed7-44de-9aee-3b13dcdfc01e">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(String content) in /workspace/native-1553/BookOfEternityClient.Tests/PortableClientStorageTests.cs:line 73
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e183d307-05ce-4b32-8efa-8e99dedf0fd1" testId="21d08414-dc5a-37a6-418b-f1f91b2e6aa0" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;{\&quot;language\&quot;:\&quot;en\&quot;,\&quot;language\&quot;:\&quot;ru\&quot;}&quot;)" computerName="c7669543e9c7" duration="00:00:00.0309589" startTime="2026-10-06T19:59:01.2272785+00:00" endTime="2026-10-06T19:59:01.2272788+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e183d307-05ce-4b32-8efa-8e99dedf0fd1">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(String content) in /workspace/native-1553/BookOfEternityClient.Tests/PortableClientStorageTests.cs:line 73
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9eb739f4-f4c1-4ac5-b754-e88c811b0df7" testId="4ce6a29e-ee49-3b1c-0b2b-2a069373fe2b" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-command&quot;)" computerName="c7669543e9c7" duration="00:00:04.0215510" startTime="2026-10-06T19:59:22.4373392+00:00" endTime="2026-10-06T19:59:22.4373407+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9eb739f4-f4c1-4ac5-b754-e88c811b0df7" />
+    <UnitTestResult executionId="220a6c7d-a9ea-47c2-b8f3-7e435ac3ee1f" testId="1b02ad68-2956-2ea2-0d6a-4dfd05eca338" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;null&quot;)" computerName="c7669543e9c7" duration="00:00:00.1082761" startTime="2026-10-06T19:59:01.1672413+00:00" endTime="2026-10-06T19:59:01.1672417+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="220a6c7d-a9ea-47c2-b8f3-7e435ac3ee1f">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(String content) in /workspace/native-1553/BookOfEternityClient.Tests/PortableClientStorageTests.cs:line 73
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b5ce4c2e-7228-49cf-9f88-74c071fd926a" testId="1052364c-c3c0-2158-1577-ac18ccff0ecb" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-storage&quot;)" computerName="c7669543e9c7" duration="00:00:03.9379416" startTime="2026-10-06T19:59:30.2095077+00:00" endTime="2026-10-06T19:59:30.2095082+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b5ce4c2e-7228-49cf-9f88-74c071fd926a" />
+    <UnitTestResult executionId="499a5d70-0389-4c09-820d-79af6b942e26" testId="2b07806c-491e-3279-4ae5-fabef969211a" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-package&quot;)" computerName="c7669543e9c7" duration="00:00:03.8317478" startTime="2026-10-06T19:59:26.2702220+00:00" endTime="2026-10-06T19:59:26.2702223+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="499a5d70-0389-4c09-820d-79af6b942e26" />
+    <UnitTestResult executionId="c992b297-107b-4b5f-a537-6ff3d8747001" testId="7fb4fed8-eec7-88c6-1854-1e659a7f4051" testName="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: &quot;foreign&quot;)" computerName="c7669543e9c7" duration="00:00:00.0154436" startTime="2026-10-06T19:59:00.5830751+00:00" endTime="2026-10-06T19:59:00.5830753+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c992b297-107b-4b5f-a537-6ff3d8747001">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.DirectoryNotFoundException : Could not find a part of the path '/tmp/neutral-controlled-f2bb0f1966464ff0b702b33ebd6cb854'.</Message>
+          <StackTrace>   at System.IO.FileSystem.RemoveEmptyDirectory(String fullPath, Boolean topLevel, Boolean throwWhenNotEmpty)
+   at System.IO.Directory.Delete(String path, Boolean recursive)
+   at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.OwnedHost.DisposeAsync() in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs:line 148
+   at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(String kind) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs:line 98
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="e4f112b7-9305-43fb-b618-fc540cb7203a" testId="26f53597-cdd0-f3b7-2611-3bc7829492fc" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_CreatesConfigAndGenerationUnderOneLeaseAndInvalidatesGenerationRevision" computerName="c7669543e9c7" duration="00:00:00.0331573" startTime="2026-10-06T19:59:01.4096761+00:00" endTime="2026-10-06T19:59:01.4096764+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e4f112b7-9305-43fb-b618-fc540cb7203a" />
+    <UnitTestResult executionId="b2de5ecb-c001-4596-95e7-937d0f35a5f7" testId="5ce4b8bf-2320-1bd6-e622-e08c0036a25b" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_RepeatedAndNewManagerLoadsExistingValuesWithoutRewritingExactConfigOrGeneration" computerName="c7669543e9c7" duration="00:00:00.1149187" startTime="2026-10-06T19:59:01.3756039+00:00" endTime="2026-10-06T19:59:01.3756043+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b2de5ecb-c001-4596-95e7-937d0f35a5f7" />
+    <UnitTestResult executionId="823abe11-83a7-4cb6-a86f-f31e954979d1" testId="cca1781a-da0c-f43f-4e7f-7ab9a0f2e003" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-cwd&quot;)" computerName="c7669543e9c7" duration="00:00:04.2126705" startTime="2026-10-06T19:59:18.4114104+00:00" endTime="2026-10-06T19:59:18.4114108+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="823abe11-83a7-4cb6-a86f-f31e954979d1" />
+    <UnitTestResult executionId="34f76df3-06aa-4f29-842c-7689d52023dd" testId="b0713133-41f5-5fbc-071e-bc35eb4b1fe7" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_PipeDraftTakeoverCancelScopedStop" computerName="c7669543e9c7" duration="00:00:04.6214278" startTime="2026-10-06T19:59:38.6835826+00:00" endTime="2026-10-06T19:59:38.6835828+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="34f76df3-06aa-4f29-842c-7689d52023dd">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.FileNotFoundException : Could not find file '/workspace/native-1553/TestResults/production-main/903ad89670f34dec83f0ec344561ece5/scenario.json'.</Message>
+          <StackTrace>   at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+   at System.IO.File.ReadAllBytes(String path)
+   at BookOfEternityClient.Tests.ProductionMainLinuxFixture.RunAsync(String mode) in /workspace/native-1553/BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs:line 60
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="aa67a791-f550-4fc2-b1dd-7569639ec5e7" testId="390d26ac-4255-dcd8-ebb6-f92d89f74eef" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-systemd&quot;)" computerName="c7669543e9c7" duration="00:00:04.1101379" startTime="2026-10-06T19:59:10.0052584+00:00" endTime="2026-10-06T19:59:10.0052585+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aa67a791-f550-4fc2-b1dd-7569639ec5e7" />
+    <UnitTestResult executionId="7d65325c-018d-454f-ac99-3137c0cf22ab" testId="45c3bc9b-bb0a-a840-8350-10384ff2df52" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;{broken&quot;)" computerName="c7669543e9c7" duration="00:00:00.0314108" startTime="2026-10-06T19:59:01.2629869+00:00" endTime="2026-10-06T19:59:01.2629873+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7d65325c-018d-454f-ac99-3137c0cf22ab">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(String content) in /workspace/native-1553/BookOfEternityClient.Tests/PortableClientStorageTests.cs:line 73
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="dc24c637-c7f0-4209-9875-849d13176d8c" testId="380491a9-08f3-c62f-2f5e-32d2d42bd69c" testName="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof" computerName="c7669543e9c7" duration="00:00:00.0412978" startTime="2026-10-06T19:59:00.6354746+00:00" endTime="2026-10-06T19:59:00.6354748+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dc24c637-c7f0-4209-9875-849d13176d8c">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.DirectoryNotFoundException : Could not find a part of the path '/tmp/neutral-controlled-2166c4a514be4cb198bb2c622ba4bc62'.</Message>
+          <StackTrace>   at System.IO.FileSystem.RemoveEmptyDirectory(String fullPath, Boolean topLevel, Boolean throwWhenNotEmpty)
+   at System.IO.Directory.Delete(String path, Boolean recursive)
+   at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.OwnedHost.DisposeAsync() in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs:line 148
+   at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof() in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs:line 106
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="05dfa509-c8b7-43f2-8643-e39d7ab2ecb4" testId="15943005-8947-478f-c766-79d19f3f445a" testName="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: &quot;incomplete&quot;)" computerName="c7669543e9c7" duration="00:00:00.0656031" startTime="2026-10-06T19:59:00.5290396+00:00" endTime="2026-10-06T19:59:00.5290861+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="05dfa509-c8b7-43f2-8643-e39d7ab2ecb4">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.DirectoryNotFoundException : Could not find a part of the path '/tmp/neutral-controlled-04470ef9d57d43ee93f4214b6e39de97'.</Message>
+          <StackTrace>   at System.IO.FileSystem.RemoveEmptyDirectory(String fullPath, Boolean topLevel, Boolean throwWhenNotEmpty)
+   at System.IO.Directory.Delete(String path, Boolean recursive)
+   at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.OwnedHost.DisposeAsync() in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs:line 148
+   at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(String kind) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs:line 98
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="54ec7835-ccd7-4fc2-8478-1986c5b17ead" testId="8fd85899-9202-efc9-80e9-2c06bef42f9a" testName="BookOfEternityClient.Tests.PortableClientStorageTests.ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence" computerName="c7669543e9c7" duration="00:00:00.6260694" startTime="2026-10-06T19:59:01.0486190+00:00" endTime="2026-10-06T19:59:01.0486195+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="54ec7835-ccd7-4fc2-8478-1986c5b17ead">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableClientStorageTests.ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence() in /workspace/native-1553/BookOfEternityClient.Tests/PortableClientStorageTests.cs:line 334
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="2e8f1515-e619-438a-baa6-ca724fb0dd73" testId="23f171aa-1b4c-c909-0edb-a8ac164c28ea" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: &quot;file-publication-transactions&quot;)" computerName="c7669543e9c7" duration="00:00:00.0060296" startTime="2026-10-06T19:59:01.0540239+00:00" endTime="2026-10-06T19:59:01.0540239+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2e8f1515-e619-438a-baa6-ca724fb0dd73" />
+    <UnitTestResult executionId="28579181-2603-49ba-828a-dde5b224a330" testId="6f6d75b9-2935-15f4-3175-217bd876d371" testName="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-worker&quot;)" computerName="c7669543e9c7" duration="00:00:03.8457163" startTime="2026-10-06T19:59:34.0579052+00:00" endTime="2026-10-06T19:59:34.0579055+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="28579181-2603-49ba-828a-dde5b224a330" />
+    <UnitTestResult executionId="52d613a4-611a-46c5-b9dc-0c65892be05c" testId="a751d6cc-4ad7-c53c-7147-2963bbc15532" testName="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: &quot;retained&quot;)" computerName="c7669543e9c7" duration="00:00:00.0111624" startTime="2026-10-06T19:59:00.5653548+00:00" endTime="2026-10-06T19:59:00.5653550+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="52d613a4-611a-46c5-b9dc-0c65892be05c">
+      <Output>
+        <ErrorInfo>
+          <Message>System.IO.DirectoryNotFoundException : Could not find a part of the path '/tmp/neutral-controlled-1ecfa517ae4047f6a8921361d1543fb2'.</Message>
+          <StackTrace>   at System.IO.FileSystem.RemoveEmptyDirectory(String fullPath, Boolean topLevel, Boolean throwWhenNotEmpty)
+   at System.IO.Directory.Delete(String path, Boolean recursive)
+   at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.OwnedHost.DisposeAsync() in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs:line 148
+   at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(String kind) in /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs:line 98
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="332afced-17f7-43d8-a331-ce7aae5db890" testId="74b23196-a6bd-1e8e-8785-75225c8ff72e" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: &quot;worker-apply-transactions&quot;)" computerName="c7669543e9c7" duration="00:00:00.0007504" startTime="2026-10-06T19:59:01.0719025+00:00" endTime="2026-10-06T19:59:01.0719026+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="332afced-17f7-43d8-a331-ce7aae5db890" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-command&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4ce6a29e-ee49-3b1c-0b2b-2a069373fe2b">
+      <Execution id="9eb739f4-f4c1-4ac5-b754-e88c811b0df7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: &quot;incomplete&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="15943005-8947-478f-c766-79d19f3f445a">
+      <Execution id="05dfa509-c8b7-43f2-8643-e39d7ab2ecb4" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests" name="ActualOwnedStop_InvalidProofRetainsOriginalAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;{broken&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="45c3bc9b-bb0a-a840-8350-10384ff2df52">
+      <Execution id="7d65325c-018d-454f-ac99-3137c0cf22ab" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: &quot;foreign&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7fb4fed8-eec7-88c6-1854-1e659a7f4051">
+      <Execution id="c992b297-107b-4b5f-a537-6ff3d8747001" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests" name="ActualOwnedStop_InvalidProofRetainsOriginalAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-storage&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1052364c-c3c0-2158-1577-ac18ccff0ecb">
+      <Execution id="b5ce4c2e-7228-49cf-9f88-74c071fd926a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8fd85899-9202-efc9-80e9-2c06bef42f9a">
+      <Execution id="54ec7835-ccd7-4fc2-8478-1986c5b17ead" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-systemd&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="390d26ac-4255-dcd8-ebb6-f92d89f74eef">
+      <Execution id="aa67a791-f550-4fc2-b1dd-7569639ec5e7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bdd2472e-2914-dc83-1783-0ce92391b980">
+      <Execution id="acfddc90-0ab2-4f64-8f47-54e44bf5c230" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="OriginalProduction_UncertainRetainsOwnerAndWorkerInventory" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: &quot;worker-apply-transactions&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="74b23196-a6bd-1e8e-8785-75225c8ff72e">
+      <Execution id="332afced-17f7-43d8-a331-ce7aae5db890" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_PipeDraftTakeoverCancelScopedStop" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b0713133-41f5-5fbc-071e-bc35eb4b1fe7">
+      <Execution id="34f76df3-06aa-4f29-842c-7689d52023dd" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="OriginalProduction_PipeDraftTakeoverCancelScopedStop" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;null&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1b02ad68-2956-2ea2-0d6a-4dfd05eca338">
+      <Execution id="220a6c7d-a9ea-47c2-b8f3-7e435ac3ee1f" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainRunFenceTests.HeldLease_RechecksMainRecordBeforeWrite" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2db5d628-a267-c6a6-353a-0638e377e1c1">
+      <Execution id="9c6bea94-c666-4324-af58-512c46bfc21c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainRunFenceTests" name="HeldLease_RechecksMainRecordBeforeWrite" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: &quot;load-transactions&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="37856566-80e2-93a1-cd42-8d0397737e4a">
+      <Execution id="c1ae9555-08a4-4246-91c2-90d8dcb11420" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-cwd&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="cca1781a-da0c-f43f-4e7f-7ab9a0f2e003">
+      <Execution id="823abe11-83a7-4cb6-a86f-f31e954979d1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_CreatesConfigAndGenerationUnderOneLeaseAndInvalidatesGenerationRevision" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="26f53597-cdd0-f3b7-2611-3bc7829492fc">
+      <Execution id="e4f112b7-9305-43fb-b618-fc540cb7203a" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_CreatesConfigAndGenerationUnderOneLeaseAndInvalidatesGenerationRevision" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;[]&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="21c9433e-941c-d4cc-225a-2c12617c486f">
+      <Execution id="0e971d39-eed7-44de-9aee-3b13dcdfc01e" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-auto&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bc61197e-d193-b96e-2260-27b12ed21d71">
+      <Execution id="e1fc2245-2027-48c7-8e89-bc8a5b831be6" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_RepeatedAndNewManagerLoadsExistingValuesWithoutRewritingExactConfigOrGeneration" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5ce4b8bf-2320-1bd6-e622-e08c0036a25b">
+      <Execution id="b2de5ecb-c001-4596-95e7-937d0f35a5f7" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_RepeatedAndNewManagerLoadsExistingValuesWithoutRewritingExactConfigOrGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-package&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2b07806c-491e-3279-4ae5-fabef969211a">
+      <Execution id="499a5d70-0389-4c09-820d-79af6b942e26" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: &quot;file-publication-transactions&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="23f171aa-1b4c-c909-0edb-a8ac164c28ea">
+      <Execution id="2e8f1515-e619-438a-baa6-ca724fb0dd73" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: &quot;retained&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a751d6cc-4ad7-c53c-7147-2963bbc15532">
+      <Execution id="52d613a4-611a-46c5-b9dc-0c65892be05c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests" name="ActualOwnedStop_InvalidProofRetainsOriginalAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: &quot;uncertain&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="07bc4195-fe2c-07b6-eceb-f9825429a46c">
+      <Execution id="1b76132c-8eba-450e-854e-dbb8a77e8508" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests" name="ActualOwnedStop_InvalidProofRetainsOriginalAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="bd6bf7bb-6fc7-2284-8ba1-f45493d01662">
+      <Execution id="36510ea6-5cf1-4128-b45e-d9cc88cf481c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;{\&quot;language\&quot;:\&quot;en\&quot;,\&quot;language\&quot;:\&quot;ru\&quot;}&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="21d08414-dc5a-37a6-418b-f1f91b2e6aa0">
+      <Execution id="e183d307-05ce-4b32-8efa-8e99dedf0fd1" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation(mode: &quot;refuse-worker&quot;)" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6f6d75b9-2935-15f4-3175-217bd876d371">
+      <Execution id="28579181-2603-49ba-828a-dde5b224a330" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmMainProductionAdmissionTests" name="AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof" storage="/workspace/native-1553/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="380491a9-08f3-c62f-2f5e-32d2d42bd69c">
+      <Execution id="dc24c637-c7f0-4209-9875-849d13176d8c" />
+      <TestMethod codeBase="/workspace/native-1553/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests" name="ActualOwnedStop_ScopedProofStillRequiresActualOutputEof" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="07bc4195-fe2c-07b6-eceb-f9825429a46c" executionId="1b76132c-8eba-450e-854e-dbb8a77e8508" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bc61197e-d193-b96e-2260-27b12ed21d71" executionId="e1fc2245-2027-48c7-8e89-bc8a5b831be6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bd6bf7bb-6fc7-2284-8ba1-f45493d01662" executionId="36510ea6-5cf1-4128-b45e-d9cc88cf481c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2db5d628-a267-c6a6-353a-0638e377e1c1" executionId="9c6bea94-c666-4324-af58-512c46bfc21c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="37856566-80e2-93a1-cd42-8d0397737e4a" executionId="c1ae9555-08a4-4246-91c2-90d8dcb11420" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bdd2472e-2914-dc83-1783-0ce92391b980" executionId="acfddc90-0ab2-4f64-8f47-54e44bf5c230" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="21c9433e-941c-d4cc-225a-2c12617c486f" executionId="0e971d39-eed7-44de-9aee-3b13dcdfc01e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="21d08414-dc5a-37a6-418b-f1f91b2e6aa0" executionId="e183d307-05ce-4b32-8efa-8e99dedf0fd1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4ce6a29e-ee49-3b1c-0b2b-2a069373fe2b" executionId="9eb739f4-f4c1-4ac5-b754-e88c811b0df7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1b02ad68-2956-2ea2-0d6a-4dfd05eca338" executionId="220a6c7d-a9ea-47c2-b8f3-7e435ac3ee1f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1052364c-c3c0-2158-1577-ac18ccff0ecb" executionId="b5ce4c2e-7228-49cf-9f88-74c071fd926a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2b07806c-491e-3279-4ae5-fabef969211a" executionId="499a5d70-0389-4c09-820d-79af6b942e26" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7fb4fed8-eec7-88c6-1854-1e659a7f4051" executionId="c992b297-107b-4b5f-a537-6ff3d8747001" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="26f53597-cdd0-f3b7-2611-3bc7829492fc" executionId="e4f112b7-9305-43fb-b618-fc540cb7203a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5ce4b8bf-2320-1bd6-e622-e08c0036a25b" executionId="b2de5ecb-c001-4596-95e7-937d0f35a5f7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cca1781a-da0c-f43f-4e7f-7ab9a0f2e003" executionId="823abe11-83a7-4cb6-a86f-f31e954979d1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b0713133-41f5-5fbc-071e-bc35eb4b1fe7" executionId="34f76df3-06aa-4f29-842c-7689d52023dd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="390d26ac-4255-dcd8-ebb6-f92d89f74eef" executionId="aa67a791-f550-4fc2-b1dd-7569639ec5e7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="45c3bc9b-bb0a-a840-8350-10384ff2df52" executionId="7d65325c-018d-454f-ac99-3137c0cf22ab" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="380491a9-08f3-c62f-2f5e-32d2d42bd69c" executionId="dc24c637-c7f0-4209-9875-849d13176d8c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="15943005-8947-478f-c766-79d19f3f445a" executionId="05dfa509-c8b7-43f2-8643-e39d7ab2ecb4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8fd85899-9202-efc9-80e9-2c06bef42f9a" executionId="54ec7835-ccd7-4fc2-8478-1986c5b17ead" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="23f171aa-1b4c-c909-0edb-a8ac164c28ea" executionId="2e8f1515-e619-438a-baa6-ca724fb0dd73" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6f6d75b9-2935-15f4-3175-217bd876d371" executionId="28579181-2603-49ba-828a-dde5b224a330" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a751d6cc-4ad7-c53c-7147-2963bbc15532" executionId="52d613a4-611a-46c5-b9dc-0c65892be05c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="74b23196-a6bd-1e8e-8785-75225c8ff72e" executionId="332afced-17f7-43d8-a331-ce7aae5db890" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="26" executed="26" passed="14" failed="12" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.23]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.87]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.91]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.06]       System.IO.DirectoryNotFoundException : Could not find a part of the path '/tmp/neutral-controlled-04470ef9d57d43ee93f4214b6e39de97'.
+[xUnit.net 00:00:02.06]       Stack Trace:
+[xUnit.net 00:00:02.06]            at System.IO.FileSystem.RemoveEmptyDirectory(String fullPath, Boolean topLevel, Boolean throwWhenNotEmpty)
+[xUnit.net 00:00:02.06]            at System.IO.Directory.Delete(String path, Boolean recursive)
+[xUnit.net 00:00:02.06]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs(148,0): at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.OwnedHost.DisposeAsync()
+[xUnit.net 00:00:02.06]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs(98,0): at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(String kind)
+[xUnit.net 00:00:02.06]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.08]       System.IO.DirectoryNotFoundException : Could not find a part of the path '/tmp/neutral-controlled-a5c251a1e5324615b017ebf0f264e64a'.
+[xUnit.net 00:00:02.08]       Stack Trace:
+[xUnit.net 00:00:02.08]            at System.IO.FileSystem.RemoveEmptyDirectory(String fullPath, Boolean topLevel, Boolean throwWhenNotEmpty)
+[xUnit.net 00:00:02.08]            at System.IO.Directory.Delete(String path, Boolean recursive)
+[xUnit.net 00:00:02.08]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs(148,0): at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.OwnedHost.DisposeAsync()
+[xUnit.net 00:00:02.08]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs(98,0): at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(String kind)
+[xUnit.net 00:00:02.08]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.09]       System.IO.DirectoryNotFoundException : Could not find a part of the path '/tmp/neutral-controlled-1ecfa517ae4047f6a8921361d1543fb2'.
+[xUnit.net 00:00:02.10]       Stack Trace:
+[xUnit.net 00:00:02.10]            at System.IO.FileSystem.RemoveEmptyDirectory(String fullPath, Boolean topLevel, Boolean throwWhenNotEmpty)
+[xUnit.net 00:00:02.10]            at System.IO.Directory.Delete(String path, Boolean recursive)
+[xUnit.net 00:00:02.10]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs(148,0): at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.OwnedHost.DisposeAsync()
+[xUnit.net 00:00:02.10]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs(98,0): at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(String kind)
+[xUnit.net 00:00:02.10]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.11]       System.IO.DirectoryNotFoundException : Could not find a part of the path '/tmp/neutral-controlled-f2bb0f1966464ff0b702b33ebd6cb854'.
+[xUnit.net 00:00:02.11]       Stack Trace:
+[xUnit.net 00:00:02.11]            at System.IO.FileSystem.RemoveEmptyDirectory(String fullPath, Boolean topLevel, Boolean throwWhenNotEmpty)
+[xUnit.net 00:00:02.11]            at System.IO.Directory.Delete(String path, Boolean recursive)
+[xUnit.net 00:00:02.11]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs(148,0): at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.OwnedHost.DisposeAsync()
+[xUnit.net 00:00:02.11]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs(98,0): at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(String kind)
+[xUnit.net 00:00:02.11]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.17]       System.IO.DirectoryNotFoundException : Could not find a part of the path '/tmp/neutral-controlled-2166c4a514be4cb198bb2c622ba4bc62'.
+[xUnit.net 00:00:02.17]       Stack Trace:
+[xUnit.net 00:00:02.17]            at System.IO.FileSystem.RemoveEmptyDirectory(String fullPath, Boolean topLevel, Boolean throwWhenNotEmpty)
+[xUnit.net 00:00:02.17]            at System.IO.Directory.Delete(String path, Boolean recursive)
+[xUnit.net 00:00:02.17]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs(148,0): at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.OwnedHost.DisposeAsync()
+[xUnit.net 00:00:02.17]         /workspace/native-1553/BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs(106,0): at BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof()
+[xUnit.net 00:00:02.17]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.58]       Assert.False() Failure
+[xUnit.net 00:00:02.58]       Expected: False
+[xUnit.net 00:00:02.58]       Actual:   True
+[xUnit.net 00:00:02.58]       Stack Trace:
+[xUnit.net 00:00:02.58]         /workspace/native-1553/BookOfEternityClient.Tests/PortableClientStorageTests.cs(334,0): at BookOfEternityClient.Tests.PortableClientStorageTests.ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence()
+[xUnit.net 00:00:02.58]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.70]       Assert.False() Failure
+[xUnit.net 00:00:02.70]       Expected: False
+[xUnit.net 00:00:02.70]       Actual:   True
+[xUnit.net 00:00:02.70]       Stack Trace:
+[xUnit.net 00:00:02.70]         /workspace/native-1553/BookOfEternityClient.Tests/PortableClientStorageTests.cs(73,0): at BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(String content)
+[xUnit.net 00:00:02.70]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.73]       Assert.False() Failure
+[xUnit.net 00:00:02.73]       Expected: False
+[xUnit.net 00:00:02.73]       Actual:   True
+[xUnit.net 00:00:02.73]       Stack Trace:
+[xUnit.net 00:00:02.73]         /workspace/native-1553/BookOfEternityClient.Tests/PortableClientStorageTests.cs(73,0): at BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(String content)
+[xUnit.net 00:00:02.73]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.76]       Assert.False() Failure
+[xUnit.net 00:00:02.76]       Expected: False
+[xUnit.net 00:00:02.76]       Actual:   True
+[xUnit.net 00:00:02.76]       Stack Trace:
+[xUnit.net 00:00:02.76]         /workspace/native-1553/BookOfEternityClient.Tests/PortableClientStorageTests.cs(73,0): at BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(String content)
+[xUnit.net 00:00:02.76]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.79]       Assert.False() Failure
+[xUnit.net 00:00:02.79]       Expected: False
+[xUnit.net 00:00:02.79]       Actual:   True
+[xUnit.net 00:00:02.79]       Stack Trace:
+[xUnit.net 00:00:02.79]         /workspace/native-1553/BookOfEternityClient.Tests/PortableClientStorageTests.cs(73,0): at BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(String content)
+[xUnit.net 00:00:02.79]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:07.43]       System.IO.FileNotFoundException : Could not find file '/workspace/native-1553/TestResults/production-main/1eb7ce1f9e5c4e87ac35780692834177/scenario.json'.
+[xUnit.net 00:00:07.43]       Stack Trace:
+[xUnit.net 00:00:07.43]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:07.43]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:07.43]            at System.IO.File.OpenHandle(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize)
+[xUnit.net 00:00:07.43]            at System.IO.File.ReadAllBytes(String path)
+[xUnit.net 00:00:07.43]         /workspace/native-1553/BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs(60,0): at BookOfEternityClient.Tests.ProductionMainLinuxFixture.RunAsync(String mode)
+[xUnit.net 00:00:07.43]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:40.21]       System.IO.FileNotFoundException : Could not find file '/workspace/native-1553/TestResults/production-main/903ad89670f34dec83f0ec344561ece5/scenario.json'.
+[xUnit.net 00:00:40.22]       Stack Trace:
+[xUnit.net 00:00:40.22]            at Interop.ThrowExceptionForIoErrno(ErrorInfo errorInfo, String path, Boolean isDirError)
+[xUnit.net 00:00:40.22]            at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, UnixFileMode openPermissions, Int64&amp; fileLength, UnixFileMode&amp; filePermissions, Boolean failForSymlink, Boolean&amp; wasSymlink, Func`4 createOpenException)
+[xUnit.net 00:00:40.22]            at System.IO.File.ReadAllBytes(String path)
+[xUnit.net 00:00:40.22]         /workspace/native-1553/BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs(60,0): at BookOfEternityClient.Tests.ProductionMainLinuxFixture.RunAsync(String mode)
+[xUnit.net 00:00:40.22]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:45.73]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:59:00.5233356+00:00">
+        <Text>[xUnit.net 00:00:02.05]     BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: "incomplete") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:59:00.5493485+00:00">
+        <Text>[xUnit.net 00:00:02.08]     BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: "uncertain") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:59:00.5637192+00:00">
+        <Text>[xUnit.net 00:00:02.09]     BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: "retained") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:59:00.5872814+00:00">
+        <Text>[xUnit.net 00:00:02.11]     BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_InvalidProofRetainsOriginalAuthority(kind: "foreign") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:59:00.6353372+00:00">
+        <Text>[xUnit.net 00:00:02.17]     BookOfEternityClient.Tests.GmOwnedTerminalBoundaryTests.ActualOwnedStop_ScopedProofStillRequiresActualOutputEof [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:59:01.0484868+00:00">
+        <Text>[xUnit.net 00:00:02.58]     BookOfEternityClient.Tests.PortableClientStorageTests.ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:59:01.1707174+00:00">
+        <Text>[xUnit.net 00:00:02.70]     BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: "null") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:59:01.1953278+00:00">
+        <Text>[xUnit.net 00:00:02.73]     BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: "[]") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:59:01.2273551+00:00">
+        <Text>[xUnit.net 00:00:02.76]     BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: "{\"language\":\"en\",\"language\":\"ru\"}") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:59:01.2633231+00:00">
+        <Text>[xUnit.net 00:00:02.79]     BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: "{broken") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:59:05.8966061+00:00">
+        <Text>[xUnit.net 00:00:07.43]     BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c7669543e9c7" outcome="Error" timestamp="2026-10-06T19:59:38.6837092+00:00">
+        <Text>[xUnit.net 00:00:40.21]     BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_PipeDraftTakeoverCancelScopedStop [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

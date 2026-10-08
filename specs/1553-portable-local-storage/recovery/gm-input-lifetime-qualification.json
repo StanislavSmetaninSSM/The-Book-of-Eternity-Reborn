@@ -1,0 +1,512 @@
+{
+  "SchemaVersion": 1,
+  "Task": "T042-INPUT-LIFETIME",
+  "BaseCommit": "618a8a20cba345f367a5e15659019d3dec6fd2be",
+  "SourceCommit": "dc29b37d0c3e3067acf9943a048360fbba66d0e3",
+  "SourceTree": "fe42d58824f76afae9816a6c539e4a1d1c8c2f53",
+  "Status": "PASS: independently reviewed bounded managed input-lifetime slice",
+  "Environment": {
+    "OS": "Debian13.6",
+    "Kernel": "6.18.44",
+    "Architecture": "x86_64",
+    "SDK": "10.0.401",
+    "Runtime": "8.0.31",
+    "PowerShell": "7.6.6",
+    "Permissions": "normal; no security/settings/access changes"
+  },
+  "VerificationInputs": {
+    "BookOfEternityGMBridge/Program.cs": {
+      "Sha256": "112191361e8b753a7b7a3fe53b8b5418ecb4cd4936b8165c1ae1aab35423711d",
+      "GitBlob": "4287ea735798fc5a207286af443ac8e60039a0f1"
+    },
+    "BookOfEternityGMBridge/BookOfEternityGMBridge.csproj": {
+      "Sha256": "aea4e886f3f2209b32e3f79ab37b62793567d6e7510109a6622be31f2af9de4d",
+      "GitBlob": "603f4886992cc8326a72d4249e9042390cf539f4"
+    },
+    "BookOfEternityClient.Tests/GmBridgeInputLifetimeTests.cs": {
+      "Sha256": "ede4205bdabd064cb7e2f8fb9d78542ae7ea92a3a2f1271b6390647c9b96573c",
+      "GitBlob": "30bffb2ebff60e9fc39dd22faaf6b159dbee1c98"
+    },
+    "BookOfEternityClient.Tests/GmBridgeDiagnosticsContractTests.cs": {
+      "Sha256": "9099347c559006189c342cb3fe0fda66868dca7b74557086d98c17185c4ecd64",
+      "GitBlob": "aeb48de5b1f86006dbe2300434dd3bf4158e6c5e"
+    },
+    "BookOfEternityClient.Tests/GmBridgeOutputPumpTests.cs": {
+      "Sha256": "210c46a2b7cd79cb540af8d78f9ccd3975957ce9ba4a386b476a9063ff228fd6",
+      "GitBlob": "a809342747e17e3e98579896fdb963723838758c"
+    },
+    "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj": {
+      "Sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "GitBlob": "8d5df04ac73689ac01baf7a225afc68adb6f1d18"
+    },
+    "tests/categories.json": {
+      "Sha256": "abf201440548b68707dc395a96b0e3ca8111dd3938dadf7622900f24bdcc8d55",
+      "GitBlob": "ad3cf271f78b2e75bd80976f36556e2093284d8a"
+    },
+    "tests/selection.json": {
+      "Sha256": "095deef14ef7aeafc0407aaa960b12e2e4958fad99acdc58f37cf3c740a66990",
+      "GitBlob": "633321b17c7b5f01b8422e39c1bb78b77893418c"
+    }
+  },
+  "UnchangedFromBase": {
+    "BookOfEternityGMBridge/ConPtySession.cs": {
+      "Sha256": "8c609242e9c9f6fe2e29526184c7350058a959b56bf02852826572b762d152c7",
+      "GitBlob": "9f23aba595233798908a1f211c05534574c2f293"
+    },
+    "BookOfEternityClient/game_master_daemon.ps1": {
+      "Sha256": "7750da7af9eb5eed8b588bf3bcac401ba01347f6895f059aa848d845c1d123e5",
+      "GitBlob": "366487c52a8b564c2e4d90a5cb41b91d2c0199c6"
+    },
+    "BookOfEternityClient/Launcher/bookofeternity.ps1": {
+      "Sha256": "868aa1bb6bb61c974287b2f65217e2c12eb7a5347fb9a6522d19977215fbb26e",
+      "GitBlob": "3c5081c3a275b3faacab837a9efc63479e704ae2"
+    },
+    "BookOfEternityClient/Launcher/Start_GM_Daemon.ps1": {
+      "Sha256": "cc91d89c18a144987442ee09f03c062d6d01311961d44713db5593eb5f6d128e",
+      "GitBlob": "754ff59125dbdf0d197a01afc1f959fe89e2b402"
+    },
+    "BookOfEternityClient/Configuration/GameSettings.cs": {
+      "Sha256": "aac28c5567f221ea91dee7cc1c50170175d72224546cae5696546ebcf21a3ca3",
+      "GitBlob": "23fa4c947e29e74db80ad87fb7e438891cb7bf94"
+    },
+    "BookOfEternityClient/Configuration/GmBridgePasteVisibilityPolicy.cs": {
+      "Sha256": "6a48253700cef39107255460fa420c44f4ad7d7919949906e8ad048330a7b8d3",
+      "GitBlob": "c10c273d95cbf206c85cab86934084a3c9bf5290"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessTree.cs": {
+      "Sha256": "812c10afbef30f0117126e209dcb5b2926995a9afdec2d8d329b53a59eb0fa74",
+      "GitBlob": "4c99db4f3b8770a660018135f9edade0747567a1"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs": {
+      "Sha256": "3a1dac5619ee4c6bc1e0292a82476a2c6fe6bdb2b6c0c7e9868fefd2773e9d7f",
+      "GitBlob": "473abc4659edacfbedca584317077da1891bd7cd"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs": {
+      "Sha256": "3da5134089e1b3748a0525805c0e716f807dd64a78b2a9ff391b5187a3074cea",
+      "GitBlob": "44ad2eec1427ff7256142804741ce3fdb8f4e658"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerExecutionWorkspace.cs": {
+      "Sha256": "412f1f3c5560ebd5f114aa160e6ba9cc4610ec873bfdf72d5b324a02ded927c9",
+      "GitBlob": "a46f14becab9acf68275e788d2b749dbb081896b"
+    },
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs": {
+      "Sha256": "c1f32c968ca6f8ff8e9b0358a8721f813a8a54688e48dc87e6080480dec60507",
+      "GitBlob": "8919337e8bbe25fb7d6af799bfd10d8c2a9da78c"
+    },
+    "BookOfEternityClient/Core/FileSystemManager.cs": {
+      "Sha256": "c000d3cd16fb0d01bb00003326e58e38f8ae144eb41475802ed22ea36ae5ecc3",
+      "GitBlob": "a6e27695d6069bf939745e431f2babf57de61a14"
+    },
+    "BookOfEternityClient/Services/SaveLoadService.Loading.cs": {
+      "Sha256": "87ef33e7bf8ae33b692148bd4a5b8023c3f470fe83561597dcdccad54c896473",
+      "GitBlob": "1a5499d7dd65caf5aa04a4e6ed2ea4fcfc2e5675"
+    },
+    "BookOfEternityClient/BookOfEternityClient.csproj": {
+      "Sha256": "ea910c91fd881982c532adf5091250b3a2e67158159bd3a46fc6e5974f2c4198",
+      "GitBlob": "6c8d0723b2f13753475c19bf37903ae39067b4db"
+    }
+  },
+  "SourcePreservation": {
+    "OutputPumpAndRecord": {
+      "ByteIdentical": true,
+      "Sha256": "ee2d4b383040255f2160de46baba80ca6650148e2eac973f73fe1a25aa5f430c"
+    },
+    "KeyToSequence": {
+      "ByteIdentical": true,
+      "Sha256": "5a851e13b86ea3427925daf73a8276f44d66d82431dbd731191b8d94f48cdac3"
+    },
+    "PasteAndVisibilityPolicies": {
+      "ByteIdentical": true,
+      "Sha256": "db062e246114e3d3dbda4794742f4311ebbc531d6f1b205c397db46a6117a475"
+    }
+  },
+  "Runs": {
+    "red-plan": {
+      "Source": "33cd8ee6b8ab8fade26b16d2e562c071a4a9e5fe",
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "WallTime": "00:01:48.1148209",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 29,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [
+          "gm-bridge-input-lifetime-unit-001"
+        ],
+        "Complete": false
+      },
+      "CleanupComplete": true,
+      "Evidence": "evidence/gm-input-red-plan/manifest.json"
+    },
+    "causal-red": {
+      "Source": "33cd8ee6b8ab8fade26b16d2e562c071a4a9e5fe",
+      "Tests": {
+        "Total": 29,
+        "Executed": 29,
+        "Passed": 12,
+        "Failed": 17
+      },
+      "WallTime": "00:00:07.8707073",
+      "ExitCode": 1,
+      "TimedOut": false,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 29,
+        "CompletedCases": 29,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "CleanupComplete": true,
+      "Evidence": "evidence/gm-input-causal-red/manifest.json"
+    },
+    "first-green": {
+      "Source": "146f2968f666e12a0a0905e215b2fcf6ffe33e9c",
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "WallTime": "00:00:33.4256106",
+      "ExitCode": 1,
+      "TimedOut": false,
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "CleanupComplete": true,
+      "Evidence": "evidence/gm-input-first-green/manifest.json"
+    },
+    "second-green": {
+      "Source": "6af7431d56a234ac0562a93e2ce0a03a34bc2ed6",
+      "Tests": {
+        "Total": 34,
+        "Executed": 34,
+        "Passed": 34,
+        "Failed": 0
+      },
+      "WallTime": "00:01:01.1408102",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 34,
+        "CompletedCases": 34,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "CleanupComplete": true,
+      "Evidence": "evidence/gm-input-second-green/manifest.json"
+    },
+    "audit": {
+      "Source": "6af7431d56a234ac0562a93e2ce0a03a34bc2ed6",
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "WallTime": "00:00:09.7215625",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "CleanupComplete": true,
+      "Evidence": "evidence/gm-input-audit/manifest.json"
+    },
+    "review-red-preparation": {
+      "Source": "db63d19d7ac27baa54ef14eb3108e29fc30050ed",
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "WallTime": "00:01:21.2068510",
+      "ExitCode": 1,
+      "TimedOut": false,
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "CleanupComplete": true,
+      "Evidence": "evidence/gm-input-review-red-preparation/manifest.json"
+    },
+    "review-red": {
+      "Source": "96cbe8af4003e3145f141a29e49268f44cf8eeb9",
+      "Tests": {
+        "Total": 37,
+        "Executed": 37,
+        "Passed": 36,
+        "Failed": 1
+      },
+      "WallTime": "00:01:11.9794201",
+      "ExitCode": 1,
+      "TimedOut": false,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 37,
+        "CompletedCases": 37,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "CleanupComplete": true,
+      "Evidence": "evidence/gm-input-review-red/manifest.json"
+    },
+    "final-green": {
+      "Source": "dc29b37d0c3e3067acf9943a048360fbba66d0e3",
+      "Tests": {
+        "Total": 37,
+        "Executed": 37,
+        "Passed": 37,
+        "Failed": 0
+      },
+      "WallTime": "00:00:56.3117905",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 37,
+        "CompletedCases": 37,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "CleanupComplete": true,
+      "Evidence": "evidence/gm-input-final-green/manifest.json"
+    },
+    "final-audit": {
+      "Source": "dc29b37d0c3e3067acf9943a048360fbba66d0e3",
+      "Tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "WallTime": "00:00:10.3148826",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "Selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "CleanupComplete": true,
+      "Evidence": "evidence/gm-input-final-audit/manifest.json"
+    }
+  },
+  "CausalRed": {
+    "Commit": "33cd8ee6b8ab8fade26b16d2e562c071a4a9e5fe",
+    "Passed": 12,
+    "Failed": 17,
+    "FixtureOrBuildFailure": false,
+    "Causes": [
+      "cancelled/obsolete queued writers still write",
+      "old origin can target replacement",
+      "null-PTY stop returns before writes/key consumer settle",
+      "timeout/dispose admission not retained",
+      "started write/flush/cancel uncertainty not exposed"
+    ],
+    "ActualDllPdbAndKeyByteControlsPassed": true
+  },
+  "PreparationFailure": {
+    "Commit": "146f2968f666e12a0a0905e215b2fcf6ffe33e9c",
+    "Error": "CS8647 using declaration directly within switch section",
+    "TestsExecuted": 0,
+    "Correction": "Braces only at6af7431d; separately retained failed attempt",
+    "ReviewRedPreparation": {
+      "Commit": "db63d19d7ac27baa54ef14eb3108e29fc30050ed",
+      "Error": "CS1503 connected-request Stream cannot convert to NamedPipeServerStream response writer parameter",
+      "ExecutedTests": 0,
+      "Correction": "Writer parameter broadened to Stream; unchanged framing body; fixture uses StreamReader for UTF8 preamble"
+    }
+  },
+  "ReviewFinding": {
+    "Severity": "P1",
+    "Problem": "Shell dispatch cancellation terminates control server while host stays live",
+    "MechanicalRedSeam": "Actual connected request catch boundary extracted unchanged; controlled request+stream",
+    "RedCommit": "96cbe8af4003e3145f141a29e49268f44cf8eeb9",
+    "Result": "36pass1causalFail (shell cancellation); host cancellation/generic IO controls pass",
+    "Correction": "Only host cancellation ends service; shell cancellation returns ordinary failure and continues",
+    "GreenCases": 37
+  },
+  "ActualProductionConsumerProof": {
+    "FreshBuildThroughCanonicalRunner": true,
+    "ExistingTarget": "net8.0-windows",
+    "TargetUnchanged": true,
+    "NativeStartupExecuted": false,
+    "RealBridgeAssemblyReflection": true,
+    "NormalHostConstructorAndDispose": true,
+    "ActualWriterKeyboardStopDispatchCompletionRequestBoundaryInvoked": true,
+    "PdbCurrentProgramSha256AssertionPassed": true,
+    "ProductionCallSiteGuardsPassed": true,
+    "ArtifactHashes": {
+      "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityGMBridge.dll": "3a27c5a5d4687f8e60cedb73329e65f6d6061352a7be4e9d6b4af53659feb540",
+      "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityGMBridge.pdb": "8c00dcd5273482d827c34b85626d041351c987ef1dfdd1801a888a1ba6ec8e1e"
+    },
+    "Warnings": "14 warnings:13 pre-existing unchanged locations plus fixtureCS4014 on Track(task), immediately followed by await of the same task; no build errors"
+  },
+  "CatalogAudit": {
+    "AtCommit": "dc29b37d0c3e3067acf9943a048360fbba66d0e3",
+    "Valid": true,
+    "Methods": 10741,
+    "Categories": 243,
+    "Unmapped": [],
+    "StaleSelectors": [],
+    "ExecutedTests": 0,
+    "UnchangedFreshIntegrationClosureFromReceiptSource": "da35de5498d8edf2787c987bd5a45ea5aa39e988",
+    "UnchangedClosureTrees": {
+      "BookOfEternityClient": "a93898d54f57faa9aca87ab94c21a61585f5ba29",
+      "BookOfEternityClient.IntegrationTests": "848726ebc39dbdb590ac9552a27f98e430be9ddb",
+      "BookOfEternityClient.TestSupport": "4dfc534ed1f73399d034a2e1bc8e1820f76d1994"
+    }
+  },
+  "IndependentDesignReview": {
+    "Task": "T042-INPUT-LIFETIME",
+    "BaseCommit": "618a8a20cba345f367a5e15659019d3dec6fd2be",
+    "Agent": "/root/input_lifetime_design_review",
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Verdict": "PASS",
+    "ObservedUtc": "2026-10-05T14:09:50.369261+00:00",
+    "Conditions": [
+      "Retain all actual queued/started IO and keyboard tasks through drain timeout; single lifecycle serialization; close admission before Dispose",
+      "Five-second managed drain observation only; incomplete retains context and blocks replacement; no native stop claim",
+      "Post-start write/flush/cancel records local uncertainty and revokes lifetime; stale status cannot overwrite B",
+      "Dispatch Completed only on success; keyboard fault is recorded; host shutdown cancellation distinguished",
+      "Recheck originating lifetime after key read; B publication awaits actual A keyboard completion"
+    ],
+    "Execution": "Read-only; no builds/tests/probes/edits"
+  },
+  "IndependentFinalReview": {
+    "Task": "T042-INPUT-LIFETIME",
+    "Model": "gpt-6.1-sol",
+    "Effort": "xhigh",
+    "Agent": "/root/input_final_review",
+    "Verdict": "PASS",
+    "CandidateCommit": "a5aefe8f8151c67a15fa107e78b487581bd43458",
+    "TestedSourceCommit": "dc29b37d0c3e3067acf9943a048360fbba66d0e3",
+    "ObservedUtc": "2026-10-05T14:44:01.358800+00:00",
+    "RemainingActionableFindings": 0,
+    "ResolvedFinding": {
+      "Severity": "P1",
+      "Issue": "Shell cancellation ended the control server while host stayed live",
+      "CausalRed": "36pass1shell-cancel-fail at96cbe8af4003e3145f141a29e49268f44cf8eeb9",
+      "Correction": "Host-token catch filter",
+      "Green": "37distinctPASS atdc29b37d0c3e3067acf9943a048360fbba66d0e3"
+    },
+    "Verified": [
+      "37distinctPASS complete selection0skipsduplicates/timeouts completecleanup",
+      "Discovery243categories10741identities0execution",
+      "10manifests54artifacts stored+decompressedhashes",
+      "8sourceinputs DLL/PDBhashes14unchangedfiles3unchangedclosuretrees11XML",
+      "Output/key/paste-visibility regions byte-identical tobase",
+      "Clean GitHub-only restoration5497tracked75changedfilebytes8inputhashes exacttree"
+    ],
+    "WarningAssessment": "14warnings13pre-existing+1benignfixtureCS4014; Track(task) returns the same task immediately awaited;0build errors",
+    "Scope": "Bounded local input lifetime only; native stop/runfencing/readinesspolicy/transactionarbitration/fullT042 unqualified",
+    "ReviewerActions": "Read-only; no builds/tests/native probes/edits/publication"
+  },
+  "ArtifactIntegrity": {
+    "Manifests": 11,
+    "Artifacts": 57,
+    "Evidence": [
+      "evidence/gm-input-audit/manifest.json",
+      "evidence/gm-input-causal-red/manifest.json",
+      "evidence/gm-input-design-cleanup/manifest.json",
+      "evidence/gm-input-final-audit/manifest.json",
+      "evidence/gm-input-final-green/manifest.json",
+      "evidence/gm-input-first-green/manifest.json",
+      "evidence/gm-input-red-plan/manifest.json",
+      "evidence/gm-input-review-red/manifest.json",
+      "evidence/gm-input-review-red-preparation/manifest.json",
+      "evidence/gm-input-second-green/manifest.json",
+      "evidence/gm-input-review/manifest.json"
+    ]
+  },
+  "GeneratedXmlValidation": [
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.xml",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.xml",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.xml",
+    "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityGMBridge.xml",
+    "BookOfEternityGMBridge/bin/Debug/net8.0-windows/BookOfEternityClient.xml"
+  ],
+  "Cleanup": {
+    "ObservedUtc": "2026-10-05T14:39:27.920820+00:00",
+    "OwnFixturesRemaining": [],
+    "ActiveRuntimeBuildTestProcesses": 0,
+    "BuildServersShutdown": "Succeeded",
+    "TerminatedPid1ZombiesNotClaimedReaped": [
+      "4077       1 Z dotnet",
+      "4111       1 Z VBCSCompiler",
+      "4391       1 Z dotnet",
+      "11704       1 Z dotnet",
+      "12166       1 Z dotnet",
+      "15890       1 Z dotnet",
+      "16191       1 Z dotnet",
+      "23280       1 Z dotnet",
+      "23305       1 Z VBCSCompiler",
+      "23516       1 Z dotnet",
+      "23520       1 Z dotnet",
+      "27695       1 Z dotnet",
+      "27696       1 Z dotnet",
+      "27697       1 Z dotnet",
+      "32598       1 Z dotnet",
+      "32599       1 Z dotnet",
+      "32600       1 Z dotnet",
+      "34708       1 Z dotnet",
+      "34709       1 Z dotnet",
+      "34710       1 Z dotnet"
+    ]
+  },
+  "QualificationLimits": [
+    "Local stream lifetime is not run/generation/fence",
+    "Five-second managed drain is a protective observation limit, not native stop evidence",
+    "Post-start uncertainty is LastInputWriteError and exception; no daemon/QTE/retry contract",
+    "Native Windows/Linux PTY/ConPTY/real CLI/live GM not executed",
+    "Paste-observe-submit transaction, manual arbitration, queue limits and key bindings not implemented",
+    "Unknown-screen/readiness/autotrust policy remains unqualified; retained input error does not claim policy redesign",
+    "Process ownership/descendant stop/workspace reuse/Release remain unqualified",
+    "Full T042/T041/B4/#1553/platform acceptance remains open"
+  ],
+  "NextWork": "Stop at handoff; no slice2/3 authorization",
+  "SourceRestoration": {
+    "CandidateCommit": "a5aefe8f8151c67a15fa107e78b487581bd43458",
+    "Report": "evidence/gm-input-review/review-restore.json",
+    "Result": "PASS",
+    "FinalMetadataCarrier": "Ordinary push/readback and another fresh GitHub-only restoration; exact final carrier report in local handoff without self-reference"
+  }
+}

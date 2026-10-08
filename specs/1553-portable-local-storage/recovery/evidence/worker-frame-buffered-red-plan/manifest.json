@@ -1,0 +1,91 @@
+{
+  "SchemaVersion": 1,
+  "CollectedAtHead": "f21652674773b810152452eeb7c0735c75b8a166",
+  "SourceResultDirectory": "20261005-041739-618-40-6d4e45fc068a48a897abbe01899c6b9d-categories",
+  "OperatingSystem": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "Runtime": "native Linux x64",
+  "Toolchain": {
+    "PowerShell": "7.6.6",
+    "Sdk": "10.0.401",
+    "Runtime": "8.0.31"
+  },
+  "TelemetryOptOuts": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "POWERSHELL_TELEMETRY_OPTOUT": "1",
+    "TESTINGPLATFORM_TELEMETRY_OPTOUT": "1"
+  },
+  "DOTNET_PROCESSOR_COUNT": "1",
+  "PathSanitization": "Absolute checkout/run-root/toolchain paths replaced; raw and stored hashes retained",
+  "Artifacts": [
+    {
+      "Path": "Build-integration.log",
+      "OriginalBytes": 9590,
+      "OriginalSha256": "09860d21e018726f7f7d246b256a922b5c8ef444dd6b6481f6a144a226352c62",
+      "Embedded": true,
+      "StoredPath": "Build-integration.log",
+      "StoredBytes": 7897,
+      "StoredSha256": "b94eb69c429ef9f4ff50336cc2fc93720f0ef34130e06867b62470df962016ec"
+    },
+    {
+      "Path": "Build-unit.log",
+      "OriginalBytes": 8910,
+      "OriginalSha256": "df1b8e77970ba40678dd9c36791286b8845cc5d4ea3f01e6117e98c24ec04edd",
+      "Embedded": true,
+      "StoredPath": "Build-unit.log",
+      "StoredBytes": 7325,
+      "StoredSha256": "d9766a6c3d85d0a1a556d4d6a2c2deb57cb4c6c40df638b1d97bfb11fe86dd62"
+    },
+    {
+      "Path": "dotnet-test.log",
+      "OriginalBytes": 2970133,
+      "OriginalSha256": "31444f4471773e518b90d91c2cbe0b08db33fc83accbc924d9913db73de88db8",
+      "Embedded": false,
+      "Reason": "Oversized generated runner log; causal TRX and structured/build reports are embedded"
+    },
+    {
+      "Path": "plan.json",
+      "OriginalBytes": 11474,
+      "OriginalSha256": "25af92c900ba53df87c694974b0cf397a969f560f0f7d6b0156bac38e9abbc26",
+      "Embedded": true,
+      "StoredPath": "plan.json",
+      "StoredBytes": 11474,
+      "StoredSha256": "25af92c900ba53df87c694974b0cf397a969f560f0f7d6b0156bac38e9abbc26"
+    },
+    {
+      "Path": "summary.json",
+      "OriginalBytes": 1616,
+      "OriginalSha256": "b642adb8b22643d28a2f4f56b55f589680b0cfb56db59fade52076c12787254c",
+      "Embedded": true,
+      "StoredPath": "summary.json",
+      "StoredBytes": 1616,
+      "StoredSha256": "b642adb8b22643d28a2f4f56b55f589680b0cfb56db59fade52076c12787254c"
+    }
+  ],
+  "MeasuredChildren": 0,
+  "SourceQualification": {
+    "TestedCommit": "f21652674773b810152452eeb7c0735c75b8a166",
+    "WorkingTreeCleanDuringExecution": true,
+    "VerificationInputs": {
+      "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHost.cs": {
+        "GitBlob": "a7ee5968bc2cbea8aa0bcfd77b14586ca5726cac",
+        "Sha256": "24705d2218409f0fbab95968ea86eec5bd83e5711bee3c306168f0e855552b17"
+      },
+      "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostFrameChannel.cs": {
+        "GitBlob": "507497dd8732f5849e384c2a0a61db95820caf74",
+        "Sha256": "80efce7aaa262b1e8e1cda7ca50a940f34b04404aa6bfd9493477343ea9acf25"
+      },
+      "BookOfEternityClient.IntegrationTests/GmWorkerProcessHostFrameTests.cs": {
+        "GitBlob": "3cbfcd92c4f8cf767446ba69a12fcefc42f3ae91",
+        "Sha256": "e11b77b65f38c59b9a9305daccddc28e2a93aa2565a7b3af79a29d9ae4e2360e"
+      },
+      "tests/categories.json": {
+        "GitBlob": "a40607c2d455de91d6ca15544631c25fb888c78b",
+        "Sha256": "fa1aeca2e9e6d878c9bcf6130ca44af2c1b7ae64bcfbd05f643ac0b8506ad896"
+      },
+      "tests/selection.json": {
+        "GitBlob": "993a7200bd209fb8d9b21406c614b971c660638a",
+        "Sha256": "248ddb701d4e47d0070124d1a590b7452030b57a6b0d1f48522ffc800b5f1d87"
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "reviewer": "/root/ci_platform_design_review",
+  "selectedModel": "gpt-6.1-sol",
+  "reasoningEffort": "xhigh",
+  "readOnly": true,
+  "reviews": [
+    {
+      "stage": "design",
+      "revision": "8661262e6f77e4482301cd2a0ad6fad8516f40ff",
+      "verdict": "PASS"
+    },
+    {
+      "stage": "source/evidence initial",
+      "revision": "f533213cc22edfb7403697d4a27f4cb5c89b6165",
+      "verdict": "Evidence PASS; required P2 schema coercion"
+    },
+    {
+      "stage": "source/evidence followup",
+      "revision": "3464cd2438b95e13146fbcf2f75ad5382902ebc2",
+      "verdict": "PASS",
+      "fix": "Causal schema rejection and integer-only check",
+      "verifiedDistinctGreen": 28
+    },
+    {
+      "stage": "metadata",
+      "revision": "fcf7fbf385500ac8a08140108e58b9c666422228",
+      "verdict": "PASS",
+      "verifiedStoredExpandedArtifacts": 29,
+      "verifiedFinalSourcePins": 7
+    }
+  ],
+  "metadataReview": "PASS",
+  "freshGitHubOnlyRestore": "Final exact-carrier delivery gate; proof reported with final SHA separately"
+}

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2",
+  "sourceCommit": "23d94fb711b262eb024dfa6a028e190fbaa4ec17",
+  "status": "T032-A2 causal baseline: public save reaches completed-ZIP boundary and succeeds on Windows through old route but emits zero B1 commits; expected one,1FAIL. Owned preparation cleanup1PASS. Exact23d94fb7 frozen binaries, NoBuild; evidence-only checkpoint0f4, no caller implementation yet.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-entry"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:17.5275363",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 2,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 1,
+    "Failed": 1
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "plan.json",
+      "originalSha256": "0B39B9D380F52FF8AE4816ECA8FCA0366E6AA6FF38BBF34A350D6DC02622013D",
+      "sha256": "022A48EB8E105D6A58655E776EA742FA479224BE061BD67FA24DD82112727A6D"
+    },
+    {
+      "path": "portable-save-entry-unit-001.trx",
+      "originalSha256": "655F4C3A8AEA0A31F79AF4BBAA92E0615BCDAB896BD06EE1B18E3E6F91768C85",
+      "sha256": "9D3D01001C3677B59EAAFC6472F36990EAA8A6AE8486D1694CDD14A5EC5B3DDF"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "17103CF2B081CD1D30196DF9544AE743B76CDC9D1826223466C8D2E1C3C3E982",
+      "sha256": "AB680978A65D36CE0EA4FEB389751C3447056D6E26FFCF2075FB01118E0D1926"
+    }
+  ]
+}

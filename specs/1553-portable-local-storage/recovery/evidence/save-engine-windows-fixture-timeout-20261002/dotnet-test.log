@@ -1,0 +1,49 @@
+===== portable-engine-save-continuation-integration-001: stdout =====
+Тестовый запуск для [WORKTREE]\BookOfEternityClient.IntegrationTests\bin\Debug\net8.0\BookOfEternityClient.IntegrationTests.dll (.NETCoreApp,Version=v8.0)
+Общее количество тестовых файлов (1), соответствующих указанному шаблону.
+  Не пройден BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_RealTurnCallerRetainsAcceptedStateAndTerminalEvidence(entry: "waiting", committed: False) [1 m 39 s]
+  Сообщение об ошибке:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   20
+  Трассировка стека:
+     at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_RealTurnCallerRetainsAcceptedStateAndTerminalEvidence(String entry, Boolean committed) in [WORKTREE]\BookOfEternityClient.IntegrationTests\GameEngineTurnLifecycleTests.PortableSave.cs:line 191
+--- End of stack trace from previous location ---
+  Не пройден BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_RealTurnCallerRetainsAcceptedStateAndTerminalEvidence(entry: "player", committed: False) [1 m 58 s]
+  Сообщение об ошибке:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   20
+  Трассировка стека:
+     at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_RealTurnCallerRetainsAcceptedStateAndTerminalEvidence(String entry, Boolean committed) in [WORKTREE]\BookOfEternityClient.IntegrationTests\GameEngineTurnLifecycleTests.PortableSave.cs:line 191
+--- End of stack trace from previous location ---
+  Не пройден BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_RealTurnCallerRetainsAcceptedStateAndTerminalEvidence(entry: "late", committed: False) [1 m 27 s]
+  Сообщение об ошибке:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   20
+  Трассировка стека:
+     at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_RealTurnCallerRetainsAcceptedStateAndTerminalEvidence(String entry, Boolean committed) in [WORKTREE]\BookOfEternityClient.IntegrationTests\GameEngineTurnLifecycleTests.PortableSave.cs:line 191
+--- End of stack trace from previous location ---
+
+===== portable-engine-save-continuation-integration-001: stderr =====
+[xUnit.net 00:01:43.97]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_RealTurnCallerRetainsAcceptedStateAndTerminalEvidence(entry: "waiting", committed: False) [FAIL]
+[xUnit.net 00:03:42.14]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_RealTurnCallerRetainsAcceptedStateAndTerminalEvidence(entry: "player", committed: False) [FAIL]
+[xUnit.net 00:05:09.95]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableAutosave_RealTurnCallerRetainsAcceptedStateAndTerminalEvidence(entry: "late", committed: False) [FAIL]
+
+===== portable-engine-save-continuation-integration-001: exit 1 =====
+
+Category result
+  Categories: portable-engine-save-continuation
+  Filter: <none>
+  Timeout: 11 minute(s)
+  Wall time: 00:09:06.9085340
+  Exit code: 124
+  Timed out: True
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=1, cases=9; completed descriptors=0, cases=0, complete=False
+  Tests: total=0, executed=0, passed=0, failed=0
+  Duplicate test IDs: 0
+  Results: [WORKTREE]\TestResults\test-categories\20261002-234621-051-1168-a5cb1d84031b49499ab79c1f58899348-categories
+  Log: [WORKTREE]\TestResults\test-categories\20261002-234621-051-1168-a5cb1d84031b49499ab79c1f58899348-categories\dotnet-test.log
+  Failure: Lane 'Categories' exceeded its 11 minute timeout.

@@ -228,8 +228,9 @@ public sealed class BrowserGenerationFencingSourceTests
             "CreateManualSaveBoundAsync",
             "private async Task<BrowserCreateSaveResultDto>");
         Assert.Contains("BuildBoundAsync(writeLease)", boundSave, StringComparison.Ordinal);
-        Assert.Contains("ExecuteAtomicWithinTransactionAsync", boundSave, StringComparison.Ordinal);
-        Assert.Contains("SaveGameAsync(", boundSave, StringComparison.Ordinal);
+        Assert.Contains("ExecutePreparedSaveWithinTransactionAsync", boundSave, StringComparison.Ordinal);
+        Assert.Contains("PrepareSaveArchiveAsync(", boundSave, StringComparison.Ordinal);
+        Assert.Contains("PublishPreparedSaveAsync", boundSave, StringComparison.Ordinal);
         Assert.Contains("writeLease,", boundSave, StringComparison.Ordinal);
     }
 
@@ -433,7 +434,7 @@ public sealed class BrowserGenerationFencingSourceTests
             browserRestoreSource,
             StringComparison.Ordinal);
         Assert.Contains(
-            "fs.DeleteDirectoryTree(writeLease, cleanupDirectory)",
+            "fs.DeleteOriginalDirectoryTree(writeLease, cleanupDirectory)",
             browserRestoreSource,
             StringComparison.Ordinal);
         Assert.DoesNotContain(
@@ -550,10 +551,20 @@ public sealed class BrowserGenerationFencingSourceTests
             fileSystemSource,
             "FileExistsCore",
             "private bool");
-        var readSessionGeneration = ExtractMethod(
-            fileSystemSource,
-            "ReadSessionGeneration",
-            "private string");
+        // This wrapper is expression-bodied. Do not let the brace-only helper
+        // consume the following write method as its body.
+        var readSessionStart = fileSystemSource.IndexOf(
+            "private string ReadSessionGeneration()", StringComparison.Ordinal);
+        Assert.True(readSessionStart >= 0);
+        var readSessionEnd = fileSystemSource.IndexOf(';', readSessionStart);
+        Assert.True(readSessionEnd > readSessionStart);
+        var readSessionGeneration = fileSystemSource[readSessionStart..(readSessionEnd + 1)];
+        var generationSource = File.ReadAllText(SourcePath(
+            "BookOfEternityClient", "Core", "FileSystemManager.GenerationSnapshot.cs"));
+        var readGenerationSnapshot = ExtractMethod(
+            generationSource, "ReadLocalGenerationSnapshot", "internal LocalSessionGenerationSnapshot");
+        var parseGeneration = ExtractMethod(
+            generationSource, "ParseSessionGenerationText", "private static string");
         var releaseAmbientLease = ExtractMethod(
             fileSystemSource,
             "ReleaseAmbientCanonicalLease",
@@ -590,12 +601,20 @@ public sealed class BrowserGenerationFencingSourceTests
         Assert.DoesNotContain("Directory.Exists(", fileExistsCore, StringComparison.Ordinal);
 
         Assert.Contains(
-            "StrictJsonAuthority.Deserialize<SessionGenerationDocument>",
+            "ParseSessionGenerationText(ReadRuntimeText(SessionGenerationPath))",
             readSessionGeneration,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "ParseSessionGenerationText(reader.ReadToEnd())",
+            readGenerationSnapshot,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "StrictJsonAuthority.Deserialize<SessionGenerationDocument>",
+            parseGeneration,
             StringComparison.Ordinal);
         Assert.DoesNotContain(
             "JsonSerializer.Deserialize<SessionGenerationDocument>",
-            readSessionGeneration,
+            parseGeneration,
             StringComparison.Ordinal);
 
         var ambientRegistrationIndex = fileSystemSource.IndexOf(

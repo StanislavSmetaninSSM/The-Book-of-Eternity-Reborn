@@ -1,0 +1,50 @@
+{
+  "SourceDirectory": "/workspace/native-1553/TestResults/test-categories/20261007-165135-383-854129-b34e2f0d58e84ec7a3757b9d62661827-categories",
+  "Artifacts": [
+    {
+      "Path": "dotnet-test.log",
+      "Bytes": 1636759,
+      "SHA256": "72e30e2e3d529a64ab0e69f6c10358efda99786b89c2ef09c33fb86e722015e7",
+      "StoredPath": "dotnet-test.log.gz",
+      "StoredBytes": 180500,
+      "StoredSHA256": "36a2586021137ec138df2be8805865bfdf18d9716230c97f57f383aeb1c8c15c"
+    },
+    {
+      "Path": "gm-live-driver-failure-unit-001.trx",
+      "Bytes": 14210,
+      "SHA256": "7469879355cfa33fc0579d887776608794f0c866c4d885cf8bbaef4628f99b14",
+      "StoredPath": "gm-live-driver-failure-unit-001.trx.gz",
+      "StoredBytes": 2251,
+      "StoredSHA256": "ee7edd6b64ae43dd4fa606f90c112e1d953445c10c925c360b3508c1c91f0bbc"
+    },
+    {
+      "Path": "gm-live-driver-phase-boundaries-unit-002.trx",
+      "Bytes": 8609,
+      "SHA256": "448dd415521fbaef3e564b0b09e681d0999f8f77f977da51cec2e37bc06e7217",
+      "StoredPath": "gm-live-driver-phase-boundaries-unit-002.trx.gz",
+      "StoredBytes": 1708,
+      "StoredSHA256": "0f9237b9b51574d1815bc6ddbba59e52e1f953228d6aad83477cc3f10b657c84"
+    },
+    {
+      "Path": "plan.json",
+      "Bytes": 2913,
+      "SHA256": "6fb1f5c21289aa431689d7783566b22744b60d4a257474c053182717b85ce929",
+      "StoredPath": "plan.json.gz",
+      "StoredBytes": 863,
+      "StoredSHA256": "a03b08a7f2a8916d94e32eb48ff8ae02791e3824e98ed29fbb412cb0070ebc41"
+    },
+    {
+      "Path": "summary.json",
+      "Bytes": 2282,
+      "SHA256": "667dfb4004aaabd8946b89919827ec5184444e0cc70827b2315e62ad2e412b8b",
+      "StoredPath": "summary.json.gz",
+      "StoredBytes": 869,
+      "StoredSHA256": "6e6d77c0e19e62028de42bf59b8ab3789ec4854a60ef76bdeb215205ef2aa03a"
+    }
+  ],
+  "PublicOnly": true,
+  "PrivateCliStateIncluded": false,
+  "ExecutionCommit": "0a3d963ff942244eaddd596d475025126697efc1",
+  "Executed": 14,
+  "Passed": 14
+}

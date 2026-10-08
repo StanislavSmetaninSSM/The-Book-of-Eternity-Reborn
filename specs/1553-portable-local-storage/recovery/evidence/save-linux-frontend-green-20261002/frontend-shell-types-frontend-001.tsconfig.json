@@ -1,0 +1,13 @@
+{
+  "include": [
+    "/repo/BookOfEternityClient.WebFrontend/test/appRouteExtraction.test.ts",
+    "/repo/BookOfEternityClient.WebFrontend/test/shellContextComponents.test.ts"
+  ],
+  "extends": "/repo/BookOfEternityClient.WebFrontend/tsconfig.player-facing-tests.json",
+  "exclude": [],
+  "compilerOptions": {
+    "outDir": "/repo/TestResults/test-categories/20261002-144417-950-32-13ab01c4fbe0466ba445cce1ccb37866-categories/frontend-shell-types-frontend-001-compiled",
+    "noEmit": true,
+    "rootDir": "/repo/BookOfEternityClient.WebFrontend"
+  }
+}

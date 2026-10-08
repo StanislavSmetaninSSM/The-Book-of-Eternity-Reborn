@@ -3,6 +3,13 @@ using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
+internal sealed class CoordinatedStatePublicationUncertainException(Exception? failure)
+    : InvalidOperationException(PlayerMessage, failure)
+{
+    internal const string PlayerMessage =
+        "Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.";
+}
+
 internal static class CoordinatedStateWriteHelper
 {
     private static readonly SemaphoreSlim CommitGate = new(1, 1);
@@ -34,7 +41,8 @@ internal static class CoordinatedStateWriteHelper
 
     internal static PlannedWrite[] CreateAuthorityGuardWrites(LocalInteractionScope scope) =>
         scope.AuthoritySnapshots
-            .GroupBy(snapshot => snapshot.Path, StringComparer.OrdinalIgnoreCase)
+            .GroupBy(snapshot => snapshot.Path,
+                OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal)
             .Select(group => group.Last())
             .Select(snapshot => new PlannedWrite(
                 snapshot.Path,
@@ -54,21 +62,62 @@ internal static class CoordinatedStateWriteHelper
 
     public static async Task<bool> TryCommitAsync(
         FileSystemManager fs,
-        params PlannedWrite[] writes)
+        params PlannedWrite[] writes) =>
+        await TryCommitWithOwnedLeaseAsync(fs, afterWriteApplied: null, writes);
+
+    private static async Task<bool> TryCommitWithOwnedLeaseAsync(
+        FileSystemManager fs,
+        Func<PlannedWrite, Task>? afterWriteApplied,
+        PlannedWrite[] writes)
     {
         await CommitGate.WaitAsync();
+        FileSystemManager.CanonicalWriteLease? writeLease = null;
+        var completed = false;
+        Exception? operationFailure = null;
         try
         {
-            await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-            return await TryCommitCoreAsync(
+            writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+            completed = await TryCommitCoreAsync(
                 fs,
                 writeLease,
-                afterWriteApplied: null,
+                afterWriteApplied,
                 writes);
+            return completed;
+        }
+        catch (Exception failure)
+        {
+            operationFailure = failure;
+            throw;
         }
         finally
         {
-            CommitGate.Release();
+            try
+            {
+                if (writeLease != null)
+                    await ReleaseOwnedLeaseAsync(fs, writeLease, completed, operationFailure);
+            }
+            finally { CommitGate.Release(); }
+        }
+    }
+
+    internal static async ValueTask ReleaseOwnedLeaseAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        bool completed,
+        Exception? operationFailure)
+    {
+        try { await writeLease.DisposeAsync(); }
+        catch (Exception failure) when (operationFailure != null)
+        {
+            // A secondary release failure cannot turn unresolved publication
+            // into an ordinary error eligible for compensation or safe retry.
+            operationFailure.Data["CoordinatedLeaseReleaseFailure"] = failure;
+        }
+        catch (Exception failure) when (completed)
+        {
+            // Diagnostics are follow-up after an established completed result.
+            try { fs.LogCompletedCoordinatedWriteReleaseFailure(failure); }
+            catch { /* A failed warning sink cannot change that result. */ }
         }
     }
 
@@ -103,29 +152,16 @@ internal static class CoordinatedStateWriteHelper
         params PlannedWrite[] writes)
     {
         ArgumentNullException.ThrowIfNull(afterWriteApplied);
-        await CommitGate.WaitAsync();
-        try
-        {
-            await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-            return await TryCommitCoreAsync(
-                fs,
-                writeLease,
-                afterWriteApplied,
-                writes);
-        }
-        finally
-        {
-            CommitGate.Release();
-        }
+        return await TryCommitWithOwnedLeaseAsync(fs, afterWriteApplied, writes);
     }
 
     private static async Task<bool> TryCommitCoreAsync(
         FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease? writeLease,
+        FileSystemManager.CanonicalWriteLease writeLease,
         Func<PlannedWrite, Task>? afterWriteApplied,
         PlannedWrite[] writes)
     {
-        var completedWrites = new List<(PlannedWrite Write, byte[]? PreviousBytes)>();
+        fs.EnsureCanonicalWriteLeaseActive(writeLease);
         foreach (var write in writes)
         {
             if (write.RequireCurrentBaseline &&
@@ -135,6 +171,23 @@ internal static class CoordinatedStateWriteHelper
             }
         }
 
+        var mutations = writes.Where(static write => !write.GuardOnly).ToArray();
+        if (mutations.Length == 0)
+            return true;
+
+        var ordinary = mutations.Count(write => fs.UsesTrustedLocalWriter(writeLease, write.Path));
+        if (ordinary != 0 && ordinary != mutations.Length)
+            throw new InvalidOperationException("A coordinated write cannot mix ordinary publication and original storage routes.");
+        if (ordinary != 0)
+        {
+            if (afterWriteApplied != null)
+                throw new InvalidOperationException("Ordinary coordinated publication uses B1 phase observation; apply callbacks belong only to the original storage route.");
+            return await TryCommitOrdinaryAsync(fs, writeLease, mutations);
+        }
+
+        // Original browser recorder/recovery owns its physical receipts and
+        // callback boundaries until that complete consumer is migrated.
+        var completedWrites = new List<(PlannedWrite Write, byte[]? PreviousBytes)>();
         try
         {
             foreach (var write in writes)
@@ -172,6 +225,45 @@ internal static class CoordinatedStateWriteHelper
 
             return false;
         }
+    }
+
+    private static async Task<bool> TryCommitOrdinaryAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        PlannedWrite[] writes)
+    {
+        var windows = OperatingSystem.IsWindows();
+        var comparer = windows ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+        var lastWrites = new Dictionary<string, (PlannedWrite Write, int Index)>(comparer);
+        for (var index = 0; index < writes.Length; index++)
+        {
+            var write = writes[index];
+            var path = TrustedLocalFilePublication.NormalizeAuthorityPath(fs.ResolvePath(write.Path), windows);
+            lastWrites[path] = (write, index);
+        }
+
+        var changes = new List<CanonicalLocalFileChange>(lastWrites.Count);
+        foreach (var (write, _) in lastWrites.Values.OrderBy(static item => item.Index))
+        {
+            var before = await fs.ReadLocalFileBytesAsync(writeLease, write.Path);
+            var after = write.NextJson == null ? null : FileSystemManager.EncodeUtf8WithPreamble(write.NextJson);
+            changes.Add(new CanonicalLocalFileChange(write.Path, before, after));
+        }
+
+        // Once attempted, only the journal can establish rollback. In
+        // particular, a failed member may already have published its name.
+        var outcome = await fs.PublishLocalFilesAsync(writeLease, changes);
+        if (outcome.Disposition == TrustedLocalPublicationDisposition.Committed)
+        {
+            // This branch has already established commitment. The manager
+            // only reports any cleanup failure; its logger is best-effort here.
+            try { fs.RequireCommittedLocalPublication(outcome); }
+            catch { /* Retain the committed result even if diagnostics fail. */ }
+            return true;
+        }
+        if (outcome.Disposition == TrustedLocalPublicationDisposition.RolledBack)
+            return false;
+        throw new CoordinatedStatePublicationUncertainException(outcome.Failure);
     }
 
     private static async Task<bool> CurrentMatchesExpectedBaselineAsync(

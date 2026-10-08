@@ -1,0 +1,134 @@
+{
+  "Categories": [
+    "worker-detached-workspace"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "23dc6cbdecfeb3482ab79ceb6198416f0f005567",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 132.3395153,
+  "Descriptors": [
+    {
+      "Name": "worker-detached-workspace-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "worker-detached-workspace",
+      "Categories": [
+        "worker-detached-workspace"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.ArtifactReadEnforcesExactByteLimit|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.CancellationAfterReadBoundaryIsObservedBeforeOpening|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.CancellationAtTransferBoundaryCannotReturnSuccess|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.CancellationBeforeOrDuringStagingRemovesPartialWorkspace|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.ContextPinFailureAfterFirstWriteRollsBackOnlyOwnedWorkspace|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.DisposeFailureCanRetryAndNeverDeletesSiblingWorkspace|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.DuplicateContextPathCannotOverwriteAndPartialStagingIsRemoved|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxCaseDistinctNamesKeepTheirExactBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxChangedImageAtTransferBoundaryIsRejected|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxCreateNewRejectsHardlinkWithoutChangingOutsideBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxDisposePreflightsWholeTreeThenRetriesAfterObstructionRemoved|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxHardlinkedArtifactReadAndUnlinkCleanupPreserveOutsideBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxReadRejectsLinkAndSpecialKindsWithoutFollowingOrOpening|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxRuntimeBaseLinkIsRejectedBeforeCreatingOutsideDescendants|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxWriteRevalidatesParentAfterBoundaryAndRetainsUnexpectedLink|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.MissingContextAndMissingNestedReadRemainAbsent|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.PartialCreationFailureKeepsOriginalErrorAndCleansOwnedTree|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.RuntimeInsideCanonicalSessionIsRejectedWithoutMutation|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.Stage_Read_Dispose_PreservesExactBinaryEmptyUnicodeAndTaskBytes|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.UnsafeContextAndArtifactPathsAreRejected",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 44,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.ArtifactReadEnforcesExactByteLimit",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.CancellationAfterReadBoundaryIsObservedBeforeOpening",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.CancellationAtTransferBoundaryCannotReturnSuccess",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.CancellationBeforeOrDuringStagingRemovesPartialWorkspace",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.ContextPinFailureAfterFirstWriteRollsBackOnlyOwnedWorkspace",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.DisposeFailureCanRetryAndNeverDeletesSiblingWorkspace",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.DuplicateContextPathCannotOverwriteAndPartialStagingIsRemoved",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxCaseDistinctNamesKeepTheirExactBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxChangedImageAtTransferBoundaryIsRejected",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxCreateNewRejectsHardlinkWithoutChangingOutsideBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxDisposePreflightsWholeTreeThenRetriesAfterObstructionRemoved",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxHardlinkedArtifactReadAndUnlinkCleanupPreserveOutsideBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxReadRejectsLinkAndSpecialKindsWithoutFollowingOrOpening",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxRuntimeBaseLinkIsRejectedBeforeCreatingOutsideDescendants",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.LinuxWriteRevalidatesParentAfterBoundaryAndRetainsUnexpectedLink",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.MissingContextAndMissingNestedReadRemainAbsent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.PartialCreationFailureKeepsOriginalErrorAndCleansOwnedTree",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.RuntimeInsideCanonicalSessionIsRejectedWithoutMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.Stage_Read_Dispose_PreservesExactBinaryEmptyUnicodeAndTaskBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDetachedWorkspaceTests.UnsafeContextAndArtifactPathsAreRejected",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "worker-detached-workspace-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "worker-detached-workspace",
+      "Categories": [
+        "worker-detached-workspace"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DescribeActualAuthenticatedProcessHostHandshake",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeSourceGuardTests.WorkerIsolationGuards_CannotRegressToUnsafePathOrCleanupSemantics",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

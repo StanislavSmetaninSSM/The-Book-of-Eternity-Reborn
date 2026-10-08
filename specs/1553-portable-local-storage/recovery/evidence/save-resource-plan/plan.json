@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-save-resource-qualification"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "1789cd32fc936c2abb7f7906fd782f6c92f7eb83",
+    "WorkingTreeFingerprint": "F52F773C87B6AD45D0A36690DD3AB4D02BC8C78B1B06B64460DE4DAD3FE39F93",
+    "ChangedFiles": 1
+  },
+  "PreparationSeconds": 3.5501177,
+  "Descriptors": [
+    {
+      "Name": "portable-save-resource-qualification-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-save-resource-qualification",
+      "Categories": [
+        "portable-save-resource-qualification"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 8,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableSaveResourceTests.MeasureUnchangedProducerAndB1CandidateWithinDeclaredOwnedBounds",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

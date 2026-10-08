@@ -1,0 +1,12 @@
+  Определение проектов для восстановления...
+  Все проекты обновлены для восстановления.
+  BookOfEternityClient -> [WORKTREE]\BookOfEternityClient\bin\Debug\net8.0\BookOfEternityClient.dll
+  BookOfEternityClient.TestSupport -> [WORKTREE]\BookOfEternityClient.TestSupport\bin\Debug\net8.0\BookOfEternityClient.TestSupport.dll
+  PortableStorageCrashHost -> [WORKTREE]\tests\fixtures\PortableStorageCrashHost\bin\Debug\net8.0\PortableStorageCrashHost.dll
+  BookOfEternityClient.Tests -> [WORKTREE]\BookOfEternityClient.Tests\bin\Debug\net8.0\BookOfEternityClient.Tests.dll
+
+Сборка успешно завершена.
+    Предупреждений: 0
+    Ошибок: 0
+
+Прошло времени 00:00:03.89

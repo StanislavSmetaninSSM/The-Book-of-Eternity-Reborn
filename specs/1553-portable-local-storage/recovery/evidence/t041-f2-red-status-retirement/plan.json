@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-status-retirement-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "5fd26471624c782cb15f0e27a3bd14c6b6d9c7d2",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 69.2508851,
+  "Descriptors": [
+    {
+      "Name": "gm-main-status-retirement-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-status-retirement-linux",
+      "Categories": [
+        "gm-main-status-retirement-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

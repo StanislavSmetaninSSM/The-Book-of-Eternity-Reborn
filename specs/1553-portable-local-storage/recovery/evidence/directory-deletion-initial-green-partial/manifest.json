@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "52edf8596812294243e415bb332863eabc5a9c08",
+  "sourceFingerprint": "95CF2CC2875E7427B1D1BB8F549447C18235785AF35A2BE8933AAAE9DDE3BD65",
+  "patchSha256": "f50d0a69c11acb46765bc554c8b6047b5c256aecef8d6617e23cf59821131a40",
+  "appliedSourceTree": "9e88f0f6e21d449c76627c7b40c29871c2c86916",
+  "platform": "Linux x64",
+  "toolchain": {
+    "sdk": "10.0.401",
+    "runtime": "8.0.31",
+    "powershell": "7.6.6"
+  },
+  "command": "pwsh -NoLogo -NoProfile -Command: scripts/test-csharp.ps1 -Category portable-directory-deletion,portable-directory-recovery,portable-directory-linux-special -Parallelism 1",
+  "scope": "First implementation attempt: 30 ordinary passes, root-link setup and stale-scope fixture failures; 14 cold/FIFO cases unrun. No full or native acceptance.",
+  "categories": [
+    "portable-directory-deletion",
+    "portable-directory-recovery",
+    "portable-directory-linux-special"
+  ],
+  "selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 46,
+    "CompletedCases": 32,
+    "UnderfilledDescriptors": [
+      "portable-directory-linux-special-unit-002",
+      "portable-directory-recovery-unit-003"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 32,
+    "Executed": 32,
+    "Passed": 30,
+    "Failed": 2
+  },
+  "duration": "00:02:19.3382008",
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "b57bbad6bacf5b8c3d9540499f043038db3078ba7458d8e555d10f637645c06e",
+      "sanitizedSha256": "b57bbad6bacf5b8c3d9540499f043038db3078ba7458d8e555d10f637645c06e",
+      "sanitizedBytes": 1642
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "8a46410b7d838aee17d9b2f81b49a6925f81a46064895e6149025987f793f140",
+      "sanitizedSha256": "8a46410b7d838aee17d9b2f81b49a6925f81a46064895e6149025987f793f140",
+      "sanitizedBytes": 7726
+    },
+    {
+      "file": "portable-directory-deletion-unit-001.trx",
+      "originalSha256": "9e89f8c421bad5e24794ebfa8ab8891906e851da34be7ab3d15c4c4ef8ef58b2",
+      "sanitizedSha256": "0451bd2c74a999bb21add1622e890467dd6cab86056b45ed8c64ea97665d99ec",
+      "sanitizedBytes": 52723
+    }
+  ]
+}

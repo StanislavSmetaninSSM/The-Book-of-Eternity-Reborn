@@ -1,0 +1,369 @@
+{
+  "Task": "T050-SOURCE-INVENTORY-AFTER-DAREN",
+  "Status": "Bounded source inventory independently reviewed PASS; next implementation not started; exact-tip publication/restoration in writer closure",
+  "Issue": 1553,
+  "AcceptedBase": "d73e2cdf43d63cbda3e9cda033834d0e902ae734",
+  "IncomingRemoteSha": "d73e2cdf43d63cbda3e9cda033834d0e902ae734",
+  "ExecutionThisAudit": {
+    "CliLaunches": 0,
+    "ServicesStarted": 0,
+    "Probes": 0,
+    "Builds": 0,
+    "Tests": 0,
+    "CatalogDiscovery": 0,
+    "RuntimeChanges": 0,
+    "EnvironmentSettingsChanges": 0
+  },
+  "SpecKitMethod": "Manual bounded cross-artifact/source consistency; existing feature prerequisites/constitution; optional analyze hook not invoked; no specify installation or CLI execution.",
+  "SourcePins": [
+    {
+      "Path": "AGENTS.md",
+      "Blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "Sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "Path": "docs/development-workflow.md",
+      "Blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "Sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "Path": "docs/testing.md",
+      "Blob": "eb036aa06c716d19467bc6aadaff5fbd535c4a3a",
+      "Sha256": "20ea808053428488ac21e5b1fee9f05b3e981e503dc8f610f0b25f91d44b84a1"
+    },
+    {
+      "Path": ".specify/memory/constitution.md",
+      "Blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "Sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/ClipboardService.cs",
+      "Blob": "56a627023fd468caa74a926fb5cffe8d94d0d557",
+      "Sha256": "98e6d885f555fa7177d909386b90686928d22cda0d95ac51c18fc70f93ac8470"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/TextComposer.cs",
+      "Blob": "6bb4a415011219b4b214c9060f1ceead0366c14e",
+      "Sha256": "60da1afb60995a584961fe0aa2ad2d978ae3900ab6a332b2b56fe7f92acdb5b9"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "Blob": "b7824ed8f9a6d1cc79922ffd617dcf3d1958dbd6",
+      "Sha256": "37fb56069ed240ea45f6109476c858fb46864bab235c899fa3890ba215aa1f1d"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/ClipboardServiceTests.cs",
+      "Blob": "4fe43c05ce52e81e4c70604945f2e78467528ea4",
+      "Sha256": "3ad5c91453508d8e208b617912a1dfcd98cf75a8253cc0cfcd4bdd413b034158"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/AudioService.cs",
+      "Blob": "808949a7d91fe13e213cb36de61910f5894330ef",
+      "Sha256": "64f46d6c343a020f3f976845568e26962e3235269fbbbfcd1d7c974cad88df3b"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/AudioService.SettingsPreview.cs",
+      "Blob": "95cf390d25e47f88b703308b1072fe4e1c0da518",
+      "Sha256": "1a46760f41f901b4b2ac58606cc7900285c3c9b3284498a4be247599ac59dd35"
+    },
+    {
+      "Path": "BookOfEternityClient/WebUi/BrowserAudioService.cs",
+      "Blob": "9a5c5f9a629627dfdec5ecb5ab816a8a66fec08b",
+      "Sha256": "18ce7d62ee0671c069ba3ffa20fa4c8a8db8940e8a5918c6ecc9a4c7f46788df"
+    },
+    {
+      "Path": "BookOfEternityClient.WebFrontend/src/components/AudioPanel.tsx",
+      "Blob": "e1c113ae7194eea2421273f0c3f399319a9c05df",
+      "Sha256": "5f32239885f8bf030d9e3df848df378c55e299efa8caeac35675177ac8e71fae"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/bookofeternity.ps1",
+      "Blob": "57cfceb9f7c54e8ae23cae97f7b7bb6a46c86b5d",
+      "Sha256": "13b2e1582d7459b135047557286912f9ab1f887bcb2e604573094e5ce70d47e6"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/Register_GM_CLI_Window.ps1",
+      "Blob": "a0d371332de1fbf88df6daaca82a53fab4b356d7",
+      "Sha256": "a0cb8d186548ff7e547087d2c3762fe665a4e7a705560670a42646b63bc78c50"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+      "Blob": "6c07f1d9c6a460ab282f0749c6f9e0a50b9c6b30",
+      "Sha256": "d4ced22bca4138f746e6e7b124a2a158a79be5a990c3160de7654c1f7defd2b0"
+    },
+    {
+      "Path": "BookOfEternityClient/Launcher/Generate_CLI_Launch_Script.ps1",
+      "Blob": "4b6d2e9626f28439a8f80423cd11a98927a3944a",
+      "Sha256": "592e6c607df18e5f0935bf4574ba3a861edb39e70c612f7eaf12653d5ddb555d"
+    },
+    {
+      "Path": "BookOfEternityClient/game_master_daemon.ps1",
+      "Blob": "204b111c0457aa8824550700ac4fd83cc1c507ab",
+      "Sha256": "8b6c57e4768ba8cdbee60dd2378b7d01f5c339bb43973c85dcaa60128c0c661a"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
+      "Blob": "1b27e5ec7d05d3974fe6c2a7639f072bfa9367d7",
+      "Sha256": "66d9bdd12751cc6379f99d65cff43dfeafbc2e80d8ce2e1ec7cfe6d64d10a68b"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBackendSelector.cs",
+      "Blob": "855114bfafa9981c76cb2f15c04accaffc7629c7",
+      "Sha256": "fdc63764d17b50c37477c900b9a8fea0c97ec7eaaab84b1a25c0703dacd2a7a1"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+      "Blob": "82ac9359de050c2820c4d3d6bb996d4cce0e65f1",
+      "Sha256": "36165a3ac7513339d8a50207aea8693ae71d8f640ccdafeeece402d32f6a28aa"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgeProfileTemplates.cs",
+      "Blob": "1e7e6c23d152607259a6c80de2126aef5e6e733b",
+      "Sha256": "262b9f8e27639fd791e4a60ee32cadf9e5fc66e71a24cab2daf183197989e265"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerProcessHostPeerIdentity.cs",
+      "Blob": "c38e4115e90dc24a68ea496e7bcbb6fec8ee15db",
+      "Sha256": "8bd8b3103b6c09f2dd375480d910ca8515018c291963681901edd7896e0fa58c"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePackage.cs",
+      "Blob": "ff2ad06c6c5e57fc55b2fd249f600822bf34a676",
+      "Sha256": "20fcd945a355ab36c09ea1aecc7c3438a2eaa93fe65fe73b4eab1c0d5525a9c4"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "Blob": "dba7b27c728d20843aae1c77ee8989f4e4757f7b",
+      "Sha256": "c49951522ebf0f8dca0237e292405c1e0d8273ed614843c904b8cfd7e09c4fbb"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/ImageService.cs",
+      "Blob": "ab90eb850c9eceb709b34d6180058f05ae264d97",
+      "Sha256": "a98e680d85912486a8d4cad5c40e9d94b25e75752ed8e144f13796098c5883a3"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/ConsoleAppearanceService.cs",
+      "Blob": "b875cf818fdbab017a8c8c5dedcfdedf52387fc1",
+      "Sha256": "b71013c291697e2161e79267772bac75b5601eee5ac77c8c69db7dc670079a23"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "Blob": "8d26da246f68bc79d0768dc45ac7a6c14c47b517",
+      "Sha256": "dcc3208ff55f5c06d75cc1e3afe336f72c4876e220b167e006a6e007a1dc6437"
+    },
+    {
+      "Path": "BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs",
+      "Blob": "2854c540ba9b43415f9a598721790279dc601a0b",
+      "Sha256": "03170b4de8807e691ec317446787918f3db3fc70edd06eb1d7ad18783d2692c8"
+    },
+    {
+      "Path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaStoryAndStatus.cs",
+      "Blob": "f89a088ba5cc1894612c60ba4b20cd4070a3347a",
+      "Sha256": "79afb81f2d1937609ba8a2bd1e3845faef837095ebff3df8d50e06c607ad9835"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "Blob": "40b5b902d03aef0c3aab718c83bd4956d5377dff",
+      "Sha256": "a33966fd92aad3ae5dc1d529eb8986694cc7b366eb52534d59a93827e44726bc"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
+      "Blob": "192208308f48a8fbd259e3251336867e00a12db4",
+      "Sha256": "04e73dcd304197c578349d22487d1e90a17fcb0675e9958c94c07fdb7a853be8"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/DarenRewardProfileRollbackTransaction.cs",
+      "Blob": "2129ec7ddae7448ee962e0598850fa6d4e4bb1d4",
+      "Sha256": "6ff121f63b70e6857c1985506ae4bcb7410579c4f4a133e13238e0261056a332"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "Blob": "aef39ff1089101499017cf4b8e3a83ea586ba417",
+      "Sha256": "02cd444581a0bd93fc671cc1b9a6dd29005e485321adf403365f034db3461f14"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/spec.md",
+      "Blob": "5fb44b590461ddd57a6ac185407deafe7a5114d2",
+      "Sha256": "adde857d9d1b9b8eff20ae25451624debe769b3f7662d33a3dba987d87a87c81"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Blob": "912087de7407230f06a280f5af7e3f3230ffb4d3",
+      "Sha256": "6c3edc520e5e7469cf4207be7f26dd8efb17104444622a98031ea83d051e8571"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/tasks.md",
+      "Blob": "49e65252700be2bf2c1a10827b93d5842bb0a049",
+      "Sha256": "ce69d48c09e77162be3b1e795b6bf9abf6c82a557e20f05821d62b275d8e4387"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/production-main-admission-design.md",
+      "Blob": "f48cfa5c484fed352a4c76f32c68c236ba42cd96",
+      "Sha256": "75a05af1770b0eeb3c1b0d4320e6d32ba4c45c2365e125a24134cf40577a58b9"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/production-main-m1-handoff.md",
+      "Blob": "6f6b0ec1109e9bb8a05c5b375af3483aa9600b8b",
+      "Sha256": "cc733f131fb245355ca25c3e7755875447c64b44dffb2600b60635f1ce5ef134"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/main-run-fence-f2-handoff.md",
+      "Blob": "c9bd2bc7c8a2e92f0de51e8aaee509bd3a8a2deb",
+      "Sha256": "e0a908cf8565ab60123a46f86fdf7e753b7ea5e03e2fee9e31527e939d1af155"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/daren-standalone-linux-handoff.md",
+      "Blob": "96fe37beec6bfdbb86f0d72ecb11b54f27b1d4c1",
+      "Sha256": "0ac70309eb261626197ab61032be08af3ce88487ed2430faac979c2112e70d96"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/daren-standalone-linux-plan.md",
+      "Blob": "77797e3892d94b63fc478d6a01a12ecdc192f456",
+      "Sha256": "167ca6041331f192822c9701d89fae75788baf2d0425e66b26a8550e5971389a"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/daren-standalone-linux-qualification.json",
+      "Blob": "90b3a3fe4e3b66136f2c3e3e76fe21d761fda12b",
+      "Sha256": "4eb1cec8f5aecbf2193d14c5bf1bdb7d04ef14f14d24943fb0b7daab10294c7d"
+    },
+    {
+      "Path": "BookOfEternityClient/UI/LocalizationManager.cs",
+      "Blob": "c6e7d0cf98ab0a96e580d7623149854e50ecd8fe",
+      "Sha256": "4c12cc29075d4246baf9aab6c10504d0e0d624dd6de24cf7c97b9d1dbfae6659"
+    },
+    {
+      "Path": "BookOfEternityClient/UI/SpectreExplorerConsole.cs",
+      "Blob": "fc63372e4b3a28d27b7b7f22763c022972be0ab0",
+      "Sha256": "f849c271ccb6a95e1b8f5ace03b4489071801ed68a9892f56525b75eddac65e5"
+    }
+  ],
+  "ProgressPercentage": "not calculated; task checkboxes and test counts are not a measured implementation denominator",
+  "RecommendedNextBlock": "T050-CLIPBOARD-LINUX: existing read service + actual turn/composer/Explorer consumers; next plan/review/causal tests, desktop qualification separately",
+  "SystemdUser": {
+    "MainAdapter": "not implemented or qualified",
+    "RequiredTask": "T041-SYSTEMD-MAIN",
+    "CurrentEnvironment": "No user manager per accepted receipts; not reprobed or configured",
+    "NativeFallbackDoesNotClosePrimary": true
+  },
+  "CodexQ1": {
+    "EvidenceMode": "historical receipts only; not a current binary/auth recheck",
+    "InstalledPath": "/opt/codex/bin/codex",
+    "Version": "codex-cli 0.159.0-alpha.3",
+    "LoginStatus": "Logged in using ChatGPT; exit0 in prior diagnostic",
+    "LastStartup": "TERM=dumb warning, no confirmation or ready screen; original Ctrl+C and guardian ECHILD",
+    "CurrentOutcome": "readiness/VT not qualified; supported presentation and actual original M1 route needed; no provider prompt authorized"
+  },
+  "MetadataAncestor": {
+    "Commit": "5be3aa31805537b88872b7b2a0a77f0162f8745e",
+    "Parent": "399564194f11e2ad336023fedceb971c2f5fa699",
+    "AuthorName": "Петр",
+    "AuthorEmail": "ronald.morgan@hmlservice.com",
+    "AuthorDate": "2026-10-07T01:36:11Z",
+    "CommitterName": "Петр",
+    "CommitterEmail": "ronald.morgan@hmlservice.com",
+    "CommitterDate": "2026-10-07T01:36:11Z",
+    "Subject": "docs: verified bounded standalone Daren Linux verdict carrier",
+    "ChangedFiles": [
+      "specs/1553-portable-local-storage/cross-platform-status.md",
+      "specs/1553-portable-local-storage/daren-standalone-linux-handoff.md",
+      "specs/1553-portable-local-storage/daren-standalone-linux-plan.md",
+      "specs/1553-portable-local-storage/plan.md",
+      "specs/1553-portable-local-storage/recovery/daren-standalone-linux-qualification.json",
+      "specs/1553-portable-local-storage/spec.md",
+      "specs/1553-portable-local-storage/tasks.md"
+    ],
+    "Insertions": 80,
+    "Deletions": 30,
+    "LinearChain": [
+      {
+        "Commit": "399564194f11e2ad336023fedceb971c2f5fa699",
+        "Parent": "b97157ef6154bb9b85d69176ab0674f63b9d10ba"
+      },
+      {
+        "Commit": "5be3aa31805537b88872b7b2a0a77f0162f8745e",
+        "Parent": "399564194f11e2ad336023fedceb971c2f5fa699"
+      },
+      {
+        "Commit": "cc84b7e99956a66b390f30d279788a015bd6cd1b",
+        "Parent": "5be3aa31805537b88872b7b2a0a77f0162f8745e"
+      },
+      {
+        "Commit": "d73e2cdf43d63cbda3e9cda033834d0e902ae734",
+        "Parent": "cc84b7e99956a66b390f30d279788a015bd6cd1b"
+      }
+    ],
+    "ProductionTestCatalogDeltaFromReviewedBase": [],
+    "AccessibleTaskReceipts": [
+      "specs/1553-portable-local-storage/daren-standalone-linux-plan.md",
+      "specs/1553-portable-local-storage/daren-standalone-linux-handoff.md",
+      "specs/1553-portable-local-storage/recovery/daren-standalone-linux-qualification.json"
+    ],
+    "OwnHostReceipts": [
+      "candidate-github-restore-proof.json",
+      "final-tip-github-restore-proof.json",
+      "provenance.json"
+    ],
+    "ReflogEvidence": "Ordinary commit entries with the same SHAs/times; does not record execution actor/session/process",
+    "Actor": "undetermined",
+    "ParallelWriterProven": "No; Git identity and existing task receipts do not establish execution actor or concurrent writer",
+    "ConflictScope": "No observed repository conflict: linear accepted ancestry, matching local/remote base, clean incoming tree, metadata corrections retained, zero production/test/catalog delta. Not a proof of all historical actor activity.",
+    "PrivateSessionStorageRead": false
+  },
+  "AcceptedDarenRestoreReuse": {
+    "Commit": "d73e2cdf43d63cbda3e9cda033834d0e902ae734",
+    "Tree": "3aeafdd45de7e8a6f9888509f97d1b3e3d30ec55",
+    "Parent": "cc84b7e99956a66b390f30d279788a015bd6cd1b",
+    "TrackedFilesByteCompared": 20693,
+    "Clean": true,
+    "FullFsck": true,
+    "ProofSha256": "8ace6928d03eb71b80e6fd70c97552fef46498616c7f6b6ec6a65677422245be",
+    "Mode": "Reuse completed own final-tip GitHub-only receipt; no repeated restoration/test execution claimed"
+  },
+  "IndependentReview": {
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "Agent": "/root/roadmap_after_daren_review",
+    "Verdict": "PASS",
+    "ReviewedCommit": "c38a5a5bfa0eb2fcb2b14bf927dc9bea4256913e",
+    "BlockingFindings": [],
+    "VerifiedSourcePins": 44,
+    "VerifiedNewLocalLinks": 29,
+    "ResolvedFinding": "Ordinary turn GetPlayerInput first uses TextComposer, swallowing clipboard failure before late error fallback; actual consumer + single read criteria corrected",
+    "ReviewerExecution": {
+      "Writes": 0,
+      "Network": 0,
+      "Tests": 0,
+      "Builds": 0,
+      "Probes": 0,
+      "CliLaunches": 0,
+      "Services": 0,
+      "Discovery": 0
+    }
+  },
+  "FinalPublicationPolicy": "Normal non-force push; exact remote SHA, independent GitHub changed-file byte readback, clean state and fresh GitHub-only exact-tip source restore per workflow. No binaries/builds/CLI/services/tests executed. Final self-SHA proof in writer response/own host receipt.",
+  "ResolvedReviewFinding": {
+    "Source": "GetPlayerInput3974–3984 calls TextComposer before late clipboard fallback",
+    "Correction": "Both actual turn and Explorer composer consume clipboard failure as empty; next slice must cover real entrypoints and one read per gesture",
+    "RuntimeAndTestsChanged": false
+  },
+  "PublishedCandidates": [
+    {
+      "Commit": "92187ce04293362fdf72a1676fd5c8451e5872f2",
+      "RemoteMatched": true,
+      "ChangedFilesByteReadback": 6,
+      "Clean": true
+    },
+    {
+      "Commit": "daa4475572dd6d1e281209750fcfe7b4e5590a54",
+      "RemoteMatched": true,
+      "ChangedFilesByteReadback": 2,
+      "Clean": true
+    },
+    {
+      "Commit": "c38a5a5bfa0eb2fcb2b14bf927dc9bea4256913e",
+      "RemoteMatched": true,
+      "ChangedFilesByteReadback": 1,
+      "Clean": true
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "gm-main-operation-closing-linux",
+    "gm-main-helper-bounds-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "49525f8f0e0de9e3ef3d81949a86d971342a100b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 69.7873736,
+  "Descriptors": [
+    {
+      "Name": "gm-main-helper-bounds-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-helper-bounds-linux",
+      "Categories": [
+        "gm-main-helper-bounds-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-operation-closing-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-operation-closing-linux",
+      "Categories": [
+        "gm-main-operation-closing-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalClient_FinalizationBoundary",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

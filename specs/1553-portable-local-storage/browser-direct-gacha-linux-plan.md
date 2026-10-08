@@ -1,0 +1,124 @@
+# T031-BROWSER-DIRECT-GACHA-LINUX — minimal implementation plan
+
+Issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
+Branch: `codex/1553-load-filesystem`; accepted base `23a5b6695a34752005ffaff6f5d5aedc2ccca797`.
+Status: bounded PASS; independent actual Sol6.1/xhigh amended design/source/final evidence/selection PASS at4723ed42; candidate GitHub-only restore20,636files independently verified. Final metadata carrier publication/exact-tip restoration are writer closure. Historical sections below retain their exact checkpoint state.
+Date: 2026-10-07 UTC. Writer is the sole implementation writer.
+
+## Intent and retained contract
+
+Enable the existing browser direct Chaos Sea gacha on Linux using the existing trusted-local player publisher. No new gacha rules, odds, rewards, currency, GM text, request format, UX, journal, provider, or active game data. The existing pre-spend soul backup remains at its original namespace, retains exact bytes through pending-turn lifetime, and is handed to the existing pending snapshot authority and original turn backup/rollback/cleanup consumers. Main + worker + generation and original browser/UI leases remain conjunctive. Known commit/rollback remains distinct from uncertainty and cleanup debt. No new authority is minted from a backup path or JSON.
+
+This is a bounded port of an existing flow. User explicitly authorized implementation after independent review of this minimal plan; no further product decision or approval is required inside these bounds. Standalone Daren remains the next separate task. Historical four F2 Windows-only IDs stay unpassed and are not selected.
+
+## Source-backed defect and boundaries
+
+- `WebUi/BrowserAfterlifeWriteService.cs:2141–2266`: real `TryApplyAsync` → held `ExecuteAtomicWithinTransactionAsync` → `StageFileAsync(fs, originalLease, soul_state, "browser_direct_gacha")` before spend. Queue/payload logic and declared cleanup directories already exist.
+- `Services/ExplorerLocalTurnRollbackArtifacts.cs:339–358`: actual Stage writes exact before bytes beneath `Root/browser_direct_gacha/<ticks>_<guid>/<safe-soul-name>.rollback.<guid>`. That root differs from the current schema7 transaction root.
+- `Core/FileSystemManager.TrustedLocalStorage.cs:59–74`: Linux writer selects portable publication for current BrowserLocalAccess artifacts, but excludes other rollback-root members. Stage therefore enters Windows physical publication. Merely routing Stage is insufficient: later acquisition rejects the retained backup as unsupported legacy/schema7 evidence.
+- `Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalRecovery.cs`: original schema7 preflight/recovery owns transaction manifests and cleanup intents, not the long-lived pending-turn backup. Preserve unknown/unsupported schema and exact evidence on refusal.
+- `WebUi/BrowserAfterlifeTurnRequestQueue.cs:66–165`: existing rollback mapping, hash and detached authority bind pre-spend backup to the same queued request. Do not replace this mechanism.
+- `Core/GameEngine/GameEngine.SessionAndSnapshots.cs:1881–1910`: original `DiscoverBackups` overlays the pre-spend before-image on a later post-spend turn capture. Existing validated pending authority supplies exact rollback mapping/hashes. Original cleanup preserves explorer backups while refreshing pending snapshots. Keep original paths to retain these semantics.
+- `WebUi/BrowserLocalWriteCoordinator.cs:278–400`: original transaction closes/cleans schema7 evidence on Committed, restores declared dynamic directories on failure, and preserves typed decision/debt. The existing browser result captures decision before later closing.
+
+## Chosen technical delta
+
+1. Keep the existing path/name and APIs. Add one narrow Linux direct-gacha namespace recognizer in the existing rollback artifacts partial class. Recognize the original ticks/GUID transaction directory and original soul backup name/GUID; retain unknown types/names. Namespace recognition grants no original live pin or destructive pending-turn authority.
+2. In `UsesTrustedLocalWriter`, route the exact original direct-gacha directory/subtree through the existing publisher on Linux; Windows body remains unchanged. Writes/deletes still require original active canonical lease, existing generation, main/worker purpose admission, strict local scope and publisher receipt. No second journal, chmod/root/security/settings change.
+3. Original schema7 read-only preflight separates recognized long-lived direct-gacha files from transaction evidence. It never recovers or deletes the pending backup merely on acquiring a lease. Existing B1 journal scratch for this root is admitted only through the existing publisher scratch reader, so interrupted publication settles before transaction recovery. Malformed/unknown backup or transaction evidence still refuses before mutation.
+4. `EnsureNoLegacyStorageEvidence` permits only recognized direct-gacha backups plus artifacts of the actual current browser transaction, after supported preflight/recovery. Old/unknown evidence remains refused. Main and worker pre-recovery gates run first as before. The backup namespace cannot bypass generation/purpose checks.
+5. Structural recognition is never turn adoption. Before the Linux original DiscoverBackups/overlay returns a direct-gacha candidate, reuse existing typed pending manifest/detached authority verification, exact mapped path/hash, and current request context (session/request/turn/action binding). Refuse and retain consumed/unmapped/mismatched residue; current schema7 staged evidence grants only its original rollback/cleanup, not adoption. This narrow guard preserves original APIs and formats and prevents cleanup debt from re-authorizing stale pre-spend soul for a new turn. Do not put full authority validation into every lease acquisition, because existing sequential cleanup may already delete one mapped file.
+6. Keep actual Stage/queue/coordinator/GM text unchanged unless causal tests identify a narrowly related defect. Actual queue failure cleans its own pending state and the original transaction restores exact soul/profile/dice/absence; Committed schema7 cleanup never deletes the retained direct-gacha before-image. No pending-turn replay or automatic acceptance.
+
+Rejected alternatives: moving backup into pending snapshot directory would let existing unconditional snapshot-directory cleanup destroy it; introducing another manifest/ledger would duplicate existing transaction + pending authority. Broadly enabling all rollback-root writes would lose unsupported-evidence refusal. The narrow original namespace is sufficient.
+
+## Test-first sequence and categories
+
+Publish/review the plan first. Create isolated bootstrapped current-schema fixtures, own mutable root per case; no stubs replace the browser consumer. Exact new categories are `browser-direct-gacha-linux` (positive/lifetime) and `browser-direct-gacha-linux-boundaries` (fault/admission). Split further only if measured coherence/budgets require it. Select only implicated old regressions after source review; no full suite or T031/F1–F3/M1/Load UX rerun.
+
+First causal RED must execute real `BrowserAfterlifeWriteService.TryApplyAsync("/gacha", ...)` through original coordinator and held lease, witness actual Stage boundary, and fail its success/lifetime oracle. A fixture/compiler/precondition failure is preparation, not causal RED. Fresh build through `scripts/test-csharp.ps1` precedes NoBuild.
+
+Positive/lifetime tests:
+- Real browser pull: exact pre-spend backup, spend once, unchanged seeded rarity/dice/rules, actual queued request + manifest + detached authority, immutable history; no local relic creation.
+- Fresh FileSystemManager read/mutation lease and browser pending inspector retain the same before-image after schema7 cleanup; repeated pull is blocked before another spend.
+- Real original turn capture discovers/overlays pre-spend bytes, validated pending reader resolves original mapping, original rollback restores exact soul, and scoped cleanup retires only consumed backups. Actual existing methods may be invoked reflectively by the fixture; no alternate implementation.
+- Real committed schema7 cleanup fault: storage remains Committed with debt; recovery cleans only transaction evidence and retains pending backup/request/history.
+
+Fault/admission tests:
+- Controlled nontransient Stage publication cut and actual queue publication cut: exact rollback and original runtime/profile/dice/absence, no false success or leftover admitted pending turn.
+- Publisher scratch/recovery at the real Stage path explicitly covers MemberStaged with scratch present/destination absent, MemberPublished, and committed cleanup debt. Scratch is admitted only by the existing authenticated journal reader; an unauthenticated lookalike is refused and retained. Interrupted decisions resolve through existing B1 mechanism; unknown bytes remain uncertain/evidence retained.
+- Real consumed-backup deletion failure followed by original pending manifest/authority cleanup and fresh console capture must refuse, retain debt and never overlay stale soul. Also reject a second valid-shaped unmapped backup and mapped bytes whose authority hash differs. All start with actual browser-created evidence; no stub consumer or fabricated successful handoff.
+- Original generation revoked after publication, failed cleanup/closing, malformed/unknown retained evidence: no false rollback/commit, no automatic cleanup or replay.
+- Actual browser consumer refuses cold main Running/Stopping, real unresolved Prepared worker, stale/original UI guard and generation loss before side effects. Reuse original accepted pin/admission mechanisms; no invented owner.
+
+Regression selection rationale: changes affect portable writer routing, schema7 preflight/recovery, artifact cleanup, original turn capture and generic original lease admission. Choose exact current successful tests covering those boundaries, rather than old Windows-only fixture creation or all gameplay cohorts. No frontend source is proposed; payload/state contract unchanged, so frontend execution is needed only if a causal consumer change reaches that layer.
+
+## Verification and recovery
+
+Use `pwsh -NoProfile -File scripts/test-csharp.ps1 -Category <exact selected IDs>` for build/RED/GREEN. Record source Git blobs/SHA256, exact commands/expected-completed counts/TRX/build provenance and own root cleanup in evidence manifests. Tests use no live browser/provider or GM model request. No process fixtures are currently needed; if actual owned process is necessary, use independent bounded guardian before qualification. Do not count unavailable Windows bodies as passed.
+
+Verified current tools: SDK10.0.401, runtimes8.0.31 and10.0.12, PowerShell7.5.4, gcc14.2.0 (Debian14.2.0-19). `specify` global CLI is absent; existing `.agents/skills/speckit-*` and `.specify` are present and applied without installing/configuring anything. Preserve feature #1553; do not run setup-plan over existing artifacts or initialize another feature. Optional Git hooks are satisfied by ordinary checkpoints; existing agent-context pointer remains correct.
+
+Spec Kit consistency: accepted trusted-local player contract, client-owned storage port, original pending/accepted-turn/history ownership, no gameplay/GM-authored changes. Mortal World/afterlife prompts/examples/source guards require no new text because odds/rules/payload/authority format are unchanged; record this rationale in final qualification. User-approved Load UX is accepted and outside this slice. Standalone Daren/systemd/nativeWindows/Q1Q2/liveGM/saves/cold/full-game acceptance remain open.
+
+After bounded blocks: ordinary commit/push, remote SHA and independent byte readback. Separate actual Sol6.1/xhigh source/selection and final evidence review. Exact final fresh GitHub-only clone with all tracked bytes/tree/parent/ancestry/clean/noalternates/fullfsck; source restoration executes no extra tests. Handoff and stop before another slice.
+
+## Independent design finding and amendment
+
+Sol6.1/xhigh review of13e6b8b returned BLOCKED for one concrete adoption gap: existing CleanupBackup logs/swallow delete failures; following CleanupPendingTurnSnapshot preserves explorer backups while removing manifest/authority, and later DiscoverBackups selects/rehashes newest matching before-image. Shape-only storage admission would expose that stale adoption path on Linux. Amended step5 separates storage recognition from exact existing-authority/current-request adoption; adds consumed-cleanup/unmapped/hash-conflict negatives and explicit journal-authenticated scratch-only/unauthenticated-scratch tests. No implementation/tests performed yet; focused amendment review next. This is turn/receipt consistency, not protection from player-owned save editing.
+
+## Plan accepted for execution; first real-consumer RED pending
+
+Independent actual Sol6.1/xhigh focused amendment review PASS atb51f4519: existing authority/current-request guard closes the stale adoption blocker. Added first isolated current-schema real BrowserAfterlifeWriteService success oracle and narrow category/selection; runtime unchanged. Fresh runner build/execution next. Tools/provenance and own root cleanup must be retained; preparation failures are not causal RED.
+
+### Initial preparation failure (not causal RED)
+
+Clean1ca1d83f runner build failed CS0117: fixture named nonexistent CanonicalWriteLeaseClosingAsync; existing accepted fixture uses SessionOperationClosingAsync.0tests executed, owned/runtime cleanup confirmed. [Evidence](recovery/evidence/direct-gacha-prep-build/manifest.json). Correct only fixture hook name, retain runtime base and rerun the same one-case selection with a fresh successful build. Existing compiler warnings remain in captured log; none are silently treated as new runtime defects.
+
+Corrected cleanb0691600 built successfully and executed1/1FAIL with own root removed. The real consumer sanitizes the underlying rollback diagnostic; add read-only first-chance observation restricted to the original Stage stack before calling this causal RED. [Unwitnessed consumer result](recovery/evidence/direct-gacha-consumer-failure-unwitnessed/manifest.json). Runtime remains unchanged.
+
+### Causal Stage RED and first WIP port
+
+Cleaned099060 fresh build executed1/1FAIL; original Stage stack proves PlatformNotSupportedException at descriptor-bound Windows create-only publication through actual BrowserAfterlifeWriteService/coordinator. Own root removed, complete selection and runner cleanup. [Causal RED](recovery/evidence/direct-gacha-stage-red/manifest.json). First WIP delta routes exact original direct-gacha soul backup/directory via existing publisher and separates retained pending evidence from schema7 transaction recovery; B1-authenticated scratch admitted only before original publisher settlement. Authority/current-request adoption guard and lifetime/fault matrix are still pending, so this checkpoint is not acceptance. Next: same positive oracle GREEN, then causal adoption negatives before adding the guard.
+
+Clean069fcd16 fresh build executed1/1FAIL; Stage physical exception is gone, but a later real-consumer failure remains sanitized. [Result](recovery/evidence/direct-gacha-route-first-failure/manifest.json). Widen read-only exception observation to original BrowserAfterlife stack to identify that exact next boundary; no speculative runtime edit or broadened test run.
+
+Clean056b181b1/1FAIL pins next causal boundary: actual after-spend StateManager refresh → AfterlifeEntityProfileState → ResolveBackupPublicationRecovery passed no original lease to legacy-evidence recognition. [Refresh RED](recovery/evidence/direct-gacha-refresh-red/manifest.json). Pass its existing held lease and the original Linux post-preflight acquisition lease; this recognizes only direct backup/current transaction evidence after original main/worker/storage admission. No new recovery/authority. Next same positive GREEN; adoption remains pending.
+
+### First real browser GREEN; adoption RED pending
+
+Clean6663b6ce fresh build1/1PASS [evidence](recovery/evidence/direct-gacha-first-green/manifest.json): real Stage/queue/spend/payload/manifest/authority/history/schema7 cleanup. Add original fresh read/mutation lease + pending inspector/duplicate refusal, real engine capture/validated rollback/scoped cleanup and5authority-context/deletion-debt adoption negatives. Runtime guard still absent; next execute only these new cases, not the unchanged successful first oracle.
+
+### Original adoption causal RED; guard WIP
+
+Cleanb86555d1 fresh build5/5FAIL [evidence](recovery/evidence/direct-gacha-adoption-red/manifest.json); every real browser pull succeeded, then original CreatePreTurnBackup incorrectly returned without refusal for consumed-deletion-debt/unmapped/changed-bytes/changed-request/changed-action. All own roots removed. The consumed case exercised original swallowed cleanup failure and actual terminal manifest/authority/request cleanup. Add Linux-only original Discover guard using existing typed manifest + detached authority/exact hashes + persisted current session/request/turn/action/timestamp. Validate all direct candidates before newest selection; no authority from JSON defaults/name/schema7. Next:5negative GREEN and3positive lifetime cases; full boundary matrix still pending.
+
+### Adoption/lifetime GREEN; next narrow fault block
+
+Cleand47d3f16 fresh build8/8PASS (3positive+5adoption negatives),0skip/duplicate/underfill and8own roots removed. [Evidence](recovery/evidence/direct-gacha-adoption-green-lifetime/manifest.json). A preceding comma-string PowerShell category invocation refused before workload0exec; corrected array command executed the8cases. Catalog now groups those already-qualified8cases under browser-direct-gacha-linux, and the new real Stage/queue/B1 scratch/schema7 cleanup/closing/residue tests under browser-direct-gacha-linux-boundaries, allowing only new cases next without replaying8unchanged bodies. Runtime and original common fixture unchanged in this block. Next new boundary13cases fresh build, then admission cases and reviewed exact affected regressions.
+
+### Boundary preparation corrections and source review
+
+Clean06ec730f fresh build12exec:9PASS/3FAIL, complete selection and12own roots removed. [Evidence](recovery/evidence/direct-gacha-boundary-first/manifest.json). Failed retained scratch rows used an empty directory cut later removed by original cosmetic cleanup; hold it with a fixture-owned marker and remove only those exact test entries before fresh recovery. Cleanup row cut fired during initial before-image Stage, not committed cleanup; arm only after actual committed-marker publication. These are cut preparation failures, not causal runtime defects. Runtime remains d47d3f16. Strengthen exact pending manifest/authority retention, add real Stage B1 Committed debt and actual admission/UI/generation plus8raw-request negatives; next22cases. Catalog moves6unchanged successful normal Stage/queue and closing cases into first qualified14case category, so only changed/new22boundary cases run next.
+
+Independent actual Sol6.1/xhigh /root/direct_gacha_source_review bounded runtime source-delta PASS atd47d3f16; confirms no gameplay/GM text/history/protocol/Windows route changes and original conjunction/no new journal. Full matrix acceptance pending. Its requested exact byte/B1/admission/raw-request additions are in this checkpoint. Exact14affected regressions get their own narrow category: schema7 unsupported5+orphan1+scratch1+committedcleanup2; backup originalevidence1+mixedroutes2+sameleasedebt2. No prior whole cohorts selected. Final source/selection and separate evidence verdict still required after execution.
+
+### Catalog preparation refusal and focused source correction
+
+Clean1097f9ab runner refused during catalog parsing0exec: new related entries must be {id,when} objects, not strings. Independent source reviewer identified this exact schema. [Both preparation refusals](recovery/evidence/direct-gacha-preparation-refusals/manifest.json). Correct catalog relationships only; no runtime change. Tighten generation-loss test to exact Failed returned result or typed Uncertain continuation carrier, reject unrelated exceptions, and compare all retained transaction/pending/B1 authority bytes after fresh refusal. Fresh22case boundary build/execution still pending.
+
+### Interrupted recovery oracle correction
+
+Clean52417c86 fresh build22exec:20PASS/2FAIL, complete runner cleanup and22 distinct fixture roots removed. [Evidence](recovery/evidence/direct-gacha-boundary-corrected-first/manifest.json). Both interrupted Stage cases recovered B1/schema7 and exact canonical before-images; only the shared final assertion wrongly demanded disappearance of the original UI lock after an Uncertain release failure. Original coordinator TryRelease retains that typed UI authority while B1 settlement is blocked; fresh storage recovery has no original UI token and cannot delete it. Correct only those two expectations to retain exact UI bytes and verify storage/pending absence independently. Runtime remains d47d3f16. Move the20 unchanged PASS cases into the qualified category (now34), rerun only the two corrected cases, then14 exact affected regressions. No other successful bodies repeated.
+
+### Interrupted Stage GREEN; affected regression block next
+
+Cleanacb42795 fresh build2/2PASS, complete selection/runner cleanup and both own roots removed. [Evidence](recovery/evidence/direct-gacha-interrupted-green/manifest.json). Both original interrupted Stage phases settle authenticated B1 then schema7 to exact canonical before-images and absent pending/rollback artifacts, while retaining exact unreleased original UI lease bytes. Independent actual Sol6.1/xhigh focused source/selection PASS atacb42795: runtime unchangedd47d3f16,34qualified+2corrected+14affected=50 distinct no-overlap cases. Next only14exact affected schema7/backup regressions, then independent final evidence review and GitHub-only restore.
+
+### Final narrow regression GREEN and evidence preparation
+
+Clean4f74e2a7 fresh builds of integration and unit projects; selected14/14PASS (9schema7+5backup), no skip/duplicates/underfill, full runner cleanup. [Evidence](recovery/evidence/direct-gacha-regression-green/manifest.json). Runtime remainedd47d3f16 and executable fixture/test/catalog sources remainedacb42795. Complete latest-case proof is50distinctPASS (36new+14affected), with68historical executions54PASS/14FAIL retained separately (7causal runtimeRED,2unwitnessedconsumer,5cut-preparation/oracle). Three preparation failures execute0tests: one compilation failure and two category refusals.13manifests,550sourcepins,62artifacts,24gzip verified;54exact new fixture root receipts plus9generic regression cleanup receipts, five unit Dispose outcomes and empty scoped prefixes are distinguished. No native/process probe/live browser/provider/model requests. [Qualification](recovery/browser-direct-gacha-linux-qualification.json) · [Handoff](browser-direct-gacha-linux-handoff.md). Final independent evidence verdict and exact GitHub-only restore remain; no further runtime tests intended.
+
+### Independent final bounded PASS and candidate restore
+
+Actual separate gpt-6.1-sol/xhigh /root/direct_gacha_final_evidence_review PASS at4723ed4268c848641bff6b79a721554b53573920, no material findings. Independently checked13manifests/550sourcepins/62artifacthashes/24gzip, exact50latestPASS/36new14affected/34+2+14selection, historical68exec54PASS14FAIL and cleanup classifications; unchangedruntime/executable continuity and selection sufficiency. Candidate fresh GitHub-only clone20,636writer/restored files and restored Gitblob hashes independently match, treef685e2f422bf0d514ca3f0ded76401b7746130ff/parent4f74/clean/fullfsck/noalternates/acceptedLoad ancestry confirmed. [Review](recovery/browser-direct-gacha-linux-reviews.json) · [Restoreproof](recovery/browser-direct-gacha-linux-candidate-restoration.json). Preserve raw tool-version output/hash including cosmetic blank EOF. Mark only bounded subtask complete; final metadata carrier normal push/remoteSHA/byte readback and its own fresh exact-tip restoration follow as writer closure,0tests. Stop before standalone Daren.

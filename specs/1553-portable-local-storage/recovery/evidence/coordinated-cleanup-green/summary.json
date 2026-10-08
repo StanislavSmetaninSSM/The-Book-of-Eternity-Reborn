@@ -1,0 +1,104 @@
+{
+  "Categories": [
+    "portable-coordinated-cleanup",
+    "portable-coordinated-cleanup-resident"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-coordinated-cleanup",
+      "reason": "Cover the causal structural NPC/Guardian/Shining catch correction and actual ordinary QTE acceptance route, preserving malformed planning controls.",
+      "contracts": [
+        "uncertain and retained admission propagate",
+        "known parse abort retained",
+        "ordinary QTE acceptance"
+      ]
+    },
+    {
+      "category": "portable-coordinated-cleanup-resident",
+      "reason": "Cover resident uncertainty/read-admission fixes and existing materialized/malformed-soul semantic branches after moving filesystem calls out of planning catches.",
+      "contracts": [
+        "target helper and independent preamble",
+        "every post-injection attempt blocked",
+        "pure planning behavior retained"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "a7eaf3cdc783bda74b718f8a704b2b8bca852719",
+    "WorkingTreeFingerprint": "52994D23C421C1EB30A9792918DCF5DFA88FD307CD0536AACEB31A302B6E6613",
+    "ChangedFiles": 7
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-coordinated-cleanup",
+      "Seconds": 6.1630598,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-coordinated-cleanup-resident",
+      "Seconds": 8.1055141,
+      "BudgetMinutes": 4,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0895581,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.020119,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0139084,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 195.5962587,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 40.085805,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0055427,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 14,
+  "WallTime": "00:04:19.5932273",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 20,
+    "CompletedCases": 20,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 20,
+    "Executed": 20,
+    "Passed": 20,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

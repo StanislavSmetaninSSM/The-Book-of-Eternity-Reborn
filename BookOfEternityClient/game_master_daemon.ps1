@@ -63,18 +63,22 @@ param(
 # ═══════════════════════════════════════════════
 
 $ErrorActionPreference = "Stop"
+. (Join-Path $PSScriptRoot "Launcher/gm_main_operation.ps1")
 $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
-chcp 65001 > $null
-Add-Type -AssemblyName System.Windows.Forms
+if (([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)) { chcp 65001 > $null; Add-Type -AssemblyName System.Windows.Forms }
 
 $script:TurnCount = 0
 $script:ErrorCount = 0
 $script:StartTime = Get-Date
 $script:IsProcessing = $false
 $script:ObservedTerminalRequestKeys = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-$script:RepoRootPath = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+# Installed immutable operational assets; source checkout keeps its existing layout.
+$packagedResources = Join-Path $PSScriptRoot 'operational-resources'
+$script:RepoRootPath = if (Test-Path (Join-Path $packagedResources 'CLI_Agent_Daemon_Specification.md')) {
+    (Resolve-Path $packagedResources).Path
+} else { (Resolve-Path (Join-Path $PSScriptRoot "..")).Path }
 $script:TaskGuideMainPath = Join-Path $script:RepoRootPath "TaskGuides\CLI_Step_Main.txt"
 $script:ExampleMainPath = Join-Path $script:RepoRootPath "Examples\E_CLI_Step_Main.txt"
 $script:MortalItemMaterializationExamplePath = Join-Path $script:RepoRootPath "Examples\E_CLI_Mortal_Item_Materialization.txt"
@@ -108,7 +112,7 @@ $script:AfterlifeSpecialArtCombatEffectDirective = " Teachable specialArts[] req
 $script:WeatherContractDirective = " Weather contract: if you write game_state/world/weather.json direct root or game_state/world/current_location.json.normalizedWeatherState, the weather object MUST keep both non-empty description and canonical tendency (IMPROVE, WORSEN, NO_CHANGE, or a valid JUMP_TO_* command). Do not wait for weather_direct_state_missing_required_fields repair; preserve/add description and tendency before writing the terminal marker."
 
 # Resolve paths
-if (!(Test-Path $GameSessionPath)) { New-Item -ItemType Directory -Path $GameSessionPath -Force | Out-Null }
+if (!(Test-Path $GameSessionPath)) { throw "Participating daemon requires an existing game_session." }
 $GameSessionPath = (Resolve-Path $GameSessionPath).Path
 
 $InputDir  = Join-Path $GameSessionPath "input"
@@ -149,8 +153,10 @@ $script:DaemonLastLoopError = $null
 $script:CorrelatedRepairGraceMilliseconds = 5000
 $script:CorrelatedRepairPollMilliseconds = 200
 
-foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
-    if (!(Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
+Invoke-GmParticipatingConsumer $GameSessionPath {
+    foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
+        if (!(Test-Path $dir)) { Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $dir }
+    }
 }
 
 $script:GmTurnHelperBootstrapPath = Join-Path $ControlDir "gm_turn_helper.bootstrap.ps1"
@@ -209,7 +215,7 @@ function Write-GmTurnHelperBootstrap {
         "Initialize-BoeGmTurnHelper -GameSessionPath $(Quote-PowerShellSingleQuotedString $GameSessionPath)"
     ) -join [Environment]::NewLine
 
-    Set-Content -LiteralPath $script:GmTurnHelperBootstrapPath -Value ($content + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmTurnHelperBootstrapPath -Value ($content + [Environment]::NewLine)
 }
 
 function Copy-GmContextPackFile {
@@ -226,10 +232,10 @@ function Copy-GmContextPackFile {
     $destinationPath = Join-Path $script:GmContextPackRoot $RelativePath
     $destinationDir = Split-Path -Parent $destinationPath
     if (!(Test-Path $destinationDir)) {
-        New-Item -ItemType Directory -Path $destinationDir -Force | Out-Null
+        Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $destinationDir
     }
 
-    Copy-Item -LiteralPath $sourcePath -Destination $destinationPath -Force
+    Copy-GmCanonicalFile -SessionPath $GameSessionPath -Source $sourcePath -Destination $destinationPath
 
     return [ordered]@{
         role = $Role
@@ -249,10 +255,10 @@ function Write-GmContextPackTemplate {
     $templatePath = Join-Path $script:GmContextPackRoot $RelativePath
     $templateDir = Split-Path -Parent $templatePath
     if (!(Test-Path $templateDir)) {
-        New-Item -ItemType Directory -Path $templateDir -Force | Out-Null
+        Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $templateDir
     }
 
-    Set-Content -LiteralPath $templatePath -Value ($Content + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $templatePath -Value ($Content + [Environment]::NewLine)
 
     return [ordered]@{
         role = $Role
@@ -938,7 +944,7 @@ function Get-GmExperienceLessons {
 function Write-GmExperienceLessons {
     $lessonsDir = Split-Path $script:GmExperienceLessonJsonPath -Parent
     if (!(Test-Path $lessonsDir)) {
-        New-Item -ItemType Directory -Path $lessonsDir -Force | Out-Null
+        Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $lessonsDir
     }
 
     $query = Get-GmExperienceQuery
@@ -954,7 +960,7 @@ function Write-GmExperienceLessons {
         lessons = @($lessons)
     }
 
-    Set-Content -LiteralPath $script:GmExperienceLessonJsonPath -Value (($payload | ConvertTo-Json -Depth 10) + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmExperienceLessonJsonPath -Value (($payload | ConvertTo-Json -Depth 10) + [Environment]::NewLine)
 
     $markdown = @(
         "# GM Experience Lessons",
@@ -975,7 +981,7 @@ function Write-GmExperienceLessons {
             $markdown += ""
         }
     }
-    Set-Content -LiteralPath $script:GmExperienceLessonMarkdownPath -Value (($markdown -join [Environment]::NewLine) + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmExperienceLessonMarkdownPath -Value (($markdown -join [Environment]::NewLine) + [Environment]::NewLine)
 
     return [ordered]@{
         role = "experience_lessons"
@@ -1080,7 +1086,7 @@ function Build-FirstMortalBootstrapDispatchMessage {
 function Write-GmSafeProbes {
     $probeDir = Split-Path $script:GmSafeProbeJsonPath -Parent
     if (!(Test-Path $probeDir)) {
-        New-Item -ItemType Directory -Path $probeDir -Force | Out-Null
+        Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $probeDir
     }
 
     $guidance = "Safe GM probes are read-only context surfaces. Prefer them before repository source; if a needed fact is missing, record a missing harness surface instead of treating implementation source as normal workflow."
@@ -1186,7 +1192,7 @@ function Write-GmSafeProbes {
         probes = $probes
     }
 
-    Set-Content -LiteralPath $script:GmSafeProbeJsonPath -Value (($payload | ConvertTo-Json -Depth 10) + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmSafeProbeJsonPath -Value (($payload | ConvertTo-Json -Depth 10) + [Environment]::NewLine)
 
     $markdown = @(
         "# GM Safe Probes",
@@ -1205,7 +1211,7 @@ function Write-GmSafeProbes {
         $markdown += ""
     }
 
-    Set-Content -LiteralPath $script:GmSafeProbeMarkdownPath -Value (($markdown -join [Environment]::NewLine) + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmSafeProbeMarkdownPath -Value (($markdown -join [Environment]::NewLine) + [Environment]::NewLine)
 
     return [ordered]@{
         role = "safe_gm_probes"
@@ -1221,7 +1227,7 @@ function Write-GmSafeProbes {
 function Write-GmLiveTestRubric {
     $rubricDir = Split-Path $script:GmLiveTestRubricJsonPath -Parent
     if (!(Test-Path $rubricDir)) {
-        New-Item -ItemType Directory -Path $rubricDir -Force | Out-Null
+        Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $rubricDir
     }
 
     $notesPath = "game_state/control/gm_live_test_notes.jsonl"
@@ -1275,7 +1281,7 @@ function Write-GmLiveTestRubric {
         }
     }
 
-    Set-Content -LiteralPath $script:GmLiveTestRubricJsonPath -Value (($payload | ConvertTo-Json -Depth 8) + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmLiveTestRubricJsonPath -Value (($payload | ConvertTo-Json -Depth 8) + [Environment]::NewLine)
 
     $markdown = @(
         "# GM Live-Test Rubric",
@@ -1305,7 +1311,7 @@ function Write-GmLiveTestRubric {
     $markdown += ""
     $markdown += "Repeated difficulty should become a harness issue, validator/normalizer issue, rollback/tool issue, worker-packet issue, or explicit no-change rationale."
 
-    Set-Content -LiteralPath $script:GmLiveTestRubricMarkdownPath -Value (($markdown -join [Environment]::NewLine) + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmLiveTestRubricMarkdownPath -Value (($markdown -join [Environment]::NewLine) + [Environment]::NewLine)
 
     return [ordered]@{
         role = "live_test_rubric"
@@ -1320,7 +1326,7 @@ function Write-GmLiveTestRubric {
 
 function Write-GmContextPack {
     if (!(Test-Path $script:GmContextPackRoot)) {
-        New-Item -ItemType Directory -Path $script:GmContextPackRoot -Force | Out-Null
+        Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $script:GmContextPackRoot
     }
 
     $docSpecs = @(
@@ -2596,7 +2602,7 @@ Start here instead of browsing repository implementation code.
 - During normal play or validation repair, do not read implementation code such as BookOfEternityClient/**/*.cs.
 - If validation repair is requested, use game_state/control/validation_repair_request.json, especially harnessRepairPackets[].
 "@
-    Set-Content -LiteralPath $readmePath -Value ($readme + [Environment]::NewLine) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $readmePath -Value ($readme + [Environment]::NewLine)
 
     $manifest = [ordered]@{
         schemaVersion = 1
@@ -2626,7 +2632,7 @@ Start here instead of browsing repository implementation code.
         )
     }
 
-    Set-Content -LiteralPath $script:GmContextPackManifestPath -Value ($manifest | ConvertTo-Json -Depth 8) -Encoding UTF8
+    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmContextPackManifestPath -Value ($manifest | ConvertTo-Json -Depth 8)
 
     $script:TaskGuideMainPath = Join-Path $script:GmContextPackRoot "TaskGuides\CLI_Step_Main.txt"
     $script:ExampleMainPath = Join-Path $script:GmContextPackRoot "Examples\E_CLI_Step_Main.txt"
@@ -2651,8 +2657,10 @@ Start here instead of browsing repository implementation code.
     $script:GmLiveTestRubricDirective = " Live-test rubric: '$($script:GmLiveTestRubricMarkdownPath)'. When running a harness live test, tie notable observations to gm_trajectory_ledger.jsonl records and append structured notes to game_state/control/gm_live_test_notes.jsonl."
 }
 
-Write-GmTurnHelperBootstrap
-Write-GmContextPack
+Invoke-GmParticipatingConsumer $GameSessionPath {
+    Write-GmTurnHelperBootstrap
+    Write-GmContextPack
+}
 $script:GmCompactTemplateDirective += $script:FactionMaterializationDirective
 $script:MortalItemMaterializationDirective = " Mortal Item Materialization v1 is mandatory for every durable ordinary Mortal item creation, repair, transfer, stack operation, storage move, or NPC trade. Always read '$($script:CompactMortalItemTemplatePath)' first. New roots use existedId = null, one turn-unique creationRef, a complete semantic shape, all twelve materialization.sections, and exact route authority. Do not author itemId, materializationReceipt, game_state/inventory/item_identity_index.json, seals, transitions, retirement, or lineage; these are client-owned. Existing physical items bind exact itemId and preserve envelope/receipt. isCarried, currentLocationId, and currentLocationName are not placement authority and must not be authored on items. Receipt-less canonical items are invalid because the game has not shipped and no compatibility promotion exists. Open '$($script:MortalItemMaterializationExamplePath)' only when the compact template does not cover the needed route-specific worked shape."
 $script:GmCompactTemplateDirective += $script:MortalItemMaterializationDirective
@@ -2916,8 +2924,7 @@ function Get-GmBridgeStatus {
             return $status
         }
         catch {
-            Write-Log "  -> Removing stale GM bridge status file (dead helper pid)." -Level "WARN" -Color Yellow
-            Remove-Item $BridgeStatusFile -Force -ErrorAction SilentlyContinue
+            # PID liveness is diagnostic; it never authorizes canonical deletion.
             return $null
         }
     }
@@ -2928,7 +2935,7 @@ function Get-GmBridgeStatus {
 
 function Ensure-GmBridgeStarted {
     $config = Get-GameConfig
-    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -ne "ConPTYBridge") {
+    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -notin @('ConPTYBridge','OwnedTerminal')) {
         return
     }
 
@@ -2985,7 +2992,7 @@ function Refresh-GmBridgeReadiness {
 
 function Get-GmBridgeDiagnosticsSnapshot {
     $config = Get-GameConfig
-    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -ne "ConPTYBridge") {
+    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -notin @('ConPTYBridge','OwnedTerminal')) {
         return $null
     }
 
@@ -3279,8 +3286,9 @@ function Test-GmBridgeArtifactWritingStall {
         ""
     }
 
-    $combinedOutput = $visibleScreenText + "`n" + $recentOutputTail
-    $hasArtifactIntent = Test-GmBridgeArtifactWritingIntent -Text $combinedOutput
+    # The raw tail survives screen clears and may contain our echoed request.
+    # Historical instructions are diagnostics, not current artifact-writing intent.
+    $hasArtifactIntent = Test-GmBridgeArtifactWritingIntent -Text $visibleScreenText
 
     if ($hasArtifactIntent -and -not $WatchState.ContainsKey("firstArtifactIntentElapsed")) {
         $WatchState.firstArtifactIntentElapsed = $ElapsedSeconds
@@ -3523,6 +3531,11 @@ function Test-GmValidationRepairArtifactWritingStall {
 }
 
 function Watch-ActiveValidationRepairProgress {
+    if ($null -eq $script:ActiveValidationRepairWatch) { return }
+    Invoke-GmParticipatingConsumer $GameSessionPath { Watch-ActiveValidationRepairProgressCore }
+}
+
+function Watch-ActiveValidationRepairProgressCore {
     if ($null -eq $script:ActiveValidationRepairWatch) {
         return
     }
@@ -3594,6 +3607,9 @@ function Stop-GmBridgeAfterTurnTimeout {
         error = ""
     }
 
+    $script:EstablishedTimeoutDiagnostic = $cleanup
+    Close-GmParticipatingBeforeStop
+
     if (!(Test-Path $BridgeControlScript)) {
         $cleanup.status = "bridge-control-missing"
         $cleanup.error = "GM bridge control script not found."
@@ -3636,59 +3652,98 @@ function Stop-GmBridgeAfterTurnTimeout {
     return [pscustomobject]$cleanup
 }
 
-function Send-ToGmBridge {
-    param(
-        [string]$Message,
-        [switch]$AllowNotReady
-    )
+function Read-GmPromptPending {
+    param([string]$Path)
+    $bytes = [IO.File]::ReadAllBytes($Path)
+    [pscustomobject]@{ Hash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes));
+        Request=([Text.Encoding]::UTF8.GetString($bytes).TrimStart([char]0xFEFF) | ConvertFrom-Json) }
+}
 
-    $config = Get-GameConfig
-    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -ne "ConPTYBridge") {
-        return $null
+function Test-GmPromptSourceCurrent {
+    param([string]$Path, [string]$Hash)
+    if (-not $Path) { return $true }
+    try { return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([IO.File]::ReadAllBytes($Path))) -ceq $Hash }
+    catch { return $false }
+}
+
+function Get-GmPromptContentHash {
+    param([object]$Payload)
+    $prefix = if ($Payload.appendEnter) { "1`n" } else { "0`n" }
+    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($prefix + [string]$Payload.text)))
+}
+
+function New-GmPromptOperation {
+    param([string]$Message, [string]$PendingPath = '', [string]$OperationKind = 'turn', [string]$OperationRevision = 'live', [string]$ExpectedSourceHash = '')
+    $sourceHash = ''
+    if ($PendingPath) {
+        $sourceHash = if ($ExpectedSourceHash) { $ExpectedSourceHash } else { (Read-GmPromptPending $PendingPath).Hash }
+        if (-not (Test-GmPromptSourceCurrent $PendingPath $sourceHash)) { return $null }
     }
-
-    Ensure-GmBridgeStarted
-
+    $key = $OperationKind + '|' + $OperationRevision + '|' + $PendingPath + '|' + $sourceHash
+    if (-not $PendingPath) { $key += '|' + [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($Message))) }
+    if ($null -eq $script:GmPromptOperations) { $script:GmPromptOperations = @{} }
+    if ($script:GmPromptOperations.ContainsKey($key)) { return $script:GmPromptOperations[$key] }
     $status = Get-GmBridgeStatus
-    if ($null -eq $status) {
-        Write-Log "  -> GM bridge status file not found. Falling back." -Level "WARN" -Color Yellow
-        return "bridge-unavailable"
+    if (-not $status -or [string]::IsNullOrWhiteSpace([string]$status.inputBindingId)) { return $null }
+    $operation = [pscustomobject]@{
+        PayloadJson = ([ordered]@{ command='dispatchPrompt'; operationId=[guid]::NewGuid().ToString('N');
+            operationKind=$OperationKind; operationRevision=$OperationRevision; inputBindingId=[string]$status.inputBindingId;
+            text=$Message; appendEnter=$true } | ConvertTo-Json -Depth 6 -Compress)
+        PendingPath=$PendingPath; SourceHash=$sourceHash; LastDelivery=$null; MayHaveReached=$false
     }
+    # A live owner retains all possibly delivered identities. Overflow never evicts or rebinds them.
+    if ($script:GmPromptOperations.Count -ge 256) { return $null }
+    $script:GmPromptOperations[$key] = $operation
+    return $operation
+}
 
-    if (-not $status.ready -and -not $AllowNotReady) {
-        $refreshedStatus = Refresh-GmBridgeReadiness
-        if ($null -ne $refreshedStatus -and $refreshedStatus.ready) {
-            $status = $refreshedStatus
-        }
-    }
+function New-GmPromptDelivery {
+    param([object]$Operation, [string]$Disposition, [string]$Reason)
+    $p = if ($Operation) { $Operation.PayloadJson | ConvertFrom-Json } else { $null }
+    return [pscustomobject]@{ operationId=[string]$p.operationId; operationKind=[string]$p.operationKind;
+        operationRevision=[string]$p.operationRevision; inputBindingId=[string]$p.inputBindingId;
+        contentHash=(Get-GmPromptContentHash $p); disposition=$Disposition; phase='terminal'; reason=$Reason }
+}
 
-    if (-not $status.ready -and -not $AllowNotReady) {
-        Write-Log "  -> GM bridge is running but not marked ready. Falling back." -Level "WARN" -Color Yellow
-        return "bridge-not-ready"
-    }
+function Test-GmPromptDeliveryIdentity {
+    param([object]$Operation, [object]$Delivery)
+    $p = $Operation.PayloadJson | ConvertFrom-Json
+    return $Delivery -and $Delivery.operationId -ceq $p.operationId -and $Delivery.operationKind -ceq $p.operationKind -and
+        $Delivery.operationRevision -ceq $p.operationRevision -and $Delivery.inputBindingId -ceq $p.inputBindingId -and
+        $Delivery.contentHash -ceq (Get-GmPromptContentHash $p)
+}
 
-    if (!(Test-Path $BridgeControlScript)) {
-        Write-Log "  -> GM bridge control script missing. Falling back." -Level "WARN" -Color Yellow
-        return "bridge-control-missing"
-    }
-
+function Invoke-GmPromptControl {
+    param([object]$Operation, [string]$Command = 'dispatchPrompt')
+    $payload = $Operation.PayloadJson | ConvertFrom-Json
+    $payload.command = $Command
+    $json = $payload | ConvertTo-Json -Depth 6 -Compress
     try {
-        if ($AllowNotReady) {
-            & $BridgeControlScript addText $Message -SessionPath $GameSessionPath | Out-Null
-            Start-Sleep -Milliseconds 100
-            & $BridgeControlScript sendEnter -SessionPath $GameSessionPath | Out-Null
-            Write-Log "  -> Sent bootstrap/reminder to GM bridge via addText+sendEnter" -Color Green
-        }
-        else {
-            & $BridgeControlScript dispatchPrompt $Message -SessionPath $GameSessionPath | Out-Null
-            Write-Log "  -> Sent to GM bridge via named pipe" -Color Green
-        }
-        return "sent"
+        # No transport exception proves zero input after invoking a launcher. Never automatically replay it.
+        if ($Command -eq 'dispatchPrompt') { $Operation.MayHaveReached = $true }
+        $raw = & $BridgeControlScript dispatch-operation $json -SessionPath $GameSessionPath
+        $response = ($raw -join "`n") | ConvertFrom-Json
+        if (-not (Test-GmPromptDeliveryIdentity $Operation $response.promptDelivery)) { throw 'Mismatched prompt delivery identity.' }
+        return $response.promptDelivery
     }
-    catch {
-        Write-Log "  -> GM bridge dispatch failed: $_" -Level "WARN" -Color Yellow
-        return "bridge-failed"
-    }
+    catch { return (New-GmPromptDelivery $Operation 'unknown-outcome' 'launcher-or-transport-ambiguous') }
+}
+
+function Send-ToGmBridge {
+    param([string]$Message, [switch]$AllowNotReady, [object]$Operation)
+    $config = Get-GameConfig
+    if (-not $config.GmBridgeEnabled -or $config.GmBridgeBackend -notin @('ConPTYBridge','OwnedTerminal')) { return $null }
+    Ensure-GmBridgeStarted
+    if (-not $Operation) { $Operation = New-GmPromptOperation -Message $Message -OperationKind 'automatic' }
+    if (-not $Operation) { return (New-GmPromptDelivery $null 'not-written' 'retention-full') }
+    if ($script:GmPromptInputPaused) { return (New-GmPromptDelivery $Operation 'unknown-outcome' 'automatic-input-paused') }
+    if ($Operation.LastDelivery -and $Operation.LastDelivery.disposition -ne 'not-written') { return $Operation.LastDelivery }
+    if (!(Test-Path $BridgeControlScript)) { return (New-GmPromptDelivery $Operation 'not-written' 'control-missing') }
+    # Dormant AllowNotReady uses this same operation; it cannot bypass the bridge's positive idle/draft check.
+    $delivery = Invoke-GmPromptControl -Operation $Operation
+    $Operation.LastDelivery = $delivery
+    if ($delivery.disposition -in @('draft-uncertain','unknown-outcome') -or -not $delivery.disposition) { $script:GmPromptInputPaused = $true }
+    return $delivery
 }
 
 function Write-Log {
@@ -3697,7 +3752,11 @@ function Write-Log {
     $logLine = "[$timestamp][$Level] $Message"
     Write-Host $logLine -ForegroundColor $Color
     if ($LogFile) {
-        try { Add-Content -Path $LogFile -Value $logLine -Encoding UTF8 -ErrorAction SilentlyContinue } catch { }
+        try {
+            $relativeLog=[IO.Path]::GetRelativePath([IO.Path]::GetFullPath($GameSessionPath),[IO.Path]::GetFullPath($LogFile)).Replace("\","/")
+            if ($relativeLog.StartsWith("../") -or [IO.Path]::IsPathRooted($relativeLog)) { Add-Content -LiteralPath $LogFile -Value $logLine -Encoding UTF8 -ErrorAction SilentlyContinue }
+            else { Write-GmCanonicalText -SessionPath $GameSessionPath -Path $LogFile -Value $logLine -Append }
+        } catch { }
     }
 }
 
@@ -3766,35 +3825,14 @@ function New-DaemonErrorPayload {
 }
 
 function Write-DaemonJsonFileBestEffort {
-    param(
-        [string]$Path,
-        [object]$Payload,
-        [int]$Depth = 8
-    )
-
-    $tmpPath = $null
+    param([string]$Path,[object]$Payload,[int]$Depth=8)
     try {
-        $directory = Split-Path $Path -Parent
-        if (!(Test-Path $directory)) {
-            New-Item -ItemType Directory -Path $directory -Force | Out-Null
-        }
-
-        $tmpName = "." + [IO.Path]::GetFileName($Path) + ".$PID.tmp"
-        $tmpPath = Join-Path $directory $tmpName
-        Set-Content -LiteralPath $tmpPath -Value ($Payload | ConvertTo-Json -Depth $Depth) -Encoding UTF8
-        Move-Item -LiteralPath $tmpPath -Destination $Path -Force
+        Write-GmCanonicalText -SessionPath $GameSessionPath -Path $Path -Value ($Payload | ConvertTo-Json -Depth $Depth)
         return $true
-    }
-    catch {
-        try {
-            if ($tmpPath -and (Test-Path $tmpPath)) {
-                Remove-Item -LiteralPath $tmpPath -Force
-            }
-        }
-        catch {
-            # Best-effort cleanup only.
-        }
-
+    } catch {
+        # Bounded volatile diagnostics survive a closed/lost operation. They are
+        # not another canonical writer and cannot authorize continuation.
+        $script:LastUnpublishedDaemonDiagnostic = [pscustomobject]@{path=$Path;payload=$Payload}
         return $false
     }
 }
@@ -4664,10 +4702,10 @@ function Write-GmTrajectoryRecord {
 
         $ledgerDir = Split-Path $script:GmTrajectoryLedgerPath -Parent
         if (!(Test-Path $ledgerDir)) {
-            New-Item -ItemType Directory -Path $ledgerDir -Force | Out-Null
+            Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $ledgerDir
         }
 
-        Add-Content -Path $script:GmTrajectoryLedgerPath -Value ($record | ConvertTo-Json -Depth 8 -Compress) -Encoding UTF8
+        Write-GmCanonicalText -SessionPath $GameSessionPath -Path $script:GmTrajectoryLedgerPath -Value ($record | ConvertTo-Json -Depth 8 -Compress) -Append
         Update-GmLiveTestNoteRecordLinks -RequestId $requestId -RecordId ([string]$record.recordId)
     }
     catch {
@@ -4722,7 +4760,7 @@ function Update-GmLiveTestNoteRecordLinks {
         }
 
         if ($changed) {
-            Set-Content -Path $notesPath -Value $updatedLines -Encoding UTF8
+            Write-GmCanonicalText -SessionPath $GameSessionPath -Path $notesPath -Value $updatedLines
         }
     }
     catch {
@@ -5141,7 +5179,7 @@ function Save-ObservedTerminalRequestKeys {
     try {
         $controlDir = Split-Path $ObservedTerminalRequestKeysFile -Parent
         if (!(Test-Path $controlDir)) {
-            New-Item -ItemType Directory -Path $controlDir -Force | Out-Null
+            Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $controlDir
         }
 
         $payload = [ordered]@{
@@ -5150,7 +5188,7 @@ function Save-ObservedTerminalRequestKeys {
             keys = @($script:ObservedTerminalRequestKeys | Sort-Object)
         }
 
-        Set-Content -Path $ObservedTerminalRequestKeysFile -Value ($payload | ConvertTo-Json -Depth 4) -Encoding UTF8
+        Write-GmCanonicalText -SessionPath $GameSessionPath -Path $ObservedTerminalRequestKeysFile -Value ($payload | ConvertTo-Json -Depth 4)
     }
     catch {
         Write-Log "  Failed to save observed terminal request keys: $_" -Level "WARN" -Color Yellow
@@ -5176,12 +5214,12 @@ Write-Host "  |  Book of Eternity: Game Master Daemon         |" -ForegroundColo
 Write-Host "  +===============================================+" -ForegroundColor Cyan
 Write-Host ""
 Write-Log "Game Session : $GameSessionPath" -Color Gray
-if ((Get-GameConfig).GmBridgeEnabled -and (Get-GameConfig).GmBridgeBackend -eq "ConPTYBridge") {
-    Write-Log "GM Backend   : ConPTYBridge" -Color Gray
+if ((Get-GameConfig).GmBridgeEnabled -and (Get-GameConfig).GmBridgeBackend -in @('ConPTYBridge','OwnedTerminal')) {
+    Write-Log "GM Backend   : $((Get-GameConfig).GmBridgeBackend)" -Color Gray
     if (Test-Path $BridgeStatusFile) {
         Write-Log "Bridge Status: '$BridgeStatusFile'" -Color Gray
     } else {
-        Write-Log "Bridge Status: bridge not started yet (fallbacks remain available)" -Color Yellow
+        Write-Log "Bridge Status: configured bridge not started yet; dispatch waits or refuses" -Color Yellow
     }
 }
 elseif (Test-Path $CliBindingFile) {
@@ -5210,8 +5248,8 @@ Write-Host ""
 # CLI Window Communication
 # ═══════════════════════════════════════════════
 
-# Win32 API for window activation
-Add-Type @"
+# Win32 API belongs only to the legacy Windows desktop route.
+if (([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)) { Add-Type @"
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -5268,6 +5306,7 @@ public class Win32Window {
     public const uint MOUSEEVENTF_RIGHTUP = 0x0010;
 }
 "@ -ErrorAction SilentlyContinue
+}
 
 function Invoke-RightClickPaste {
     param([System.IntPtr]$WindowHandle)
@@ -5359,15 +5398,16 @@ function Resolve-CliTarget {
 
 function Send-ToCliWindow {
     param(
-        [string]$Message
+        [string]$Message, [object]$Operation
     )
 
     $config = Get-GameConfig
-    if ($config.GmBridgeEnabled -and $config.GmBridgeBackend -eq "ConPTYBridge") {
-        return (Send-ToGmBridge -Message $Message)
+    if ($config.GmBridgeEnabled -and $config.GmBridgeBackend -in @('ConPTYBridge','OwnedTerminal')) {
+        return (Send-ToGmBridge -Message $Message -Operation $Operation)
     }
 
-    # Clipboard is the universal fallback for every bridge/window failure path.
+    if (-not ([Environment]::OSVersion.Platform -eq [PlatformID]::Win32NT)) { throw 'Linux requires the configured owned bridge; no window/clipboard transport fallback.' }
+    # Explicit Windows desktop transport only; bridge delivery never falls back.
     Set-Clipboard -Value $Message
     Write-Log "  -> Clipboard: command copied" -Color DarkGray
 
@@ -5420,55 +5460,86 @@ function Send-ToCliWindow {
 }
 
 function Dispatch-WithRetry {
-    param(
-        [string]$Message,
-        [string]$PendingPath = "",
-        [switch]$ReturnDetails,
-        [int]$MaxWaitSeconds = 0
-    )
-
-    $attempts = 0
-    $busyRetries = 0
-    $startedAt = Get-Date
-
-    while ($true) {
-        if ($PendingPath -and !(Test-Path $PendingPath)) {
-            if ($ReturnDetails) {
-                return (New-GmDispatchDiagnostics -Status "cancelled" -Attempts $attempts -BusyRetries $busyRetries)
-            }
-            return "cancelled"
-        }
-
-        $attempts++
-        $dispatch = Send-ToCliWindow -Message $Message
-        if ($dispatch -eq "sent" -or $dispatch -eq "clipboard") {
-            if ($ReturnDetails) {
-                return (New-GmDispatchDiagnostics -Status $dispatch -Attempts $attempts -BusyRetries $busyRetries)
-            }
-            return $dispatch
-        }
-
-        if ($dispatch -like "bridge-*") {
-            $busyRetries++
-            $elapsedSeconds = ((Get-Date) - $startedAt).TotalSeconds
-            if ($MaxWaitSeconds -gt 0 -and $elapsedSeconds -ge $MaxWaitSeconds) {
-                Write-Log "  -> GM bridge dispatch timeout after $([math]::Round($elapsedSeconds, 1))s; bridge did not accept the prompt." -Level "ERROR" -Color Red
-                if ($ReturnDetails) {
-                    return (New-GmDispatchDiagnostics -Status "bridge-dispatch-timeout" -Attempts $attempts -BusyRetries $busyRetries -Timeout $true)
-                }
-                return "bridge-dispatch-timeout"
-            }
-
-            Write-Log "  -> Waiting for GM bridge to become available/ready..." -Level "WARN" -Color Yellow
-            Start-Sleep -Seconds 1
-            continue
-        }
-
-        if ($ReturnDetails) {
-            return (New-GmDispatchDiagnostics -Status $dispatch -Attempts $attempts -BusyRetries $busyRetries)
-        }
-        return $dispatch
+    param([string]$Message, [string]$PendingPath = '', [switch]$ReturnDetails, [int]$MaxWaitSeconds = 0,
+        [string]$OperationKind = 'turn', [string]$OperationRevision = 'live', [object]$Operation, [string]$ExpectedSourceHash = '')
+    $attempts = 0; $busyRetries = 0; $startedAt = Get-Date
+    $config = Get-GameConfig
+    $bridge = $config.GmBridgeEnabled -and $config.GmBridgeBackend -in @('ConPTYBridge','OwnedTerminal')
+    if ($bridge -and -not $Operation) {
+        if ($PendingPath -and !(Test-Path $PendingPath)) { return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails 0 0) }
+        if (-not $ExpectedSourceHash -and $PendingPath) { $ExpectedSourceHash = (Read-GmPromptPending $PendingPath).Hash }
+        if (-not (Test-GmPromptSourceCurrent $PendingPath $ExpectedSourceHash)) { return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails 0 0) }
+        Ensure-GmBridgeStarted
+        $Operation = New-GmPromptOperation -Message $Message -PendingPath $PendingPath -OperationKind $OperationKind -OperationRevision $OperationRevision -ExpectedSourceHash $ExpectedSourceHash
+        if (-not $Operation) { return (Complete-GmPromptDispatch 'bridge-not-written' (New-GmPromptDelivery $null 'not-written' 'binding-unavailable-or-retention-full') $ReturnDetails 0 0) }
     }
+    while ($true) {
+        $hash = if ($Operation) { $Operation.SourceHash } else { $ExpectedSourceHash }
+        if (-not (Test-GmPromptSourceCurrent $PendingPath $hash)) {
+            if ($Operation -and $Operation.MayHaveReached -and $Operation.LastDelivery.disposition -notin @('not-written','queued-cancelled')) {
+                $null = Invoke-GmPromptControl -Operation $Operation -Command 'cancelPrompt'
+                $script:GmPromptInputPaused = $true
+                $delivery = New-GmPromptDelivery $Operation 'unknown-outcome' 'pending-source-replaced-after-dispatch'
+                $Operation.LastDelivery = $delivery
+                return (Complete-GmPromptDispatch 'bridge-unknown-outcome' $delivery $ReturnDetails $attempts $busyRetries)
+            }
+            return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails $attempts $busyRetries)
+        }
+        $attempts++
+        $dispatch = Send-ToCliWindow -Message $Message -Operation $Operation
+        # An old remote callback cannot complete a replacement pending packet.
+        if (-not (Test-GmPromptSourceCurrent $PendingPath $hash)) {
+            if ($dispatch -isnot [string] -and $dispatch.disposition -in @('not-written','queued-cancelled')) {
+                return (Complete-GmPromptDispatch 'cancelled' $dispatch $ReturnDetails $attempts $busyRetries)
+            }
+            if ($Operation -and $Operation.MayHaveReached) { $null = Invoke-GmPromptControl -Operation $Operation -Command 'cancelPrompt' }
+            $script:GmPromptInputPaused = $true
+            $delivery = New-GmPromptDelivery $Operation 'unknown-outcome' 'pending-source-replaced-during-dispatch'
+            if ($Operation) { $Operation.LastDelivery = $delivery }
+            return (Complete-GmPromptDispatch 'bridge-unknown-outcome' $delivery $ReturnDetails $attempts $busyRetries)
+        }
+        if ($dispatch -is [string]) {
+            # Untyped bridge failures cannot authorize a retry, even for legacy collaborators.
+            $status = if ($dispatch -like 'bridge-*') { 'bridge-unknown-outcome' } else { $dispatch }
+            if ($status -eq 'bridge-unknown-outcome') { $script:GmPromptInputPaused = $true }
+            return (Complete-GmPromptDispatch $status $null $ReturnDetails $attempts $busyRetries)
+        }
+        $delivery = $dispatch
+        if (-not $Operation -or -not (Test-GmPromptDeliveryIdentity $Operation $delivery)) {
+            $script:GmPromptInputPaused = $true
+            return (Complete-GmPromptDispatch 'bridge-unknown-outcome' $delivery $ReturnDetails $attempts $busyRetries)
+        }
+        $Operation.LastDelivery = $delivery
+        switch ([string]$delivery.disposition) {
+            'submission-observed' { return (Complete-GmPromptDispatch 'sent' $delivery $ReturnDetails $attempts $busyRetries) }
+            'queued-cancelled' { return (Complete-GmPromptDispatch 'cancelled' $delivery $ReturnDetails $attempts $busyRetries) }
+            'not-written' {
+                if ($delivery.reason -notin @('busy','not-ready')) { return (Complete-GmPromptDispatch 'bridge-not-written' $delivery $ReturnDetails $attempts $busyRetries) }
+                $busyRetries++
+                if ($MaxWaitSeconds -le 0 -or ((Get-Date)-$startedAt).TotalSeconds -ge $MaxWaitSeconds) {
+                    return (Complete-GmPromptDispatch 'bridge-dispatch-timeout' $delivery $ReturnDetails $attempts $busyRetries)
+                }
+                Start-Sleep -Seconds 1
+            }
+            default {
+                $script:GmPromptInputPaused = $true
+                return (Complete-GmPromptDispatch 'bridge-unknown-outcome' $delivery $ReturnDetails $attempts $busyRetries)
+            }
+        }
+    }
+}
+
+function Complete-GmPromptDispatch {
+    param([string]$Status, [object]$Delivery, [bool]$Details, [int]$Attempts, [int]$BusyRetries)
+    if (-not $Details) { return $Status }
+    $result = New-GmDispatchDiagnostics -Status $Status -Attempts $Attempts -BusyRetries $BusyRetries -Timeout:($Status -eq 'bridge-dispatch-timeout')
+    $result | Add-Member -NotePropertyName PromptDelivery -NotePropertyValue $Delivery -Force
+    return $result
+}
+
+function Test-GmPromptDispatchPaused {
+    param([object]$Dispatch)
+    return $Dispatch.Status -in @('bridge-unknown-outcome','bridge-not-written','cancelled')
 }
 
 # ═══════════════════════════════════════════════
@@ -5586,6 +5657,11 @@ After that helper call, stop immediately and do not report or write anything els
 
 function Process-QteEffectResolutionRequest {
     param([string]$RequestPath)
+    Invoke-GmParticipatingConsumer $GameSessionPath { Process-QteEffectResolutionRequestCore -RequestPath $RequestPath }
+}
+
+function Process-QteEffectResolutionRequestCore {
+    param([string]$RequestPath)
 
     if ($script:IsProcessing) { return }
     $script:IsProcessing = $true
@@ -5596,7 +5672,8 @@ function Process-QteEffectResolutionRequest {
             return
         }
 
-        $request = Get-Content -Path $RequestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $pendingSnapshot = Read-GmPromptPending -Path $RequestPath
+        $request = $pendingSnapshot.Request
         if (-not [string]::Equals(
                 [string]$request.requestKind,
                 "qte_deferred_effect_resolution",
@@ -5634,10 +5711,11 @@ function Process-QteEffectResolutionRequest {
         }
         $dispatch = Dispatch-WithRetry `
             -Message $message `
-            -PendingPath $RequestPath `
+            -PendingPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash `
+            -OperationKind qte-effect -OperationRevision $requestKey `
             -ReturnDetails `
             -MaxWaitSeconds $dispatchMaxWaitSeconds
-        if ($dispatch.Status -eq "cancelled") {
+        if (Test-GmPromptDispatchPaused $dispatch) {
             Write-Log "  QTE effect receipt request was cancelled before dispatch." -Level "WARN" -Color Yellow
             return
         }
@@ -5669,15 +5747,11 @@ function Process-QteEffectResolutionRequest {
 
             if ($elapsed % 15 -eq 0 -and
                 (Test-GmBridgeReturnedIdleWithoutTerminalSignal -ElapsedSeconds $elapsed)) {
-                Write-Log "  GM bridge returned idle without the correlated QTE ready marker; redispatching the same sealed packet." -Level "WARN" -Color Yellow
-                $dispatch = Dispatch-WithRetry `
-                    -Message $message `
-                    -PendingPath $RequestPath `
-                    -ReturnDetails `
-                    -MaxWaitSeconds $dispatchMaxWaitSeconds
-                if ($dispatch.Status -eq "cancelled") {
-                    return
-                }
+                Write-Log "  GM bridge returned idle without the correlated QTE ready marker; preserving the original delivery without replay." -Level "WARN" -Color Yellow
+                $operation = New-GmPromptOperation -Message $message -PendingPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash -OperationKind qte-effect -OperationRevision $requestKey
+                if ($operation) { $operation.LastDelivery = Invoke-GmPromptControl -Operation $operation -Command 'promptStatus' }
+                $script:GmPromptInputPaused = $true
+                return
             }
 
             if ($elapsed % 60 -eq 0) {
@@ -5702,6 +5776,11 @@ function Process-QteEffectResolutionRequest {
 
 function Process-Turn {
     param([string]$RequestPath)
+    Invoke-GmParticipatingConsumer $GameSessionPath { Process-TurnCore -RequestPath $RequestPath }
+}
+
+function Process-TurnCore {
+    param([string]$RequestPath)
 
     if ($script:IsProcessing) { return }
     $script:IsProcessing = $true
@@ -5713,7 +5792,8 @@ function Process-Turn {
     }
 
     try {
-        $turnRequest = Get-Content -Path $RequestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $pendingSnapshot = Read-GmPromptPending -Path $RequestPath
+        $turnRequest = $pendingSnapshot.Request
         $turnNumber = $turnRequest.turnNumber
         $turnRequestKey = Get-TurnRequestKey -TurnRequest $turnRequest
         if (Test-ObservedTerminalRequestKey -Key $turnRequestKey) {
@@ -5765,8 +5845,8 @@ function Process-Turn {
 
         if ($null -eq $terminalSignal) {
             $dispatchMaxWaitSeconds = if ($TurnTimeout -gt 0 -and $TurnTimeout -lt $script:BridgeDispatchMaxWaitSeconds) { $TurnTimeout } else { $script:BridgeDispatchMaxWaitSeconds }
-            $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RequestPath -ReturnDetails -MaxWaitSeconds $dispatchMaxWaitSeconds
-            if ($dispatchDiagnostics.Status -eq "cancelled") {
+            $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash -OperationKind turn -ReturnDetails -MaxWaitSeconds $dispatchMaxWaitSeconds
+            if (Test-GmPromptDispatchPaused $dispatchDiagnostics) {
                 Write-Log "  Turn cancelled while waiting for bridge turn dispatch" -Level "WARN" -Color Yellow
                 Write-GmTrajectoryRecord `
                     -Kind "turn" `
@@ -5782,6 +5862,7 @@ function Process-Turn {
             }
 
             if ($dispatchDiagnostics.Status -eq "bridge-dispatch-timeout") {
+                if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
                 $script:ErrorCount++
                 Write-Log "  GM bridge did not accept dispatch before the dispatch timeout; emitting daemon terminal error." -Level "ERROR" -Color Red
                 $missingHarnessTool = "gm_bridge_dispatch_unavailable"
@@ -5794,7 +5875,7 @@ function Process-Turn {
                     timestamp = (Get-Date).ToUniversalTime().ToString("o")
                     error = "GM bridge did not accept dispatch before the dispatch timeout."
                 }
-                Set-Content -Path $errorPath -Value ($dispatchTerminalSignal | ConvertTo-Json -Depth 4) -Encoding UTF8
+                Write-GmCanonicalText -SessionPath $GameSessionPath -Path $errorPath -Value ($dispatchTerminalSignal | ConvertTo-Json -Depth 4)
                 Write-GmTrajectoryRecord `
                     -Kind "turn" `
                     -Mode "ordinary" `
@@ -5821,6 +5902,10 @@ function Process-Turn {
         }
 
         # Wait for terminal signal
+        # A captured correlated terminal may still be logged after client consumption.
+        # Replacement bytes never inherit that observation; no new terminal writes use this exception.
+        if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash) -and
+            ($null -eq $terminalSignal -or (Test-Path -LiteralPath $RequestPath))) { return }
         $elapsed = 0
         $artifactWriteStallWatchState = @{}
         $outputWithoutTerminalWatchState = New-GmOutputWithoutTerminalWatchState
@@ -5829,6 +5914,8 @@ function Process-Turn {
             Start-Sleep -Seconds 1
             $elapsed++
 
+            # The old invocation cannot act on replacement bytes, even if snapshot context still matches.
+            if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
             if (!(Test-Path $RequestPath)) {
                 Write-Log "  Turn cancelled by client" -Level "WARN" -Color Yellow
                 break
@@ -5841,8 +5928,11 @@ function Process-Turn {
             }
 
             $terminalSignal = Get-CorrelatedTerminalSignal -TurnRequest $turnRequest -CompletionPath $completionPath -ErrorPath $errorPath
+            if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash) -and
+                ($null -eq $terminalSignal -or (Test-Path -LiteralPath $RequestPath))) { return }
 
             if ($null -eq $terminalSignal -and $elapsed % 15 -eq 0 -and (Test-GmBridgeReturnedIdleWithoutTerminalSignal -ElapsedSeconds $elapsed)) {
+                if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
                 $script:ErrorCount++
                 Write-Log "  GM bridge returned to idle without a correlated terminal signal; emitting daemon terminal error instead of waiting for full timeout." -Level "ERROR" -Color Red
                 $missingHarnessTool = "gm_bridge_idle_without_terminal_signal"
@@ -5855,7 +5945,7 @@ function Process-Turn {
                     timestamp = (Get-Date).ToUniversalTime().ToString("o")
                     error = "GM bridge returned to idle without a correlated terminal signal."
                 }
-                Set-Content -Path $errorPath -Value ($idleTerminalSignal | ConvertTo-Json -Depth 4) -Encoding UTF8
+                Write-GmCanonicalText -SessionPath $GameSessionPath -Path $errorPath -Value ($idleTerminalSignal | ConvertTo-Json -Depth 4)
                 $terminalSignal = [pscustomobject]@{
                     Path = $errorPath
                     Kind = "error"
@@ -5866,11 +5956,13 @@ function Process-Turn {
 
             if ($null -eq $terminalSignal -and $elapsed % 15 -eq 0) {
                 $payloadStall = Test-GmOutputWithoutTerminalSignal -ElapsedSeconds $elapsed -WatchState $outputWithoutTerminalWatchState
+                if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
                 if ($null -ne $payloadStall -and $payloadStall.isStalled) {
                     $script:ErrorCount++
                     Write-Log "  GM wrote turn payload files without a correlated terminal signal; emitting daemon terminal error before indefinite wait." -Level "ERROR" -Color Red
                     $missingHarnessTool = "gm_output_without_terminal_signal"
                     $payloadCleanup = Stop-GmBridgeAfterTurnTimeout -TurnRequest $turnRequest -ElapsedSeconds $elapsed -Reason "gm_output_without_terminal_signal"
+                    if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
                     $payloadStall | Add-Member -NotePropertyName timeoutBridgeCleanup -NotePropertyValue $payloadCleanup -Force
                     [void](Write-DaemonJsonFileBestEffort -Path $OutputWithoutTerminalReportFile -Payload $payloadStall -Depth 10)
                     $payloadTerminalSignal = @{
@@ -5884,7 +5976,7 @@ function Process-Turn {
                         changedFiles = $payloadStall.changedFiles
                         outputWithoutTerminal = $payloadStall
                     }
-                    Set-Content -Path $errorPath -Value ($payloadTerminalSignal | ConvertTo-Json -Depth 12) -Encoding UTF8
+                    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $errorPath -Value ($payloadTerminalSignal | ConvertTo-Json -Depth 12)
                     $terminalSignal = [pscustomobject]@{
                         Path = $errorPath
                         Kind = "error"
@@ -5894,11 +5986,13 @@ function Process-Turn {
                 }
 
                 $artifactStall = Test-GmBridgeArtifactWritingStall -ElapsedSeconds $elapsed -WatchState $artifactWriteStallWatchState
+                if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
                 if ($null -ne $artifactStall -and $artifactStall.isStalled) {
                     $script:ErrorCount++
                     Write-Log "  GM bridge appears stalled while preparing turn artifacts; emitting daemon terminal error before full timeout." -Level "ERROR" -Color Red
                     $missingHarnessTool = "gm_bridge_artifact_write_stall"
                     $artifactCleanup = Stop-GmBridgeAfterTurnTimeout -TurnRequest $turnRequest -ElapsedSeconds $elapsed -Reason "gm_bridge_artifact_write_stall"
+                    if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
                     $artifactStall | Add-Member -NotePropertyName timeoutBridgeCleanup -NotePropertyValue $artifactCleanup -Force
                     [void](Write-DaemonJsonFileBestEffort -Path $ArtifactWriteStallReportFile -Payload $artifactStall -Depth 10)
                     $artifactTerminalSignal = @{
@@ -5911,7 +6005,7 @@ function Process-Turn {
                         error = "GM bridge appears stalled while preparing turn artifacts."
                         artifactWriteStall = $artifactStall
                     }
-                    Set-Content -Path $errorPath -Value ($artifactTerminalSignal | ConvertTo-Json -Depth 12) -Encoding UTF8
+                    Write-GmCanonicalText -SessionPath $GameSessionPath -Path $errorPath -Value ($artifactTerminalSignal | ConvertTo-Json -Depth 12)
                     $terminalSignal = [pscustomobject]@{
                         Path = $errorPath
                         Kind = "error"
@@ -5928,11 +6022,13 @@ function Process-Turn {
         }
 
         if ($TurnTimeout -gt 0 -and $elapsed -ge $TurnTimeout -and $null -eq $terminalSignal) {
+            if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
             $script:ErrorCount++
             Write-Log "  Timeout after ${elapsed}s" -Level "ERROR" -Color Red
             $dispatchDiagnostics.Timeout = $true
             $missingHarnessTool = "gm_turn_timeout"
             $timeoutBridgeCleanup = Stop-GmBridgeAfterTurnTimeout -TurnRequest $turnRequest -ElapsedSeconds $elapsed
+            if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
             $timeoutSignal = @{
                 sessionId = $turnRequest.sessionId
                 requestId = $turnRequest.requestId
@@ -5943,7 +6039,7 @@ function Process-Turn {
                 error = "Timeout after ${elapsed}s"
                 timeoutBridgeCleanup = $timeoutBridgeCleanup
             }
-            Set-Content -Path $errorPath -Value ($timeoutSignal | ConvertTo-Json -Depth 8) -Encoding UTF8
+            Write-GmCanonicalText -SessionPath $GameSessionPath -Path $errorPath -Value ($timeoutSignal | ConvertTo-Json -Depth 8)
             $terminalSignal = [pscustomobject]@{
                 Path = $errorPath
                 Kind = "error"
@@ -6042,6 +6138,11 @@ function Process-Turn {
 
 function Process-RepairRequest {
     param([string]$RepairPath)
+    Invoke-GmParticipatingConsumer $GameSessionPath { Process-RepairRequestCore -RepairPath $RepairPath }
+}
+
+function Process-RepairRequestCore {
+    param([string]$RepairPath)
 
     if (!(Test-Path $RepairPath)) { return }
 
@@ -6050,7 +6151,8 @@ function Process-RepairRequest {
         if ($fileInfo.LastWriteTimeUtc -le $script:LastRepairRequestWrite) { return }
         $script:LastRepairRequestWrite = $fileInfo.LastWriteTimeUtc
 
-        $repair = Get-Content -Path $RepairPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $pendingSnapshot = Read-GmPromptPending -Path $RepairPath
+        $repair = $pendingSnapshot.Request
         $turnNumber = if ($repair.turnNumber) { [int]$repair.turnNumber } else { -1 }
         $requestId = if ($repair.requestId) { $repair.requestId } else { "<missing-requestId>" }
         $attempt = if ($repair.revalidationAttempt) { [int]$repair.revalidationAttempt } else { 1 }
@@ -6197,7 +6299,8 @@ function Process-RepairRequest {
         }
 
         $repairDispatchMaxWaitSeconds = if ($TurnTimeout -gt 0 -and $TurnTimeout -lt $script:BridgeDispatchMaxWaitSeconds) { $TurnTimeout } else { $script:BridgeDispatchMaxWaitSeconds }
-        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RepairPath -ReturnDetails -MaxWaitSeconds $repairDispatchMaxWaitSeconds
+        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $RepairPath -ExpectedSourceHash $pendingSnapshot.Hash -OperationKind repair -OperationRevision ([string]$attempt) -ReturnDetails -MaxWaitSeconds $repairDispatchMaxWaitSeconds
+        if (Test-GmPromptDispatchPaused $dispatchDiagnostics) { return }
         if ($dispatchDiagnostics.Status -eq "bridge-dispatch-timeout") {
             $script:ErrorCount++
             Write-Log "  GM bridge did not accept validation repair dispatch before the dispatch timeout; publishing repair stall report." -Level "ERROR" -Color Red
@@ -6292,6 +6395,11 @@ function Test-ProtocolRequestUsesDiagnosticOnlyMetadata {
 
 function Process-TerminalProtocolFailureRequest {
     param([string]$FailurePath)
+    Invoke-GmParticipatingConsumer $GameSessionPath { Process-TerminalProtocolFailureRequestCore -FailurePath $FailurePath }
+}
+
+function Process-TerminalProtocolFailureRequestCore {
+    param([string]$FailurePath)
 
     if (!(Test-Path $FailurePath)) { return }
 
@@ -6300,7 +6408,8 @@ function Process-TerminalProtocolFailureRequest {
         if ($fileInfo.LastWriteTimeUtc -le $script:LastTerminalProtocolFailureWrite) { return }
         $script:LastTerminalProtocolFailureWrite = $fileInfo.LastWriteTimeUtc
 
-        $failure = Get-Content -Path $FailurePath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $pendingSnapshot = Read-GmPromptPending -Path $FailurePath
+        $failure = $pendingSnapshot.Request
         $turnNumber = if ($failure.turnNumber) { [int]$failure.turnNumber } else { -1 }
         $requestId = if ($failure.requestId) { $failure.requestId } else { "<missing-requestId>" }
         $hasDiagnosticOnlyMetadata = Test-ProtocolRequestUsesDiagnosticOnlyMetadata -RequestObject $failure
@@ -6345,7 +6454,8 @@ function Process-TerminalProtocolFailureRequest {
 
         $null = Write-GmExperienceLessons
 
-        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $FailurePath -ReturnDetails
+        $dispatchDiagnostics = Dispatch-WithRetry -Message $message -PendingPath $FailurePath -ExpectedSourceHash $pendingSnapshot.Hash -OperationKind terminal-repair -ReturnDetails
+        if (Test-GmPromptDispatchPaused $dispatchDiagnostics) { return }
         Write-GmTrajectoryRecord `
             -Kind "terminal" `
             -Mode "terminal_protocol" `
@@ -6431,7 +6541,7 @@ function Get-CorrelatedTerminalSignal {
         $fileName = Split-Path $path -Leaf
         if ($null -eq $signal) {
             Write-Log "  Removed unreadable terminal signal artifact: $fileName" -Level "WARN" -Color Yellow
-            Remove-Item $path -Force -ErrorAction SilentlyContinue
+            Remove-GmCanonicalFile -SessionPath $GameSessionPath -Path $path
             continue
         }
 
@@ -6450,7 +6560,7 @@ function Get-CorrelatedTerminalSignal {
         }
 
         Write-Log "  Removed stale terminal signal artifact: $fileName (sessionId/requestId/turnNumber mismatch)" -Level "WARN" -Color Yellow
-        Remove-Item $path -Force -ErrorAction SilentlyContinue
+        Remove-GmCanonicalFile -SessionPath $GameSessionPath -Path $path
     }
 
     if ($matchedSignals.Count -gt 1) {
@@ -6494,7 +6604,7 @@ function Resolve-DaemonTimeoutTerminalConflict {
         foreach ($timeoutSignal in $timeoutSignals) {
             $fileName = Split-Path $timeoutSignal.Path -Leaf
             Write-Log "  Removed stale daemon timeout terminal signal artifact: $fileName" -Level "WARN" -Color Yellow
-            Remove-Item $timeoutSignal.Path -Force -ErrorAction SilentlyContinue
+            Remove-GmCanonicalFile -SessionPath $GameSessionPath -Path $timeoutSignal.Path
         }
 
         return $successSignals[0]
@@ -6577,7 +6687,7 @@ Register-ObjectEvent $terminalProtocolFailureWatcher "Changed" -Action $terminal
 Write-Log "Watching: $InputDir" -Color DarkGray
 
 try {
-    if (-not $CliWindowTitle) {
+    if (-not $CliWindowTitle -and -not ((Get-GameConfig).GmBridgeEnabled -and (Get-GameConfig).GmBridgeBackend -in @('ConPTYBridge','OwnedTerminal'))) {
         Write-Host ""
         Write-Host "  +-------------------------------------------------+" -ForegroundColor Yellow
         Write-Host "  |  CLIPBOARD MODE                                  |" -ForegroundColor Yellow

@@ -2,62 +2,102 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { browserApi } from '../api/client';
 import type { BrowserClientSettingsDto, BrowserClientSettingsUpdateRequest, BrowserMainMenuDto } from '../api/contracts';
 import { isSuccess, useShell } from '../context/ShellContext';
-import { toLauncherSaveFailureNotice } from '../utils/formatters';
 import { toPlayerFacingText } from '../utils/playerCopy';
+import { createSettingsWriteNoticeTracker, mergeSettingsPatch, type SettingsWriteNotice } from '../utils/settingsPersistenceNotice';
+import { executeBrowserSaveCreation, type SavePersistenceNotice } from '../utils/savePersistenceNotice';
+import { executeBrowserLoad } from '../utils/loadPersistenceNotice';
 import { AudioPanel } from './AudioPanel';
 
 export function SettingsView() {
-  const { readyState, menu, advancedEnabled, setAdvancedEnabled, setActiveRoute, loadBrowserState } = useShell();
+  const { readyState, menu, advancedEnabled, setAdvancedEnabled, setActiveRoute, loadBrowserState, blockSaveContinuation, refreshAfterSave, beginLoad, isLoadCurrent, finishLoad, isLoadInProgress, refreshAfterLoad, blockLoadContinuation, reportLoadNotice } = useShell();
   const [settings, setSettings] = useState<BrowserClientSettingsDto | null>(null);
+  const [persistenceNotice, setPersistenceNotice] = useState<SettingsWriteNotice | null>(null);
+  const writeScope = useRef({ generation: 0 });
+  const persistenceTracker = useRef(createSettingsWriteNoticeTracker(writeScope.current));
+  const pendingPatch = useRef<BrowserClientSettingsUpdateRequest>({});
+  const pendingUpdate = useRef(false);
+  const settingsWriteQueue = useRef<Promise<void>>(Promise.resolve());
   const [saveNotice, setSaveNotice] = useState('');
   const [creatingSave, setCreatingSave] = useState(false);
   const [loadingSaveId, setLoadingSaveId] = useState<string | null>(null);
   const updateQueue = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
+  const saveContinuationBlocked = useRef(false);
+
+  const invalidatePendingSettings = useCallback(() => {
+    writeScope.current.generation++;
+    persistenceTracker.current.invalidate();
+    if (updateQueue.current) clearTimeout(updateQueue.current);
+    updateQueue.current = null;
+    pendingPatch.current = {};
+    pendingUpdate.current = false;
+  }, []);
 
   useEffect(() => {
     isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
+      invalidatePendingSettings();
     };
-  }, []);
+  }, [invalidatePendingSettings]);
 
   useEffect(() => {
-    if (readyState && isSuccess(readyState.settings)) {
+    if (!pendingUpdate.current && readyState && isSuccess(readyState.settings)) {
       setSettings(readyState.settings.data);
     }
   }, [readyState]);
 
   const debouncedUpdate = useCallback((patch: BrowserClientSettingsUpdateRequest) => {
+    const request = persistenceTracker.current.begin();
+    pendingUpdate.current = true;
+    pendingPatch.current = mergeSettingsPatch(pendingPatch.current, patch);
     if (updateQueue.current) clearTimeout(updateQueue.current);
     updateQueue.current = setTimeout(() => {
-      void browserApi.updateClientSettings(patch).then(() => void loadBrowserState());
+      const combined = pendingPatch.current;
+      pendingPatch.current = {};
+      updateQueue.current = null;
+      // Serialize admitted patches so an earlier request cannot commit after a later one.
+      // Cancel only unsent work when this mount/session loses ownership.
+      // An already-sent request may still commit; response invalidation is not rollback.
+      settingsWriteQueue.current = settingsWriteQueue.current.catch(() => undefined).then(() => {
+        if (!persistenceTracker.current.canDispatch(request)) return;
+        return browserApi.updateClientSettings(combined).then((result) => {
+          persistenceTracker.current.resolve(request, result, (writeNotice) => {
+            pendingUpdate.current = false;
+            setPersistenceNotice(writeNotice);
+            setSettings(result.ok ? result.data : null);
+            void loadBrowserState(() => persistenceTracker.current.isCurrent(request));
+          });
+        }, () => {
+          persistenceTracker.current.interrupted(request, (writeNotice) => {
+            pendingUpdate.current = false;
+            setPersistenceNotice(writeNotice);
+            setSettings(null);
+            void loadBrowserState(() => persistenceTracker.current.isCurrent(request));
+          });
+        });
+      });
     }, 500);
   }, [loadBrowserState]);
 
   async function createManualSave() {
+    if (saveContinuationBlocked.current || isLoadInProgress?.() || creatingSave || loadingSaveId !== null) return;
     setCreatingSave(true);
     setSaveNotice('Создаём ручное сохранение…');
+    const applyNotice = (notice: SavePersistenceNotice) => {
+      if (isMountedRef.current) setSaveNotice(notice.kind === 'follow-up' && notice.createdSaveId
+        ? `${notice.message} Созданное сохранение: ${notice.createdSaveId}` : notice.message);
+    };
+    const stopContinuation = (notice: SavePersistenceNotice) => {
+      saveContinuationBlocked.current = true;
+      invalidatePendingSettings();
+      blockSaveContinuation?.(notice);
+    };
     try {
-      const result = await browserApi.createSave({ saveName: null });
-      if (!isMountedRef.current) {
-        return;
-      }
-      if (isSuccess(result) && result.data.success) {
-        setSaveNotice('Игра сохранена. Новая запись появилась в списке сохранений.');
-        await loadBrowserState();
-        return;
-      }
-      if (isSuccess(result)) {
-        setSaveNotice(toLauncherSaveFailureNotice(result.data.error));
-        return;
-      }
-      setSaveNotice(toLauncherSaveFailureNotice(result.message || result.playerMessage));
-    } catch {
-      if (!isMountedRef.current) {
-        return;
-      }
-      setSaveNotice('Сохранение не удалось создать. Проверьте, что книга запущена, и попробуйте ещё раз.');
+      await executeBrowserSaveCreation(() => browserApi.createSave({ saveName: null }), applyNotice, stopContinuation, async createdSaveId => {
+        if (!isMountedRef.current || !refreshAfterSave) return false;
+        return refreshAfterSave(createdSaveId, () => isMountedRef.current);
+      });
     } finally {
       if (isMountedRef.current) {
         setCreatingSave(false);
@@ -66,38 +106,38 @@ export function SettingsView() {
   }
 
   async function loadSaveSlot(slot: BrowserMainMenuDto['saves'][number]) {
+    if (saveContinuationBlocked.current || creatingSave) return;
+    const owner = beginLoad?.();
+    if (!owner) return;
+    invalidatePendingSettings();
+    const generation = writeScope.current.generation;
+    const ownsLoad = () => isMountedRef.current && writeScope.current.generation === generation && Boolean(isLoadCurrent?.(owner));
+    setSettings(null);
     setLoadingSaveId(slot.saveId);
     setSaveNotice('Загружаем выбранное сохранение…');
     try {
-      const result = await browserApi.loadSave({ saveId: slot.saveId });
-      if (!isMountedRef.current) {
-        return;
-      }
-      if (isSuccess(result) && result.data.success) {
-        setSaveNotice(`Сохранение «${toPlayerFacingText(slot.displayName, 'выбранная запись')}» загружено. Открываем главу…`);
-        setActiveRoute('game');
-        await loadBrowserState();
-        return;
-      }
-      if (isSuccess(result)) {
-        setSaveNotice(toLauncherSaveFailureNotice(result.data.error));
-        return;
-      }
-      setSaveNotice(toLauncherSaveFailureNotice(result.playerMessage));
-    } catch {
-      if (!isMountedRef.current) {
-        return;
-      }
-      setSaveNotice('Сохранение не удалось загрузить. Проверьте, что книга запущена, и попробуйте ещё раз.');
+      await executeBrowserLoad(() => browserApi.loadSave({ saveId: slot.saveId, operationId: owner.operationId, expectedGeneration: menu?.loadGeneration ?? null }), ownsLoad,
+        notice => setSaveNotice(notice.message), notice => {
+          saveContinuationBlocked.current = true;
+          invalidatePendingSettings();
+          blockLoadContinuation?.(notice);
+        },
+        (established, allowNoActive, state) => refreshAfterLoad?.(established, ownsLoad, allowNoActive, state) ?? Promise.resolve(false),
+        () => setActiveRoute('game'), notice => reportLoadNotice?.(notice), { operationId: owner.operationId,
+          complete: establishedGeneration => browserApi.completeLoad({ operationId: owner.operationId, establishedGeneration, refreshConfirmed: true }),
+          cancel: establishedGeneration => browserApi.cancelLoad({ operationId: owner.operationId, establishedGeneration, refreshConfirmed: false }) });
     } finally {
-      if (isMountedRef.current) {
-        setLoadingSaveId(null);
-      }
+      if (isMountedRef.current && writeScope.current.generation === generation) setLoadingSaveId(null);
+      finishLoad?.(owner);
     }
   }
 
   if (!settings) {
-    return <div className="settings-view"><p className="block-text--muted">Загрузка настроек…</p></div>;
+    return <div className="settings-view">
+      {saveNotice && <p className="composer-notice" role="status">{saveNotice}</p>}
+      {persistenceNotice && <p className="composer-notice" role="status">{persistenceNotice.message}</p>}
+      <p className="block-text--muted">{persistenceNotice || saveNotice ? 'Текущие настройки требуют обновления.' : 'Загрузка настроек…'}</p>
+    </div>;
   }
 
   const canCreateSave = Boolean(menu?.session.gameSessionExists && menu.session.hasReadableSoul && menu.session.canStartBrowserWrite);
@@ -110,7 +150,8 @@ export function SettingsView() {
         : '';
 
   return (
-    <div className="settings-view">
+    <fieldset className="settings-view" disabled={loadingSaveId !== null || creatingSave} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
+      {persistenceNotice && <p className="composer-notice" role="status">{persistenceNotice.message}</p>}
       <section className="settings-card">
         <h3>⚙️ Основные</h3>
         <div className="settings-row">
@@ -151,7 +192,7 @@ export function SettingsView() {
         </div>
       </section>
 
-      <AudioPanel />
+      <AudioPanel writeScope={writeScope.current} />
 
       <section className="settings-card" aria-labelledby="browser-saves-title">
         <h3 id="browser-saves-title">Сохранения</h3>
@@ -259,6 +300,6 @@ export function SettingsView() {
         </div>
         <p className="block-text--muted">{settings.locality.safetySummary}</p>
       </section>
-    </div>
+    </fieldset>
   );
 }

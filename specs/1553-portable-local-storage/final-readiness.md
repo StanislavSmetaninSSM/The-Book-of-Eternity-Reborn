@@ -1,0 +1,76 @@
+# Final readiness — bounded #1553 integration handoff
+
+Source: [issue1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), accepted `20bdeb6c42a8729acbfdf39d55f758d3e746240f`.
+Owner on 2026-10-08 accepts explicit OwnedTerminal/NativeLineage Linux use while actual systemd qualification is deferred. Native Windows verification follows completion/merge in the existing HOME-PC «Лориан-Codex bridge» task; parent coordinates it. No HOME-PC access here. LATEST owner+parent instruction now explicitly authorizes this sole writer to disable GitHub CI and merge PR1555 using existing ADMIN rights; the earlier no-merge hold is superseded. See the current owner integration decision below.
+
+## Accepted requirements and evidence reused
+
+| Contract | Accepted bounded evidence / current source | Limit |
+|---|---|---|
+| Trusted-local canonical save/load, generation, rollback/recovery | [filesystem qualification](recovery/load-filesystem-linux-qualification.json), later F1–F3 and T031 slices; existing FileSystemManager + SaveLoadService | Ordinary isolated roots; no power-loss/reboot salvage or owner-save protection |
+| Original persistent terminal, T042 immutable paste → observation → submit | terminal14888663 / input1bc9d675; ProductionMainLaunch, BridgeHost, original InputLifetime | Supported VT subset, no arbitrary TUI/readiness promise |
+| Main owner/schema1 durable fence + original operation pins | F1f4e7621f / F28b0c416e / F3fc49f271; coordinator and participating consumers | Native lineage/actual I/O conjunction; cold nonterminal refusal, no replay |
+| Installed Linux main and retained disabled worker inventory | M14d456d5d; ordinary launcher/ProductionMainLaunch | Explicit NativeLineage only; production workers remain closed |
+| Browser rollback, direct gacha and standalone Daren Linux | dc62a88a / 953c48f8 / d73e2cdf; trusted-local existing transactions | Real isolated consumers; historical Windows-only fixtures are not PASS |
+| Stop → Load → full refresh → fresh configured session | 23a5b669; actual console/both browser handlers | No-active leaves GM absent; failed/unknown stop/load/refresh blocks restart; generated gameplay through Load and continuation is not qualified |
+| Clipboard/audio/auxiliary/desktop helpers | 499ca652 / 0c526b3c / 65674ee8 / 42812722 and associated handoffs | Synthetic bytes/dummy device/controlled launch; actual desktop/device positives separate |
+| Real generated/applied game action and reusable relay | [r3 handoff](relay-gm-bounded-handoff.md), [shared relay](relay-reusable-handoff.md); dc1724af/db847f6a | One clean real action via test relay; not Codex/OpenCode compatibility or universal API support |
+| Systemd source/controlled S1 + S2A | [S1](systemd-main-s1-handoff.md), [S2A](systemd-main-s2a-handoff.md) | Actual manager S2 and public S3 deferred; backend OFF; explicit SystemdUser never downgrades |
+| Category-based CI | [CI platform checkpoint](ci-platform-selection.md) /20bdeb6c | Hosted result must be observed independently; local metadata PASS is not hosted CI PASS |
+
+No completion percentage: at accepted20bdeb6c vs mainf6dc2a1 the branch contains 21,402 changed paths, including 20,846 spec/evidence paths, not a measurable total of product requirements. Historical open umbrella checkboxes are not a claim that their accepted sub-slices are missing.
+
+## Minimal reviewed change and final selection
+
+Independent actual Sol6.1/xhigh design PASS at20bdeb6c establishes a documentation gap, no blocking runtime defect. Add exact game_session/config.json setup, partial consumed fields preserving arbitrary command/model/args/cwd and disabled inventory. Explain empty input profile refusal and --no-autopaste scope. No runtime/defaults, gameplay, GM-authored schema/prompt/example change is needed. Final execution additionally localized a test preparation defect: seven integration cases fail to resolve source fixtures until the existing BOE_REPO_ROOT is explicit. Independent Sol minimal correction design PASS: pin only owned test child source root in the existing runner, caller environment unchanged; SDK/AppContext specifics are not inferred. Post-edit causal GREEN is required.
+
+| Selected category | Reason | Budget |
+|---|---|---:|
+| gm-main-linux-guide | Execute real inert Read-GameConfig against documented fields; preserve configured profile and disabled inventory | 1min |
+| gm-main-linux-launcher | Installed foreground route after later auxiliary/early-exit/presentation changes since M1 | 3min |
+| gm-load-installed-profile | Original stop/load/fresh launch consumes installed archive command/model/args/cwd/profile | 3min |
+| gm-load-ordinary-schema | Real console/HTTP canonical schema1 generation and complete refresh bundle after current-session/storage changes | 5min |
+| gm-main-affected-managed | Exact finalizers/participating/ambiguity/no-replay consumers after bootstrap/cancel/artifact detection changes | 3min |
+
+PlanOnly establishes exact membership. No relay/systemd/crash/resource/frontend/historic cohort replay: retained relay24 and S2A16 pins are unchanged; one relay-listed test-runner source pin has a reviewed BOE_REPO_ROOT delta, separately qualified by the current causal7/11 cases (catalog/selection metadata is deliberately changed); accepted evidence remains reusable. All five selected categories route to Ubuntu, including the two portable categories now verified on Linux, to honor the explicit no-Windows-before-merge sequence. Other catalog default conventions remain unchanged; no native Windows claim.
+
+## Deferred environment and product boundaries
+
+- Actual systemd S2 requires an already-running accessible user manager; S3 public activation follows qualification. No setup or services here; current Linux stays explicit NativeLineage.
+- Native Windows ConPTY/Job/full game is scheduled AFTER merge, not a pre-merge PASS condition. Parent assigns the existing desktop task.
+- Physical audio, desktop clipboard/associations and live HTML Audio remain unqualified; capability errors/manual fallback are accepted bounded behavior.
+- Codex protected read-only SQLite state and OpenCode CONNECT403 remain recorded blockers; no auth/network workaround or fresh requests. The accepted relay is a separate model-generation transport.
+- Public production workers/helpers, arbitrary TUI/live browser, user saves and cold exactly-once are not claimed. Generated game Save/Load/fresh continuation remains separate from neutral Load + one real action.
+
+## Initial merge visibility (before ADMIN capability verification)
+
+Default branch is `main`, current known tip f6dc2a1ce3e73f5e6940f686c97b863c9f7a8173. Branch endpoint says protected=true; its summary shows status contexts empty/enforcement off. Detailed classic protection GET returns403 Resource not accessible by integration. Available rulesets and rules/branches/main return[]; these do NOT establish that review/restriction/admin requirements are absent. CODEOWNERS selects @StanislavSmetaninSSM. Parent/maintainer must confirm inaccessible protection and required reviews before merge. No permission/protection change, no merge here.
+
+## Historical F2 checks — unchanged, no new executions
+
+- `BrowserLocalWriteCoordinatorTests.ExecuteAsync_SessionReplacementWaitsForWholeLegacyTransaction` — Original Linux timeout before callback; legacy physical fixture; NewExecutions=0.
+- `BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction` — Original Linux timeout before callback; legacy physical fixture; NewExecutions=0.
+- `BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_LockReleaseFailureDoesNotRollbackCommittedMutation` — Original Windows physical creation unavailable on Linux; legacy fixture; NewExecutions=0.
+- `BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ExplicitLeaseWritesWithoutAmbientAuthority` — Original Windows physical creation unavailable on Linux; legacy fixture; NewExecutions=0.
+
+Those historical Windows physical fixtures stay unpassed; subsequent real Linux browser rollback/gacha/Daren causal acceptance is separate, and closes the actual Linux consumer defect. No actor/provenance inference from Git author alone.
+
+## Execution/closure
+
+Current state: independent design/source PASS at20bdeb6c/0be9c979; minimal runner preparation correction design PASS. Final unique30/30PASS: guide3 + launcher/profile9 + canonical/managed18, all selections complete/cleanup complete. Fresh unit/integration builds passed, warning budgets29/158 and22/158. PlanOnly28estimated cases/5descriptors executed0; guide expands to3 executed assertions. Historical ENOSPC1failed case and fixture-context7failed cases remain preparation failures, not gameplay RED; explicit-root diagnostic7PASS is separate from corrected ordinary-runner18PASS. Catalog435categories/11194identities valid, executed0; exact current CI plan5entries/1Ubuntu group/no Windows. [Qualification](recovery/final-readiness-qualification.json) stores hashes/counts/cleanup and historical failures. Independent final source/evidence PASS at5a7fb8d1 with the named relay24+reviewed-runner delta metadata correction applied. Writer verified118stored/expanded artifact records and75current source pins. Separate actual Sol6.1/xhigh metadata PASS atc104e5b2, no required corrections. Only bounded T052 closes. Source/evidence/metadata are ready for parent integration gates; exact final-tip hosted CI/readback/GitHub-only recovery is confirmed separately in writer delivery. Classic protection/review requirements remain inaccessible and require parent/maintainer confirmation before merge. No merge or full#1553/platform qualification follows. Publish WIP before long checks. Record toolchain, exact commands, planned/executed counts, cleanup, hashes and review source SHA in recovery/final-readiness-qualification.json. Stop at parent handoff without merge, services or model calls.
+
+## Historical observed integration gates after draft PR creation
+
+[Draft PR1555](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/pull/1555) targets main. At observed head72ffde8c, GitHub reports MERGEABLE but BLOCKED/REVIEW_REQUIRED and no checks. `.NET CI` workflow280957256 is `disabled_manually`; no selected hosted result observed; no attached checks. Existing portable-load workflow is active but its fixed filesystem selection is not changed or replayed. Read-only Actions permissions GET returns403 Resource not accessible by integration, as does detailed main protection. Actor/reason for workflow disabling is not inferred.
+
+At that initial snapshot, no workflow enablement, permission/protection change or merge was performed. Parent/maintainer must resolve required review and the hosted-CI gate under the owner's settings policy before integration; no CI PASS or absence of protection is claimed. Native Windows remains postmerge; systemd S2/S3/backend-off remains owner-approved deferral. Final exact-tip remote/readback/GitHub-only restore is separate writer delivery evidence.
+
+## Current owner integration decision
+
+Owner2026-10-08 explicitly requests disabling GitHub CI and merging PR1555 into the actual default branch main. This supersedes the earlier hosted-green and other-human-review delivery gates; it does not turn any failed check into PASS. Accepted local final30 and reviewed causalCI21 remain separate bounded evidence.
+
+Workflow280957256 was enabled by earlier authorization. Its initial startup37718428447 refused setup-node under repository policy. Minimal reviewed sourcec7afc4ea eliminates that action using conditional installed Node22.12+ refusal, without installer/allowlist/permissions changes. Local internal19PASS/2RED then21GREEN, catalog435/11194 valid/discovery0; original5selection entries plus affectedCI category preserved. Actual PR run37719162311 atc7af reaches selected verification and FAILS; final gate also FAILS. Hosted cause/counts/cleanup are unknown. Available annotations only provide exit code1; official logs and test artifact downloads are forbidden on results-receiver.actions.githubusercontent.com and productionresultssa9.blob.core.windows.net. No retry, transfer workaround or guessed runtime fix followed. [Current CI qualification and safe receipts](recovery/ci-pr-enable/qualification.json).
+
+On the new explicit instruction, both existing CI workflows (280957256 and374267479) are confirmed disabled_manually. Current integration is viewer StanislavSmetaninSSM, repository ADMIN, viewerCanMergeAsAdmin=true. The ordinary admin merge path uses these existing rights; no fictitious self-approval or protection/permissions/network change. Mainf6dc2a1 is ancestor of sourcec7af. This source checkpoint records authorization before the actual merge; exact published/merged SHA, byte readback and fresh GitHub-only recovery accompany final delivery. Native Windows remains AFTER merge in «Лориан-Codex bridge»; actual systemd S2/S3/backend-off, production workers closed and desktop/provider/cold boundaries remain unchanged. No full#1553/platform qualification claim.
+
+Merge method preserves the no-issue-closure contract: three historical messages contain Fix#1553 while issue1553 is open. Supported GitHub squash merge with explicit Refs-only text avoids carrying those closing-keyword messages onto main. Original working branch and every source commit remain preserved; no history rewrite, branch deletion or issue mutation. The final merged tree must equal the reviewed published source exactly.

@@ -1,0 +1,277 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A1-V1 main source/evidence integration",
+  "status": "Accepted bounded main source/evidence integration by the coordinator on 2026-10-02 after independent GPT-6 Astra XHigh PASS with no actionable findings",
+  "baseline": {
+    "remoteBase": "068151c6366c96614b02a057b680d82eeebfbbf2",
+    "rawTree": "3c58d02c007aafc02f3abe0ef053094b505b3897",
+    "fullAppliedTree": "f413a00a71c4bb0907986081c004ea94b4c043e0",
+    "carrierExcludedTree": "ece35c4d4ef3bf8e5e912aaf49fdd29f936cb7b3",
+    "cleanInitialCheckout": true,
+    "fsckFullExitCode": 0,
+    "applyCount": 1,
+    "packetBytes": 13992,
+    "packetSha256": "58cb29cc840e99e3c82daa548d91a834dbf5229915017b89e699eab2644bc3e1"
+  },
+  "importedFrom": "c94469e8c5bb80072020001182085066589d6dd5",
+  "testedSource": {
+    "testedSourceCommit": "d4460793abbd61ec9e884004c93bf4154f979111",
+    "runtimeSourceCommit": "26c0327c20b41e82e647287a455b7a8018f0796a",
+    "rawSourceTree": "d647f9fcc30c3b876de22afeef5503378f170b72",
+    "appliedSourceTreeExcludingCurrentCarriers": "4ac5cdc7ea75b0927feee672ef547a5fb6c306c3",
+    "packetSha256": "fa0f4a1da02e812cc07d4a764aa93316da0279a742a1724bcbf92b410e1e95d9",
+    "productionTrees": [
+      {
+        "path": "BookOfEternityClient",
+        "gitTree": "2fcdd4aadfe5e3959a1348a70ff0c27247f5cdc3",
+        "trackedFiles": 825,
+        "unchangedFromRuntimeSource": true
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport",
+        "gitTree": "72e2411155f4b6591f80a48af0a314799594247b",
+        "trackedFiles": 25,
+        "unchangedFromRuntimeSource": true
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests",
+        "gitTree": "7a3635589c74956bb3c5b93eaa629f586d8cebb6",
+        "trackedFiles": 454,
+        "unchangedFromRuntimeSource": true
+      },
+      {
+        "path": "BookOfEternityGMBridge",
+        "gitTree": "29e6682727b3b77b69a9eacb53dd656f738c2440",
+        "trackedFiles": 3,
+        "unchangedFromRuntimeSource": true
+      },
+      {
+        "path": "tests/fixtures",
+        "gitTree": "2e15ec992c661b30f1c4f8ba066a86ab6599449a",
+        "trackedFiles": 2,
+        "unchangedFromRuntimeSource": true
+      }
+    ],
+    "identities": [
+      {
+        "path": "BookOfEternityClient.Tests/TrustedLocalOriginalV1FixtureTests.cs",
+        "gitBlob": "9aa64077be1b12639a7816464bcfd0edf4e48ccd",
+        "bytes": 8654,
+        "sha256": "f1cc6523241df0464d5f88c98706e88a1c0607dd541ba6e497b9f3ea9244c2d2"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "gitBlob": "4dc1ce302c9f0db8c167901f61c548513098d296",
+        "bytes": 226775,
+        "sha256": "764e3698d84bdeeffa372e0830b8b643373b14e5e963132fde88562c1ae5805f"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "gitBlob": "48fde8733d2f210c624adde08a068f414b7e0afd",
+        "bytes": 22834,
+        "sha256": "a6d53b803f384018856f0ffe42b58fbfe335d954f474986ac9696e738739bbf7"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+        "gitBlob": "69d480b2cc10c640dcf79cd906f8a59263eba4e3",
+        "bytes": 11880,
+        "sha256": "158838814f3d55c1669538e9bc0e4d2593b3d4adf356901007609d779fc68d9d"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+        "gitBlob": "34bb94a325381be80eac63fee5caab9cbf128624",
+        "bytes": 7153,
+        "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9"
+      },
+      {
+        "path": "tests/categories.json",
+        "gitBlob": "969a50a8beb509c2309ea4b4bc52f24e479fc132",
+        "bytes": 875374,
+        "sha256": "d2cda147ce37e78f4b1458e30353f33edeafd53bfab1688097ad9f4d04ce26aa"
+      },
+      {
+        "path": "tests/selection.json",
+        "gitBlob": "1687a7cc87f76a245763e05d3a4397916cd6080c",
+        "bytes": 504,
+        "sha256": "7e8cba27d1a6d8ad69f268608afd4330a937a386f90f0a576e5a75d2657d6b3a"
+      }
+    ]
+  },
+  "sourceEvidenceReview": "bd23ad76b1758c8b268733d6da04c3d2876d12a4",
+  "finalIsolatedDocsProofReview": "c94469e8c5bb80072020001182085066589d6dd5",
+  "importedFiles": [
+    {
+      "path": "BookOfEternityClient.Tests/TrustedLocalOriginalV1FixtureTests.cs",
+      "gitBlob": "9aa64077be1b12639a7816464bcfd0edf4e48ccd",
+      "sha256": "f1cc6523241df0464d5f88c98706e88a1c0607dd541ba6e497b9f3ea9244c2d2",
+      "bytes": 8654
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/v1-compatibility-restoration.json",
+      "gitBlob": "41e2dda3c1942e693f0c5295e302258fd7610ece",
+      "sha256": "a766c86f635b3053c1a7409fba60fa7b609014ac08d54661497887b13c223f44",
+      "bytes": 2510
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/original-v1-compatibility/audit/Build-integration.log",
+      "gitBlob": "37a4b6a46effa0e9952d0bace47c2fb6188b7a22",
+      "sha256": "91e8104f3c54beae3137e3ba5389f3e459b46e644dc5dbfeb8190563e7d06b84",
+      "bytes": 1983
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/original-v1-compatibility/audit/catalog-audit.json",
+      "gitBlob": "811c702096d68e28a29b99613614990c491e9242",
+      "sha256": "bdd35cdfd325e7fb2b67cc441d675a8e2f83ff7210e2da78530e6410ae494f28",
+      "bytes": 103
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/original-v1-compatibility/audit/summary.json",
+      "gitBlob": "3ad1683b9bf4f262e46356ac4b9c14e3c8008c09",
+      "sha256": "acad5cf07afa16a4ed07e1aa6a628c8bd4df17ca7c1dae442edfb5048a1013fd",
+      "bytes": 1405
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/original-v1-compatibility/manifest.json",
+      "gitBlob": "3b5af73857d1ed3fb7c2893900902d87206ce59b",
+      "sha256": "89b6c7dd13d4ce080e9081a614e46f26f66fff59f4bdf9cc13fd5c00ef500a33",
+      "bytes": 15223
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/original-v1-compatibility/plan-only/Build-unit.log",
+      "gitBlob": "3b2343246b7c7634125259336e14d071647d1621",
+      "sha256": "f557c9303aadda5e3e046e2c938f7ce508096893e088541dc3483315c810027c",
+      "bytes": 3441
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/original-v1-compatibility/plan-only/plan.json",
+      "gitBlob": "fef4eee51f6882c21b6e2d9f78de7d9a14f85694",
+      "sha256": "3a9b90f1fad7fbdf4db095fb0ccacfc4b4af7877cf5f342e9658a08d5e66b098",
+      "bytes": 1135
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/original-v1-compatibility/plan-only/summary.json",
+      "gitBlob": "d3a9efd01ea40537ebfddabf254bff52fe613ab3",
+      "sha256": "9edad93dcbd9eff8dd2b8a3f10dd3527b76f50d860420a48b44797603144ac17",
+      "bytes": 1483
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/original-v1-compatibility/run/plan.json",
+      "gitBlob": "3dc26a30ee3a3110a4cbe6a1594fcdcb39aa6e63",
+      "sha256": "c2b5de64ad83a135b897ea44bd2c9c008c0b20e29779dfe7ad1802f3cf5c4e9f",
+      "bytes": 1133
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/original-v1-compatibility/run/portable-storage-original-v1-fixtures-unit-001.trx",
+      "gitBlob": "8213a79f5cd8afa0d90158fbb109a3d3b2a77353",
+      "sha256": "523f1ca72651366a394804190620a4c7eac60132451187bf7f54c3665bc31808",
+      "bytes": 5958
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/original-v1-compatibility/run/summary.json",
+      "gitBlob": "34a702c350b890a79642ff5a21af21f2b34f0104",
+      "sha256": "b86b93256649e32032b2c5d44ca7d5b3bc0444c7661691b2b1a910340d4fa36e",
+      "bytes": 1481
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/evidence/original-v1-compatibility/source-identity.json",
+      "gitBlob": "3d4053b13a8a8fd62bc065588e854c8f17e49c77",
+      "sha256": "d5d94e7abd7b31781852ac9c3926d6523c89368c0686411894e0116db8f56c36",
+      "bytes": 3047
+    }
+  ],
+  "reconciledFiles": [
+    "specs/1553-portable-local-storage/plan.md",
+    "specs/1553-portable-local-storage/recovery/README.md",
+    "specs/1553-portable-local-storage/recovery/fixtures/original-v1-source-derived/README.md",
+    "specs/1553-portable-local-storage/save-resource-gate.md",
+    "specs/1553-portable-local-storage/tasks.md",
+    "tests/categories.json",
+    "tests/selection.json"
+  ],
+  "unchangedImmutableFixtures": [
+    {
+      "path": "specs/1553-portable-local-storage/recovery/fixtures/original-v1-source-derived/pending.json",
+      "gitBlob": "58e30e2f8bb593be0d5e22c1beb4acdd2e185d8a",
+      "sha256": "13fb4c68e26b87107501478a4f302a17e16fa5f25019de3bcac14d528e7167a1",
+      "bytes": 2066
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/fixtures/original-v1-source-derived/committed.json",
+      "gitBlob": "2af9b158255e77d55815b63e9e09e7d0825dd6fd",
+      "sha256": "da0c9fd29ed3d23d8903d42b88691d4d83bc156c1142061595dbdc2bd602ba02",
+      "bytes": 2065
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/fixtures/original-v1-source-derived/provenance.json",
+      "gitBlob": "082e8dc9957375a06138dd8370ad3528357c1a86",
+      "sha256": "19cfa1f7170c0ac1c94524242e0ffb581eae9cb79d2df3cd9cefe4570a442e0e",
+      "bytes": 12233
+    }
+  ],
+  "invariance": {
+    "existingTrackedFiles": 3997,
+    "existingCSharpFiles": 1615,
+    "allExistingCSharpByteIdenticalToAppliedMainBaseline": true,
+    "allOtherExistingFilesUnchangedExceptReconciledFilesAndActiveCarrierPair": true,
+    "previousCategories": 173,
+    "currentCategories": 174,
+    "all173ExistingCategoryObjectsEqual": true,
+    "onlyNewOwner": "portable-storage-original-v1-fixtures",
+    "existingCSharpIdentityListSha256": "f030bad7ed684c712501d07aa6a4afdae0e51d52d91607ad97a6e601f208cb0a",
+    "unrunScaffoldStillUnbuiltUnrunUnowned": true,
+    "observerStillUnwired": true
+  },
+  "mainDiffersFromIsolatedRuntimeAt": [
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "gitBlob": "36c3f76dac6b41de5be0d980d5054082b27ce311",
+      "sha256": "84384b25adaec172244296671706837217e815d7df19abf04c432d53b4250d0f",
+      "bytes": 226879
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/TrustedLocalStreamCrashFixture.cs",
+      "gitBlob": "24a28c1ce616d71d25e37b913dfcf797832a89c5",
+      "sha256": "be3c2a5e0f1465ffd5f21d92d8ae1bf36aafe89b4f43cdc73fcd5110e6a9211f",
+      "bytes": 3894
+    },
+    {
+      "path": "BookOfEternityClient.Tests/TrustedLocalStreamRecoveryTests.cs",
+      "gitBlob": "9e85b631362b3cc7d5e60e910c26082cc0d31e90",
+      "sha256": "d441842f3acac8e87d114255f531986b9c64912526e4b0f7bb8f1c52ca685ab1",
+      "bytes": 9544
+    },
+    {
+      "path": "tests/fixtures/PortableStorageCrashHost/Program.cs",
+      "gitBlob": "5fe656c8bc49102e03d659036710f3f33f4acbee",
+      "sha256": "8db594088f6bf149ef21691c68a5c6171bce87495d82135731f67bea2bf33db8",
+      "bytes": 547
+    }
+  ],
+  "verification": {
+    "kind": "Static Git/source/artifact/link/hash/JSON/XML readback only",
+    "evidenceArtifactsHashVerified": 10,
+    "builds": 0,
+    "tests": 0,
+    "discovery": 0,
+    "runtimeOperations": 0,
+    "installedTools": 0
+  },
+  "limits": [
+    "Historical two-case run and 174/10461 audit belong to isolated source only; not a run of integrated main.",
+    "No change to active runtime behavior or preexisting CSharp.",
+    "No new test cases, cold-scaffold ownership, observer wiring, diagnostic continuation or weakened gate.",
+    "Only T032-A1-V1 and its bounded main source/evidence integration are accepted; full T032-A1 prerequisite and SaveGame/client cutover remain open.",
+    "No second active recovery packet; isolated packet remains at its immutable GitHub source.",
+    "Saved SDK certificate-installation disclosure is unchanged; later opt-out was nonretroactive."
+  ],
+  "mainIntegrationReview": {
+    "reviewer": "Independent GPT-6 Astra XHigh",
+    "date": "2026-10-02",
+    "disposition": "PASS; coordinator accepted the bounded integration",
+    "actionableFindings": 0,
+    "integrationCommit": "10933f73d0c4b18199b8d87c0ad0cc637950a62a",
+    "proofSupplementCommit": "5504396e808160c8f341ccb01b908a766cef2e68",
+    "scope": "Source/evidence integration and saved restoration proof only; no new runtime execution or wider prerequisite acceptance"
+  }
+}

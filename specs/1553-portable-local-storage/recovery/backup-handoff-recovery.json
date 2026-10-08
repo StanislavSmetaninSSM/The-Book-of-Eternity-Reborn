@@ -1,0 +1,58 @@
+{
+  "remoteSha": "f3e26dd8aa1228680af02329f074f88b6b8cc7fe",
+  "initialCleanTree": "b4a92ea7e2ad04976e7c432b79e3040f0aab8f11",
+  "fullAppliedTree": "890af1267eb5fd1e92c024534dd200fbefa6d688",
+  "carrierExcludedSourceTree": "905de84790eb1f2848400a1f34f45165c48b89e5",
+  "trackedFiles": 3915,
+  "packetSha256": "a88e5df0ed4ae56fe851e5bba7aa8cb9b0962074cd12cd3c789693604c793e38",
+  "manifestSha256": "796201d9b127727fabeaad172242c3d8f871171f2b4b685e2fdfaafa16aedb9a",
+  "afterImages": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs",
+      "beforeBlob": "4cec0dc9a5ca6428c86e891135dae1ad163ed4b9",
+      "afterBlob": "de441eb73df3be9d4fdeb5281528a131739de35e",
+      "beforeSha256": "81f40dc827bc9d7759b7091b238d31a533fb7fdbb87b2b3152b53cfb43c716e1",
+      "afterSha256": "7711cd74f294c0eb0ef88539094a4e58b62b7abaae1cba3910850e6ad4fa31c5"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "beforeBlob": "70079f9db26fd60980f9a7868a2644436bbeb9d8",
+      "afterBlob": "4dc1ce302c9f0db8c167901f61c548513098d296",
+      "beforeSha256": "8cfec1a97f1ec180325b5b4cb7ebf3082300bf31f6e6d8421f128e368cbecf83",
+      "afterSha256": "764e3698d84bdeeffa372e0830b8b643373b14e5e963132fde88562c1ae5805f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "beforeBlob": "3a0189ff949ee8a6f0a09b894a87d4cbcc76e110",
+      "afterBlob": "17ddc4efbeaee534b32cce33bd56bcb2ec3a27e8",
+      "beforeSha256": "752cf5468cd818d241d190b4b22184f79ed211abab4a1b282a192b2d2f94aea9",
+      "afterSha256": "aedb827fecd686b904f549d4c22008176932896edb8f2c7b73c194476d272d50"
+    },
+    {
+      "path": "tests/categories.json",
+      "beforeBlob": "0a621b605dac7029df573211c7dd091615f870fe",
+      "afterBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+      "beforeSha256": "e90132627211590d9b78798133175d6468b59907801c83a9818500cd610bc045",
+      "afterSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08"
+    }
+  ],
+  "origin": "fresh GitHub-only shallow clone; no prior local object store",
+  "deliveryIdentitiesVerified": 17,
+  "evidenceArtifactsVerified": 46,
+  "xmlTrxParsed": 22,
+  "linuxPassingUnion": {
+    "methods": 42,
+    "distinctCases": 94,
+    "separateCohorts": [
+      43,
+      50,
+      19
+    ]
+  },
+  "nativePlanOnly": {
+    "methods": 14,
+    "cases": 30,
+    "descriptors": 7,
+    "testsExecuted": 0
+  }
+}

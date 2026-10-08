@@ -44,16 +44,14 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
-    public void BridgeHost_ConfirmsPromptLeavesInputAfterAppendEnter()
+    public void BridgeHost_DispatchRequiresFreshPasteAndSubmissionEvidence()
     {
-        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
-
-        Assert.Contains("WaitForPromptSubmittedAfterEnterAsync", source, StringComparison.Ordinal);
-        Assert.Contains("Prompt was visible and Enter was sent, but the CLI did not transition away from the pasted prompt marker", source, StringComparison.Ordinal);
-        Assert.True(
-            source.IndexOf("await WriteToPtyAsync(string.Empty, appendEnter: true);", StringComparison.Ordinal) <
-            source.IndexOf("WaitForPromptSubmittedAfterEnterAsync", StringComparison.Ordinal),
-            "The bridge must press Enter before waiting for the submitted/working screen.");
+        var source = ReadRepoFile("BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs");
+        Assert.Contains("PromptObservationVersion > afterVersion", source, StringComparison.Ordinal);
+        Assert.Contains("_terminalScreen != null ? CaptureTerminalView().Revision : _outputVersion", source, StringComparison.Ordinal);
+        Assert.Contains("PromptDeliveryDisposition.SubmissionObserved", source, StringComparison.Ordinal);
+        Assert.Contains("PromptDeliveryDisposition.UnknownOutcome", source, StringComparison.Ordinal);
+        Assert.True(source.IndexOf("operation.Phase = PromptDeliveryPhase.SubmitStarted", StringComparison.Ordinal) < source.IndexOf("profile.SubmitSequence, false, token", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -140,150 +138,86 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
-    public void BridgeHost_ClearsPendingCliInputBeforeDispatchPrompt()
+    public void BridgeHost_PreservesPendingCliDraftBeforeAutomaticDispatch()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
-
-        Assert.Contains("ClearPendingInputBeforePromptDispatchAsync", source, StringComparison.Ordinal);
-        Assert.Contains("\"\\u0015\"", source, StringComparison.Ordinal);
-        Assert.Contains("await ClearPendingInputBeforePromptDispatchAsync();", source, StringComparison.Ordinal);
-        Assert.True(
-            source.IndexOf("await ClearPendingInputBeforePromptDispatchAsync();", StringComparison.Ordinal) <
-            source.IndexOf("var payload = BuildBracketedPastePayload", StringComparison.Ordinal),
-            "Pending CLI drafts must be cleared before the bridge pastes a GM prompt.");
+        Assert.DoesNotContain("ClearPendingInputBeforePromptDispatchAsync", source, StringComparison.Ordinal);
+        Assert.Contains("return await DispatchPromptAsync(request);", source, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void BridgeHost_RefusesPromptDispatchWhileCodexCliIsWorking()
+    public void BridgeHost_DispatchUsesPositiveProfileAndEmptyComposer()
     {
-        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
-
-        Assert.Contains("ProbeCliPromptReadinessForDispatch", source, StringComparison.Ordinal);
-        Assert.Contains("GM CLI is not ready for a new prompt", source, StringComparison.Ordinal);
-        Assert.Contains("esc to interrupt", source, StringComparison.Ordinal);
-        Assert.True(
-            source.IndexOf("await ClearPendingInputBeforePromptDispatchAsync();", StringComparison.Ordinal) <
-            source.IndexOf("var readiness = ProbeCliPromptReadinessForDispatch();", StringComparison.Ordinal),
-            "The bridge should clear idle-line drafts before probing visible CLI readiness.");
-        Assert.True(
-            source.IndexOf("var readiness = ProbeCliPromptReadinessForDispatch();", StringComparison.Ordinal) <
-            source.IndexOf("var payload = BuildBracketedPastePayload", StringComparison.Ordinal),
-            "The bridge must verify that Codex is idle before pasting the GM prompt.");
+        var source = ReadRepoFile("BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs");
+        Assert.Contains("IsEmptyIdleView(operation.Snapshot.Profile, _promptScreenReader())", source, StringComparison.Ordinal);
+        Assert.True(source.IndexOf("IsEmptyIdleView(operation.Snapshot.Profile", StringComparison.Ordinal) < source.IndexOf("operation.Phase = PromptDeliveryPhase.PasteStarted", StringComparison.Ordinal));
     }
 
     [Fact]
-    public void BridgeHost_ManualReadyMustProbeCodexCliReadiness()
+    public void BridgeHost_ManualReadyCannotClearUncertainDelivery()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
-
-        var setReadyMethod = source.IndexOf("private BridgeResponse SetReady(bool ready)", StringComparison.Ordinal);
-        Assert.True(setReadyMethod >= 0, "Manual setReady should return a response so it can fail closed.");
-
-        var readinessProbe = source.IndexOf("var readiness = ProbeCliPromptReadinessForDispatch();", setReadyMethod, StringComparison.Ordinal);
-        var readyAssignment = source.IndexOf("_status.Ready = ready;", setReadyMethod, StringComparison.Ordinal);
-
-        Assert.True(readinessProbe > setReadyMethod, "Manual ready must probe the visible Codex CLI state before accepting Ready=true.");
-        Assert.True(readyAssignment > readinessProbe, "Manual ready must not set Ready=true before the Codex readiness probe.");
-        Assert.Contains("Cannot mark bridge ready", source, StringComparison.Ordinal);
+        var ready = source[source.IndexOf("private BridgeResponse SetReady", StringComparison.Ordinal)..source.IndexOf("private void EnsureShellAlive", StringComparison.Ordinal)];
+        Assert.Contains("_automaticInputPaused", ready, StringComparison.Ordinal);
+        Assert.Contains("IsEmptyIdleView", ready, StringComparison.Ordinal);
+        Assert.DoesNotContain("_automaticInputPaused = false", ready, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void BridgeHost_MarksNotReadyWhileDispatchedCodexPromptIsRunning()
+    public void BridgeHost_ActiveOperationCannotBeMarkedReady()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
-
-        var dispatchStart = source.IndexOf("case \"dispatchprompt\":", StringComparison.Ordinal);
-        var busyState = source.IndexOf("_status.State = \"Busy\";", dispatchStart, StringComparison.Ordinal);
-        var readyReset = source.IndexOf("_status.Ready = false;", dispatchStart, StringComparison.Ordinal);
-        var promptSubmitted = source.IndexOf("WaitForPromptSubmittedAfterEnterAsync", dispatchStart, StringComparison.Ordinal);
-
-        Assert.True(dispatchStart >= 0, "dispatchprompt handler must exist.");
-        Assert.True(readyReset > dispatchStart, "Dispatch must clear Ready before Codex starts processing.");
-        Assert.True(busyState > readyReset, "Ready must be cleared before the bridge enters Busy state.");
-        Assert.True(promptSubmitted > busyState, "Busy/not-ready state must be written before prompt submission.");
-        Assert.Contains("RefreshDispatchFailureRecoveryIfCliPromptReady", source, StringComparison.Ordinal);
-        Assert.Contains("AutoMarkReadyIfCliPromptReady", source, StringComparison.Ordinal);
+        Assert.Contains("_admittedPrompts != 0", source, StringComparison.Ordinal);
+        Assert.Contains("_admittedPrompts == 0", source, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void BridgeHost_RecoversDispatchFailedStatusWhenCodexPromptReturns()
+    public void BridgeHost_IdleObservationCannotClearUncertainDelivery()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
-
-        Assert.Contains("RefreshDispatchFailureRecoveryIfCliPromptReady", source, StringComparison.Ordinal);
-        Assert.Contains("string.Equals(_status.State, \"DispatchFailed\", StringComparison.Ordinal)", source, StringComparison.Ordinal);
-        Assert.Contains("_status.Ready = true;", source, StringComparison.Ordinal);
-        Assert.Contains("_status.State = \"Ready\";", source, StringComparison.Ordinal);
-        Assert.Contains("_status.LastError = null;", source, StringComparison.Ordinal);
-        Assert.True(
-            source.IndexOf("await RefreshBridgeAutomationStateAsync();", StringComparison.Ordinal) <
-            source.IndexOf("case \"dispatchprompt\":", StringComparison.Ordinal),
-            "Status and dispatch requests must recover a stale DispatchFailed state before rejecting the next prompt.");
+        var refresh = source[source.IndexOf("private Task RefreshBridgeAutomationStateAsync", StringComparison.Ordinal)..source.IndexOf("private CliPromptReadiness", StringComparison.Ordinal)];
+        Assert.Contains("!_automaticInputPaused", refresh, StringComparison.Ordinal);
+        Assert.DoesNotContain("RefreshDispatchFailureRecovery", refresh, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void BridgeHost_AutoAcceptsTrustPromptOnlyForTrustedSessionDirectories()
+    public void BridgeHost_DoesNotAutoAcceptTrustPrompt()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
-
-        Assert.Contains("AutoAcceptTrustedCodexWorkingDirectoryTrustPromptAsync", source, StringComparison.Ordinal);
-        Assert.Contains("IsWorkspaceTrustPrompt", source, StringComparison.Ordinal);
-        Assert.Contains("IsTrustedCodexWorkingDirectory", source, StringComparison.Ordinal);
-        Assert.Contains("var sessionRootPath = Path.GetFullPath(_sessionPath);", source, StringComparison.Ordinal);
-        Assert.Contains("game_state", source, StringComparison.Ordinal);
-        Assert.Contains("gm_context_pack", source, StringComparison.Ordinal);
-        Assert.Contains("_lastAutoTrustOutputVersion", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("AutoAcceptTrustedCodexWorkingDirectoryTrustPromptAsync", source, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void BridgeHost_AutoSkipsCodexUpdatePromptWithoutMarkingReady()
+    public void BridgeHost_DoesNotAutoAnswerUpdatePrompt()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
-
-        Assert.Contains("AutoSkipCodexUpdatePromptAsync", source, StringComparison.Ordinal);
-        Assert.Contains("IsCodexCliUpdatePrompt", source, StringComparison.Ordinal);
-        Assert.Contains("Update available!", source, StringComparison.Ordinal);
-        Assert.Contains("Skip until next version", source, StringComparison.Ordinal);
-        Assert.Contains("await WriteToPtyAsync(\"3\", appendEnter: true);", source, StringComparison.Ordinal);
-        Assert.Contains("Codex CLI is waiting at an update prompt.", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("AutoSkipCodexUpdatePromptAsync", source, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void BridgeHost_AutoMarksReadyOnlyAtIdleCodexPrompt()
+    public void BridgeHost_AutoReadyRequiresSupportedEmptyIdleView()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
-
-        Assert.Contains("AutoMarkReadyIfCliPromptReady", source, StringComparison.Ordinal);
-        Assert.Contains("IsCodexCliIdlePrompt", source, StringComparison.Ordinal);
-        Assert.Contains("OpenAI Codex", source, StringComparison.Ordinal);
-        Assert.Contains("Starting MCP server", source, StringComparison.Ordinal);
-        Assert.Contains("Codex CLI is not at an idle input prompt", source, StringComparison.Ordinal);
+        var refresh = source[source.IndexOf("private Task RefreshBridgeAutomationStateAsync", StringComparison.Ordinal)..source.IndexOf("private CliPromptReadiness", StringComparison.Ordinal)];
+        Assert.Contains("GmCliInputProfile.Snapshot()", refresh, StringComparison.Ordinal);
+        Assert.Contains("IsEmptyIdleView", refresh, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void BridgeHost_AutoClearsReadyWhenCodexCliIsWorking()
+    public void BridgeHost_ManualTakeoverPrecedesCompetingWrite()
     {
-        var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
-
-        Assert.Contains("AutoMarkNotReadyIfCliWorking", source, StringComparison.Ordinal);
-        Assert.Contains("Codex CLI is working; bridge is not ready for a new prompt.", source, StringComparison.Ordinal);
-
-        var refreshMethod = source.IndexOf("private async Task RefreshBridgeAutomationStateAsync()", StringComparison.Ordinal);
-        var notReadyCall = source.IndexOf("AutoMarkNotReadyIfCliWorking();", refreshMethod, StringComparison.Ordinal);
-        var readyCall = source.IndexOf("AutoMarkReadyIfCliPromptReady();", refreshMethod, StringComparison.Ordinal);
-
-        Assert.True(refreshMethod >= 0, "Bridge automation refresh must exist.");
-        Assert.True(notReadyCall > refreshMethod, "Bridge should clear stale ready state during refresh.");
-        Assert.True(readyCall > notReadyCall, "Bridge should clear working state before considering auto-ready.");
+        var source = ReadRepoFile("BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs");
+        var manual = source[source.IndexOf("private async Task WriteManualInputAsync", StringComparison.Ordinal)..];
+        Assert.True(manual.IndexOf("TakeManualInput(input)", StringComparison.Ordinal) < manual.IndexOf("await WriteExclusiveInputAsync", StringComparison.Ordinal));
     }
 
     [Fact]
-    public void BridgeHost_AutoReadyOnlyBlocksActiveDispatchNotEveryBusyState()
+    public void BridgeHost_StatusAndCancelReachRealPromptOperation()
     {
         var source = ReadRepoFile("BookOfEternityGMBridge/Program.cs");
-
-        Assert.Contains("string.Equals(_status.LastPromptDispatchState, \"Dispatching\", StringComparison.Ordinal)", source, StringComparison.Ordinal);
-        Assert.DoesNotContain("string.Equals(_status.State, \"Busy\", StringComparison.Ordinal) ||", source, StringComparison.Ordinal);
+        Assert.Contains("case \"promptstatus\":", source, StringComparison.Ordinal);
+        Assert.Contains("case \"cancelprompt\":", source, StringComparison.Ordinal);
+        Assert.Contains("return QueryPrompt(request, true);", source, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -427,21 +361,13 @@ public sealed class GmBridgeDiagnosticsContractTests
     }
 
     [Fact]
-    public void DaemonBridgeDispatch_RefreshesDiagnosticsBeforeNotReadyFallback()
+    public void DaemonBridgeDispatch_UsesTypedOperationWithoutReadinessBypass()
     {
         var source = ReadRepoFile("BookOfEternityClient/game_master_daemon.ps1");
-
-        Assert.Contains("function Refresh-GmBridgeReadiness", source, StringComparison.Ordinal);
-        Assert.Contains("diagnostics -SessionPath $GameSessionPath", source, StringComparison.Ordinal);
-        Assert.Contains("GM bridge readiness refresh via diagnostics", source, StringComparison.Ordinal);
-
-        var notReadyCheck = source.IndexOf("if (-not $status.ready -and -not $AllowNotReady)", StringComparison.Ordinal);
-        var refresh = source.IndexOf("Refresh-GmBridgeReadiness", notReadyCheck, StringComparison.Ordinal);
-        var fallback = source.IndexOf("return \"bridge-not-ready\"", notReadyCheck, StringComparison.Ordinal);
-
-        Assert.True(notReadyCheck >= 0, "Daemon must still guard against dispatch while bridge is not ready.");
-        Assert.True(refresh > notReadyCheck, "Daemon should ask the bridge to refresh diagnostics before waiting.");
-        Assert.True(fallback > refresh, "Daemon should only return bridge-not-ready after diagnostics refresh cannot prove readiness.");
+        Assert.Contains("dispatch-operation $json", source, StringComparison.Ordinal);
+        Assert.Contains("Test-GmPromptDeliveryIdentity", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("& $BridgeControlScript addText $Message", source, StringComparison.Ordinal);
+        Assert.DoesNotContain("& $BridgeControlScript sendEnter", source, StringComparison.Ordinal);
     }
 
     [Fact]

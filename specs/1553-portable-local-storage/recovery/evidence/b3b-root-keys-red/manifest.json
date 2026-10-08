@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "d7852fd51a6512804bdbeab390a781cfc9e44460",
+  "catalogBlobAfterPatch": "a9bc36eefff0fb0b184ea43b05d2737e373a78f6",
+  "kind": "newly executed b3b-root-keys-red; sanitized original artifacts",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "7dfdbe2e3e2ebffc77b305c29231959bb4cf6d9359e81495f3e702c0e34392ac",
+      "sanitizedSha256": "7dfdbe2e3e2ebffc77b305c29231959bb4cf6d9359e81495f3e702c0e34392ac"
+    },
+    {
+      "path": "portable-session-root-keys-unit-001.trx",
+      "originalSha256": "ad788a8c633c5090ed18983f984702af1bda62ad67c847804d82bbb8ac4a7809",
+      "sanitizedSha256": "ef0baec9ccf6c0b2ba82b552b269c2c2acceb6654101cbb1dafde491d24d661e"
+    }
+  ],
+  "sourceAppliedTree": "0924b962647a4d836906af79637dafdd73943c03",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-session-root-keys -Parallelism 1",
+  "platform": "Linux x64",
+  "result": "Six of six cases executed: five intended scaffold NotImplementedException failures and one passing Linux case-distinct member rollback/clear case. Complete selection and owned cleanup. No Windows-only category executed."
+}

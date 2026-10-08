@@ -1,0 +1,211 @@
+{
+  "Source": "41e34a28ed28f966d0ddf9f3f877d9b846374e6d",
+  "ProviderRequests": 0,
+  "GameTurns": 0,
+  "SourcePins": [
+    {
+      "Path": "BookOfEternityGMBridge/Program.cs",
+      "Bytes": 88390,
+      "SHA256": "fa28837ac9f746e8fef8468e9a060e9e37140b4d2ec7510b3517c7694493ad2d"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "Bytes": 4225,
+      "SHA256": "937a3dd992ae6f96d19c3e7a37da6d3d620b4e8ca3b2774961c5c94a3f335a49"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/SynchronizedTerminalScreen.cs",
+      "Bytes": 10626,
+      "SHA256": "107658ee8137eb6ce8cec4690da97f1852e554fc2ddf3d7aa392a72b97a686ca"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmSynchronizedTerminalPresentationTests.cs",
+      "Bytes": 12745,
+      "SHA256": "96563620411e7379a9cbf7d0fe351765f23d87f153711a0708f67ca0f0f0257c"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalBoundaryTests.cs",
+      "Bytes": 12449,
+      "SHA256": "a0719afb67d9eba1f5d39aa13ac171b873d4d491d1de7ff71675e8faebeb8df9"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+      "Bytes": 6443,
+      "SHA256": "939e8b2454d39081947b6eae2a56304e72ffdad28a02d5034f8bac55d097ebae"
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "Bytes": 30915,
+      "SHA256": "db2ae83a53e28f104a1a8166aec63e2a445cc01e2b4309de0b37c21685dfc926"
+    },
+    {
+      "Path": "tests/fixtures/LinuxTerminal/foreground.py",
+      "Bytes": 5372,
+      "SHA256": "655c94f24d786087beb8925ea20ce35737335e5c29830c3f9fe9f4da8c797766"
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1159842,
+      "SHA256": "88fb65a900c416baadbeee88eb10b3fecf6a0ded298ad31572d8ac0212916bd0"
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 372,
+      "SHA256": "0843fcc422def6b2c281fc469bd4ab738d14286f915237b3bba53eecc0932a2a"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmExternalDraftObservationTests.cs",
+      "Bytes": 7796,
+      "SHA256": "73b4b41e53939a15bc331f648c6a6f7b7ae1a1fb60a8a6dd423637ace9d29216"
+    },
+    {
+      "Path": "BookOfEternityClient/Configuration/GmCliInputProfile.cs",
+      "Bytes": 2895,
+      "SHA256": "a07fa2ff57b1b34e0fc4863b7857b259eb3f966777e115cf3b455a3314a48d01"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "Bytes": 20049,
+      "SHA256": "e65306028ac6d3fe27f5376e696fd1b83ff6b03a9fed33af03f6d8089c1841c2"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.MiniPresentation.cs",
+      "Bytes": 4058,
+      "SHA256": "7743047c5ca16fafa93cb8836595ba27973424ae1b38ccdf0f2c417ef1a7267b"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/DraftObservation.cs",
+      "Bytes": 7383,
+      "SHA256": "5c4a37e87d52d44b50e52a1a285af7021f93eeb98e3c1f68838090b9d0cf81e4"
+    },
+    {
+      "Path": "BookOfEternityGMBridge/BridgeHost.DraftObservation.cs",
+      "Bytes": 6828,
+      "SHA256": "a436aa7604515472c998de27dc8add480e00bdd127ef9528d469e2a067b4cdfb"
+    },
+    {
+      "Path": "BookOfEternityClient.Tests/GmConnectedMiniTransactionTests.cs",
+      "Bytes": 6143,
+      "SHA256": "989fc69b27f556184ee7b9c83b0be1c60e6c57cdbe455fb96b44739a325f6a0d"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmWorkers/NativeLineageOwner.cs",
+      "Bytes": 22709,
+      "SHA256": "718f1948f7a35630a8a8245862bf7179de67e37922c3a8171483fd6baa37ca57"
+    },
+    {
+      "Path": "BookOfEternityClient/Services/GmRuntime/ProductionMainLaunch.cs",
+      "Bytes": 3009,
+      "SHA256": "46b141084f32f109d9bf921a4f551c0ccd3bae4d557b4ec77d5f649bca07c34b"
+    }
+  ],
+  "Artifacts": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/connected-incomplete/Build-unit.log.gz",
+      "Bytes": 24684,
+      "SHA256": "e54b6c592c5e118762e5bc15c694bb91bed6e94af0bd20fcb9bde6121254064d",
+      "StoredSHA256": "6a598d52f509fb9fd867947b0d1c011c2a77e30bd14bc40f71f929060448ff60"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/connected-incomplete/dotnet-test.log.gz",
+      "Bytes": 1630039,
+      "SHA256": "2a9641aae5f3975a8656e60f4de29a987f570234b05740e145873130c1687f2e",
+      "StoredSHA256": "86892fb596b620ccae49b362a6cb1bac897708cd4272b8fb762409bd78c02773"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/connected-incomplete/summary.json.gz",
+      "Bytes": 1789,
+      "SHA256": "a26860170f62d7d2bc1fba0bf5631c7e45e1af06a1cbe2ca74265a7a717f4720",
+      "StoredSHA256": "8dbcdf486e6a987280c855b656270ddde7e56080d47c13167cce9088d30f3da2"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/connected-incomplete/gm-connected-mini-transaction-unit-001.trx.gz",
+      "Bytes": 17939,
+      "SHA256": "89376d0be388416a64e5f897cbd678b63cd34fb4c268737ee4f1d1da7b9c956a",
+      "StoredSHA256": "406728105191541ffef275b2e3f82e25f28ac063e502f5c15da91561fd10da67"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/evidence/opencode-connected/connected-incomplete/plan.json.gz",
+      "Bytes": 1735,
+      "SHA256": "0b86c4a1552c4d1910e3446ec75c7afdc2139777d7d4de7d27e69f8bef9267b0",
+      "StoredSHA256": "a95a9abb4b3e23e5f9633a36a483dfd84e04d3855d51df7898c5654c094c263d"
+    }
+  ],
+  "RunSummary": {
+    "Categories": [
+      "gm-connected-mini-transaction"
+    ],
+    "Reasons": [
+      {
+        "category": "gm-connected-mini-transaction",
+        "reason": "New connected original-operation witnesses and dropped terminal environment have no existing positive qualification; prior four readiness successes excluded from this baseline",
+        "contracts": [
+          "T043-OPENCODE-LIVE-BOUNDED"
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "41e34a28ed28f966d0ddf9f3f877d9b846374e6d",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "gm-connected-mini-transaction",
+        "Seconds": 8.3239405,
+        "BudgetMinutes": 4,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0733641,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0781423,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1111752,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 43.6034074,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 9,
+    "WallTime": "00:00:57.0231429",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 8,
+      "CompletedCases": 8,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 8,
+      "Executed": 8,
+      "Passed": 6,
+      "Failed": 2
+    },
+    "DuplicateTests": []
+  },
+  "MetadataCorrection": "Missing four executed41e34a28 source pins added from historic gitshow; raw evidence/results unchanged."
+}

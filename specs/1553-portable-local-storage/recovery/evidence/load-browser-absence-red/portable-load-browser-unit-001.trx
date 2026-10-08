@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="8f0791f2-b373-4098-875a-f63224c3ac1d" name="@95e438a3e5cb 2026-10-04 13:07:05" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-04T13:07:05.8801871-04:00" queuing="2026-10-04T13:07:05.8801872-04:00" start="2026-10-04T13:07:02.5391194-04:00" finish="2026-10-04T13:07:07.3424817-04:00" />
+  <TestSettings name="default" id="32894793-b92a-4f9c-834c-930d155f484a">
+    <Deployment runDeploymentRoot="_95e438a3e5cb_2026-10-04_13_07_05" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="f540aea2-88f6-4cdc-93fa-3ec52209d58d" testId="c455edab-e63c-98f4-487f-8db77fb0d5bb" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;newer-generation&quot;)" computerName="95e438a3e5cb" duration="00:00:00.1209230" startTime="2026-10-04T13:07:06.6889733-04:00" endTime="2026-10-04T13:07:06.6889735-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f540aea2-88f6-4cdc-93fa-3ec52209d58d" />
+    <UnitTestResult executionId="f3c6b22e-240a-4be1-b529-e7b3a6d1584a" testId="b1f77714-2bc9-ce56-323f-93e7844d846f" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;service-refresh&quot;)" computerName="95e438a3e5cb" duration="00:00:00.2393959" startTime="2026-10-04T13:07:05.4455108-04:00" endTime="2026-10-04T13:07:05.4455111-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f3c6b22e-240a-4be1-b529-e7b3a6d1584a" />
+    <UnitTestResult executionId="97a9ffd6-2a25-46ee-ae02-f510aef8e383" testId="e682d0cf-81ca-10e6-a29c-bb0e96a04112" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;committed&quot;)" computerName="95e438a3e5cb" duration="00:00:00.3682712" startTime="2026-10-04T13:07:07.2813532-04:00" endTime="2026-10-04T13:07:07.2813533-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="97a9ffd6-2a25-46ee-ae02-f510aef8e383" />
+    <UnitTestResult executionId="615f9cf1-a4da-4d33-8932-ee1b26a0f6fe" testId="e78ceb70-1f0c-5bb6-d4ce-20e89289df8a" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;missing-source&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0460772" startTime="2026-10-04T13:07:06.5694798-04:00" endTime="2026-10-04T13:07:06.5694800-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="615f9cf1-a4da-4d33-8932-ee1b26a0f6fe" />
+    <UnitTestResult executionId="e6b021a3-dbc5-4551-8c58-d4ac53e99055" testId="3fe33d81-7f11-9d4e-b8d6-924064bebe52" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;menu-refresh&quot;)" computerName="95e438a3e5cb" duration="00:00:00.1088646" startTime="2026-10-04T13:07:06.9124924-04:00" endTime="2026-10-04T13:07:06.9124927-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e6b021a3-dbc5-4551-8c58-d4ac53e99055" />
+    <UnitTestResult executionId="c5e99008-388c-40ad-91c0-1d002d117eb4" testId="ab1707e4-c524-c772-48fc-ce61266c78de" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;late-absent-generation&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0765573" startTime="2026-10-04T13:07:05.5369585-04:00" endTime="2026-10-04T13:07:05.5369586-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c5e99008-388c-40ad-91c0-1d002d117eb4">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.False() Failure
+Expected: False
+Actual:   True</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 143
+   at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 150
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="f7747b68-fb4a-476f-abb4-76ce98f947f0" testId="1429792d-b3bd-e92e-5fda-2082f6266129" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;late-pending&quot;)" computerName="95e438a3e5cb" duration="00:00:01.0360083" startTime="2026-10-04T13:07:05.2031422-04:00" endTime="2026-10-04T13:07:05.2031597-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f7747b68-fb4a-476f-abb4-76ce98f947f0" />
+    <UnitTestResult executionId="75afb652-5e1e-439a-a450-dac2b5c97e08" testId="7b995f5a-100c-cfe6-ee8e-f899dd425119" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;rollback&quot;)" computerName="95e438a3e5cb" duration="00:00:00.1128617" startTime="2026-10-04T13:07:06.8027144-04:00" endTime="2026-10-04T13:07:06.8027146-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="75afb652-5e1e-439a-a450-dac2b5c97e08" />
+    <UnitTestResult executionId="c89a2223-da5c-46bc-890a-a0c066a2202e" testId="744f0ed0-458d-4f92-920e-e58e2ae7e855" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;late-token&quot;)" computerName="95e438a3e5cb" duration="00:00:00.0600046" startTime="2026-10-04T13:07:06.5205901-04:00" endTime="2026-10-04T13:07:06.5205903-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c89a2223-da5c-46bc-890a-a0c066a2202e" />
+    <UnitTestResult executionId="0c1dc7bf-ae60-4036-ac19-9906661f15aa" testId="a2d4a8b9-3c6a-2588-2b23-22c14886f86a" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;absent-generation&quot;)" computerName="95e438a3e5cb" duration="00:00:00.8135094" startTime="2026-10-04T13:07:06.3505120-04:00" endTime="2026-10-04T13:07:06.3505122-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0c1dc7bf-ae60-4036-ac19-9906661f15aa">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "NotLoaded"
+Actual:   "Committed"
+           ↑ (pos 0)</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 121
+   at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario) in [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs:line 150
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6ed417b7-83cd-4d5a-a300-3a8ada87e606" testId="87ae5b29-39cf-a519-51fb-edeedb446181" testName="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;uncertain&quot;)" computerName="95e438a3e5cb" duration="00:00:00.1101636" startTime="2026-10-04T13:07:06.4598857-04:00" endTime="2026-10-04T13:07:06.4598859-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6ed417b7-83cd-4d5a-a300-3a8ada87e606" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;committed&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e682d0cf-81ca-10e6-a29c-bb0e96a04112">
+      <Execution id="97a9ffd6-2a25-46ee-ae02-f510aef8e383" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;uncertain&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="87ae5b29-39cf-a519-51fb-edeedb446181">
+      <Execution id="6ed417b7-83cd-4d5a-a300-3a8ada87e606" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;late-token&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="744f0ed0-458d-4f92-920e-e58e2ae7e855">
+      <Execution id="c89a2223-da5c-46bc-890a-a0c066a2202e" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;service-refresh&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b1f77714-2bc9-ce56-323f-93e7844d846f">
+      <Execution id="f3c6b22e-240a-4be1-b529-e7b3a6d1584a" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;rollback&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7b995f5a-100c-cfe6-ee8e-f899dd425119">
+      <Execution id="75afb652-5e1e-439a-a450-dac2b5c97e08" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;absent-generation&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a2d4a8b9-3c6a-2588-2b23-22c14886f86a">
+      <Execution id="0c1dc7bf-ae60-4036-ac19-9906661f15aa" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;late-absent-generation&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ab1707e4-c524-c772-48fc-ce61266c78de">
+      <Execution id="c5e99008-388c-40ad-91c0-1d002d117eb4" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;late-pending&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1429792d-b3bd-e92e-5fda-2082f6266129">
+      <Execution id="f7747b68-fb4a-476f-abb4-76ce98f947f0" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;menu-refresh&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3fe33d81-7f11-9d4e-b8d6-924064bebe52">
+      <Execution id="e6b021a3-dbc5-4551-8c58-d4ac53e99055" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;newer-generation&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c455edab-e63c-98f4-487f-8db77fb0d5bb">
+      <Execution id="f540aea2-88f6-4cdc-93fa-3ec52209d58d" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: &quot;missing-source&quot;)" storage="[checkout]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e78ceb70-1f0c-5bb6-d4ce-20e89289df8a">
+      <Execution id="615f9cf1-a4da-4d33-8932-ee1b26a0f6fe" />
+      <TestMethod codeBase="[checkout]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBrowserLoadTests" name="BrowserLoadRetainsTypedDecisionAndAdmission" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="c455edab-e63c-98f4-487f-8db77fb0d5bb" executionId="f540aea2-88f6-4cdc-93fa-3ec52209d58d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b1f77714-2bc9-ce56-323f-93e7844d846f" executionId="f3c6b22e-240a-4be1-b529-e7b3a6d1584a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e682d0cf-81ca-10e6-a29c-bb0e96a04112" executionId="97a9ffd6-2a25-46ee-ae02-f510aef8e383" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e78ceb70-1f0c-5bb6-d4ce-20e89289df8a" executionId="615f9cf1-a4da-4d33-8932-ee1b26a0f6fe" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3fe33d81-7f11-9d4e-b8d6-924064bebe52" executionId="e6b021a3-dbc5-4551-8c58-d4ac53e99055" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ab1707e4-c524-c772-48fc-ce61266c78de" executionId="c5e99008-388c-40ad-91c0-1d002d117eb4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1429792d-b3bd-e92e-5fda-2082f6266129" executionId="f7747b68-fb4a-476f-abb4-76ce98f947f0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7b995f5a-100c-cfe6-ee8e-f899dd425119" executionId="75afb652-5e1e-439a-a450-dac2b5c97e08" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="744f0ed0-458d-4f92-920e-e58e2ae7e855" executionId="c89a2223-da5c-46bc-890a-a0c066a2202e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a2d4a8b9-3c6a-2588-2b23-22c14886f86a" executionId="0c1dc7bf-ae60-4036-ac19-9906661f15aa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="87ae5b29-39cf-a519-51fb-edeedb446181" executionId="6ed417b7-83cd-4d5a-a300-3a8ada87e606" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="11" executed="11" passed="9" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.14]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.03]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.05]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.64]       Assert.False() Failure
+[xUnit.net 00:00:02.64]       Expected: False
+[xUnit.net 00:00:02.64]       Actual:   True
+[xUnit.net 00:00:02.64]       Stack Trace:
+[xUnit.net 00:00:02.64]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(143,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario)
+[xUnit.net 00:00:02.64]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(150,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario)
+[xUnit.net 00:00:02.64]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:03.46]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:03.46]                  ↓ (pos 0)
+[xUnit.net 00:00:03.46]       Expected: "NotLoaded"
+[xUnit.net 00:00:03.46]       Actual:   "Committed"
+[xUnit.net 00:00:03.46]                  ↑ (pos 0)
+[xUnit.net 00:00:03.46]       Stack Trace:
+[xUnit.net 00:00:03.46]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(121,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario)
+[xUnit.net 00:00:03.46]         [checkout]/BookOfEternityClient.Tests/PortableBrowserLoadTests.cs(150,0): at BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(String scenario)
+[xUnit.net 00:00:03.46]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.39]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T13:07:05.5328112-04:00">
+        <Text>[xUnit.net 00:00:02.64]     BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: "late-absent-generation") [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="95e438a3e5cb" outcome="Error" timestamp="2026-10-04T13:07:06.3513443-04:00">
+        <Text>[xUnit.net 00:00:03.46]     BookOfEternityClient.Tests.PortableBrowserLoadTests.BrowserLoadRetainsTypedDecisionAndAdmission(scenario: "absent-generation") [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

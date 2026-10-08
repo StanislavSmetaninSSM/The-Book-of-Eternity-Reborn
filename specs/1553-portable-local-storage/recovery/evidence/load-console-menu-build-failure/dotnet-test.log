@@ -1,0 +1,68 @@
+RequestedLane: Categories
+EffectiveLane: Categories
+Filter: <pending validation>
+TimeoutMinutes: 8
+StartedUtc: 2026-10-04T15:27:05.1768187Z
+Owned process 'Revision': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Revision: stdout =====
+ca86ad589900c2ac22b34ee836292d71ff4afcfe
+
+===== Revision: stderr =====
+
+===== Revision: exit 0 =====
+Owned process 'Changed-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Changed-paths: stdout =====
+
+===== Changed-paths: stderr =====
+
+===== Changed-paths: exit 0 =====
+Owned process 'New-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== New-paths: stdout =====
+
+===== New-paths: stderr =====
+
+===== New-paths: exit 0 =====
+Owned process 'Build-integration': FileName=dotnet; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=dotnet
+
+===== Build-integration: stdout =====
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+[checkout]/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]
+[checkout]/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]
+[checkout]/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]
+  BookOfEternityClient -> [checkout]/BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll
+  BookOfEternityClient.TestSupport -> [checkout]/BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll
+[checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs(298,83): error CS0535: 'GameEngineTurnLifecycleTests.LoadMenuConsoleInput' does not implement interface member 'IConsoleInputSource.AssertCompleted()' [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+
+Build FAILED.
+
+[checkout]/BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs(1095,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]
+[checkout]/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs(1637,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]
+[checkout]/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.Trade.cs(756,5): warning CS1587: XML comment is not placed on a valid language element [[checkout]/BookOfEternityClient/BookOfEternityClient.csproj]
+[checkout]/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.PortableLoad.cs(298,83): error CS0535: 'GameEngineTurnLifecycleTests.LoadMenuConsoleInput' does not implement interface member 'IConsoleInputSource.AssertCompleted()' [[checkout]/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]
+    3 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:01:15.65
+
+===== Build-integration: stderr =====
+
+===== Build-integration: exit 1 =====
+
+Category result
+  Categories: portable-load-console
+  Filter: <none>
+  Timeout: 8 minute(s)
+  Wall time: 00:01:15.9861269
+  Exit code: 1
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=0, cases=0; completed descriptors=0, cases=0, complete=False
+  Tests: total=0, executed=0, passed=0, failed=0
+  Duplicate test IDs: 0
+  Results: [checkout]/TestResults/test-categories/20261004-112705-167-2-78b4c22936924b7ba91ab8f9b66e8e62-categories
+  Log: [checkout]/TestResults/test-categories/20261004-112705-167-2-78b4c22936924b7ba91ab8f9b66e8e62-categories/dotnet-test.log
+  Failure: Build-integration failed with exit code 1.

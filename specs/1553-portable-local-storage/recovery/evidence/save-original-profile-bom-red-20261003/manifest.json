@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "issue": 1553,
+  "task": "T032-A2/A3",
+  "sourceCommit": "112c523731cb8305472645099c4b24277b56c022",
+  "status": "Fresh112c5237 exact original receipt/hash/identity passed before semantic JSON assertion rejected the original UTF8 BOM. Fixture-only correction uses normal BOM-aware text decoding; exact raw-byte/receipt checks remain. Profileconsumer3 unrun.",
+  "platform": "Windows x64",
+  "sdk": "10.0.401",
+  "runtime": "8.0.31",
+  "commandCategories": [
+    "portable-save-original-profile-windows",
+    "portable-save-profile-consumers"
+  ],
+  "discoveryOnly": false,
+  "wallTime": "00:00:53.3173348",
+  "exitCode": 1,
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 4,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [
+      "portable-save-profile-consumers-unit-002"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "timedOut": false,
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "artifacts": [
+    {
+      "path": "Build-unit.log",
+      "originalSha256": "72C5C477D6814EC49A68E12E24D4990484715CF8471BDB1980CF5A4EE414B3EF",
+      "sha256": "4646569D1B8EFE32331F9407E6F079F97ADA13E35A72968363548A54C9C73DD4"
+    },
+    {
+      "path": "plan.json",
+      "originalSha256": "9D5E79173F96443156F524F73BABA18FD3EAE1726F6F998838D2665293531405",
+      "sha256": "345113B6936F9AA5C16D1126944F9123201134CAADE520B1EBD3FF82DB639120"
+    },
+    {
+      "path": "portable-save-original-profile-windows-unit-001.trx",
+      "originalSha256": "08FE7E866E2478CD0EBF6C44E29B0A9DFFF76D901CDECC2AA7F279F37634C13A",
+      "sha256": "76BC9DD8F8469964657C82270A2E920D70DB37F35A78F249C138367CBB90BD9F"
+    },
+    {
+      "path": "summary.json",
+      "originalSha256": "183E6463060DFF4D9E963B4F263F0DA7722CC45EE99E185D1F33A4C2B0073867",
+      "sha256": "DED35FA32E9C7C34D049BE104D7B6FAF3E6790A2B686E5EB843A260DBDE1F200"
+    }
+  ]
+}

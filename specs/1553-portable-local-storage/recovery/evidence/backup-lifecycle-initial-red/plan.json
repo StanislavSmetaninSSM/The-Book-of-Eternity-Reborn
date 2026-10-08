@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "portable-backup-api"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e26fa21e80c1c8234c2dd8585bb29dd5ce592e32",
+    "WorkingTreeFingerprint": "B76F0239394748C34BB8F60EBCC07006F435654167DE63FBA39389C01591DB37",
+    "ChangedFiles": 1
+  },
+  "PreparationSeconds": 155.1367758,
+  "Descriptors": [
+    {
+      "Name": "portable-backup-api-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-api",
+      "Categories": [
+        "portable-backup-api"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

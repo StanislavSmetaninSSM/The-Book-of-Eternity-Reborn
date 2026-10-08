@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services.GmWorkers;
+using BookOfEternityClient.Services.GmRuntime;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Win32.SafeHandles;
 
@@ -16,6 +17,7 @@ internal static class Program
 {
     private static async Task<int> Main(string[] args)
     {
+        if (args.Length > 0 && args[0] == "--observe-draft") return await DraftObservation.RunAsync(args);
         if (!TryParseHostArgs(args, out var sessionPath, out var pipeName))
         {
             PrintUsage();
@@ -24,7 +26,10 @@ internal static class Program
 
         try
         {
-            using var host = new BridgeHost(sessionPath, pipeName);
+            var neutral = Array.IndexOf(args, "--neutralPackage");
+            var launch = neutral >= 0 && neutral+1<args.Length ? NeutralTerminalLaunch.Create(args[neutral+1],Path.GetTempPath()) : null;
+            using var host = new BridgeHost(launch?.Scratch ?? sessionPath, pipeName);
+            if(launch!=null)host.ConfigureNeutral(launch);
             return await host.RunAsync();
         }
         catch (Exception ex)
@@ -73,7 +78,7 @@ internal static class Program
     }
 }
 
-internal sealed class BridgeHost : IDisposable
+internal sealed partial class BridgeHost : IDisposable
 {
     private static readonly JsonSerializerOptions JsonOpts = new()
     {
@@ -102,18 +107,74 @@ internal sealed class BridgeHost : IDisposable
     private readonly CancellationTokenSource _cts = new();
     private readonly object _sync = new();
     private readonly SemaphoreSlim _ptyWriteLock = new(1, 1);
+    private readonly SemaphoreSlim _shellLifecycleLock = new(1, 1);
+    private NeutralTerminalLaunch? _neutralLaunch;
+    private SystemdControlledFixture? _systemdControlled;
+    private GmSessionRunCoordinator? _mainRun;
+    private GmSessionRunCoordinator? _lastMainRun;
+    private GameSettings? _productionConfig;
+    internal Func<MainOperationClose,Task>? BeforeMainCloseReply;
+    private BookOfEternityClient.Core.FileSystemManager? _neutralFiles;
+    internal Action<BookOfEternityClient.Core.MainRunIoStage>? ObserveMainMetadata;
+    internal Action<int>? ObserveMainHeldRoot;
+    internal Stream? NeutralOutput;
+    internal void ConfigureNeutral(NeutralTerminalLaunch launch) {
+        if(_sessionPath!=launch.Scratch)throw new InvalidOperationException("Neutral host requires its fresh admitted scratch."); _neutralLaunch=launch;
+        _neutralFiles=new(_clientRoot,Microsoft.Extensions.Logging.Abstractions.NullLogger<BookOfEternityClient.Core.FileSystemManager>.Instance);
+        File.WriteAllText(_configPath, JsonSerializer.Serialize(new { GmCliInputProfile = new { IdleMarker="NEUTRAL READY", PromptPrefix="> ", WorkingMarker="NEUTRAL WORKING", ObservationTimeoutMilliseconds=1500 } }));
+    }
+    internal void ConfigureSystemdControlled(NeutralTerminalLaunch launch,SystemdControlledFixture fixture) {
+        fixture.RequireAvailable();ConfigureNeutral(launch);_systemdControlled=fixture;
+    }
+    private InputLifetime? _inputLifetime;
+    private bool _inputClosed;
+    private bool _writeGateDisposed;
+    private static readonly TimeSpan InputDrainTimeout = TimeSpan.FromSeconds(5);
+
+    // Local stream/task identity only; never a persistent run, generation or ownership grant.
+    private sealed class InputLifetime(Stream input, CancellationTokenSource cancellation)
+    {
+        public string Id { get; } = Guid.NewGuid().ToString("N");
+        public bool ManualTakeover;
+        public bool MiniPasteAttempted;
+        public long ManualObservationAfter = -1;
+        public CancellationTokenSource? BootstrapCancellation;
+        public readonly List<Task> PromptTasks = new();
+        public Stream Input { get; } = input;
+        public CancellationTokenSource Cancellation { get; } = cancellation;
+        public CancellationToken Token { get; } = cancellation.Token;
+        public bool Revoked;
+        public int PendingWrites;
+        public TaskCompletionSource<bool>? WritesDrained;
+        public Task CancellationTask = Task.CompletedTask;
+        public Task? DrainTask;
+    }
+
+    private sealed class InputLifetimeUnavailableException() : InvalidOperationException("PTY input lifetime is no longer active.");
+    private sealed class PtyInputWriteException(Exception inner) : IOException(
+        "PTY input write failed after it started; some bytes may have been delivered.", inner);
     private readonly StringBuilder _recentOutput = new();
 
-    private ConPtySession? _pty;
+    private IOwnedTerminalSession? _pty;
+    private Task<TerminalStopEvidence>? _terminalStopTask;
+    private Task? _terminalDisposeTask;
+    private bool _terminalUncertain;
+    private TerminalScreen? _terminalScreen;
+    private TerminalSize _terminalLaunchSize = new(80,25);
+    private TerminalViewObservation CaptureTerminalView()
+    {
+        lock (_sync) { var view = _terminalScreen?.Capture() ?? new("", 0, "", false);
+            return view with { Reliable = view.Reliable && !_terminalUncertain && _pty?.AuthorityLost.IsCompleted != true && _pty?.RootExited.IsCompleted != true && _inputLifetime is { Revoked: false } input && input.Id == view.BindingId }; }
+    }
     private Stream? _ptyInput;
     private Task? _outputPumpTask;
+    private Task? _terminalAuthorityTask;
+    private Task? _terminalRootTask;
     private Task? _keyboardPumpTask;
     private Task? _resizePumpTask;
     private CancellationTokenSource? _shellLoopCts;
     private long _outputVersion;
     private TaskCompletionSource<bool> _outputChanged = CreateOutputSignal();
-    private long _lastAutoTrustOutputVersion = -1;
-    private long _lastAutoUpdateSkipOutputVersion = -1;
     private BridgeStatus _status;
 
     public BridgeHost(string sessionPath, string pipeName)
@@ -125,7 +186,7 @@ internal sealed class BridgeHost : IDisposable
         _controlDir = Path.Combine(_sessionPath, "game_state", "control");
         _statusPath = Path.Combine(_controlDir, "gm_bridge_status.json");
         _configPath = Path.Combine(_sessionPath, "config.json");
-        Directory.CreateDirectory(_controlDir);
+        // Canonical directories are created only by admitted client consumers.
 
         _status = new BridgeStatus
         {
@@ -142,43 +203,64 @@ internal sealed class BridgeHost : IDisposable
 
     public async Task<int> RunAsync()
     {
-        NativeMethods.SetConsoleCP(65001);
-        NativeMethods.SetConsoleOutputCP(65001);
+        if (OperatingSystem.IsWindows()) { NativeMethods.SetConsoleCP(65001); NativeMethods.SetConsoleOutputCP(65001); }
         Console.InputEncoding = Encoding.UTF8;
         Console.OutputEncoding = Encoding.UTF8;
-        EnableVirtualTerminalOutput();
+        if (OperatingSystem.IsWindows()) EnableVirtualTerminalOutput();
         UpdateConsoleTitle();
         PrintBanner();
 
-        await StartShellAsync();
+        try { await StartShellAsync(); }
+        catch(OwnedTerminalStartException ex) { ReportDiagnosticStartupException(ex); /* Original owner retained; keep diagnostics/control alive. */ }
+        catch(Exception ex) when(_mainRun?.RetainsAuthority==true) { ReportDiagnosticStartupException(ex); MarkTerminalUncertain(); /* Exact no-child debt also retains diagnostics, never release replay. */ }
         var serverTask = RunServerLoopAsync(_cts.Token);
+        var controlKeys=!Console.IsInputRedirected;
+        var previousControlKeys=controlKeys && Console.TreatControlCAsInput;
+        if(controlKeys)Console.TreatControlCAsInput=true;
 
         try
         {
             while (!_cts.IsCancellationRequested)
             {
+                IOwnedTerminalSession? exited;
+                InputLifetime? observedInput;
                 lock (_sync)
                 {
-                    if (_pty is { HasExited: true })
-                        HandlePtyExited_NoThrow();
+                    exited = _pty?.RootExited.IsCompletedSuccessfully == true ? _pty : null;
+                    observedInput = _inputLifetime;
                 }
+                if (exited != null)
+                    await HandlePtyExitedAsync(exited, observedInput);
 
                 await RefreshBridgeAutomationStateAsync();
                 await Task.Delay(250, _cts.Token);
             }
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (_cts.IsCancellationRequested)
         {
             // normal shutdown
         }
         finally
         {
             try { await serverTask; } catch { /* ignored */ }
-            await StopShellAsync();
+            try { await StopShellAsync(); } finally { if(controlKeys)Console.TreatControlCAsInput=previousControlKeys; }
             SafeDeleteStatusFile();
         }
 
         return 0;
+    }
+
+    private static void ReportDiagnosticStartupException(Exception error)
+    {
+        // Opt-in isolated bootstrap diagnosis only. Emitted after failure, without
+        // inserting I/O between the original A1 send and socket disposal.
+        if (Environment.GetEnvironmentVariable("BOE_BOOTSTRAP_DIAGNOSTIC") != "1") return;
+        try
+        {
+            var text = error.ToString();
+            Console.Error.WriteLine("BOE_BOOTSTRAP_EXCEPTION " + DateTimeOffset.UtcNow.ToString("O") + " truncated=" + (text.Length > 32768) + "\n" + text[..Math.Min(text.Length, 32768)]);
+        }
+        catch { /* Diagnostic sink failure cannot replace the original retained outcome. */ }
     }
 
     private void PrintBanner()
@@ -199,47 +281,102 @@ internal sealed class BridgeHost : IDisposable
 
     private async Task RunServerLoopAsync(CancellationToken cancellationToken)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        var peers = new List<Task>();
+        using var capacity = new SemaphoreSlim(48, 48);
+        using var shortCapacity = new SemaphoreSlim(16,16);
+        NamedPipeServerStream NewListener() => new(_pipeName,PipeDirection.InOut,NamedPipeServerStream.MaxAllowedServerInstances,PipeTransmissionMode.Byte,PipeOptions.Asynchronous);
+        var listener=NewListener();
+        try
         {
-            using var server = new NamedPipeServerStream(
-                _pipeName,
-                PipeDirection.InOut,
-                1,
-                PipeTransmissionMode.Byte,
-                PipeOptions.Asynchronous);
-
-            await server.WaitForConnectionAsync(cancellationToken);
-
-            try
+            while (!cancellationToken.IsCancellationRequested)
             {
-                var request = await ReadMessageAsync<BridgeRequest>(server, cancellationToken) ?? new BridgeRequest();
-                var response = await HandleRequestAsync(request);
-                await WriteMessageAsync(
-                    server,
-                    response,
-                    response.ShutdownAfterResponse ? CancellationToken.None : cancellationToken);
-                if (response.ShutdownAfterResponse)
-                    _cts.Cancel();
-            }
-            catch (OperationCanceledException)
-            {
-                break;
-            }
-            catch (Exception ex)
-            {
-                await WriteMessageAsync(server, new BridgeResponse
-                {
-                    Ok = false,
-                    Error = ex.Message,
-                    Status = SnapshotStatus()
-                }, cancellationToken);
+                await capacity.WaitAsync(cancellationToken);
+                var server=listener;
+                try { await server.WaitForConnectionAsync(cancellationToken); }
+                catch { server.Dispose(); capacity.Release(); throw; }
+                // Keep the Unix pipe listener alive before a completed handler can dispose its peer.
+                listener=NewListener();
+                peers.RemoveAll(t => t.IsCompleted);
+                peers.Add(ServePeerAsync(server));
             }
         }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { }
+        finally { listener.Dispose(); await Task.WhenAll(peers); }
+
+        async Task ServePeerAsync(NamedPipeServerStream server)
+        {
+            using (server)
+            using (var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+            {
+                // Bound incomplete reads independently of dispatch; every accepted peer is joined.
+                deadline.CancelAfter(TimeSpan.FromSeconds(3));
+                try
+                {
+                    var reader=new MainOperationReader(server);
+                    var request = await reader.ReadAsync<BridgeRequest>(deadline.Token,int.MaxValue) ?? new BridgeRequest();
+                    if(string.Equals(request.Command,"beginMainOperation",StringComparison.OrdinalIgnoreCase)) {
+                        if(reader.LastFrameBytes>65536)throw new InvalidDataException("Operation begin exceeds bound.");
+                        await ServeMainOperationAsync(server,reader,request,cancellationToken);return;
+                    }
+                    if(string.Equals(request.Command,"beginLoadSession",StringComparison.OrdinalIgnoreCase)) {
+                        if(reader.LastFrameBytes>65536)throw new InvalidDataException("Load begin exceeds bound.");
+                        await ServeLoadSessionAsync(server,reader,request,cancellationToken);return;
+                    }
+                    if(string.Equals(request.Command,"observeDraft",StringComparison.OrdinalIgnoreCase)) {
+                        if(reader.LastFrameBytes>65536)throw new InvalidDataException("Draft begin exceeds bound.");
+                        await ServeDraftObservationAsync(server,reader,request,cancellationToken);return;
+                    }
+                    if(string.Equals(request.Command,"mainOperationStatus",StringComparison.OrdinalIgnoreCase)) {
+                        if(reader.LastFrameBytes>65536)throw new InvalidDataException("Operation lookup exceeds bound.");
+                        var known=(_mainRun??_lastMainRun)?.QueryRemoteOperation(request.MainOperationClose??throw new InvalidDataException("Missing close identity.")) ?? new MainOperationReply(false,Error:"Unknown original operation.");
+                        await MainOperationReader.WriteAsync(server,known,deadline.Token);return;
+                    }
+                    await shortCapacity.WaitAsync(deadline.Token);
+                    deadline.CancelAfter(Timeout.InfiniteTimeSpan);
+                    try { await ProcessConnectedRequestAsync(server, async () =>
+                    {
+                        var response = await HandleRequestAsync(request);
+                        deadline.CancelAfter(TimeSpan.FromSeconds(3));
+                        await WriteMessageAsync(server, response, deadline.Token);
+                        if (response.ShutdownAfterResponse) _cts.Cancel();
+                    }, deadline.Token); } finally { shortCapacity.Release(); }
+                }
+                catch (Exception) { /* The accepted peer owns a bounded read/response; no second unbounded write. */ }
+                finally { capacity.Release(); }
+            }
+        }
+    }
+
+    private async Task<bool> ProcessConnectedRequestAsync(Stream server, Func<Task> processRequest, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await processRequest();
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            return false;
+        }
+        catch (Exception ex)
+        {
+            // The handler may throw before the normal response deadline is armed.
+            using var errorDeadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            errorDeadline.CancelAfter(TimeSpan.FromSeconds(3));
+            await WriteMessageAsync(server, new BridgeResponse
+            {
+                Ok = false,
+                Error = ex.Message,
+                Status = SnapshotStatus()
+            }, errorDeadline.Token);
+        }
+        return true;
     }
 
     private async Task<BridgeResponse> HandleRequestAsync(BridgeRequest request)
     {
         var command = (request.Command ?? string.Empty).Trim().ToLowerInvariant();
+        if(command=="cancelloadsession")return CancelLoadSession(request);
+        if((_neutralLaunch!=null || _productionConfig!=null) && command=="dispatchworkertask")return BridgeResponse.Failure("This main admission has no production worker execution capability.",SnapshotStatus());
         await RefreshBridgeAutomationStateAsync();
 
         switch (command)
@@ -256,114 +393,38 @@ internal sealed class BridgeHost : IDisposable
             case "dispatchworkertask":
                 return await DispatchWorkerTaskAsync(request);
 
+            case "resize":
+                IOwnedTerminalSession? resizedSession;
+                lock (_sync) resizedSession = _pty;
+                if (resizedSession == null) return BridgeResponse.Failure("No original terminal.", SnapshotStatus());
+                lock (_sync) _terminalScreen?.Resize(request.Columns ?? 80, request.Rows ?? 25);
+                await resizedSession.ResizeAsync(new(request.Columns ?? 80, request.Rows ?? 25), _cts.Token);
+                return BridgeResponse.Success(SnapshotStatus());
             case "addtext":
-                EnsureShellAlive();
-                await WriteToPtyAsync(request.Text ?? string.Empty, appendEnter: false);
+                await WriteManualInputAsync(CaptureInputLifetime(), request.Text ?? string.Empty, _cts.Token);
                 return BridgeResponse.Success(SnapshotStatus());
-
             case "sendenter":
-                EnsureShellAlive();
-                await WriteToPtyAsync(string.Empty, appendEnter: true);
+                await WriteManualInputAsync(CaptureInputLifetime(), LoadBridgeConfig().GmCliInputProfile.SubmitSequence, _cts.Token);
                 return BridgeResponse.Success(SnapshotStatus());
-
             case "dispatchprompt":
-                EnsureShellAlive();
-                var dispatchStartedAt = DateTimeOffset.UtcNow;
-                var dispatchStopwatch = Stopwatch.StartNew();
-                lock (_sync)
-                {
-                    if (!_status.Ready)
-                        return BridgeResponse.Failure("Bridge is not marked ready.", SnapshotStatus());
-
-                    _status.Ready = false;
-                    _status.State = "Busy";
-                    _status.LastPromptDispatchState = "Dispatching";
-                    _status.LastPromptDispatchStartedAtUtc = dispatchStartedAt.ToString("O");
-                    _status.LastPromptDispatchCompletedAtUtc = null;
-                    _status.LastPromptDispatchElapsedMs = null;
-                    WriteStatusFile();
-                }
-
-                try
-                {
-                    var visibilitySettings = LoadBridgeConfig();
-                    await ClearPendingInputBeforePromptDispatchAsync();
-                    var readiness = ProbeCliPromptReadinessForDispatch();
-                    if (!readiness.IsReady)
-                    {
-                        return FailWithLastError(
-                            "GM CLI is not ready for a new prompt: " + readiness.Reason +
-                            " Dispatch was blocked so the player turn is not pasted into an active or confirmation screen.");
-                    }
-
-                    long outputVersionBefore;
-                    int outputLengthBefore;
-                    lock (_sync)
-                    {
-                        outputVersionBefore = _outputVersion;
-                        outputLengthBefore = _recentOutput.Length;
-                    }
-
-                    var payload = BuildBracketedPastePayload(request.Text ?? string.Empty);
-                    await WriteToPtyAsync(payload, appendEnter: false);
-                    if (request.AppendEnter)
-                    {
-                        var visible = await WaitForPromptVisibleAsync(
-                            request.Text ?? string.Empty,
-                            outputVersionBefore,
-                            outputLengthBefore,
-                            visibilitySettings,
-                            TimeSpan.FromSeconds(visibilitySettings.GmBridgePromptVisibilityTimeoutSeconds),
-                            _cts.Token);
-                        if (!visible)
-                        {
-                            return FailWithLastError(
-                                "Prompt text was pasted into the PTY, but it never became visible in the CLI output. Enter was not sent to avoid switching the CLI into a wrong mode.");
-                        }
-
-                        await WaitForOutputQuietPeriodAsync(TimeSpan.FromMilliseconds(250), TimeSpan.FromSeconds(2), _cts.Token);
-                        long outputVersionBeforeEnter;
-                        lock (_sync)
-                            outputVersionBeforeEnter = _outputVersion;
-
-                        await WriteToPtyAsync(string.Empty, appendEnter: true);
-                        var submitted = await WaitForPromptSubmittedAfterEnterAsync(
-                            request.Text ?? string.Empty,
-                            outputVersionBeforeEnter,
-                            visibilitySettings,
-                            TimeSpan.FromSeconds(5),
-                            _cts.Token);
-                        if (!submitted)
-                        {
-                            return FailWithLastError(
-                                "Prompt was visible and Enter was sent, but the CLI did not transition away from the pasted prompt marker. Dispatch was not confirmed; use diagnostics/sendEnter or restart the shell before retrying.");
-                        }
-                    }
-                }
-                finally
-                {
-                    dispatchStopwatch.Stop();
-                    lock (_sync)
-                    {
-                        _status.LastPromptDispatchCompletedAtUtc = DateTimeOffset.UtcNow.ToString("O");
-                        _status.LastPromptDispatchElapsedMs = dispatchStopwatch.ElapsedMilliseconds;
-                        _status.LastPromptDispatchState = string.Equals(_status.State, "DispatchFailed", StringComparison.Ordinal)
-                            ? "Failed"
-                            : "Completed";
-                        if (!string.Equals(_status.State, "DispatchFailed", StringComparison.Ordinal))
-                            _status.State = _status.Ready ? "Ready" : "OperatorNotReady";
-                        WriteStatusFile();
-                    }
-                }
-
-                return BridgeResponse.Success(SnapshotStatus());
+                return await DispatchPromptAsync(request);
+            case "promptstatus":
+                return QueryPrompt(request, false);
+            case "cancelprompt":
+                return QueryPrompt(request, true);
 
             case "restartshell":
             case "restartcli":
                 await StartShellAsync();
                 return BridgeResponse.Success(SnapshotStatus());
 
+            case "stopterminal":
+                if(_neutralLaunch==null)return BridgeResponse.Failure("Scoped terminal harness control requires fixed neutral admission.",SnapshotStatus());
+                await StopShellAsync();return BridgeResponse.Success(SnapshotStatus());
             case "shutdown":
+                // Keep retained original peers alive through durable Stopping and
+                // actual local closing. Cancel transport only after stop settlement.
+                await StopExpectedMainAsync(request);
                 lock (_sync)
                 {
                     _status.Ready = false;
@@ -381,274 +442,418 @@ internal sealed class BridgeHost : IDisposable
 
     private async Task StartShellAsync()
     {
-        await StopShellAsync();
-
-        var config = LoadBridgeConfig();
-        var shellExe = ResolveShellExecutable();
-        var shellArgs = BuildShellArguments(shellExe);
-        var workingDirectory = ResolveGmBridgeShellWorkingDirectory(config.GmBridgeShellWorkingDirectory);
-        var (width, height) = GetConsoleSize();
-        var pty = ConPtySession.Start(shellExe, shellArgs, workingDirectory, width, height);
-        var outputWriter = Console.OpenStandardOutput();
-
-        _pty = pty;
-        _ptyInput = pty.InputWriter;
-        _shellLoopCts = new CancellationTokenSource();
-        _outputPumpTask = Task.Run(() => PumpOutputAsync(pty.OutputReader, outputWriter, _shellLoopCts.Token), _shellLoopCts.Token);
-        _keyboardPumpTask = Task.Run(() => PumpKeyboardAsync(_shellLoopCts.Token), _shellLoopCts.Token);
-        _resizePumpTask = Task.Run(() => PumpResizeAsync(_shellLoopCts.Token), _shellLoopCts.Token);
-
-        lock (_sync)
+        await _shellLifecycleLock.WaitAsync(_cts.Token);
+        try
         {
-            _status.ShellPid = pty.ProcessId;
-            _status.CliProcessId = null;
-            _status.CliLaunchCommand = config.GmCliLaunchCommand;
-            _status.ShellWorkingDirectory = workingDirectory;
-            _status.WorkerStatuses = GmWorkerBridgePool.BuildInitialStatuses(config.GmWorkerBridgeProfiles).ToList();
-            _status.Ready = false;
-            _status.State = "OperatorNotReady";
-            _status.LastError = null;
-            WriteStatusFile();
+            lock(_sync)if(_loadSession!=null)throw new InvalidOperationException("An original Load operation retains this terminal lifecycle.");
+            await StartShellCoreAsync();
         }
+        finally { _shellLifecycleLock.Release(); }
+    }
 
-        Console.WriteLine();
-        Console.WriteLine($"[Bridge] Hosted PTY shell started (pid={pty.ProcessId}).");
-        Console.WriteLine($"[Bridge] Working directory: {workingDirectory}");
-        Console.WriteLine($"[Bridge] Shell command: {shellExe} {shellArgs}");
-        if (string.IsNullOrWhiteSpace(config.GmCliLaunchCommand))
-            Console.WriteLine("[Bridge] GmCliLaunchCommand is empty. Type your CLI launch command manually, then mark bridge ready.");
-        else
-        {
-            Console.WriteLine($"[Bridge] Launch command: {config.GmCliLaunchCommand}");
-            var bootstrap = BuildShellBootstrap(config.GmCliLaunchCommand);
-            await Task.Delay(250);
-            await WriteToPtyAsync(bootstrap, appendEnter: true);
+    // Only the original retained Load connection may call this with a generation.
+    private async Task StartShellCoreAsync(string? expectedGeneration=null)
+    {
+            lock (_sync)
+                ObjectDisposedException.ThrowIf(_inputClosed, this);
+            await StopShellCoreAsync();
+
+            if (_neutralLaunch != null) {
+                _systemdControlled?.RequireAvailable(); // before acquiring a new original guard/Prepared
+                _terminalLaunchSize=new(80,25); // Same fixed size consumed by the original neutral factory.
+                IOwnedTerminalSession neutralSession;
+                try {
+                    _mainRun=await GmSessionRunCoordinator.OpenNeutralAsync(_neutralFiles!,ObserveMainMetadata);
+                    neutralSession=_systemdControlled==null
+                        ? await _mainRun.LaunchNeutralAsync(_neutralLaunch,_cts.Token,ObserveMainHeldRoot)
+                        : await _mainRun.LaunchSystemdControlledAsync(_neutralLaunch,_systemdControlled,_cts.Token,ObserveMainHeldRoot);
+                    _neutralLaunch=_neutralLaunch.NextEpoch();
+                }
+                catch(OwnedTerminalStartException ex) { AttachOwnedTerminalCore(ex.Owner,NeutralOutput??Console.OpenStandardOutput(),false); MarkTerminalUncertain(); throw; }
+                catch { if(_mainRun?.RetainsAuthority==true)MarkTerminalUncertain();else _mainRun=null;throw; }
+                OpenOriginalStatusPublication();
+                AttachOwnedTerminal(neutralSession, NeutralOutput??Console.OpenStandardOutput());
+                await _firstStatus.Task;
+                return;
+            }
+            if (!OperatingSystem.IsWindows()) {
+                var settings=LoadBridgeConfig();
+                var (columns,rows)=GetConsoleSize();
+                var configuration=ProductionMainConfiguration.Resolve(settings,_sessionPath,new(columns,rows));
+                configuration=ConfigureDraftObservation(configuration,settings.GmCliInputProfile.Snapshot());
+                _terminalLaunchSize=configuration.Size;
+                _productionConfig=settings; _productionConfig.GmCliInputProfile=settings.GmCliInputProfile.Snapshot();
+                _neutralFiles=new BookOfEternityClient.Core.FileSystemManager(_clientRoot,Microsoft.Extensions.Logging.Abstractions.NullLogger<BookOfEternityClient.Core.FileSystemManager>.Instance);
+                IOwnedTerminalSession session;
+                try {
+                    _mainRun=await GmSessionRunCoordinator.OpenProductionAsync(_neutralFiles,ObserveMainMetadata);
+                    session=expectedGeneration==null
+                        ? await _mainRun.LaunchProductionAsync(configuration,_cts.Token,ObserveMainHeldRoot)
+                        : await _mainRun.LaunchProductionBoundAsync(configuration,expectedGeneration,_cts.Token,ObserveMainHeldRoot);
+                }
+                catch(OwnedTerminalStartException ex) { AttachOwnedTerminalCore(ex.Owner,Console.OpenStandardOutput(),false);MarkTerminalUncertain();throw; }
+                catch { if(_mainRun?.RetainsAuthority==true)MarkTerminalUncertain();else _mainRun=null;throw; }
+                lock(_sync) { _status.CliLaunchCommand=configuration.Command; _status.ShellWorkingDirectory=configuration.Cwd; _status.WorkerStatuses=GmWorkerBridgePool.BuildInitialStatuses(settings.GmWorkerBridgeProfiles).ToList(); }
+                OpenOriginalStatusPublication(); AttachOwnedTerminal(session,Console.OpenStandardOutput());
+                await _firstStatus.Task; return;
+            }
+            var config = LoadBridgeConfig();
+            var shellExe = ResolveShellExecutable();
+            var shellArgs = BuildShellArguments(shellExe);
+            var workingDirectory = ResolveGmBridgeShellWorkingDirectory(config.GmBridgeShellWorkingDirectory);
+            var (width, height) = GetConsoleSize();
+            _terminalLaunchSize=new(width,height);
+            using var legacyAdmission=expectedGeneration==null?null:_neutralFiles!.BeginMainAdmission();
+            if(legacyAdmission!=null) {
+                await legacyAdmission.AcquireAsync(quiescentOnly:true);
+                await using var lease=await _neutralFiles!.AcquireCanonicalWriteLeaseAsync();
+                if(_neutralFiles.ReadExistingSessionGeneration(lease)!=expectedGeneration)throw new InvalidDataException("Loaded generation changed before legacy terminal creation.");
+            }
+            ConPtySession pty;
+            try { pty=ConPtySession.Start(shellExe,shellArgs,workingDirectory,width,height); }
+            catch(OwnedTerminalStartException ex) { AttachOwnedTerminalCore(ex.Owner,Console.OpenStandardOutput(),false); MarkTerminalUncertain(); throw; }
+            var outputWriter = Console.OpenStandardOutput();
+
+            var input = AttachOwnedTerminal(pty, outputWriter);
+
+            lock (_sync)
+            {
+                _status.ShellPid = pty.ProcessId;
+                _status.CliProcessId = null;
+                _status.CliLaunchCommand = config.GmCliLaunchCommand;
+                _status.ShellWorkingDirectory = workingDirectory;
+                _status.WorkerStatuses = GmWorkerBridgePool.BuildInitialStatuses(config.GmWorkerBridgeProfiles).ToList();
+                _status.Ready = false;
+                _status.State = "OperatorNotReady";
+                _status.LastError = null;
+                WriteStatusFile();
+            }
+
+            Console.WriteLine();
+            Console.WriteLine($"[Bridge] Hosted PTY shell started (pid={pty.ProcessId}).");
+            Console.WriteLine($"[Bridge] Working directory: {workingDirectory}");
+            Console.WriteLine($"[Bridge] Shell command: {shellExe} {shellArgs}");
+            if (string.IsNullOrWhiteSpace(config.GmCliLaunchCommand))
+                Console.WriteLine("[Bridge] GmCliLaunchCommand is empty. Type your CLI launch command manually, then mark bridge ready.");
+            else
+            {
+                Console.WriteLine($"[Bridge] Launch command: {config.GmCliLaunchCommand}");
+                var bootstrap = BuildShellBootstrap(config.GmCliLaunchCommand);
+                await Task.Delay(250, input.Token);
+                await WriteShellBootstrapAsync(input, bootstrap, input.Token);
+            }
+
+    }
+
+    // All admitted sessions consume the original writer/lifetime/pumps, never a second dispatcher.
+    private InputLifetime AttachOwnedTerminal(IOwnedTerminalSession session, Stream output)=>AttachOwnedTerminalCore(session,output,true);
+    private InputLifetime AttachOwnedTerminalCore(IOwnedTerminalSession session, Stream output,bool admitInput)
+    {
+        lock (_sync) { if (_pty != null || _terminalUncertain) throw new InvalidOperationException("Original terminal owner is retained."); _pty = session; }
+        var shellLoopCts = new CancellationTokenSource();
+        var input = BeginInputLifetime(session.InputWriter, shellLoopCts);
+        if(!admitInput)MarkTerminalUncertain(); // revoke before any keyboard/resize task can run
+        lock (_sync) { _terminalScreen = new(input.Id,LoadBridgeConfig().GmCliInputProfile.TerminalPresentation,_terminalLaunchSize.Columns,_terminalLaunchSize.Rows); _promptScreenReader = () => { var view=CaptureTerminalView(); return view.Reliable ? view.Text : ""; }; }
+        // Output has its own lifetime: revoking input must not discard final terminal bytes.
+        _outputPumpTask = Task.Run(async () => { try { await PumpOutputAsync(session.OutputReader, output, CancellationToken.None); } catch { MarkTerminalUncertain(); throw; } });
+        _terminalAuthorityTask = ObserveTerminalAuthorityAsync(session,input);
+        _terminalRootTask = ObserveTerminalRootAsync(session,input);
+        _keyboardPumpTask = Task.Run(() => PumpKeyboardAsync(input, ReadConsoleKeyAsync, shellLoopCts.Token));
+        _resizePumpTask = Task.Run(() => PumpResizeAsync(shellLoopCts.Token));
+        _mainRun?.BindActualBridgeRetirement(session,[_outputPumpTask,_keyboardPumpTask,_resizePumpTask,_terminalRootTask,_terminalAuthorityTask,_statusSettlement.Task],()=>input.Revoked?input.DrainTask:null);
+        lock (_sync) { _status.ShellPid = session.Identity.RootPid; _status.Backend = session.Identity.Backend; _status.TerminalRunId=session.Identity.RunId; _status.TerminalGuarantee=session.Identity.Guarantee; _status.State = _terminalUncertain?"TerminalUncertain":"OperatorNotReady"; WriteStatusFile(); }
+        return input;
+    }
+
+    private async Task ObserveTerminalAuthorityAsync(IOwnedTerminalSession session, InputLifetime input)
+    {
+        try { await session.AuthorityLost.WaitAsync(input.Token); }
+        catch(OperationCanceledException) when(input.Token.IsCancellationRequested) { return; }
+        lock(_sync) { if(!ReferenceEquals(_pty,session)||!ReferenceEquals(_inputLifetime,input))return; MarkTerminalUncertain(); }
+        RevokeInputLifetime(input);
+    }
+
+    private async Task ObserveTerminalRootAsync(IOwnedTerminalSession session, InputLifetime input)
+    {
+        try { await session.RootExited.WaitAsync(input.Token); }
+        catch(OperationCanceledException) when(input.Token.IsCancellationRequested) { return; }
+        catch { lock(_sync) { if(ReferenceEquals(_pty,session) && ReferenceEquals(_inputLifetime,input))MarkTerminalUncertain(); } }
+        lock(_sync) {
+            if(!ReferenceEquals(_pty,session)||!ReferenceEquals(_inputLifetime,input))return;
+            _status.Ready=false;
         }
+        // Exit withdraws only this original input binding; it is never scoped stop proof.
+        RevokeInputLifetime(input);
+    }
 
-        await Task.CompletedTask;
+    private async Task StopExpectedMainAsync(BridgeRequest request)
+    {
+        await _shellLifecycleLock.WaitAsync();
+        try {
+            // Validate after waiting for the lifecycle gate. Metadata is only an
+            // expectation; this exact live original coordinator owns the stop.
+            var original=_mainRun??_lastMainRun;
+            if(original!=null || request.ExpectedMainIdentity!=null) {
+                if(original==null || request.ExpectedMainIdentity==null || request.RootKey!=original.Identity.RootKey ||
+                    !GmSessionRunValidation.IdentityMatches(original.Identity,request.ExpectedMainIdentity))
+                    throw new InvalidDataException("Original main stop identity does not match this terminal owner.");
+                if(_mainRun!=null)original.ValidateStopExpectation(request.ExpectedMainIdentity);
+                else if(original.Record?.Disposition!=GmSessionRunDisposition.Stopped)
+                    throw new InvalidDataException("Original main stop remains unconfirmed.");
+            }
+            await StopShellCoreAsync();
+        } finally {_shellLifecycleLock.Release();}
     }
 
     private async Task StopShellAsync()
     {
-        ConPtySession? pty;
-        Task? outputPump;
-        Task? keyboardPump;
-        Task? resizePump;
-        CancellationTokenSource? shellLoopCts;
+        await _shellLifecycleLock.WaitAsync();
+        try { await StopShellCoreAsync(); }
+        finally { _shellLifecycleLock.Release(); }
+    }
 
+    private async Task StopShellCoreAsync()
+    {
+        InputLifetime? input;
+        IOwnedTerminalSession? pty;
         lock (_sync)
         {
+            input = _inputLifetime;
             pty = _pty;
-            outputPump = _outputPumpTask;
-            keyboardPump = _keyboardPumpTask;
-            resizePump = _resizePumpTask;
-            shellLoopCts = _shellLoopCts;
-            _pty = null;
-            _ptyInput = null;
-            _outputPumpTask = null;
-            _keyboardPumpTask = null;
-            _resizePumpTask = null;
-            _shellLoopCts = null;
         }
-
-        if (pty == null)
+        var statusDrain = SealOriginalStatusPublicationAsync();
+        if (input != null)
+            RevokeInputLifetime(input);
+        Exception? metadataFailure=null;
+        if(_mainRun!=null)try { await _mainRun.BeginStopAsync(); } catch(Exception ex){metadataFailure=ex;}
+        try { await statusDrain.WaitAsync(InputDrainTimeout); }
+        catch(Exception ex) { metadataFailure ??= ex; _mainRun?.NotifyUncertain(); }
+        if (pty != null)
+        {
+            try
+            {
+                _terminalStopTask ??= ObserveScopedTerminalStopAsync(pty);
+                var proof = await _terminalStopTask.WaitAsync(InputDrainTimeout);
+                lock(_sync)_status.TerminalStop=proof;
+                if (_terminalUncertain || proof.Identity != pty.Identity ||
+                    proof.State != GmWorkerStopState.StoppedWithinScope || !proof.CleanupComplete || proof.AuthorityRetained)
+                    throw new InvalidOperationException("Original terminal scoped stop is unconfirmed.");
+            }
+            catch (Exception ex)
+            {
+                MarkTerminalUncertain();
+                throw new TimeoutException("Original terminal owner is retained as Uncertain.", ex);
+            }
+        }
+        if (input == null)
+        {
+            if(metadataFailure!=null)throw metadataFailure;
+            if(_mainRun!=null && pty==null)throw new InvalidOperationException("Original main metadata owner remains unresolved without terminal retirement evidence.");
+            if(pty!=null) { await Task.WhenAll(_outputPumpTask??Task.CompletedTask,_resizePumpTask??Task.CompletedTask).WaitAsync(InputDrainTimeout); await RetireTerminalHandlesAsync(pty); }
             return;
-
-        try
-        {
-            shellLoopCts?.Cancel();
-        }
-        catch
-        {
-            // ignored
         }
 
-        try
+        Task drain;
+        lock (_sync)
         {
-            pty.Dispose();
+            drain = input.DrainTask ??= ObserveManagedDrainAsync(
+                input.WritesDrained?.Task ?? Task.CompletedTask,
+                _keyboardPumpTask ?? Task.CompletedTask,
+                _terminalAuthorityTask ?? Task.CompletedTask,
+                _terminalRootTask ?? Task.CompletedTask,
+                _outputPumpTask ?? Task.CompletedTask,
+                _resizePumpTask ?? Task.CompletedTask,
+                input.CancellationTask,
+                Task.WhenAll(input.PromptTasks));
         }
-        catch
+        try { await drain.WaitAsync(InputDrainTimeout); }
+        catch (TimeoutException)
         {
-            // ignored
+            if (pty != null) MarkTerminalUncertain();
+            lock (_sync)
+            {
+                if (ReferenceEquals(_inputLifetime, input))
+                {
+                    _status.Ready = false;
+                    _status.LastInputWriteError ??= "PTY input lifetime cleanup is incomplete; replacement remains blocked.";
+                    TryWriteInputStatus();
+                }
+            }
+            throw; // Keep actual tasks, binding and CTS for the next stop attempt.
         }
+        if (pty != null) await RetireTerminalHandlesAsync(pty);
+        if(metadataFailure!=null)throw metadataFailure;
+        lock (_sync)
+        {
+            if (ReferenceEquals(_inputLifetime, input))
+            {
+                _inputLifetime = null;
+                _shellLoopCts = null;
+                _keyboardPumpTask = null;
+                _terminalAuthorityTask = null;
+                _terminalRootTask = null;
+                _outputPumpTask = null;
+                _resizePumpTask = null;
+            }
+        }
+        input.Cancellation.Dispose();
+    }
 
-        try
-        {
-            if (outputPump != null)
-                await outputPump;
-        }
-        catch
-        {
-            // ignored
-        }
+    private static async Task<TerminalStopEvidence> ObserveScopedTerminalStopAsync(IOwnedTerminalSession session) =>
+        await session.StopAndObserveAsync(CancellationToken.None);
 
-        try
+    private void MarkTerminalUncertain()
+    {
+        lock (_sync)
         {
-            if (keyboardPump != null)
-                await keyboardPump;
+            _mainRun?.NotifyUncertain();
+            if(_inputLifetime is { } input)RevokeInputLifetime(input);
+            _terminalUncertain = true;
+            _status.TerminalUncertain=true;
+            _status.Ready = false;
+            _status.State = "TerminalUncertain";
+            _status.LastError = "Original terminal ownership or I/O settlement is uncertain; replacement remains blocked.";
+            TryWriteInputStatus();
         }
-        catch
-        {
-            // ignored
-        }
+    }
 
+    private async Task RetireTerminalHandlesAsync(IOwnedTerminalSession session)
+    {
         try
         {
-            if (resizePump != null)
-                await resizePump;
+            _terminalDisposeTask ??= session.DisposeAsync().AsTask();
+            await _terminalDisposeTask.WaitAsync(InputDrainTimeout);
         }
-        catch
+        catch (Exception ex)
         {
-            // ignored
+            MarkTerminalUncertain();
+            throw new TimeoutException("Original terminal resources remain retained.", ex);
+        }
+        if(_mainRun!=null) {
+            try { await _mainRun.ConfirmSettledStopAsync(session,await _terminalStopTask!); }
+            catch { if(_mainRun.IsUncertain)MarkTerminalUncertain();throw; }
+            _lastMainRun=_mainRun;_mainRun=null;_productionConfig=null;
+        }
+        lock (_sync)
+        {
+            if (!ReferenceEquals(_pty, session)) throw new InvalidOperationException("Terminal retirement identity changed.");
+            _pty = null;
+            _status.Ready=false;_status.State="TerminalStopped";_status.ShellPid=null;
+            _ptyInput = null;
+            _terminalStopTask = null;
+            _terminalDisposeTask = null;
+            _terminalScreen = null;
+        }
+    }
+
+    private static async Task ObserveManagedDrainAsync(params Task[] tasks)
+    {
+        try { await Task.WhenAll(tasks); }
+        catch { /* All actual tasks have now settled; write uncertainty is retained at its source. */ }
+    }
+
+    private InputLifetime BeginInputLifetime(Stream stream, CancellationTokenSource shellLoopCts)
+    {
+        lock (_sync)
+        {
+            ObjectDisposedException.ThrowIf(_inputClosed, this);
+            if (_inputLifetime != null)
+                throw new InvalidOperationException("Previous PTY input lifetime has not been drained.");
+            var input = new InputLifetime(stream, shellLoopCts);
+            _inputLifetime = input;
+            _draftLaunchInput=string.IsNullOrEmpty(_draftLaunchBinding)?null:input;
+            _ptyInput = stream;
+            _shellLoopCts = shellLoopCts;
+            _status.LastInputWriteError = null;
+            _status.InputBindingId = input.Id;
+            return input;
+        }
+    }
+
+    private InputLifetime CaptureInputLifetime()
+    {
+        lock (_sync)
+        {
+            var input = _inputLifetime;
+            if (_inputClosed || input == null || input.Revoked || input.Token.IsCancellationRequested)
+                throw new InputLifetimeUnavailableException();
+            return input;
+        }
+    }
+
+    private void RevokeInputLifetime(InputLifetime input)
+    {
+        lock (_sync)
+        {
+            if (!ReferenceEquals(_inputLifetime, input) || input.Revoked)
+                return;
+            input.Revoked = true;
+            // CancelAsync marks the token now and runs callbacks asynchronously, never inline under _sync.
+            input.CancellationTask = input.Cancellation.CancelAsync();
+        }
+    }
+
+    private void CompletePromptDispatch(InputLifetime input, bool succeeded, long elapsedMilliseconds)
+    {
+        lock (_sync)
+        {
+            if (!ReferenceEquals(_inputLifetime, input))
+                return;
+            _status.LastPromptDispatchCompletedAtUtc = DateTimeOffset.UtcNow.ToString("O");
+            _status.LastPromptDispatchElapsedMs = elapsedMilliseconds;
+            _status.LastPromptDispatchState = succeeded ? "Completed" : "Failed";
+            if (!string.Equals(_status.State, "DispatchFailed", StringComparison.Ordinal))
+                _status.State = _status.Ready ? "Ready" : "OperatorNotReady";
+            WriteStatusFile();
         }
     }
 
     private BridgeResponse SetReady(bool ready)
     {
-        if (ready)
-        {
-            var readiness = ProbeCliPromptReadinessForDispatch();
-            if (!readiness.IsReady)
-            {
-                var message = "Cannot mark bridge ready: " + readiness.Reason;
-                lock (_sync)
-                {
-                    _status.Ready = false;
-                    _status.State = "OperatorNotReady";
-                    _status.LastError = message;
-                    WriteStatusFile();
-                }
-
-                Console.WriteLine();
-                Console.WriteLine("[Bridge] " + message);
-                return BridgeResponse.Failure(message, SnapshotStatus());
-            }
-        }
-
         lock (_sync)
         {
+            if (ready && (_terminalUncertain || _automaticInputPaused || _admittedPrompts != 0 || _inputLifetime == null ||
+                _inputLifetime.Revoked || (_inputLifetime.ManualTakeover && PromptObservationVersion <= _inputLifetime.ManualObservationAfter) || !IsEmptyIdleView(LoadBridgeConfig().GmCliInputProfile.Snapshot(), _promptScreenReader())))
+                return BridgeResponse.Failure("Fresh empty supported idle view is required; uncertain operations remain paused.", SnapshotStatus());
+            if (ready) _inputLifetime!.ManualTakeover = false;
             _status.Ready = ready;
             _status.State = ready ? "Ready" : "OperatorNotReady";
-            _status.LastError = null;
             WriteStatusFile();
+            return BridgeResponse.Success(SnapshotStatus());
         }
-
-        Console.WriteLine();
-        Console.WriteLine(ready
-            ? "[Bridge] Marked READY. Daemon may dispatch prompts now."
-            : "[Bridge] Marked NOT READY. Daemon dispatch should pause or fallback.");
-
-        return BridgeResponse.Success(SnapshotStatus());
     }
 
     private void EnsureShellAlive()
     {
         lock (_sync)
         {
-            if (_pty == null || _pty.HasExited || _ptyInput == null)
+            if (_pty == null || _pty.RootExited.IsCompleted || _ptyInput == null)
                 throw new InvalidOperationException("Hosted PTY shell is not running.");
         }
     }
 
-    private async Task ClearPendingInputBeforePromptDispatchAsync()
+    private Task RefreshBridgeAutomationStateAsync()
     {
-        await WriteToPtyAsync("\u0015", appendEnter: false);
-        await WaitForOutputQuietPeriodAsync(TimeSpan.FromMilliseconds(100), TimeSpan.FromSeconds(1), _cts.Token);
-    }
-
-    private async Task RefreshBridgeAutomationStateAsync()
-    {
-        await AutoAcceptTrustedCodexWorkingDirectoryTrustPromptAsync();
-        await AutoSkipCodexUpdatePromptAsync();
-        AutoMarkNotReadyIfCliWorking();
-        AutoMarkReadyIfCliPromptReady();
-        RefreshDispatchFailureRecoveryIfCliPromptReady();
-    }
-
-    private async Task AutoAcceptTrustedCodexWorkingDirectoryTrustPromptAsync()
-    {
-        var visibleText = ReadVisibleConsoleText();
-        if (!IsWorkspaceTrustPrompt(visibleText))
-            return;
-
-        long outputVersion;
-        string workingDirectory;
+        // Observation never acknowledges trust/update prompts or clears an uncertain operation.
         lock (_sync)
         {
-            outputVersion = _outputVersion;
-            workingDirectory = _status.ShellWorkingDirectory;
-        }
-
-        if (outputVersion == _lastAutoTrustOutputVersion ||
-            !IsTrustedCodexWorkingDirectory(workingDirectory))
-        {
-            return;
-        }
-
-        _lastAutoTrustOutputVersion = outputVersion;
-        await WriteToPtyAsync(string.Empty, appendEnter: true);
-    }
-
-    private async Task AutoSkipCodexUpdatePromptAsync()
-    {
-        var visibleText = ReadVisibleConsoleText();
-        if (!IsCodexCliUpdatePrompt(visibleText))
-            return;
-
-        long outputVersion;
-        lock (_sync)
-            outputVersion = _outputVersion;
-
-        if (outputVersion == _lastAutoUpdateSkipOutputVersion)
-            return;
-
-        _lastAutoUpdateSkipOutputVersion = outputVersion;
-        await WriteToPtyAsync("3", appendEnter: true);
-    }
-
-    private void AutoMarkReadyIfCliPromptReady()
-    {
-        var visibleText = ReadVisibleConsoleText();
-        if (!IsCodexCliIdlePrompt(visibleText))
-            return;
-
-        lock (_sync)
-        {
-            if (_status.Ready ||
-                string.Equals(_status.State, "Dispatching", StringComparison.Ordinal) ||
-                string.Equals(_status.LastPromptDispatchState, "Dispatching", StringComparison.Ordinal))
+            if (_terminalUncertain) { _status.Ready=false; _status.State="TerminalUncertain"; TryWriteInputStatus(); return Task.CompletedTask; }
+            var profile = LoadBridgeConfig().GmCliInputProfile.Snapshot();
+            if (_inputLifetime != null && !_inputLifetime.Revoked && !_inputLifetime.ManualTakeover &&
+                !_automaticInputPaused && _admittedPrompts == 0 && IsEmptyIdleView(profile, _promptScreenReader()))
             {
-                return;
+                _status.Ready = true;
+                _status.State = "Ready";
+                TryWriteInputStatus();
             }
-
-            _status.Ready = true;
-            _status.State = "Ready";
-            _status.LastError = null;
-            WriteStatusFile();
-        }
-    }
-
-    private void AutoMarkNotReadyIfCliWorking()
-    {
-        var visibleText = ReadVisibleConsoleText();
-        if (!IsCodexCliWorkingScreen(visibleText))
-            return;
-
-        const string message = "Codex CLI is working; bridge is not ready for a new prompt.";
-        lock (_sync)
-        {
-            if (!_status.Ready &&
-                string.Equals(_status.State, "Busy", StringComparison.Ordinal) &&
-                string.Equals(_status.LastError, message, StringComparison.Ordinal))
+            else if (_admittedPrompts == 0)
             {
-                return;
+                _status.Ready = false;
+                if (!_automaticInputPaused) _status.State = "OperatorNotReady";
+                TryWriteInputStatus();
             }
-
-            _status.Ready = false;
-            _status.State = "Busy";
-            _status.LastError = message;
-            WriteStatusFile();
         }
+        return Task.CompletedTask;
     }
 
     private CliPromptReadiness ProbeCliPromptReadinessForDispatch()
@@ -841,101 +1046,205 @@ internal sealed class BridgeHost : IDisposable
         }
     }
 
-    private async Task WriteToPtyAsync(string text, bool appendEnter)
+    private Task WriteToPtyAsync(InputLifetime input, string text, bool appendEnter, CancellationToken cancellationToken)
+        =>WriteToPtyCoreAsync(input,text,appendEnter,cancellationToken,null);
+
+    private async Task WriteToPtyCoreAsync(InputLifetime input, string text, bool appendEnter, CancellationToken cancellationToken,Func<bool>? currentView)
     {
-        Stream? input;
+        var bytes = Encoding.UTF8.GetBytes(appendEnter ? text + "\r" : text);
         lock (_sync)
-            input = _ptyInput;
-
-        if (input == null)
-            throw new InvalidOperationException("PTY input stream is unavailable.");
-
-        await _ptyWriteLock.WaitAsync(_cts.Token);
+        {
+            if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked || _pty?.AuthorityLost.IsCompleted == true || _pty?.RootExited.IsCompleted == true)
+                throw new InputLifetimeUnavailableException();
+            cancellationToken.ThrowIfCancellationRequested();
+            input.Token.ThrowIfCancellationRequested();
+            _cts.Token.ThrowIfCancellationRequested();
+            if (input.PendingWrites++ == 0)
+                input.WritesDrained = CreateOutputSignal();
+        }
+        var acquired = false;
+        var started = false;
         try
         {
-            var payload = appendEnter ? text + "\r" : text;
-            var bytes = Encoding.UTF8.GetBytes(payload);
-            await input.WriteAsync(bytes, 0, bytes.Length, _cts.Token);
-            await input.FlushAsync(_cts.Token);
+            using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cts.Token, input.Token);
+            await _ptyWriteLock.WaitAsync(linked.Token);
+            acquired = true;
+            lock (_sync)
+            {
+                linked.Token.ThrowIfCancellationRequested();
+                if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked || _pty?.AuthorityLost.IsCompleted == true || _pty?.RootExited.IsCompleted == true)
+                    throw new InputLifetimeUnavailableException();
+                if(currentView!=null && !currentView())throw new IOException("Original automatic frame changed before its actual byte reservation.");
+                started = true; // Reservation linearizes before revocation; failures after it are uncertain.
+            }
+            await input.Input.WriteAsync(bytes, 0, bytes.Length, linked.Token);
+            linked.Token.ThrowIfCancellationRequested();
+            await input.Input.FlushAsync(linked.Token);
+            lock (_sync)
+            {
+                linked.Token.ThrowIfCancellationRequested();
+                if (input.Revoked || !ReferenceEquals(_inputLifetime, input))
+                    throw new InputLifetimeUnavailableException();
+            }
+        }
+        catch (Exception ex) when (started)
+        {
+            if(_pty!=null)MarkTerminalUncertain();
+            var error = new PtyInputWriteException(ex);
+            lock (_sync)
+            {
+                if (ReferenceEquals(_inputLifetime, input))
+                {
+                    _status.Ready = false;
+                    _status.State = "DispatchFailed";
+                    _status.LastInputWriteError = error.Message;
+                    _status.LastError = error.Message;
+                    TryWriteInputStatus();
+                }
+            }
+            RevokeInputLifetime(input);
+            throw error;
         }
         finally
         {
-            _ptyWriteLock.Release();
+            if (acquired) _ptyWriteLock.Release();
+            lock (_sync)
+            {
+                if (--input.PendingWrites == 0)
+                    input.WritesDrained!.TrySetResult(true);
+            }
         }
+    }
+
+    private void TryWriteInputStatus()
+    {
+        try { WriteStatusFile(); }
+        catch { /* In-memory status and the fixed exception still retain input uncertainty. */ }
     }
 
     private async Task PumpOutputAsync(Stream outputReader, Stream consoleWriter, CancellationToken cancellationToken)
     {
+        TerminalScreen? screen;
+        lock (_sync) screen = _terminalScreen;
         var buffer = new byte[4096];
-        while (!cancellationToken.IsCancellationRequested)
+        var decoder = Encoding.UTF8.GetDecoder();
+        var characters = new char[Encoding.UTF8.GetMaxCharCount(buffer.Length)];
+        while (true)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var read = await outputReader.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken);
-            if (read <= 0)
-                break;
+            cancellationToken.ThrowIfCancellationRequested();
+            if (read == 0)
+            {
+                // Only a real EOF finalizes pending bytes. Faults/cancellation propagate above.
+                var finalCount = decoder.GetChars(buffer, 0, 0, characters, 0, flush: true);
+                lock(_sync) { if(finalCount>0)RecordOutputChunk(characters,finalCount,hasByteActivity:false); screen?.Fault(); }
+                return;
+            }
 
             await consoleWriter.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
             await consoleWriter.FlushAsync(cancellationToken);
 
-            var chunk = Encoding.UTF8.GetString(buffer, 0, read);
-            TaskCompletionSource<bool> signalToRelease;
-            lock (_sync)
-            {
-                _recentOutput.Append(chunk);
-                if (_recentOutput.Length > 65536)
-                    _recentOutput.Remove(0, _recentOutput.Length - 65536);
-                _outputVersion++;
-                signalToRelease = _outputChanged;
-                _outputChanged = CreateOutputSignal();
-            }
-
-            signalToRelease.TrySetResult(true);
-
+            var count = decoder.GetChars(buffer, 0, read, characters, 0, flush: false);
+            // A partial scalar is still byte activity, even when it produces no text yet.
+            lock(_sync) { RecordOutputChunk(characters,count,hasByteActivity:true); if(ReferenceEquals(_terminalScreen,screen))screen?.Feed(buffer.AsSpan(0,read),characters.AsSpan(0,count)); }
         }
     }
 
-    private async Task PumpKeyboardAsync(CancellationToken cancellationToken)
+    private void RecordOutputChunk(char[] characters, int count, bool hasByteActivity)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        TaskCompletionSource<bool> signalToRelease;
+        lock (_sync)
         {
-            if (!Console.KeyAvailable)
+            _recentOutput.Append(characters, 0, count);
+            if (_recentOutput.Length > 65536)
             {
-                await Task.Delay(15, cancellationToken);
-                continue;
+                var removeCount = _recentOutput.Length - 65536;
+                if (char.IsHighSurrogate(_recentOutput[removeCount - 1]) &&
+                    char.IsLowSurrogate(_recentOutput[removeCount]))
+                    removeCount++;
+                _recentOutput.Remove(0, removeCount);
             }
+            if (hasByteActivity)
+                _outputVersion++;
+            signalToRelease = _outputChanged;
+            _outputChanged = CreateOutputSignal();
+        }
 
-            var key = Console.ReadKey(intercept: true);
-            var sequence = KeyToSequence(key);
-            if (sequence == null)
-                continue;
+        signalToRelease.TrySetResult(true);
+    }
 
-            try
+    private async Task PumpKeyboardAsync(InputLifetime input,
+        Func<CancellationToken, ValueTask<ConsoleKeyInfo?>> keySource, CancellationToken cancellationToken)
+    {
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, input.Token, _cts.Token);
+        char? highSurrogate=null;
+        try
+        {
+            while (true)
             {
-                await WriteToPtyAsync(sequence, appendEnter: false);
-            }
-            catch
-            {
-                // ignored
+                linked.Token.ThrowIfCancellationRequested();
+                var key = await keySource(linked.Token);
+                linked.Token.ThrowIfCancellationRequested();
+                lock (_sync)
+                    if (_inputClosed || !ReferenceEquals(_inputLifetime, input) || input.Revoked || _pty?.AuthorityLost.IsCompleted == true || _pty?.RootExited.IsCompleted == true)
+                        return;
+                if (key == null) continue;
+                TakeManualInput(input);
+                string? sequence;
+                var character=key.Value.KeyChar;
+                if(char.IsHighSurrogate(character)) { highSurrogate=character; continue; }
+                if(char.IsLowSurrogate(character)) { sequence=highSurrogate is { } high ? new string([high,character]) : null; highSurrogate=null; }
+                else { highSurrogate=null;
+                    if((key.Value.Modifiers & ConsoleModifiers.Control)!=0 && key.Value.Key==ConsoleKey.D)sequence=LoadBridgeConfig().GmCliInputProfile.ExitSequence;
+                    else if((key.Value.Modifiers & ConsoleModifiers.Control)!=0 && key.Value.Key==ConsoleKey.C)sequence=LoadBridgeConfig().GmCliInputProfile.InterruptSequence;
+                    else sequence = KeyToSequence(key.Value);
+                }
+                if (sequence == null) continue;
+                await WriteManualInputAsync(input, sequence, linked.Token);
             }
         }
+        catch (OperationCanceledException) when (linked.IsCancellationRequested) { }
+        catch (InputLifetimeUnavailableException) { }
+        catch (PtyInputWriteException) { /* Recorded and revoked by the real writer; no silent retry. */ }
+        catch { if(_pty!=null)MarkTerminalUncertain();throw; }
+    }
+
+    private static async ValueTask<ConsoleKeyInfo?> ReadConsoleKeyAsync(CancellationToken cancellationToken)
+    {
+        if (!Console.IsInputRedirected && Console.KeyAvailable)
+            return Console.ReadKey(intercept: true);
+        await Task.Delay(15, cancellationToken);
+        return null;
     }
 
     private async Task PumpResizeAsync(CancellationToken cancellationToken)
     {
-        var last = GetConsoleSize();
+        // A redirected Console has no physical terminal geometry. Its clamped
+        // fallback dimensions must not resize the original owned session.
+        if (Console.IsOutputRedirected) return;
+        try {
+        var last = _terminalLaunchSize;
         while (!cancellationToken.IsCancellationRequested)
         {
             await Task.Delay(200, cancellationToken);
             var current = GetConsoleSize();
-            if (current == last)
+            var size=new TerminalSize(current.width,current.height);
+            if (size == last)
                 continue;
 
-            lock (_sync)
-            {
-                _pty?.Resize(current.width, current.height);
+            IOwnedTerminalSession? session;
+            lock (_sync) session = _pty;
+            if (session?.RootExited.IsCompleted == true) return;
+            if (session != null) {
+                lock (_sync) _terminalScreen?.Resize(current.width,current.height);
+                await session.ResizeAsync(new(current.width, current.height), cancellationToken);
             }
 
-            last = current;
+            last = size;
         }
+        } catch(OperationCanceledException) when(cancellationToken.IsCancellationRequested) { }
+        catch { MarkTerminalUncertain();throw; }
     }
 
     private static string? KeyToSequence(ConsoleKeyInfo key)
@@ -1096,6 +1405,7 @@ internal sealed class BridgeHost : IDisposable
 
     private static string ReadVisibleConsoleText()
     {
+        if (!OperatingSystem.IsWindows()) return string.Empty;
         var stdOut = NativeMethods.GetStdHandle(NativeMethods.STD_OUTPUT_HANDLE);
         if (stdOut == IntPtr.Zero || stdOut == NativeMethods.INVALID_HANDLE_VALUE)
             return string.Empty;
@@ -1220,6 +1530,7 @@ internal sealed class BridgeHost : IDisposable
 
     private GameSettings LoadBridgeConfig()
     {
+        if(_productionConfig!=null)return _productionConfig;
         try
         {
             if (!File.Exists(_configPath))
@@ -1242,23 +1553,20 @@ internal sealed class BridgeHost : IDisposable
     {
         lock (_sync)
         {
-            return _status with { };
+            return _status with { TerminalOwnerRetained=_pty!=null || _mainRun?.RetainsAuthority==true };
         }
     }
 
     private BridgeDiagnostics SnapshotDiagnostics()
     {
-        const int tailLimit = 12000;
         long outputVersion;
         string recentOutput;
         string visibleScreenText;
         lock (_sync)
         {
-            recentOutput = _recentOutput.ToString();
-            if (recentOutput.Length > tailLimit)
-                recentOutput = recentOutput[^tailLimit..];
+            recentOutput = GetRecentOutputTail();
             outputVersion = _outputVersion;
-            visibleScreenText = ReadVisibleConsoleText();
+            visibleScreenText = _promptScreenReader();
         }
 
         return new BridgeDiagnostics
@@ -1268,6 +1576,20 @@ internal sealed class BridgeHost : IDisposable
             VisibleScreenText = visibleScreenText,
             WorkerProposalInbox = ReadWorkerProposalInbox()
         };
+    }
+
+    private string GetRecentOutputTail()
+    {
+        const int tailLimit = 12000;
+        var recentOutput = _recentOutput.ToString();
+        if (recentOutput.Length > tailLimit)
+        {
+            var start = recentOutput.Length - tailLimit;
+            if (char.IsHighSurrogate(recentOutput[start - 1]) && char.IsLowSurrogate(recentOutput[start]))
+                start++;
+            recentOutput = recentOutput[start..];
+        }
+        return recentOutput;
     }
 
     private List<GmWorkerProposalInboxEntry> ReadWorkerProposalInbox()
@@ -1421,32 +1743,38 @@ internal sealed class BridgeHost : IDisposable
         return BridgeResponse.Failure(error, SnapshotStatus(), SnapshotDiagnostics());
     }
 
-    private void HandlePtyExited_NoThrow()
+    private async Task HandlePtyExitedAsync(IOwnedTerminalSession observedPty, InputLifetime? observedInput)
     {
-        if (_pty == null)
-            return;
-
-        var exitCode = _pty.ExitCode;
-        _pty.Dispose();
-        _pty = null;
-        _ptyInput = null;
-
-        _status.ShellPid = null;
-        _status.CliProcessId = null;
-        _status.Ready = false;
-        _status.State = "Disconnected";
-        _status.LastError = $"PTY shell exited with code {exitCode}.";
-        WriteStatusFile();
-
-        Console.WriteLine();
-        Console.WriteLine($"[Bridge] Hosted PTY shell exited with code {exitCode}. Use `bookofeternity.ps1 restart-shell` to restart it.");
+        await _shellLifecycleLock.WaitAsync();
+        try
+        {
+            int? exitCode;
+            lock (_sync)
+            {
+                if (!ReferenceEquals(_pty, observedPty) || !ReferenceEquals(_inputLifetime, observedInput))
+                    return;
+                exitCode = observedPty.RootExited.IsCompletedSuccessfully ? observedPty.RootExited.Result.ExitCode : null;
+            }
+            try { await StopShellCoreAsync(); }
+            catch (TimeoutException) { return; } // Retained drain blocks replacement; continue serving diagnostics.
+            lock (_sync)
+            {
+                _status.ShellPid = null;
+                _status.CliProcessId = null;
+                _status.Ready = false;
+                _status.State = "Disconnected";
+                _status.LastError = $"PTY shell exited with code {exitCode}.";
+                WriteStatusFile();
+            }
+            Console.WriteLine();
+            Console.WriteLine($"[Bridge] Hosted PTY shell exited with code {exitCode}. Use `bookofeternity.ps1 restart-shell` to restart it.");
+        }
+        finally { _shellLifecycleLock.Release(); }
     }
 
     private void WriteStatusFile()
     {
-        _status.UpdatedAtUtc = DateTimeOffset.UtcNow.ToString("O");
-        var json = JsonSerializer.Serialize(_status, JsonOpts);
-        File.WriteAllText(_statusPath, json, Encoding.UTF8);
+        QueueOriginalStatusPublication();
         UpdateConsoleTitle();
     }
 
@@ -1462,15 +1790,8 @@ internal sealed class BridgeHost : IDisposable
 
     private void SafeDeleteStatusFile()
     {
-        try
-        {
-            if (File.Exists(_statusPath))
-                File.Delete(_statusPath);
-        }
-        catch
-        {
-            // ignored
-        }
+        // A status PID is never deletion authority. F2 retains stale diagnostic
+        // bytes; actual launcher cleanup must acquire participating admission.
     }
 
     private static void EnableVirtualTerminalOutput()
@@ -1501,10 +1822,18 @@ internal sealed class BridgeHost : IDisposable
 
     public void Dispose()
     {
+        lock (_sync) _inputClosed = true;
         _cts.Cancel();
-        try { StopShellAsync().GetAwaiter().GetResult(); } catch { /* ignored */ }
-        _shellLoopCts?.Dispose();
-        _ptyWriteLock.Dispose();
+        try { StopShellAsync().GetAwaiter().GetResult(); }
+        catch (TimeoutException) { return; } // Retain the gate/CTS and actual tasks for a later drain attempt.
+        lock (_sync)
+        {
+            if (!_writeGateDisposed)
+            {
+                _ptyWriteLock.Dispose();
+                _writeGateDisposed = true;
+            }
+        }
         SafeDeleteStatusFile();
     }
 
@@ -1518,23 +1847,36 @@ internal sealed class BridgeHost : IDisposable
         return JsonSerializer.Deserialize<T>(line, PipeJsonOpts);
     }
 
-    private static async Task WriteMessageAsync(NamedPipeServerStream stream, object payload, CancellationToken cancellationToken)
+    private static async Task WriteMessageAsync<T>(Stream stream, T payload, CancellationToken cancellationToken)
     {
-        using var writer = new StreamWriter(stream, Encoding.UTF8, 1024, leaveOpen: true)
-        {
-            AutoFlush = true
-        };
-        var json = JsonSerializer.Serialize(payload, PipeJsonOpts);
-        await writer.WriteLineAsync(json.AsMemory(), cancellationToken);
+        // No StreamWriter.Dispose synchronous flush after a timed-out response.
+        var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload, PipeJsonOpts) + "\n");
+        await stream.WriteAsync(bytes, cancellationToken);
+        await stream.FlushAsync(cancellationToken);
     }
+
 }
 
 internal sealed class BridgeRequest
 {
+    public string? Binding {get;set;}
+    public string? Path {get;set;}
+    public int? Columns { get; set; }
+    public int? Rows { get; set; }
     public string? Command { get; set; }
+    public string? RootKey {get;set;}
+    public MainOperationClose? MainOperationClose {get;set;}
+    public GmSessionRunIdentity? ExpectedMainIdentity {get;set;}
+    public string? ExpectedGeneration {get;set;}
+    public string? ExpectedTerminalRunId {get;set;}
+    public string? LoadSourceKey {get;set;}
     public string? Text { get; set; }
     public bool AppendEnter { get; set; } = true;
     public bool? Ready { get; set; }
+    public string? OperationId { get; set; }
+    public string? OperationKind { get; set; }
+    public string? OperationRevision { get; set; }
+    public string? InputBindingId { get; set; }
     public string? WorkerTaskType { get; set; }
     public string? SessionId { get; set; }
     public string? RequestId { get; set; }
@@ -1559,6 +1901,8 @@ internal sealed class BridgeResponse
     public string? Error { get; set; }
     public BridgeStatus? Status { get; set; }
     public BridgeDiagnostics? Diagnostics { get; set; }
+    public PromptDeliveryResult? PromptDelivery { get; set; }
+    public MainOperationReply? MainOperation {get;set;}
     public GmWorkerProposalOnlyDispatchResult? WorkerDispatch { get; set; }
     [JsonIgnore]
     public bool ShutdownAfterResponse { get; set; }
@@ -1612,6 +1956,13 @@ internal sealed class BridgeResponse
 
 internal sealed record BridgeStatus
 {
+    public string? TerminalRunId { get; set; }
+    public string? TerminalGuarantee { get; set; }
+    public bool TerminalUncertain { get; set; }
+    public TerminalStopEvidence? TerminalStop { get; set; }
+    public bool TerminalOwnerRetained { get; set; }
+    public string? InputBindingId { get; set; }
+    public PromptDeliveryResult? PromptDelivery { get; set; }
     public string Backend { get; set; } = "ConPTYBridge";
     public string State { get; set; } = "Starting";
     public bool Ready { get; set; }
@@ -1629,6 +1980,7 @@ internal sealed record BridgeStatus
     public string StartedAtUtc { get; set; } = DateTimeOffset.UtcNow.ToString("O");
     public string UpdatedAtUtc { get; set; } = DateTimeOffset.UtcNow.ToString("O");
     public string? LastError { get; set; }
+    public string? LastInputWriteError { get; set; }
     public List<WorkerBridgeStatus> WorkerStatuses { get; set; } = new();
 }
 
