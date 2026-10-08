@@ -30,5 +30,48 @@
         "sha256": "7f4f44e16121497a4c6e379e65935a7d134a94f217ea21204cfeb6b794fbc55f"
       }
     ]
+  },
+  "intermediatePlan": {
+    "source": "d0c46cce372789138ffc72f8221e8c85ca097ed3",
+    "artifacts": [
+      {
+        "path": "intermediate-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-220710-981-160544-c6584e2e68ca40fb9004945176868d57-categories/plan.json",
+        "sha256": "49f88b97460d85426e559db7078579d40b4dccdd3d858e2323b2881ffa85a755",
+        "originalSha256": "49f88b97460d85426e559db7078579d40b4dccdd3d858e2323b2881ffa85a755"
+      },
+      {
+        "path": "intermediate-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-220710-981-160544-c6584e2e68ca40fb9004945176868d57-categories/summary.json",
+        "sha256": "41e9d6a3e5f93a16bd9786f50d32673d412ece2b199d5df16fd36da3d4893055",
+        "originalSha256": "41e9d6a3e5f93a16bd9786f50d32673d412ece2b199d5df16fd36da3d4893055"
+      },
+      {
+        "path": "intermediate-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-220710-981-160544-c6584e2e68ca40fb9004945176868d57-categories/Build-integration.log",
+        "sha256": "53dfd3c1f85fb2cf569265b23b0594adb6d634aba3161f86f95af75d7c8d4ff5",
+        "originalSha256": "0fecd0ddae7d01b77b930da16af2c3cd4f1ff18f0d5f2e1d05b77e25516aa748"
+      },
+      {
+        "path": "intermediate-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-220710-981-160544-c6584e2e68ca40fb9004945176868d57-categories/dotnet-test.log",
+        "sha256": "16ae50db8fc89e9b1f8090f0092ca7d0b1f00c9d06322ba170385681a5d6f79e",
+        "originalSha256": "0b8bdb521a46bfa45034aee4f8eab76b86c5c0cec7295af1f52ae041c6f52716"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.TreatmentStorageOutcome.cs",
+        "sha256": "6a5c904a019cbc6a7a5eef77d0f77be161896be270f0bdae5955beeba1ae5235"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.cs",
+        "sha256": "ea4cfd9e7ed64bb1096f290518d12869755fe5351f509e4daa0e3bc9b3fe89cc"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "7f4f44e16121497a4c6e379e65935a7d134a94f217ea21204cfeb6b794fbc55f"
+      }
+    ]
   }
 }

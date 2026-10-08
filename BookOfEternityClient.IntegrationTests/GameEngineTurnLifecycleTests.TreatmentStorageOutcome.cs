@@ -112,7 +112,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 TypedCarrier = cut.OriginalUncertainty?.GetType().FullName,
                 Failure = failure?.ToString(), DisposalFailure = disposalFailure?.ToString(),
                 journalBeforeDispose, journalAfterDisposeExact, disposalLeases, disposalRecovery, disposalAttempts,
-                cut.MirrorDriftPrepared, publishedTreatmentRetained,
+                cut.MirrorDriftPrepared, cut.TreatmentResourceChanged, publishedTreatmentRetained,
+                BusinessCausePreserved = cut.HasBusinessCause(failure),
+                BusinessCause = cut.BusinessFailure.ToString(),
                 PublishedTreatmentImages = cut.PublishedTreatmentImages.ToDictionary(p => p.Key, p => Convert.ToBase64String(p.Value)),
                 JournalBytesBeforeCleanup = retainedJournal is null ? null : Convert.ToBase64String(retainedJournal),
                 JournalRetainedBeforeExplicitCleanup = retainedJournal is not null, restartBlocked,
@@ -129,7 +131,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.True(cut.PublishedTreatmentMembers > 0);
             Assert.NotNull(cut.OriginalUncertainty);
             Assert.NotNull(retainedJournal);
-            if (mode == "helper_restore") Assert.Equal(1, cut.BusinessCutCount);
+            if (mode == "helper_restore") { Assert.Equal(1, cut.BusinessCutCount); Assert.True(cut.HasBusinessCause(failure)); }
             if (mode == "compensate_dispose") Assert.True(cut.SharingConflictObserved);
             else Assert.Equal(TreatmentStorageCut.ForeignBytes, memberBytes);
             if (mode == "engine_mirror")
@@ -180,6 +182,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         private FileStream? _holder;
         private byte[]? _initialResourceBytes;
         private readonly InvalidOperationException _forward = new("actual treatment publication cut");
+        internal InvalidOperationException BusinessFailure { get; } = new("known post-publication treatment validation failure");
         private readonly EventHandler<FirstChanceExceptionEventArgs> _firstChance;
         internal TreatmentStorageCut(string mode)
         {
@@ -253,7 +256,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 OnStack("ValidatePublishedOutputAuthorityAsync") && OnStack("NormalizeAndValidateWithPlanAsync"))
             {
                 BusinessCutCount++;
-                throw new InvalidOperationException("known post-publication treatment validation failure");
+                throw BusinessFailure;
             }
             return Task.CompletedTask;
         }
@@ -299,9 +302,24 @@ public sealed partial class GameEngineTurnLifecycleTests
             bytes.AsSpan().StartsWith("BOELP2\r\n"u8)
                 ? JsonDocument.Parse(bytes.AsMemory(16, checked((int)BinaryPrimitives.ReadInt64LittleEndian(bytes.AsSpan(8, 8)))))
                 : JsonDocument.Parse(bytes);
-        private static bool Contains(Exception failure, Exception original) => ReferenceEquals(failure, original) ||
-            failure.InnerException is { } inner && Contains(inner, original) ||
-            failure is AggregateException aggregate && aggregate.InnerExceptions.Any(e => Contains(e, original));
+        internal bool HasBusinessCause(Exception? failure) => failure is not null && Contains(failure, BusinessFailure);
+        private static bool Contains(Exception failure, Exception original)
+        {
+            var pending = new Stack<Exception>();
+            var seen = new HashSet<Exception>(ReferenceEqualityComparer.Instance);
+            pending.Push(failure);
+            while (pending.TryPop(out var current))
+            {
+                if (!seen.Add(current)) continue;
+                if (ReferenceEquals(current, original)) return true;
+                if (current.InnerException is { } inner) pending.Push(inner);
+                if (current is AggregateException aggregate)
+                    foreach (var child in aggregate.InnerExceptions) pending.Push(child);
+                foreach (var value in current.Data.Values)
+                    if (value is Exception diagnostic) pending.Push(diagnostic);
+            }
+            return false;
+        }
         private static bool OnStack(string marker) => new StackTrace().GetFrames().Any(frame =>
             frame.GetMethod()?.Name.Contains(marker, StringComparison.Ordinal) == true ||
             frame.GetMethod()?.DeclaringType?.FullName?.Contains(marker, StringComparison.Ordinal) == true);

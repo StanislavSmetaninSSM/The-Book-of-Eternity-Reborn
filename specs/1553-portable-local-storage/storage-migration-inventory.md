@@ -110,7 +110,7 @@ ConPty/Job lifecycle execution remains unqualified. Conservative provider-labell
 restart observation never authorizes cold adoption or reboot recovery. Native Windows
 qualification remains external and unexecuted. Bounded Bridge/shared consumers and A03 gates above are accepted within their
 stated platforms. F06 has34-case Linux GREEN; F04/F05 has corrected57-case shared Linux GREEN with independent raw review PASS,
-final be3d carrier and parent fresh remote restore accepted. F13/F14 bounded Linux delivery is recorded above; native gaps, F16/F18, dead code, cleanup and treatment-storage tails stay open.
+final be3d carrier and parent fresh remote restore accepted. F13/F14 bounded Linux delivery is recorded above; F17 exact-five removal is accepted/restored2fcd; native gaps, F16/F18, cleanup and treatment-storage tails stay open.
 
 T062 restoration delta:9e30 source has10/10 Linux PASS including actual second
 mirror publication after baseline restoration; earlier7 affected recovery neighbors

@@ -1,3 +1,13 @@
+## Treatment original-cause fixture refinement — 2026-10-08
+
+Intermediate d0c Plan220710 compiled exact3/one/zero successfully45.6252156s,
+both cleanup flags true; retained as build-only evidence. Same helper row now retains
+and checks the exact original known failure through the resulting diagnostic chain,
+without replacing the genuine publisher Unknown. Raw mirror evidence explicitly reports
+the resource-change predicate. Restoration-read counts mean reached post-open hooks,
+not a universal census of every attempted facade call. Three rows unchanged; final
+source/fixture gate and matching fresh build precede any actual execution.
+
 ## Treatment fixture compile correction — 2026-10-08
 
 Initial Plan220439 at clean b8c failed compilation on the explicit IAsyncDisposable
@@ -129,8 +139,8 @@ Saved packet now414 stored/expanded/original artifacts and132 historical Git sou
 pins; final carrier integrity review and parent fresh GitHub-only restore PASS,
 as recorded in the current F17 checkpoint above.
 No native Windows, provider/desktop, full client QTE continuation or whole-migration
-claim. F17 exact dead helpers, treatment-storage tails, F10 cleanup, F16 media and F18
-fault-hook migration remain open under the existing queue; T062–T065 remain unchecked.
+claim. F17 exact dead helpers are accepted/restored above. Treatment-storage tails, F10
+cleanup, F16 media and F18 fault-hook migration remain open under the existing queue; T062–T065 remain unchecked.
 
 ## F14 explicit inert current-fixture configuration — 2026-10-08
 
