@@ -1,3 +1,30 @@
+## Treatment current neighbors PASS and terminal causal proof — 2026-10-08
+
+Independent SOURCE/FIXTURE/SELECTION gate passed8fcbb after pre-build corrections.
+Matching Plan2345316/2/0 passed88.7147255s. Actual234717 completed6/2 in41.8342455s:
+5 known-neighbor PASS and1 genuine new terminal causal FAIL, no timeout/duplicates,
+both runner cleanup flags true. All original artifacts are preserved under unique names.
+
+Known five now positively reach the intended conditions: health exactly3 current visits;
+cleanup after actual treatment publication/critical validation; Unsafe deliberately refused
+command restoration with exact other before-images and original blocker; terminal safe
+HeldBlocked and terminal restoration Aggregate using actual original terminal receipt.
+The new terminal cut reaches original command MemberPublished/index0, TerminalReleaseOnly
+receipt, real typed Uncertain with foreign bytes and authentic journal retained before
+explicit fixture recovery; original blocker is confirmed. No later restoration read,
+publication, lease or recovery was observed. Original consumer wraps the same typed
+carrier twice in Aggregate and records generic retry. Assert.Same fails; subsequent notice
+assertions are unexecuted, while raw actual notice is independently inspectable. Owned
+fixture removal is true. This is the connected original consumer defect, not a fixture miss.
+
+Minimal runtime correction: direct typed escape before generic settlement, preserve a
+later settlement typed decision with original first-cause diagnostic, and retain actual
+CSP before this method's own lease disposal so secondary close cannot replace it. No new
+bookkeeping/admission/replay. Final exact terminal3 (new causal1 + known terminal2) is
+proposed for affected-method verification; other13 passing obligations remain source-era
+evidence unless another relevant change requires repetition. Overall treatment acceptance
+waits for source/selection and actual final evidence gates.
+
 ## Treatment fixture review correction — 2026-10-08
 
 Independent41fbe source review identified decoder scope and BOM parsing before build.
