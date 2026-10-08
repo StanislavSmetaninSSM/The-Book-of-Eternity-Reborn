@@ -271,6 +271,24 @@
         "FR-010",
         "A01"
       ]
+    },
+    {
+      "category": "gm-main-worker-dispatch-consumer-linux",
+      "reason": "Causal missing-pin private original consumer RED; actual pool-slot and physical canonical-lock cancellation boundaries with fail-closed pre-reservation fixture, no worker process.",
+      "contracts": [
+        "#1553",
+        "FR-010",
+        "A01"
+      ]
+    },
+    {
+      "category": "gm-load-started-not-ready-receipts-linux",
+      "reason": "Eight exact original Load receipt cases bind manual readiness to real new owner/generation and validated metadata while preserving original connection/no replay.",
+      "contracts": [
+        "#1553",
+        "FR-010",
+        "A01"
+      ]
     }
   ]
 }

@@ -1,3 +1,7 @@
+> Current A01 checkpoint: shared probe-host71a561 independently accepted with3 actual
+> Linux cases, restored carrier5b6a6069. Next original consumer fixtures10 (worker2,
+> Load8) are WIP/unrun; Windows production activation/native qualification remains open.
+
 ## Current A01 adapter and owner gates
 
 Bootfed43297 independent source/evidence PASS16 Linux controlled cases; metadata

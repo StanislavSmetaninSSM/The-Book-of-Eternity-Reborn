@@ -117,6 +117,10 @@ internal sealed partial class BridgeHost : IDisposable
     private BookOfEternityClient.Core.FileSystemManager? _neutralFiles;
     internal Action<BookOfEternityClient.Core.MainRunIoStage>? ObserveMainMetadata;
     internal Action<int>? ObserveMainHeldRoot;
+    // Explicit isolated tests may supply a source-root-bound pool; ordinary
+    // profiles and bridge requests cannot enable a different worker backend.
+    internal Func<FileSystemManager,GmWorkerAuditLog,GmWorkerBridgePool>? WorkerDispatchPoolFactory;
+    internal FileSystemManagerHooks? WorkerDispatchFileHooks;
     internal Stream? NeutralOutput;
     internal void ConfigureNeutral(NeutralTerminalLaunch launch) {
         if(_sessionPath!=launch.Scratch)throw new InvalidOperationException("Neutral host requires its fresh admitted scratch."); _neutralLaunch=launch;
@@ -1619,11 +1623,12 @@ internal sealed partial class BridgeHost : IDisposable
     private async Task<BridgeResponse> DispatchWorkerTaskAsync(BridgeRequest request)
     {
         var settings = LoadBridgeConfig();
-        var fs = new FileSystemManager(_clientRoot, NullLogger<FileSystemManager>.Instance);
+        var fs = new FileSystemManager(_clientRoot, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, WorkerDispatchFileHooks);
         var audit = new GmWorkerAuditLog(fs);
         var service = new GmWorkerProposalOnlyDispatchService(
             fs,
-            new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit),
+            WorkerDispatchPoolFactory?.Invoke(fs,audit) ?? new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit),
             audit);
         var dispatchRequest = BuildWorkerDispatchRequest(request);
         var result = await service.DispatchAsync(settings.GmWorkerBridgeProfiles, dispatchRequest);

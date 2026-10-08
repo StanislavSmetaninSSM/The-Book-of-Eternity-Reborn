@@ -17830,6 +17830,56 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-worker-dispatch-consumer-linux",
+      "responsibility": "Actual private Bridge dispatch/service with original neutral owner, source-root-bound fixture pool and occupied slot or canonical lock; input revocation before task reservation/process release.",
+      "excludes": "Native Windows/WMI/ConPTY/Job, live provider, public Linux worker capability and broad main lifecycle.",
+      "changeHints": [
+        "BookOfEternityGMBridge/Program.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeOriginalConsumerTests.PrivateWorkerDispatch_BorrowsOriginalPinAndCapturedInputCancellation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-load-started-not-ready-receipts-linux",
+      "responsibility": "Original console Load with real stopped/replaced/restarted Linux owner; first original-connection StartedNotReady receipt exact or malformed/foreign. Canonical owner metadata is never fabricated.",
+      "excludes": "Native Windows/WMI/ConPTY/Job, live provider, public Linux worker capability and broad main lifecycle.",
+      "changeHints": [
+        "BookOfEternityGMBridge/Program.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeOriginalConsumerTests.ConsoleLoad_StartedNotReadyReceiptRequiresActualFreshOriginalIdentity"
+          ]
+        }
+      ]
     }
   ]
 }

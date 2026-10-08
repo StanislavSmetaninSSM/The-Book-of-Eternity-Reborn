@@ -420,5 +420,72 @@
         "sha256": "6c39517b8daee72514ee0f43c70b17a00b58a95cee14968490f26c3b1d472faa"
       }
     ]
+  },
+  "probeCatalog": {
+    "executed": 0,
+    "valid": true,
+    "categories": 464,
+    "methodsFiles": 11254,
+    "source": "5b6a606955c0098240babf52874e8fd8f5ec0ceb",
+    "artifacts": [
+      {
+        "path": "probe-catalog-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-135305-823-62160-b4794945790d4116bb829ed8fbec6dce-categories/catalog-audit.json",
+        "sha256": "33db2db7e6265193a789b143e11927d52e931080d78b7aa77caa89ceab494b9a",
+        "originalSha256": "33db2db7e6265193a789b143e11927d52e931080d78b7aa77caa89ceab494b9a"
+      },
+      {
+        "path": "probe-catalog-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-135305-823-62160-b4794945790d4116bb829ed8fbec6dce-categories/dotnet-test.log",
+        "sha256": "33137a84eb0c4a6f3c904f3328d03d7f5a6f14e02790650b6bd528f8ee02eb91",
+        "originalSha256": "97b21862a27ffcac85307ec9e9feef9de1ddb7b750ac952cbe249c01d29e019c"
+      },
+      {
+        "path": "probe-catalog-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-135305-823-62160-b4794945790d4116bb829ed8fbec6dce-categories/summary.json",
+        "sha256": "a2ceb0c0d0ca4b3c287952ae3b1ff3c4507de734375e253fab4b17c6ae87c860",
+        "originalSha256": "a2ceb0c0d0ca4b3c287952ae3b1ff3c4507de734375e253fab4b17c6ae87c860"
+      },
+      {
+        "path": "probe-catalog-runner-boe-1553-probe-host-catalog.log.gz",
+        "source": "/tmp/boe-1553-probe-host-catalog.log",
+        "sha256": "f795642939561e89a3875f33921167fb6dfee5111580d2ecbfbe09f1147dd81b",
+        "originalSha256": "4a58025e54cde7639e08ae983ba256a1e08fc24ad34fa8cccedd32e2898bb95b"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityGMBridge/Program.cs",
+        "sha256": "14c920614d6d7f568d9678e6d4afdeba0bf09b61c49cb322aa1840d6b8c3c63c"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.LoadSession.cs",
+        "sha256": "61055512203b6c639f2737858eb3e84dfc51863e466949cde965c1524d82b0c5"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs",
+        "sha256": "6c81145fdae9396dba4214861ce1465e40075d33009dc520c4257b48b271dc7d"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservationProbe.cs",
+        "sha256": "1af28e67d431bf4e13673c44916cb4f8b543b787267ab5d4b8d4180f141f54b1"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "e86fd8d37da1ea13f29a868cc6c4c60c0256dbbd847f545d0bf8a366afaa0134"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "26eacb304bd66a955b90d29557b66f37a00d6d92ef590474758f8778083ecdea"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.StartupObservation.cs",
+        "sha256": "e55f5c28bb76504950174e859033a7182472e6900adb4fc51e95495b148a93a5"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmBridgeStartupObservationTests.cs",
+        "sha256": "6c39517b8daee72514ee0f43c70b17a00b58a95cee14968490f26c3b1d472faa"
+      }
+    ]
   }
 }

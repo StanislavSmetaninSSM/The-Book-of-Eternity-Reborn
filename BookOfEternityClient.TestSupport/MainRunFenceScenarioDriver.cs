@@ -155,7 +155,10 @@ internal static class MainRunFenceScenarioDriver
             await Call("StartShellAsync");
             var owner=(GmSessionRunCoordinator)Field("_mainRun")!;var terminal=(IOwnedTerminalSession)Field("_pty")!;
             var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var old=Read();
-            if(mode.StartsWith("terminal-main-worker-cleanup-",StringComparison.Ordinal)) {
+            if(mode.StartsWith("terminal-main-worker-dispatch-",StringComparison.Ordinal)) {
+                await MainWorkerDispatchScenario.RunAsync(mode["terminal-main-worker-dispatch-".Length..],root,package,host!,type!,owner,()=>Call("StopShellAsync"),result);
+            }
+            else if(mode.StartsWith("terminal-main-worker-cleanup-",StringComparison.Ordinal)) {
                 await MainWorkerCleanupScenario.RunAsync(mode["terminal-main-worker-cleanup-".Length..],root,folder,owner,
                     ()=>Call("StopShellAsync"),result);
             }

@@ -1,3 +1,35 @@
+## A01 original consumer fixtures — 2026-10-08
+
+Probe-host runtime71a561/carrier5b6a6069 independent Astra XHigh source/selection/
+evidence PASS, no findings; actual shared Linux3PASS, catalog464/11254/0 valid.
+Root direct GitHub restore5b6 into fresh boe-1553-probe-host-restore is detached
+clean25469 tracked/fsck0;42 artifact hashes and30 historical source pins verified,
+no tests run in restore. This is latest accepted recoverable checkpoint.
+
+Next frozen fixture selection10: worker2 (actual occupied pool slot; actual physical
+canonical lock contention), Load8 (exact StartedNotReady; generation/prior-run/
+terminal-run/null/foreign-root/foreign-backend/malformed-host identity). Worker uses
+original private Bridge dispatch/service under actual neutral main, not public
+Linux worker admission. Explicit internal hooks/root-bound pool fixture and inert
+exit74 plus a hard pre-reservation stop prevent any worker/provider launch. Existing
+CanonicalWriteLockContendedAsync proves physical contention; cancellation must settle
+dispatch while holder remains owned, then holder releases so original Stop can finish.
+Missing original pin may prevent both wait cuts in RED; later reached cancellation
+is a GREEN extension unless separately reproduced, never invented RED evidence.
+
+Load replaces only the first reply on the retained original connection AFTER real
+original stop/replacement/new Running owner and terminal are witnessed. Metadata is
+never fabricated. Current-record checks are refusal/consistency evidence paired
+with that connection, never adoption from JSON. Exact StartedNotReady must preserve
+manual readiness without a false unconfirmed-launch follow-up. Invalid identity is
+refused using locally trusted backend/root and existing schema validation.
+
+Current source changes only add internal test seams; original dispatch scope/token,
+Load receipt/projection and Windows launch remain unfixed. Fresh PlanOnly10 then
+separate actual worker2 and Load8 prevents descriptor fail-fast hiding either RED.
+Proposed final shared GREEN15 =10 plus existing status3/console Load2, after minimal
+runtime fixes. Native Windows WMI/ConPTY/Job/Load/worker remains body-required/unrun.
+
 ## A01 shared probe-host GREEN — 2026-10-08
 
 Frozen71a561 fresh PlanOnly135046 built successfully3/0; actual135142 complete
