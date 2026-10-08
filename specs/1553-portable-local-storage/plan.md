@@ -1,3 +1,15 @@
+## Treatment first actual fixture failure — 2026-10-08
+
+Matching clean121f Plan221155 succeeded3/one/zero42.0687393s. Actual221310
+hit the unchanged category four-minute bound (4m03.8640976s wall), exit124,
+no completed TRX/cases; runner process cleanup flags true. Log records helper
+cut0/no failure, then disposal evidence FileNotFound after original Dispose removed
+the target. Engine late soul/profile edits invalidated sealed before-images and
+entered genuine repair wait; live repair bytes are preserved. That owned engine
+fixture remained after forced timeout. None is accepted causal RED. Production
+unchanged. Correct fixture phase observation, capture pre/post-Dispose absence,
+and preserve pre-admission soul/profile before-images before another reviewed run.
+
 ## Treatment exact receipt oracle correction — 2026-10-08
 
 Review rejected a post-evidence full current-graph export/Compose oracle: after Unknown,

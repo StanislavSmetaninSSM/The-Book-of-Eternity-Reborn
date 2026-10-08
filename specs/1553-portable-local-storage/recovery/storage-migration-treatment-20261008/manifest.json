@@ -1,5 +1,5 @@
 {
-  "scope": "Test-only treatment3 compile failure; zero tests executed, not causal evidence.",
+  "scope": "Treatment storage-tail test-only preparation and failed fixture run. No production change or accepted causal RED.",
   "initialCompile": {
     "source": "b8c7dc35886f30b286f1caa99c9e3f04e906800a",
     "artifacts": [
@@ -114,6 +114,106 @@
       {
         "path": "tests/categories.json",
         "sha256": "7f4f44e16121497a4c6e379e65935a7d134a94f217ea21204cfeb6b794fbc55f"
+      }
+    ]
+  },
+  "initialActual": {
+    "source": "121f4747c0abba4d45ec4069ae7b050a918e47df",
+    "qualification": "Incomplete fixture run:4m03.8640976 timeout,0 completed TRX cases; helper cut0, disposal raw evidence read failed after target deletion, engine late before-image edits entered repair wait. No accepted causal RED. Process cleanup true; engine owned fixture remained after forced timeout. Live repair captured read-only while original process ran.",
+    "artifacts": [
+      {
+        "path": "final-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-221155-212-162344-66c96335f9ff494c9d18c2f001d29b4c-categories/Build-integration.log",
+        "sha256": "bb60b5fd40dffaa7a07803607ec0215b7bd206285ee859773052fafd33c4d546",
+        "originalSha256": "215c28a254f1fbf2509150839f030907092b40b9bf14e1d785b71dff710cea37"
+      },
+      {
+        "path": "final-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-221155-212-162344-66c96335f9ff494c9d18c2f001d29b4c-categories/dotnet-test.log",
+        "sha256": "16f5c93f03f081f1420ec3b0f7580f6574a2d0ed733f3a00db373d508c89a15b",
+        "originalSha256": "ffec2ffe95b2a65bb0d0829abd227ffdbf7871a837345e92cd4f7e8ffe640416"
+      },
+      {
+        "path": "final-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-221155-212-162344-66c96335f9ff494c9d18c2f001d29b4c-categories/plan.json",
+        "sha256": "c505069ce073b514712acacc16eafa0c9fb100eb03e11c7715be093c4d03a34b",
+        "originalSha256": "c505069ce073b514712acacc16eafa0c9fb100eb03e11c7715be093c4d03a34b"
+      },
+      {
+        "path": "final-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-221155-212-162344-66c96335f9ff494c9d18c2f001d29b4c-categories/summary.json",
+        "sha256": "b0e4f77d6135d9a29e860c46568152cc341b6fd18e2d85d4933222e6d20943a7",
+        "originalSha256": "b0e4f77d6135d9a29e860c46568152cc341b6fd18e2d85d4933222e6d20943a7"
+      },
+      {
+        "path": "initial-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-221310-768-162825-5d29a22e427546b7ab9ce44625582341-categories/dotnet-test.log",
+        "sha256": "8af9220fd764e247230e507fc51b0e7982275e64b5c88bd09f450c180410b7ee",
+        "originalSha256": "c3edcd3fb690455a8fc1e407ececbecabd88148ad730231257561e17b926194b"
+      },
+      {
+        "path": "initial-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-221310-768-162825-5d29a22e427546b7ab9ce44625582341-categories/plan.json",
+        "sha256": "d9feee4381c4fcf97d604dbe995fad3531be018008b1c68743fca3448bd0e4cd",
+        "originalSha256": "d9feee4381c4fcf97d604dbe995fad3531be018008b1c68743fca3448bd0e4cd"
+      },
+      {
+        "path": "initial-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-221310-768-162825-5d29a22e427546b7ab9ce44625582341-categories/summary.json",
+        "sha256": "81cd3ecd422d0695ea94e7fb7be2c94c9e2da2b368c97cd4b542a812ef58e3c6",
+        "originalSha256": "81cd3ecd422d0695ea94e7fb7be2c94c9e2da2b368c97cd4b542a812ef58e3c6"
+      },
+      {
+        "path": "live-repair-boe-treatment-121f-live-repair.json",
+        "source": "/tmp/boe-treatment-121f-live-repair.json",
+        "sha256": "1ac2e4cc192107272581aa3d0ea2dcce64f07af264b6759f90aa163d10d5aa23",
+        "originalSha256": "1ac2e4cc192107272581aa3d0ea2dcce64f07af264b6759f90aa163d10d5aa23"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.TreatmentStorageOutcome.cs",
+        "sha256": "ae53b12b74e16e2ba6c558f2f4ca04692a32167fbdff283c5bb5270e3443ce0a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.cs",
+        "sha256": "ea4cfd9e7ed64bb1096f290518d12869755fe5351f509e4daa0e3bc9b3fe89cc"
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+        "sha256": "07bed61b9604d200db23823bb28c81930d87b0ebea2ea5b760710be0d5fa0562"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+        "sha256": "d7bd84ca21435ed86ac279432722d08d1f466b142e288068b11df83082071b4e"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "dc9a7da0614e05ec48297293b7b03b52fa9a71e5d4ac3eb229b1cc181e898618"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "sha256": "86ba1ecf5b2ae813fb7d68b8a7eb05ad4da49cde93cc809ed7e95ea3098a4628"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "sha256": "176b0af190ab7c536f3af98303753e8bd9fba00ac0b81b44f879648789b8f013"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
+        "sha256": "4e248b04c73731e2cc0c5c4b35e69d1bdbd141a6bace970cabba7e64589b0f70"
+      },
+      {
+        "path": "BookOfEternityClient/Core/StateManager.cs",
+        "sha256": "fdf7fa9d071c750a18a27eab0d0ac25dd2d036a3eec06544fe639fd699c4d997"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "7f4f44e16121497a4c6e379e65935a7d134a94f217ea21204cfeb6b794fbc55f"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "d23e5edcdc8aaaa343a83bfb02e5fe93c6d136266dd4b4e9f58c2556c3e6b52e"
       }
     ]
   }

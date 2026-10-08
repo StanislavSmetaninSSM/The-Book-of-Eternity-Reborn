@@ -1,0 +1,63 @@
+﻿{
+  "sessionId": "session_t070b3_game_engine",
+  "requestId": "request_t070b3_game_engine",
+  "turnNumber": 42,
+  "metadataDiagnosticOnly": false,
+  "source": "storage-only treatment mirror",
+  "detectedAtUtc": "2026-10-08T22:13:30.7618918Z",
+  "revalidationAttempt": 1,
+  "fullTurnResubmissionRequired": false,
+  "gmInstructions": "Текущий ответ/состояние отклонены клиентом. Исправь уже записанные файлы in place, ориентируясь на список ошибок ниже. Прочитай TaskGuides/CLI_Step_Main.txt и Examples/E_CLI_Step_Main.txt. После исправлений создай game_state/control/validation_repair_ready.json с sessionId/requestId/turnNumber. Если ошибка касается canonical accumulated state (guardians/quests/factions/rival_soul_arcs и т.п.), правь итоговое canonical состояние явно: нужное удаление или замена должны остаться и после повторной нормализации. Если клиент переписал этот repair request повторно, используй ТОЛЬКО самые свежие metadata из текущего файла.",
+  "summaryGroups": [
+    "State / wound_materialization: 4"
+  ],
+  "harnessRepairPackets": [],
+  "resubmissionObligations": [],
+  "requiredResubmissionPaths": [],
+  "errors": [
+    {
+      "code": "accepted_mechanics_wound_live_before_image_mismatch",
+      "filePath": "game_state/meta/afterlife_entity_profiles.json",
+      "severity": "Error",
+      "category": "StateConsistency",
+      "message": "Wound materialization violates exact accepted-turn authority.",
+      "section": "wound_materialization",
+      "expected": "the exact sealed Mortal wound-treatment publication before-image",
+      "actual": "canonical bytes changed after treatment-plan admission",
+      "repairHint": "Restore the validated wound roots and use only the strict accepted wound command flow."
+    },
+    {
+      "code": "accepted_mechanics_wound_live_before_image_mismatch",
+      "filePath": "game_state/meta/afterlife_entity_profiles.json",
+      "severity": "Error",
+      "category": "StateConsistency",
+      "message": "Wound materialization violates exact accepted-turn authority.",
+      "section": "wound_materialization",
+      "expected": "the exact sealed Mortal wound-treatment publication before-image",
+      "actual": "canonical bytes changed after treatment-plan admission",
+      "repairHint": "Restore the validated wound roots and use only the strict accepted wound command flow."
+    },
+    {
+      "code": "accepted_mechanics_wound_live_before_image_mismatch",
+      "filePath": "game_state/meta/soul_state.json",
+      "severity": "Error",
+      "category": "StateConsistency",
+      "message": "Wound materialization violates exact accepted-turn authority.",
+      "section": "wound_materialization",
+      "expected": "the exact sealed Mortal wound-treatment publication before-image",
+      "actual": "canonical bytes changed after treatment-plan admission",
+      "repairHint": "Restore the validated wound roots and use only the strict accepted wound command flow."
+    },
+    {
+      "code": "accepted_mechanics_wound_live_before_image_mismatch",
+      "filePath": "game_state/meta/soul_state.json",
+      "severity": "Error",
+      "category": "StateConsistency",
+      "message": "Wound materialization violates exact accepted-turn authority.",
+      "section": "wound_materialization",
+      "expected": "the exact sealed Mortal wound-treatment publication before-image",
+      "actual": "canonical bytes changed after treatment-plan admission",
+      "repairHint": "Restore the validated wound roots and use only the strict accepted wound command flow."
+    }
+  ]
+}
