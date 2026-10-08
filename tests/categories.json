@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-treatment-storage-causal-linux",
+      "responsibility": "Three actual held-treatment publication uncertainty boundaries: original normalizer helper settlement, retained Compensate/Dispose, original engine profile mirror and player notice.",
+      "excludes": "No B2-B5 gameplay, provider, native Windows, full treatment cohort, or whole-turn atomicity claim.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TreatmentStorage_OriginalPublicationUncertaintyRetainsDecision"
+          ]
+        }
+      ]
+    },
+    {
       "id": "browser-read-authority",
       "responsibility": "T055 four real HTTP read entry points refuse Stopping authority and finalization failure, retaining the same generation; validation must not mask refusal as HTTP200",
       "excludes": "No synthetic record qualifies live-owner success; no provider calls, actual Linux owner belongs to browser-original-owner-linux",

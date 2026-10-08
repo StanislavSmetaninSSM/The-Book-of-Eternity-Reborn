@@ -1,3 +1,19 @@
+## Treatment causal fixture candidate — 2026-10-08
+
+The concrete test-only category `portable-treatment-storage-causal-linux` contains
+three rows on the actual held-treatment pipeline context. The helper row enters the
+original normalizer, lets generic restoration complete and cuts subsequent forced
+durable treatment restoration. The disposal row owns the real returned transaction,
+actual sharing refusal and original Dispose. The mirror row explicitly prepares a
+99 mirror after normalization repaired it, before the original runtime refresh lease,
+with soul17, then cuts that exact real mirror publication. This is published treatment
+before final acceptance, not an already accepted turn. All rows record raw failure,
+member/journal evidence and operation counts before desired-contract assertions.
+First two rows explicitly repair only the fixture's selected image after capture to
+inspect the retained restart blocker/ConfirmedHeld registry on a fresh recovery lease.
+No finally reacquisition and no provider/native/gameplay runs. Source/fixture review,
+fresh PlanOnly and actual causal execution remain pending; production is unchanged.
+
 ## Treatment storage-tail design draft — 2026-10-08
 
 F17 final carrier2fcd6e92 has independent final source/selection/raw/artifact/docs

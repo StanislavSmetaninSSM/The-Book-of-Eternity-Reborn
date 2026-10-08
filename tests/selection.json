@@ -2,6 +2,11 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-treatment-storage-causal-linux",
+      "reason": "T062 three actual treatment storage outcomes: original helper settlement, original compensation/disposal, and published-treatment runtime mirror/notice. Test-only causal capture before fixes.",
+      "contracts": ["#1553", "FR-003", "FR-004", "FR-006", "T062-STORAGE-OUTCOMES"]
+    },
+    {
       "category": "portable-console-rollback-preparation",
       "reason": "T061 original console/incarnation preparation and owned exact-byte evidence lifecycle: reached failure/retry, absence-only footprint, cold signed cancellation, generation/tamper refusal, marker-last cleanup and save/load ephemeral interaction. No browser/gameplay aggregate.",
       "contracts": [
