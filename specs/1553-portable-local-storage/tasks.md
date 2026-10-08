@@ -6,6 +6,17 @@ Current access boundary after accepted5f663533: owner approval and parent config
 
 Current T043 state: bounded driver correction source0a3d963f has causal REDs and fresh14/14 controlled GREEN, independent Sol source/evidence/metadata PASS; catalog419/11156 valid0executed. Actual controlled ordinary NewGame/client/daemon/Bridge cancellation reaches original Stopped ACK/allpeer I/O. Separate held original pin proves drain timeout before lifecycle acquisition and retained logical Uncertain despite physical cleanup. Production runtime unchanged; historical og10 Uncertain/request/pending unchanged; exact og10 client cause unproven. No provider retry/network/auth change, new provider calls0/acceptedGMturns0. Owner approval/config publication reported; current CONNECT check blocked403. Accepted5f663533 has completed publication/restore; new access receipt closes separately. [Handoff](opencode-current-live-handoff.md).
 
+## Active original-owner HTTP follow-up 2026-10-08
+
+- [ ] T055-HTTP-ORIGINAL-OWNER Source #1553, owner/parent authorized separate
+  active relay/session HTTP500 cause after completed Windows carrier1df88385.
+  Linux baselineca2f817b shows original Running/Ready session/game-screen500
+  even serially, missing participating original-owner admission; queue-only
+  correction is insufficient. [Plan](http-original-owner-plan.md). Real original
+  GM/relay causal regression, unchanged owner/generation/Load rules, bounded
+  independent Windows/Linux evidence and exact remote recovery required. No
+  model/provider calls or unrelated changes. Diagnosis/review in progress.
+
 ## Native Windows follow-up 2026-10-08
 
 Source #1553, owner-approved [plan](relay-windows-plan.md).

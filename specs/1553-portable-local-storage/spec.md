@@ -1,3 +1,13 @@
+## Active original-owner HTTP reads — owner-approved T055, 2026-10-08
+
+[Separate follow-up](http-original-owner-plan.md): browser state reads while the
+original GM run is active must participate through that original owner and its
+exact generation for the entire operation, including final close. Preserve typed
+payloads and authority refusal. The host queue alone does not supply this grant.
+Load remains quiescent-only at its existing boundaries; its IPC cannot borrow
+filesystem admission. No fence weakening, new owner, fabricated status or model
+request. Prior Windows qualification explicitly excluded this active-GM case.
+
 ## Browser HTTP admission — owner-approved T054, 2026-10-08
 
 The separately approved [HTTP plan](windows-http-plan.md) addresses proven
