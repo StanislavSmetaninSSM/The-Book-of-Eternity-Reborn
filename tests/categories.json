@@ -17743,6 +17743,36 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-worker-cleanup-admission-linux",
+      "responsibility": "Seven actual original Linux main/guardian cases with real pool required-audit callback, detached workspace, NoLaunch cleanup owner, reaper and slot: expired/retired Access, exact receipt ACK retry, live metadata and actual publisher uncertainty, plus retained audit debt after pin exhaustion or original retirement.",
+      "excludes": "No worker process launched; no Windows Job/ConPTY qualification or whole dispatch/stop proof. Pool private production callback invoked by reflection, not fabricated audit disposition.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs"
+      ],
+      "related": [
+        {
+          "id": "worker-quarantine-audit-receipt",
+          "when": "Receipt protocol changes beyond admission classification"
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainWorkerCleanupTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

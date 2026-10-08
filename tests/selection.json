@@ -226,6 +226,15 @@
         "FR-010",
         "A01"
       ]
+    },
+    {
+      "category": "gm-main-worker-cleanup-admission-linux",
+      "reason": "A01 connected original worker cleanup prerequisite before Windows Bridge pins: distinguish exact withdrawn original Access from live metadata/publication failures; real no-launch owner/reaper/receipt with actual main guardian.",
+      "contracts": [
+        "#1553",
+        "FR-010",
+        "A01"
+      ]
     }
   ]
 }

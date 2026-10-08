@@ -1,3 +1,34 @@
+## A01 consumer prerequisite: retained worker cleanup — 2026-10-08
+
+Parent fresh GitHub restore offd5871ff is clean25336 tracked, fsck connectivity0;
+all97 owner stored/expanded artifacts and54 historical source pins verified. No
+build/test was run in restore. This supersedes63bb as current recovery endpoint.
+
+Before wiring Windows worker dispatch into original main pins, establish seven exact
+shared-boundary cases using actual neutral main/guardian plus real detached workspace,
+NoLaunch cleanup authority/reaper/slot and production private pool callback via
+reflection. No worker process is launched. First cleanup failure must retain owner;
+a delayed task inherits actual Access and runs only after its original pin returns.
+Expired and fully retired original main need exact local receipt; receipt ACK cut
+must retain capacity until same-event/byte retry. Live-pin malformed main metadata
+and reached canonical audit MemberPublished unknown must retain owner/evidence,
+never fallback. Test-owned known-byte restoration occurs only after refusal assertions.
+
+Runtime unchanged; causal RED pending. Proposed minimal classification is a private
+original-access-withdrawal type emitted only for the same non-metadata Access.Owner
+and non-null matching Pin whose references are actually exhausted, checked before
+disposed guard can obscure expiry; pool catches only that class. Closed/uncertain
+owner, root exit, wrong owner and generic metadata failure are not that class.
+Generic IsAdmissionRefusal also marks metadata corruption/IO and is insufficient.
+Independent focused design review supports this narrow direction. It requires
+retaining actual typed required-audit uncertainty in existing cleanup phase state:
+only actual callback Appended clears it; later Unavailable OR SessionReplaced must
+rethrow the original debt before receipt or release. Added unknown→expired/retired
+controls plus actual live-pin recovery/Appended counterpart. Permanently lost pins
+may leave unresolved debt; no new authority or restart mechanism. Next full Bridge
+consumer wiring remains separate. No new journal, fallback authority, native qualification,
+indefinite main pin or relaxed worker ledger admission.
+
 ## A01 owner/worker bounded gate accepted — 2026-10-08
 
 Runtimec5bc8dd6: independent Astra XHigh source/selection/evidence PASS, no findings.
