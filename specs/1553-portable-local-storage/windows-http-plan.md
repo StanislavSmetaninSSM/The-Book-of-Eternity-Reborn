@@ -46,7 +46,9 @@ The four independent real-Kestrel probes provide normal host-shutdown evidence.
 Discovery-only catalog:439 categories/11204 methods/files, valid,0 tests executed,
 clean metadata carrierc5e3680e. Unit project/reference build for discovery:
 0errors/41warnings; integration was freshly built for the33-case run. No repeat
-of passing runtime selections. Whole-branch PlanOnly and final recovery follow.
+of passing runtime selections. Whole-branch PlanOnly at clean carrier ee1c2fa5:
+10 descriptors/72 cases planned,0 executed, no timeout, owned/runtime cleanup
+true. This is inventory evidence, not72 passing tests. Final recovery follows.
 
 Independent actual Astra XHigh source, causal RED,33-case original TRX evidence,
 prior-Linux coverage and all native/browser raw records reviewed: no product
@@ -72,7 +74,7 @@ schema, rule, prompt or example changed or requires synchronization.
   A malformed fixture alone does not justify a product fix or an empty200.
 - [x] Make only a proven correction, select affected catalog categories, preserve
   parallel/repeated HTTP reads, Save/Load/restart and normal owned shutdown.
-- [ ] Publish bounded WIP before long checks/review, obtain independent Astra
+- [x] Publish bounded WIP before long checks/review, obtain independent Astra
   XHigh review, verify exact remote SHA and fresh GitHub-only source recovery.
 
 Original evidence: three500 responses (/api/session,/api/game-screen,
