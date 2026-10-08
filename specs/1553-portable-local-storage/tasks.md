@@ -16,9 +16,10 @@ Current T043 state: bounded driver correction source0a3d963f has causal REDs and
   GM/relay causal regression, unchanged owner/generation/Load rules, bounded
   independent Windows/Linux evidence and exact remote recovery required. No
   model/provider calls or unrelated changes. Runtime3d6cfd24 and native Windows
-  33/33PASS published with causal8-case RED. Native Linux original-owner RED
-  reported; its receipt, GREEN/live qualification and final recovery remain
-  pending. T055 stays open.
+  33/33PASS published with causal8-case RED. Linux carrier7afb1934 directly
+  verified:1case causalRED and3/3GREEN including10exact original HTTP closes.
+  Catalog441/11207 andPlanOnly14descriptors83planned0executed valid. Original
+  live133 after correction and final recovery/review remain pending; T055 open.
 
 ## Native Windows follow-up 2026-10-08
 

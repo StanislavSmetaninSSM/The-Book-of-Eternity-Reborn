@@ -225,5 +225,219 @@
         "SHA256": "553bde37b0113bf252757f105715e67c494f68e3795c087cacbd3050392669b7"
       }
     ]
+  },
+  "Catalog": {
+    "Archive": "catalog-original-evidence.zip",
+    "Bytes": 365981,
+    "SHA256": "503d589c154a54602ae525b83a7fcc274eace0c5466aa0e221157375df6c944a",
+    "Source": "36ca49618da5ea37ace8bac54336410d0ae00b60",
+    "Revision": {
+      "Head": "36ca49618da5ea37ace8bac54336410d0ae00b60",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": {
+      "Valid": true,
+      "Methods": 11207,
+      "Categories": 441,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "Selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "WallTime": "00:02:42.6406294",
+    "ArchiveEntries": [
+      {
+        "Path": "Build-integration.log",
+        "Bytes": 20889,
+        "SHA256": "851bee147e0d0007edb74ac39f17bf3e64c22501261e4395cca6242676d7594e"
+      },
+      {
+        "Path": "Build-unit.log",
+        "Bytes": 27105,
+        "SHA256": "b1f03b5435d1bbc39d3cc68c1d391cc2e219542cd87c71b6efe04f9d2d6453d1"
+      },
+      {
+        "Path": "catalog-audit.json",
+        "Bytes": 110,
+        "SHA256": "6f43d76b7c1a6cef1b35f05bb80b2b5e1e7038c62ea04aaa2291859a78960936"
+      },
+      {
+        "Path": "dotnet-test.log",
+        "Bytes": 3214749,
+        "SHA256": "aadc93d3bc236bf432eb11d384dd8d9c7894bca1101d99056001543eeff32113"
+      },
+      {
+        "Path": "owned-process-16225a952bda448e81c9ad997e8ab3f8.json",
+        "Bytes": 105,
+        "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+      },
+      {
+        "Path": "owned-process-4d0346618cf049efad2e3a09053970bb.json",
+        "Bytes": 246,
+        "SHA256": "9282647c380479c545fab21a085f1ea17a1e3b24b8260d4d8458c3a9aa8c1c61"
+      },
+      {
+        "Path": "owned-process-740a96aafd1f4ebab1632f6d686ef3ef.json",
+        "Bytes": 268,
+        "SHA256": "306607b911cf581ab7b6a29665a4314a782ae5d0be97324ab3f6ff99faeb9a6f"
+      },
+      {
+        "Path": "owned-process-89112dd291f641d8a0f733d8306b45fb.json",
+        "Bytes": 233,
+        "SHA256": "bf58debd41f89954c7e40200005ab9383721d5b1c3e8abed184fafa0e79d96f8"
+      },
+      {
+        "Path": "owned-process-9b70b0ee16ad441ca13c296fb72682ac.json",
+        "Bytes": 255,
+        "SHA256": "0ca6872d297efd0a89bb88f6ed1559faae313c28aaf2e183cc9a0749d449c939"
+      },
+      {
+        "Path": "owned-process-dfa1545d9b2b409b9f907c893b47243d.json",
+        "Bytes": 90,
+        "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+      },
+      {
+        "Path": "owned-process-f94c6b79533d4cb98e15117fd32ef67d.json",
+        "Bytes": 53,
+        "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+      },
+      {
+        "Path": "owned-process-launcher.ps1",
+        "Bytes": 751,
+        "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+      },
+      {
+        "Path": "summary.json",
+        "Bytes": 1676,
+        "SHA256": "595c42dc106b5bdc8bb68bc5a1c79c85b3ddc47fae8e1c465af06b2b742f7c66"
+      },
+      {
+        "Path": "wrapper.log",
+        "Bytes": 759,
+        "SHA256": "f78ce93a3381f5a58be725a67ee018eee2bd3159d53b34e5c957b5293884c5ad"
+      }
+    ]
+  },
+  "PlanOnly": {
+    "Archive": "planonly-original-evidence.zip",
+    "Bytes": 363401,
+    "SHA256": "59b380f11602bd924007605213b543205337c825c5450cd906152c8a85aa5a9f",
+    "Source": "36ca49618da5ea37ace8bac54336410d0ae00b60",
+    "Revision": {
+      "Head": "36ca49618da5ea37ace8bac54336410d0ae00b60",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "Selection": {
+      "PlannedDescriptors": 14,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 83,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "browser-http-admission-integration-001",
+        "browser-http-admission-lifetime-integration-002",
+        "browser-original-owner-linux-unit-003",
+        "browser-read-authority-integration-004",
+        "gm-load-browser-entry-unit-005",
+        "gm-load-early-ack-unit-006",
+        "gm-relay-native-windows-unit-007",
+        "gm-relay-repair-unit-008",
+        "gm-relay-reusable-contract-unit-009",
+        "gm-relay-reusable-main-unit-010",
+        "gm-relay-transport-unit-011",
+        "portable-load-browser-refresh-integration-012",
+        "portable-load-browser-required-generation-integration-013",
+        "portable-settings-endpoints-integration-014"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "WallTime": "00:00:20.0311737",
+    "ArchiveEntries": [
+      {
+        "Path": "dotnet-test.log",
+        "Bytes": 3166493,
+        "SHA256": "48f163c608396221627d4965f6fbbdb7a095b87721aade967aca24c2e663448b"
+      },
+      {
+        "Path": "owned-process-36143f6bbe4b47bcafcf767e560dcce7.json",
+        "Bytes": 255,
+        "SHA256": "0ca6872d297efd0a89bb88f6ed1559faae313c28aaf2e183cc9a0749d449c939"
+      },
+      {
+        "Path": "owned-process-6d084cfd32494630a0e741a34cc85533.json",
+        "Bytes": 90,
+        "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+      },
+      {
+        "Path": "owned-process-b4e803febe6c48e48daac9d96a0f818d.json",
+        "Bytes": 105,
+        "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+      },
+      {
+        "Path": "owned-process-bdf1ada37a7e4e328cf749cf9189563b.json",
+        "Bytes": 53,
+        "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+      },
+      {
+        "Path": "owned-process-c3ead2901dc64275a4921d4c29741168.json",
+        "Bytes": 233,
+        "SHA256": "bf58debd41f89954c7e40200005ab9383721d5b1c3e8abed184fafa0e79d96f8"
+      },
+      {
+        "Path": "owned-process-launcher.ps1",
+        "Bytes": 751,
+        "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+      },
+      {
+        "Path": "plan.json",
+        "Bytes": 20971,
+        "SHA256": "0c5741594b201f5198c80ff55fc25d87c5cbb90da61856a6660c6ed0b3f15bf6"
+      },
+      {
+        "Path": "summary.json",
+        "Bytes": 6032,
+        "SHA256": "5066841d66f14920e4df9ffe631f64df226ed7366109e3dfe0326d180c03c5f6"
+      },
+      {
+        "Path": "wrapper.log",
+        "Bytes": 14352,
+        "SHA256": "83c04dfd3b977d6603ed48dd16ad424d08cc8d84d58b89336d881073dc21fd09"
+      }
+    ]
+  },
+  "LinuxControlledReadback": {
+    "Path": "t055-linux-controlled-readback.json",
+    "Bytes": 2921,
+    "SHA256": "0a0a2b01601e961d73da700ec329655ab05d6bbc9c6db70b52ba813f3a8163d8",
+    "Carrier": "7afb19349519bacb959b5ccad3069226c669efa1",
+    "RedCompleted": 1,
+    "RedFailed": 1,
+    "GreenCompleted": 3,
+    "GreenPassed": 3,
+    "Live133AfterCorrection": "pending"
   }
 }

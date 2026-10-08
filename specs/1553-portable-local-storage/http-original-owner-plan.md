@@ -6,8 +6,9 @@ only source writer; the Linux worker verifies independently. Branch:
 `codex/1553-http-original-owner-20261008`.
 
 Runtime/tests checkpoint: **3d6cfd24898fa30b37764de688432455ac9a4660**.
-Current result: native Windows **33/33 PASS**; native Linux causal RED reported,
-its published receipt, GREEN and live web+relay comparison remain pending.
+Current result: native Windows **33/33 PASS** and native Linux **3/3 PASS**,
+with both causal RED receipts directly verified. The original live133 web+relay
+comparison after correction remains pending.
 Do not mark T055 or the whole HTTP task complete from Windows/unit results alone.
 
 ## Preserved predecessor and new cause
@@ -65,12 +66,23 @@ The manifest records every original ZIP entry hash/size; raw bytes are preserved
 - Actual Astra XHigh independently reviewed the design, tests/selection,
   three-file runtime diff and original Windows RED archive: PASS. It found an
   owned helper timeout cleanup gap, corrected in09f965d9 before GREEN; the exact
-  helper is now terminated/awaited if needed. Final evidence review is pending.
-- Parent reports native Linux causal RED on0a2843af:1/1 completed failure,
-  ten genuine HTTP requests,6x500(session/game/dashboard),2validation HTTP200
-  swallowed-error DTOs and2control successes;2closed pins instead of10. Original
-  queue/I-O close, scoped shutdown, Stopped/OwnedScopeEmpty and guardian ECHILD
-  with zero emergency signals. Treat this as reported until its receipt is read.
+  helper is now terminated/awaited if needed. Windows GREEN evidence/metadata review at36ca4961 also PASS:21 original
+  entries and33 distinct passing TRX cases independently verified.
+- Linux carrier [7afb1934](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/tree/7afb19349519bacb959b5ccad3069226c669efa1/specs/1553-portable-local-storage/recovery/http-linux-20261008)
+  directly fetched/read. RED0a:1/1 completed failure, ten actual HTTP requests,
+  six500(session/game/dashboard), two validation200 with swallowed-error DTOs,
+  two control successes and only two original close receipts. GREEN3d:3/3 PASS
+  (original-owner reads, real Load/new epoch, premature ACK refusal); all10 HTTP
+  responses meaningful200 and ten same-owner Completed closes, no failure DTOs.
+  Both ZIP hashes,40RED/111GREEN entries and17 source pins per source verified;
+  original TRXs read. All four guardians have ECHILD, zero emergency/failures,
+  no deadline; queue/I-O closure precedes matching original Stopped retirement.
+  Source writer readback is retained alongside the Windows manifest. Live133
+  after this correction is still pending and is not inferred from fixture PASS.
+- Catalog discovery on clean36ca4961:441 categories/11207 methods valid, no
+  unmapped/stale selectors,0tests executed. Fresh unit and integration builds.
+  Whole-branch PlanOnly on the same clean source:14descriptors/83planned cases,
+  0executed, all cleanup successful. This is inventory, not an83-test run.
 
 The Linux fixture uses the actual production Bridge, durable Running identity,
 original pipe and shared idle relay. It does not synthesize a positive owner,
@@ -81,10 +93,12 @@ Stopping records are explicitly negative-only and cannot qualify live authority.
 
 - [x] Publish branch and bounded tests-first checkpoints; preserve original RED.
 - [x] Apply independently reviewed narrow correction and complete Windows33.
-- [ ] Inspect published Linux causal RED, GREEN3-case selection and same live133
-  series; require actual original cleanup/receipts and no hidden DTO failures.
-- [ ] Complete catalog discovery/whole-branch PlanOnly (zero tests), independent
-  final evidence review and new clean direct GitHub-only recovery.
+- [x] Inspect published Linux causal RED and GREEN3-case selection/cleanup.
+- [x] Complete catalog discovery and whole-branch PlanOnly (zero tests).
+- [ ] Inspect same live133 series after correction; require actual original
+  cleanup/receipts and no hidden DTO failures.
+- [ ] Complete independent final evidence review and new clean direct GitHub-only
+  recovery of the final carrier.
 
 No installation, WSL, user saves/auth profiles, model/provider calls, new network
 or security permissions, CI enablement, merge, force-push, branch deletion or

@@ -35,4 +35,13 @@ are not causal RED/PASS. Also repeat the original ordinary-NewGame/web+idle-rela
 133-request live series from Linux evidencee469976b. Require full meaningful DTOs,
 original operation closes and original shutdown; HTTP200 alone is insufficient.
 
-Linux evidence and final exact-carrier restoration remain pending at this checkpoint.
+Native Linux controlled RED/GREEN archives are published in carrier
+7afb19349519bacb959b5ccad3069226c669efa1 under recovery/http-linux-20261008;
+[t055-linux-controlled-readback.json](t055-linux-controlled-readback.json) records
+direct SHA/entry/source-pin/receipt verification. GREEN is3/3PASS with10correct
+HTTP DTOs and10matching original closes. The post-fix original live133 series
+and final exact-carrier restoration remain pending.
+
+Catalog/PlanOnly original archives preserve clean36ca4961 inventory:441categories,
+11207methods,14descriptors/83planned cases. Both executed0tests; no83-case PASS
+is claimed. Windows33 and Linux3 retain their own exact runtime receipts.
