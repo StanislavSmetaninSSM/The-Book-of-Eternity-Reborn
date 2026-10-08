@@ -121,7 +121,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 TypedCarrier = cut.OriginalUncertainty?.GetType().FullName,
                 Failure = failure?.ToString(), DisposalFailure = disposalFailure?.ToString(),
                 journalBeforeDispose, journalAfterDisposeExact, disposalLeases, disposalRecovery, disposalAttempts,
-                cut.InitialMirrorConsistent, cut.MirrorPublishedAuthority17, cut.MirrorDriftPrepared, cut.MirrorLeaseStack, cut.MirrorLeaseAttempt, cut.MirrorBeforeValue, cut.MirrorForeignValue, cut.TreatmentResourceChanged, publishedTreatmentRetained,
+                cut.MirrorBootstrapValidated, cut.InitialMirrorConsistent, cut.MirrorPublishedAuthority17, cut.MirrorDriftPrepared, cut.MirrorLeaseStack, cut.MirrorLeaseAttempt, cut.MirrorBeforeValue, cut.MirrorForeignValue, cut.TreatmentResourceChanged, publishedTreatmentRetained,
                 BusinessCausePreserved = cut.HasBusinessCause(failure),
                 BusinessCause = cut.BusinessFailure.ToString(),
                 PublishedTreatmentImages = cut.PublishedTreatmentImages.ToDictionary(p => p.Key, p => Convert.ToBase64String(p.Value)),
@@ -145,6 +145,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             else Assert.Equal(TreatmentStorageCut.ForeignBytes, memberBytes);
             if (mode == "engine_mirror")
             {
+                Assert.True(cut.MirrorBootstrapValidated);
                 Assert.True(cut.InitialMirrorConsistent);
                 Assert.True(cut.MirrorPublishedAuthority17);
                 Assert.True(cut.MirrorDriftPrepared);
@@ -253,6 +254,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal string? CutPhaseStack { get; private set; }
         internal bool OriginalCohortRestoredBeforeCut { get; private set; }
         internal string? BusinessReadPath { get; private set; }
+        internal bool MirrorBootstrapValidated { get; private set; }
         internal bool TreatmentResourceChanged { get; private set; }
         internal Dictionary<string, byte[]> PublishedTreatmentImages { get; } = new(StringComparer.Ordinal);
         internal CoordinatedStatePublicationUncertainException? OriginalUncertainty { get; private set; }
@@ -260,17 +262,118 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal string JournalPath => Path.Combine(_context!.FileSystem.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
         internal async Task SeedConsistentMirrorAsync(FileSystemManager files)
         {
-            // Called before LiveTurnPreparation creates any immutable snapshot/plan.
+            // Supplement the existing Mortal quartet before LiveTurnPreparation seals it.
+            // The real afterlife planner owns all binding/capacity/history generation.
+            const string soulPath = "game_state/meta/soul_state.json";
+            const int setupTurn = 41;
             await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
-            var soul = ParseJsonObjectBytes((await files.ReadFileBytesAsync(lease, "game_state/meta/soul_state.json"))!);
+            var before = new Dictionary<string, string?>(StringComparer.Ordinal);
+            async Task<string?> Read(string path)
+            {
+                if (!before.TryGetValue(path, out var value))
+                    before[path] = value = await files.ReadFileAsync(lease, path);
+                return value;
+            }
+            var definitionsResult = ResourceDefinitionCatalog.ParseCanonical(
+                await Read(ResourceMaterializationContract.DefinitionsPath), allowMissingPristine: false);
+            Assert.True(definitionsResult.IsValid, string.Join(Environment.NewLine, definitionsResult.Issues));
+            var definitions = definitionsResult.Catalog!;
+            var stateResult = ResourceStateContract.ParseCanonical(
+                await Read(ResourceMaterializationContract.StatePath), definitions, allowMissingPristine: false);
+            var historyResult = ResourceHistoryState.ParseCanonical(
+                await Read(ResourceMaterializationContract.HistoryPath), definitions, allowMissingPristine: false);
+            Assert.True(stateResult.IsValid, string.Join(Environment.NewLine, stateResult.Issues));
+            Assert.True(historyResult.IsValid, string.Join(Environment.NewLine, historyResult.Issues));
+            var mortalState = stateResult.Ledger!;
+            var mortalHistory = historyResult.History!;
+            Assert.DoesNotContain(mortalHistory.Transitions, transition => transition.Turn >= setupTurn);
+            Assert.Equal(2m, Assert.Single(mortalState.Entries.Where(entry => entry.Coordinate.ResourceKey == "energy")).Current);
+            var woundBefore = new Dictionary<string, byte[]>(StringComparer.Ordinal);
+            foreach (var path in new[] { WoundCarrierCatalog.PlayerPath, WoundHistoryState.HistoryPath })
+                woundBefore.Add(path, (await files.ReadFileBytesAsync(lease, path))!);
+
+            var soul = JsonNode.Parse((await Read(soulPath))!)!.AsObject();
+            Assert.Equal("Mortal World", soul["currentRealm"]!.GetValue<string>());
             soul["inkFeathers"] = new JsonObject { ["current"] = 17, ["total"] = 17 };
-            var profiles = ParseJsonObjectBytes(Encoding.UTF8.GetBytes(
-                """{"schemaVersion":1,"profiles":[{"actorType":"player_soul","actorId":"player_soul","displayName":"Held fixture","realm":"Chaos Sea","currencies":{"inkFeathers":17,"lightSparks":0}}]}"""));
+            var combatProfile = soul["afterlifeCombatProfile"] as JsonObject ?? new JsonObject();
+            combatProfile["spiritFocusTier"] = 0;
+            if (combatProfile.Parent is null) soul["afterlifeCombatProfile"] = combatProfile;
+            var originalProfilesJson = await Read(AfterlifeEntityProfileState.StatePath);
+            var originalProfiles = originalProfilesJson is null ? AfterlifeEntityProfileState.CreateDefaultRoot()
+                : JsonNode.Parse(originalProfilesJson)!.AsObject();
+            Assert.Empty(originalProfiles["profiles"]!.AsArray());
+            var profiles = JsonNode.Parse(
+                """{"schemaVersion":1,"profiles":[{"actorType":"player_soul","actorId":"player_soul","displayName":"Held fixture","realm":"Chaos Sea","currencies":{"inkFeathers":17,"lightSparks":0}}]}""")!.AsObject();
             profiles = AfterlifeEntityProfileState.ProjectCanonicalRoot(profiles, null);
             AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthority(profiles, soul, null);
-            await files.WriteFileAtomicAsync(lease, "game_state/meta/soul_state.json", soul.ToJsonString());
-            await files.WriteFileAtomicAsync(lease, AfterlifeEntityProfileState.StatePath, profiles.ToJsonString());
+            var pristine = ResourceBootstrapStateBuilder.BuildPristine();
+            Assert.True(pristine.IsValid, string.Join(Environment.NewLine, pristine.Issues));
+            var planning = AfterlifeOwnerResourceStatePlanner.Build(new AfterlifeOwnerResourceStatePlanningInput(
+                setupTurn, definitions, pristine.State!, pristine.History!,
+                new AfterlifeResourceOwnerRoots(AfterlifeEntityProfileState.CreateDefaultRoot(), null),
+                new AfterlifeResourceOwnerRoots(profiles, null, soul)));
+            Assert.True(planning.IsValid, string.Join(Environment.NewLine, planning.Issues));
+            var addedState = planning.StateAfterImage!;
+            var addedHistory = planning.HistoryAfterImage!;
+            Assert.NotEmpty(addedState.Entries);
+            Assert.All(addedState.Entries, entry =>
+            {
+                Assert.Equal(ResourceOwnerKind.AfterlifeActor, entry.Coordinate.OwnerKind);
+                Assert.Equal("spiritual_action_points", entry.Coordinate.ResourceKey);
+                Assert.Equal(ResourceLifecycleState.Suspended, entry.State);
+                Assert.DoesNotContain(mortalState.Entries, original => original.Coordinate == entry.Coordinate);
+            });
+            Assert.All(addedHistory.Transitions, transition =>
+            {
+                Assert.Equal(setupTurn, transition.Turn);
+                Assert.DoesNotContain(mortalHistory.Transitions, original => original.TransitionId == transition.TransitionId);
+            });
+            var combinedState = new ResourceStateLedger(mortalState.Entries.Concat(addedState.Entries));
+            var combinedHistoryResult = ResourceHistoryState.CreateValidated(
+                mortalHistory.Transitions.Concat(addedHistory.Transitions), definitions);
+            Assert.True(combinedHistoryResult.IsValid, string.Join(Environment.NewLine, combinedHistoryResult.Issues));
+            var combinedHistory = combinedHistoryResult.History!;
+            Assert.Empty(combinedHistory.ValidateStateAgreement(combinedState));
+            var projected = new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                [soulPath] = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soul).ToJsonString(),
+                [AfterlifeEntityProfileState.StatePath] = profiles.ToJsonString()
+            };
+            foreach (var pair in planning.Composition!.OwnerCompanionAfterImages)
+                projected[pair.Key] = pair.Value.ToJsonString();
+            var generatedProfile = Assert.Single(JsonNode.Parse(projected[AfterlifeEntityProfileState.StatePath])!["profiles"]!.AsArray());
+            Assert.Equal("player_soul", generatedProfile!["actorId"]!.GetValue<string>());
+            Assert.Equal(17, generatedProfile["currencies"]!["inkFeathers"]!.GetValue<int>());
+            Assert.Equal(17, JsonNode.Parse(projected[soulPath])!["inkFeathers"]!["current"]!.GetValue<int>());
+            var quartet = await CanonicalResourceQuartetTransaction.ComposeExistingSessionAsync(
+                definitions, mortalState, mortalHistory, combinedState, combinedHistory, Read, before, projected);
+            Assert.NotNull(quartet.Projection);
+            Assert.Empty(quartet.Issues);
+            projected[ResourceMaterializationContract.StatePath] = combinedState.ToCanonicalJson();
+            projected[ResourceMaterializationContract.HistoryPath] = combinedHistory.ToCanonicalJson();
+            var writes = projected.Select(pair => new CoordinatedStateWriteHelper.PlannedWrite(
+                pair.Key, quartet.Projection!.BeforeImages[pair.Key], pair.Value, RequireCurrentBaseline: true)).ToList();
+            CanonicalResourceQuartetTransaction.AddAuthorityWriteAndGlobalGuards(writes, quartet.Projection!);
+            Assert.True(await CoordinatedStateWriteHelper.TryCommitAsync(files, lease, writes.ToArray()));
+
+            var actualState = ResourceStateContract.ParseCanonical(await files.ReadFileAsync(lease,
+                ResourceMaterializationContract.StatePath), definitions, allowMissingPristine: false).Ledger!;
+            var actualHistory = ResourceHistoryState.ParseCanonical(await files.ReadFileAsync(lease,
+                ResourceMaterializationContract.HistoryPath), definitions, allowMissingPristine: false).History!;
+            Assert.Equal(mortalState.ToCanonicalJson(), new ResourceStateLedger(actualState.Entries.Where(entry =>
+                !addedState.Entries.Any(added => added.Coordinate == entry.Coordinate))).ToCanonicalJson());
+            Assert.Equal(mortalHistory.ToCanonicalJson(), ResourceHistoryState.CreateValidated(actualHistory.Transitions.Where(transition =>
+                !addedHistory.Transitions.Any(added => added.TransitionId == transition.TransitionId)), definitions).History!.ToCanonicalJson());
+            foreach (var pair in woundBefore)
+                Assert.Equal(pair.Value, await files.ReadFileBytesAsync(lease, pair.Key));
+            var authority = await CanonicalResourceOwnerAuthorityComposer.ComposeAsync(definitions,
+                path => files.ReadFileAsync(lease, path), actualState, actualHistory,
+                CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
+            Assert.True(authority.IsValid, string.Join(Environment.NewLine, authority.Issues));
+            Assert.Empty(authority.Authority!.ValidateCanonicalAgreement(actualState, actualHistory));
+            MirrorBootstrapValidated = true;
         }
+
         internal void Attach(HeldTreatmentPipelineContext context)
         {
             _context = context;

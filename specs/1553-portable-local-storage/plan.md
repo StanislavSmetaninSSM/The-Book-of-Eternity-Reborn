@@ -1,3 +1,28 @@
+## Treatment mirror complete fixture bootstrap — 2026-10-08
+
+The isolated mirror fixture now supplements the real existing Mortal resource quartet
+before LiveTurnPreparation. At unused turn41 the existing afterlife planner receives
+an empty afterlife state/history slice and generates the persistent suspended player
+binding, spiritual AP capacity/state/history from consistent soul/profile17 and tier0.
+Its disjoint entries/history are merged with the original Mortal cohort; duplicate
+coordinates/transition IDs, preexisting profiles and setup-turn collisions refuse.
+The existing canonical quartet composer validates both original and combined authority,
+and one baseline-bound coordinated commit includes its original global guards.
+Post-commit assertions require original Mortal state/history and wound bytes unchanged,
+valid existing-session authority/agreement, and the generated profile17. No hand-minted
+binding, resource reset, validation relaxation or production change. Late drift99 and
+actual profile MemberPublished17 remain the same isolated causal obligation.
+
+This is test-only source awaiting focused review and a matching Plan1. The two accepted
+causal rows are unchanged and will not repeat. Prior failed attempts remain archived:
+latest evidence carrier740f428b has43 stored/expanded artifacts and56 historical pins.
+No new actual result or mirror uncertainty is claimed by this checkpoint.
+
+Parent fresh GitHub-only restoration of740f428b passed: clean detached checkout,
+27868 tracked files, treee1291f1c5a221fa6032797ba04a72bdb95ff21d6, no alternates,
+all43 stored/expanded artifacts and56 historical pins verified, full fsck exit0.
+No builds/tests in the restore; this preserves causal2 and the disclosed setup failures.
+
 ## Treatment mirror owner-bootstrap review — 2026-10-08
 
 Seeded a94d actual223842 completed one setupFAIL8.5178250s: the genuine accepted
