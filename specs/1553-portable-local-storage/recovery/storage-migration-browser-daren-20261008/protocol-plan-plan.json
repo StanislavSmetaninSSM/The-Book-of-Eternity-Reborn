@@ -1,0 +1,75 @@
+{
+  "Categories": [
+    "portable-browser-protocol-admission-linux",
+    "portable-browser-protocol-native-windows"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "7ab3dc97b57db87ad387543963d667701f1721e4",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 49.4559301,
+  "Descriptors": [
+    {
+      "Name": "portable-browser-protocol-admission-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-browser-protocol-admission-linux",
+      "Categories": [
+        "portable-browser-protocol-admission-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "portable-browser-protocol-native-windows-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-browser-protocol-native-windows",
+      "Categories": [
+        "portable-browser-protocol-native-windows"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAliasMember_RecordsOneBaselineAndRestoresExactBytes|FullyQualifiedName=BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup|FullyQualifiedName=BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler|FullyQualifiedName=BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers|FullyQualifiedName=BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence|FullyQualifiedName=BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 28,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAliasMember_RecordsOneBaselineAndRestoresExactBytes",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsFreshBrowser_UsesCurrentDeclaredMembers",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+          "Cases": 8
+        }
+      ]
+    }
+  ]
+}

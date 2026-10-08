@@ -1,0 +1,70 @@
+{
+  "Categories": [
+    "portable-browser-protocol-admission-linux",
+    "portable-browser-protocol-native-windows"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "96ae23ff61671b5e68147c5f4b80509dceff9933",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0555081,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0400069,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.083326,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 92.1510646,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0053879,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:01:37.4360294",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 32,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-browser-protocol-admission-linux-integration-001",
+      "portable-browser-protocol-native-windows-integration-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

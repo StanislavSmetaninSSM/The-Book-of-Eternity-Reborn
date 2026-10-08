@@ -1,3 +1,20 @@
+## F04/F05 shared protocol controls preserved — 2026-10-08
+
+Corrected fixture7ab3dc97 independently SOURCE/SELECTION PASS. Fresh Plan172505
+built/discovered32/2/0 (49.7296528s); actual172624 Linux4/4 PASS,1/1 complete,
+8.0196214s, clean exact source and both cleanup flags true. All three negative
+protocol cases retained full evidence before any recovery/mutation; neutral case
+recovered its real pending journal and retained the direct backup. These are
+pre-cutover positive/negative controls, not causal RED. Native28 remains0 executed.
+[Preserved raw packet](recovery/storage-migration-browser-daren-20261008/manifest.json).
+
+Next runtime gate: coherent read-only whole namespace classification, existing old
+handler/refusal, common schema7 both-platform dispatch, normalized path operands,
+context-first Daren, and signed direct-gacha adoption. Final finite Linux selection
+is56: existing46 + protocol4 + original direct-gacha TurnLifetime1/AdoptionRefuses5.
+The unchanged raw-request parser8 is excluded. Native28 stays a separate unexecuted
+recipe. Independent source/selection and fresh PlanOnly precede actual56.
+
 ## F04/F05 protocol fixtures WIP — 2026-10-08
 
 Baseline carrier4f12f45c independently accepted: unchanged Linux46 PASS,
