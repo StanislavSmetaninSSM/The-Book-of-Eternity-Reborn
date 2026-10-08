@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-gm-helper-admission-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "82f56cdb2a1e239eefff390d2ae7bb18a2a2f7c5",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 44.4204871,
+  "Descriptors": [
+    {
+      "Name": "portable-gm-helper-admission-causal-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-gm-helper-admission-causal-linux",
+      "Categories": [
+        "portable-gm-helper-admission-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperStorageTests.OriginalHelperAdmitsCurrentGenerationAndCommittedPolicySnapshot",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperStorageTests.OriginalHelperAdmitsCurrentGenerationAndCommittedPolicySnapshot",
+          "Cases": 10
+        }
+      ]
+    }
+  ]
+}

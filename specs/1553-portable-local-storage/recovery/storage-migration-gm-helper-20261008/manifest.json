@@ -1,0 +1,706 @@
+{
+  "scope": "F13 original PowerShell helper admission/read/policy/publication. Actual isolated Linux pwsh and original processes; no native Windows/PS5.1 or live GM/provider. Causal fixture uses actual publisher/Load/paths, never a fabricated outcome. Future helper bootstrap is test-only.",
+  "initialPlan": {
+    "qualification": "Fresh initial fixture build only;10 planned/1 descriptor/0 executed. Prior cleanup-oracle gaps subsequently corrected.",
+    "source": "6c3f5de12ac005feb555abc4a9dc1511b480af57",
+    "artifacts": [
+      {
+        "path": "initial-plan-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-181854-409-105988-db981d78cfc243c0912a231b00b9a54e-categories/Build-unit.log",
+        "sha256": "12942f77f75d567e590cfad58a2d2963509b33a4328f2f065c56e75cd5997d3e",
+        "originalSha256": "99496927f24e5707a5420cf83fd5b85f308f6627b79bb5960e61aac6f406c332"
+      },
+      {
+        "path": "initial-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-181854-409-105988-db981d78cfc243c0912a231b00b9a54e-categories/dotnet-test.log",
+        "sha256": "b4e080e9ee9d77222a6ab84f1d5c5533fafd97c41f195c96d12f46d39a38e821",
+        "originalSha256": "bf78c0e9579de62f78cb3eea21807f3d4529dda619a98845541ed5cc76d7ebe9"
+      },
+      {
+        "path": "initial-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-181854-409-105988-db981d78cfc243c0912a231b00b9a54e-categories/plan.json",
+        "sha256": "a4730fc067746d592b0bc4892225aff3280234526742de523b5392b773ede9e7",
+        "originalSha256": "a4730fc067746d592b0bc4892225aff3280234526742de523b5392b773ede9e7"
+      },
+      {
+        "path": "initial-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-181854-409-105988-db981d78cfc243c0912a231b00b9a54e-categories/summary.json",
+        "sha256": "072e8d2739710d3b1ae701da919e1b54896833aacf79731104a6d3cf24dd83ea",
+        "originalSha256": "072e8d2739710d3b1ae701da919e1b54896833aacf79731104a6d3cf24dd83ea"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "sha256": "f24a483eb936b50f13faa8b7ab16aadefeba66a93b609dfdb04605ecccec5f1c"
+      },
+      {
+        "path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+        "sha256": "d7a46514973be6be8797fba9b1a44dd7db7e20d457292e1317f01e86472cdcb6"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "ec05408d0e2d041133af2eb3c06c480783a68bcc53c10e7e79ef3c749c1a18bb"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+        "sha256": "06d1e16f65dfdd64ec6b9f75f6c60a1a9c7b079e59e685f3338a041f9a7b638b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "sha256": "288255dd158fc146cf017b2be9211c5f583bd71fba76b5572e89768225fa1e40"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "08c5b4542a54fb045b7dc4ed53b0244df95812b6bb7054b2559f5bb65960a3f0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+        "sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+        "sha256": "693e601b81568ba9e6b478b57666f6e1d3f8eec172bc49b41958892ef2370642"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+        "sha256": "881559a5e20ce76489f16a2fecda55dc5a7c932bceccd6eee3ad6d0cd6161982"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/GmTurnHelperStorageScenario.cs",
+        "sha256": "342450ab87a7fc9508fed82b68425fc4f7b7be69c1d7ea80804dc58f190f10d1"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+        "sha256": "c0d70996c7e77bd787dad1f31a5d0122540f5085064a87d00e70f99c12e511fb"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmTurnHelperStorageTests.cs",
+        "sha256": "882e59860104a829a95504c998795dfdad0359ebd8be9b1e8c4672df466a7f2e"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+        "sha256": "a71ecce4a60b8285b91e53f75fd0292b902b860ed664c02fc93695656ce3fda6"
+      },
+      {
+        "path": "tests/fixtures/GmTurnHelper/storage.ps1",
+        "sha256": "6f0f2fa430981a5ce44bf0c5b31dc2d30fd11d0a97578733f5de7c1dc833dca2"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "af0489f3832231077c2832dc858135282d604ff2b6f4681fc5820bec66854836"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "d0a3c97da6373c6c8f80eb3bb3e261108c47a7838ff9411d0a9bad6c73a533d8"
+      }
+    ]
+  },
+  "mixedCausal": {
+    "qualification": "Actual10 complete0PASS10FAIL = nine causal REDs plus realm-link fixture failure before intended helper access. Four actual held publications roll back; stale actual Load/current recoverable journal, protected alias, sibling read and invalid generation admissions reach their oracles. Realm-link setup re-resolves its own link, then cleanup does likewise; forced pwsh termination and failed logical cleanup are fixture failure. All10 physical guardians healthy; only nine unforced exits/logical ownership proofs. No production changes/native qualification.",
+    "planned": 10,
+    "executed": 10,
+    "passed": 0,
+    "failed": 10,
+    "causalFailures": 9,
+    "fixtureFailures": 1,
+    "wallSeconds": 25.865018,
+    "source": "82f56cdb2a1e239eefff390d2ae7bb18a2a2f7c5",
+    "artifacts": [
+      {
+        "path": "corrected-plan-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-182232-044-106662-573a9d47506e43509229b30b318abd05-categories/Build-unit.log",
+        "sha256": "3d8594cacefddc68e28e5b02c51051ecd7bb90a722e30c2addc74393a769eb88",
+        "originalSha256": "7fe15808e033815a2402ea255489449091f8c11d0068b94a6bce333ff034cd17"
+      },
+      {
+        "path": "corrected-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-182232-044-106662-573a9d47506e43509229b30b318abd05-categories/dotnet-test.log",
+        "sha256": "eb5cd640323135e3b45b49845821d982bcfa669890b23bbbaea5e0a6c3f6ab5c",
+        "originalSha256": "961542dbe3086d9651def3fa9f132d598f6d73636b05a3df38345dffa1952145"
+      },
+      {
+        "path": "corrected-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-182232-044-106662-573a9d47506e43509229b30b318abd05-categories/plan.json",
+        "sha256": "9e525c597b9b427c7fb1c0b5576c6dfdb9d8526f8d685b68ec466fd94144d7d6",
+        "originalSha256": "9e525c597b9b427c7fb1c0b5576c6dfdb9d8526f8d685b68ec466fd94144d7d6"
+      },
+      {
+        "path": "corrected-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-182232-044-106662-573a9d47506e43509229b30b318abd05-categories/summary.json",
+        "sha256": "d4f8cd145faa781cebb0f64364dc72027a2a5a9625f029f8cf6cc89dcf10fb2b",
+        "originalSha256": "d4f8cd145faa781cebb0f64364dc72027a2a5a9625f029f8cf6cc89dcf10fb2b"
+      },
+      {
+        "path": "mixed-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-190610-261-107617-82edb4cd6cc84dec827cdc1bceae3dbe-categories/dotnet-test.log",
+        "sha256": "35e71c206144b22acb09c2849d238e62782a6d65ea1c2e564bff9fd4fef13569",
+        "originalSha256": "d18613d6b2ce458bba6814d0256cd02334577d9ca8d4d3deb9d4416b7fffaeb8"
+      },
+      {
+        "path": "mixed-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-190610-261-107617-82edb4cd6cc84dec827cdc1bceae3dbe-categories/plan.json",
+        "sha256": "d20d23b70a21cb1c314d99b4ea7f955cf08daceb28326a0de1c4091868d9b073",
+        "originalSha256": "d20d23b70a21cb1c314d99b4ea7f955cf08daceb28326a0de1c4091868d9b073"
+      },
+      {
+        "path": "mixed-actual-portable-gm-helper-admission-causal-linux-unit-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-190610-261-107617-82edb4cd6cc84dec827cdc1bceae3dbe-categories/portable-gm-helper-admission-causal-linux-unit-001.trx",
+        "sha256": "4d42df9fae467d7bf8ab1c988f79ee44eebe6900d7b8774c27ac7802eeb82017",
+        "originalSha256": "e6c22d8a6eeac7c1122c2104cf58818f7852ba591d2aab5ec200f34bcdedbd2d"
+      },
+      {
+        "path": "mixed-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-190610-261-107617-82edb4cd6cc84dec827cdc1bceae3dbe-categories/summary.json",
+        "sha256": "d0fde5bed8e40aed15c2550080a61a26f8100f68caedf1a8b14f519ca01d192e",
+        "originalSha256": "d0fde5bed8e40aed15c2550080a61a26f8100f68caedf1a8b14f519ca01d192e"
+      },
+      {
+        "path": "mixed-runner-boe-gm-helper-causal-red.log.gz",
+        "source": "/tmp/boe-gm-helper-causal-red.log",
+        "sha256": "3d3f1aba61e8e70c3c97b6ff383459e1412507f9a33461481a376751fd4eff3c",
+        "originalSha256": "05666d8f0e87999067c769e7eb5669d44caa2a57c21534d609dba4f1dbff58b6"
+      },
+      {
+        "path": "mixed-09128477e4b246d68b39f4959f758c01-build-provenance.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/09128477e4b246d68b39f4959f758c01/build-provenance.json",
+        "sha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27",
+        "originalSha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27"
+      },
+      {
+        "path": "mixed-09128477e4b246d68b39f4959f758c01-build.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/09128477e4b246d68b39f4959f758c01/build.log",
+        "sha256": "fb5825cbf585a9f92159c8637930d1501eab863e26b2a2cdba8884846f5ce56e",
+        "originalSha256": "03d967b8e5fcf58618a128c8dc78ba52208c0cb42fa01984551313db8a10d65a"
+      },
+      {
+        "path": "mixed-09128477e4b246d68b39f4959f758c01-guardian.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/09128477e4b246d68b39f4959f758c01/guardian.json",
+        "sha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+        "originalSha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+      },
+      {
+        "path": "mixed-09128477e4b246d68b39f4959f758c01-guardian.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/09128477e4b246d68b39f4959f758c01/guardian.log",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "mixed-09128477e4b246d68b39f4959f758c01-neutral-terminal-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/09128477e4b246d68b39f4959f758c01/neutral-terminal-manifest.json",
+        "sha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d",
+        "originalSha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d"
+      },
+      {
+        "path": "mixed-09128477e4b246d68b39f4959f758c01-package-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/09128477e4b246d68b39f4959f758c01/package-manifest.json",
+        "sha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5",
+        "originalSha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5"
+      },
+      {
+        "path": "mixed-09128477e4b246d68b39f4959f758c01-powershell.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/09128477e4b246d68b39f4959f758c01/powershell.json",
+        "sha256": "9699b8778f74cdd76b0760c20f74ac162f8b3e4a30f213da71826eb536a1259d",
+        "originalSha256": "9699b8778f74cdd76b0760c20f74ac162f8b3e4a30f213da71826eb536a1259d"
+      },
+      {
+        "path": "mixed-09128477e4b246d68b39f4959f758c01-scenario.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/09128477e4b246d68b39f4959f758c01/scenario.json",
+        "sha256": "417a92ec1efd3d6f7b681c6bae4728e27ec4b5c9c21f77b1425ee08a4f885d64",
+        "originalSha256": "417a92ec1efd3d6f7b681c6bae4728e27ec4b5c9c21f77b1425ee08a4f885d64"
+      },
+      {
+        "path": "mixed-d2fe2899280b4ea18f7b1cd1b03da068-build-provenance.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d2fe2899280b4ea18f7b1cd1b03da068/build-provenance.json",
+        "sha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27",
+        "originalSha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27"
+      },
+      {
+        "path": "mixed-d2fe2899280b4ea18f7b1cd1b03da068-build.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d2fe2899280b4ea18f7b1cd1b03da068/build.log",
+        "sha256": "81e68c28326a41d2485fa707493bae4e65b3eb8fdc0115aefc9ac51e2e516d69",
+        "originalSha256": "219c67dd4ea544b3bcfffb4ad068147a11c667dcbc03a8feded197443aa996de"
+      },
+      {
+        "path": "mixed-d2fe2899280b4ea18f7b1cd1b03da068-guardian.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d2fe2899280b4ea18f7b1cd1b03da068/guardian.json",
+        "sha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+        "originalSha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+      },
+      {
+        "path": "mixed-d2fe2899280b4ea18f7b1cd1b03da068-guardian.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d2fe2899280b4ea18f7b1cd1b03da068/guardian.log",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "mixed-d2fe2899280b4ea18f7b1cd1b03da068-neutral-terminal-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d2fe2899280b4ea18f7b1cd1b03da068/neutral-terminal-manifest.json",
+        "sha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d",
+        "originalSha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d"
+      },
+      {
+        "path": "mixed-d2fe2899280b4ea18f7b1cd1b03da068-package-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d2fe2899280b4ea18f7b1cd1b03da068/package-manifest.json",
+        "sha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5",
+        "originalSha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5"
+      },
+      {
+        "path": "mixed-d2fe2899280b4ea18f7b1cd1b03da068-powershell.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d2fe2899280b4ea18f7b1cd1b03da068/powershell.json",
+        "sha256": "42b514e87d971a99a2971b373fe47b8f447f4340580d6021b244db1da79ff0ac",
+        "originalSha256": "42b514e87d971a99a2971b373fe47b8f447f4340580d6021b244db1da79ff0ac"
+      },
+      {
+        "path": "mixed-d2fe2899280b4ea18f7b1cd1b03da068-scenario.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d2fe2899280b4ea18f7b1cd1b03da068/scenario.json",
+        "sha256": "17b476950788f30b0fb2630470ffd08ffaef4bb0062efa82bba7a5588491e469",
+        "originalSha256": "17b476950788f30b0fb2630470ffd08ffaef4bb0062efa82bba7a5588491e469"
+      },
+      {
+        "path": "mixed-92aea8fff8c64992b82d1eb44f0d7f47-build-provenance.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/92aea8fff8c64992b82d1eb44f0d7f47/build-provenance.json",
+        "sha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27",
+        "originalSha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27"
+      },
+      {
+        "path": "mixed-92aea8fff8c64992b82d1eb44f0d7f47-build.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/92aea8fff8c64992b82d1eb44f0d7f47/build.log",
+        "sha256": "77d7450e67984849a7b48623cdb1b676ed36269331ffdb77944299d89f16e9a0",
+        "originalSha256": "5032fd6f25d20160e4f57321e6249871759962a69aa8c5001610b786b5941c07"
+      },
+      {
+        "path": "mixed-92aea8fff8c64992b82d1eb44f0d7f47-guardian.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/92aea8fff8c64992b82d1eb44f0d7f47/guardian.json",
+        "sha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+        "originalSha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+      },
+      {
+        "path": "mixed-92aea8fff8c64992b82d1eb44f0d7f47-guardian.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/92aea8fff8c64992b82d1eb44f0d7f47/guardian.log",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "mixed-92aea8fff8c64992b82d1eb44f0d7f47-neutral-terminal-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/92aea8fff8c64992b82d1eb44f0d7f47/neutral-terminal-manifest.json",
+        "sha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d",
+        "originalSha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d"
+      },
+      {
+        "path": "mixed-92aea8fff8c64992b82d1eb44f0d7f47-package-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/92aea8fff8c64992b82d1eb44f0d7f47/package-manifest.json",
+        "sha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5",
+        "originalSha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5"
+      },
+      {
+        "path": "mixed-92aea8fff8c64992b82d1eb44f0d7f47-powershell.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/92aea8fff8c64992b82d1eb44f0d7f47/powershell.json",
+        "sha256": "42b514e87d971a99a2971b373fe47b8f447f4340580d6021b244db1da79ff0ac",
+        "originalSha256": "42b514e87d971a99a2971b373fe47b8f447f4340580d6021b244db1da79ff0ac"
+      },
+      {
+        "path": "mixed-92aea8fff8c64992b82d1eb44f0d7f47-scenario.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/92aea8fff8c64992b82d1eb44f0d7f47/scenario.json",
+        "sha256": "e9b2f0c953e9fe5c490a2c31e0a96be2e7dba17426a623b437b12d24cbc3f75a",
+        "originalSha256": "e9b2f0c953e9fe5c490a2c31e0a96be2e7dba17426a623b437b12d24cbc3f75a"
+      },
+      {
+        "path": "mixed-ecf9129c59804d3f9f2e2572cebc1d6e-build-provenance.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/ecf9129c59804d3f9f2e2572cebc1d6e/build-provenance.json",
+        "sha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27",
+        "originalSha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27"
+      },
+      {
+        "path": "mixed-ecf9129c59804d3f9f2e2572cebc1d6e-build.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/ecf9129c59804d3f9f2e2572cebc1d6e/build.log",
+        "sha256": "106d3d0e255aca309f6327b6ac6e3eb95373f16a453348f74e8c49bd2d0706c9",
+        "originalSha256": "98f8be26c7e98d4900671f4fcd85a4955382f3f91e3d6c31c9e5aea0bf5bcd2b"
+      },
+      {
+        "path": "mixed-ecf9129c59804d3f9f2e2572cebc1d6e-guardian.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/ecf9129c59804d3f9f2e2572cebc1d6e/guardian.json",
+        "sha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+        "originalSha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+      },
+      {
+        "path": "mixed-ecf9129c59804d3f9f2e2572cebc1d6e-guardian.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/ecf9129c59804d3f9f2e2572cebc1d6e/guardian.log",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "mixed-ecf9129c59804d3f9f2e2572cebc1d6e-neutral-terminal-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/ecf9129c59804d3f9f2e2572cebc1d6e/neutral-terminal-manifest.json",
+        "sha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d",
+        "originalSha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d"
+      },
+      {
+        "path": "mixed-ecf9129c59804d3f9f2e2572cebc1d6e-package-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/ecf9129c59804d3f9f2e2572cebc1d6e/package-manifest.json",
+        "sha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5",
+        "originalSha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5"
+      },
+      {
+        "path": "mixed-ecf9129c59804d3f9f2e2572cebc1d6e-powershell.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/ecf9129c59804d3f9f2e2572cebc1d6e/powershell.json",
+        "sha256": "42b514e87d971a99a2971b373fe47b8f447f4340580d6021b244db1da79ff0ac",
+        "originalSha256": "42b514e87d971a99a2971b373fe47b8f447f4340580d6021b244db1da79ff0ac"
+      },
+      {
+        "path": "mixed-ecf9129c59804d3f9f2e2572cebc1d6e-scenario.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/ecf9129c59804d3f9f2e2572cebc1d6e/scenario.json",
+        "sha256": "f0e1d56020afbaa6b2db4a59d31bc9f2fd4d13b43ceab7c3d5f0582da6bc27aa",
+        "originalSha256": "f0e1d56020afbaa6b2db4a59d31bc9f2fd4d13b43ceab7c3d5f0582da6bc27aa"
+      },
+      {
+        "path": "mixed-0f85af25bcdc4c2abbe2884f7625b015-build-provenance.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/0f85af25bcdc4c2abbe2884f7625b015/build-provenance.json",
+        "sha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27",
+        "originalSha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27"
+      },
+      {
+        "path": "mixed-0f85af25bcdc4c2abbe2884f7625b015-build.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/0f85af25bcdc4c2abbe2884f7625b015/build.log",
+        "sha256": "732fd8fa1d6844bc519bd43393553fa8438383666f380e27cb9d9f3a830b1be9",
+        "originalSha256": "3a3fd4b5cc7a6d4d2b722036ca3ad7bb2b6a2eac06cbe6d51ef5b3d7a2dc9462"
+      },
+      {
+        "path": "mixed-0f85af25bcdc4c2abbe2884f7625b015-guardian.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/0f85af25bcdc4c2abbe2884f7625b015/guardian.json",
+        "sha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+        "originalSha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+      },
+      {
+        "path": "mixed-0f85af25bcdc4c2abbe2884f7625b015-guardian.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/0f85af25bcdc4c2abbe2884f7625b015/guardian.log",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "mixed-0f85af25bcdc4c2abbe2884f7625b015-neutral-terminal-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/0f85af25bcdc4c2abbe2884f7625b015/neutral-terminal-manifest.json",
+        "sha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d",
+        "originalSha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d"
+      },
+      {
+        "path": "mixed-0f85af25bcdc4c2abbe2884f7625b015-package-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/0f85af25bcdc4c2abbe2884f7625b015/package-manifest.json",
+        "sha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5",
+        "originalSha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5"
+      },
+      {
+        "path": "mixed-0f85af25bcdc4c2abbe2884f7625b015-powershell.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/0f85af25bcdc4c2abbe2884f7625b015/powershell.json",
+        "sha256": "80c2386c1e73509c705a3d014ff0a3beadd090d6cad4327ef683743745e0f87c",
+        "originalSha256": "80c2386c1e73509c705a3d014ff0a3beadd090d6cad4327ef683743745e0f87c"
+      },
+      {
+        "path": "mixed-0f85af25bcdc4c2abbe2884f7625b015-scenario.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/0f85af25bcdc4c2abbe2884f7625b015/scenario.json",
+        "sha256": "d4e1a7487dbc758f10658d65ea998c5aa6c5d591b2e173a4fbbfdfbeeda257f4",
+        "originalSha256": "d4e1a7487dbc758f10658d65ea998c5aa6c5d591b2e173a4fbbfdfbeeda257f4"
+      },
+      {
+        "path": "mixed-6f05db0aa0ea4846b0dab6b8d60a7e66-build-provenance.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/6f05db0aa0ea4846b0dab6b8d60a7e66/build-provenance.json",
+        "sha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27",
+        "originalSha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27"
+      },
+      {
+        "path": "mixed-6f05db0aa0ea4846b0dab6b8d60a7e66-build.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/6f05db0aa0ea4846b0dab6b8d60a7e66/build.log",
+        "sha256": "f9d707a5c38432471b6d156349706f2dd7f945190b2df24f2288f062ce7449a6",
+        "originalSha256": "e468dc8496fa676edb251ad2d92dfffd90b667446d0fa8d754dfbb6d5873790a"
+      },
+      {
+        "path": "mixed-6f05db0aa0ea4846b0dab6b8d60a7e66-guardian.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/6f05db0aa0ea4846b0dab6b8d60a7e66/guardian.json",
+        "sha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+        "originalSha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+      },
+      {
+        "path": "mixed-6f05db0aa0ea4846b0dab6b8d60a7e66-guardian.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/6f05db0aa0ea4846b0dab6b8d60a7e66/guardian.log",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "mixed-6f05db0aa0ea4846b0dab6b8d60a7e66-neutral-terminal-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/6f05db0aa0ea4846b0dab6b8d60a7e66/neutral-terminal-manifest.json",
+        "sha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d",
+        "originalSha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d"
+      },
+      {
+        "path": "mixed-6f05db0aa0ea4846b0dab6b8d60a7e66-package-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/6f05db0aa0ea4846b0dab6b8d60a7e66/package-manifest.json",
+        "sha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5",
+        "originalSha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5"
+      },
+      {
+        "path": "mixed-6f05db0aa0ea4846b0dab6b8d60a7e66-powershell.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/6f05db0aa0ea4846b0dab6b8d60a7e66/powershell.json",
+        "sha256": "bf996bd74d1c8eec5eeeff399d90d91e02df6ec7b456c4f0798dae63690b4a96",
+        "originalSha256": "bf996bd74d1c8eec5eeeff399d90d91e02df6ec7b456c4f0798dae63690b4a96"
+      },
+      {
+        "path": "mixed-6f05db0aa0ea4846b0dab6b8d60a7e66-scenario.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/6f05db0aa0ea4846b0dab6b8d60a7e66/scenario.json",
+        "sha256": "9db3423d571806597d3504f38908792734a2b652804dc75d427528ae5831167d",
+        "originalSha256": "9db3423d571806597d3504f38908792734a2b652804dc75d427528ae5831167d"
+      },
+      {
+        "path": "mixed-632f7f8859924b7aa355311f8528bbd3-build-provenance.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/632f7f8859924b7aa355311f8528bbd3/build-provenance.json",
+        "sha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27",
+        "originalSha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27"
+      },
+      {
+        "path": "mixed-632f7f8859924b7aa355311f8528bbd3-build.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/632f7f8859924b7aa355311f8528bbd3/build.log",
+        "sha256": "77bcdd25802d3a529d22d78c8557b420f55719cf8921c9464fb4167a180984da",
+        "originalSha256": "7eee95282d20dee1894bd9e81cb5ff8bbee63e189fab73df5ed86db1bed723ee"
+      },
+      {
+        "path": "mixed-632f7f8859924b7aa355311f8528bbd3-guardian.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/632f7f8859924b7aa355311f8528bbd3/guardian.json",
+        "sha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+        "originalSha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+      },
+      {
+        "path": "mixed-632f7f8859924b7aa355311f8528bbd3-guardian.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/632f7f8859924b7aa355311f8528bbd3/guardian.log",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "mixed-632f7f8859924b7aa355311f8528bbd3-neutral-terminal-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/632f7f8859924b7aa355311f8528bbd3/neutral-terminal-manifest.json",
+        "sha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d",
+        "originalSha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d"
+      },
+      {
+        "path": "mixed-632f7f8859924b7aa355311f8528bbd3-package-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/632f7f8859924b7aa355311f8528bbd3/package-manifest.json",
+        "sha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5",
+        "originalSha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5"
+      },
+      {
+        "path": "mixed-632f7f8859924b7aa355311f8528bbd3-powershell.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/632f7f8859924b7aa355311f8528bbd3/powershell.json",
+        "sha256": "42b514e87d971a99a2971b373fe47b8f447f4340580d6021b244db1da79ff0ac",
+        "originalSha256": "42b514e87d971a99a2971b373fe47b8f447f4340580d6021b244db1da79ff0ac"
+      },
+      {
+        "path": "mixed-632f7f8859924b7aa355311f8528bbd3-scenario.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/632f7f8859924b7aa355311f8528bbd3/scenario.json",
+        "sha256": "4f10ab8b15214c21f1d125a10bc8e2d9eec2104f0e847ba168bb4dbbb520985f",
+        "originalSha256": "4f10ab8b15214c21f1d125a10bc8e2d9eec2104f0e847ba168bb4dbbb520985f"
+      },
+      {
+        "path": "mixed-4fc32961c0e84c3ca938a660a886a6eb-build-provenance.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/4fc32961c0e84c3ca938a660a886a6eb/build-provenance.json",
+        "sha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27",
+        "originalSha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27"
+      },
+      {
+        "path": "mixed-4fc32961c0e84c3ca938a660a886a6eb-build.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/4fc32961c0e84c3ca938a660a886a6eb/build.log",
+        "sha256": "0905a3742e8b30721b1246f5382b5b29670eed563026db3414772c1cd3ab3753",
+        "originalSha256": "9c042c3f79523510bf1d6b70e21f031bdb895c85a899c09234ba10d3516b4114"
+      },
+      {
+        "path": "mixed-4fc32961c0e84c3ca938a660a886a6eb-guardian.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/4fc32961c0e84c3ca938a660a886a6eb/guardian.json",
+        "sha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+        "originalSha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+      },
+      {
+        "path": "mixed-4fc32961c0e84c3ca938a660a886a6eb-guardian.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/4fc32961c0e84c3ca938a660a886a6eb/guardian.log",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "mixed-4fc32961c0e84c3ca938a660a886a6eb-neutral-terminal-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/4fc32961c0e84c3ca938a660a886a6eb/neutral-terminal-manifest.json",
+        "sha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d",
+        "originalSha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d"
+      },
+      {
+        "path": "mixed-4fc32961c0e84c3ca938a660a886a6eb-package-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/4fc32961c0e84c3ca938a660a886a6eb/package-manifest.json",
+        "sha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5",
+        "originalSha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5"
+      },
+      {
+        "path": "mixed-4fc32961c0e84c3ca938a660a886a6eb-powershell.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/4fc32961c0e84c3ca938a660a886a6eb/powershell.json",
+        "sha256": "80c2386c1e73509c705a3d014ff0a3beadd090d6cad4327ef683743745e0f87c",
+        "originalSha256": "80c2386c1e73509c705a3d014ff0a3beadd090d6cad4327ef683743745e0f87c"
+      },
+      {
+        "path": "mixed-4fc32961c0e84c3ca938a660a886a6eb-scenario.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/4fc32961c0e84c3ca938a660a886a6eb/scenario.json",
+        "sha256": "0cafd0f34baae8b2fec9aae987896724ce686c72ec5bbb4fe26d5cc6912ad9f4",
+        "originalSha256": "0cafd0f34baae8b2fec9aae987896724ce686c72ec5bbb4fe26d5cc6912ad9f4"
+      },
+      {
+        "path": "mixed-a0450a5f0e624fc3aa7d11c461209b3a-build-provenance.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/a0450a5f0e624fc3aa7d11c461209b3a/build-provenance.json",
+        "sha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27",
+        "originalSha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27"
+      },
+      {
+        "path": "mixed-a0450a5f0e624fc3aa7d11c461209b3a-build.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/a0450a5f0e624fc3aa7d11c461209b3a/build.log",
+        "sha256": "c1b541a90f5fd42887f7c6548d09f017fc63272b284ad3146396686fa7cdaa68",
+        "originalSha256": "ac0e67b89286cc443464a5c6763cd1efe18fd6bb7dfbf06628204b8cdb292b08"
+      },
+      {
+        "path": "mixed-a0450a5f0e624fc3aa7d11c461209b3a-guardian.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/a0450a5f0e624fc3aa7d11c461209b3a/guardian.json",
+        "sha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+        "originalSha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+      },
+      {
+        "path": "mixed-a0450a5f0e624fc3aa7d11c461209b3a-guardian.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/a0450a5f0e624fc3aa7d11c461209b3a/guardian.log",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "mixed-a0450a5f0e624fc3aa7d11c461209b3a-neutral-terminal-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/a0450a5f0e624fc3aa7d11c461209b3a/neutral-terminal-manifest.json",
+        "sha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d",
+        "originalSha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d"
+      },
+      {
+        "path": "mixed-a0450a5f0e624fc3aa7d11c461209b3a-package-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/a0450a5f0e624fc3aa7d11c461209b3a/package-manifest.json",
+        "sha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5",
+        "originalSha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5"
+      },
+      {
+        "path": "mixed-a0450a5f0e624fc3aa7d11c461209b3a-powershell.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/a0450a5f0e624fc3aa7d11c461209b3a/powershell.json",
+        "sha256": "9699b8778f74cdd76b0760c20f74ac162f8b3e4a30f213da71826eb536a1259d",
+        "originalSha256": "9699b8778f74cdd76b0760c20f74ac162f8b3e4a30f213da71826eb536a1259d"
+      },
+      {
+        "path": "mixed-a0450a5f0e624fc3aa7d11c461209b3a-scenario.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/a0450a5f0e624fc3aa7d11c461209b3a/scenario.json",
+        "sha256": "5e550dcdb4cd3d945dc9ce1e6034efe01fe06b16e8fb0ae229ee7e489495c86f",
+        "originalSha256": "5e550dcdb4cd3d945dc9ce1e6034efe01fe06b16e8fb0ae229ee7e489495c86f"
+      },
+      {
+        "path": "mixed-d6084beb43644211b4a3e5cc9571cc3d-build-provenance.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d6084beb43644211b4a3e5cc9571cc3d/build-provenance.json",
+        "sha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27",
+        "originalSha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27"
+      },
+      {
+        "path": "mixed-d6084beb43644211b4a3e5cc9571cc3d-build.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d6084beb43644211b4a3e5cc9571cc3d/build.log",
+        "sha256": "a6acf94b31c8c036aaee612643f3ce86cf1cfebb67a65d56eed7354750c1399a",
+        "originalSha256": "e17b22d53bd73aeba607bce5f64b18c489a5351f26b45105011b5d82de228c33"
+      },
+      {
+        "path": "mixed-d6084beb43644211b4a3e5cc9571cc3d-guardian.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d6084beb43644211b4a3e5cc9571cc3d/guardian.json",
+        "sha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+        "originalSha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+      },
+      {
+        "path": "mixed-d6084beb43644211b4a3e5cc9571cc3d-guardian.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d6084beb43644211b4a3e5cc9571cc3d/guardian.log",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "mixed-d6084beb43644211b4a3e5cc9571cc3d-neutral-terminal-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d6084beb43644211b4a3e5cc9571cc3d/neutral-terminal-manifest.json",
+        "sha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d",
+        "originalSha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d"
+      },
+      {
+        "path": "mixed-d6084beb43644211b4a3e5cc9571cc3d-package-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d6084beb43644211b4a3e5cc9571cc3d/package-manifest.json",
+        "sha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5",
+        "originalSha256": "9aaa194d651a1082c979ca729ea08d906e1cd0ca06af558719bf60bdb6b5fbd5"
+      },
+      {
+        "path": "mixed-d6084beb43644211b4a3e5cc9571cc3d-scenario.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/d6084beb43644211b4a3e5cc9571cc3d/scenario.json",
+        "sha256": "084524b7493d1bdfd38e7f8dc3254a55be94ba6a6745311246529e32058450d2",
+        "originalSha256": "084524b7493d1bdfd38e7f8dc3254a55be94ba6a6745311246529e32058450d2"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "sha256": "f24a483eb936b50f13faa8b7ab16aadefeba66a93b609dfdb04605ecccec5f1c"
+      },
+      {
+        "path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+        "sha256": "d7a46514973be6be8797fba9b1a44dd7db7e20d457292e1317f01e86472cdcb6"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "ec05408d0e2d041133af2eb3c06c480783a68bcc53c10e7e79ef3c749c1a18bb"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+        "sha256": "06d1e16f65dfdd64ec6b9f75f6c60a1a9c7b079e59e685f3338a041f9a7b638b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "sha256": "288255dd158fc146cf017b2be9211c5f583bd71fba76b5572e89768225fa1e40"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "08c5b4542a54fb045b7dc4ed53b0244df95812b6bb7054b2559f5bb65960a3f0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+        "sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+        "sha256": "693e601b81568ba9e6b478b57666f6e1d3f8eec172bc49b41958892ef2370642"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+        "sha256": "881559a5e20ce76489f16a2fecda55dc5a7c932bceccd6eee3ad6d0cd6161982"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/GmTurnHelperStorageScenario.cs",
+        "sha256": "dcd18e452e0421595d0279a338f487061720f89de447711c7dadc26831f33858"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+        "sha256": "c0d70996c7e77bd787dad1f31a5d0122540f5085064a87d00e70f99c12e511fb"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmTurnHelperStorageTests.cs",
+        "sha256": "882e59860104a829a95504c998795dfdad0359ebd8be9b1e8c4672df466a7f2e"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+        "sha256": "a71ecce4a60b8285b91e53f75fd0292b902b860ed664c02fc93695656ce3fda6"
+      },
+      {
+        "path": "tests/fixtures/GmTurnHelper/storage.ps1",
+        "sha256": "1df291475bd3fcafb28a42257cae28810ef7de523ff0bceee49c2c62d34f3995"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "af0489f3832231077c2832dc858135282d604ff2b6f4681fc5820bec66854836"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "d0a3c97da6373c6c8f80eb3bb3e261108c47a7838ff9411d0a9bad6c73a533d8"
+      }
+    ]
+  }
+}

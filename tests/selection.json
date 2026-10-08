@@ -465,7 +465,19 @@
     },
     {
       "category": "portable-gm-helper-admission-causal-linux",
-      "reason": "T063 F13 frozen test-only causal10. Real original helper functions and held current publication/public Load/path predicates before dedicated admission implementation; positive actual cuts and exact evidence precede desired behavior assertions. Source/fixture gate and fresh matching PlanOnly required before actual execution.",
+      "reason": "T063 F13 nine reached original-helper causal failures retained. Full final GREEN selects these nine plus separately owned realm-link row; do not repeat nine for the narrow fixture correction.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS"
+      ]
+    },
+    {
+      "category": "portable-gm-helper-realm-link-causal-linux",
+      "reason": "T063 F13 corrected realm-link fixture: retain pre-link validated absolute target only for fixture install/evidence/repair. Rerun this exact one case after source/selection gate and fresh build; no production change.",
       "contracts": [
         "#1553",
         "FR-002",

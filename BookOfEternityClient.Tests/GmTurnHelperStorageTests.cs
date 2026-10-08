@@ -13,10 +13,14 @@ public sealed class GmTurnHelperStorageTests
     [InlineData("stale-load")]
     [InlineData("path-dot")]
     [InlineData("path-sibling")]
-    [InlineData("realm-link")]
     [InlineData("generation-missing")]
     [InlineData("generation-malformed")]
-    public async Task OriginalHelperAdmitsCurrentGenerationAndCommittedPolicySnapshot(string scenario)
+    public Task OriginalHelperAdmitsCurrentGenerationAndCommittedPolicySnapshot(string scenario) => RunScenarioAsync(scenario);
+
+    [Fact]
+    public Task OriginalHelperRejectsRealmLinkBeforePolicyWrite() => RunScenarioAsync("realm-link");
+
+    private static async Task RunScenarioAsync(string scenario)
     {
         string? folder = null;
         try {

@@ -1,3 +1,31 @@
+## F13 causal checkpoint and isolated realm-link correction — 2026-10-08
+
+Both parent and independent fixture/source/selection gates accepted82f; corrected
+Plan182232 built successfully (40.5667668s, wall44.7200884s),10/1/0, clean source.
+Actual190610 completed10/10,0PASS10FAIL in25.8650180s, clean82f, both runner
+cleanup flags true: **nine causal failures and one fixture failure**. Four held
+publication cases reached exact MemberPublished and known rollback; old helper
+Init/read/policy/completion consumed undecided state. Actual public Load plus a
+new recoverable journal exposed stale Init; normalized protected alias, sibling
+prefix and missing/malformed generation admissions also reached actual behavior.
+Nine original pwsh processes exited without force and fresh canonical ownership
+was proved. All ten physical guardians report ECHILD/no emergency/failure/deadline.
+
+The realm-link fixture re-resolved its own symlink at setup, so the trusted facade
+correctly refused before helper access; its cleanup repeated that mistake, forcing
+pwsh termination and failing logical cleanup. Runner cleanup true does not erase
+that fixture failure. Preserve it in [the evidence manifest](recovery/storage-migration-gm-helper-20261008/manifest.json),
+alongside initial6c3 Plan181854, corrected82f Plan182232 and all ten raw scenarios.
+Independent reviewer and parent corroborated this classification.
+
+Correction retains the pre-link validated absolute SoulPath solely for fixture
+install, LinkTarget observation and fixture repair. Production resolution is
+unchanged. Extract realm-link into one Fact/category
+`portable-gm-helper-realm-link-causal-linux`; original category owns the unchanged
+nine other rows. Fresh one-case PlanOnly and focused fixture gate precede actual
+one-case execution. Final GREEN will select both categories (9+1). No production
+F13 implementation or native Windows/PowerShell5.1 acceptance yet.
+
 ## F13 causal10 fixture WIP — 2026-10-08
 
 Initial6c3f Plan181854 completed a fresh unit build79.5930786s, exact10/1/0,
@@ -8,13 +36,13 @@ Corrected finally stages settle independently and retain every cleanup error;
 the PS observer proves original exit before Dispose's kill fallback, matches each
 joined PID/exit to the actual child report, and rejects duplicates/forced cleanup.
 Missing/malformed-generation rows also preserve exact config before/after bytes.
-Fresh corrected build and focused fixture gate remain required; no causal RED yet.
+Historical fixture state before82f; corrected build/gates and mixed actual result are recorded above.
 
 Independent Astra XHigh and parent design/proposed-selection PASS94f912, no blocking
 findings. Test-only packet now defines exact10 rows in
 `portable-gm-helper-admission-causal-linux`; no production behavior changed.
 Fresh PlanOnly/build and independent frozen fixture/source/selection gate are
-required before actual10. No F13 actual evidence or runtime acceptance yet.
+were required before actual10; the later mixed result above supersedes this historical pending state.
 
 The original native guardian owns an isolated managed driver, actual pwsh and any
 original helper children, without launching a terminal or provider. Roots use actual

@@ -68,6 +68,7 @@ internal static class GmTurnHelperStorageScenario
         Task? writer = null;
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         byte[]? originalGeneration = null;
+        string? fixtureSoulPath = null;
         var actualCuts = 0;
         try {
             await using (var lease = await files.AcquireCanonicalWriteLeaseAsync()) {
@@ -76,6 +77,7 @@ internal static class GmTurnHelperStorageScenario
             }
             originalGeneration = File.ReadAllBytes(files.SessionGenerationPath);
             await SeedAsync(files);
+            fixtureSoulPath = files.ResolvePath(SoulPath);
             var selected = scenario switch { "realm-held" => SoulPath, "terminal-held" => ErrorPath, _ => DataPath };
             var before = scenario == "realm-held"
                 ? Encoding.UTF8.GetBytes("{\"soulName\":\"Fixture\",\"currentRealm\":\"Chaos Sea\",\"currentIncarnation\":1}")
@@ -129,8 +131,8 @@ internal static class GmTurnHelperStorageScenario
                 if (scenario == "realm-link") {
                     var foreign = Path.Combine(root, "foreign-realm.json");
                     File.WriteAllBytes(foreign, Encoding.UTF8.GetBytes("{\"currentRealm\":\"Mortal World\"}"));
-                    File.Delete(files.ResolvePath(SoulPath)); File.CreateSymbolicLink(files.ResolvePath(SoulPath), foreign);
-                    evidence["ActualRealmLink"] = new FileInfo(files.ResolvePath(SoulPath)).LinkTarget;
+                    File.Delete(fixtureSoulPath); File.CreateSymbolicLink(fixtureSoulPath, foreign);
+                    evidence["ActualRealmLink"] = new FileInfo(fixtureSoulPath).LinkTarget;
                 }
                 File.WriteAllText(Path.Combine(folder, "continue"), "original fixture release");
             }
@@ -225,8 +227,8 @@ internal static class GmTurnHelperStorageScenario
                 // they neither establish the tested decision nor turn RED green.
                 if (scenario.StartsWith("generation-", StringComparison.Ordinal) && originalGeneration != null)
                     File.WriteAllBytes(files.SessionGenerationPath, originalGeneration);
-                if (scenario == "realm-link" && File.Exists(files.ResolvePath(SoulPath))) {
-                    File.Delete(files.ResolvePath(SoulPath)); File.WriteAllBytes(files.ResolvePath(SoulPath), Encoding.UTF8.GetBytes("{\"currentRealm\":\"Mortal World\"}"));
+                if (scenario == "realm-link" && fixtureSoulPath != null && File.Exists(fixtureSoulPath)) {
+                    File.Delete(fixtureSoulPath); File.WriteAllBytes(fixtureSoulPath, Encoding.UTF8.GetBytes("{\"currentRealm\":\"Mortal World\"}"));
                 }
                 var recoveryEvents = 0;
                 var closingFiles = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance,

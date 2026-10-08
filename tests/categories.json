@@ -867,7 +867,7 @@
     },
     {
       "id": "daren-standalone-browser-dispatch",
-      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
+      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent \u00d7 commit/rollback), no broader browser cohort.",
       "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
@@ -18301,7 +18301,7 @@
     },
     {
       "id": "portable-gm-helper-admission-causal-linux",
-      "responsibility": "F13 actual original PowerShell helper: held real publication versus Init/read/realm/outer terminal completion, public Load generation replacement before a recoverable journal, normalized scope/type and missing/malformed existing generation. Exact ten causal rows under the original process guardian.",
+      "responsibility": "F13 actual original PowerShell helper: held real publication versus Init/read/realm/outer terminal completion, public Load generation replacement before a recoverable journal, normalized scope/type and missing/malformed existing generation. Exact nine causal rows (realm-link is separately owned) under the original process guardian.",
       "excludes": "No new helper transport/runtime yet, no fake publication outcome, broad GM/daemon/contract suites, native Windows/PowerShell5.1, provider or gameplay execution.",
       "changeHints": [
         "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
@@ -18323,6 +18323,34 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmTurnHelperStorageTests.OriginalHelperAdmitsCurrentGenerationAndCommittedPolicySnapshot"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-gm-helper-realm-link-causal-linux",
+      "responsibility": "F13 original helper realm-link policy read through an actual fixture-owned symlink. Exact one row, isolated from the nine previously reached causal failures; original pwsh/IO and fresh canonical ownership cleanup required.",
+      "excludes": "No new helper transport/runtime yet, no fake publication outcome, broad GM/daemon/contract suites, native Windows/PowerShell5.1, provider or gameplay execution.",
+      "changeHints": [
+        "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient.TestSupport/GmTurnHelperStorageScenario.cs",
+        "tests/fixtures/GmTurnHelper/storage.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperStorageTests.OriginalHelperRejectsRealmLinkBeforePolicyWrite"
           ]
         }
       ]
