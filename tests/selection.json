@@ -2,115 +2,75 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-load-early-ack",
-      "reason": "Premature application ACK cannot launch a fresh owner",
+      "category": "spiritual-binding-result-dependency",
+      "reason": "B2 original-valid binding/force-binding, mixed cost, lawful alternatives and immutable edit bounds.",
       "contracts": [
-        "#1553",
-        "T055-HTTP-ORIGINAL-OWNER"
+        "#1536",
+        "RESULT-CLOSURE-BINDING B2–B5"
       ]
     },
     {
-      "category": "gm-load-browser-entry",
-      "reason": "Actual original owner Load bundle and fresh epoch require confirmed application",
+      "category": "spiritual-binding-control-boundaries",
+      "reason": "B3 exact absent/null/value and effective raw carrier precedence.",
       "contracts": [
-        "#1553",
-        "T055-HTTP-ORIGINAL-OWNER"
+        "#1536",
+        "RESULT-CLOSURE-BINDING B2–B5"
       ]
     },
     {
-      "category": "browser-original-owner-linux",
-      "reason": "Actual original production Bridge/idle relay causal RED/GREEN, receipts and owned shutdown",
+      "category": "spiritual-binding-final-control",
+      "reason": "B3/B4 actual A then B, isolated projection, mixed costs and cold journal replay.",
       "contracts": [
-        "#1553",
-        "T055-HTTP-ORIGINAL-OWNER"
+        "#1536",
+        "RESULT-CLOSURE-BINDING B2–B5"
       ]
     },
     {
-      "category": "browser-read-authority",
-      "reason": "All four public read boundaries refuse Stopping authority and failed finalization without successful DTOs",
+      "category": "spiritual-binding-wrapper-control",
+      "reason": "B3 raw replacement carrier and ignored siblings under force binding.",
       "contracts": [
-        "#1553",
-        "T055-HTTP-ORIGINAL-OWNER"
+        "#1536",
+        "RESULT-CLOSURE-BINDING B2–B5"
       ]
     },
     {
-      "category": "portable-load-browser-required-generation",
-      "reason": "Preserve all four exact-generation Save/Load/refresh controls after splitting the slow native category; no cases dropped",
+      "category": "spiritual-binding-live-publication",
+      "reason": "B4 original GameEngine synthetic file responses, independent Ready and once-only publication.",
       "contracts": [
-        "#1553",
-        "T054-WINDOWS-HTTP"
+        "#1536",
+        "RESULT-CLOSURE-BINDING B2–B5"
       ]
     },
     {
-      "category": "browser-http-admission-lifetime",
-      "reason": "Review regression for host disposal versus surviving handler and exact cancelled queue permit ownership",
+      "category": "spiritual-binding-cold-publication",
+      "reason": "B4 cold accepted-A cut before final Ready, zero remaining exchange replay and cleanup.",
       "contracts": [
-        "#1553",
-        "T054-WINDOWS-HTTP"
+        "#1536",
+        "RESULT-CLOSURE-BINDING B2–B5"
       ]
     },
     {
-      "category": "browser-http-admission",
-      "reason": "Causal real HTTP parallel admission, cancellation/failure release and Load/static bypass; physical owner refusal preserved",
+      "category": "spiritual-frontier-admission",
+      "reason": "Shared dependent policy must reject future edits and substituted private pair.",
       "contracts": [
-        "#1553",
-        "T054-WINDOWS-HTTP"
+        "#1536",
+        "RESULT-CLOSURE-BINDING B2–B5"
       ]
     },
     {
-      "category": "portable-settings-endpoints",
-      "reason": "Actual GET/POST settings and audio handlers now share host admission",
+      "category": "spiritual-frontier-response-evaluation",
+      "reason": "Shared evaluate/commit owner preserves held, rejected, advanced and resolved outcomes.",
       "contracts": [
-        "#1553",
-        "T054-WINDOWS-HTTP"
+        "#1536",
+        "RESULT-CLOSURE-BINDING B2–B5"
       ]
     },
     {
-      "category": "portable-load-browser-refresh",
-      "reason": "Real Save/Load and exact generation bundle routes cross the new host boundary",
+      "category": "spiritual-cutover-staged-publication",
+      "reason": "Shared progress journal ownership and old/new/ambiguous write-failure classification.",
       "contracts": [
-        "#1553",
-        "T054-WINDOWS-HTTP"
-      ]
-    },
-    {
-      "category": "gm-relay-native-windows",
-      "reason": "Actual native console/pipes/gate repair and original Job cleanup",
-      "contracts": [
-        "#1553",
-        "T053-WINDOWS-RELAY"
-      ]
-    },
-    {
-      "category": "gm-relay-reusable-contract",
-      "reason": "Shared exact bytes/identity/publication/close negative cases affected by gate backend",
-      "contracts": [
-        "#1553",
-        "T053-WINDOWS-RELAY"
-      ]
-    },
-    {
-      "category": "gm-relay-reusable-main",
-      "reason": "Linux original production Bridge/fixed helper/retirement affected by shared terminal adapter and worker stdout",
-      "contracts": [
-        "#1553",
-        "T053-WINDOWS-RELAY"
-      ]
-    },
-    {
-      "category": "gm-relay-transport",
-      "reason": "Linux raw input/output, close-before-snapshot and held child ordering preserved by extracted POSIX adapter",
-      "contracts": [
-        "#1553",
-        "T053-WINDOWS-RELAY"
-      ]
-    },
-    {
-      "category": "gm-relay-repair",
-      "reason": "Linux rejected response/repair consumers of the shared persistent relay",
-      "contracts": [
-        "#1553",
-        "T053-WINDOWS-RELAY"
+        "#1536",
+        "RESULT-CLOSURE-BINDING B2–B5"
       ]
     }
   ]

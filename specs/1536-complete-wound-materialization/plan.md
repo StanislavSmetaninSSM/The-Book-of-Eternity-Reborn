@@ -8,6 +8,53 @@ plus the approved Superpowers design at
 `docs/superpowers/specs/2026-08-26-complete-wound-materialization-design.md`.
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
+## Cloud RESULT-CLOSURE-BINDING checkpoint — 2026-10-08 (WIP)
+
+Source: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), approved RESULT-CLOSURE-BINDING revision1, B2–B5 only.
+Branch: `1536-binding-result-closure-cloud-20261008`; verified base
+`d0241e71e349fbe2020e4a41b6be7c627c81cbb4`. The owner authorized bounded
+implementation after the separate read-only cloud audit
+`13c820294df2bf7e824b06eb41ddc73bd18b87c0` on `docs/1536-cloud-audit-20261008`.
+The remote branch was published before editing, its full SHA reread, and a fresh
+direct GitHub clone into `/workspace/boe-1536-binding-restore` reproduced the base
+with clean status and AGENTS/spec/plan/tasks present. This verifies source download
+only; it is not build or test evidence. Astra executes; a separate Astra XHigh
+must review the coherent result before acceptance. No merge or issue changes.
+
+Current scope supersedes the broad execution order in the historical checkpoint
+below: no physical treatment, healers, UI, HOME-PC/desktop, live GM, CI changes,
+full suite, Fast or PreMerge. Synthetic file responders are fixtures. B0/B1 and
+other historically accepted child work remain recorded; B2–B5 remain unchecked.
+The old warm run 484acdd0 has no available completion evidence and is not PASS.
+
+Engineering order and acceptance:
+1. Inspect current publication routes, then run a fresh original-binding/control
+   baseline. Ordinary writes now use TrustedLocalFilePublication; the old cold
+   fixture's AfterPhysicalFilePublishedAsync cannot observe its B publication.
+   Repair only the fixture after baseline/causal evidence. The staged progress
+   failure test injects at writeOverrideAsync and remains applicable.
+2. Verify B2 original-lawful admission and exact arithmetic/result permissions,
+   mixed costs, strong +2→+1 with only setup:true, sufficient alternatives,
+   immutable choice/dice/actors/source/closed prefix and negative edit bounds.
+3. Verify B3 detached final-control-only validation, unrelated-error rejection,
+   exact raw carrier/presence and separately correlated A/B. No physical projection.
+4. Verify B4 actual synthetic public Ready replies, accepted-A journal with no B
+   row, cold reconstruction with zero exchanges remaining, preserved images,
+   once-only publication and owned cleanup. Address demonstrated defects only.
+5. Check B5 existing GM guide/live contract/worker/CLI/example/manifest coherence,
+   run scoped source/example guards and discovery-only ValidateCatalog. Inspect
+   complete counts, failures, skips and cleanup. Obtain independent review.
+
+Selection reasons are explicit in tests/selection.json. The binding dependency,
+raw-control, direct/wrapper A/B, warm/cold lifecycle categories cover B2–B4.
+Frontier admission/evaluation and staged publication cover shared owner/progress
+consumers, including failure readback. GM binding guards/examples are selected
+separately without unrelated afterlife matrices. PlanOnly precedes execution;
+NoBuild is allowed only after fresh successful selected-project builds. Existing
+category budgets and assertions are preserved. No runtime behavior has changed.
+Next action: fresh binding dependency/control PlanOnly and baseline. No current
+cloud test result or independent acceptance yet. Historical evidence follows.
+
 ## Current completion checkpoint — resumed 2026-09-30
 
 GitHub preservation checkpoint requested by the owner (2026-09-30): save the
