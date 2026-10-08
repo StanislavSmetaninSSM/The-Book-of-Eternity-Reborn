@@ -174,3 +174,33 @@ then records same-owner Stopped/no retained authority. Forced termination or
 cleanup failure is fixture failure, not causal evidence. Unknown evidence is
 recorded before explicit fixture-owned byte repair and recovery for cleanup.
 Native execution and the remainder of the whole daemon migration remain open.
+
+## Concrete implementation choice (foundation WIP, unbuilt)
+
+Use a separate chunked daemon exchange on the same A03 process/sequence. Only
+in-memory transfer buffers span frames. A completed snapshot opens one short
+PublicationReadQuiescence lease, normalizes and validates requested targets,
+reads exact bytes/absence/kind and handle-derived timestamps, and enumerates
+requested trees. Maps use the host destination comparer; Linux case/backslash
+siblings remain distinct. No new aggregate document ceiling, disk spool or helper
+role is added. Existing mutation allowlist remains the sole write boundary.
+
+Dynamic turn authority chooses two batches: initial request/manifest/authority
+observations determine the declared paths, then the second batch verifies their
+exact initial hashes and reads the whole declared cohort under one lease. Witness
+change returns a normal mismatch; storage/type/generation/recovery failure returns
+the fixed GmDaemonReadRefused marker, thrown outside transport-loss handling.
+Authoritative daemon catches will rethrow it. The original outer operation closes
+Failed on that same connection and annotates the unchanged first cause with actual
+close/ACK; any earlier own publication Unknown retains its existing override.
+
+Notes rewrites and Ready deletion use conditional requests restricted to existing
+control write paths. Target witness is mandatory and all supplied witnesses are
+checked initially and at the existing publisher's prepared/per-retry seam. No old
+Windows physical CAS is revived. Capture actual publication outcome before facade
+throw/lease disposal. This foundation is not full consumer wiring or acceptance;
+whole caller migration, causal GREEN and additional connected controls remain.
+
+Independent causal/carrier383268f9 PASS covers80 artifacts/48 historical pins.
+Three reached defects and two commit positives plus four delivery positives are
+retained source-era evidence; no F14 runtime tests have been run.

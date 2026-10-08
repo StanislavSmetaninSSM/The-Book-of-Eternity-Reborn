@@ -7,7 +7,7 @@ namespace BookOfEternityClient.Services.GmRuntime;
 
 // A cooperating script uses this one retained process/connection for its whole
 // operation. It is not a general writer, journal, launcher or cold recovery API.
-internal static class GmMainParticipatingControl
+internal static partial class GmMainParticipatingControl
 {
     private const int FrameLimit = 4 * 1024 * 1024;
     private sealed class Command
@@ -16,6 +16,10 @@ internal static class GmMainParticipatingControl
         public string? Action { get; set; }
         public string? Path { get; set; }
         public string? Bytes { get; set; }
+        public string? Transfer { get; set; }
+        public long Length { get; set; }
+        public long Offset { get; set; }
+        public string? Hash { get; set; }
         public MainOperationOutcome? Outcome { get; set; }
     }
 
@@ -50,6 +54,7 @@ internal static class GmMainParticipatingControl
     internal static async Task<int> RunAsync(FileSystemManager files, Stream input, Stream output)
     {
         var reader = new MainOperationReader(input);
+        using var daemon = new DaemonExchange();
         var explicitClose = false;
         long sequence = 0;
         MainOperationOutcome outcome = MainOperationOutcome.Completed;
@@ -90,22 +95,29 @@ internal static class GmMainParticipatingControl
                     var blockedByPriorUncertainty = publicationUncertain;
                     if (!blockedByPriorUncertainty)
                     {
-                        try { await MutateAsync(files, command, result); }
+                        try {
+                            if(command.Action?.StartsWith("daemon-",StringComparison.Ordinal)==true)
+                                result.Fields=await daemon.HandleAsync(files,command,result);
+                            else {
+                                if(daemon.HasPending)throw new InvalidDataException("A daemon exchange is incomplete.");
+                                await MutateAsync(files, command, result);
+                            }
+                        }
                         catch (Exception failure) { result.Failure = failure; }
                         publicationUncertain = result.Publication?.Disposition == TrustedLocalPublicationDisposition.Uncertain;
                     }
                     // Capture belongs to this command, not the whole body. A valid
                     // uncertain reply retains this connection for its original close.
                     var committed = result.Publication?.Disposition == TrustedLocalPublicationDisposition.Committed;
-                    await MainOperationReader.WriteAsync(output, new {
-                        ok = !blockedByPriorUncertainty && result.Failure == null, sequence,
-                        publicationDisposition = result.Publication?.Disposition.ToString(),
-                        // Conservative post-decision follow-up: no claim that a journal
-                        // necessarily still exists after every cleanup/validation fault.
-                        cleanupPending = committed && result.Publication?.Failure != null,
-                        commandFollowUpRequired = committed && result.Failure != null,
-                        blockedByPriorUncertainty
-                    }, CancellationToken.None);
+                    var fields=result.Fields??new Dictionary<string,object?>();
+                    fields["ok"]=!blockedByPriorUncertainty&&result.Failure==null;
+                    fields["sequence"]=sequence;
+                    fields["publicationDisposition"]=result.Publication?.Disposition.ToString();
+                    fields["cleanupPending"]=committed&&result.Publication?.Failure!=null;
+                    fields["commandFollowUpRequired"]=committed&&result.Failure!=null;
+                    fields["blockedByPriorUncertainty"]=blockedByPriorUncertainty;
+                    fields["daemonReadRefused"]=result.ReadRefused;
+                    await MainOperationReader.WriteAsync(output,fields,CancellationToken.None);
                 }
                 }
                 finally { if (!explicitClose) files.MarkMainOperationUnresolved(); }
@@ -135,6 +147,8 @@ internal static class GmMainParticipatingControl
     {
         internal TrustedLocalPublicationOutcome? Publication;
         internal Exception? Failure;
+        internal bool ReadRefused;
+        internal Dictionary<string,object?>? Fields;
     }
 
     private static async Task MutateAsync(FileSystemManager files, Command command, CommandResult result)

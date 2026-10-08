@@ -7,7 +7,7 @@ function Read-GmOperationReply {
     $read = $Context.process.StandardOutput.ReadLineAsync(); $Context.pendingRead=$read
     if (-not $read.Wait(10000)) { $Context.lost = $true; throw 'Original operation reply unavailable; no replay.' }
     $line = $read.Result
-    if ($null -eq $line -or $line.Length -gt 65536) { $Context.lost = $true; throw 'Original operation connection lost; no replay.' }
+    if ($null -eq $line -or [Text.Encoding]::UTF8.GetByteCount($line) -gt 65536) { $Context.lost = $true; throw 'Original operation connection lost; no replay.' }
     return ($line | ConvertFrom-Json -ErrorAction Stop)
 }
 
@@ -88,7 +88,10 @@ function Send-GmOperationCommand {
             $Context.closeObserved=$reply.closeObserved
         }
     }
-    if (-not $reply.ok) { throw 'Participating canonical mutation or original close refused.' }
+    if (-not $reply.ok) {
+        if($reply.daemonReadRefused -eq $true){throw (New-GmDaemonReadFailure 'Original admitted daemon read refused.' $null)}
+        throw 'Participating canonical mutation or original close refused.'
+    }
     return $reply
 }
 
@@ -169,6 +172,13 @@ function Invoke-GmParticipatingConsumer {
         $continuation.Data['OriginalOperationCloseObserved']=$context.closeObserved
         $failure=[Management.Automation.ErrorRecord]::new($continuation,'OriginalOperationContinuationUnconfirmed',[Management.Automation.ErrorCategory]::OperationStopped,$null)
     }
+    if($failure -and (Test-GmDaemonReadFailure $failure.Exception)) {
+        # Preserve the first body cause and the actual immutable closing receipt.
+        # An earlier own publication Unknown still overrides the effective body.
+        $failure.Exception.Data['EstablishedOperationOutcome']=$context.closeOutcome
+        $failure.Exception.Data['OriginalOperationClose']=$context.terminalClose
+        $failure.Exception.Data['OriginalOperationCloseObserved']=$context.closeObserved
+    }
     if ($failure) { throw $failure }
     return $result
 }
@@ -219,4 +229,78 @@ function Copy-GmCanonicalFile {
     Invoke-GmParticipatingConsumer $SessionPath {
         Invoke-GmCanonicalControl $SessionPath 'write' $Destination ([IO.File]::ReadAllBytes($Source))
     }
+}
+
+# Daemon observations share the existing original connection, not helper-role
+# authority. Every completed request acquires/releases its own canonical lease.
+function New-GmDaemonReadFailure {
+    param([string]$Message,[Exception]$Cause)
+    $failure=[IO.IOException]::new($Message,$Cause)
+    $failure.Data['GmDaemonReadRefused']=$true
+    return $failure
+}
+function Test-GmDaemonReadFailure {
+    param($Failure)
+    $current=if($Failure -is [Management.Automation.ErrorRecord]){$Failure.Exception}else{$Failure}
+    while($current){if($current.Data -and $current.Data.Contains('GmDaemonReadRefused')){return $true};$current=$current.InnerException}
+    return $false
+}
+function Assert-GmNotDaemonReadFailure {
+    param($Failure)
+    if(Test-GmDaemonReadFailure $Failure){throw $Failure}
+}
+function Get-GmDaemonBytesHash {
+    param([AllowNull()][byte[]]$Bytes)
+    if($null -eq $Bytes){return $null}
+    $sha=[Security.Cryptography.SHA256]::Create()
+    try{return ([BitConverter]::ToString($sha.ComputeHash($Bytes))).Replace('-','').ToLowerInvariant()}
+    finally{$sha.Dispose()}
+}
+function New-GmDaemonPathMap {
+    $comparer=if([IO.Path]::DirectorySeparatorChar -eq '\'){[StringComparer]::OrdinalIgnoreCase}else{[StringComparer]::Ordinal}
+    return [Collections.Generic.Dictionary[string,object]]::new($comparer)
+}
+function Invoke-GmDaemonStorageRequest {
+    param([hashtable]$Request)
+    $context=$global:BoeMainOperationContext
+    if(-not $context){throw (New-GmDaemonReadFailure 'An original daemon operation is required.' $null)}
+    $bytes=[Text.UTF8Encoding]::new($false,$true).GetBytes((ConvertTo-Json -InputObject $Request -Depth 100 -Compress))
+    $transfer=[guid]::NewGuid().ToString('N')
+    [void](Send-GmOperationCommand $context @{action='daemon-request-begin';transfer=$transfer;length=[long]$bytes.LongLength;hash=(Get-GmDaemonBytesHash $bytes)})
+    for($offset=0L;$offset -lt $bytes.LongLength;$offset+=$count){
+        $count=[int][Math]::Min(32768,$bytes.LongLength-$offset)
+        [void](Send-GmOperationCommand $context @{action='daemon-request-chunk';transfer=$transfer;offset=$offset;bytes=[Convert]::ToBase64String($bytes,[int]$offset,$count)})
+    }
+    # Valid negative storage/decision replies stay outside malformed-wire handling.
+    $header=Send-GmOperationCommand $context @{action='daemon-request-end';transfer=$transfer}
+    $buffer=[IO.MemoryStream]::new()
+    try {
+        if($header.transfer -cne $transfer -or $header.length -lt 0 -or $header.hash -cnotmatch '^[0-9a-f]{64}$'){throw 'Invalid daemon response header.'}
+        while($buffer.Length -lt [long]$header.length){
+            $reply=Send-GmOperationCommand $context @{action='daemon-response-chunk';transfer=$transfer;offset=$buffer.Length}
+            if($reply.transfer -cne $transfer -or $reply.offset -ne $buffer.Length){throw 'Invalid daemon response identity.'}
+            $chunk=[Convert]::FromBase64String($reply.bytes)
+            if($chunk.Length -lt 1 -or $chunk.Length -gt 32768 -or $buffer.Length+$chunk.Length -gt [long]$header.length){throw 'Invalid daemon response chunk.'}
+            $buffer.Write($chunk,0,$chunk.Length)
+            if([bool]$reply.complete -ne ($buffer.Length -eq [long]$header.length)){throw 'Invalid daemon response completion.'}
+        }
+        $result=$buffer.ToArray()
+        if((Get-GmDaemonBytesHash $result) -cne $header.hash){throw 'Daemon response hash changed.'}
+        $json=[Text.UTF8Encoding]::new($false,$true).GetString($result)
+        return ConvertFrom-Json -InputObject $json -ErrorAction Stop
+    } catch {
+        if(Test-GmDaemonReadFailure $_){throw}
+        $context.lost=$true
+        throw (New-GmDaemonReadFailure 'Original daemon response unavailable; no replay.' $_.Exception)
+    } finally {$buffer.Dispose()}
+}
+function Get-GmDaemonSnapshot {
+    param([string[]]$Paths=@(),[string[]]$Trees=@(),$Expected=$null)
+    if($null -eq $Expected){$Expected=New-GmDaemonPathMap}
+    return Invoke-GmDaemonStorageRequest @{action='snapshot';paths=$Paths;trees=$Trees;expected=$Expected}
+}
+function Invoke-GmDaemonConditionalMutation {
+    param([string]$Path,[AllowNull()][byte[]]$Bytes,$Expected,[switch]$Delete)
+    $action=if($Delete){'delete-if-current'}else{'write-if-current'}
+    return Invoke-GmDaemonStorageRequest @{action=$action;path=$Path;bytes=$(if($Delete){$null}else{[Convert]::ToBase64String($Bytes)});expected=$Expected}
 }

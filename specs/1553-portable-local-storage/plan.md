@@ -1,3 +1,13 @@
+## F14 original-connection transport foundation WIP — 2026-10-08
+
+Saved an unbuilt/unreviewed same-connection daemon exchange and PowerShell snapshot/
+conditional-mutation transport. Canonical leases are short and end before transfer
+responses; no helper role or broader mutation path grant. Dynamic cohort uses the
+second exact-witness batch chosen in [the design](storage-migration-daemon-design.md).
+Full daemon callers and their finite controls remain to be migrated; no runtime
+acceptance/build/GREEN is claimed. Independent causal383 carrier PASS80/48 is
+received; the three defects and four delivery neighbors need no repeated baseline.
+
 ## F14 causal evidence checkpoint — 2026-10-08
 
 Frozen d376 fixture/source/exact-selection received independent PASS. Fresh
