@@ -1,3 +1,22 @@
+## Treatment diagnostic six result — 2026-10-08
+
+Clean ef0e matching Plan233108 completed6/1/0 in88.0552999s; actual233306
+completed6/6 in36.0323981s,1 PASS/5 FAIL, exit1/no timeout, both runner cleanup
+flags true. Full original Plan/TRX/log/summary are preserved as neighborDiagnostics.
+Independent parent/reviewer raw classification agrees: exact foreign-plan identity,
+fingerprint and original blocker now PASS. No production changes were made.
+
+Four remaining faults are unreached selectors: terminal2 have actual validated rollback
+capability55/55 and real command/pending quarantine but missing deep async ancestors;
+cleanup reaches the guardians mutation; full validation reaches the current health Core
+while its historical wrapper matcher records0. The Unsafe row reaches its known failure:
+normalizer deletes command, then the deliberately refused command restoration leaves
+it absent. Its blanket exact-command assertion is unsupported, not evidence that a
+successful restoration was lost. Correct these bounded fixture obligations from actual
+path/data/ordered phase evidence; preserve known nonstorage dispositions and exact
+successful images. The connected pre-canonical direct-CSP consumer gap remains queued.
+Passed9 plus the newly passing foreign row are retained separately; no whole-block GREEN.
+
 ## Treatment diagnostic split correction — 2026-10-08
 
 727ff diagnostic Plan231351 failed compilation20.7085858s, zero actual tests. An
