@@ -71,6 +71,17 @@
         "FR-006",
         "T062-STORAGE-OUTCOMES"
       ]
+    },
+    {
+      "category": "portable-accepted-normalization-outcomes",
+      "reason": "Independent changeset A02/F08-F09 actual accepted coordinator and ordinary normalizer wrapper; selected real journal member unknown bytes with positive reached cut and known exact rollback control. No broad spiritual/wound suite.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "A02-ACCEPTED-NORMALIZER"
+      ]
     }
   ]
 }

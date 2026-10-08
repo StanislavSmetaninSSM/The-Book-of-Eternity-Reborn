@@ -1,3 +1,15 @@
+## A02 accepted-turn causal preparation — 2026-10-08
+
+Bounded connected restoration source/evidence review accepted9e30; carrier26b36a08
+published and remote verified. New A02 three-row fixture invokes the original
+AcceptedTurnCanonicalStateRefresh directly with real validated pending/resource
+and item authority. Select actual history journal member at MemberPublished, then
+unknown bytes or known failure; assert exact member/cut/journal and positive hook
+reach before typed-carrier / zero-later-attempt or exact rollback controls. No
+unconditional finally lease reacquisition can hide the original error. No normalizer
+runtime edits yet. PlanOnly then baseline; broader accepted-handler disposition/
+notification and uncertainty during compensation require their own actual cuts.
+
 ## T062 latest connected restoration verification — 2026-10-08
 
 Frozen9e30e638637dafd68e43419c963d6bbb666d1b7d: freshPlanOnly10 then10/10PASS,

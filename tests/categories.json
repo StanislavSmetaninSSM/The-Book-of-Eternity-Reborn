@@ -17403,6 +17403,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-accepted-normalization-outcomes",
+      "responsibility": "Actual validated accepted-turn resource normalization publication retains typed unknown-byte outcome without before-image compensation; selected MemberPublished and exact known-rollback control.",
+      "excludes": "Live accepted turn/GM, wound settlement redesign, false restored notice not actually observed, native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs",
+        "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedNormalizationPublicationRetainsStorageDecision"
+          ]
+        }
+      ]
     }
   ]
 }
