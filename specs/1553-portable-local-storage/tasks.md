@@ -19,6 +19,8 @@ Source #1553, owner-approved [plan](relay-windows-plan.md).
 - [ ] T054-WINDOWS-HTTP Compare synthetic Save/Load/restart HTTP 500 with clean
   valid root, collect real server exception/stack, then repair proven cause with
   parallel/repeated reads, Save/Load and shutdown checks.
+  Separate approved [diagnosis plan](windows-http-plan.md), branch based5ff403ed;
+  relay runtime remains frozen. No HTTP cause established yet.
 
 # Tasks: Trusted local storage and cross-platform runtime
 
