@@ -61,6 +61,16 @@
         "FR-006",
         "T062-STORAGE-OUTCOMES"
       ]
+    },
+    {
+      "category": "portable-ordinary-outcome-recovery-neighbors",
+      "reason": "Independent review identified exact original callers whose unknown publication expectation must follow the typed facade contract; preserve cold admission InvalidData and original recovery controls.",
+      "contracts": [
+        "#1553",
+        "FR-004",
+        "FR-006",
+        "T062-STORAGE-OUTCOMES"
+      ]
     }
   ]
 }

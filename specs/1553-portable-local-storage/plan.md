@@ -1,3 +1,17 @@
+## T062 fixture diagnosis and affected neighbors — 2026-10-08
+
+Diagnostic source77be7a6a proves QTE observer itself rejected UTF-8 BOM (0xEF)
+on forward experience bytes; both QTE rows still cut0, not causal runtime evidence.
+Only JSON interpretation now removes one BOM; restoration equality remains exact
+raw bytes. Pre-turn4 causal failures remain unchanged. Seven existing browser/
+standalone-Daren recovery cases are split narrowly: four old exact exception
+expectations may conflict with the deliberately changed ordinary carrier, plus
+three confirmed recovery controls. Run their unchanged expectations first; cold
+admission refusal types must remain untouched. Tree deletion is a separate typed
+CanonicalDirectoryDeletionUncertainException path before the ordinary facade;
+it is not a direct affected-assertion update and remains a later F08 assessment.
+No restoration runtime change yet.
+
 ## T062 restoration baseline checkpoint — 2026-10-08
 
 Source8d0624c9 actual9 complete:3controls PASS,4 causal pre-turn FAIL,2 QTE

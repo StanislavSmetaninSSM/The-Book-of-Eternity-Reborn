@@ -58,6 +58,56 @@
       "source": "TestResults/test-categories/20261008-104143-918-21470-29f02b81810c41d0a69e2efac03de933-categories/summary.json",
       "sha256": "c6767d3f4789bab12c59bb23a1663f60bdfed52257f1ce940e981d5258bd4093",
       "originalSha256": "c6767d3f4789bab12c59bb23a1663f60bdfed52257f1ce940e981d5258bd4093"
+    },
+    {
+      "path": "diagnostic-plan-Build-integration.log.gz",
+      "source": "TestResults/test-categories/20261008-104349-329-22218-b1115c94dc924d5ab62ed6424c38058b-categories/Build-integration.log",
+      "sha256": "3ccf8ea9d80dd68889ac4cb65a19d7d11e9ec2437e7e7439db580dedf51b7f60",
+      "originalSha256": "c67f7147956c073b509f8ef3dd42c213da7d46f38305bcba1749457f418b53a7"
+    },
+    {
+      "path": "diagnostic-plan-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-104349-329-22218-b1115c94dc924d5ab62ed6424c38058b-categories/dotnet-test.log",
+      "sha256": "c5ef18ee6e61fac7d3898ee6e85be2a8d591f6ece8b9756c0bf5a609c26fcb07",
+      "originalSha256": "ea9d446a8af9c1cbbb927b0f1f0587a60f541ace0af1351a4ab6abe1b72cf266"
+    },
+    {
+      "path": "diagnostic-plan-plan.json",
+      "source": "TestResults/test-categories/20261008-104349-329-22218-b1115c94dc924d5ab62ed6424c38058b-categories/plan.json",
+      "sha256": "7d3ff3d7556bc437f391bfa02ee7523591f7ec1e77e2706491c564db8a86df5c",
+      "originalSha256": "7d3ff3d7556bc437f391bfa02ee7523591f7ec1e77e2706491c564db8a86df5c"
+    },
+    {
+      "path": "diagnostic-plan-summary.json",
+      "source": "TestResults/test-categories/20261008-104349-329-22218-b1115c94dc924d5ab62ed6424c38058b-categories/summary.json",
+      "sha256": "58a3ebe1eff8f7cc2f9eb64072a767992fa08bf31d7118b2669ffc460eabc291",
+      "originalSha256": "58a3ebe1eff8f7cc2f9eb64072a767992fa08bf31d7118b2669ffc460eabc291"
+    },
+    {
+      "path": "diagnostic-red-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-104439-923-22612-e6ed0eeba0824d698b8107b1b2897172-categories/dotnet-test.log",
+      "sha256": "f10eb86d0f04287346fcdb433518903783d82d37440ca7adce1bb45381ec540f",
+      "originalSha256": "0086c2a6a332c7060f3c0d84dbe4bcd7d6ea7484d74a3d028e4afacb95a1500b"
+    },
+    {
+      "path": "diagnostic-red-plan.json",
+      "source": "TestResults/test-categories/20261008-104439-923-22612-e6ed0eeba0824d698b8107b1b2897172-categories/plan.json",
+      "sha256": "17cfb944e001765e575ef34f1bc34511f2b9735ebf2346b3496f97aab88c48cb",
+      "originalSha256": "17cfb944e001765e575ef34f1bc34511f2b9735ebf2346b3496f97aab88c48cb"
+    },
+    {
+      "path": "diagnostic-red-portable-restoration-publication-outcomes-integration-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-104439-923-22612-e6ed0eeba0824d698b8107b1b2897172-categories/portable-restoration-publication-outcomes-integration-001.trx",
+      "sha256": "95cd4b549ac3a3b857fbd88dc7247f69e6bf1b541ce377d7c2b33e1635e66726",
+      "originalSha256": "f71c77e8130077bf8bd495489dedf6b13eebd4f15033819bd41cd0468adc78c2"
+    },
+    {
+      "path": "diagnostic-red-summary.json",
+      "source": "TestResults/test-categories/20261008-104439-923-22612-e6ed0eeba0824d698b8107b1b2897172-categories/summary.json",
+      "sha256": "50239b005b5c25597b31a17e7c5aaa25a72c8d684532f7f2fa649a9e8c5fc746",
+      "originalSha256": "50239b005b5c25597b31a17e7c5aaa25a72c8d684532f7f2fa649a9e8c5fc746"
     }
-  ]
+  ],
+  "diagnosticSource": "77be7a6a46b127d3397373e082f46ab742eb1930",
+  "diagnosticQteCause": "Caught original JsonReaderException0xEF at observer JSON interpretation of forward bytes with BOM; cut0 not causal. Strip one BOM only for interpretation, preserve raw restoration bytes."
 }

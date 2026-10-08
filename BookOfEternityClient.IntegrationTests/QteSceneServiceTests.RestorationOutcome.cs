@@ -44,7 +44,9 @@ public sealed partial class QteSceneServiceTests
                     var bytes = File.ReadAllBytes(files.ResolvePath(target));
                     if (!bytes.SequenceEqual(baseline))
                     {
-                        using var experience = JsonDocument.Parse(bytes);
+                        var jsonBytes = bytes.AsMemory();
+                        if (bytes.AsSpan().StartsWith(new byte[] { 0xEF, 0xBB, 0xBF })) jsonBytes = jsonBytes[3..];
+                        using var experience = JsonDocument.Parse(jsonBytes);
                         Assert.Equal(15, experience.RootElement.GetProperty("totalExperience").GetInt32());
                         forwardPublished++;
                         return;
