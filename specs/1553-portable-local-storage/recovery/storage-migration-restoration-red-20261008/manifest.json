@@ -106,8 +106,90 @@
       "source": "TestResults/test-categories/20261008-104439-923-22612-e6ed0eeba0824d698b8107b1b2897172-categories/summary.json",
       "sha256": "50239b005b5c25597b31a17e7c5aaa25a72c8d684532f7f2fa649a9e8c5fc746",
       "originalSha256": "50239b005b5c25597b31a17e7c5aaa25a72c8d684532f7f2fa649a9e8c5fc746"
+    },
+    {
+      "path": "bom-plan-Build-integration.log.gz",
+      "source": "TestResults/test-categories/20261008-104634-655-23116-ee18a99e5c0a4b7da0c350e69016d1de-categories/Build-integration.log",
+      "sha256": "4d7c1e7ffc375441d718ef42afd5163db4083ff16e5805c3f2374012bee4d339",
+      "originalSha256": "e6de056eb6e1e601be7e3bb1d1622fbc0ed82054b1686585233684bb8b714b2e"
+    },
+    {
+      "path": "bom-plan-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-104634-655-23116-ee18a99e5c0a4b7da0c350e69016d1de-categories/dotnet-test.log",
+      "sha256": "9bb1c62592a870bc9960a7e35a4543d8c7737f18929981229c8486cd98a16091",
+      "originalSha256": "2ff1fd75312278faf55d38fb85daa951b0e79e12402e9fa678594961741e8dc1"
+    },
+    {
+      "path": "bom-plan-plan.json",
+      "source": "TestResults/test-categories/20261008-104634-655-23116-ee18a99e5c0a4b7da0c350e69016d1de-categories/plan.json",
+      "sha256": "11b4be084c62419f9857fbbc11daa8b4d70a1f7dcff2077f528781e0078b372c",
+      "originalSha256": "11b4be084c62419f9857fbbc11daa8b4d70a1f7dcff2077f528781e0078b372c"
+    },
+    {
+      "path": "bom-plan-summary.json",
+      "source": "TestResults/test-categories/20261008-104634-655-23116-ee18a99e5c0a4b7da0c350e69016d1de-categories/summary.json",
+      "sha256": "00a24360ca250670d344a582f6a8ace025485d3410a84e6261145af618f72064",
+      "originalSha256": "00a24360ca250670d344a582f6a8ace025485d3410a84e6261145af618f72064"
+    },
+    {
+      "path": "bom-red-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-104738-718-23378-b3755cf519a0466b803cd0346e22d365-categories/dotnet-test.log",
+      "sha256": "9c066e3d061529dfabe04e5237c47556a85f65939eb997b8ef1586a0e9a13448",
+      "originalSha256": "07838ddb8595586c17cd18a1599abcde475c8c3d8c52aa98d48f8734cab306ec"
+    },
+    {
+      "path": "bom-red-plan.json",
+      "source": "TestResults/test-categories/20261008-104738-718-23378-b3755cf519a0466b803cd0346e22d365-categories/plan.json",
+      "sha256": "16c52933ae7006919c3d5d64eb25c6ddc8dc2538d582fdbaecc1a9df83195520",
+      "originalSha256": "16c52933ae7006919c3d5d64eb25c6ddc8dc2538d582fdbaecc1a9df83195520"
+    },
+    {
+      "path": "bom-red-portable-restoration-publication-outcomes-integration-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-104738-718-23378-b3755cf519a0466b803cd0346e22d365-categories/portable-restoration-publication-outcomes-integration-001.trx",
+      "sha256": "2792b7d31a4059617e04d398ca6fa5fc81260eeffd36588eab8cb526e70774bd",
+      "originalSha256": "4821e4c66c82425e33380c0e2000d05e8ac1021a3ce67cecf5a0c886b0a1945c"
+    },
+    {
+      "path": "bom-red-summary.json",
+      "source": "TestResults/test-categories/20261008-104738-718-23378-b3755cf519a0466b803cd0346e22d365-categories/summary.json",
+      "sha256": "41b6e6386ae29b06cfc3dd304315475fe04e00703ed3088c85184539327b51a2",
+      "originalSha256": "41b6e6386ae29b06cfc3dd304315475fe04e00703ed3088c85184539327b51a2"
+    },
+    {
+      "path": "neighbors-red-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-104807-326-23739-ed2a35eec2724eab901da34891e5102f-categories/dotnet-test.log",
+      "sha256": "c832c3568711ab5e3fedb31a18e242ed79816103910fc53bc3cb1ed8bc42d5e7",
+      "originalSha256": "dbb9f333b88f9bfa864946c62078aa27ca9458b76253d54296d89ac218d9a57e"
+    },
+    {
+      "path": "neighbors-red-plan.json",
+      "source": "TestResults/test-categories/20261008-104807-326-23739-ed2a35eec2724eab901da34891e5102f-categories/plan.json",
+      "sha256": "6a03495eacd61cb8fd9a61666a392b89ce452bc50963cac864040d24381fb3b6",
+      "originalSha256": "6a03495eacd61cb8fd9a61666a392b89ce452bc50963cac864040d24381fb3b6"
+    },
+    {
+      "path": "neighbors-red-portable-ordinary-outcome-recovery-neighbors-integration-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-104807-326-23739-ed2a35eec2724eab901da34891e5102f-categories/portable-ordinary-outcome-recovery-neighbors-integration-001.trx",
+      "sha256": "f67aff71d9687f64de945fee44f5353d78918f095bc6634dc821d897077103e1",
+      "originalSha256": "adc4506178d57b66b2e96e8924b25b4e0e3de9ce8e8616fb541d7a9d487d311b"
+    },
+    {
+      "path": "neighbors-red-summary.json",
+      "source": "TestResults/test-categories/20261008-104807-326-23739-ed2a35eec2724eab901da34891e5102f-categories/summary.json",
+      "sha256": "bfaa2b8436035c7e34fc92845e503d5c6bdb00c935787e6e2d56d7287fff56a4",
+      "originalSha256": "bfaa2b8436035c7e34fc92845e503d5c6bdb00c935787e6e2d56d7287fff56a4"
     }
   ],
   "diagnosticSource": "77be7a6a46b127d3397373e082f46ab742eb1930",
-  "diagnosticQteCause": "Caught original JsonReaderException0xEF at observer JSON interpretation of forward bytes with BOM; cut0 not causal. Strip one BOM only for interpretation, preserve raw restoration bytes."
+  "diagnosticQteCause": "Caught original JsonReaderException0xEF at observer JSON interpretation of forward bytes with BOM; cut0 not causal. Strip one BOM only for interpretation, preserve raw restoration bytes.",
+  "bomSource": "852953b338ebfc7574df5c1f5503b29d250e0b03",
+  "bomQteCause": "Observed formatted experience10 published before forward15. Fixture prematurely asserted every non-byte-identical publication was15;2unreached failures, not causal. Admit formatting10 while still requiring observed15 before exact originalbytes restoration cut.",
+  "neighborRed": {
+    "source": "852953b338ebfc7574df5c1f5503b29d250e0b03",
+    "executed": 7,
+    "passed": 3,
+    "failed": 4,
+    "wallSeconds": 8.1581079,
+    "cause": "Old exact InvalidData expectations now receive intentional typed common uncertainty at actual browser2/Daren2 publication cuts; cold admission types unchanged."
+  }
 }

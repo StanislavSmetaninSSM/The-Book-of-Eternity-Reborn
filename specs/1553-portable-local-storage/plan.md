@@ -1,3 +1,15 @@
+## T062 second fixture observation / neighbor regression — 2026-10-08
+
+Source852953b3: QTE forward route first publishes semantically10 with different
+formatting, so nonexact bytes alone are not forward15. Fixture now tolerates that
+observed normalization, still requires explicit15 then exact original baseline
+bytes for the restore cut. Those two zero-cut failures remain fixture-only.
+Existing neighbors7 completed3PASS/4FAIL at exact old InvalidData expectations;
+actual runtime emits intended typed uncertainty. Update only these ordinary
+publication expectations, add exact cut counts to browser rows, keep cold
+recovery/admission InvalidData assertions. Runtime compensation remains unchanged.
+All runs complete with owned cleanup; preserved raw history identifies each source.
+
 ## T062 fixture diagnosis and affected neighbors — 2026-10-08
 
 Diagnostic source77be7a6a proves QTE observer itself rejected UTF-8 BOM (0xEF)

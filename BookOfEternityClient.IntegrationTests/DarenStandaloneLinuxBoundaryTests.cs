@@ -91,8 +91,8 @@ public sealed partial class DarenStandaloneLinuxBoundaryTests(ITestOutputHelper 
         };
         await using (var lease = await fixture.Files.AcquireCanonicalWriteLeaseAsync())
         {
-            var failure = await Assert.ThrowsAsync<InvalidDataException>(() => new DarenRewardProfileFileStore(fixture.Files).WriteExactBytesAtomicAsync(lease, After));
-            Assert.Contains("uncertain", failure.Message, StringComparison.OrdinalIgnoreCase);
+            var failure = await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => new DarenRewardProfileFileStore(fixture.Files).WriteExactBytesAtomicAsync(lease, After));
+            Assert.Equal(CoordinatedStatePublicationUncertainException.PlayerMessage, failure.Message);
         }
         Assert.True(reached); Assert.True(File.Exists(fixture.ActiveJournal));
         Assert.Equal(generationLoss ? After : new byte[] { 7, 7, 7 }, File.ReadAllBytes(fixture.ProfilePath));
