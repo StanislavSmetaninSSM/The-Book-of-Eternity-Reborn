@@ -1,0 +1,148 @@
+{
+  "StartedUtc": "2026-10-08T05:56:49.1104228Z",
+  "FinishedUtc": "2026-10-08T05:58:15.3166099Z",
+  "Root": "C:\\Temp\\boe-win-6381a950-20261008T030647Z\\data\\http-synthetic-copy",
+  "ProcessId": 15836,
+  "Stopped": true,
+  "Disposed": true,
+  "Fatal": null,
+  "Observations": [
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/main-menu",
+      "Status": 200,
+      "Milliseconds": 14959,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "d9d3b1a57edae16e4167af227bbd2d5e508ad50f42d7f8c3a190735d2b0aae4f"
+    },
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/session",
+      "Status": 200,
+      "Milliseconds": 399,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "bb28175be1bfca605e8abc5827222f324f698af1e549573fbb5385323c129b8d"
+    },
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/game-screen",
+      "Status": 200,
+      "Milliseconds": 29930,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "feb5e7262775a03b51b7efca39955aac1a9c6b3c698d3bc7234eb76519cb4136"
+    },
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/audio/settings",
+      "Status": 200,
+      "Milliseconds": 606,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "143e2d5e4dc6feb42013a832f010b907807ef39e404707d5824fff88966c1434"
+    },
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/client/settings",
+      "Status": 200,
+      "Milliseconds": 15118,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "475d96e33efd26c00e986fa5c70c5ebab327f99eeaf69a6cbabbd9e207293fa1"
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/main-menu",
+      "Status": 200,
+      "Milliseconds": 12169,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "197edb21e6666579644c2e24f813a72fc43d75369038d0903ca571d8466dbc64"
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/session",
+      "Status": 200,
+      "Milliseconds": 12253,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "7614f7743d4a10201a4d3b8182da29b2abe1459de6b4bc520312d3487cb4a73a"
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/game-screen",
+      "Status": 200,
+      "Milliseconds": 27460,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "feb5e7262775a03b51b7efca39955aac1a9c6b3c698d3bc7234eb76519cb4136"
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/audio/settings",
+      "Status": 200,
+      "Milliseconds": 27859,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "143e2d5e4dc6feb42013a832f010b907807ef39e404707d5824fff88966c1434"
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/client/settings",
+      "Status": 200,
+      "Milliseconds": 27665,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "475d96e33efd26c00e986fa5c70c5ebab327f99eeaf69a6cbabbd9e207293fa1"
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/main-menu",
+      "Status": 200,
+      "Milliseconds": 12634,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "67b93fb1f7f214a8c3a9ad38b4895cdbd004e6060bc448befc9c07609501fd53"
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/session",
+      "Status": 200,
+      "Milliseconds": 98,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "5e9750aa406db15726ec72947bd4ee40f627a2f9fbcbd5e7c0cd81d817671dd9"
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/game-screen",
+      "Status": 200,
+      "Milliseconds": 14688,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "feb5e7262775a03b51b7efca39955aac1a9c6b3c698d3bc7234eb76519cb4136"
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/audio/settings",
+      "Status": 200,
+      "Milliseconds": 170,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "143e2d5e4dc6feb42013a832f010b907807ef39e404707d5824fff88966c1434"
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/client/settings",
+      "Status": 200,
+      "Milliseconds": 163,
+      "ErrorBody": null,
+      "Exception": null,
+      "PayloadSHA256": "475d96e33efd26c00e986fa5c70c5ebab327f99eeaf69a6cbabbd9e207293fa1"
+    }
+  ],
+  "SaveLoad": [],
+  "ServerLogs": []
+}

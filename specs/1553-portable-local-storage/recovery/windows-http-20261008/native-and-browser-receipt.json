@@ -1,0 +1,120 @@
+{
+  "RuntimeAndTestsCommit": "3d205d317244b977460fc5537f66fa35e8bc567b",
+  "CompiledProductSHA256": "0ce0363343b0aa1b9b595a58cedf2bb61d9c5184d2d0bcd481e2cb31bebb7e55",
+  "IntegrationAndProbeProductAssemblyBytesEqual": true,
+  "BrowserAssemblyEqualityEvidence": "Executor compared the product, integration and probe copies before the later catalog unit build; equality was observed in tool output, not a retained raw log.",
+  "ProbeBuild": "Fresh at clean 3d205; 0 errors/0 warnings. No probe ran from stale diagnostic build.",
+  "FrontendAssetsSourceCommit": "6381a9507baae6bb2531e22e9a0ace839f03985f",
+  "FrontendAssets": "Previously built original checkout dist; unchanged frontend source, no restoration build claim.",
+  "NativeProbeSummary": [
+    {
+      "Label": "http-empty-final",
+      "GetResponses": 15,
+      "Status200": 12,
+      "Status404": 3,
+      "Warnings": 30,
+      "ExceptionEntries": 0,
+      "Stopped": true,
+      "Disposed": true,
+      "WrapperExitCode": 0
+    },
+    {
+      "Label": "http-synthetic-final",
+      "GetResponses": 15,
+      "Status200": 15,
+      "Status404": 0,
+      "Warnings": 0,
+      "ExceptionEntries": 0,
+      "Stopped": true,
+      "Disposed": true,
+      "WrapperExitCode": 0
+    },
+    {
+      "Label": "http-ordinary-final",
+      "GetResponses": 20,
+      "Status200": 20,
+      "Status404": 0,
+      "Warnings": 0,
+      "ExceptionEntries": 0,
+      "Stopped": true,
+      "Disposed": true,
+      "WrapperExitCode": 0
+    },
+    {
+      "Label": "http-ordinary-restart",
+      "GetResponses": 15,
+      "Status200": 15,
+      "Status404": 0,
+      "Warnings": 0,
+      "ExceptionEntries": 0,
+      "Stopped": true,
+      "Disposed": true,
+      "WrapperExitCode": 0
+    }
+  ],
+  "SaveLoad": {
+    "CreateStatus": 200,
+    "LoadStatus": 200,
+    "BothCommitted": true,
+    "ContinuationBlocked": false,
+    "LoadBundleMembers": [
+      "menu",
+      "session",
+      "game",
+      "audio",
+      "settings"
+    ],
+    "ActiveGmContinuationQualified": false
+  },
+  "PostLoadRestartPayloadMatches": [
+    {
+      "Route": "/api/game-screen",
+      "MatchingRestartResponses": 3,
+      "PayloadSHA256": "55b187008dc2f58bc8f6ea1da4a5c139ae90ad0061ef2adc7830b6dafe9ae6c2"
+    },
+    {
+      "Route": "/api/audio/settings",
+      "MatchingRestartResponses": 3,
+      "PayloadSHA256": "71355d266575ee337014773a82feb7b8c2786567370af9f9b69bc520f9cb8f03"
+    },
+    {
+      "Route": "/api/client/settings",
+      "MatchingRestartResponses": 3,
+      "PayloadSHA256": "d4974c8faf4b8433bb0ccb596558cdcfd20840055517b98b2877ea0e54ee0d4c"
+    }
+  ],
+  "Browser": {
+    "OverallHelperResult": "FAIL",
+    "OverallHelperExitCode": 1,
+    "Reason": "404 /favicon.ico; retained unchanged, no rerun or weakened assertion",
+    "HttpResponses": 26,
+    "ApiStatus200": 6,
+    "HttpFailures": [
+      {
+        "url": "http://127.0.0.1:2489/favicon.ico",
+        "status": 404,
+        "mimeType": "text/plain"
+      }
+    ],
+    "MainMenuRendered": true,
+    "SettingsControls": 11,
+    "JavaScriptExceptions": 0,
+    "NetworkLoadingFailures": 0,
+    "ChromeExit": {
+      "code": 0,
+      "signal": null
+    },
+    "HelperSHA256": "3540228ee72da159d4c6c0895d188eaced79c21e135e02d3be3f476c541ab379"
+  },
+  "BrowserHostCleanup": {
+    "ProductPid": 38696,
+    "PowerShellWrapperPid": 8272,
+    "LoopbackUrl": "http://127.0.0.1:2489",
+    "Signal": "Ctrl+C through retained owned tool PTY",
+    "PowerShellToolExitCode": 1,
+    "ProductExitCode": null,
+    "BothPidsObservedAbsent": true,
+    "Evidence": "Executor tool transcript; PowerShell transcript reports pipeline cancellation. Do not claim product exit0. Four independent real-Kestrel probes above retain explicit StopAsync/DisposeAsync/exit0."
+  },
+  "Scope": "Only owned isolated roots and a new Chrome profile. No user saves/profiles, new model requests, install, WSL, security/network permissions, CI enabling, merge or issue closure."
+}

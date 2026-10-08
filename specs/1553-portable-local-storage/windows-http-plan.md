@@ -5,20 +5,72 @@ Owner approved separate diagnosis and a minimal causally established fix on 2026
 Branch `codex/1553-windows-http-20261008` was published at base
 `5ff403ed998f7e04dadf6179fba614252bcfd2cf` before changes.
 
-Relay runtime remains frozen at0067874e; its independently reviewed Windows
-checkpoint5ff403ed restored29 changed files and14 evidence payloads from GitHub.
-Linux regression is parent-owned and must retain its actual source revision.
+Relay runtime remains frozen at0067874e. Its final Windows carrier
+19d79b26afe3a46c488794b6a6d010badab44909 restored29 changed files/14 payloads,
+clean, from GitHub. Windows24/24 and separate parent-accepted Linux32/32 qualify
+that relay slice; [Linux carrier100939f9](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/100939f9e07e66d6933af6712e87a86af2206c8e/specs/1553-portable-local-storage/relay-linux-regression-20261008.md).
+
+## Verified Windows HTTP result
+
+Frozen runtime/tests: `3d205d317244b977460fc5537f66fa35e8bc567b`.
+Native HOME-PC Windows11/.NET8; no WSL. Targeted fresh build0errors/22warnings,
+33/33 PASS (9 admission +2 lifetime +10 Load refresh +4 required generation
++8 settings), no skips/duplicates/timeout, original owned/runtime cleanup true.
+All Load cases retained after category split; unchanged5minute budgets.
+[Original evidence and hashes](recovery/windows-http-20261008/manifest.json).
+
+| Real Kestrel probe | GET responses | Warnings/exceptions |
+|---|---|---|
+| Fresh empty root | 12x200,3xexpected game-screen404 | 30 validation warnings,0 exceptions |
+| Separate synthetic copy | 15x200 | 0 |
+| Ordinary NewGame, before/after SaveLoad | 20x200 | 0 |
+| Fresh process on the ordinary root after Load | 15x200 | 0 |
+
+Both actual Save and Load returned200/Committed, continuationBlocked=false;
+Load included menu/session/game/audio/settings. Game/audio/settings payload
+hashes matched all three corresponding restart reads. All four probes record
+StopAsync/DisposeAsync true, Fatalnull, tool wrapper exit0. The probe, integration
+and ordinary CLI product DLLs were byte-equal before the later catalog build;
+see the receipt for the hash and distinction between raw and executor evidence.
+
+Actual browser on the ordinary CLI host: separate new Chrome profile, launcher
+with HTTP Probe Soul and settings with11 controls rendered, all five state APIs
+plus metadata returned200, JavaScript/transport errors0, Chrome exit0. **Overall
+browser smoke remains FAIL** because `/favicon.ico` returned404. Its original
+failure, images and helper are preserved, with no weakened oracle or rerun.
+The CLI was stopped by Ctrl+C through its retained PTY; PowerShell wrapper exit1
+means pipeline cancellation. Product exit code was not captured. Both observed
+host/shell PIDs were absent afterwards: cleanup evidence, not product exit0.
+The four independent real-Kestrel probes provide normal host-shutdown evidence.
+
+Discovery-only catalog:439 categories/11204 methods/files, valid,0 tests executed,
+clean metadata carrierc5e3680e. Unit project/reference build for discovery:
+0errors/41warnings; integration was freshly built for the33-case run. No repeat
+of passing runtime selections. Whole-branch PlanOnly and final recovery follow.
+
+Independent actual Astra XHigh source, causal RED,33-case original TRX evidence,
+prior-Linux coverage and all native/browser raw records reviewed: no product
+blocker. Final metadata carrier still requires exact remote/readback/GitHub-only
+recovery before writer delivery. Linux HTTP execution is separate/pending here;
+the [exact independent recipe](windows-http-linux-reproduction.md) is published.
+
+Limits: queued reads reached29.93seconds; no latency improvement is claimed.
+No active-GM Load continuation, provider/model turn, physical audio/clipboard,
+whole-game qualification, CI enablement, merge or issue closure. The favicon404
+is a separate frontend issue. This host-scheduling change preserves all original
+storage/owner/generation guards, responses and finite retries; no game/GM-authored
+schema, rule, prompt or example changed or requires synchronization.
 
 ## Accepted scope and plan
 
-- [ ] Compare an empty root, an ordinary newly initialized game and a separate
+- [x] Compare an empty root, an ordinary newly initialized game and a separate
   copy of the original owned synthetic Save/Load/restart root. No user data.
-- [ ] Capture actual server exceptions/stacks through the existing ILoggerFactory
+- [x] Capture actual server exceptions/stacks through the existing ILoggerFactory
   on the real LocalWebUiHost, with actual loopback Kestrel and original DI.
   Diagnostic provider only; no replacement services or response rewriting.
-- [ ] Establish the smallest causal failing regression before runtime changes.
+- [x] Establish the smallest causal failing regression before runtime changes.
   A malformed fixture alone does not justify a product fix or an empty200.
-- [ ] Make only a proven correction, select affected catalog categories, preserve
+- [x] Make only a proven correction, select affected catalog categories, preserve
   parallel/repeated HTTP reads, Save/Load/restart and normal owned shutdown.
 - [ ] Publish bounded WIP before long checks/review, obtain independent Astra
   XHigh review, verify exact remote SHA and fresh GitHub-only source recovery.
@@ -33,7 +85,7 @@ CI enabling, merge, force push, branch deletion or issue closure. Bind loopback
 only; retain ownership and await each diagnostic host's StopAsync/DisposeAsync.
 No game/GM schema or prompt change is planned; reassess if a proven cause requires it.
 
-## Checkpoint
+## Historical checkpoints (current qualification above)
 
 Diagnostic harness builds with0errors/3existing warnings. Actual probes at
 source406423ae use fresh product assembly and built frontend assets from the

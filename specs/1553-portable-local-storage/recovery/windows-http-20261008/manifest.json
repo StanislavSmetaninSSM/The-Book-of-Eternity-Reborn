@@ -4,6 +4,16 @@
   "IncompleteGreenSourceCommit": "7e4d66df17f933b1d9a4d9e7e36a6202bb84a272",
   "Files": [
     {
+      "Path": "browser-original-evidence.zip",
+      "Bytes": 1779813,
+      "SHA256": "2a89e8ecc3a3e0798a1d05b42ac21615a3197448e94db7e7cb91bf42ac8c19d6"
+    },
+    {
+      "Path": "catalog-original-evidence.zip",
+      "Bytes": 3801,
+      "SHA256": "f9af4c0ae875094eba874a8a013f1979503dd90c30fc086a4e4356790a61998c"
+    },
+    {
       "Path": "final-green-original-results.zip",
       "Bytes": 15106,
       "SHA256": "7c7d612ac854be7c6201bb0cc4d675e58b2f1181c25313350b4b85cda6055c31"
@@ -12,6 +22,11 @@
       "Path": "first-green-incomplete-original-results.zip",
       "Bytes": 5815,
       "SHA256": "3f797302b1471427eed36d0169b2c60c568f59b9b1d8291d1f093edac648ec67"
+    },
+    {
+      "Path": "http-empty-final.json",
+      "Bytes": 19892,
+      "SHA256": "a0ac0a4f72f8141be9e044d888418f28dc0b63cc44b7d1fc58f9e2b305024d3e"
     },
     {
       "Path": "http-empty-first.json",
@@ -24,9 +39,24 @@
       "SHA256": "0b1f53df2dd184acb5bc9671fa9ba94343d0d48d23b8f8c634ab5a422377371d"
     },
     {
+      "Path": "http-ordinary-final.json",
+      "Bytes": 302353,
+      "SHA256": "552ae805ec0a089683b59719fceaab4b594f1803b6e424810affe3b188c367a1"
+    },
+    {
       "Path": "http-ordinary-first.json",
       "Bytes": 16390,
       "SHA256": "9468570a272e4be5f920be4c46ef39173176f4bd49a5de3e2cbfec320aa6d2b0"
+    },
+    {
+      "Path": "http-ordinary-restart.json",
+      "Bytes": 4452,
+      "SHA256": "4f1ca29430f1d88367d0ca306ce2c33206f5e911178f38e733e4637b779f64e3"
+    },
+    {
+      "Path": "http-synthetic-final.json",
+      "Bytes": 4447,
+      "SHA256": "6498c42c8ead5eb918fe3305746f14fe371dea8807d0d0096ccb8e60ed0aa043"
     },
     {
       "Path": "http-synthetic-first.json",
@@ -37,6 +67,16 @@
       "Path": "lifetime-red-original-results.zip",
       "Bytes": 5344,
       "SHA256": "f20682ab2bd23b2bd443ca784cd608b51e3a3fe5fc48873f938d2282eac2e7bb"
+    },
+    {
+      "Path": "native-and-browser-receipt.json",
+      "Bytes": 3936,
+      "SHA256": "3306fd630b66724980d5631eb4e5f759070c5c73c9d9d9e2b094f364acbb7262"
+    },
+    {
+      "Path": "native-probe-build.zip",
+      "Bytes": 418,
+      "SHA256": "34a8f9fa7291047a5a46c9a1fbe638aa14735e82f97d0365609dc222ea4d2995"
     },
     {
       "Path": "red-original-results.zip",

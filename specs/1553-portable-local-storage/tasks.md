@@ -9,20 +9,27 @@ Current T043 state: bounded driver correction source0a3d963f has causal REDs and
 ## Native Windows follow-up 2026-10-08
 
 Source #1553, owner-approved [plan](relay-windows-plan.md).
-- [ ] T053-WINDOWS-RELAY Shared protocol/POSIX preservation, native Unicode/input
+- [x] T053-WINDOWS-RELAY Shared protocol/POSIX preservation, native Unicode/input
   restoration, child polling, gate; causal tests, real ConPTY/worker/helper/close/
   original Job cleanup, Astra XHigh review and exact remote recovery.
   Native bounded implementation is reviewed: source0067874e,24/24 PASS,
-  candidate3ce1ab52 Astra XHigh PASS, catalog436/11196/0executed, GitHub-only
-  candidate restoration verified. Linux regression is a separate parent gate;
-  final metadata carrier requires exact-tip readback/restoration.
-- [ ] T054-WINDOWS-HTTP Compare synthetic Save/Load/restart HTTP 500 with clean
+  final carrier19d79b26 Astra XHigh PASS, catalog436/11196/0executed,
+  GitHub-only29 changed files/14 payloads restored clean. Parent accepted separate
+  native Linux32/32 on exact source0067874e, independent Sol6.1/xhigh PASS;
+  [Linux carrier100939f9](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/100939f9e07e66d6933af6712e87a86af2206c8e/specs/1553-portable-local-storage/relay-linux-regression-20261008.md).
+- [x] T054-WINDOWS-HTTP Compare synthetic Save/Load/restart HTTP 500 with clean
   valid root, collect real server exception/stack, then repair proven cause with
   parallel/repeated reads, Save/Load and shutdown checks.
   Separate approved [diagnosis plan](windows-http-plan.md), branch based5ff403ed;
   relay runtime remains frozen. Actual clean/ordinary/synthetic HTTP stacks prove
-  main-owner guard contention; host-local request admission and targeted review
-  lifetime regression are in progress. No fixture-only product fix or fake200.
+  main-owner guard contention. Runtime/tests3d205d31:33/33 PASS, no skips/timeouts/
+  duplicates, original cleanup true; native65GETs62x200+3expectedempty404, actual
+  SaveLoadCommitted/fullbundle, restartpayloadmatches, four normalhostshutdowns.
+  Independent Astra XHigh source/evidence PASS; valid439/11204catalog0executed.
+  Browsermenu/settings/all5stateAPI200, but overallsmokeFAIL on favicon404;
+  CLIwrapperCtrlCexit1/productexitunknown, ownedPIDsabsent. No latency/liveGM/
+  whole-game/LinuxHTTPclaim. Finalcarrier remote/readback/GitHub-only recovery
+  remains the writer delivery guard. [Linux reproduction](windows-http-linux-reproduction.md).
 
 # Tasks: Trusted local storage and cross-platform runtime
 

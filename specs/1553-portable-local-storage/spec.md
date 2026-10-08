@@ -19,8 +19,10 @@ Source #1553. Implement the bounded [Windows relay plan](relay-windows-plan.md):
 native Unicode/multiline terminal input with mode restoration, child output
 polling and interprocess gate, preserving shared protocol/POSIX behavior and
 original Job ownership. No provider requests, installs, WSL, security changes or
-game/GM-authored contract changes. Separately diagnose HTTP 500 after this block;
-the existing reproduction is limited to synthetic Save/Load and restart.
+game/GM-authored contract changes. Frozen relay0067874e has Windows24/24 and
+separate parent-accepted Linux32/32 evidence. The separately approved HTTP fix
+above now has causal empty/ordinary/synthetic-root evidence and bounded Windows
+qualification; see the HTTP plan for exact results and remaining limitations.
 
 ## Current final-readiness boundary — owner-approved deferral
 

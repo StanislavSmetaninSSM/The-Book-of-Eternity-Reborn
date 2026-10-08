@@ -1,6 +1,6 @@
 # Native Windows relay implementation plan
 
-## Current checkpoint: native Windows GREEN and independently reviewed; Linux pending
+## Current checkpoint: reviewed Windows GREEN and accepted Linux regression
 
 Frozen runtime/tests: `0067874e15f479327dc37268fc891f51e3a2713d`.
 Native Windows selected run: **24/24 PASS**, 7 native cases plus 17 shared worker
@@ -30,10 +30,16 @@ PlanOnly:5 descriptors/39 cases,0 executed. Catalog:436 categories/11196 methods
 valid,0 executed. GitHub-only sparse restoration of candidate3ce1ab52 verified
 all25 changed files byte-for-byte and10 manifest payloads; source recovery only,
 not a fresh-restoration build. Final metadata carrier needs its own exact-tip check.
-Linux regression is **not run** on HOME-PC; parent runs it separately against
-the same frozen source0067874e. Existing source paths are retained but that is not
-a Linux PASS. HTTP diagnosis has not started. The original report reproduction remains
-limited to synthetic Save/Load and restart; compare clean valid data first.
+Parent accepted the separately executed native Linux regression: **32/32 PASS**
+on the same frozen source0067874e, no skips/timeouts, independent Sol6.1/xhigh PASS.
+All14 scenario guardians observed ECHILD without emergency; three original Bridge
+stop/I-O/ACK assertions passed. [Exact Linux carrier100939f9 report](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/100939f9e07e66d6933af6712e87a86af2206c8e/specs/1553-portable-local-storage/relay-linux-regression-20261008.md)
+was read back from GitHub; the parent confirms exact remote/fresh restoration.
+That is separate Linux execution, not a HOME-PC or whole-game qualification.
+Final reviewed Windows carrier5ff403ed restored29 changed files and14 payloads,
+clean, from GitHub only. This final handoff metadata needs its own exact-tip check.
+HTTP diagnosis continues separately on branchcodex/1553-windows-http-20261008;
+its newly reproduced ordinary/empty-root failures do not change relay source.
 
 Reproduce from a prepared native Windows checkout (Python3.14.7 on PATH,
 PowerShell7.6.6, .NET SDK10.0.401/runtime8.0.31, Windows11Pro10.0.26200 x64):
