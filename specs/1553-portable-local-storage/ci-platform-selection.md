@@ -60,6 +60,14 @@ One metadata preparation invocation incorrectly combined ValidateCatalog with
 Parallelism; rejected at parameter binding before any workload, corrected without
 source changes. It is not a causal RED. Preinstalled PyYAML6.0.3 parsed workflow
 and checked preserved triggers/permissions, matrix and stable final name.
-Final source followup, discovery and restoration gates pending. Hosted Actions
+Independent actual Sol6.1/xhigh SOURCE/EVIDENCE PASS at3464cd24 after P2fix;
+no remaining source defects. Final catalog434/11193/0tests and PlanOnly2files/
+2descriptors/0tests exit0/cleanup complete on frozen3464. NoBuild discovery reused
+its fresh successful preceding C# builds; there are no C#/project source changes.
+Writer independently verifies all29stored/expanded artifact hashes and final7pins.
+[Final discovery](recovery/ci-platform-selection/final-discovery/manifest.json),
+[final plan](recovery/ci-platform-selection/final-plan/manifest.json),
+[review record](recovery/ci-platform-selection/review-verdicts.json).
+Metadata verdict and exact final carrier push/readback/freshGitHubrestore pending. Hosted Actions
 matrix and native Windows remain unexecuted; branch protection requirements
 remain unknown after the read-only403. No workflow_dispatch/PR/merge here.
