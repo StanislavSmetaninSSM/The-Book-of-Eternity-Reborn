@@ -13,6 +13,7 @@ internal static class GmDaemonCurrentScenario
     internal const string Manifest="game_state/control/pending_turn_snapshot.json";
     internal const string Snapshot="game_state/control/pending_turn_snapshot/output/daemon-declared.json";
     internal const string Notes="game_state/control/gm_live_test_notes.jsonl";
+    internal const string PositiveReady="ready/daemon-positive.json";
     internal const string Ready="ready/turn_complete.json";
     internal const string Repair="game_state/control/validation_repair_request.json";
     internal const string Terminal="game_state/control/terminal_protocol_failure_request.json";
@@ -28,6 +29,7 @@ internal static class GmDaemonCurrentScenario
                 [Snapshot]="{\"baseline\":true}",["output/daemon-declared.rollback"]="{\"baseline\":true}",
                 [Repair]="{\"sessionId\":\"session\",\"requestId\":\"request\",\"turnNumber\":1}",
                 [Terminal]="{\"sessionId\":\"session\",\"requestId\":\"request\",\"turnNumber\":1}",
+                [PositiveReady]="{\"positive\":true}",
                 [Ready]="{\"sessionId\":\"stale\",\"requestId\":\"stale\",\"turnNumber\":0}",
                 [Notes]="{\"requestId\":\"request\",\"recordId\":\"unknown\"}\nmalformed-manual-line\n",
                 [Keys]="{\"keys\":[\"saved-key\"]}",
@@ -56,9 +58,18 @@ internal static class GmDaemonCurrentScenario
     {
         var modeFile=Path.Combine(folder,"current-mode.json");
         var mode=File.Exists(modeFile)?JsonSerializer.Deserialize<string>(File.ReadAllText(modeFile)):null;
-        var count=0;var manifestReads=0;var targetReads=0;
+        var count=0;var manifestReads=0;var targetReads=0;var initialTurnCut=false;
         return (phase,path)=>{
             if(mode==null)return;
+            if(mode=="ready-race"&&phase=="member"&&path==files.ResolvePath(PositiveReady)){
+                if(report.ContainsKey("PositiveConditionalPublication"))throw new InvalidOperationException("Positive conditional publication repeated.");
+                if(File.Exists(path))throw new InvalidOperationException("Positive deletion did not publish absence.");
+                report["PositiveConditionalPublication"]=new{Path=path,Index=0,Count=1,Absent=true};return;
+            }
+            if(mode=="cohort-read-refusal"&&phase=="read"&&path=="input/turn_request.json"&&!initialTurnCut){
+                initialTurnCut=true;report["InitialTurnReadRefusal"]=true;
+                throw new InvalidDataException("Actual initial admitted turn read refusal.");
+            }
             string? target=mode switch {
                 "config-refusal"=>"config.json","cache-refusal"=>Keys,"repair-refusal"=>Repair,"terminal-refusal"=>Terminal,
                 "post-send-refusal"=>"input/turn_request.json","cohort-read-refusal"=>Snapshot,"notes-race"=>Notes,"ready-race"=>Ready,"cohort-change"=>Manifest,_=>null};
@@ -96,14 +107,22 @@ internal static class GmDaemonCurrentScenario
             using var ps=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"powershell.json")));evidence["PowerShell"]=ps.RootElement.Clone();
             using var helper=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"daemon-helper.json")));evidence["Helper"]=helper.RootElement.Clone();
             var p=ps.RootElement;var h=helper.RootElement;
-            if(!p.GetProperty("helperExitedBeforeDispose").GetBoolean()||!p.GetProperty("disposed").GetBoolean()||!h.GetProperty("Completed").GetBoolean()||
+            var localLoss=mode is "malformed-response" or "request-end-loss";
+            if(!p.GetProperty("helperExitedBeforeDispose").GetBoolean()||!p.GetProperty("disposed").GetBoolean()||
                 p.GetProperty("helperPid").GetInt32()!=h.GetProperty("ProcessId").GetInt32()||p.GetProperty("helperExitCode").GetInt32()!=h.GetProperty("ExitCode").GetInt32())throw new InvalidOperationException("Current daemon original helper join missing.");
+            if(localLoss){if(h.GetProperty("ExitCode").GetInt32()!=2||!h.TryGetProperty("Failure",out _)||h.TryGetProperty("Completed",out _))throw new InvalidOperationException("Expected natural local EOF failure missing.");}
+            else if(!h.GetProperty("Completed").GetBoolean()||h.GetProperty("ExitCode").GetInt32()!=0)throw new InvalidOperationException("Original successful helper completion missing.");
             if(mode is not ("malformed-response" or "request-end-loss")&&(!p.GetProperty("closeObserved").GetBoolean()||p.GetProperty("lost").GetBoolean()))throw new InvalidOperationException("Current daemon original receipt missing.");
             if(!mode.EndsWith("refusal",StringComparison.Ordinal)&&mode is not ("malformed-response" or "request-end-loss")&&p.GetProperty("failure").ValueKind!=JsonValueKind.Null)throw new InvalidOperationException("Known current row failed unexpectedly.");
             if(mode.EndsWith("refusal",StringComparison.Ordinal)&&(!p.GetProperty("daemonReadRefused").GetBoolean()||p.GetProperty("terminalClose").GetProperty("outcome").GetInt32()!=1||p.GetProperty("terminalClose").GetProperty("closingFailed").GetBoolean()))throw new InvalidOperationException("Read refusal did not preserve Failed/ACK.");
             if(mode is "post-send-refusal" or "config-refusal" or "cache-refusal" or "repair-refusal" or "terminal-refusal" or "cohort-read-refusal" or "cohort-change" or "notes-race" or "ready-race")
                 if(h.GetProperty("CurrentCut").GetProperty("Count").GetInt32()!=1)throw new InvalidOperationException("Actual current daemon boundary not reached.");
+            if(mode is "malformed-response" or "request-end-loss"){
+                if(p.GetProperty("terminalClose").ValueKind!=JsonValueKind.Null||p.GetProperty("closeObserved").GetBoolean()||p.GetProperty("localScopeCompleted").GetBoolean()||p.GetProperty("establishedOutcome").ValueKind!=JsonValueKind.Null||!p.GetProperty("lost").GetBoolean())throw new InvalidOperationException("Lost local read fabricated a completed outcome or remote receipt.");
+            }
+            if(mode=="cohort-read-refusal"&&!h.GetProperty("InitialTurnReadRefusal").GetBoolean())throw new InvalidOperationException("Initial turn refusal was not reached.");
             if(mode=="notes-race"&&!File.ReadAllBytes(files.ResolvePath(Notes)).SequenceEqual(CompetingNote))throw new InvalidOperationException("Competing GM append was overwritten.");
+            if(mode=="ready-race"&&h.GetProperty("PositiveConditionalPublication").GetProperty("Count").GetInt32()!=1)throw new InvalidOperationException("Actual conditional success not reached.");
             if(mode=="ready-race"&&!File.ReadAllBytes(files.ResolvePath(Ready)).SequenceEqual(CompetingReady))throw new InvalidOperationException("Replacement Ready was deleted.");
             if(!p.GetProperty("currentPassed").GetBoolean())throw new InvalidOperationException("Current daemon semantic oracle failed.");
             evidence["CurrentPassed"]=true;

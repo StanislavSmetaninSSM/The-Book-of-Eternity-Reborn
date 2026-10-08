@@ -64,11 +64,20 @@ try {
  }
  'repair-refusal' {Process-RepairRequest -RepairPath ([IO.Path]::Combine($ControlDir,'validation_repair_request.json'));throw 'Repair refusal was swallowed.'}
  'terminal-refusal' {Process-TerminalProtocolFailureRequest -FailurePath ([IO.Path]::Combine($ControlDir,'terminal_protocol_failure_request.json'));throw 'Terminal refusal was swallowed.'}
- 'ready-race' {$signal=Get-CorrelatedTerminalSignal $request ([IO.Path]::Combine($SessionPath,'ready/turn_complete.json')) ([IO.Path]::Combine($SessionPath,'ready/absent-error.json'));Assert-Current ($null -eq $signal) 'Changed Ready acquired old correlation.'}
+ 'ready-race' {
+  $positive=Get-GmDaemonFileObservation 'ready/daemon-positive.json'
+  Assert-Current (Remove-GmDaemonObservedFile $positive) 'Exact original positive conditional deletion refused.'
+  Assert-Current (-not (Test-GmDaemonPath 'ready/daemon-positive.json')) 'Committed conditional deletion retained member.'
+  $signal=Get-CorrelatedTerminalSignal $request ([IO.Path]::Combine($SessionPath,'ready/turn_complete.json')) ([IO.Path]::Combine($SessionPath,'ready/absent-error.json'));Assert-Current ($null -eq $signal) 'Changed Ready acquired old correlation.'}
  'notes-race' {Update-GmLiveTestNoteRecordLinks -RequestId 'request' -RecordId 'actual-record'}
  'cohort-positive' {Assert-Current (Test-TurnRequestHasPendingSnapshotContext $request) 'Authentic declared cohort refused.'}
  'cohort-change' {Assert-Current (-not (Test-TurnRequestHasPendingSnapshotContext $request)) 'Changed first manifest was adopted by second batch.'}
- 'cohort-read-refusal' {Process-Turn -RequestPath $TurnRequestFile;throw 'Turn authority read refusal was swallowed.'}
+ 'cohort-read-refusal' {
+  $initialRefused=$false
+  try{Process-Turn -RequestPath $TurnRequestFile}catch{Assert-Current (Test-GmDaemonReadFailure $_) 'Initial turn failure lost its read marker';$initialRefused=$true}
+  Assert-Current ($initialRefused -and -not $script:IsProcessing) 'Initial turn refusal retained the processing flag.'
+  Process-Turn -RequestPath $TurnRequestFile;throw 'Turn authority read refusal was swallowed.'
+ }
  'post-send-refusal' {
   $pending=Read-GmPromptPending $TurnRequestFile
   $operation=New-GmPromptOperation -Message 'inert exact message' -PendingPath $TurnRequestFile -OperationKind 'turn' -OperationRevision 'fixture' -ExpectedSourceHash $pending.Hash

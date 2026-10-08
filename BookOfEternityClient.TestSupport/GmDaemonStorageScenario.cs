@@ -34,6 +34,11 @@ internal static class GmDaemonStorageScenario
             },
             BeforeCanonicalReadOpenAsync=path=>{Interlocked.Increment(ref reads);currentHook?.Invoke("read",path);return Task.CompletedTask;},
             AfterCanonicalMutationBoundaryValidatedAsync=path=>{currentHook?.Invoke("publish",path);return Task.CompletedTask;},
+            LocalPublicationObserver=(phase,index)=>{
+                if(phase!=TrustedLocalPublicationPhase.MemberPublished||index!=0)return;
+                using var journal=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(root,".boe_runtime/trusted-local-publication-v1/active.json")));
+                currentHook?.Invoke("member",journal.RootElement.GetProperty("Members")[index].GetProperty("Path").GetString()!);
+            },
             LocalPublicationRecoveryObserver=(_,_)=>Interlocked.Increment(ref recoveries)
         });
         currentHook=GmDaemonCurrentScenario.CreateHook(files,folder,evidence);

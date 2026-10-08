@@ -175,9 +175,13 @@ function Invoke-GmParticipatingConsumer {
     if($failure -and (Test-GmDaemonReadFailure $failure.Exception)) {
         # Preserve the first body cause and the actual immutable closing receipt.
         # An earlier own publication Unknown still overrides the effective body.
-        $failure.Exception.Data['EstablishedOperationOutcome']=$context.closeOutcome
+        if($context.publicationUncertain){$failure.Exception.Data['EstablishedOperationOutcome']=5}
+        elseif($null -ne $context.terminalClose){$failure.Exception.Data['EstablishedOperationOutcome']=$context.terminalClose.outcome}
+        elseif($context.localScopeCompleted){$failure.Exception.Data['EstablishedOperationOutcome']=$context.closeOutcome}
+        else{$failure.Exception.Data.Remove('EstablishedOperationOutcome')}
         $failure.Exception.Data['OriginalOperationClose']=$context.terminalClose
         $failure.Exception.Data['OriginalOperationCloseObserved']=$context.closeObserved
+        $failure.Exception.Data['OriginalOperationTransportLost']=$context.lost
     }
     if ($failure) { throw $failure }
     return $result
@@ -318,7 +322,7 @@ function Invoke-GmDaemonStorageRequest {
 function Get-GmDaemonSnapshot {
     param([string[]]$Paths=@(),[string[]]$Trees=@(),$Expected=$null,[string]$Generation=$null)
     if($null -eq $Expected){$Expected=New-GmDaemonPathMap}
-    try {return Invoke-GmParticipatingConsumer $GameSessionPath {Invoke-GmDaemonStorageRequest @{action='snapshot';paths=$Paths;trees=$Trees;expected=$Expected;generation=$Generation}}}
+    try {return Invoke-GmParticipatingConsumer $GameSessionPath {Invoke-GmDaemonStorageRequest @{action='snapshot';paths=$Paths;trees=$Trees;expected=$Expected;generation=$(if([string]::IsNullOrEmpty($Generation)){$null}else{$Generation})}}}
     catch {
         if(Test-GmDaemonReadFailure $_){throw}
         throw (New-GmDaemonReadFailure 'Original daemon read admission or completion was refused.' $_.Exception)

@@ -1,3 +1,18 @@
+## F14 bounded review corrections — 2026-10-08
+
+Intermediate clean58c Plan213120 compiled successfully: unit build76.4344852s,
+wall80.2687921s,27 planned/six descriptors/zero executed, both cleanup flags true.
+Its original raw logs/summary/source pins are retained as build-only evidence.
+
+Before execution, connected review corrected nullable initial generation, receipt
+annotation after loss, outer daemon polling/fatal handling, and initial-turn flag
+cleanup. Existing current rows positively exercise current-generation cache loading,
+initial turn refusal/reset before declared-cohort refusal, and actual successful
+conditional Ready deletion before the competing replacement race. The two local
+transport-loss rows require natural original helper exit2/Failure, no Completed,
+no local completion or remote receipt/ACK, and no invented Established Completed.
+Exact27 remains unchanged; full source/fixture review and fresh build are pending.
+
 ## F14 frozen runtime/source-selection candidate — 2026-10-08
 
 Exact proposed Linux27 in six categories: `portable-gm-daemon-qte-storage-causal-linux`5,

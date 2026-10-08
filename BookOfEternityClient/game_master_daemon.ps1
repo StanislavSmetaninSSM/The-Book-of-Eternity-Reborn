@@ -5842,13 +5842,9 @@ function Process-TurnCore {
     if ($script:IsProcessing) { return }
     $script:IsProcessing = $true
 
-    Start-Sleep -Milliseconds 300
-    if (!(Test-GmDaemonPath $RequestPath)) {
-        $script:IsProcessing = $false
-        return
-    }
-
     try {
+        Start-Sleep -Milliseconds 300
+        if (!(Test-GmDaemonPath $RequestPath)) { return }
         $pendingSnapshot = Read-GmPromptPending -Path $RequestPath
         $turnRequest = $pendingSnapshot.Request
         $turnNumber = $turnRequest.turnNumber
@@ -6814,7 +6810,6 @@ try {
             }
         }
         catch {
-        Assert-GmNotDaemonReadFailure $_
             $script:ErrorCount++
             $script:DaemonLastLoopError = New-DaemonErrorPayload -ErrorRecord $_ -Phase "main_loop"
             Write-Log "Main loop error recovered: $($_.Exception.Message)" -Level "ERROR" -Color Red
@@ -6824,7 +6819,6 @@ try {
     }
 }
 catch {
-        Assert-GmNotDaemonReadFailure $_
     $script:DaemonFatalError = $_
     $script:ErrorCount++
     Write-Log "Fatal daemon error: $($_.Exception.Message)" -Level "ERROR" -Color Red
