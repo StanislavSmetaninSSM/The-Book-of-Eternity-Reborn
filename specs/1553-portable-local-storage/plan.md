@@ -1,5 +1,15 @@
 ## F13 causal10 fixture WIP — 2026-10-08
 
+Initial6c3f Plan181854 completed a fresh unit build79.5930786s, exact10/1/0,
+clean source and both cleanup flags true; no tests executed. Fixture review found
+two cleanup-oracle gaps: unexpected writer failure could skip child settlement,
+and child completion was count-only rather than exact original PID/exit evidence.
+Corrected finally stages settle independently and retain every cleanup error;
+the PS observer proves original exit before Dispose's kill fallback, matches each
+joined PID/exit to the actual child report, and rejects duplicates/forced cleanup.
+Missing/malformed-generation rows also preserve exact config before/after bytes.
+Fresh corrected build and focused fixture gate remain required; no causal RED yet.
+
 Independent Astra XHigh and parent design/proposed-selection PASS94f912, no blocking
 findings. Test-only packet now defines exact10 rows in
 `portable-gm-helper-admission-causal-linux`; no production behavior changed.

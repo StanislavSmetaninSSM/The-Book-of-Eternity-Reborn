@@ -6,13 +6,17 @@ $ErrorActionPreference='Stop'
 # Only the dedicated helper's process factory changes. The old helper does not
 # call it on RED. A later production helper retains its actual framing, body,
 # scope/lease, close and Dispose functions; TestSupport injects original FS hooks.
-$script:JoinedHelperTransports=0
+$script:JoinedHelperTransports=[Collections.Generic.List[object]]::new()
 $script:OriginalDispose=${function:Dispose-GmOperationTransport}
 function Dispose-GmOperationTransport {
     param($Context)
-    $already=$Context.disposed
+    if($Context.disposed){return (& $script:OriginalDispose $Context)}
+    $originalPid=$Context.process.Id
+    # Observe the original handle, never reopen a PID. A helper requiring the
+    # production Dispose kill fallback is a fixture failure, not causal evidence.
+    $exited=$Context.process.WaitForExit(3500)
     & $script:OriginalDispose $Context
-    if(-not $already -and $Context.disposed){$script:JoinedHelperTransports++}
+    $script:JoinedHelperTransports.Add([pscustomobject]@{ProcessId=$originalPid;ExitedBeforeDispose=$exited;Disposed=$Context.disposed;ExitCode=$Context.exitCode})
 }
 function Start-BoeHelperProcess {
     param([string]$Root,[AllowNull()][string]$ExpectedGeneration)
@@ -52,5 +56,5 @@ try {
         default {throw 'Unknown fixture scenario.'}
     }
 } catch {$failure=$_.Exception.ToString()}
-$report=[ordered]@{Initialized=$initialized;Value=$value;Failure=$failure;JoinedHelperTransports=$script:JoinedHelperTransports}
+$report=[ordered]@{Initialized=$initialized;Value=$value;Failure=$failure;JoinedHelperTransports=@($script:JoinedHelperTransports.ToArray())}
 [IO.File]::WriteAllText((Join-Path $Folder 'powershell.json'),($report|ConvertTo-Json -Depth 12 -Compress))

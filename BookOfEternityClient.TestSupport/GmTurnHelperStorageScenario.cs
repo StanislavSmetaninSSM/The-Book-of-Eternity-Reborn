@@ -28,7 +28,7 @@ internal static class GmTurnHelperStorageScenario
 
     internal static async Task<int> RunHelperChildAsync(string root, string folder, string expected)
     {
-        var report = new Dictionary<string, object?> { ["ExpectedGeneration"] = expected };
+        var report = new Dictionary<string, object?> { ["ExpectedGeneration"] = expected, ["ProcessId"] = Environment.ProcessId };
         var reads = 0; var recoveries = 0; var contentions = 0;
         var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks {
@@ -88,6 +88,8 @@ internal static class GmTurnHelperStorageScenario
             if (scenario == "generation-malformed") File.WriteAllText(files.SessionGenerationPath, "{\"schemaVersion\":1,\"generationId\":\"not-current-authority\"}");
             var observedGeneration = Bytes(files.SessionGenerationPath);
             evidence["GenerationAtInvocation"] = observedGeneration;
+            var observedConfig = File.ReadAllBytes(files.ResolvePath("config.json"));
+            evidence["ConfigAtInvocation"] = observedConfig;
 
             async Task StartWriterAsync()
             {
@@ -150,12 +152,22 @@ internal static class GmTurnHelperStorageScenario
             evidence["PublicationCuts"] = actualCuts;
             evidence["WorldBytes"] = Bytes(files.ResolvePath(WorldPath)); evidence["AuthorityBytes"] = Bytes(files.ResolvePath(AuthorityPath));
             evidence["GenerationAfterHelper"] = Bytes(files.SessionGenerationPath);
+            evidence["ConfigAfterHelper"] = Bytes(files.ResolvePath("config.json"));
             evidence["JournalAfterHelper"] = Bytes(Journal(files));
             var children = Directory.GetFiles(folder, "helper-child-*.json").Select(path => JsonDocument.Parse(File.ReadAllBytes(path))).ToArray();
             try {
                 evidence["ActualHelperChildren"] = children.Select(document => document.RootElement.Clone()).ToArray();
                 Require(children.All(document => document.RootElement.GetProperty("Completed").GetBoolean()), "An actual nested helper did not record completion.");
-                Require(ps.GetProperty("JoinedHelperTransports").GetInt32() == children.Length, "Nested helper process/IO disposal does not match actual child completions.");
+                var joined = ps.GetProperty("JoinedHelperTransports").EnumerateArray().ToArray();
+                Require(joined.Length == children.Length && joined.Select(item => item.GetProperty("ProcessId").GetInt32()).Distinct().Count() == joined.Length,
+                    "Nested helper disposal count/identity does not match actual child completions.");
+                foreach (var completed in children) {
+                    var pid = completed.RootElement.GetProperty("ProcessId").GetInt32();
+                    var original = joined.Single(item => item.GetProperty("ProcessId").GetInt32() == pid);
+                    Require(original.GetProperty("ExitedBeforeDispose").GetBoolean() && original.GetProperty("Disposed").GetBoolean() &&
+                        original.GetProperty("ExitCode").GetInt32() == completed.RootElement.GetProperty("ExitCode").GetInt32(),
+                        "Original helper needed forced termination or did not join the exact reported exit.");
+                }
                 if (scenario == "stale-load") {
                     Require(children.Sum(document => document.RootElement.GetProperty("RecoveryEvents").GetInt32()) == 0, "Stale helper recovered before rejecting its initialized generation.");
                     Require(File.ReadAllBytes(Journal(files)).SequenceEqual((byte[])evidence["RecoverableJournal"]!), "Stale helper changed pending journal bytes.");
@@ -179,6 +191,7 @@ internal static class GmTurnHelperStorageScenario
                 Require(ps.GetProperty("Failure").ValueKind == JsonValueKind.String && ps.GetProperty("Value").ValueKind == JsonValueKind.Null, "Causal RED: sibling-prefix absolute read escaped the initialized session.");
             } else if (scenario.StartsWith("generation-", StringComparison.Ordinal)) {
                 Require(Equal(observedGeneration, Bytes(files.SessionGenerationPath)), "Initialization changed missing/malformed generation authority.");
+                Require(File.ReadAllBytes(files.ResolvePath("config.json")).SequenceEqual(observedConfig), "Initialization changed existing configuration.");
                 Require(ps.GetProperty("Initialized").GetBoolean() == false && ps.GetProperty("Failure").ValueKind == JsonValueKind.String, "Causal RED: initialization accepted missing/malformed generation authority.");
             } else if (scenario == "stale-load") {
                 Require(ps.GetProperty("Failure").ValueKind == JsonValueKind.String && ps.GetProperty("Value").ValueKind == JsonValueKind.Null, "Causal RED: stale initialized helper read the replacement generation.");
@@ -187,14 +200,27 @@ internal static class GmTurnHelperStorageScenario
         } catch (Exception failure) { evidence["Failure"] = failure.ToString(); return 1; }
         finally {
             release.TrySetResult();
-            try {
-                if (writer != null) await writer;
-                if (child != null) {
+            var cleanupFailures = new List<string>();
+            async Task SettleAsync(string label, Func<Task> settlement)
+            {
+                try { await settlement(); }
+                catch (Exception failure) { cleanupFailures.Add(label + ": " + failure); }
+            }
+            // Independent original-owner cleanup stages: a writer fault cannot
+            // skip child/IO joining, and both precede the fresh ownership proof.
+            await SettleAsync("writer", async () => { if (writer != null) await writer; });
+            await SettleAsync("PowerShell/IO", async () => {
+                if (child == null) return;
+                try {
                     if (!child.HasExited) { evidence["ForcedPowerShellTermination"] = true; child.Kill(); await child.WaitForExitAsync(); }
-                    if (stdout != null && stderr != null) await Task.WhenAll(stdout, stderr);
-                    evidence["OriginalPowerShellExited"] = child.HasExited;
-                    child.Dispose();
+                } finally {
+                    try {
+                        if (stdout != null && stderr != null) await Task.WhenAll(stdout, stderr);
+                        evidence["OriginalPowerShellExited"] = child.HasExited;
+                    } finally { child.Dispose(); }
                 }
+            });
+            try {
                 // Fixture-owned repairs happen only after the observations above;
                 // they neither establish the tested decision nor turn RED green.
                 if (scenario.StartsWith("generation-", StringComparison.Ordinal) && originalGeneration != null)
@@ -210,7 +236,8 @@ internal static class GmTurnHelperStorageScenario
                 evidence["PostObservationRecoveryEvents"] = recoveryEvents;
                 if (scenario == "stale-load") Require(recoveryEvents > 0 && File.ReadAllBytes(files.ResolvePath(DataPath)).SequenceEqual(A), "Supposedly recoverable fixture journal never reached actual recovery.");
                 evidence["FixtureCanonicalOwnershipReleased"] = true;
-            } catch (Exception failure) { evidence["CleanupFailure"] = failure.ToString(); evidence["Success"] = false; }
+            } catch (Exception failure) { cleanupFailures.Add("canonical ownership: " + failure); }
+            if (cleanupFailures.Count != 0) { evidence["CleanupFailure"] = cleanupFailures; evidence["Success"] = false; }
             await File.WriteAllTextAsync(Path.Combine(folder, "scenario.json"), JsonSerializer.Serialize(evidence));
         }
     }
