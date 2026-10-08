@@ -52,10 +52,21 @@ publication decision; restore remains the original per-file operation. Cleanup
 keeps marker last and retains snapshot after failure; a completed restore retry
 only finishes cleanup. Cold signed admission transfers the complete cohort before
 request removal. Unknown old root handling remains unchanged.
-Selection now has 12 cases including reached partial cleanup and exact live marker
-hash, plus actual save/load exclusion. These runtime changes/new cases are unbuilt
-and unrun. Independent source/evidence review and all other migration families
-remain open.
+First runtime source083ae3bc built successfully; PlanOnly selected 26/2 (12 console,
+14 existing neighbor). Actual runner stopped after first descriptor: 12 executed,
+11 PASS/one fixture FAIL (cut count20, because IOException is intentionally retried
+by PublishLocalCore; neighbor14 unexecuted). Change the controlled cut to the
+nontransient InvalidOperationException so one reached publication is the intended
+failure. Do not classify this as a storage outcome regression.
+
+Independent source review found a real P2: a successfully restored snapshot with
+cleanup debt remains RestoreCompleted and can be reused by new preparation,
+skipping future rollback. Add two reached partial-cleanup → new preparation cases
+(same/new tracked file), obtain RED, then require completed cleanup and a fresh
+snapshot before staging. Never reset the old completion flag. These tests and
+fixture correction are unbuilt/unrun. No GREEN or acceptance is claimed.
+Root SaveLoad compile correction in083ae3bc and the initial47330 failed PlanOnly
+are build-only evidence (zero executed). All other migration families remain open.
 
 Source [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 Latest owner instruction authorizes systematic inventory → independent completeness

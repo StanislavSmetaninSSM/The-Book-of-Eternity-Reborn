@@ -12,6 +12,35 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class GameEngineTurnLifecycleTests
 {
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline(bool newTrackedFile)
+    {
+        const string first = "lore/current_world/console_restage_first.json";
+        const string second = "lore/current_world/console_restage_second.json";
+        const string other = "lore/current_world/console_restage_other.json";
+        await _fs.WriteFileAtomicBytesAsync(first, [0x41]);
+        await _fs.WriteFileAtomicBytesAsync(second, [0x42]);
+        var explorer = GetPrivateField<ExplorerMode>(CreateGameEngine(), "_explorer");
+        await explorer.StagePendingLocalTurnRollbackSnapshotAsync(first, second);
+        var previous = explorer.ConsumePendingLocalTurnRollbackSnapshot()!;
+        ArmCanonicalWriteFailure(previous.BackupFiles[second]);
+        await Assert.ThrowsAsync<IOException>(() => explorer.RestoreConsumedLocalTurnRollbackSnapshotAsync(previous));
+        Assert.Null(_armedCanonicalWriteFailurePath);
+        Assert.False(File.Exists(_fs.ResolvePath(previous.BackupFiles[first])));
+        Assert.True(File.Exists(_fs.ResolvePath(Assert.Single(previous.TechnicalArtifacts))));
+
+        var target = newTrackedFile ? other : first;
+        await _fs.WriteFileAtomicBytesAsync(target, [0x61]);
+        await explorer.StagePendingLocalTurnRollbackSnapshotAsync(target);
+        await _fs.WriteFileAtomicBytesAsync(target, [0x71]);
+        await explorer.RestoreStagedLocalTurnRollbackSnapshotAsync();
+
+        Assert.Equal(new byte[] { 0x61 }, File.ReadAllBytes(_fs.ResolvePath(target)));
+        Assert.False(Directory.Exists(_fs.ResolvePath(ConsoleLocalTurnRollbackArtifacts.Root)));
+    }
+
     [Fact]
     public async Task ConsoleRollback_PartialCleanupRetainsMarkerAndRetryDoesNotRestoreTwice()
     {
@@ -175,9 +204,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             if (phase != TrustedLocalPublicationPhase.MemberPublished) return;
             cutHits++;
-            throw new IOException("Reached console before-image publication cut.");
+            throw new InvalidOperationException("Reached console before-image publication cut.");
         };
-        await Assert.ThrowsAsync<IOException>(() => explorer.StagePendingLocalTurnRollbackSnapshotAsync(original));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => explorer.StagePendingLocalTurnRollbackSnapshotAsync(original));
         _consolePublicationObserver = null;
         Assert.Equal(1, cutHits);
         Assert.Equal(before, File.ReadAllBytes(_fs.ResolvePath(original)));
