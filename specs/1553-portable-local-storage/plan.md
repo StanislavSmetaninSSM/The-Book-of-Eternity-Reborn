@@ -1,3 +1,7 @@
+Mirror-only initial Plan49e7 was rejected before build/discovery by catalog schema:
+related entries require objects with id/when, not strings. Zero execution; corrected
+metadata keeps exact one-case scope. No runtime or fixture-body change follows.
+
 ## Treatment two causal boundaries; isolated mirror correction — 2026-10-08
 
 Clean ec30e actual222606 completed3/3 in23.5902898s (0P3F), both runner cleanup

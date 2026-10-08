@@ -11,7 +11,10 @@
         "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
       ],
       "related": [
-        "portable-treatment-mirror-causal-linux"
+        {
+          "id": "portable-treatment-mirror-causal-linux",
+          "when": "Shared original treatment propagation or player notice changes."
+        }
       ],
       "requirements": {
         "frontendBuild": false,
@@ -39,7 +42,10 @@
         "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
       ],
       "related": [
-        "portable-treatment-storage-causal-linux"
+        {
+          "id": "portable-treatment-storage-causal-linux",
+          "when": "Shared original treatment propagation or player notice changes."
+        }
       ],
       "requirements": {
         "frontendBuild": false,
@@ -923,7 +929,7 @@
     },
     {
       "id": "daren-standalone-browser-dispatch",
-      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
+      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent \u00d7 commit/rollback), no broader browser cohort.",
       "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
@@ -18498,20 +18504,11 @@
         "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs"
       ],
       "related": [],
-      "requirements": {
-        "frontendBuild": false,
-        "exclusive": true,
-        "ciRunner": "ubuntu-24.04"
-      },
+      "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
       "timeoutMinutes": 5,
       "expectedSeconds": null,
       "selectors": [
-        {
-          "project": "integration",
-          "tests": [
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite"
-          ]
-        }
+        { "project": "integration", "tests": ["BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite"] }
       ]
     },
     {
