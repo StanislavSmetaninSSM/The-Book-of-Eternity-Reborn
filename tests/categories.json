@@ -867,7 +867,7 @@
     },
     {
       "id": "daren-standalone-browser-dispatch",
-      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
+      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent \u00d7 commit/rollback), no broader browser cohort.",
       "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
@@ -6036,8 +6036,6 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_CanonicalRefreshReturnsOneOpaqueOpenTransactionCarrier",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HandleIncarnation_SessionReplacementAfterBinding_DoesNotReadOrMutateReplacement",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.NormalizeRuntimeUiArtifactsAsync_PreservesResolvedShiningPendingRequestDuringActiveSnapshot",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_PresenceMetadataDoesNotChangeCanonicalRestoreSemantics",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_RestoresExactOriginalBytesWithoutAddingBom",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcessPlayerTurn_RepairStalledAcceptedTurn_RestoresPreTurnSnapshot",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RebindRuntimeAfterSessionReplacement_EmptyReplacementReturnsToMenu",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ReportRejectedRepairReadyAsync_ReturnsExclusiveDispatchStateToCaller",
@@ -17347,6 +17345,34 @@
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry",
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealUncertainRollbackPreservesLastConfirmedRuntimeAndRecoveryNotice",
             "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ConfirmedDiskRollbackWithRuntimeCallbackFailureRequiresFollowUp"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-restoration-publication-outcomes",
+      "responsibility": "Actual QTE validation-failure and pre-turn restoration reach ordinary MemberPublished uncertainty, preserve the original typed decision/evidence and stop later refresh/mutation; exact-byte/presence restoration controls.",
+      "excludes": "Whole-turn UX, stronger all-or-none restore, lease close or native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/QteSceneService.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresStateAfterValidationFailure",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_RestoresExactOriginalBytesWithoutAddingBom",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_PresenceMetadataDoesNotChangeCanonicalRestoreSemantics",
+            "BookOfEternityClient.Tests.QteSceneServiceTests.ActualRestorationUncertaintyRetainsQteDecisionWithoutRefresh",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualPreTurnRestorationUncertaintyRetainsDecisionAndStopsLaterMutations"
           ]
         }
       ]

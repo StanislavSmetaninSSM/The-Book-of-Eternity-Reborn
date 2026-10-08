@@ -1,3 +1,20 @@
+## T062 restoration-time causal preparation — 2026-10-08
+
+Bounded F08/F11 source/evidence gate PASS at83f6e9a7; GREEN/catalog carrier9f07d385
+published and remote SHA read back. Parent verified fresh GitHub-only clone
+`/workspace/boe-1553-outcomes-restore` at exact9f07d385, clean, connectivity fsck
+success; all16 stored/expanded artifacts and10 frozen83f source pins match,
+original three TRXs19PASS inspected. This is source/evidence recovery only.
+Next six prepared causal rows run original QTE validation-failure compensation
+(forward experience15, restored baseline10 cut) and pre-turn restoration write/
+delete. They assert live member phase, unknown bytes, unchanged common journal and
+retained rollback evidence before the carrier or post-cut refresh/mutation oracle.
+Three existing exact-byte/presence success controls move unchanged into the same
+nine-case category. No restoration runtime change yet. Fresh PlanOnly then RED;
+failed setup is not causal proof. Partial restore remains permitted, with no whole
+operation atomicity or live command claim. F06 then fresh Windows browser/Daren
+migration follows after this bounded consumer tail and independent review.
+
 ## T062 bounded F08/F11 verification — 2026-10-08
 
 Frozen runtime83f6e9a726a208573095711f4e9f4f34c1b7b993 has19/19 Linux PASS:

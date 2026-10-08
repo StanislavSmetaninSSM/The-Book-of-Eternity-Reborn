@@ -61,6 +61,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
     private Action<TrustedLocalPublicationPhase, int>? _consolePublicationObserver;
+    private Action<string>? _consoleMutationObserver;
     private string? _armedCanonicalWriteFailurePath;
     private int _remainingCanonicalWriteFailureMatches;
     private readonly ITestOutputHelper? _directGachaOutput;
@@ -11053,6 +11054,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
 
     private Task BeforeCanonicalMutationAsync(string relativePath)
     {
+        _consoleMutationObserver?.Invoke(relativePath);
         if (_armedCanonicalWriteFailurePath == null ||
             !string.Equals(
                 relativePath,
