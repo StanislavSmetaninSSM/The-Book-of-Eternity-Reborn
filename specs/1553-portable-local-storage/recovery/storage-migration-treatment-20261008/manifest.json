@@ -541,25 +541,25 @@
     "qualification": "Mirror1 actual225134 completed causalRED14.9070091s after all bootstrap/17-to99-to17/originalreceipt/four-treatment-image predicates; exact CSP wrapped Unsafe and actual generic retry notice. Same assertion fails; later notice assertions not executed, raw notice independently retained. Owned root and runner cleanup true. Prior two accepted causal rows remain source ec30e.",
     "artifacts": [
       {
-        "path": "mirror-plan-Build-integration.log.gz",
+        "path": "mirror-causal-plan-Build-integration.log.gz",
         "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-224959-349-173643-67b9b6669e6141dfa3732e836492be95-categories/Build-integration.log",
         "sha256": "6e46b0fd1a33d627f4e26f905c06a76e5e9729a2e50a21bbadc89964dfa5f615",
         "originalSha256": "4a01afacfef834ea048d753d479881078a37c811513382805146dd48e9ae5710"
       },
       {
-        "path": "mirror-plan-dotnet-test.log.gz",
+        "path": "mirror-causal-plan-dotnet-test.log.gz",
         "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-224959-349-173643-67b9b6669e6141dfa3732e836492be95-categories/dotnet-test.log",
         "sha256": "3901c3911987a19a1c6bac56764912ef8646c55afbd4f419d922714e38aa8fb0",
         "originalSha256": "6cab3fde116a6d9d59d4d8e204a2f487c9a52bd69b83fc0b7f7eb3b848ff92ef"
       },
       {
-        "path": "mirror-plan-plan.json",
+        "path": "mirror-causal-plan-plan.json",
         "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-224959-349-173643-67b9b6669e6141dfa3732e836492be95-categories/plan.json",
         "sha256": "fcf0c8582adb19e8da80faf45b0fc85de802511a25a5be12d99ffd8c330a7600",
         "originalSha256": "fcf0c8582adb19e8da80faf45b0fc85de802511a25a5be12d99ffd8c330a7600"
       },
       {
-        "path": "mirror-plan-summary.json",
+        "path": "mirror-causal-plan-summary.json",
         "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-224959-349-173643-67b9b6669e6141dfa3732e836492be95-categories/summary.json",
         "sha256": "a7301d65155255129ca06fac48ea40d73209c17a951b76d8181afa0eb6d88a54",
         "originalSha256": "a7301d65155255129ca06fac48ea40d73209c17a951b76d8181afa0eb6d88a54"
