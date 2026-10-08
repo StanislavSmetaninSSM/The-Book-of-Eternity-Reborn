@@ -35,6 +35,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         await context.ReleaseLeaseAsync();
         Exception? failure;
         Exception? disposalFailure = null;
+        Exception? repeatedSettlementFailure = null;
         AcceptedTurnValidationDisposition? engineDisposition = null;
         var disposalLeases = 0;
         var disposalRecovery = 0;
@@ -65,6 +66,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var leases = cut.LeaseAttempts;
                 var recoveries = cut.RecoveryEvents;
                 var attempts = cut.RestoreReadAttempts;
+                // GREEN extension: explicit settlement is equally fenced before another lease.
+                repeatedSettlementFailure = await Record.ExceptionAsync(() => transaction.CompensateAsync(context.FileSystem));
                 disposalFailure = await Record.ExceptionAsync(async () => await ((IAsyncDisposable)transaction).DisposeAsync());
                 memberAfterDispose = ReadOptionalTreatmentMember(cut.Target);
                 disposalLeases = cut.LeaseAttempts - leases;
@@ -120,6 +123,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 cut.RestoreReadAttemptsAfterCut, cut.PublicationsAfterCut,
                 TypedCarrier = cut.OriginalUncertainty?.GetType().FullName,
                 Failure = failure?.ToString(), DisposalFailure = disposalFailure?.ToString(),
+                RepeatedSettlementSameUncertainty = ReferenceEquals(repeatedSettlementFailure, cut.OriginalUncertainty),
+                cut.LeaseAttemptsAfterCut, cut.OriginalReceiptStillOpen,
                 journalBeforeDispose, journalAfterDisposeExact, disposalLeases, disposalRecovery, disposalAttempts,
                 cut.MirrorBootstrapValidated, cut.InitialMirrorConsistent, cut.MirrorPublishedAuthority17, cut.MirrorDriftPrepared, cut.MirrorLeaseStack, cut.MirrorLeaseAttempt, cut.MirrorBeforeValue, cut.MirrorForeignValue, cut.TreatmentResourceChanged, publishedTreatmentRetained,
                 BusinessCausePreserved = cut.HasBusinessCause(failure),
@@ -145,6 +150,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             else Assert.Equal(TreatmentStorageCut.ForeignBytes, memberBytes);
             if (mode == "engine_mirror")
             {
+                Assert.True(cut.OriginalReceiptStillOpen);
+                Assert.Equal(0, cut.LeaseAttemptsAfterCut);
                 Assert.True(cut.MirrorBootstrapValidated);
                 Assert.True(cut.InitialMirrorConsistent);
                 Assert.True(cut.MirrorPublishedAuthority17);
@@ -158,6 +165,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (mode != "engine_mirror") { Assert.Null(blockerFailure); Assert.True(restartBlocked); }
             if (mode == "compensate_dispose")
             {
+                Assert.Same(cut.OriginalUncertainty, repeatedSettlementFailure);
                 Assert.Equal(0, disposalLeases);
                 Assert.Equal(0, disposalRecovery);
                 Assert.Equal(0, disposalAttempts);
@@ -248,6 +256,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal bool MirrorDriftPrepared { get; private set; }
         internal string? MirrorLeaseStack { get; private set; }
         internal int MirrorLeaseAttempt { get; private set; }
+        internal int LeaseAttemptsAfterCut { get; private set; }
+        internal bool OriginalReceiptStillOpen => OriginalReceipt is not null && ReferenceEquals(OriginalReceipt,
+            _originalRegistryState!.GetType().GetField("_openTreatmentPublicationReceipt", BindingFlags.Instance | BindingFlags.NonPublic)!
+                .GetValue(_originalRegistryState));
         internal int MirrorBeforeValue { get; private set; }
         internal int MirrorForeignValue { get; private set; }
         internal string? CutPhase { get; private set; }
@@ -401,6 +413,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         {
             if (!Armed) return Task.CompletedTask;
             LeaseAttempts++;
+            if (Cuts != 0) LeaseAttemptsAfterCut++;
             if (_mode == "engine_mirror" && !MirrorDriftPrepared && PublishedTreatmentMembers > 0 &&
                 !File.Exists(JournalPath) && _originalRegistryState!.GetType()
                     .GetField("_openTreatmentPublicationReceipt", BindingFlags.Instance | BindingFlags.NonPublic)!

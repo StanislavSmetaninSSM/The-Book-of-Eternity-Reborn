@@ -1,3 +1,33 @@
+## Treatment runtime source candidate — 2026-10-08
+
+The original transaction now retains the first actual publication uncertainty locally.
+Every subsequent transaction admission/settlement refuses before opening a lease;
+Dispose does no recovery after that observation. Existing same-lease settlement wrappers
+retain the exact FailTaken/FailRearmed bookkeeping and close semantics, while actual
+Uncertain bypasses restoration/quarantine aggregation and stops further reads. Secondary
+registry/lease-close diagnostics attach to the same typed carrier. Known nonstorage
+restoration/Unsafe/ReleaseFailed behavior is unchanged.
+
+The original normalizer preserves its known business cause on the exact typed settlement
+failure. The engine checks original mirror Uncertain before compensation, and the outer
+original await-using body records direct Uncertain before compiler disposal (including
+later refresh/progression paths). The latter route is a connected source safeguard;
+the actual mirror causal cut remains the first refresh, not a claimed second-refresh RED.
+No new lease/authority is acquired to terminate a mirror receipt after its owner scope
+ended: its original open receipt/held claims remain, separately from the local stop.
+
+Finite GREEN selection is15: existing causal2 + mirror1 + twelve unchanged neighbors
+(eight original engine boundary rows; Unsafe, restoration Aggregate, safe HeldBlocked,
+and rearmed retry). The five neighbor methods move uniquely from their wider owners.
+Same-case GREEN refinements require repeated explicit settlement to return the exact
+uncertainty with zero lease/recovery, and mirror to retain its exact open receipt and
+attempt zero later leases. Prior causal packets remain unchanged and are not relabeled.
+
+Carrier filename collision in c4a was corrected at65604a: historical0ec5 Plan bytes
+restored, d72a Plan artifacts given unique names. Independent review and full original
+comparison verify52 artifacts/72 pins. Runtime here is unbuilt and pending independent
+SOURCE/SELECTION gate plus fresh exact15 Plan; no GREEN/native acceptance yet.
+
 ## Treatment causal packet complete; bounded runtime design — 2026-10-08
 
 At clean d72a, matching Plan224959 built exact1/0 in85.0896047s; actual225134

@@ -2,6 +2,45 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-treatment-storage-neighbors-linux",
+      "responsibility": "Twelve unchanged known treatment settlement cases: eight original engine boundaries plus Unsafe, restoration Aggregate, proven HeldBlocked and rearmed retry.",
+      "excludes": "No broad treatment/gameplay category or native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-treatment-storage-causal-linux",
+          "when": "Typed uncertainty propagation or retained original transaction lifetime changes."
+        },
+        {
+          "id": "portable-treatment-mirror-causal-linux",
+          "when": "Original engine mirror uncertainty compensation or player projection changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 6,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_RealGameEngineBoundaryFailureCompensatesExactHeldPlan",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PostPublicationCompensationFailureSurfacesUnsafeSettlementWithoutTerminalDisposition",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalRestorationFailureSurfacesAggregateInsteadOfHeldBlockedDisposition",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalCleanupFailureMapsHeldBlockedOnlyAfterExactSafetyProof",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_WaitLifecyclePreservesRearmedPublicationForSameTurnRetry"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-treatment-storage-causal-linux",
       "responsibility": "Two actual held-treatment publication uncertainty boundaries: original normalizer helper settlement and retained Compensate/Dispose.",
       "excludes": "No B2-B5 gameplay, provider, native Windows, full treatment cohort, or whole-turn atomicity claim.",
@@ -929,7 +968,7 @@
     },
     {
       "id": "daren-standalone-browser-dispatch",
-      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent \u00d7 commit/rollback), no broader browser cohort.",
+      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
       "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
@@ -5677,11 +5716,7 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_ColdConfirmedCommandRealPipelineCommitThenRestartReplaySpendsOnce",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_FullPipelineOwnsCompensationScopeAndCompletesAfterFinalRefresh",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PostHelperFailureBoundaryRemainsInsideCompensationFence",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PostPublicationCompensationFailureSurfacesUnsafeSettlementWithoutTerminalDisposition",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalCleanupFailureMapsHeldBlockedOnlyAfterExactSafetyProof",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalControlFlowExceptionsPropagateAfterSafeBlocking",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalRestorationFailureSurfacesAggregateInsteadOfHeldBlockedDisposition",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_RealGameEngineBoundaryFailureCompensatesExactHeldPlan",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_RepeatedRawItemAdmissionRejectsChangedItemRoot",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_ResourceFreeCommonPlanKeepsOpenTransactionCarrierEmpty",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_UnsafeSettlementCannotFallThroughTerminalCatchAndPreCanonicalSettlementHasNoCatchAll",
@@ -5792,7 +5827,6 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedItemConsumption_PostTailFinalBaselineDriftRejectsBeforeCommonWriteAndExactRetryCommitsOnce",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedMixedItemAndResourceConsumption_EveryPipelineFailureRestoresExpandedRootsAndExactRetryCommitsOnce",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreTokenRawValidationTerminalRollbackQuarantinesExactHeldRequestAndReleasesHold",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_WaitLifecyclePreservesRearmedPublicationForSameTurnRetry",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LifeEvaluationSnapshot_ClientOwnedCurrentWorldDirectivesUseRollbackBaselineWhenCurrentFileIsCleared",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalBootstrapBaselineFiles_AreValidationSnapshottedButRollbackDeletedWhenTurnFails",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalItemCanonicalRepair_RejectsStaleAcquisitionConfirmationUntilRewritten",
@@ -18504,11 +18538,20 @@
         "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs"
       ],
       "related": [],
-      "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 5,
       "expectedSeconds": null,
       "selectors": [
-        { "project": "integration", "tests": ["BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite"] }
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite"
+          ]
+        }
       ]
     },
     {

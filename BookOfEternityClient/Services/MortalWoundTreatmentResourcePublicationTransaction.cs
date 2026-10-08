@@ -1,3 +1,4 @@
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -262,6 +263,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
     private int _progressionAgreementAdvanced;
     private int _rearmed;
     private int _closed;
+    private ExceptionDispatchInfo? _publicationUncertainty;
 
     private MortalWoundTreatmentResourcePublicationTransaction(
         FileSystemManager fileSystem,
@@ -329,6 +331,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
     internal async Task<MortalWoundTreatmentPublicationProbeResult> ProbeAsync(
         FileSystemManager fileSystem)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         await using var writeLease =
             await fileSystem.AcquireCanonicalWriteLeaseAsync();
@@ -344,6 +347,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             FileSystemManager fileSystem,
             IReadOnlyList<ValidationIssue> issues)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(issues);
         var publicationAuthority = _plan.TreatmentResourcePublicationAuthority;
@@ -436,6 +440,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
         if (_receipt.IsTerminalReleaseOnly ||
@@ -474,6 +479,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             ProgressionScheduleService progressionSchedule,
             ProgressionControl control)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(progressionSchedule);
         ArgumentNullException.ThrowIfNull(control);
@@ -605,6 +611,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
     internal async Task<MortalWoundTreatmentPublicationOperationResult>
         CompleteAsync(FileSystemManager fileSystem)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         if (_receipt.IsTerminalReleaseOnly)
             return TerminalReleaseOnlyFailure("finalize publication");
@@ -673,6 +680,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
     internal async Task<MortalWoundTreatmentPublicationOperationResult>
         CompensateAsync(FileSystemManager fileSystem)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         FileSystemManager.CanonicalWriteLease? writeLease = null;
         MortalWoundTreatmentPublicationOperationResult? result = null;
@@ -705,6 +713,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             FileSystemManager fileSystem,
             string reason)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentException.ThrowIfNullOrWhiteSpace(reason);
         FileSystemManager.CanonicalWriteLease? writeLease = null;
@@ -738,6 +747,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             FileSystemManager.CanonicalWriteLease writeLease,
             string reason)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentException.ThrowIfNullOrWhiteSpace(reason);
@@ -763,6 +773,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease)
     {
+        ThrowIfPublicationUncertain();
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
         var result = _receipt.IsTerminalReleaseOnly
@@ -784,7 +795,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
 
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
-        if (Volatile.Read(ref _closed) != 0)
+        if (Volatile.Read(ref _closed) != 0 || Volatile.Read(ref _publicationUncertainty) is not null)
             return;
 
         var result = await CompensateAsync(_fileSystem);
@@ -801,6 +812,35 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
 
     private async Task<MortalWoundTreatmentPublicationOperationResult>
         RestoreAndSettleAsync(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ThrowIfPublicationUncertain();
+        try
+        {
+            return await RestoreAndSettleCoreAsync(fileSystem, writeLease);
+        }
+        catch (CoordinatedStatePublicationUncertainException uncertain)
+        {
+            ObservePublicationUncertainty(uncertain);
+            try
+            {
+                var failure = AcceptedTurnAuthorityRegistry.FailTakenMortalWoundTreatmentPublicationTerminal(
+                    fileSystem, writeLease, _receipt);
+                ObserveClosure(failure);
+                uncertain.Data["TreatmentPublicationTerminalFence"] = failure;
+            }
+            catch (Exception fencingFailure)
+            {
+                // A secondary in-memory fencing diagnostic cannot replace the actual storage decision.
+                uncertain.Data["TreatmentPublicationTerminalFenceFailure"] = fencingFailure;
+            }
+            throw;
+        }
+    }
+
+    private async Task<MortalWoundTreatmentPublicationOperationResult>
+        RestoreAndSettleCoreAsync(
             FileSystemManager fileSystem,
             FileSystemManager.CanonicalWriteLease writeLease)
     {
@@ -829,7 +869,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                 writeLease,
                 forceDurablePublication: true);
         }
-        catch (Exception exception)
+        catch (Exception exception) when (exception is not CoordinatedStatePublicationUncertainException)
         {
             var failure = AcceptedTurnAuthorityRegistry
                 .FailTakenMortalWoundTreatmentPublicationTerminal(
@@ -861,7 +901,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         {
             await WriteQuarantinedDurableSurfacesAsync(fileSystem, writeLease);
         }
-        catch (Exception quarantineException)
+        catch (Exception quarantineException) when (quarantineException is not CoordinatedStatePublicationUncertainException)
         {
             Exception? restorationFailure = null;
             try
@@ -870,6 +910,11 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                     fileSystem,
                     writeLease,
                     forceDurablePublication: false);
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                uncertain.Data["TreatmentPublicationOriginalFailure"] = quarantineException;
+                throw;
             }
             catch (Exception exception)
             {
@@ -904,7 +949,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                 writeLease,
                 forceDurablePublication: false);
         }
-        catch (Exception restorationException)
+        catch (Exception restorationException) when (restorationException is not CoordinatedStatePublicationUncertainException)
         {
             throw new AggregateException(
                 "Treatment publication quarantine settlement failed and its durable authority could not be restored.",
@@ -916,6 +961,38 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
 
     private async Task<MortalWoundTreatmentPublicationOperationResult>
         ReleaseTerminalWithLeaseAsync(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            string reason,
+            bool fromRearmed)
+    {
+        ThrowIfPublicationUncertain();
+        try
+        {
+            return await ReleaseTerminalWithLeaseCoreAsync(fileSystem, writeLease, reason, fromRearmed);
+        }
+        catch (CoordinatedStatePublicationUncertainException uncertain)
+        {
+            ObservePublicationUncertainty(uncertain);
+            try
+            {
+                var failure = fromRearmed
+                    ? AcceptedTurnAuthorityRegistry.FailRearmedMortalWoundTreatmentPublicationTerminal(fileSystem, writeLease, _receipt)
+                    : AcceptedTurnAuthorityRegistry.FailTakenMortalWoundTreatmentPublicationTerminal(fileSystem, writeLease, _receipt);
+                ObserveClosure(failure);
+                uncertain.Data["TreatmentPublicationTerminalFence"] = failure;
+            }
+            catch (Exception fencingFailure)
+            {
+                // A secondary in-memory fencing diagnostic cannot replace the actual storage decision.
+                uncertain.Data["TreatmentPublicationTerminalFenceFailure"] = fencingFailure;
+            }
+            throw;
+        }
+    }
+
+    private async Task<MortalWoundTreatmentPublicationOperationResult>
+        ReleaseTerminalWithLeaseCoreAsync(
             FileSystemManager fileSystem,
             FileSystemManager.CanonicalWriteLease writeLease,
             string reason,
@@ -954,7 +1031,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                 forceDurablePublication: false);
             await WriteQuarantinedDurableSurfacesAsync(fileSystem, writeLease);
         }
-        catch (Exception cleanupException)
+        catch (Exception cleanupException) when (cleanupException is not CoordinatedStatePublicationUncertainException)
         {
             Exception? restorationFailure = null;
             try
@@ -963,6 +1040,11 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                     fileSystem,
                     writeLease,
                     forceDurablePublication: false);
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                uncertain.Data["TreatmentPublicationOriginalFailure"] = cleanupException;
+                throw;
             }
             catch (Exception exception)
             {
@@ -1194,7 +1276,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                     beforeImage.Path,
                     expected);
             }
-            catch (Exception exception)
+            catch (Exception exception) when (exception is not CoordinatedStatePublicationUncertainException)
             {
                 failures.Add(new InvalidOperationException(
                     $"Failed to restore exact treatment-publication before-image for '{beforeImage.Path}'.",
@@ -1556,6 +1638,16 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
             StringComparison.Ordinal);
 
+    // Local stop only: an uncertainty observed after another scope's lease ended does
+    // not consume the original receipt or release its held claims. No recovery is run.
+    internal void ObservePublicationUncertainty(CoordinatedStatePublicationUncertainException uncertain)
+    {
+        ArgumentNullException.ThrowIfNull(uncertain);
+        Interlocked.CompareExchange(ref _publicationUncertainty, ExceptionDispatchInfo.Capture(uncertain), null);
+    }
+
+    private void ThrowIfPublicationUncertain() => Volatile.Read(ref _publicationUncertainty)?.Throw();
+
     private static bool ClosesReceipt(
         MortalWoundTreatmentPublicationOperationResult result) =>
         result.Outcome is
@@ -1580,7 +1672,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             Interlocked.Exchange(ref _closed, 1);
     }
 
-    private static async Task DisposeLeaseAsync(
+    private async Task DisposeLeaseAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
         bool suppressFailure)
     {
@@ -1588,9 +1680,11 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         {
             await writeLease.DisposeAsync();
         }
-        catch when (suppressFailure)
+        catch (Exception closingFailure) when (suppressFailure || Volatile.Read(ref _publicationUncertainty) is not null)
         {
-            // The one-use registry state is already terminal. A lock-handle close
+            if (Volatile.Read(ref _publicationUncertainty) is { } uncertainty)
+                uncertainty.SourceException.Data["TreatmentPublicationLeaseCloseFailure"] = closingFailure;
+            // The one-use registry state is already terminal or uncertainty is retained. A lock-handle close
             // failure must not turn an exact resource commit into a second spend.
         }
     }

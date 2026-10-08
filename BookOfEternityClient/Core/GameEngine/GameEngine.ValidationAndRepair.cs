@@ -713,278 +713,322 @@ public partial class GameEngine
             }
             await using var treatmentResourcePublicationTransaction =
                 canonicalRefresh.TreatmentResourcePublicationTransaction;
-            if (!canonicalRefresh.BaselineUsable)
+            try
             {
-                criticalRepairAttempt++;
-                var baselineErrors = new List<ValidationIssue>
+                if (!canonicalRefresh.BaselineUsable)
                 {
-                    new(
-                        "game_state/control/pending_turn_snapshot.json",
-                        IssueSeverity.Error,
-                        "Accepted-turn canonical materialization requires a readable validated pending-turn snapshot baseline.",
-                        code: "accepted_turn_invalid_snapshot_baseline",
-                        section: "AcceptedTurnCanonicalState",
-                        expected: "usable current pending turn snapshot manifest with detached authority and hash-validated canonical baseline files",
-                        actual: "validated snapshot baseline is missing, detached-authority-invalid, modified, structurally invalid, or mismatched to the active request context",
-                        repairHint: "Восстанови current pending_turn_snapshot.json, detached snapshot authority и canonical snapshot files без tampering; accepted-turn canonical validation должна читать pre-turn baseline только из validated snapshot authority.")
-                };
-
-                _logger.LogError(
-                    "Critical accepted-turn canonical baseline authority failure after {Source}: {Count} errors",
-                    source,
-                    baselineErrors.Count);
-
-                lastCriticalRepairErrors = baselineErrors;
-                lastCriticalRepairAttempt = criticalRepairAttempt;
-                lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
-                var baselineRepairStartedAtUtc = DateTime.UtcNow;
-                await CompensateTreatmentResourcePublicationBeforeRepairAsync(
-                    treatmentResourcePublicationTransaction);
-                if (!await WaitForContractRepairAsync(
-                        source,
-                        baselineErrors,
-                        criticalRepairAttempt,
-                        rollbackSnapshot,
-                        lastCriticalRepairSessionGeneration,
-                        pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
-                {
-                    await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
-                        treatmentResourcePublicationTransaction,
-                        rollbackSnapshot,
-                        "validation_failed");
-                    return AcceptedTurnValidationDisposition.TerminalRejected;
-                }
-                lastCriticalRepairStartedAtUtc = baselineRepairStartedAtUtc;
-                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
-                    baselineErrors,
-                    baselineRepairStartedAtUtc);
-
-                continue;
-            }
-
-            var postSealErrors = PrioritizeValidationErrors(
-                    canonicalRefresh.PostSealIssues.Where(issue =>
-                        issue.Severity == IssueSeverity.Error))
-                .ToList();
-            if (postSealErrors.Count > 0)
-            {
-                criticalRepairAttempt++;
-                _logger.LogError(
-                    "Critical accepted-turn post-seal validation failure after {Source}: {Count} errors",
-                    source,
-                    postSealErrors.Count);
-
-                lastCriticalRepairErrors = postSealErrors;
-                lastCriticalRepairAttempt = criticalRepairAttempt;
-                lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
-                var postSealRepairStartedAtUtc = DateTime.UtcNow;
-                var actionableWoundPackets = WoundRepairPacketBuilder.Build(postSealErrors);
-                if (actionableWoundPackets.Count > 0 &&
-                    woundRepairRetryObligations == null)
-                {
-                    var capturedWoundObligations =
-                        await CaptureWoundRepairRetryObligationsAsync(
-                            actionableWoundPackets);
-                    if (capturedWoundObligations.Count !=
-                        actionableWoundPackets.Count)
+                    criticalRepairAttempt++;
+                    var baselineErrors = new List<ValidationIssue>
                     {
-                        postSealErrors.Add(BuildWoundRepairRetryAuthorityIssue());
-                    }
-                    else
+                        new(
+                            "game_state/control/pending_turn_snapshot.json",
+                            IssueSeverity.Error,
+                            "Accepted-turn canonical materialization requires a readable validated pending-turn snapshot baseline.",
+                            code: "accepted_turn_invalid_snapshot_baseline",
+                            section: "AcceptedTurnCanonicalState",
+                            expected: "usable current pending turn snapshot manifest with detached authority and hash-validated canonical baseline files",
+                            actual: "validated snapshot baseline is missing, detached-authority-invalid, modified, structurally invalid, or mismatched to the active request context",
+                            repairHint: "Восстанови current pending_turn_snapshot.json, detached snapshot authority и canonical snapshot files без tampering; accepted-turn canonical validation должна читать pre-turn baseline только из validated snapshot authority.")
+                    };
+
+                    _logger.LogError(
+                        "Critical accepted-turn canonical baseline authority failure after {Source}: {Count} errors",
+                        source,
+                        baselineErrors.Count);
+
+                    lastCriticalRepairErrors = baselineErrors;
+                    lastCriticalRepairAttempt = criticalRepairAttempt;
+                    lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
+                    var baselineRepairStartedAtUtc = DateTime.UtcNow;
+                    await CompensateTreatmentResourcePublicationBeforeRepairAsync(
+                        treatmentResourcePublicationTransaction);
+                    if (!await WaitForContractRepairAsync(
+                            source,
+                            baselineErrors,
+                            criticalRepairAttempt,
+                            rollbackSnapshot,
+                            lastCriticalRepairSessionGeneration,
+                            pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
                     {
-                        woundRepairRetryObligations = capturedWoundObligations;
-                        woundRepairRetryErrors = postSealErrors
-                            .Select(WoundAcceptedTurnData.CloneIssue)
-                            .ToList();
-                        if (HasRollbackCapability(rollbackSnapshot))
-                        {
-                            woundRequiredResubmissionPaths =
-                                await CaptureChangedRollbackTrackedPathsForRepairSessionAsync(
-                                    rollbackSnapshot!,
-                                    lastCriticalRepairSessionGeneration);
-                        }
-                    }
-                }
-                await CompensateTreatmentResourcePublicationBeforeRepairAsync(
-                    treatmentResourcePublicationTransaction);
-                if (!await WaitForContractRepairAsync(
-                        source,
-                        postSealErrors,
-                        criticalRepairAttempt,
-                        rollbackSnapshot,
-                        lastCriticalRepairSessionGeneration,
-                        woundRepairRetryObligations: woundRepairRetryObligations,
-                        woundRequiredResubmissionPaths: woundRequiredResubmissionPaths,
-                        pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
-                {
-                    await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
-                        treatmentResourcePublicationTransaction,
-                        rollbackSnapshot,
-                        "validation_failed");
-                    return AcceptedTurnValidationDisposition.TerminalRejected;
-                }
-
-                lastCriticalRepairStartedAtUtc = postSealRepairStartedAtUtc;
-                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
-                    postSealErrors,
-                    postSealRepairStartedAtUtc);
-                continue;
-            }
-
-            if (canonicalRefresh.MechanicsPlan is { AwaitsPendingResolution: true } pendingPlan)
-            {
-                if (!pendingPlan.PendingAfterImages.TryGetValue(
-                        ResourcePendingResolutionState.PendingPath,
-                        out var pendingAfterImage) ||
-                    pendingAfterImage == null)
-                {
-                    throw new InvalidDataException(
-                        "Pending accepted mechanics plan has no technical pending checkpoint.");
-                }
-                pendingResolutionRepairCheckpoint =
-                    await _fs.ReadFileBytesAsync(ResourcePendingResolutionState.PendingPath) ??
-                    throw new InvalidDataException(
-                        "Published pending accepted mechanics checkpoint is missing.");
-                criticalRepairAttempt++;
-                var pendingErrors = new List<ValidationIssue>
-                {
-                    BuildBoundedResourceResolutionResubmissionIssue(pendingPlan)
-                };
-                lastCriticalRepairErrors = pendingErrors;
-                lastCriticalRepairAttempt = criticalRepairAttempt;
-                lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
-                var pendingStartedAtUtc = DateTime.UtcNow;
-                await CompensateTreatmentResourcePublicationBeforeRepairAsync(
-                    treatmentResourcePublicationTransaction);
-                if (!await WaitForBoundedPendingResolutionResubmissionAsync(
-                        source,
-                        pendingErrors,
-                        criticalRepairAttempt,
-                        rollbackSnapshot,
-                        lastCriticalRepairSessionGeneration,
-                        pendingResolutionRepairCheckpoint))
-                {
-                    await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
-                        treatmentResourcePublicationTransaction,
-                        rollbackSnapshot,
-                        "validation_failed");
-                    return AcceptedTurnValidationDisposition.TerminalRejected;
-                }
-                lastCriticalRepairStartedAtUtc = pendingStartedAtUtc;
-                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
-                    pendingErrors,
-                    pendingStartedAtUtc);
-                continue;
-            }
-
-            if (canonicalRefresh.MechanicsPlan is { } acceptedPlan &&
-                acceptedPlan.PendingAfterImages.TryGetValue(
-                    ResourcePendingResolutionState.PendingPath,
-                    out var acceptedPendingAfterImage))
-            {
-                pendingResolutionRepairCheckpoint = acceptedPendingAfterImage == null
-                    ? null
-                    : await _fs.ReadFileBytesAsync(
-                        ResourcePendingResolutionState.PendingPath) ??
-                      throw new InvalidDataException(
-                          "Published accepted mechanics pending checkpoint is missing.");
-            }
-
-            await EnsureClientOwnedSystemFilesHealthyAsync();
-            var canonicalIssues = await _criticalStateHealth.ValidateCriticalCanonicalStateAsync();
-            var canonicalErrors = PrioritizeValidationErrors(canonicalIssues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
-            if (canonicalErrors.Count > 0)
-            {
-                criticalRepairAttempt++;
-                _logger.LogError(
-                    "Critical accepted-turn canonical state corruption after {Source}: {Count} errors",
-                    source,
-                    canonicalErrors.Count);
-
-                lastCriticalRepairErrors = canonicalErrors;
-                lastCriticalRepairAttempt = criticalRepairAttempt;
-                lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
-                var canonicalRepairStartedAtUtc = DateTime.UtcNow;
-                await CompensateTreatmentResourcePublicationBeforeRepairAsync(
-                    treatmentResourcePublicationTransaction);
-                if (!await WaitForContractRepairAsync(
-                        source,
-                        canonicalErrors,
-                        criticalRepairAttempt,
-                        rollbackSnapshot,
-                        lastCriticalRepairSessionGeneration,
-                        pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
-                {
-                    await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
-                        treatmentResourcePublicationTransaction,
-                        rollbackSnapshot,
-                        "validation_failed");
-                    return AcceptedTurnValidationDisposition.TerminalRejected;
-                }
-                lastCriticalRepairStartedAtUtc = canonicalRepairStartedAtUtc;
-                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
-                    canonicalErrors,
-                    canonicalRepairStartedAtUtc);
-
-                continue;
-            }
-
-            if (lastCriticalRepairErrors is { Count: > 0 } &&
-                lastCriticalRepairStartedAtUtc.HasValue)
-            {
-                lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
-                    lastCriticalRepairErrors,
-                    lastCriticalRepairStartedAtUtc.Value);
-            }
-
-            var treatmentPublicationCompensatedForRepair = false;
-            using var completedConflictValidationScope = _validator.UseCompletedSpiritualConflictValidationScope(
-                canonicalRefresh.SpiritualConflictValidation);
-            var currentStateValid = await ValidateCurrentGameStateOrShowErrorsAsync(
-                    source,
-                    rollbackSnapshot,
-                    progressionControl,
-                    allowRepairLoop: true,
-                    initialCanonicalRepairBoundaryUtc: lastCriticalRepairBoundaryUtc,
-                    initialCanonicalRepairErrors: lastCriticalRepairErrors,
-                    initialCanonicalRepairStartedAtUtc: lastCriticalRepairStartedAtUtc,
-                    pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint,
-                    beforeRepairMutation: async () =>
-                    {
-                        treatmentPublicationCompensatedForRepair =
-                            await CompensateTreatmentResourcePublicationBeforeRepairAsync(
-                                treatmentResourcePublicationTransaction);
-                    },
-                    beforeTerminalRepairReturn: () =>
-                        ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
+                        await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
                             treatmentResourcePublicationTransaction,
                             rollbackSnapshot,
-                            "validation_failed"),
-                    applyProgressionOnSuccess:
-                        treatmentResourcePublicationTransaction is null,
-                    treatmentResourcePublicationTransaction:
-                        treatmentResourcePublicationTransaction);
-            if (!currentStateValid)
-            {
-                return AcceptedTurnValidationDisposition.TerminalRejected;
-            }
-            if (treatmentPublicationCompensatedForRepair)
-                continue;
+                            "validation_failed");
+                        return AcceptedTurnValidationDisposition.TerminalRejected;
+                    }
+                    lastCriticalRepairStartedAtUtc = baselineRepairStartedAtUtc;
+                    lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                        baselineErrors,
+                        baselineRepairStartedAtUtc);
 
-            if (treatmentResourcePublicationTransaction is not null &&
-                progressionControl is not null)
-            {
-                var progressionAdvance = await treatmentResourcePublicationTransaction
-                    .AdvancePublishedAgreementWithProgressionAsync(
-                        _fs,
-                        _progressionSchedule,
-                        progressionControl);
-                if (!progressionAdvance.IsValid ||
-                    progressionAdvance.Issues.Count != 0 ||
-                    progressionAdvance.ChangedCount != 1 ||
-                    progressionAdvance.Outcome !=
-                        MortalWoundTreatmentPublicationTransactionOutcome
-                            .PublishedAgreementAdvanced)
+                    continue;
+                }
+
+                var postSealErrors = PrioritizeValidationErrors(
+                        canonicalRefresh.PostSealIssues.Where(issue =>
+                            issue.Severity == IssueSeverity.Error))
+                    .ToList();
+                if (postSealErrors.Count > 0)
+                {
+                    criticalRepairAttempt++;
+                    _logger.LogError(
+                        "Critical accepted-turn post-seal validation failure after {Source}: {Count} errors",
+                        source,
+                        postSealErrors.Count);
+
+                    lastCriticalRepairErrors = postSealErrors;
+                    lastCriticalRepairAttempt = criticalRepairAttempt;
+                    lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
+                    var postSealRepairStartedAtUtc = DateTime.UtcNow;
+                    var actionableWoundPackets = WoundRepairPacketBuilder.Build(postSealErrors);
+                    if (actionableWoundPackets.Count > 0 &&
+                        woundRepairRetryObligations == null)
+                    {
+                        var capturedWoundObligations =
+                            await CaptureWoundRepairRetryObligationsAsync(
+                                actionableWoundPackets);
+                        if (capturedWoundObligations.Count !=
+                            actionableWoundPackets.Count)
+                        {
+                            postSealErrors.Add(BuildWoundRepairRetryAuthorityIssue());
+                        }
+                        else
+                        {
+                            woundRepairRetryObligations = capturedWoundObligations;
+                            woundRepairRetryErrors = postSealErrors
+                                .Select(WoundAcceptedTurnData.CloneIssue)
+                                .ToList();
+                            if (HasRollbackCapability(rollbackSnapshot))
+                            {
+                                woundRequiredResubmissionPaths =
+                                    await CaptureChangedRollbackTrackedPathsForRepairSessionAsync(
+                                        rollbackSnapshot!,
+                                        lastCriticalRepairSessionGeneration);
+                            }
+                        }
+                    }
+                    await CompensateTreatmentResourcePublicationBeforeRepairAsync(
+                        treatmentResourcePublicationTransaction);
+                    if (!await WaitForContractRepairAsync(
+                            source,
+                            postSealErrors,
+                            criticalRepairAttempt,
+                            rollbackSnapshot,
+                            lastCriticalRepairSessionGeneration,
+                            woundRepairRetryObligations: woundRepairRetryObligations,
+                            woundRequiredResubmissionPaths: woundRequiredResubmissionPaths,
+                            pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
+                    {
+                        await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
+                            treatmentResourcePublicationTransaction,
+                            rollbackSnapshot,
+                            "validation_failed");
+                        return AcceptedTurnValidationDisposition.TerminalRejected;
+                    }
+
+                    lastCriticalRepairStartedAtUtc = postSealRepairStartedAtUtc;
+                    lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                        postSealErrors,
+                        postSealRepairStartedAtUtc);
+                    continue;
+                }
+
+                if (canonicalRefresh.MechanicsPlan is { AwaitsPendingResolution: true } pendingPlan)
+                {
+                    if (!pendingPlan.PendingAfterImages.TryGetValue(
+                            ResourcePendingResolutionState.PendingPath,
+                            out var pendingAfterImage) ||
+                        pendingAfterImage == null)
+                    {
+                        throw new InvalidDataException(
+                            "Pending accepted mechanics plan has no technical pending checkpoint.");
+                    }
+                    pendingResolutionRepairCheckpoint =
+                        await _fs.ReadFileBytesAsync(ResourcePendingResolutionState.PendingPath) ??
+                        throw new InvalidDataException(
+                            "Published pending accepted mechanics checkpoint is missing.");
+                    criticalRepairAttempt++;
+                    var pendingErrors = new List<ValidationIssue>
+                    {
+                        BuildBoundedResourceResolutionResubmissionIssue(pendingPlan)
+                    };
+                    lastCriticalRepairErrors = pendingErrors;
+                    lastCriticalRepairAttempt = criticalRepairAttempt;
+                    lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
+                    var pendingStartedAtUtc = DateTime.UtcNow;
+                    await CompensateTreatmentResourcePublicationBeforeRepairAsync(
+                        treatmentResourcePublicationTransaction);
+                    if (!await WaitForBoundedPendingResolutionResubmissionAsync(
+                            source,
+                            pendingErrors,
+                            criticalRepairAttempt,
+                            rollbackSnapshot,
+                            lastCriticalRepairSessionGeneration,
+                            pendingResolutionRepairCheckpoint))
+                    {
+                        await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
+                            treatmentResourcePublicationTransaction,
+                            rollbackSnapshot,
+                            "validation_failed");
+                        return AcceptedTurnValidationDisposition.TerminalRejected;
+                    }
+                    lastCriticalRepairStartedAtUtc = pendingStartedAtUtc;
+                    lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                        pendingErrors,
+                        pendingStartedAtUtc);
+                    continue;
+                }
+
+                if (canonicalRefresh.MechanicsPlan is { } acceptedPlan &&
+                    acceptedPlan.PendingAfterImages.TryGetValue(
+                        ResourcePendingResolutionState.PendingPath,
+                        out var acceptedPendingAfterImage))
+                {
+                    pendingResolutionRepairCheckpoint = acceptedPendingAfterImage == null
+                        ? null
+                        : await _fs.ReadFileBytesAsync(
+                            ResourcePendingResolutionState.PendingPath) ??
+                          throw new InvalidDataException(
+                              "Published accepted mechanics pending checkpoint is missing.");
+                }
+
+                await EnsureClientOwnedSystemFilesHealthyAsync();
+                var canonicalIssues = await _criticalStateHealth.ValidateCriticalCanonicalStateAsync();
+                var canonicalErrors = PrioritizeValidationErrors(canonicalIssues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
+                if (canonicalErrors.Count > 0)
+                {
+                    criticalRepairAttempt++;
+                    _logger.LogError(
+                        "Critical accepted-turn canonical state corruption after {Source}: {Count} errors",
+                        source,
+                        canonicalErrors.Count);
+
+                    lastCriticalRepairErrors = canonicalErrors;
+                    lastCriticalRepairAttempt = criticalRepairAttempt;
+                    lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
+                    var canonicalRepairStartedAtUtc = DateTime.UtcNow;
+                    await CompensateTreatmentResourcePublicationBeforeRepairAsync(
+                        treatmentResourcePublicationTransaction);
+                    if (!await WaitForContractRepairAsync(
+                            source,
+                            canonicalErrors,
+                            criticalRepairAttempt,
+                            rollbackSnapshot,
+                            lastCriticalRepairSessionGeneration,
+                            pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
+                    {
+                        await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
+                            treatmentResourcePublicationTransaction,
+                            rollbackSnapshot,
+                            "validation_failed");
+                        return AcceptedTurnValidationDisposition.TerminalRejected;
+                    }
+                    lastCriticalRepairStartedAtUtc = canonicalRepairStartedAtUtc;
+                    lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                        canonicalErrors,
+                        canonicalRepairStartedAtUtc);
+
+                    continue;
+                }
+
+                if (lastCriticalRepairErrors is { Count: > 0 } &&
+                    lastCriticalRepairStartedAtUtc.HasValue)
+                {
+                    lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
+                        lastCriticalRepairErrors,
+                        lastCriticalRepairStartedAtUtc.Value);
+                }
+
+                var treatmentPublicationCompensatedForRepair = false;
+                using var completedConflictValidationScope = _validator.UseCompletedSpiritualConflictValidationScope(
+                    canonicalRefresh.SpiritualConflictValidation);
+                var currentStateValid = await ValidateCurrentGameStateOrShowErrorsAsync(
+                        source,
+                        rollbackSnapshot,
+                        progressionControl,
+                        allowRepairLoop: true,
+                        initialCanonicalRepairBoundaryUtc: lastCriticalRepairBoundaryUtc,
+                        initialCanonicalRepairErrors: lastCriticalRepairErrors,
+                        initialCanonicalRepairStartedAtUtc: lastCriticalRepairStartedAtUtc,
+                        pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint,
+                        beforeRepairMutation: async () =>
+                        {
+                            treatmentPublicationCompensatedForRepair =
+                                await CompensateTreatmentResourcePublicationBeforeRepairAsync(
+                                    treatmentResourcePublicationTransaction);
+                        },
+                        beforeTerminalRepairReturn: () =>
+                            ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
+                                treatmentResourcePublicationTransaction,
+                                rollbackSnapshot,
+                                "validation_failed"),
+                        applyProgressionOnSuccess:
+                            treatmentResourcePublicationTransaction is null,
+                        treatmentResourcePublicationTransaction:
+                            treatmentResourcePublicationTransaction);
+                if (!currentStateValid)
+                {
+                    return AcceptedTurnValidationDisposition.TerminalRejected;
+                }
+                if (treatmentPublicationCompensatedForRepair)
+                    continue;
+
+                if (treatmentResourcePublicationTransaction is not null &&
+                    progressionControl is not null)
+                {
+                    var progressionAdvance = await treatmentResourcePublicationTransaction
+                        .AdvancePublishedAgreementWithProgressionAsync(
+                            _fs,
+                            _progressionSchedule,
+                            progressionControl);
+                    if (!progressionAdvance.IsValid ||
+                        progressionAdvance.Issues.Count != 0 ||
+                        progressionAdvance.ChangedCount != 1 ||
+                        progressionAdvance.Outcome !=
+                            MortalWoundTreatmentPublicationTransactionOutcome
+                                .PublishedAgreementAdvanced)
+                    {
+                        var settlement =
+                            await SettleTreatmentResourcePublicationCompletionFailureAsync(
+                                treatmentResourcePublicationTransaction);
+                        return MapTreatmentPublicationSettlementToDisposition(
+                            settlement);
+                    }
+                }
+
+                if (lastCriticalRepairErrors is { Count: > 0 })
+                {
+                    await AppendClearedValidationRepairTrajectoryAsync(
+                        source,
+                        lastCriticalRepairErrors,
+                        lastCriticalRepairAttempt,
+                        lastCriticalRepairSessionGeneration!);
+                    await CleanupAcceptedTurnCommandSurfacesAsync(lastCriticalRepairSessionGeneration);
+                }
+                else
+                {
+                    await CleanupAcceptedTurnCommandSurfacesAsync();
+                }
+                await RefreshRuntimeStateAsync();
+                if (treatmentResourcePublicationTransaction is null)
+                {
+                    _acceptedTurnSpiritualOutput = canonicalRefresh.SpiritualWoundOutput;
+                    _acceptedTurnSpiritualConflictValidation = canonicalRefresh.SpiritualConflictValidation;
+                    _acceptedTurnWoundNotifications = canonicalRefresh.WoundNotifications
+                        .Select(static value => value with
+                        {
+                            Text = value.Text with { }
+                        }).ToArray();
+                    return CompleteAcceptedTurnWithoutTreatmentResourcePublication();
+                }
+
+                var treatmentResourcePublicationCompletion =
+                    await treatmentResourcePublicationTransaction.CompleteAsync(_fs);
+                if (!treatmentResourcePublicationCompletion.IsValid ||
+                    treatmentResourcePublicationCompletion.Issues.Count != 0 ||
+                    treatmentResourcePublicationCompletion.ChangedCount != 1 ||
+                    treatmentResourcePublicationCompletion.Outcome !=
+                        MortalWoundTreatmentPublicationTransactionOutcome.Finalized)
                 {
                     var settlement =
                         await SettleTreatmentResourcePublicationCompletionFailureAsync(
@@ -992,54 +1036,18 @@ public partial class GameEngine
                     return MapTreatmentPublicationSettlementToDisposition(
                         settlement);
                 }
-            }
-
-            if (lastCriticalRepairErrors is { Count: > 0 })
-            {
-                await AppendClearedValidationRepairTrajectoryAsync(
-                    source,
-                    lastCriticalRepairErrors,
-                    lastCriticalRepairAttempt,
-                    lastCriticalRepairSessionGeneration!);
-                await CleanupAcceptedTurnCommandSurfacesAsync(lastCriticalRepairSessionGeneration);
-            }
-            else
-            {
-                await CleanupAcceptedTurnCommandSurfacesAsync();
-            }
-            await RefreshRuntimeStateAsync();
-            if (treatmentResourcePublicationTransaction is null)
-            {
-                _acceptedTurnSpiritualOutput = canonicalRefresh.SpiritualWoundOutput;
-                _acceptedTurnSpiritualConflictValidation = canonicalRefresh.SpiritualConflictValidation;
                 _acceptedTurnWoundNotifications = canonicalRefresh.WoundNotifications
                     .Select(static value => value with
                     {
                         Text = value.Text with { }
                     }).ToArray();
-                return CompleteAcceptedTurnWithoutTreatmentResourcePublication();
+                return AcceptedTurnValidationDisposition.Accepted;
             }
-
-            var treatmentResourcePublicationCompletion =
-                await treatmentResourcePublicationTransaction.CompleteAsync(_fs);
-            if (!treatmentResourcePublicationCompletion.IsValid ||
-                treatmentResourcePublicationCompletion.Issues.Count != 0 ||
-                treatmentResourcePublicationCompletion.ChangedCount != 1 ||
-                treatmentResourcePublicationCompletion.Outcome !=
-                    MortalWoundTreatmentPublicationTransactionOutcome.Finalized)
+            catch (CoordinatedStatePublicationUncertainException uncertain)
             {
-                var settlement =
-                    await SettleTreatmentResourcePublicationCompletionFailureAsync(
-                        treatmentResourcePublicationTransaction);
-                return MapTreatmentPublicationSettlementToDisposition(
-                    settlement);
+                treatmentResourcePublicationTransaction?.ObservePublicationUncertainty(uncertain);
+                throw;
             }
-            _acceptedTurnWoundNotifications = canonicalRefresh.WoundNotifications
-                .Select(static value => value with
-                {
-                    Text = value.Text with { }
-                }).ToArray();
-            return AcceptedTurnValidationDisposition.Accepted;
         }
     }
 
@@ -1383,6 +1391,11 @@ public partial class GameEngine
             MortalWoundTreatmentResourcePublicationTransaction transaction,
             Exception originalException)
     {
+        if (originalException is CoordinatedStatePublicationUncertainException originalUncertainty)
+        {
+            transaction.ObservePublicationUncertainty(originalUncertainty);
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(originalUncertainty).Throw();
+        }
         try
         {
             var outcome =
@@ -1391,6 +1404,12 @@ public partial class GameEngine
             return new CompensatedTreatmentPublicationException(
                 originalException,
                 outcome);
+        }
+        catch (CoordinatedStatePublicationUncertainException uncertain)
+        {
+            transaction.ObservePublicationUncertainty(uncertain);
+            uncertain.Data["TreatmentPublicationOriginalFailure"] = originalException;
+            throw;
         }
         catch (Exception settlementException)
         {
