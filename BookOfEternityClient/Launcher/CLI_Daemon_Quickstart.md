@@ -9,6 +9,46 @@ not a live-GM acceptance. Select `GmBridgeBackend=OwnedTerminal` and explicitly
 model, arguments and cwd. Helpers remain disabled. `Auto`/`SystemdUser` do not
 silently downgrade. A user systemd manager is not installed or qualified by M1.
 
+### Configure the existing game profile before launch
+
+Settings live at `<game-root>/game_session/config.json`. For a new disposable
+root, first open the ordinary client to initialize its local profile, then exit
+normally. Configure that profile while the client, bridge and daemon are stopped;
+then use the three-terminal launch below. This setup does not require starting a
+provider or sending a model prompt.
+
+Merge these fields into the existing JSON object; this is a **partial example**,
+not a replacement configuration:
+
+```json
+{
+  "gmBridgeEnabled": true,
+  "gmBridgeBackend": "OwnedTerminal",
+  "gmMainOwnerBackend": "NativeLineage"
+}
+```
+
+Keep the selected `gmCliLaunchCommand` (including model and arguments),
+`gmBridgeShellWorkingDirectory` and existing `gmCliInputProfile`. Retain the
+original `gmWorkerBridgeProfiles` inventory with each helper's `enabled=false`;
+do not replace the profiles with an empty list. The initial defaults remain
+`ConPTYBridge`/`Auto` and do not select this qualified Linux path automatically.
+The systemd backend is disabled pending qualification with an already-working
+user manager; explicit `SystemdUser` does not downgrade to NativeLineage.
+
+An empty `gmCliInputProfile` deliberately refuses automatic submission. Configure
+it only from an observed supported CLI presentation: reliable `idleMarker`,
+`promptPrefix`, `workingMarker`, `blockedMarkers`, draft observation, paste framing,
+newline and submit sequences must describe that CLI. Starting a process or setting
+`TERM` does not establish readiness. There is no generic Codex/OpenCode profile
+whose selectors can safely be copied as proof.
+
+Developers may separately configure the maintained [test relay](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/codex/1553-load-filesystem/tools/gm-relay/README.md)
+with its exact [qualified input profile](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/codex/1553-load-filesystem/tools/gm-relay/input-profile.json).
+That is an explicit test transport choice, not an automatic substitution of the
+player's command or model. One isolated generated/applied relay action is accepted;
+native Codex/OpenCode compatibility remains unqualified.
+
 Publisher preparation (SDK/compiler needed only here):
 
 ```powershell
@@ -20,7 +60,8 @@ dotnet publish BookOfEternityGMBridge/BookOfEternityGMBridge.csproj -c Release -
 Keep both published directories together. The client includes Launcher, daemon,
 unchanged operational docs/rules and built-in guardians; native helper+manifest
 are prebuilt at `runtimes/linux-x64/native`. Preserve executable mode and package
-provenance. Player startup needs .NET8 runtime, PowerShell7 and the measured
+provenance. Player startup needs .NET8 shared frameworks (Microsoft.NETCore.App
+and Microsoft.AspNetCore.App), PowerShell7 and the measured
 linux-x64/glibc ABI; it does not compile/download the helper or require the source tree.
 The qualification used Debug publications; the commands above describe publisher
 layout and do not claim production Release gameplay qualification.
@@ -36,6 +77,10 @@ Use three separate caller-supplied terminals and an admitted disposable root:
  pwsh -NoProfile -File out/ship/BookOfEternityClient/Launcher/bookofeternity.ps1 start-daemon visible --no-autopaste -SessionPath /path/to/disposable-root/game_session
 ```
 
+`--no-autopaste` controls legacy Windows desktop paste gestures. With
+`OwnedTerminal`, the daemon still uses the existing T042 bridge transaction;
+this option does not turn off its paste → fresh observation → submit checks.
+
 Status reports `native-lineage` / `ordinary-same-namespace-lineage`: original
 process lineage in the same PID namespace. It does not control external services.
 T042 automatic submission requires the configured reliable idle view and an empty
@@ -46,7 +91,9 @@ worker inventory or storage debt keeps refusal. Accepted bounded Load UX require
 confirmed original stop + successful Load + current-owner refresh before a fresh
 configured launch; uncertain/failed decisions pause without old-session continuation.
 Linux browser rollback/gacha/Daren portability is accepted in isolated automated
-checks; native Windows and live GM remain separate unqualified environments.
+checks. Full native Windows validation is scheduled after merge in the existing
+desktop task; it is not a Linux launch prerequisite. Actual hardware/desktop
+capabilities and generated gameplay through Load/fresh continuation remain separate.
 Windows instructions below retain their existing route.
 
 

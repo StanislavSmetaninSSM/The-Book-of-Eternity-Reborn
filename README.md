@@ -61,7 +61,7 @@ not a release, stability promise, or save-compatibility promise.
 
 ## Предварительные требования
 
-- .NET 8 SDK;
+- .NET SDK 10 и .NET 8 runtime для разработки и проверок;
 - Node.js и npm для разработки фронтенда;
 - PowerShell 7;
 - отдельно настроенная совместимая внешняя команда ИИ-ведущего.
@@ -73,6 +73,12 @@ not a release, stability promise, or save-compatibility promise.
 ```powershell
 dotnet run --project BookOfEternityClient
 ```
+
+Для установленного Linux package используйте [инструкцию обычного запуска](BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md):
+prebuilt client/bridge/helper, .NET 8 shared frameworks и PowerShell 7; SDK и
+компилятор при запуске игроком не нужны. Текущий квалифицированный Linux backend
+выбирается явно как `OwnedTerminal`/`NativeLineage`; systemd отключён до отдельной
+проверки в подходящей среде.
 
 ### Browser Client
 
