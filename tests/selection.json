@@ -102,6 +102,15 @@
         "FR-004",
         "T062-STORAGE-OUTCOMES"
       ]
+    },
+    {
+      "category": "portable-directory-outcome-notice",
+      "reason": "Separate original snapshot cleanup/AgentConsole descriptor so causal failure cannot prevent the unit consumer descriptor from executing under fail-fast runner.",
+      "contracts": [
+        "#1553",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES"
+      ]
     }
   ]
 }

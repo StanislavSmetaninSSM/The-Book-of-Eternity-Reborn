@@ -1,3 +1,12 @@
+## A04 fail-fast baseline split — 2026-10-08
+
+Sourcebfd64967 freshPlanOnly15/3 succeeded. Actual first descriptor12 complete:
+11PASS/1FAIL,10.178s, exact unknown-tree carrier mismatch after byte/evidence
+assertions. Runner stopped before consumer3; no15-case result is claimed.
+Split original consumer unit2 and engine notice1 into separate finite category IDs
+so each causal boundary runs through the same runner. Runtime/test bodies unchanged;
+no repeated neighbor baseline needed. Record both source pins with final RED carrier.
+
 ## A04 directory carrier causal preparation — 2026-10-08
 
 A02 independent Astra XHigh source/evidence PASS at28eacf4f; no new delta findings.

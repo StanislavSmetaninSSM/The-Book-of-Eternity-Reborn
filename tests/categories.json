@@ -4610,7 +4610,7 @@
     },
     {
       "id": "portable-directory-uncertain-consumer",
-      "responsibility": "A04 actual public live preparation, original pending snapshot cleanup/console notice, and generation-replacement closing preserve the established storage decision with exact partial bytes and retained evidence.",
+      "responsibility": "A04 actual public live preparation and generation-replacement closing preserve established unknown tree decision with exact partial bytes and retained evidence.",
       "excludes": "Whole lifecycle, unrelated gameplay and full accepted-turn/backup migration.",
       "changeHints": [
         "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
@@ -4629,7 +4629,24 @@
             "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup",
             "BookOfEternityClient.Tests.PortableDirectoryDeletionClosingTests.ActualTreeDecisionSurvivesClosingGenerationReplacement"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": "portable-directory-outcome-notice",
+      "responsibility": "A04 original GameEngine pending snapshot cleanup stops after partial tree uncertainty and projects truthful recovery notice without retry or private diagnostics.",
+      "excludes": "Whole lifecycle, unrelated gameplay and full accepted-turn/backup migration.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
         {
           "project": "integration",
           "tests": [
