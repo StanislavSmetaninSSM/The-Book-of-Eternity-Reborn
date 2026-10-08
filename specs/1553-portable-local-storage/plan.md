@@ -12,8 +12,13 @@ methods from the 60-method afterlife category into
 Run PlanOnly, then the same three original consumer methods as baseline/RED
 before any runtime edit. They exercise stage, world-lore deletion, signed
 snapshot overlay with original absence, consumed restore and cleanup. Add real
-failure/retry/recovery controls after the boundary is established. Current
-runtime is unchanged; no RED/GREEN result exists yet. Selection reasons are
+failure/retry/recovery controls after the boundary is established. Runtime is unchanged. At source `ea82bb43`, PlanOnly completed with zero
+executed; actual original selection completed 3/3, one PASS and two causal FAIL
+(no timeout, complete owned cleanup). Both failures reach console stage line743
+then the legacy physical create-only backend, which is unsupported on Linux.
+[Raw RED/plan evidence](recovery/storage-migration-console-red-20261008/manifest.json).
+Current console namespace/admission and explicit snapshot adoption are being
+traced together before the minimal fix; unknown legacy evidence must still refuse. Selection reasons are
 recorded in tests/selection.json; no other family or aggregate is scheduled.
 
 Source [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).

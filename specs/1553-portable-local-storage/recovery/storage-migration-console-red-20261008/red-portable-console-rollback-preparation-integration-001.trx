@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="b4b02216-5fe7-4786-a86d-565cdee7d86e" name="@c61a5018b3fb 2026-10-08 09:37:29" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-08T09:37:29.3945472+00:00" queuing="2026-10-08T09:37:29.3945473+00:00" start="2026-10-08T09:37:26.9125087+00:00" finish="2026-10-08T09:37:29.4003819+00:00" />
+  <TestSettings name="default" id="d99cb862-e2ef-4b2e-9c22-9d117bbfd5a1">
+    <Deployment runDeploymentRoot="_c61a5018b3fb_2026-10-08_09_37_29" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="66b26440-72ab-4d1e-86c8-609ab4c1a334" testId="8ce30006-63a8-e49a-a092-19261581befe" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear" computerName="c61a5018b3fb" duration="00:00:00.1320636" startTime="2026-10-08T09:37:29.0804585+00:00" endTime="2026-10-08T09:37:29.0804717+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="66b26440-72ab-4d1e-86c8-609ab4c1a334">
+      <Output>
+        <ErrorInfo>
+          <Message>System.PlatformNotSupportedException : Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.FileSystemManager.EnsureDescriptorBoundCreateOnlyPublicationSupported(String authorityName) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 4023
+   at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 3995
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesCoreAsync(String relativePath, Byte[] content, CancellationToken cancellationToken, IReadOnlySet`1 allowedCurrentSha256s, Boolean allowMissingCurrent, FileIdentity expectedDestinationIdentity, String expectedDestinationSha256, Func`1 afterPublicationNotCommitted) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 1108
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 847
+   at BookOfEternityClient.UI.ExplorerMode.EnsurePendingLocalTurnRollbackSnapshotAsync(String[] trackedFiles) in /workspace/boe-1553-storage-migration/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs:line 743
+   at BookOfEternityClient.UI.ExplorerMode.EnsurePendingLocalTurnRollbackSnapshotAsync(String[] trackedFiles) in /workspace/boe-1553-storage-migration/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs:line 730
+   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear() in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 9558
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="dd621851-0cbc-4328-a326-4ba27c1dd865" testId="f2a19502-92af-6b48-96ca-eae9c7e0666e" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles" computerName="c61a5018b3fb" duration="00:00:00.0377005" startTime="2026-10-08T09:37:29.1371263+00:00" endTime="2026-10-08T09:37:29.1371266+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dd621851-0cbc-4328-a326-4ba27c1dd865">
+      <Output>
+        <ErrorInfo>
+          <Message>System.PlatformNotSupportedException : Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.FileSystemManager.EnsureDescriptorBoundCreateOnlyPublicationSupported(String authorityName) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 4023
+   at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 3995
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesCoreAsync(String relativePath, Byte[] content, CancellationToken cancellationToken, IReadOnlySet`1 allowedCurrentSha256s, Boolean allowMissingCurrent, FileIdentity expectedDestinationIdentity, String expectedDestinationSha256, Func`1 afterPublicationNotCommitted) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 1108
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 847
+   at BookOfEternityClient.UI.ExplorerMode.EnsurePendingLocalTurnRollbackSnapshotAsync(String[] trackedFiles) in /workspace/boe-1553-storage-migration/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs:line 743
+   at BookOfEternityClient.UI.ExplorerMode.EnsurePendingLocalTurnRollbackSnapshotAsync(String[] trackedFiles) in /workspace/boe-1553-storage-migration/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs:line 730
+   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles() in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 10589
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3d20d907-fe35-4cd6-9871-8cb760f1acfb" testId="d9fa4081-ad75-4c4b-3412-70b595149932" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted" computerName="c61a5018b3fb" duration="00:00:00.1783839" startTime="2026-10-08T09:37:29.3158823+00:00" endTime="2026-10-08T09:37:29.3158825+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3d20d907-fe35-4cd6-9871-8cb760f1acfb" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="8ce30006-63a8-e49a-a092-19261581befe">
+      <Execution id="66b26440-72ab-4d1e-86c8-609ab4c1a334" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d9fa4081-ad75-4c4b-3412-70b595149932">
+      <Execution id="3d20d907-fe35-4cd6-9871-8cb760f1acfb" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="f2a19502-92af-6b48-96ca-eae9c7e0666e">
+      <Execution id="dd621851-0cbc-4328-a326-4ba27c1dd865" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="8ce30006-63a8-e49a-a092-19261581befe" executionId="66b26440-72ab-4d1e-86c8-609ab4c1a334" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f2a19502-92af-6b48-96ca-eae9c7e0666e" executionId="dd621851-0cbc-4328-a326-4ba27c1dd865" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d9fa4081-ad75-4c4b-3412-70b595149932" executionId="3d20d907-fe35-4cd6-9871-8cb760f1acfb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="3" executed="3" passed="1" failed="2" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.31]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.54]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.58]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.78]       System.PlatformNotSupportedException : Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.
+[xUnit.net 00:00:01.78]       Stack Trace:
+[xUnit.net 00:00:01.78]         /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs(4023,0): at BookOfEternityClient.Core.FileSystemManager.EnsureDescriptorBoundCreateOnlyPublicationSupported(String authorityName)
+[xUnit.net 00:00:01.78]         /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs(3995,0): at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName)
+[xUnit.net 00:00:01.78]         /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs(1108,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesCoreAsync(String relativePath, Byte[] content, CancellationToken cancellationToken, IReadOnlySet`1 allowedCurrentSha256s, Boolean allowMissingCurrent, FileIdentity expectedDestinationIdentity, String expectedDestinationSha256, Func`1 afterPublicationNotCommitted)
+[xUnit.net 00:00:01.78]         /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs(847,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content)
+[xUnit.net 00:00:01.78]         /workspace/boe-1553-storage-migration/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs(743,0): at BookOfEternityClient.UI.ExplorerMode.EnsurePendingLocalTurnRollbackSnapshotAsync(String[] trackedFiles)
+[xUnit.net 00:00:01.78]         /workspace/boe-1553-storage-migration/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs(730,0): at BookOfEternityClient.UI.ExplorerMode.EnsurePendingLocalTurnRollbackSnapshotAsync(String[] trackedFiles)
+[xUnit.net 00:00:01.78]         /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs(9558,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear()
+[xUnit.net 00:00:01.78]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.84]       System.PlatformNotSupportedException : Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.
+[xUnit.net 00:00:01.84]       Stack Trace:
+[xUnit.net 00:00:01.84]         /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs(4023,0): at BookOfEternityClient.Core.FileSystemManager.EnsureDescriptorBoundCreateOnlyPublicationSupported(String authorityName)
+[xUnit.net 00:00:01.84]         /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs(3995,0): at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName)
+[xUnit.net 00:00:01.84]         /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs(1108,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesCoreAsync(String relativePath, Byte[] content, CancellationToken cancellationToken, IReadOnlySet`1 allowedCurrentSha256s, Boolean allowMissingCurrent, FileIdentity expectedDestinationIdentity, String expectedDestinationSha256, Func`1 afterPublicationNotCommitted)
+[xUnit.net 00:00:01.84]         /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs(847,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesAsync(CanonicalWriteLease writeLease, String relativePath, Byte[] content)
+[xUnit.net 00:00:01.84]         /workspace/boe-1553-storage-migration/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs(743,0): at BookOfEternityClient.UI.ExplorerMode.EnsurePendingLocalTurnRollbackSnapshotAsync(String[] trackedFiles)
+[xUnit.net 00:00:01.84]         /workspace/boe-1553-storage-migration/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs(730,0): at BookOfEternityClient.UI.ExplorerMode.EnsurePendingLocalTurnRollbackSnapshotAsync(String[] trackedFiles)
+[xUnit.net 00:00:01.84]         /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs(10589,0): at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles()
+[xUnit.net 00:00:01.84]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.02]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="c61a5018b3fb" outcome="Error" timestamp="2026-10-08T09:37:29.0788069+00:00">
+        <Text>[xUnit.net 00:00:01.78]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="c61a5018b3fb" outcome="Error" timestamp="2026-10-08T09:37:29.1374112+00:00">
+        <Text>[xUnit.net 00:00:01.84]     BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

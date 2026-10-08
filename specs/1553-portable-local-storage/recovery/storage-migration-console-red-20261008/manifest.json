@@ -1,0 +1,55 @@
+{
+  "source": "ea82bb43c6e9b49fe394ce70c1ec89f060ad0836",
+  "category": "portable-console-rollback-preparation",
+  "planOnlyExecuted": 0,
+  "executed": 3,
+  "passed": 1,
+  "failed": 2,
+  "complete": true,
+  "cleanupComplete": true,
+  "causalFailure": "Existing console stage line743 reaches legacy physical create-only PlatformNotSupportedException on Linux.",
+  "artifacts": [
+    {
+      "path": "plan-only-dotnet-test.log.gz",
+      "sha256": "b24408c0e4655e5f767edf93d5666b1ce16a0d8ce0f15d8ea19f3ab330c9aede",
+      "originalSha256": "719007fdf1bd7901ca0a68cfaa947cef6dd2cbdc676f9a0467ec114878dd864b",
+      "source": "TestResults/test-categories/20261008-093155-526-7621-e950686c32f544319c8d1a3f3c61e8a7-categories/dotnet-test.log"
+    },
+    {
+      "path": "plan-only-plan.json",
+      "sha256": "8db63dc8ca4002ff079209c71cf217916f34a37ca90984418b8efe0825aac03b",
+      "originalSha256": "8db63dc8ca4002ff079209c71cf217916f34a37ca90984418b8efe0825aac03b",
+      "source": "TestResults/test-categories/20261008-093155-526-7621-e950686c32f544319c8d1a3f3c61e8a7-categories/plan.json"
+    },
+    {
+      "path": "plan-only-summary.json",
+      "sha256": "e5b87f740eb50d61ad9e62f5f710d57fdbeaba5ab9898ca1a55ab6aea315a3fa",
+      "originalSha256": "e5b87f740eb50d61ad9e62f5f710d57fdbeaba5ab9898ca1a55ab6aea315a3fa",
+      "source": "TestResults/test-categories/20261008-093155-526-7621-e950686c32f544319c8d1a3f3c61e8a7-categories/summary.json"
+    },
+    {
+      "path": "red-dotnet-test.log.gz",
+      "sha256": "1d54094daddd4b0d4944eae2e12c7d6c7b25cd23cd811a33b13e4e5e24ecb7ac",
+      "originalSha256": "3946e4ab1add1f582b6c75e2706b87a98434da0d6bbb0f98a4e5cfc23e590102",
+      "source": "TestResults/test-categories/20261008-093722-681-8025-a164926f1dcc490180da847cc462bdf1-categories/dotnet-test.log"
+    },
+    {
+      "path": "red-plan.json",
+      "sha256": "2664002c4b56689dff233443681e6c8574937079833cab7bca367d00164aab07",
+      "originalSha256": "2664002c4b56689dff233443681e6c8574937079833cab7bca367d00164aab07",
+      "source": "TestResults/test-categories/20261008-093722-681-8025-a164926f1dcc490180da847cc462bdf1-categories/plan.json"
+    },
+    {
+      "path": "red-portable-console-rollback-preparation-integration-001.trx",
+      "sha256": "d4824e1a5f46bdb74579fe1ed187db53190656c4641565a6f73d58b2677e81fb",
+      "originalSha256": "d4824e1a5f46bdb74579fe1ed187db53190656c4641565a6f73d58b2677e81fb",
+      "source": "TestResults/test-categories/20261008-093722-681-8025-a164926f1dcc490180da847cc462bdf1-categories/portable-console-rollback-preparation-integration-001.trx"
+    },
+    {
+      "path": "red-summary.json",
+      "sha256": "f7a5ae25a99cd21990155f802f3876f09dc5b4900c01519d52e64ca9516cf1a9",
+      "originalSha256": "f7a5ae25a99cd21990155f802f3876f09dc5b4900c01519d52e64ca9516cf1a9",
+      "source": "TestResults/test-categories/20261008-093722-681-8025-a164926f1dcc490180da847cc462bdf1-categories/summary.json"
+    }
+  ]
+}
