@@ -17424,7 +17424,8 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedNormalizationPublicationRetainsStorageDecision"
+            "BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedNormalizationPublicationRetainsStorageDecision",
+            "BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedCompensationUncertaintyRetainsPrimaryFailure"
           ]
         }
       ]

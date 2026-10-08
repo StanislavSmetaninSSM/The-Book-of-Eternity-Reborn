@@ -1839,7 +1839,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
             return new Result(issues, mechanicsPlan, treatmentTransaction, spiritualOutput,
                 mechanicsPlan is null ? null : spiritualReceipt?.Authority.CompletedConflictValidation);
         }
-        catch (Exception exception)
+        catch (Exception exception) when (exception is not CoordinatedStatePublicationUncertainException)
         {
             var rollbackFailures = new List<Exception>();
             try

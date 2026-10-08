@@ -85,5 +85,77 @@ public sealed class AcceptedTurnStorageOutcomeTests
         else Assert.Equal(0, laterMutations);
     }
 
+    [Theory]
+    [InlineData("carrier")]
+    [InlineData("later-mutations")]
+    public async Task ActualAcceptedCompensationUncertaintyRetainsPrimaryFailure(string observation)
+    {
+        var armed = false;
+        var forwardCutHits = 0;
+        var restoreCutHits = 0;
+        var laterMutations = 0;
+        byte[]? originalState = null;
+        byte[]? retainedJournal = null;
+        byte[] unknown = [0xFF, 0x71];
+        var originalFailure = new AcceptedPublicationCutFailure();
+        ResourceMaterializationTestContext? active = null;
+        var hooks = new FileSystemManagerHooks
+        {
+            BeforeCanonicalMutationAsync = _ =>
+            {
+                if (restoreCutHits > 0) laterMutations++;
+                return Task.CompletedTask;
+            },
+            LocalPublicationObserver = (phase, index) =>
+            {
+                if (!armed || restoreCutHits > 0 || phase != TrustedLocalPublicationPhase.MemberPublished) return;
+                var files = active!.FileSystem;
+                var journalPath = Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+                using var document = JsonDocument.Parse(File.ReadAllBytes(journalPath));
+                var path = document.RootElement.GetProperty("Members")[index].GetProperty("Path").GetString();
+                if (forwardCutHits == 0 && path == files.ResolvePath(ResourceMaterializationTestContext.HistoryPath))
+                {
+                    Assert.False(originalState!.SequenceEqual(File.ReadAllBytes(files.ResolvePath(ResourceMaterializationTestContext.StatePath))));
+                    forwardCutHits++;
+                    throw originalFailure;
+                }
+                if (forwardCutHits != 1 || path != files.ResolvePath(ResourceMaterializationTestContext.StatePath)) return;
+                Assert.Equal(originalState, File.ReadAllBytes(path));
+                restoreCutHits++;
+                File.WriteAllBytes(path, unknown);
+                retainedJournal = File.ReadAllBytes(journalPath);
+                throw new InvalidOperationException("accepted before-image restoration cut");
+            }
+        };
+        await using var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
+        active = context;
+        await ResourceMaterializationValidationTests.SeedEmptyRootsAsync(context);
+        await context.WriteExactJsonAsync(MortalItemIdentityState.StatePath, MortalItemIdentityState.CreateEmptyRoot().ToJsonString());
+        await context.CaptureValidatedPendingSnapshotAsync();
+        await context.WriteExactJsonAsync(ResourceMaterializationTestContext.CommandsPath,
+            ResourceMaterializationValidationTests.DefinitionAndInitializationCommand().ToJsonString());
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        Assert.DoesNotContain(await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync(),
+            issue => issue.Severity == IssueSeverity.Error);
+        originalState = File.ReadAllBytes(context.FileSystem.ResolvePath(ResourceMaterializationTestContext.StatePath));
+        armed = true;
+        var failure = await Record.ExceptionAsync(() => AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateAsync(
+            context.FileSystem, context.Normalizer, context.Validator,
+            new Dictionary<string, string>(StringComparer.Ordinal)));
+        armed = false;
+        Assert.True(forwardCutHits == 1 && restoreCutHits == 1,
+            $"Forward cut={forwardCutHits}; restore cut={restoreCutHits}; failure={failure}");
+        Assert.Equal(unknown, File.ReadAllBytes(context.FileSystem.ResolvePath(ResourceMaterializationTestContext.StatePath)));
+        Assert.Equal(retainedJournal, File.ReadAllBytes(Path.Combine(context.FileSystem.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
+        if (observation == "carrier")
+        {
+            var uncertain = Assert.IsType<CoordinatedStatePublicationUncertainException>(failure);
+            var primary = Assert.IsType<CanonicalStateWriteException>(uncertain.Data["AcceptedTurnNormalizationFailure"]);
+            Assert.Same(originalFailure, primary.InnerException);
+        }
+        else Assert.Equal(0, laterMutations);
+    }
+
     private sealed class AcceptedPublicationCutFailure() : Exception("accepted storage publication fixture");
 }

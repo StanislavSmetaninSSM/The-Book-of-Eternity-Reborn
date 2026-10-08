@@ -1,3 +1,23 @@
+## A02 direct accepted-publication causal RED — 2026-10-08
+
+Frozen d990d8fa actual3complete:1PASS/2FAIL,11.194s,owned cleanup complete.
+Actual accepted-history MemberPublished unknown bytes/journal remain before outer
+AggregateException and three later mutation attempts. Known cut restores the exact
+resource/command set. [Raw evidence](recovery/storage-migration-accepted-red-20261008/manifest.json).
+Parent independently restored frozen26b36a08 from a fresh direct GitHub clone
+(branch tip then d990) into `/workspace/boe-1553-restoration-restore`, clean
+detached HEAD, fsck connectivity PASS; all27 stored/expanded GREEN artifacts,
+9 e265 plus7 final9e30 source pins and original TRX counters verified. This is
+source/evidence recovery, not additional runtime execution; main remains d024.
+
+Minimal direct correction excludes typed uncertainty from normalizer write wrapping
+and accepted coordinator's compensation catch. No runtime compensation-stage or
+outer GameEngine catch change yet. Two added rows now attempt actual uncertainty
+while restoring resource_state after a known history publication failure, preserving
+that distinct primary failure. They must reach both actual cuts before any claim.
+Fresh PlanOnly5, then mixed direct GREEN/compensation RED baseline; outer handler
+and final treatment settlement stay separate, with no claimed false message output.
+
 ## A02 accepted-turn causal preparation — 2026-10-08
 
 Bounded connected restoration source/evidence review accepted9e30; carrier26b36a08

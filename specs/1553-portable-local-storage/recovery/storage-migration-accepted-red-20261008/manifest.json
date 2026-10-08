@@ -1,0 +1,78 @@
+{
+  "source": "d990d8fa1da74a2a3ee327eeaa22c001bcb1cbc6",
+  "platform": "Linux",
+  "executed": 3,
+  "passed": 1,
+  "failed": 2,
+  "wallSeconds": 11.1939662,
+  "cleanupComplete": true,
+  "cause": "Actual accepted history MemberPublished unknown bytes/journal retained before outerAggregate and3later mutation attempts. Known nontransientcut restores exact resource/command byte set.",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/AcceptedTurnStorageOutcomeTests.cs",
+      "sha256": "5a223b669bff2f88254e9868f9af023e8319a5425a700e7eae3977faf495bc52"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs",
+      "sha256": "fc530e1a75b9259888b4f31978b9c3a0882c25ba61f6c9dc3c82c4fde8209608"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+      "sha256": "eb536e92c67337586cee7c0542c0c4878ece5e571314163f68f553246a14ce48"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "f75986ddeb1362144f13a86d692d7c090eb0495c1f3309829ab8ce69d9e0d4a3"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "plan-Build-integration.log.gz",
+      "source": "TestResults/test-categories/20261008-110610-986-29148-aa9293a5ba3b45c490574567ae7ffa45-categories/Build-integration.log",
+      "sha256": "484611b66d8bbf51fd9daf14065a33e3e4f414f576f82abf50232bcbc91031ac",
+      "originalSha256": "9a9caab1802c69cdefaa3b0cc77272122305096d45cd35e7bb33c880a6cd6cda"
+    },
+    {
+      "path": "plan-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-110610-986-29148-aa9293a5ba3b45c490574567ae7ffa45-categories/dotnet-test.log",
+      "sha256": "288d98fc780725e9249443f957645baf9a4752fbfc91da220c39a00c135f5850",
+      "originalSha256": "53c8cb33575e968ede29bf63b167ba506b83598b66daf885f899891af24b0021"
+    },
+    {
+      "path": "plan-plan.json",
+      "source": "TestResults/test-categories/20261008-110610-986-29148-aa9293a5ba3b45c490574567ae7ffa45-categories/plan.json",
+      "sha256": "78186fa3ad28bc2c40f2fc3364d13ab12f3877656115c0203a0e7dd607b1ba59",
+      "originalSha256": "78186fa3ad28bc2c40f2fc3364d13ab12f3877656115c0203a0e7dd607b1ba59"
+    },
+    {
+      "path": "plan-summary.json",
+      "source": "TestResults/test-categories/20261008-110610-986-29148-aa9293a5ba3b45c490574567ae7ffa45-categories/summary.json",
+      "sha256": "4fbfb5a03841f8358e6fda9ff27c0c4fc25584f382807f80afaad6ccc58033ec",
+      "originalSha256": "4fbfb5a03841f8358e6fda9ff27c0c4fc25584f382807f80afaad6ccc58033ec"
+    },
+    {
+      "path": "red-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-110716-366-29370-bfc9c0f89a4844a291bb40ab9f145f34-categories/dotnet-test.log",
+      "sha256": "9d443c9649870d9611747439b347242f67dbf4df35703045a02b9021c3252766",
+      "originalSha256": "32ab9a3f170800cb6fc0c85870736b13201f7d758b385bab5b0e529113a81e17"
+    },
+    {
+      "path": "red-plan.json",
+      "source": "TestResults/test-categories/20261008-110716-366-29370-bfc9c0f89a4844a291bb40ab9f145f34-categories/plan.json",
+      "sha256": "498540677d3c91ccb5bfd27bf681cf1824bb293c82e41b3f47dc0d1aa494ffc5",
+      "originalSha256": "498540677d3c91ccb5bfd27bf681cf1824bb293c82e41b3f47dc0d1aa494ffc5"
+    },
+    {
+      "path": "red-portable-accepted-normalization-outcomes-integration-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-110716-366-29370-bfc9c0f89a4844a291bb40ab9f145f34-categories/portable-accepted-normalization-outcomes-integration-001.trx",
+      "sha256": "8a2371d551f470124c38fc8d77cf866187ff1d751d8a19b5d8b4d7b3ae2b6f6f",
+      "originalSha256": "0437ac6a9227e429b37b72a5c311552c159c33f6b5ced2b8fc9632e4ba94f9cb"
+    },
+    {
+      "path": "red-summary.json",
+      "source": "TestResults/test-categories/20261008-110716-366-29370-bfc9c0f89a4844a291bb40ab9f145f34-categories/summary.json",
+      "sha256": "19d3c7a6d9883cf15ebd0cc8c87cdb39627c80cb49922288b3847e2542edd2ac",
+      "originalSha256": "19d3c7a6d9883cf15ebd0cc8c87cdb39627c80cb49922288b3847e2542edd2ac"
+    }
+  ]
+}

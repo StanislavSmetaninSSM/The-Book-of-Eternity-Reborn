@@ -193,7 +193,7 @@ public partial class CanonicalStateNormalizer
         {
             throw;
         }
-        catch (Exception exception)
+        catch (Exception exception) when (exception is not CoordinatedStatePublicationUncertainException)
         {
             throw new CanonicalStateWriteException(path, exception);
         }
