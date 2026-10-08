@@ -35,5 +35,23 @@ No game/GM schema or prompt change is planned; reassess if a proven cause requir
 
 ## Checkpoint
 
-Diagnostic harness prepared for real server logging and bounded HTTP batches.
-No runtime change or diagnosis run yet; test selection follows the actual cause.
+Diagnostic harness builds with0errors/3existing warnings. Actual probes at
+source406423ae use fresh product assembly and built frontend assets from the
+original6381 checkout; no product changes. Both hosts stopped/disposed normally.
+[Evidence](recovery/windows-http-20261008/manifest.json).
+
+Fresh empty root beforeSaveLoad: first parallel batch game-screen500; other four
+200. Second batch returns expected404 for no game, others200. All serial reads
+are successful (game-screen404 expected). Actual Kestrel exception is IOException
+opening gm-main-owner.lock, from MainAdmission through ReadFileAsync and dashboard
+soul read. Serial menu9380ms/game-screen10598ms; requests contend with a legitimate
+long participating main-menu operation/full validation.
+
+Separate copied synthetic SaveLoad root: first batch5/5 status200; second batch
+session/game-screen/client-settings500,menu/audio200; same original-lock IOException.
+Thus the symptom is not confined to damaged save data. No lock timeout or authority
+checks have been changed. Independent narrow design review is in progress.
+
+Ordinary actual console NewGame created another owned root, initial request observed,
+Escape cancelled before any CLI/model, pending request absent, ordinary menu exit0
+(UI/exit observed in tool transcript). Its HTTP comparison is running. No user data.

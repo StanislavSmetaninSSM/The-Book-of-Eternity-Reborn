@@ -1,0 +1,341 @@
+{
+  "StartedUtc": "2026-10-08T05:07:15.8672888Z",
+  "FinishedUtc": "2026-10-08T05:08:10.4154129Z",
+  "Root": "C:\\Temp\\boe-win-6381a950-20261008T030647Z\\data\\http-empty-before-save",
+  "ProcessId": 8248,
+  "Stopped": true,
+  "Disposed": true,
+  "Fatal": null,
+  "Observations": [
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/main-menu",
+      "Status": 200,
+      "Milliseconds": 12443,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/session",
+      "Status": 200,
+      "Milliseconds": 335,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/game-screen",
+      "Status": 500,
+      "Milliseconds": 12256,
+      "ErrorBody": "",
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/audio/settings",
+      "Status": 200,
+      "Milliseconds": 762,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/client/settings",
+      "Status": 200,
+      "Milliseconds": 578,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/main-menu",
+      "Status": 200,
+      "Milliseconds": 10803,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/session",
+      "Status": 200,
+      "Milliseconds": 127,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/game-screen",
+      "Status": 404,
+      "Milliseconds": 20987,
+      "ErrorBody": "{\r\n  \u0022error\u0022: \u0022game_session \\u043F\\u043E\\u043A\\u0430 \\u043D\\u0435 \\u0441\\u043E\\u0434\\u0435\\u0440\\u0436\\u0438\\u0442 \\u0430\\u043A\\u0442\\u0438\\u0432\\u043D\\u0443\\u044E \\u0433\\u043B\\u0430\\u0432\\u0443. \\u041D\\u0430\\u0447\\u043D\\u0438\\u0442\\u0435 \\u043D\\u043E\\u0432\\u0443\\u044E \\u0433\\u043B\\u0430\\u0432\\u0443 \\u0438\\u043B\\u0438 \\u0437\\u0430\\u0433\\u0440\\u0443\\u0437\\u0438\\u0442\\u0435 \\u0441\\u043E\\u0445\\u0440\\u0430\\u043D\\u0435\\u043D\\u0438\\u0435 \\u0438\\u0437 \\u0433\\u043B\\u0430\\u0432\\u043D\\u043E\\u0433\\u043E \\u043C\\u0435\\u043D\\u044E.\u0022\r\n}",
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/audio/settings",
+      "Status": 200,
+      "Milliseconds": 818,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/client/settings",
+      "Status": 200,
+      "Milliseconds": 634,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/main-menu",
+      "Status": 200,
+      "Milliseconds": 9380,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/session",
+      "Status": 200,
+      "Milliseconds": 107,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/game-screen",
+      "Status": 404,
+      "Milliseconds": 10598,
+      "ErrorBody": "{\r\n  \u0022error\u0022: \u0022game_session \\u043F\\u043E\\u043A\\u0430 \\u043D\\u0435 \\u0441\\u043E\\u0434\\u0435\\u0440\\u0436\\u0438\\u0442 \\u0430\\u043A\\u0442\\u0438\\u0432\\u043D\\u0443\\u044E \\u0433\\u043B\\u0430\\u0432\\u0443. \\u041D\\u0430\\u0447\\u043D\\u0438\\u0442\\u0435 \\u043D\\u043E\\u0432\\u0443\\u044E \\u0433\\u043B\\u0430\\u0432\\u0443 \\u0438\\u043B\\u0438 \\u0437\\u0430\\u0433\\u0440\\u0443\\u0437\\u0438\\u0442\\u0435 \\u0441\\u043E\\u0445\\u0440\\u0430\\u043D\\u0435\\u043D\\u0438\\u0435 \\u0438\\u0437 \\u0433\\u043B\\u0430\\u0432\\u043D\\u043E\\u0433\\u043E \\u043C\\u0435\\u043D\\u044E.\u0022\r\n}",
+      "Exception": null
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/audio/settings",
+      "Status": 200,
+      "Milliseconds": 183,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/client/settings",
+      "Status": 200,
+      "Milliseconds": 172,
+      "ErrorBody": null,
+      "Exception": null
+    }
+  ],
+  "ServerLogs": [
+    {
+      "Utc": "2026-10-08T05:07:28.5245657Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/meta/soul_state.json] \u041E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u0444\u0430\u0439\u043B \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D: game_state/meta/soul_state.json",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:28.5255219Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_definitions.json] Unified resource contract rejected \u0027game_state/resources/resource_definitions.json\u0027.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:28.5255406Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_state.json] Resource materialization violates exact accepted-turn authority.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:28.5255439Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_history.json] Resource materialization violates exact accepted-turn authority.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:28.5255462Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/inventory/item_identity_index.json] Mortal item identity index root is invalid.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:28.7675085Z",
+      "Category": "Microsoft.AspNetCore.Server.Kestrel",
+      "Level": "Error",
+      "EventId": 13,
+      "Message": "Connection id \u00220HNP4V82QOT72\u0022, Request id \u00220HNP4V82QOT72:00000001\u0022: An unhandled exception was thrown by the application.",
+      "Exception": "System.IO.IOException: The process cannot access the file \u0027C:\\Temp\\boe-win-6381a950-20261008T030647Z\\data\\http-empty-before-save\\.boe_runtime\\locks\\gm-main-owner.lock\u0027 because it is being used by another process.\r\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)\r\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable\u00601 unixCreateMode)\r\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable\u00601 unixCreateMode)\r\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)\r\n   at BookOfEternityClient.Core.GmMainOwnerGuard.AcquireAsync(String root, CancellationToken token, Func\u00601 contended, Int32 attempts, Nullable\u00601 retryDelay) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\GmSessionRunPersistence.cs:line 129\r\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\FileSystemManager.MainRunFence.cs:line 70\r\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3633\r\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileAsync(String relativePath) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 1264\r\n   at BookOfEternityClient.WebUi.BrowserLifecycleDashboardService.BuildSoulSummaryAsync() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\BrowserLifecycleDashboardService.cs:line 134\r\n   at BookOfEternityClient.WebUi.BrowserLifecycleDashboardService.BuildDashboardAsync(LocalWebUiSessionStatus session) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\BrowserLifecycleDashboardService.cs:line 41\r\n   at BookOfEternityClient.WebUi.BrowserLifecycleDashboardService.BuildDashboardAsync() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\BrowserLifecycleDashboardService.cs:line 28\r\n   at BookOfEternityClient.WebUi.BrowserGameScreenService.BuildAsync() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\BrowserGameScreenService.cs:line 36\r\n   at BookOfEternityClient.WebUi.LocalWebUiHost.\u003C\u003Ec.\u003C\u003CBuild\u003Eb__2_14\u003Ed.MoveNext() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\LocalWebUiHost.cs:line 147\r\n--- End of stack trace from previous location ---\r\n   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task\u00601 task, HttpContext httpContext)\r\n   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.\u003CInvoke\u003Eg__AwaitMatcher|10_0(EndpointRoutingMiddleware middleware, HttpContext httpContext, Task\u00601 matcherTask)\r\n   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication\u00601 application)"
+    },
+    {
+      "Utc": "2026-10-08T05:07:39.3398887Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/meta/soul_state.json] \u041E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u0444\u0430\u0439\u043B \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D: game_state/meta/soul_state.json",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:39.3399311Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_definitions.json] Unified resource contract rejected \u0027game_state/resources/resource_definitions.json\u0027.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:39.3399328Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_state.json] Resource materialization violates exact accepted-turn authority.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:39.3399339Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_history.json] Resource materialization violates exact accepted-turn authority.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:39.3399351Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/inventory/item_identity_index.json] Mortal item identity index root is invalid.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:49.9513835Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/meta/soul_state.json] \u041E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u0444\u0430\u0439\u043B \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D: game_state/meta/soul_state.json",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:49.9514077Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_definitions.json] Unified resource contract rejected \u0027game_state/resources/resource_definitions.json\u0027.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:49.951409Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_state.json] Resource materialization violates exact accepted-turn authority.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:49.9514106Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_history.json] Resource materialization violates exact accepted-turn authority.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:49.9514125Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/inventory/item_identity_index.json] Mortal item identity index root is invalid.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:58.8881895Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/meta/soul_state.json] \u041E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u0444\u0430\u0439\u043B \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D: game_state/meta/soul_state.json",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:58.888214Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_definitions.json] Unified resource contract rejected \u0027game_state/resources/resource_definitions.json\u0027.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:58.8882166Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_state.json] Resource materialization violates exact accepted-turn authority.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:58.8882234Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_history.json] Resource materialization violates exact accepted-turn authority.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:07:58.8882246Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/inventory/item_identity_index.json] Mortal item identity index root is invalid.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:08:10.040087Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/meta/soul_state.json] \u041E\u0431\u044F\u0437\u0430\u0442\u0435\u043B\u044C\u043D\u044B\u0439 \u0444\u0430\u0439\u043B \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D: game_state/meta/soul_state.json",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:08:10.0401185Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_definitions.json] Unified resource contract rejected \u0027game_state/resources/resource_definitions.json\u0027.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:08:10.0401202Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_state.json] Resource materialization violates exact accepted-turn authority.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:08:10.0401213Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/resources/resource_history.json] Resource materialization violates exact accepted-turn authority.",
+      "Exception": null
+    },
+    {
+      "Utc": "2026-10-08T05:08:10.0401221Z",
+      "Category": "BookOfEternityClient.Services.ValidationService",
+      "Level": "Warning",
+      "EventId": 0,
+      "Message": "\u041E\u0448\u0438\u0431\u043A\u0430 \u0432\u0430\u043B\u0438\u0434\u0430\u0446\u0438\u0438: [game_state/inventory/item_identity_index.json] Mortal item identity index root is invalid.",
+      "Exception": null
+    }
+  ]
+}
