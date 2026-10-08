@@ -34,6 +34,8 @@ public sealed class GmDaemonStorageTests
                 Assert.True(value.GetProperty("OriginalDaemonOwnerRetired").GetBoolean());
                 Assert.True(value.GetProperty("PowerShellExited").GetBoolean());
                 Assert.False(value.TryGetProperty("ForcedPowerShellTermination",out _));
+                Assert.False(value.TryGetProperty("CleanupFailure",out var cleanup),cleanup.ToString());
+                Assert.False(value.TryGetProperty("DisposeFailure",out var dispose),dispose.ToString());
             }
         }
     }

@@ -113,6 +113,13 @@ internal static class GmDaemonCurrentScenario
             if(localLoss){if(h.GetProperty("ExitCode").GetInt32()!=2||!h.TryGetProperty("Failure",out _)||h.TryGetProperty("Completed",out _))throw new InvalidOperationException("Expected natural local EOF failure missing.");}
             else if(!h.GetProperty("Completed").GetBoolean()||h.GetProperty("ExitCode").GetInt32()!=0)throw new InvalidOperationException("Original successful helper completion missing.");
             if(mode is not ("malformed-response" or "request-end-loss")&&(!p.GetProperty("closeObserved").GetBoolean()||p.GetProperty("lost").GetBoolean()))throw new InvalidOperationException("Current daemon original receipt missing.");
+            if(!localLoss){
+                var close=p.GetProperty("terminalClose");var admitted=p.GetProperty("originalClose");
+                foreach(var name in new[]{"pinId","closeId","operationId"})if(close.GetProperty(name).GetString()!=admitted.GetProperty(name).GetString())throw new InvalidOperationException("Original current close identifiers changed.");
+                if(close.GetProperty("identity").GetRawText()!=admitted.GetProperty("identity").GetRawText()||close.GetProperty("closingFailed").GetBoolean())throw new InvalidOperationException("Original current close identity/finalization changed.");
+                if(!mode.EndsWith("refusal",StringComparison.Ordinal)&&close.GetProperty("outcome").GetInt32()!=0)throw new InvalidOperationException("Known current consumer did not close Completed.");
+            }
+            if(File.Exists(Path.Combine(files.BasePath,".boe_runtime/trusted-local-publication-v1/active.json")))throw new InvalidOperationException("Current daemon left an unexpected publication journal.");
             if(!mode.EndsWith("refusal",StringComparison.Ordinal)&&mode is not ("malformed-response" or "request-end-loss")&&p.GetProperty("failure").ValueKind!=JsonValueKind.Null)throw new InvalidOperationException("Known current row failed unexpectedly.");
             if(mode.EndsWith("refusal",StringComparison.Ordinal)&&(!p.GetProperty("daemonReadRefused").GetBoolean()||p.GetProperty("terminalClose").GetProperty("outcome").GetInt32()!=1||p.GetProperty("terminalClose").GetProperty("closingFailed").GetBoolean()))throw new InvalidOperationException("Read refusal did not preserve Failed/ACK.");
             if(mode is "post-send-refusal" or "config-refusal" or "cache-refusal" or "repair-refusal" or "terminal-refusal" or "cohort-read-refusal" or "cohort-change" or "notes-race" or "ready-race")

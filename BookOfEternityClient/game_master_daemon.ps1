@@ -256,7 +256,7 @@ function Write-GmContextPackTemplate {
 
     $templatePath = Join-Path $script:GmContextPackRoot $RelativePath
     $templateDir = Split-Path -Parent $templatePath
-    if (!(Test-Path $templateDir)) {
+    if (!(Test-GmDaemonPath $templateDir)) {
         Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $templateDir
     }
 
@@ -5106,7 +5106,8 @@ function Get-MissingHarnessToolFromTerminalError {
 }
 
 function Test-TurnRequestHasPendingSnapshotContext {
-    param([psobject]$TurnRequest,[string]$RequestPath=$TurnRequestFile,[string]$ExpectedSourceHash='')
+    param([psobject]$TurnRequest,[string]$RequestPath=$TurnRequestFile,[string]$ExpectedSourceHash='',[ref]$SamplingMismatch)
+    if($null -ne $SamplingMismatch){$SamplingMismatch.Value=$false}
     $initial=Get-GmDaemonSnapshot -Paths @($PendingTurnSnapshotManifestFile,$PendingTurnSnapshotAuthorityFile,$RequestPath)
     $expected=New-GmDaemonPathMap
     foreach($file in $initial.files){$expected.Add([string]$file.path,$file.hash)}
@@ -5132,7 +5133,7 @@ function Test-TurnRequestHasPendingSnapshotContext {
         if($null -eq $declared){return $false}
         foreach($path in @($declared.Paths)){if(-not [string]::IsNullOrWhiteSpace($path)){$paths.Add($path)}}
         $batch=Get-GmDaemonSnapshot -Paths $paths.ToArray() -Expected $expected -Generation $initial.generation
-        if(-not $batch.matches){return $false}
+        if(-not $batch.matches){if($null -ne $SamplingMismatch){$SamplingMismatch.Value=$true};return $false}
         return Invoke-GmDaemonSnapshotView $batch {Test-TurnRequestHasPendingSnapshotContextCore -TurnRequest $TurnRequest}
     } catch {Assert-GmNotDaemonReadFailure $_;return $false}
 }
@@ -5853,7 +5854,9 @@ function Process-TurnCore {
             return
         }
 
-        if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest -RequestPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash)) {
+        $samplingMismatch=$false
+        if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest -RequestPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash -SamplingMismatch ([ref]$samplingMismatch))) {
+            if($samplingMismatch){return} # No coherent invalidity decision; do not suppress this request.
             Write-Log "  Skipping stale turn request without matching pending snapshot context (requestKey=$turnRequestKey)." -Level "WARN" -Color Yellow
             Add-ObservedTerminalRequestKey -Key $turnRequestKey
             return
@@ -5974,7 +5977,9 @@ function Process-TurnCore {
                 break
             }
 
-            if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest -RequestPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash)) {
+            $samplingMismatch=$false
+            if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest -RequestPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash -SamplingMismatch ([ref]$samplingMismatch))) {
+                if($samplingMismatch){return}
                 Write-Log "  Turn wait closed because the client no longer has matching pending snapshot context. The client likely consumed the terminal signal first." -Level "WARN" -Color Yellow
                 Add-ObservedTerminalRequestKey -Key $turnRequestKey
                 break

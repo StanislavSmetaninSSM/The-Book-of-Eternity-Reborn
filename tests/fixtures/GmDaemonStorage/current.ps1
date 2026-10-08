@@ -71,7 +71,13 @@ try {
   $signal=Get-CorrelatedTerminalSignal $request ([IO.Path]::Combine($SessionPath,'ready/turn_complete.json')) ([IO.Path]::Combine($SessionPath,'ready/absent-error.json'));Assert-Current ($null -eq $signal) 'Changed Ready acquired old correlation.'}
  'notes-race' {Update-GmLiveTestNoteRecordLinks -RequestId 'request' -RecordId 'actual-record'}
  'cohort-positive' {Assert-Current (Test-TurnRequestHasPendingSnapshotContext $request) 'Authentic declared cohort refused.'}
- 'cohort-change' {Assert-Current (-not (Test-TurnRequestHasPendingSnapshotContext $request)) 'Changed first manifest was adopted by second batch.'}
+ 'cohort-change' {
+  $keysBefore=Get-GmDaemonFileBytes $ObservedTerminalRequestKeysFile
+  Process-Turn -RequestPath $TurnRequestFile
+  Assert-Current ($script:Dispatches.Count -eq 0 -and -not $script:IsProcessing -and -not $script:ObservedTerminalRequestKeys.Contains((Get-TurnRequestKey $request))) 'Incoherent sample suppressed or dispatched the request.'
+  Assert-Current ((Get-GmDaemonBytesHash (Get-GmDaemonFileBytes $ObservedTerminalRequestKeysFile)) -ceq (Get-GmDaemonBytesHash $keysBefore)) 'Incoherent sample persisted an observed key.'
+  Assert-Current (Test-TurnRequestHasPendingSnapshotContext $request) 'Later coherent same-request authority was incorrectly suppressed.'
+ }
  'cohort-read-refusal' {
   $initialRefused=$false
   try{Process-Turn -RequestPath $TurnRequestFile}catch{Assert-Current (Test-GmDaemonReadFailure $_) 'Initial turn failure lost its read marker';$initialRefused=$true}

@@ -1,3 +1,17 @@
+## F14 final bounded source-review correction candidate — 2026-10-08
+
+The dynamic manifest witness mismatch is an ordinary incoherent sample, not proof
+of stale authority: Process-Turn now exits without persisting/adding the request key.
+Coherently invalid/missing contexts preserve the prior suppression policy. Existing
+cohort-change drives actual Process-Turn, checks no dispatch/volatile/durable adoption,
+and validates the same request coherently afterward. The remaining canonical context
+pack template-directory probe uses admitted observation. Current fixture cleanup now
+checks outer host errors as well as original helper joins; exact close identities,
+normal outcomes and absence of unexpected journals are explicit. Exact27 unchanged.
+
+Await focused review of these corrections and a fresh matching PlanOnly; no actual
+runtime execution has occurred after the original accepted causal packet.
+
 ## F14 bounded review corrections — 2026-10-08
 
 Intermediate clean58c Plan213120 compiled successfully: unit build76.4344852s,
