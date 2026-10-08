@@ -1,3 +1,27 @@
+## F14 causal evidence checkpoint — 2026-10-08
+
+Frozen d376 fixture/source/exact-selection received independent PASS. Fresh
+Plan210308 built unit successfully9/2/0 in35.9053657s. Actual210401 ran allfive
+QTE cases,2 PASS/3 causal FAIL, then stopped before delivery4:5/9 executed,1/2
+descriptors,21.8057831s. Delivery-only210509 then passed4/4,1/1,8.6475012s from
+the same fresh build. Both runs were clean exactd376 with no skips/duplicates/
+timeouts and both runner cleanup flags true. This is two bounded runs, not one
+complete nine-case run. No production F14 edits yet.
+
+Allfive actual MemberPublished cuts reached exactlyonce and returned real producer
+decisions. Request rollback dispatched frozenB although the publisher restored
+exactA; unknown dispatched validC with retained actual Uncertain journal, no
+outward error and an observed Completed close; transient correlatedReady suppressed
+dispatch before its exact rollback to absence. Known requestB commit and Ready
+commit controls passed. Ready synchronization was actual finally status-write
+contention, not admitted-read proof. Delivery was an inert lower collaborator,
+not provider input. Allfive original owners were Stopped/no retained authority;
+all original pwsh/helper exits were natural and uniquely joined, all guardians
+ECHILD/no emergency/failure/deadline. No fixture failure is inferred from the
+three reached causal assertions. Raw packets and source pins are saved in
+[the F14 evidence manifest](recovery/storage-migration-daemon-20261008/manifest.json).
+Independent raw/carrier review is pending; fullF14/native qualification remains open.
+
 ## F14 fixture status-publication ordering — 2026-10-08
 
 Intermediate0b8 Plan210208 succeeded9/2/0 in38.5047138s; no tests executed.
