@@ -1,3 +1,19 @@
+## Treatment mirror owner-bootstrap review — 2026-10-08
+
+Seeded a94d actual223842 completed one setupFAIL8.5178250s: the genuine accepted
+state exporter rejected missing afterlife resourceOwnerBindings before arming. No
+publisher cut or Unknown. Full Plan/result preserved; accepted prior two causal rows
+remain unchanged. A minimal profile JSON is insufficient for this canonical fixture.
+
+Independent source tracing requires a complete persistent owner/resource cohort.
+The direct afterlife service cannot consume the mixed Mortal ledger because its
+planner validates against afterlife-only owners. Proposed corrected setup uses that
+same real planner on an empty afterlife slice to generate the suspended persistent
+player binding/AP entries/history, then combines its disjoint outputs with unchanged
+Mortal entries and validates/publishes through the existing canonical quartet boundary,
+all before turn preparation. No hand-authored binding/history, no ledger reset, no
+validation relaxation, no production API. Exact frozen recipe/review precede execution.
+
 ## Treatment mirror prerequisite correction — 2026-10-08
 
 Isolated0ec5 actual223135 completed1/1FAIL15.0220035s with all cleanup true.
