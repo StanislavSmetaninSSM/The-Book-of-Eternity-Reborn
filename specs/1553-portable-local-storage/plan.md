@@ -1,3 +1,33 @@
+## F13 implementation WIP: generation and policy snapshot foundation — 2026-10-08
+
+Final causal/carrier676 independently accepted: ten reached semantic defects across
+nine82f plus corrected realm-link c2bc, with the original fixture failure retained.
+All109 artifacts/48 source pins verified. Parent fresh GitHub-only restoration into
+`/workspace/boe-1553-gm-helper-causal-restore` is clean detached676, no alternates,
+26345 tracked files, treec54eb94e0306a594ea336ab50795f033f6471e6c, full fsck exit0;
+all109/48 verified, no builds/tests in that restore. Main remains d0241e71.
+
+Implementation has started under the accepted94f design. Current unvalidated source
+foundation factors the strict read-only existing-generation observation, adds a
+separate expected-generation participating entry with no GetOrCreate fallback,
+and explicitly verifies a bound generation before any ordinary recovery/classifier.
+The existing current-session entry retains its established bootstrap behavior.
+A dedicated helper canonical scope records exact byte, namespace-kind and tree-set
+witnesses, rechecks them after mutation hooks/per publication retry, and advances
+only known committed own file/directory effects. Read-only mode rejects publication.
+No dedicated helper CLI/transport or PowerShell caller is activated in this WIP.
+
+Remaining coherent implementation: original-owned short process/lease and close
+projection; dedicated bounded chunk transfer; all admitted PowerShell read/policy/
+completion functions and parse-only fallbacks; persistent baselines/uncertainty;
+PS5.1-compatible launch; actual current-route controls and migrated original22;
+GM bootstrap instructions/worked example. Preserve9+1 causal membership and freeze
+exact current18/original22/conditional3 before final source/selection gate and GREEN.
+This foundation is **not compiled, tested, reviewed or accepted runtime evidence**;
+no additional executions since the corrected causal row. Native Windows/PS5.1 and
+full migration remain open. Historical design-only and pending entries below are
+chronology, superseded by this current status.
+
 ## F13 causal evidence complete; implementation pending — 2026-10-08
 
 Focused parent/independent source, fixture and exact selection PASSc2bc. Fresh
@@ -14,7 +44,7 @@ Together with the original nine reached cases at82f, all ten semantic causal
 obligations have now reached their defects. The earlier ten-case mixed run remains
 nine causal failures plus one fixture failure; it is not rewritten as ten causal
 failures. All initial/corrected Plans, both actual runs, raw processes and source
-pins are preserved in the helper evidence manifest (105 artifacts/48 historical
+pins are preserved in the helper evidence manifest (109 artifacts/48 historical
 source pins). Production F13 implementation has not started. Causal evidence review
 precedes the accepted dedicated role/generation/leased policy/byte transport work;
 current-route controls and exact final selection still need their frozen source

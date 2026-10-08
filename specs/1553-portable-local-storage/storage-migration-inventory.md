@@ -7,8 +7,10 @@ pwsh exits and all ten healthy physical guardians are separately recorded. Initi
 and corrected Plans plus raw evidence are retained in the current plan/manifest.
 The retained-path correction passed focused gates; isolated actual191330 reaches
 the symlink policy defect with unforced exit/logical ownership and healthy guardian.
-All ten semantic causal cases are now reached across9+1; the old fixture failure
-remains disclosed. Production F13 implementation has not started.
+All ten semantic causal cases are now reached across9+1; final carrier676 is
+independently accepted and freshly restored. Production F13 generation/witness
+foundation is now WIP, uncompiled/unreviewed; dedicated transport and PS integration
+remain pending. The old fixture failure remains disclosed.
 Native Windows/PowerShell5.1 and the full migration remain open.
 
 ## Current F04/F05 checkpoint — 2026-10-08

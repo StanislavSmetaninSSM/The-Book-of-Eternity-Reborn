@@ -3730,6 +3730,9 @@ public partial class FileSystemManager
                     writeLease.MainAdmission!.Validate(writeLease);return writeLease;
                 }
                 EnsureMainBeforeRecovery(writeLease);
+                // An explicitly bound reader is fenced before any recovery or
+                // evidence classification, including quiescent local admission.
+                EnsureBoundSessionOperationCanWrite(writeLease);
                 // Classify the entire browser namespace before either recovery owner
                 // can mutate anything. Structural direct-gacha backups are neutral.
                 var browserProtocol = ExplorerLocalTurnRollbackArtifacts.ClassifyBrowserStorageEvidence(this, writeLease);

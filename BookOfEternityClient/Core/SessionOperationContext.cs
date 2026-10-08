@@ -107,14 +107,26 @@ internal static class SessionOperationContext
         return result!;
     }
 
-    internal static async Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null)
+    internal static Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null) =>
+        RunParticipatingSessionAsync(files, operation, null, establishedOutcome, observeOriginalClose);
+
+    // Dedicated Init-bound callers never bootstrap or adopt a later generation.
+    internal static Task<T> RunParticipatingExpectedSessionAsync<T>(FileSystemManager files,string expectedGeneration,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null)
+    {
+        if (!Guid.TryParseExact(expectedGeneration, "N", out var parsed) || parsed.ToString("N") != expectedGeneration)
+            throw new InvalidDataException("An exact existing helper generation is required.");
+        return RunParticipatingSessionAsync(files, operation, expectedGeneration, establishedOutcome, observeOriginalClose);
+    }
+
+    private static async Task<T> RunParticipatingSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,string? initializedGeneration,Func<MainOperationOutcome>? establishedOutcome,Action<MainOperationClose?,bool,bool>? observeOriginalClose)
     {
         ArgumentNullException.ThrowIfNull(files);ArgumentNullException.ThrowIfNull(operation);
         await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync();
         Exception? failure=null;T? result=default;MainOperationOutcome outcome=MainOperationOutcome.Completed;
         try {
             string generation;
-            if(!TryGetExpectedGeneration(files.BasePath,out generation)) {
+            if(initializedGeneration != null) generation=initializedGeneration;
+            else if(!TryGetExpectedGeneration(files.BasePath,out generation)) {
                 await using var lease=await files.AcquireCanonicalWriteLeaseAsync();generation=files.GetOrCreateSessionGeneration(lease);
             }
             result=await RunBoundCoreAsync(files,generation,async()=> {
