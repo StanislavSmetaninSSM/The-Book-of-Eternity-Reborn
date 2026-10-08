@@ -1,0 +1,369 @@
+{
+  "reason": "Recoverable ENOSPC in test preparation",
+  "removedOnlyGeneratedClosedFixturePublishedCopies": true,
+  "historicalUncertainUntouched": true,
+  "gameRootsTracesGuardiansSourceManifestsRetained": true,
+  "totalBytes": 2124720440,
+  "records": [
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/f5234511acd84c6c9ab77e9fd4d6f8d9",
+      "deletedOnly": "ship",
+      "bytes": 85570889,
+      "files": 317,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": true,
+      "scopedStopAndRetirement": false,
+      "scenarioSha256": "bf7920458ed359f9d6a9cf3f256e0e61225f11e97cda3d0db1151b33d63d3bde",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/ec349a4aeeb74a96bccd3f5e8bef88ec",
+      "deletedOnly": "ship",
+      "bytes": 85570889,
+      "files": 317,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": true,
+      "scopedStopAndRetirement": false,
+      "scenarioSha256": "3ab1ed06a91db340750c3b5d038ad1a8a4a5e93b5b68039a434df18ec325a532",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/ff135d2e321943df8ee30344f2ce2a92",
+      "deletedOnly": "ship",
+      "bytes": 85570889,
+      "files": 317,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": true,
+      "scopedStopAndRetirement": false,
+      "scenarioSha256": "69dadd954e90179537ef8b00e39ed777245ee1ca3675d34b8b5fb9bc5b0e00fd",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/0bb02eb1159e4cc6b979576d98b084b1",
+      "deletedOnly": "ship",
+      "bytes": 85570889,
+      "files": 317,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": true,
+      "scopedStopAndRetirement": false,
+      "scenarioSha256": "d97bd326857c85b93fe0a861e916c0349233abf66d4563363b2d954ec46031cb",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/7ccfe69251b14702b53b18a5d2bbaf64",
+      "deletedOnly": "ship",
+      "bytes": 85803511,
+      "files": 324,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": true,
+      "scopedStopAndRetirement": false,
+      "scenarioSha256": "7997cf1d822629eca31deece7ca36a7683c868c4f717339727bfa12e93e7553a",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/a0320b4041864260a3f8416354fd95a8",
+      "deletedOnly": "ship",
+      "bytes": 130692527,
+      "files": 489,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": false,
+      "scopedStopAndRetirement": true,
+      "scenarioSha256": "f4dd82ea3d50cba3491ee862dd49d06be5326db7a94daa580f4d7799bc5600c6",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/0db2581e10834779b80ad8cd2ad422ee",
+      "deletedOnly": "ship",
+      "bytes": 85803511,
+      "files": 324,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": true,
+      "scopedStopAndRetirement": false,
+      "scenarioSha256": "3220ffd9cc69fdfaf8eeb5436e1be76366634e3141419937c908952ad50c591f",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/164b23669cb147c7bd2e668f8723d946",
+      "deletedOnly": "ship",
+      "bytes": 85803515,
+      "files": 324,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": true,
+      "scopedStopAndRetirement": false,
+      "scenarioSha256": "0efee76ffe5879e6d6ff927c6ca5b0d2ead551c81edb7e04a9aa8b58f4d25bc7",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/155c2c7c8fbb437f98f0932ec6cf57f2",
+      "deletedOnly": "ship",
+      "bytes": 130702035,
+      "files": 489,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": false,
+      "scopedStopAndRetirement": true,
+      "scenarioSha256": "280844ca19d9b1bd87421225536d3f11ee2fa0e0f612056bd9fc4e98c24410a8",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/9fcf574ffe984f458572cee8de7180a6",
+      "deletedOnly": "ship",
+      "bytes": 85803515,
+      "files": 324,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": true,
+      "scopedStopAndRetirement": false,
+      "scenarioSha256": "33afd0a4a0107c0685c999eeafb3e1ab807f721adf04c8bef1d344f32e6af5df",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/f44e8ad09e4d48f3b5c60272a5ede423",
+      "deletedOnly": "ship",
+      "bytes": 85803523,
+      "files": 324,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": true,
+      "scopedStopAndRetirement": false,
+      "scenarioSha256": "9cdb1eaec8db42415e1b8dc5c03086bca835beb38cd3a764329eae6cfd9738fe",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/e669c78fe60f4b1d8410bde94ae567db",
+      "deletedOnly": "ship",
+      "bytes": 98465623,
+      "files": 676,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": true,
+      "scopedStopAndRetirement": false,
+      "scenarioSha256": "3a8827b459b8292c6dbaf2f9c28dbcbbafd55076d3acf8dbd9c2729d7623aee4",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/926a4c2115da440b9791b6494d6bcca7",
+      "deletedOnly": "ship",
+      "bytes": 149695201,
+      "files": 1017,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": false,
+      "scopedStopAndRetirement": true,
+      "scenarioSha256": "afbf748e605e6bcc5eb0d3bc030670d2b3a0782b6e4cc596f6faa2660196f298",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/41fe6429b08b49c19fb9dc146ba7f4ae",
+      "deletedOnly": "ship",
+      "bytes": 98465623,
+      "files": 676,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": true,
+      "scopedStopAndRetirement": false,
+      "scenarioSha256": "8c54def5e7454dbd2725051bfd901366d0c743097ecc6335b73e49b0ea4f66e6",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/766749279e974f4e8582380fee23f7c8",
+      "deletedOnly": "ship",
+      "bytes": 98465615,
+      "files": 676,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": true,
+      "scopedStopAndRetirement": false,
+      "scenarioSha256": "4d405b8ab3f4682673a324502ef2b748af5444fff7a369d8ad6524d4638cb6b5",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/b23dfe59ea184c6eb3dfdd3a2bee96c6",
+      "deletedOnly": "ship",
+      "bytes": 149696877,
+      "files": 1017,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": false,
+      "scopedStopAndRetirement": true,
+      "scenarioSha256": "421466f6f83a31edb38dfaffd7b4e6dfb7755056ae875f7026376f3535fb4688",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/9e56a7dc0ea54e7180bb7ad6a12e4430",
+      "deletedOnly": "ship",
+      "bytes": 98465615,
+      "files": 676,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": true,
+      "scopedStopAndRetirement": false,
+      "scenarioSha256": "6c35d6ec8f7e21f691d429a1d73145c718081c7a6038d29bb9fff868433d91b2",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/8c212cd2817a409197727f406dc2dddc",
+      "deletedOnly": "ship",
+      "bytes": 98465691,
+      "files": 676,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": true,
+      "scopedStopAndRetirement": false,
+      "scenarioSha256": "8593e7417b67b860777a380abc9b004f146aa023da4bdb0709f759a7d345c4c1",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/64dc22dc5b3c43e6aaeb48a4fe3da4c0",
+      "deletedOnly": "ship",
+      "bytes": 149698153,
+      "files": 1017,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": false,
+      "scopedStopAndRetirement": true,
+      "scenarioSha256": "e8d2b50ff7f7759069be8813091736252aeac76794971fc4c014fd35d5288854",
+      "gameRootAndEvidenceRetained": true
+    },
+    {
+      "fixtureDirectory": "/workspace/native-1553/TestResults/production-main/bfff634d4565454fbcaa092c2cd577dc",
+      "deletedOnly": "ship",
+      "bytes": 150606349,
+      "files": 1020,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "logicalStopped": false,
+      "scopedStopAndRetirement": true,
+      "scenarioSha256": "e1c01305e99988b9264ea78031648ef2ab1d5d078e60fa5988ec7c68aba51268",
+      "gameRootAndEvidenceRetained": true
+    }
+  ]
+}

@@ -23,97 +23,6 @@
     "exitCode": 0,
     "body": {
       "name": "main",
-      "commit": {
-        "sha": "f6dc2a1ce3e73f5e6940f686c97b863c9f7a8173",
-        "node_id": "C_kwDORoVJtdoAKGY2ZGMyYTFjZTNlNzNmNWU2OTQwZjY4NmM5N2I4NjNjOWY3YTgxNzM",
-        "commit": {
-          "author": {
-            "name": "StanislavSmetaninSSM",
-            "email": "128771619+StanislavSmetaninSSM@users.noreply.github.com",
-            "date": "2026-09-30T18:22:25Z"
-          },
-          "committer": {
-            "name": "GitHub",
-            "email": "noreply@github.com",
-            "date": "2026-09-30T18:22:25Z"
-          },
-          "message": "Merge pull request #1554: preserve wound materialization WIP\n\nIntegrate the existing wound-materialization branch into main at the owner's explicit request before Linux/Windows portability work. Preserve the complete branch history. Wound work remains unfinished and deferred; issue #1536 remains open. This merge is not acceptance of outstanding B2-B5 work or a claim of passing tests.",
-          "tree": {
-            "sha": "24de5ac0f178963c3781fca177b8f75835bb20d5",
-            "url": "https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/git/trees/24de5ac0f178963c3781fca177b8f75835bb20d5"
-          },
-          "url": "https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/git/commits/f6dc2a1ce3e73f5e6940f686c97b863c9f7a8173",
-          "comment_count": 0,
-          "verification": {
-            "verified": true,
-            "reason": "valid",
-            "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJqvVNhCRC1aQ7uu5UhlAAA7v8QACJJZnIldCIlDP3xYWsOtd0u\n9OAB79yh8TXZM3qkMUgIq9fSIS1TGnZGVzS/9a6jeuwt6BV+T/rF0oVwakEthMUI\nXCsBJV31EWKFz7LVn67tPJ4IUbf32LYhRgucrUtWQ+o06mwfcTKwoA4+ZAAVg2nO\njcyRc196pdyqRaXVBBKlysMe34OFdCl/E4bGlNBe5x1IbRqe+LazMLRZNhhsX+Se\nkhQn2s+W8cmvBXAXH1NXgv6LzVPgrSn0zVfs4V8YtdhCFCFF5LYhWzeogRbWxGXh\nHpiZgokqyfCzG0baqKGMvk+uEhXoXKNbJ5j4wVOSvYzd6WZmRhqjyYyot955WYcE\nFI+9aK0Ye9PE5WkUQinWbZLB4U6r7lGPyhriA7MerB7WA0sQXDK/gFi4BwB/onCF\nKkolP3KWSH4C5qOFmPnujfjofCZKznP4eAAeLx/HXngH0zdkWWEPcPGdTNECoIcB\nFo7j1Mpo+A+sm/l7GI92EqA4i2YAx5C+R1B+Xil/q84bNgKqn4m+9deniqWdWhLN\nU36RvKzmjYqdnF0cLim5B82/vXJSdKxWy/BYCqX7AtVJb6bKppqs+Wfg8UucVrWk\nlaE8VcDY5WN9bdKCrHJyFLlCaRR9QZsDkqDIomswdwZTtgm64igaDTzeu3Y89Grt\n7aGVdP/fQqRx/NMMPXB+\n=QF0q\n-----END PGP SIGNATURE-----\n",
-            "payload": "tree 24de5ac0f178963c3781fca177b8f75835bb20d5\nparent db39d863c9c05050291b67d1f42f9a4ef6c020f2\nparent 1fc5e59b253c358a8622df66a4e9459f5f3fe78b\nauthor StanislavSmetaninSSM <128771619+StanislavSmetaninSSM@users.noreply.github.com> 1790792545 +1000\ncommitter GitHub <noreply@github.com> 1790792545 +1000\n\nMerge pull request #1554: preserve wound materialization WIP\n\nIntegrate the existing wound-materialization branch into main at the owner's explicit request before Linux/Windows portability work. Preserve the complete branch history. Wound work remains unfinished and deferred; issue #1536 remains open. This merge is not acceptance of outstanding B2-B5 work or a claim of passing tests.",
-            "verified_at": "2026-09-30T18:22:26Z"
-          }
-        },
-        "url": "https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commits/f6dc2a1ce3e73f5e6940f686c97b863c9f7a8173",
-        "html_url": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/f6dc2a1ce3e73f5e6940f686c97b863c9f7a8173",
-        "comments_url": "https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commits/f6dc2a1ce3e73f5e6940f686c97b863c9f7a8173/comments",
-        "author": {
-          "login": "StanislavSmetaninSSM",
-          "id": 128771619,
-          "node_id": "U_kgDOB6zmIw",
-          "avatar_url": "https://avatars.githubusercontent.com/u/128771619?v=4",
-          "gravatar_id": "",
-          "url": "https://api.github.com/users/StanislavSmetaninSSM",
-          "html_url": "https://github.com/StanislavSmetaninSSM",
-          "followers_url": "https://api.github.com/users/StanislavSmetaninSSM/followers",
-          "following_url": "https://api.github.com/users/StanislavSmetaninSSM/following{/other_user}",
-          "gists_url": "https://api.github.com/users/StanislavSmetaninSSM/gists{/gist_id}",
-          "starred_url": "https://api.github.com/users/StanislavSmetaninSSM/starred{/owner}{/repo}",
-          "subscriptions_url": "https://api.github.com/users/StanislavSmetaninSSM/subscriptions",
-          "organizations_url": "https://api.github.com/users/StanislavSmetaninSSM/orgs",
-          "repos_url": "https://api.github.com/users/StanislavSmetaninSSM/repos",
-          "events_url": "https://api.github.com/users/StanislavSmetaninSSM/events{/privacy}",
-          "received_events_url": "https://api.github.com/users/StanislavSmetaninSSM/received_events",
-          "type": "User",
-          "user_view_type": "public",
-          "site_admin": false
-        },
-        "committer": {
-          "login": "web-flow",
-          "id": 19864447,
-          "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
-          "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
-          "gravatar_id": "",
-          "url": "https://api.github.com/users/web-flow",
-          "html_url": "https://github.com/web-flow",
-          "followers_url": "https://api.github.com/users/web-flow/followers",
-          "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
-          "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
-          "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
-          "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
-          "organizations_url": "https://api.github.com/users/web-flow/orgs",
-          "repos_url": "https://api.github.com/users/web-flow/repos",
-          "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
-          "received_events_url": "https://api.github.com/users/web-flow/received_events",
-          "type": "User",
-          "user_view_type": "public",
-          "site_admin": false
-        },
-        "parents": [
-          {
-            "sha": "db39d863c9c05050291b67d1f42f9a4ef6c020f2",
-            "url": "https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commits/db39d863c9c05050291b67d1f42f9a4ef6c020f2",
-            "html_url": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/db39d863c9c05050291b67d1f42f9a4ef6c020f2"
-          },
-          {
-            "sha": "1fc5e59b253c358a8622df66a4e9459f5f3fe78b",
-            "url": "https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commits/1fc5e59b253c358a8622df66a4e9459f5f3fe78b",
-            "html_url": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/1fc5e59b253c358a8622df66a4e9459f5f3fe78b"
-          }
-        ]
-      },
-      "_links": {
-        "self": "https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/branches/main",
-        "html": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/tree/main"
-      },
       "protected": true,
       "protection": {
         "enabled": true,
@@ -123,7 +32,8 @@
           "checks": []
         }
       },
-      "protection_url": "https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/branches/main/protection"
+      "protection_url": "https://api.github.com/repos/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/branches/main/protection",
+      "commitSha": "f6dc2a1ce3e73f5e6940f686c97b863c9f7a8173"
     },
     "safeStderr": ""
   },

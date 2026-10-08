@@ -1,0 +1,58 @@
+{
+  "cause": "dotnet publish TestSupport ENOSPC; retries over existing50s ObserveBuild preparation bound",
+  "correctedInitialLocalization": "Not compiler timeout; actual publish log is earliest causal disk failure",
+  "behavioralExecuted": false,
+  "originalGuardianLaunched": false,
+  "runnerCleanup": "complete",
+  "ownedCleanup": "Only own failed attempt ship/package outputs removed after process completion and evidence preservation; game root retained",
+  "artifacts": [
+    {
+      "path": "recovery/final-readiness/preparation-fixture-build.log.gz",
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rawSize": 0
+    },
+    {
+      "path": "recovery/final-readiness/preparation-publish-BookOfEternityGMBridge.log.gz",
+      "sha256": "4bf00bb2c368f2d8e104c62a136139270a08b0abb8e8cbc0b9302e6a354ec2a4",
+      "rawSha256": "aff6304f65962569d0ebefdb410db6228a9b0a66625b1db35e800eee633efcdc",
+      "rawSize": 141
+    },
+    {
+      "path": "recovery/final-readiness/preparation-fixture-compiler-version.log.gz",
+      "sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+      "rawSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc",
+      "rawSize": 231
+    },
+    {
+      "path": "recovery/final-readiness/preparation-helper-build.log.gz",
+      "sha256": "05ca09e36a61fec2565058cd007c5786fdcd211ae3059717dac74fbca473d273",
+      "rawSha256": "dcfcd0103b0de8ae28428ab54a0c7ff27da0ea9292fa5a2062d914785512fd5b",
+      "rawSize": 114
+    },
+    {
+      "path": "recovery/final-readiness/preparation-publish-BookOfEternityClient.TestSupport.log.gz",
+      "sha256": "4c56b55fa571f9a9f39579069e43f716ffab932718b93442676909e9778d1b08",
+      "rawSha256": "42dc51c21475222087a26d9e39479534f4e75d10fb3ad182715ab19b7f243146",
+      "rawSize": 175636
+    },
+    {
+      "path": "recovery/final-readiness/preparation-publish-BookOfEternityClient.log.gz",
+      "sha256": "fef2500c778e7e8fdbbc319135a16e10308299302e16c69f5e48de155abc22d8",
+      "rawSha256": "3dad0c5251d1452f658c6add896b3c6d797d4f6ab1f653d51fa60788a748df60",
+      "rawSize": 137
+    },
+    {
+      "path": "recovery/final-readiness/preparation-build-provenance.json.gz",
+      "sha256": "c7221a0b17c8f7cf3a3486af9e5c7fb4b705d86edf9012b26c3f09afdf81c812",
+      "rawSha256": "f9cd04cde9282130f6878b88d0fcbbee6882e29e18b2fcba32fc469f6d3a30cc",
+      "rawSize": 1153
+    },
+    {
+      "path": "recovery/final-readiness/preparation-package-manifest.json.gz",
+      "sha256": "7d14ed2e38e067baeed3775467e8c72df405d4b715395a6d824aa9ac467e5081",
+      "rawSha256": "04b308e7e49ac0792501c81ee6c1ee2c0e45799fef76894e35574d2cf14b1e1a",
+      "rawSize": 968
+    }
+  ]
+}

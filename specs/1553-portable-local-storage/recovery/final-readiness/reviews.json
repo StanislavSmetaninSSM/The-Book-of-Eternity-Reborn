@@ -1,0 +1,22 @@
+{
+  "reviewer": "/root/final_readiness_design_review",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "xhigh",
+  "design": {
+    "source": "20bdeb6c42a8729acbfdf39d55f758d3e746240f",
+    "verdict": "PASS"
+  },
+  "source": {
+    "source": "0be9c9799ecdf05b9ae82ec6ddae8af0a359c60d",
+    "verdict": "PASS",
+    "P1": 0,
+    "P2": 0,
+    "minorMetadata": [
+      "Reusable carrier typo corrected db847f6a",
+      "Historical changed-file counts labeled accepted20bdeb6c",
+      "Stale unrun guide status replaced"
+    ]
+  },
+  "evidence": "pending",
+  "metadata": "pending"
+}

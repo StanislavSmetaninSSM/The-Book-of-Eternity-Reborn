@@ -57,4 +57,4 @@ Those historical Windows physical fixtures stay unpassed; subsequent real Linux 
 
 ## Execution/closure
 
-Current state: design PASS; guide causal check and final selections unrun; source/evidence/metadata review, hosted CI, exact-tip remote/readback/fresh recovery pending. Publish WIP before long checks. Record toolchain, exact commands, planned/executed counts, cleanup, hashes and review source SHA in recovery/final-readiness-qualification.json. Stop at parent handoff without merge, services or model calls.
+Current state: actual independent Sol6.1/xhigh design/source PASS at20bdeb6c/0be9c979. Guide causal internal2PASS/1FAIL (adapter accepted0) then3/3GREEN; PlanOnly28estimated cases/5descriptors executed0, fresh unit/integration builds passed. Four runtime categories (27cases) and evidence/metadata review, hosted CI, exact-tip remote/readback/fresh recovery pending. Publish WIP before long checks. Record toolchain, exact commands, planned/executed counts, cleanup, hashes and review source SHA in recovery/final-readiness-qualification.json. Stop at parent handoff without merge, services or model calls.
