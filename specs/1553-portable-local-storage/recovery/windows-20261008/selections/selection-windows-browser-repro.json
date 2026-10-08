@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "gm-main-affected-browser-native-windows",
+      "reason": "Execute four explicitly unqualified Linux handoff cases on their actual Windows reversible publication backend.",
+      "contracts": [
+        "#1553 F2 browser transaction",
+        "session replacement",
+        "lease release"
+      ]
+    }
+  ]
+}

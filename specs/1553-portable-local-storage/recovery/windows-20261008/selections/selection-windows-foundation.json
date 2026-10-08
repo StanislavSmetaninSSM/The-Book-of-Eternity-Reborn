@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-client-bootstrap",
+      "reason": "Post-merge native Windows baseline for shared leased config/generation bootstrap and retained invalid-state admission.",
+      "contracts": [
+        "#1553 Windows bootstrap",
+        "trusted-local storage"
+      ]
+    },
+    {
+      "category": "portable-storage-windows-paths",
+      "reason": "Execute the native junction, extended-root, alias and replacement-fencing bodies affected by portable storage migration.",
+      "contracts": [
+        "#1553 native Windows path boundaries"
+      ]
+    },
+    {
+      "category": "portable-storage-windows-handle-comparison",
+      "reason": "Verify original Windows handle/lock comparison and cross-alias before-write fencing after merge; overlap is deduplicated by runner.",
+      "contracts": [
+        "#1553 Windows handle identity",
+        "lease admission"
+      ]
+    },
+    {
+      "category": "portable-load-native-boundaries",
+      "reason": "Verify real Windows typed Load with hard links and junction refusal while preserving source library and outside aliases.",
+      "contracts": [
+        "#1553 typed Load",
+        "native Windows filesystem"
+      ]
+    },
+    {
+      "category": "gm-main-affected-browser-native-windows",
+      "reason": "Execute four explicitly unqualified Linux handoff cases on their actual Windows reversible publication backend.",
+      "contracts": [
+        "#1553 F2 browser transaction",
+        "session replacement",
+        "lease release"
+      ]
+    }
+  ]
+}

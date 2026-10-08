@@ -1,0 +1,30 @@
+[
+  {
+    "route": "/api/main-menu",
+    "status": 200,
+    "elapsedMs": 13241
+  },
+  {
+    "route": "/api/session",
+    "status": 500,
+    "elapsedMs": 12268,
+    "body": ""
+  },
+  {
+    "route": "/api/game-screen",
+    "status": 500,
+    "elapsedMs": 12265,
+    "body": ""
+  },
+  {
+    "route": "/api/audio/settings",
+    "status": 500,
+    "elapsedMs": 12267,
+    "body": ""
+  },
+  {
+    "route": "/api/client/settings",
+    "status": 200,
+    "elapsedMs": 13423
+  }
+]

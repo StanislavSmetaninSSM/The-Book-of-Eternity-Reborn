@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "6381a9507baae6bb2531e22e9a0ace839f03985f",
+  "reportBranch": "codex/1553-windows-verification-20261008",
+  "scope": "Archival report only; no new runtime execution or product changes",
+  "files": [
+    {
+      "path": "evidence/browser-observations.json",
+      "bytes": 1885,
+      "sha256": "5589B33BFE4360B257851715AFD14686D44957F472C8BA568726EFEA81CA4FEB"
+    },
+    {
+      "path": "evidence/codex-native-live-answer.txt",
+      "bytes": 20,
+      "sha256": "6EB6B62D37B67A9F23DB9AB32CC1DA6F4F8720E5AD6F6989DB70F8A480CB03F5"
+    },
+    {
+      "path": "evidence/codex-native-live-exit.txt",
+      "bytes": 1,
+      "sha256": "5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9"
+    },
+    {
+      "path": "evidence/failed-test-errors.json",
+      "bytes": 9808,
+      "sha256": "4A4272477C07FF8827A942ED4B668D1015FFDF877CDB03158EF6C6A5C95C6B9A"
+    },
+    {
+      "path": "evidence/final-cleanup.json",
+      "bytes": 283,
+      "sha256": "91EDDCDD18F4AC89CD692A378E6E3D816DAC7EEB443ED93769CA0E331E5624BA"
+    },
+    {
+      "path": "evidence/http-concurrent-read-results.json",
+      "bytes": 471,
+      "sha256": "53DFB353F3BEE3CEE3253DA96D5CBCED14C6EABDA33A59EC3902EA2224F286C5"
+    },
+    {
+      "path": "evidence/operational-observations.json",
+      "bytes": 4372,
+      "sha256": "BDEC9BFE447BFFAE07800975481BD2714804BB9620F09C959A0E8A70190EAD0C"
+    },
+    {
+      "path": "evidence/relay-native-help.stderr.txt",
+      "bytes": 243,
+      "sha256": "9BAF83E469D99E418AD9C89B5A3E259CCF595FC0D65C542E6EA0EA845A8A9F05"
+    },
+    {
+      "path": "evidence/runner-summary-index.json",
+      "bytes": 7311,
+      "sha256": "BA09E7D1EA7AD3DB295C4AC1705E346E026323A39ABB1AF21DE16C535375AFB6"
+    },
+    {
+      "path": "evidence/source-provenance.json",
+      "bytes": 3768,
+      "sha256": "5D492CEFC35AC0DB04262F332E192725C3E6EE82715F5F985F1B084A92FD5B74"
+    },
+    {
+      "path": "evidence/test-case-index.json",
+      "bytes": 31470,
+      "sha256": "C5FA22BC83FA57FCA826CAA9BAAA5062FD43527CD208BE396768BBA4FA60D3B3"
+    },
+    {
+      "path": "evidence/unique-test-totals.json",
+      "bytes": 713,
+      "sha256": "C349ADA614564E5907EB47C661E9B23CCA15D8A68A41AF34EF4B90B808B4D977"
+    },
+    {
+      "path": "HANDOFF.md",
+      "bytes": 15587,
+      "sha256": "9554232A0B4422ED09FE4A69438D695EC4B421EF0C81175FCE70EE5B2A4B8C82"
+    },
+    {
+      "path": "README.md",
+      "bytes": 19651,
+      "sha256": "8D76EFAF3F7C858178DCF643D2B5B64FA634EC8A78B7F0AD2A587412E6CBD194"
+    },
+    {
+      "path": "selections/selection-windows-browser-repro.json",
+      "bytes": 375,
+      "sha256": "06F1258A7A80F9D206203B8A98D46ED3A5F6BF79D2BBFF27DC9F8165D0E042E4"
+    },
+    {
+      "path": "selections/selection-windows-foundation.json",
+      "bytes": 1573,
+      "sha256": "6B2287748DD5714E41C86C29C327FA438C562405CC0879DA55D6B553DB2B2480"
+    },
+    {
+      "path": "selections/selection-windows-paths.json",
+      "bytes": 327,
+      "sha256": "65D6193BADF012819703BD311503A0F7237C857EC552CC4C1352052D2D4BE235"
+    },
+    {
+      "path": "selections/selection-windows-storage.json",
+      "bytes": 1244,
+      "sha256": "4A659184D4BD668FDC2CB59CD79C7FBFD407F650E4C8FD23D88BFFF6A0434982"
+    },
+    {
+      "path": "selections/selection-windows-workflow.json",
+      "bytes": 1049,
+      "sha256": "9313F7833625F1E071E29768EC7CF67BCD22BD8E49AEBFEDD123D34E656C7596"
+    }
+  ]
+}

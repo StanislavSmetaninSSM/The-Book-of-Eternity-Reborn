@@ -1,0 +1,133 @@
+{
+  "console": {
+    "beforeRestart": {
+      "utc": "2026-10-08T03:26:10.4495257Z",
+      "configQte": false,
+      "projectionQte": false,
+      "configHash": "A073718AD0BAB3C70FD6075B45480D2021D776EF695AB81BB10DA81F4EE50A4F",
+      "projectionHash": "24D5DD78B965B5017A26F0E3D6BDC9843234294231617FED626B62C6F547173A"
+    },
+    "afterRestart": {
+      "configHashUnchanged": true,
+      "projectionHashUnchanged": true
+    },
+    "actualPtyQteDisabledAfterRestart": true,
+    "firstExit": 0,
+    "secondExit": 0
+  },
+  "nativeBridge": {
+    "beforeRestart": {
+      "ok": true,
+      "error": null,
+      "state": "OperatorNotReady",
+      "helperPid": 10384,
+      "shellPid": 35396,
+      "terminalRunId": "12ad50a7e4c6474ca2f88d8c68cb95d4",
+      "terminalGuarantee": "windows-job",
+      "terminalUncertain": false,
+      "terminalOwnerRetained": true,
+      "terminalStop": null
+    },
+    "restart": {
+      "ok": true,
+      "error": null,
+      "state": "OperatorNotReady",
+      "helperPid": 10384,
+      "shellPid": 27568,
+      "terminalRunId": "442311e723b447d88ead4df15a372863",
+      "terminalGuarantee": "windows-job",
+      "terminalUncertain": false,
+      "terminalOwnerRetained": true,
+      "terminalStop": {
+        "identity": {
+          "runId": "12ad50a7e4c6474ca2f88d8c68cb95d4",
+          "backend": "windows-job",
+          "guarantee": "windows-job",
+          "rootPid": 35396
+        },
+        "state": "stopped-within-scope",
+        "reason": "original-job-empty",
+        "cleanupComplete": true,
+        "authorityRetained": false
+      }
+    },
+    "oldTreeAfterRestart": {
+      "utc": "2026-10-08T03:31:36.4293122Z",
+      "oldShellAlive": false,
+      "childPid": 35004,
+      "childAlive": false
+    },
+    "shutdown": {
+      "ok": true,
+      "error": null,
+      "state": "ShuttingDown",
+      "helperPid": 10384,
+      "shellPid": null,
+      "terminalRunId": "442311e723b447d88ead4df15a372863",
+      "terminalGuarantee": "windows-job",
+      "terminalUncertain": false,
+      "terminalOwnerRetained": false,
+      "terminalStop": {
+        "identity": {
+          "runId": "442311e723b447d88ead4df15a372863",
+          "backend": "windows-job",
+          "guarantee": "windows-job",
+          "rootPid": 27568
+        },
+        "state": "stopped-within-scope",
+        "reason": "original-job-empty",
+        "cleanupComplete": true,
+        "authorityRetained": false
+      }
+    },
+    "hostExit": 0,
+    "scope": "Actual Windows PTY / ConPTY / original Job, no neutral package; OperatorNotReady is not game dispatch qualification."
+  },
+  "minimalCodex": {
+    "answer": "BOE_WINDOWS_CODEX_OK",
+    "exitCode": 0,
+    "scope": "One connectivity-only request through existing native bridge terminal; no accepted gameplay turn claim; no credentials or CLI initialization log included."
+  },
+  "publicSave": {
+    "status": 200,
+    "success": true,
+    "saveId": "manual:Windows native verification_20261008_133553.zip",
+    "disposition": "Committed",
+    "archive": [
+      {
+        "FullName": "<RUN_ROOT>\\data\\ordinary-web\\game_session\\saves\\manual_saves\\Windows native verification_20261008_133553.zip",
+        "Length": 46181,
+        "Sha256": "11CF41AA9F3D9592AAFEBD28A489D2ED48EDB8496656229B336657045706B567"
+      }
+    ]
+  },
+  "publicLoad": {
+    "status": 200,
+    "success": true,
+    "disposition": "Committed",
+    "mainSessionState": "NoActiveSession",
+    "establishedGeneration": "0cec9b345fe84502b4cc4d3e2ffd8da2",
+    "needsFollowUp": false,
+    "continuationBlocked": false,
+    "completeBundle": true,
+    "scope": "Synthetic repository fixture; no active GM. Not a generated new game."
+  },
+  "redundantLoadComplete": {
+    "status": 409,
+    "error": "Исходная операция загрузки больше не ожидает подтверждения.",
+    "interpretation": "Diagnostic call made after no-active-GM Load already completed; rejected, not counted as success or application defect."
+  },
+  "webRestart": {
+    "before": {
+      "utc": "2026-10-08T03:39:19.4616007Z",
+      "browserFontScalePercent": 110,
+      "configHash": "6F0E27A848293D781117546E6E9267DA79DE70CE9C77AC624474FCACFE8C7628"
+    },
+    "afterAccessibility": {
+      "fontScalePercent": 110,
+      "uiScalePercent": 100,
+      "reducedMotion": false,
+      "contrastFriendly": false
+    }
+  }
+}

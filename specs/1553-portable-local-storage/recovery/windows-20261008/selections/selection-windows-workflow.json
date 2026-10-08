@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-console-settings-client",
+      "reason": "Independent review selected real scripted client settings save/discard/interruption/restart for native Windows qualification; not PTY acceptance.",
+      "contracts": [
+        "#1553 ordinary console settings"
+      ]
+    },
+    {
+      "category": "portable-settings-endpoints",
+      "reason": "Actual loopback HTTP shared settings/audio publication and ownership refusal under Windows.",
+      "contracts": [
+        "#1553 browser settings"
+      ]
+    },
+    {
+      "category": "portable-save-entry",
+      "reason": "Actual public save creation with complete publication and failure cleanup.",
+      "contracts": [
+        "#1553 public save"
+      ]
+    },
+    {
+      "category": "gm-load-ordinary-schema",
+      "reason": "Current canonical schema console and HTTP Load/full refresh on Windows; these bodies do not depend on Linux fixture.",
+      "contracts": [
+        "#1553 ordinary Load schema"
+      ]
+    }
+  ]
+}

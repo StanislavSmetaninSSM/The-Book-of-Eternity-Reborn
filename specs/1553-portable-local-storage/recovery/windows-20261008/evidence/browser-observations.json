@@ -1,0 +1,82 @@
+{
+  "browserVersion": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/154.0.8037.99",
+    "revision": "@45889d77830582727fe00dbfd614bcb7aac35caa",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+    "jsVersion": "15.4.80.20"
+  },
+  "networkErrorsUtc": "2026-10-08T03:44:14.383Z",
+  "networkErrors": [
+    {
+      "url": "http://127.0.0.1:61719/favicon.ico",
+      "status": 404,
+      "body": ""
+    },
+    {
+      "url": "http://127.0.0.1:61719/api/session",
+      "status": 500,
+      "body": ""
+    },
+    {
+      "url": "http://127.0.0.1:61719/api/game-screen",
+      "status": 500,
+      "body": ""
+    },
+    {
+      "url": "http://127.0.0.1:61719/api/audio/settings",
+      "status": 500,
+      "body": ""
+    }
+  ],
+  "settingsClicked": true,
+  "renderedControls": [
+    {
+      "tag": "SELECT",
+      "type": "select-one",
+      "value": "ru"
+    },
+    {
+      "tag": "SELECT",
+      "type": "select-one",
+      "value": "normal"
+    },
+    {
+      "tag": "INPUT",
+      "type": "checkbox",
+      "value": "on",
+      "checked": false
+    },
+    {
+      "tag": "INPUT",
+      "type": "range",
+      "value": "110",
+      "checked": false
+    },
+    {
+      "tag": "INPUT",
+      "type": "range",
+      "value": "100",
+      "checked": false
+    },
+    {
+      "tag": "INPUT",
+      "type": "checkbox",
+      "value": "on",
+      "checked": false
+    },
+    {
+      "tag": "INPUT",
+      "type": "checkbox",
+      "value": "on",
+      "checked": false
+    }
+  ],
+  "displayedAudioError": true,
+  "javascriptExceptions": [],
+  "browserExit": {
+    "exitCode": 0,
+    "pid": 35624
+  },
+  "interpretation": "Rendering and settings controls observed; API 500 errors remain failures despite no JavaScript exception and probe exit 0. HTTP bodies empty; stack traces not collected."
+}

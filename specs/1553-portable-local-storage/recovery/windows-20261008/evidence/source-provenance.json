@@ -1,0 +1,106 @@
+[
+  {
+    "source": "evidence/browser-probe-events.json",
+    "sha256": "685A73E3F3AE892C4B96FDF18D1A01E5B09DE5647782E4C3D243D3278F149CE7"
+  },
+  {
+    "source": "evidence/browser-ui-events.json",
+    "sha256": "3A8F2985821C18149745C39E88ECFE965B54DF8D475F2CF577B7D2FD83F8B384"
+  },
+  {
+    "source": "evidence/codex-native-live-answer.txt",
+    "sha256": "6EB6B62D37B67A9F23DB9AB32CC1DA6F4F8720E5AD6F6989DB70F8A480CB03F5"
+  },
+  {
+    "source": "evidence/codex-native-live-exit.txt",
+    "sha256": "5FECEB66FFC86F38D952786C6D696C79C2DBC239DD4E91B46729D73A27FB57E9"
+  },
+  {
+    "source": "evidence/console-after-restart.json",
+    "sha256": "3A0D568F5B6768F318BF1D740B509280FE53B07E80FD5BCEE0D2BA585CB8231C"
+  },
+  {
+    "source": "evidence/console-before-restart.json",
+    "sha256": "A0AA284774800111ABB201D82A5C997D8186065D0D7F84F62C421BB41BFC54A4"
+  },
+  {
+    "source": "evidence/created-save-inventory.json",
+    "sha256": "04195FE48183A1C01596E5AA4554CD29D8ACE00264B689419AA6A7C0E783DB3F"
+  },
+  {
+    "source": "evidence/final-cleanup.json",
+    "sha256": "9D5C0A4E31EE94FA915B725DDE02EC6154DD9C939792640A1D30DF284E8278D0"
+  },
+  {
+    "source": "evidence/http-concurrent-read-results.json",
+    "sha256": "53DFB353F3BEE3CEE3253DA96D5CBCED14C6EABDA33A59EC3902EA2224F286C5"
+  },
+  {
+    "source": "evidence/native-pty-before-restart.json",
+    "sha256": "6AE8E6922CF7911742544D86DFB8F81490B8CA90701D565AD40BAD4076484F0E"
+  },
+  {
+    "source": "evidence/native-pty-old-tree-after-restart.json",
+    "sha256": "E1D6270CF8965F73CDA7F214E48416F265664CCDF7D8DBC43B3EA8098DAFB012"
+  },
+  {
+    "source": "evidence/native-pty-restart.json",
+    "sha256": "A4AA50A2EC173995BBDA9DBD3B7446DA9EEBA4E18F12F9CC968AFAFA62296C5D"
+  },
+  {
+    "source": "evidence/native-pty-shutdown.json",
+    "sha256": "1EB72131BD33F9F6941DE9097ADBF8720BC91547444E4C7B02BC2AD4A7822151"
+  },
+  {
+    "source": "evidence/ordinary-console-restart-transcript.json",
+    "sha256": "2FBC67A82235811D936FD8ACCD0D75A4DA12D84B803DF5D5A063C6C016435130"
+  },
+  {
+    "source": "evidence/relay-native-help.stderr.txt",
+    "sha256": "8C259ECC1C951FFBD8C037E458B9A3D1C3F0EC1D768C22F4E5998A6D622246D8"
+  },
+  {
+    "source": "evidence/runner-summary-index.json",
+    "sha256": "C37D913FE9B644BF908FE079FD0BCDEDA10D7D3C2F373D17E1EAF16815E129CB"
+  },
+  {
+    "source": "evidence/selection-windows-browser-repro.json",
+    "sha256": "7DA45285B020EE7E1068B526026D39BC31D434300057AF57559AB511668A40D1"
+  },
+  {
+    "source": "evidence/selection-windows-foundation.json",
+    "sha256": "D246DB537328ADB79567B14BC1F1AC355A7BB5AC929E4AC843E4D0D2ADDC2E0C"
+  },
+  {
+    "source": "evidence/selection-windows-paths.json",
+    "sha256": "E5CED818CCDCF94754C8196DC8E6E454CF26CD6979970C3A344E6D80B8724B24"
+  },
+  {
+    "source": "evidence/selection-windows-storage.json",
+    "sha256": "8275ABEC67A09BF79001FCF7FFB17BF5E644BA7700B9DF32C15693F4915FE6CB"
+  },
+  {
+    "source": "evidence/selection-windows-workflow.json",
+    "sha256": "9D944086A6BC2022C0802C3C429645BBF48584803D6355C9DAA4B36AC430506B"
+  },
+  {
+    "source": "evidence/test-case-index.json",
+    "sha256": "ADFAA200A8922A515016E87D1B81D562ED21A95563964BEC9F4D5DD3FFB0483B"
+  },
+  {
+    "source": "evidence/unique-test-totals.json",
+    "sha256": "CD7D4CF7D158F9E1B12BF286FF09D437451A4CC4600004AB2CAA680B0CB38D28"
+  },
+  {
+    "source": "evidence/web-after-restart-settings.json",
+    "sha256": "FE19C17C9B4185035DC5596EF8673FCEFFB9F109EBE2CF2243F606CA13C4121E"
+  },
+  {
+    "source": "evidence/web-before-restart.json",
+    "sha256": "FD3CA85C583D0FC45CB90AB6DC83692857E9C1604E2AB4CC17E6D77F4A41E909"
+  },
+  {
+    "source": "evidence/WINDOWS-VALIDATION-HANDOFF.md",
+    "sha256": "DFF53E2DD83AE59F0ED226E7B07F7E0DF9E45895281EE88E83E3FB5433DC65DB"
+  }
+]

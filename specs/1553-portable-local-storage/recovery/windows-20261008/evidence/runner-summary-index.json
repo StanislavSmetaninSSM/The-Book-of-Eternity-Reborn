@@ -1,0 +1,250 @@
+[
+  {
+    "directory": "20261008-131402-546-18188-0d716e6fc2644c079c5ea80e45a077ea-categories",
+    "planOnly": true,
+    "categories": [
+      "portable-client-bootstrap",
+      "portable-storage-windows-paths",
+      "portable-storage-windows-handle-comparison",
+      "portable-load-native-boundaries",
+      "gm-main-affected-browser-native-windows"
+    ],
+    "selection": {
+      "PlannedDescriptors": 6,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 54,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "gm-main-affected-browser-native-windows-integration-001",
+        "portable-client-bootstrap-unit-002",
+        "portable-load-native-boundaries-integration-003",
+        "portable-storage-windows-handle-comparison-integration-004",
+        "portable-storage-windows-paths-integration-005",
+        "portable-storage-windows-paths-unit-006"
+      ],
+      "Complete": false
+    },
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "exitCode": 0,
+    "wallTime": "00:03:22.3338962",
+    "processCleanup": true,
+    "runtimeCleanup": true,
+    "revision": {
+      "Head": "6381a9507baae6bb2531e22e9a0ace839f03985f",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    }
+  },
+  {
+    "directory": "20261008-132042-545-15136-cadaf1190604405c9df2d965947301f1-categories",
+    "planOnly": false,
+    "categories": [
+      "portable-client-bootstrap",
+      "portable-storage-windows-paths",
+      "portable-storage-windows-handle-comparison",
+      "portable-load-native-boundaries",
+      "gm-main-affected-browser-native-windows"
+    ],
+    "selection": {
+      "PlannedDescriptors": 6,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 54,
+      "CompletedCases": 4,
+      "UnderfilledDescriptors": [
+        "portable-client-bootstrap-unit-002",
+        "portable-load-native-boundaries-integration-003",
+        "portable-storage-windows-handle-comparison-integration-004",
+        "portable-storage-windows-paths-integration-005",
+        "portable-storage-windows-paths-unit-006"
+      ],
+      "Complete": false
+    },
+    "tests": {
+      "Total": 4,
+      "Executed": 4,
+      "Passed": 3,
+      "Failed": 1
+    },
+    "exitCode": 1,
+    "wallTime": "00:00:37.9376284",
+    "processCleanup": true,
+    "runtimeCleanup": true,
+    "revision": {
+      "Head": "6381a9507baae6bb2531e22e9a0ace839f03985f",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    }
+  },
+  {
+    "directory": "20261008-132219-106-20724-2cb2ec954eaf4f8496f45b7a7170ceb1-categories",
+    "planOnly": false,
+    "categories": [
+      "gm-main-affected-browser-native-windows"
+    ],
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 4,
+      "CompletedCases": 4,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "tests": {
+      "Total": 4,
+      "Executed": 4,
+      "Passed": 3,
+      "Failed": 1
+    },
+    "exitCode": 1,
+    "wallTime": "00:00:28.2347655",
+    "processCleanup": true,
+    "runtimeCleanup": true,
+    "revision": {
+      "Head": "6381a9507baae6bb2531e22e9a0ace839f03985f",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    }
+  },
+  {
+    "directory": "20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories",
+    "planOnly": false,
+    "categories": [
+      "portable-client-bootstrap",
+      "portable-storage-windows-paths",
+      "portable-storage-windows-handle-comparison",
+      "portable-load-native-boundaries"
+    ],
+    "selection": {
+      "PlannedDescriptors": 5,
+      "CompletedDescriptors": 3,
+      "PlannedCases": 50,
+      "CompletedCases": 44,
+      "UnderfilledDescriptors": [
+        "portable-storage-windows-paths-integration-004",
+        "portable-storage-windows-paths-unit-005"
+      ],
+      "Complete": false
+    },
+    "tests": {
+      "Total": 44,
+      "Executed": 44,
+      "Passed": 42,
+      "Failed": 2
+    },
+    "exitCode": 1,
+    "wallTime": "00:00:58.8617254",
+    "processCleanup": true,
+    "runtimeCleanup": true,
+    "revision": {
+      "Head": "6381a9507baae6bb2531e22e9a0ace839f03985f",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    }
+  },
+  {
+    "directory": "20261008-132527-110-16064-06e7f53ac94e40e9b2c61ac877f1cc56-categories",
+    "planOnly": false,
+    "categories": [
+      "portable-storage-windows-paths"
+    ],
+    "selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 2,
+      "PlannedCases": 6,
+      "CompletedCases": 6,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "tests": {
+      "Total": 6,
+      "Executed": 6,
+      "Passed": 5,
+      "Failed": 1
+    },
+    "exitCode": 1,
+    "wallTime": "00:00:46.1595850",
+    "processCleanup": true,
+    "runtimeCleanup": true,
+    "revision": {
+      "Head": "6381a9507baae6bb2531e22e9a0ace839f03985f",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    }
+  },
+  {
+    "directory": "20261008-132725-072-32216-b2734754f420420795d7ea1fb4d55379-categories",
+    "planOnly": true,
+    "categories": [
+      "portable-console-settings-client",
+      "portable-settings-endpoints",
+      "portable-save-entry",
+      "gm-load-ordinary-schema"
+    ],
+    "selection": {
+      "PlannedDescriptors": 4,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 22,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "gm-load-ordinary-schema-integration-001",
+        "portable-console-settings-client-integration-002",
+        "portable-save-entry-unit-003",
+        "portable-settings-endpoints-integration-004"
+      ],
+      "Complete": false
+    },
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "exitCode": 0,
+    "wallTime": "00:00:19.8595434",
+    "processCleanup": true,
+    "runtimeCleanup": true,
+    "revision": {
+      "Head": "6381a9507baae6bb2531e22e9a0ace839f03985f",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    }
+  },
+  {
+    "directory": "20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories",
+    "planOnly": false,
+    "categories": [
+      "portable-console-settings-client",
+      "portable-settings-endpoints",
+      "portable-save-entry",
+      "gm-load-ordinary-schema"
+    ],
+    "selection": {
+      "PlannedDescriptors": 4,
+      "CompletedDescriptors": 4,
+      "PlannedCases": 22,
+      "CompletedCases": 22,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "tests": {
+      "Total": 22,
+      "Executed": 22,
+      "Passed": 22,
+      "Failed": 0
+    },
+    "exitCode": 0,
+    "wallTime": "00:06:50.7232413",
+    "processCleanup": true,
+    "runtimeCleanup": true,
+    "revision": {
+      "Head": "6381a9507baae6bb2531e22e9a0ace839f03985f",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    }
+  }
+]

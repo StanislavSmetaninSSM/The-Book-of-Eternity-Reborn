@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-storage-windows-paths",
+      "reason": "Execute the native junction, extended-root, alias and replacement-fencing bodies affected by portable storage migration.",
+      "contracts": [
+        "#1553 native Windows path boundaries"
+      ]
+    }
+  ]
+}

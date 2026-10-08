@@ -1,0 +1,14 @@
+{
+  "totalExecutions": 80,
+  "uniqueCases": 76,
+  "uniqueFailed": 4,
+  "uniqueReportedPassed": 72,
+  "windowsNoOpFifoRows": 5,
+  "windowsExecutedPassed": 67,
+  "failureNames": [
+    "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
+    "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsOpenedExternalLockHandleAfterPathSwap",
+    "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireSessionLifecycleLease_RejectsOpenedExternalLockHandleAfterPathSwap",
+    "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence"
+  ]
+}

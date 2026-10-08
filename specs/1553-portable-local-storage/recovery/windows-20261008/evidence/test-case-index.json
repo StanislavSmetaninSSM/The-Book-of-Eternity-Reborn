@@ -1,0 +1,482 @@
+[
+  {
+    "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_SessionReplacementWaitsForWholeLegacyTransaction",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132042-545-15136-cadaf1190604405c9df2d965947301f1-categories\\gm-main-affected-browser-native-windows-integration-001.trx",
+    "duration": "00:00:01.9413292"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ExplicitLeaseWritesWithoutAmbientAuthority",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132042-545-15136-cadaf1190604405c9df2d965947301f1-categories\\gm-main-affected-browser-native-windows-integration-001.trx",
+    "duration": "00:00:00.9923818"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
+    "outcome": "Failed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132042-545-15136-cadaf1190604405c9df2d965947301f1-categories\\gm-main-affected-browser-native-windows-integration-001.trx",
+    "duration": "00:00:05.8079358"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_LockReleaseFailureDoesNotRollbackCommittedMutation",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132042-545-15136-cadaf1190604405c9df2d965947301f1-categories\\gm-main-affected-browser-native-windows-integration-001.trx",
+    "duration": "00:00:02.8461296"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_LockReleaseFailureDoesNotRollbackCommittedMutation",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132219-106-20724-2cb2ec954eaf4f8496f45b7a7170ceb1-categories\\gm-main-affected-browser-native-windows-integration-001.trx",
+    "duration": "00:00:02.7241697"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ExplicitLeaseWritesWithoutAmbientAuthority",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132219-106-20724-2cb2ec954eaf4f8496f45b7a7170ceb1-categories\\gm-main-affected-browser-native-windows-integration-001.trx",
+    "duration": "00:00:00.7974406"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
+    "outcome": "Failed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132219-106-20724-2cb2ec954eaf4f8496f45b7a7170ceb1-categories\\gm-main-affected-browser-native-windows-integration-001.trx",
+    "duration": "00:00:05.6464199"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_SessionReplacementWaitsForWholeLegacyTransaction",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132219-106-20724-2cb2ec954eaf4f8496f45b7a7170ceb1-categories\\gm-main-affected-browser-native-windows-integration-001.trx",
+    "duration": "00:00:01.6101869"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_EmptyLegacyRootsAreNotUnresolvedEvidence",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.3599582"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"{\\\"language\\\":\\\"en\\\",\\\"language\\\":\\\"ru\\\"}\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.2259785"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: \"append\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.0016229"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_RepeatedAndNewManagerLoadsExistingValuesWithoutRewritingExactConfigOrGeneration",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.4028411"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.3646075"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:01.0398589"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UsesRealColdProcessAndRetainsConfigAndGenerationAfterRestart",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:01.3555915"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterPreservesBoundaryHooksAndStopsARevokedBoundOperationBeforeMutation",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.6027481"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: \"pending\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.2483215"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: \"compare\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.3925745"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.ActualWebHostBuildRejectsInvalidExistingConfigWithoutCreatingGeneration",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.2384590"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"{broken\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.2130689"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.ActualWebHostBuildBootstrapsConfigAndGenerationBeforeServingAnything",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.7768716"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: \"append\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.3371441"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode(fail: True)",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.4001571"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: \"delete\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.0012899"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: \"compare\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.0035595"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: \"write\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.3145390"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.AcquireLease_UnresolvedLegacyPublicationCannotSilentlyPassOnLinux",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.0367100"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_CreatesConfigAndGenerationUnderOneLeaseAndInvalidatesGenerationRevision",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.3333012"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: \"file-publication-transactions\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.0242129"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: \"conflict\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.2102691"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: \"committed\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.3630253"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: \"worker-apply-transactions\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.0315490"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode(fail: False)",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.3899646"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"[]\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.1905580"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriteAppendCompareExchangeAndDeleteUseExactLogicalContent",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.9398771"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: \"delete\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.3211633"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: \"load-transactions\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.0325757"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: \"null\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.2210386"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: \"bootstrap\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.3132465"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.PreparedCanonicalSetPublishesOneLogicalResultWithoutPhysicalReceipt",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.4340178"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: \"bootstrap\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.0012825"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: \"write\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-client-bootstrap-unit-001.trx",
+    "duration": "00:00:00.0012856"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication(position: \"library\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-load-native-boundaries-integration-002.trx",
+    "duration": "00:00:01.1464842"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication(position: \"target\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-load-native-boundaries-integration-002.trx",
+    "duration": "00:00:00.9104696"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.LibrarySelectedSourceCommitsWithoutChangingOpaqueLibrary",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-load-native-boundaries-integration-002.trx",
+    "duration": "00:00:02.3568657"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication(position: \"ancestor\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-load-native-boundaries-integration-002.trx",
+    "duration": "00:00:01.6933335"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeDirectoryLinkBoundaryRefusesBeforeSessionPublication(position: \"source\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-load-native-boundaries-integration-002.trx",
+    "duration": "00:00:01.0181398"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableLoadReplacementTests.NativeHardLinkedMarkerReplacementPreservesOutsideSessionAlias",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-load-native-boundaries-integration-002.trx",
+    "duration": "00:00:02.3460934"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile(isLifecycleLease: False)",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-storage-windows-handle-comparison-integration-003.trx",
+    "duration": "00:00:00.1412219"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireSessionLifecycleLease_RejectsOpenedExternalLockHandleAfterPathSwap",
+    "outcome": "Failed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-storage-windows-handle-comparison-integration-003.trx",
+    "duration": "00:00:00.1511241"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile(isLifecycleLease: True)",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-storage-windows-handle-comparison-integration-003.trx",
+    "duration": "00:00:00.1029392"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsOpenedExternalLockHandleAfterPathSwap",
+    "outcome": "Failed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132300-679-8332-038572b0a0fc4e3097ba7fe9c75918b7-categories\\portable-storage-windows-handle-comparison-integration-003.trx",
+    "duration": "00:00:00.1073676"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDirectoryJunctionAndPreservesOutsideData",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132527-110-16064-06e7f53ac94e40e9b2c61ac877f1cc56-categories\\portable-storage-windows-paths-integration-001.trx",
+    "duration": "00:00:00.5102254"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsDanglingLocalUiLockNode",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132527-110-16064-06e7f53ac94e40e9b2c61ac877f1cc56-categories\\portable-storage-windows-paths-integration-001.trx",
+    "duration": "00:00:00.5970819"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsLocalUiLockJunctionWithoutTraversingTarget",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132527-110-16064-06e7f53ac94e40e9b2c61ac877f1cc56-categories\\portable-storage-windows-paths-integration-001.trx",
+    "duration": "00:00:00.5502626"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence",
+    "outcome": "Failed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132527-110-16064-06e7f53ac94e40e9b2c61ac877f1cc56-categories\\portable-storage-windows-paths-unit-002.trx",
+    "duration": "00:00:12.7653976"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132527-110-16064-06e7f53ac94e40e9b2c61ac877f1cc56-categories\\portable-storage-windows-paths-unit-002.trx",
+    "duration": "00:00:00.8090908"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132527-110-16064-06e7f53ac94e40e9b2c61ac877f1cc56-categories\\portable-storage-windows-paths-unit-002.trx",
+    "duration": "00:00:00.4780797"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\gm-load-ordinary-schema-integration-001.trx",
+    "duration": "00:00:35.7642918"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"missing\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\gm-load-ordinary-schema-integration-001.trx",
+    "duration": "00:00:35.4529825"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"stale\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\gm-load-ordinary-schema-integration-001.trx",
+    "duration": "00:00:37.7772945"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"current\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\gm-load-ordinary-schema-integration-001.trx",
+    "duration": "00:01:05.9728884"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh(failRefresh: False)",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\gm-load-ordinary-schema-integration-001.trx",
+    "duration": "00:00:27.2947062"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PortableLoadConsole_InGameMenuReportsCommitAndResumesOnlyAfterRequiredRefresh(failRefresh: True)",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\gm-load-ordinary-schema-integration-001.trx",
+    "duration": "00:00:07.1487942"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"settings-failure\")",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\gm-load-ordinary-schema-integration-001.trx",
+    "duration": "00:00:36.8008388"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_ImmediateQteSaveSurvivesInterruptedMenuAndProcessRestart",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-console-settings-client-integration-002.trx",
+    "duration": "00:00:46.2727920"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave(otherOwner: True)",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-console-settings-client-integration-002.trx",
+    "duration": "00:00:20.2973024"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_MainMenuExitScript_UsesSandboxAndEmitsObservationArtifacts",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-console-settings-client-integration-002.trx",
+    "duration": "00:00:10.6900724"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleSettings_DiscardRestoresAcceptedLanguageAfterPreviewOrBlockedSave(otherOwner: False)",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-console-settings-client-integration-002.trx",
+    "duration": "00:00:19.2924929"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.ConsoleE2ESmokeTests.ConsoleE2E_OptionsMenuScript_UsesScriptedInputAndEmitsMenuObservations",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-console-settings-client-integration-002.trx",
+    "duration": "00:00:17.3071841"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableSaveCreationTests.FailedPreparationCleansActualOwnedRuntimeSaveScratch",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-save-entry-unit-003.trx",
+    "duration": "00:00:00.8899530"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.PortableSaveCreationTests.PublicSaveReachesCompletedArchiveAndPublishesOneCreateOnlyDecision",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-save-entry-unit-003.trx",
+    "duration": "00:00:00.6643070"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_LoadsSharedSettingsAndReturnsSafeCatalog",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-settings-endpoints-integration-004.trx",
+    "duration": "00:00:00.5130679"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.BrowserAudioService_SerializesSharedSettingsUpdates",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-settings-endpoints-integration-004.trx",
+    "duration": "00:00:00.0040626"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_UpdatesAndPersistsSharedSettingsWithClampedVolumes",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-settings-endpoints-integration-004.trx",
+    "duration": "00:00:00.9123590"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAsync_ActiveOtherOwner_BlocksWithoutRunningWrite",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-settings-endpoints-integration-004.trx",
+    "duration": "00:00:00.6914188"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_BlocksGameplaySettingsWhenPendingTurnExists",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-settings-endpoints-integration-004.trx",
+    "duration": "00:00:00.5637740"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_UpdatesWhitelistedSettingsAndWritesGmProjection",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-settings-endpoints-integration-004.trx",
+    "duration": "00:00:01.6158511"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_LoadsPlayerSafeSharedSettingsAndLocality",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-settings-endpoints-integration-004.trx",
+    "duration": "00:00:00.4789975"
+  },
+  {
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.ClientSettingsEndpoint_DoesNotReuseActiveBrowserWriteOwnerLock",
+    "outcome": "Passed",
+    "trx": "<RUN_ROOT>\\repo\\TestResults\\test-categories\\20261008-132800-742-28840-bab10755905049969401e2c6d17ab144-categories\\portable-settings-endpoints-integration-004.trx",
+    "duration": "00:00:00.7359373"
+  }
+]
