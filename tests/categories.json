@@ -17273,6 +17273,54 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-ordinary-publication-outcomes",
+      "responsibility": "Original public Write/Append/Delete/CompareExchange publication outcomes: exact uncertainty and retained decision, rolled-back cause/retry, and committed cleanup debt despite warning logger failure.",
+      "excludes": "Other storage protocols, browser transactions, unrelated gameplay and native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-ordinary-outcome-notice",
+      "responsibility": "Actual ordinary public write failure fed into the original console error projection: recovery required, no retry promise or private diagnostic disclosure.",
+      "excludes": "Other storage protocols, browser transactions, unrelated gameplay and native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OrdinaryPublication_ActualUncertainWriteProjectsRecoveryWithoutRetryPromise"
+          ]
+        }
+      ]
     }
   ]
 }

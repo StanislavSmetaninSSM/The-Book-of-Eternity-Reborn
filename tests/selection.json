@@ -21,6 +21,25 @@
         "FR-006",
         "T061-CONSOLE-ROLLBACK"
       ]
+    },
+    {
+      "category": "portable-ordinary-publication-outcomes",
+      "reason": "T062 causal public facade outcome/retained-evidence and committed-warning boundary; capture baseline RED before runtime outcome correction.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES"
+      ]
+    },
+    {
+      "category": "portable-ordinary-outcome-notice",
+      "reason": "T062 actual ordinary publication error, not constructed exception, reaches original console notice projection.",
+      "contracts": [
+        "#1553",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES"
+      ]
     }
   ]
 }

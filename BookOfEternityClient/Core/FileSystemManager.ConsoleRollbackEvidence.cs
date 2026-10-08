@@ -39,7 +39,7 @@ public partial class FileSystemManager
         VerifyCurrentSessionOperation(lease);
         var files = EnumerateLocalTreeFiles(new TrustedLocalFileScope([GameSessionPath]),
             ResolvePath(ConsoleLocalTurnRollbackArtifacts.Root))
-            .Select(path => GetLocalRelativePath(GameSessionPath, path, false)).ToArray();
+            .Select(path => GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows())).ToArray();
         if (files.Length == 0) return;
         var generation = ReadExistingSessionGeneration(lease) ?? throw new InvalidDataException("Console preparation generation is missing.");
         PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload? signed = null;

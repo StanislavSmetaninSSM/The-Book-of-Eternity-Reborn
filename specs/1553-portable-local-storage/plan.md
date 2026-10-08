@@ -1,3 +1,28 @@
+## Current continuation — F03 platform correction and T062 causal tests
+
+Parent completed fresh GitHub-only restore of bounded F03 carrier
+`00d04d44f3451f4024485b0433922518c018fc03` into
+`/workspace/boe-1553-f03-restore`, clean exact HEAD/remote SHA; main remained d024.
+All13 GREEN/catalog artifacts and15 frozen source pins against git-show ebd were
+verified there. This is source/evidence recovery, not a new runtime test.
+
+Parent and independent Astra XHigh then identified one cross-platform source
+mistake: the new console admission called GetLocalRelativePath with windows=false,
+so actual Windows backslashes would not be normalized before cohort recognition.
+Correct this caller to OperatingSystem.IsWindows; preserve Linux30 proof at its
+original ebd source, do not claim Windows execution. Repeat only affected console16
+on corrected source; the Windows recipe must use the corrected source, and stays
+unexecuted. Existing shared path policy is reused; no new compatibility adapter.
+
+T062 now has ten prepared causal tests: four original public write/append/delete/
+CAS uncertainty cases, four rolled-back exact retry controls, committed cleanup
+debt with a failing warning logger, and an actual ordinary failure fed to original
+console projection. Two narrow categories allow both unit and original projection
+RED evidence despite runner stop-on-first-failed-descriptor. No F08 runtime fix
+has been made and these tests are unbuilt/unrun. F11 original browser runtime and
+notice cuts follow. All remaining families stay open; no new user permission is
+needed for this approved bounded sequence.
+
 ## Current console migration checkpoint — 2026-10-08
 
 Frozen runtime/tests `ebd645ccd671f086dc5eded9f5b7f4a96a71432d`:
