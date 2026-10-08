@@ -14,11 +14,11 @@ Owner on 2026-10-08 accepts explicit OwnedTerminal/NativeLineage Linux use while
 | Browser rollback, direct gacha and standalone Daren Linux | dc62a88a / 953c48f8 / d73e2cdf; trusted-local existing transactions | Real isolated consumers; historical Windows-only fixtures are not PASS |
 | Stop → Load → full refresh → fresh configured session | 23a5b669; actual console/both browser handlers | No-active leaves GM absent; failed/unknown stop/load/refresh blocks restart; generated gameplay through Load and continuation is not qualified |
 | Clipboard/audio/auxiliary/desktop helpers | 499ca652 / 0c526b3c / 65674ee8 / 42812722 and associated handoffs | Synthetic bytes/dummy device/controlled launch; actual desktop/device positives separate |
-| Real generated/applied game action and reusable relay | [r3 handoff](relay-gm-bounded-handoff.md), [shared relay](relay-reusable-handoff.md); dc1724af/db847706 | One clean real action via test relay; not Codex/OpenCode compatibility or universal API support |
+| Real generated/applied game action and reusable relay | [r3 handoff](relay-gm-bounded-handoff.md), [shared relay](relay-reusable-handoff.md); dc1724af/db847f6a | One clean real action via test relay; not Codex/OpenCode compatibility or universal API support |
 | Systemd source/controlled S1 + S2A | [S1](systemd-main-s1-handoff.md), [S2A](systemd-main-s2a-handoff.md) | Actual manager S2 and public S3 deferred; backend OFF; explicit SystemdUser never downgrades |
 | Category-based CI | [CI platform checkpoint](ci-platform-selection.md) /20bdeb6c | Hosted result must be observed independently; local metadata PASS is not hosted CI PASS |
 
-No completion percentage: current branch vs main contains 21,402 changed paths, including 20,846 spec/evidence paths, not a measurable total of product requirements. Historical open umbrella checkboxes are not a claim that their accepted sub-slices are missing.
+No completion percentage: at accepted20bdeb6c vs mainf6dc2a1 the branch contains 21,402 changed paths, including 20,846 spec/evidence paths, not a measurable total of product requirements. Historical open umbrella checkboxes are not a claim that their accepted sub-slices are missing.
 
 ## Minimal reviewed change and final selection
 
@@ -32,7 +32,7 @@ Independent actual Sol6.1/xhigh design PASS at20bdeb6c establishes a documentati
 | gm-load-ordinary-schema | Real console/HTTP canonical schema1 generation and complete refresh bundle after current-session/storage changes | 5min |
 | gm-main-affected-managed | Exact finalizers/participating/ambiguity/no-replay consumers after bootstrap/cancel/artifact detection changes | 3min |
 
-PlanOnly establishes exact membership. No relay/systemd/crash/resource/frontend/historic cohort replay: retained relay25 and S2A16 noncatalog source pins are unchanged; accepted evidence remains reusable. Only required catalog metadata routes the mandatory Linux categories to Ubuntu; portable categories keep the current CI convention without native Windows claims.
+PlanOnly establishes exact membership. No relay/systemd/crash/resource/frontend/historic cohort replay: retained relay25 and S2A16 runtime source pins (excluding the deliberately changed catalog/selection metadata) are unchanged; accepted evidence remains reusable. Only required catalog metadata routes the mandatory Linux categories to Ubuntu; portable categories keep the current CI convention without native Windows claims.
 
 ## Deferred environment and product boundaries
 
