@@ -1,3 +1,14 @@
+## A01 observation component fresh evidence — 2026-10-08
+
+Frozen fed43297: fresh PlanOnly/build16/1, then16/16 Linux PASS in9.286s,
+complete/no skips/duplicates, both cleanup flags true. Discovery-only453/11237
+valid,0executed in35.994s. [Original artifacts and exact source pins](recovery/storage-migration-boot-component-20261008/manifest.json)
+keep initial14 separately. Independent Astra source follow-up PASS; final evidence
+review requested. Native WMI, Windows metadata/Job/ConPTY and Bridge lifetime are
+not qualified by these controlled Linux processes. Next isolated metadata adapter
+retains same-owner CAS/debt/guard and truthful platform acknowledgement; then
+separate owner/worker conjunction and original consumer gates.
+
 ## A01 observation review corrections before adapter gate — 2026-10-08
 
 Isolatedbea component14/14 Linux PASS8.070s, fresh build and complete owned
