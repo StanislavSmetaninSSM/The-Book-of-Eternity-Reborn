@@ -1,0 +1,91 @@
+[
+  {
+    "Id": "98445c7fdffb4e4ba9bd3f92bc1395d9",
+    "Facts": {
+      "Ready": {
+        "ok": true,
+        "status": {
+          "terminalRunId": "94bc2872128f4167affcee5b11a1fb6c",
+          "terminalGuarantee": "owned-unit-cgroup",
+          "terminalUncertain": false,
+          "terminalOwnerRetained": true,
+          "inputBindingId": "4d02689939824adea9f1cd8ea145a359",
+          "backend": "systemd-user",
+          "state": "Ready",
+          "ready": true,
+          "helperPid": 932017,
+          "sessionPath": "/workspace/native-1553/TestResults/native-terminal/98445c7fdffb4e4ba9bd3f92bc1395d9/neutral-session-372e64e699b143de8f383708b251c5cc/game_session",
+          "shellPid": 932033,
+          "pipeName": "neutral-3a53377d71234825985972e2fccab69c",
+          "cliLaunchCommand": "",
+          "shellWorkingDirectory": "",
+          "lastPromptDispatchState": "None",
+          "startedAtUtc": "2026-10-08T00:16:00.7409692+00:00",
+          "updatedAtUtc": "2026-10-08T00:16:01.2320733+00:00",
+          "workerStatuses": []
+        }
+      },
+      "Binding": "4d02689939824adea9f1cd8ea145a359",
+      "TwoDispatchesOneSession": true,
+      "DraftPreserved": true,
+      "CancelledViaPipe": true,
+      "TakeoverViaPipe": true,
+      "ActualResizeViaPipe": true,
+      "ScopedStopViaPipe": true,
+      "Success": true,
+      "ScopedRetired": true,
+      "ActualScopePreparedRunningStopping": true,
+      "OriginalPidfdTransferred": true,
+      "OneScopeStartStop": true,
+      "ActualDisposedAndStoppedAck": true
+    },
+    "Guardian": {
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    }
+  },
+  {
+    "Id": "6d1c3f5c1cc943ac979f0248579f5d92",
+    "Facts": {
+      "Mode": "terminal-systemd-cgroup-late-replacement",
+      "LogicalUncertainRetained": true,
+      "OriginalRootReapedAndOutputEof": true,
+      "Success": true,
+      "ActualHeldPid": 931969,
+      "StartCount": 1,
+      "StopCount": 1
+    },
+    "Guardian": {
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    }
+  },
+  {
+    "Id": "6f0cbe785414401bb8318d8eaa9f8e5e",
+    "Facts": {
+      "Mode": "terminal-systemd-cgroup-late-read-fault",
+      "LogicalUncertainRetained": true,
+      "OriginalRootReapedAndOutputEof": true,
+      "Success": true,
+      "ActualHeldPid": 931904,
+      "StartCount": 1,
+      "StopCount": 1
+    },
+    "Guardian": {
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    }
+  }
+]
