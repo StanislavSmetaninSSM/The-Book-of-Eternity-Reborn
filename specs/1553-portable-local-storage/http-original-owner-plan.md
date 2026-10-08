@@ -1,4 +1,4 @@
-# Active original-owner HTTP reads — T055
+# Active original-owner HTTP reads вЂ” T055
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 Owner/parent authorized this separate causal HTTP500 diagnosis and correction
@@ -41,8 +41,10 @@ the same missing outer boundary for standalone dashboard and validation.
 
 Parent supplied the post-queue Linux evidence carrier
 e469976bb2aeb999b1c645630423f1e47c43b335:33/33 bounded tests PASS, but the genuine
-original-owner live series still records107x200/26x500. Fetch/read its exact
-comparison and response packet before claiming direct inspection.
+original-owner live series still records107x200/26x500. Exact comparison and
+green-http-responses were fetched/read directly:26 genuine500 at MainRunFence65,
+matching original Running/Stopped identities, guardian ECHILD with no emergency
+signals, model requests0. Queue correction alone does not change the failure.
 
 ## Contract and bounded plan
 
@@ -96,3 +98,14 @@ Tests-first WIP: new Linux production relay mode requires genuine idle output
 then queue closure and original shutdown. Portable negative-only Stopping and
 finalization cuts cover all four public entries. These tests are not yet run.
 Selections live in recovery/http-original-owner-20261008. Runtime remains1df.
+
+Windows RED on clean0a2843af: fresh integration build0errors/22warnings;
+8planned/8completed,4PASS/4FAIL, no timeout/duplicates, owned/runtime cleanup true.
+Failures are real HTTP200 where500 is required: Stopping validation, and final-
+close session/dashboard/validation. Game-screen already encounters a nested
+closing operation in this controlled case. Original TRX/build/summary/plan/logs
+are preserved byte-for-byte in the linked recovery manifest/archive.
+Independent Astra XHigh test/selection review found one helper-timeout cleanup
+gap; tests-first follow-up terminates and awaits only that owned helper and
+retains unexpected HTTP exceptions. Runtime still unchanged; Linux new causal
+fixture not yet run locally (native Windows cannot qualify that path).

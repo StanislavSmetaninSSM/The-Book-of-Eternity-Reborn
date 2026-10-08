@@ -1,0 +1,100 @@
+{
+  "SchemaVersion": 1,
+  "WindowsRed": {
+    "Source": "0a2843af69c521d7507a9e036cb5494d8c9d73cb",
+    "Runtime": "1df88385818d722595e2bed41245afdc00e416e5",
+    "Archive": "windows-red-original-results.zip",
+    "SHA256": "7be26697f75b4b42cde5041e9f229f1d169fa65e694fd313920ddea6969a63da",
+    "Bytes": 187353,
+    "Planned": 8,
+    "Completed": 8,
+    "Passed": 4,
+    "Failed": 4,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "ArchiveEntries": [
+      {
+        "Path": "browser-read-authority-integration-001.trx",
+        "Bytes": 24469,
+        "SHA256": "49ef51092420279851e096839ffc5493538c34abe6b863b8cc593e97174eb1fe"
+      },
+      {
+        "Path": "Build-integration.log",
+        "Bytes": 20889,
+        "SHA256": "1df5f515afc8d650891348d34d396c0a35a7414431f38028956fd97c3a86ff05"
+      },
+      {
+        "Path": "dotnet-test.log",
+        "Bytes": 1561412,
+        "SHA256": "bf853f97a5c8c47739fcc1cdebaf32f9840d37366a502f4cced20c852bb8efc5"
+      },
+      {
+        "Path": "owned-process-0f49484d58344d51a5f7920dccc31b6a.json",
+        "Bytes": 255,
+        "SHA256": "0ca6872d297efd0a89bb88f6ed1559faae313c28aaf2e183cc9a0749d449c939"
+      },
+      {
+        "Path": "owned-process-2057bc14b9c844798a96635e25a6e4c3.json",
+        "Bytes": 90,
+        "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+      },
+      {
+        "Path": "owned-process-475a90d40abe4a8393b0e43483a97c82.json",
+        "Bytes": 268,
+        "SHA256": "306607b911cf581ab7b6a29665a4314a782ae5d0be97324ab3f6ff99faeb9a6f"
+      },
+      {
+        "Path": "owned-process-800a94bf16664f65a9d77967ba742739.json",
+        "Bytes": 744,
+        "SHA256": "5eca6978ddea243af2350b0981e945d1ed229933486f10206e8ca492c7790182"
+      },
+      {
+        "Path": "owned-process-86c1e61f74ae4430b8e7e804a6064e2b.json",
+        "Bytes": 53,
+        "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+      },
+      {
+        "Path": "owned-process-ccdffff63c3d477c84ae8c6b2707963b.json",
+        "Bytes": 105,
+        "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+      },
+      {
+        "Path": "owned-process-launcher.ps1",
+        "Bytes": 751,
+        "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+      },
+      {
+        "Path": "plan.json",
+        "Bytes": 1674,
+        "SHA256": "58f656339974e05ebb1d69d5c6f94489c2b1e2f4d8bf94d64535901356a68cba"
+      },
+      {
+        "Path": "summary.json",
+        "Bytes": 1796,
+        "SHA256": "5a9f30255b75e91f478cd0adf787b9cf629118f8d0a3927141565c0df68beba0"
+      },
+      {
+        "Path": "wrapper.log",
+        "Bytes": 7647,
+        "SHA256": "74f26c4278f8bcfb90dc119ad4dd860eb268409085c78b8d193e72b09f5ed968"
+      }
+    ]
+  },
+  "LinuxIndependentEvidence": {
+    "Source": "e469976bb2aeb999b1c645630423f1e47c43b335",
+    "Inspected": [
+      "live-comparison.json",
+      "green-http-responses.json"
+    ],
+    "ObservedTotal": 133,
+    "Observed200": 107,
+    "Observed500": 26,
+    "FailedRoutes": {
+      "/api/session": 13,
+      "/api/game-screen": 13
+    },
+    "ModelRequests": 0,
+    "OriginalShutdownAndGuardianConfirmed": true
+  }
+}
