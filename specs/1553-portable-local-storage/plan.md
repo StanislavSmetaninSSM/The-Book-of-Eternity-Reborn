@@ -1,3 +1,21 @@
+## F14 design checkpoint; F13 bounded delivery accepted — 2026-10-08
+
+F13 final independent raw/artifact/docs PASS at38940493:1144 artifacts/194 pins,
+composed semantic53 and all qualifications verified. Parent fresh GitHub-only restore
+`/workspace/boe-1553-gm-helper-final-restore` is clean detached38940493,27388 tracked
+files, tree3de3109c8d4a4961a980ea6274c88190728840f3,no alternates, full fsck0; all1144
+stored/expanded artifacts and194 historical pins reverified. No builds/tests there.
+Main remainsd024. This is bounded Linux F13 delivery, not native/full migration.
+
+[The F14 design](storage-migration-daemon-design.md) records the complete daemon
+read/decision boundary and initial five actual QTE publication cases plus four exact
+delivery neighbors. Original Running main and already-admitted PowerShell connection
+are mandatory for the race; quiescent admission would mask it. All new runtime
+implementation waits for design and frozen causal fixture gates. Read-failure carrier
+mapping and exact final whole-F14 selection remain explicit review items. Repository
+context-pack source reads stay technical; terminal/repair progress, watermark,
+config/status and Ready cleanup remain in the full F14 scope. No F14 execution yet.
+
 ## F13 complete bounded Linux evidence packet — 2026-10-08
 
 Runtime45a received parent and independent focused source/selection PASS. Matching
