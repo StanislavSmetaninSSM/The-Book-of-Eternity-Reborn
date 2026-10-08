@@ -497,17 +497,22 @@ internal sealed partial class BridgeHost : IDisposable
                 var configuration=ProductionMainConfiguration.Resolve(settings,_sessionPath,new(columns,rows));
                 configuration=ConfigureDraftObservation(configuration,settings.GmCliInputProfile.Snapshot());
                 _terminalLaunchSize=configuration.Size;
-                _productionConfig=settings; _productionConfig.GmCliInputProfile=settings.GmCliInputProfile.Snapshot();
                 _neutralFiles=new BookOfEternityClient.Core.FileSystemManager(_clientRoot,Microsoft.Extensions.Logging.Abstractions.NullLogger<BookOfEternityClient.Core.FileSystemManager>.Instance);
                 IOwnedTerminalSession session;
                 try {
                     _mainRun=await GmSessionRunCoordinator.OpenProductionAsync(_neutralFiles,ObserveMainMetadata,ObserveMainGuardContention);
-                    session=expectedGeneration==null
-                        ? await _mainRun.LaunchProductionAsync(configuration,_cts.Token,ObserveMainHeldRoot)
-                        : await _mainRun.LaunchProductionBoundAsync(configuration,expectedGeneration,_cts.Token,ObserveMainHeldRoot);
+                    session=await _mainRun.LaunchProductionAsync(async lease=> {
+                        settings=await ReadAdmittedBridgeConfigAsync(_neutralFiles,lease);
+                        configuration=ProductionMainConfiguration.Resolve(settings,_sessionPath,new(columns,rows));
+                        configuration=ConfigureDraftObservation(configuration,settings.GmCliInputProfile.Snapshot());
+                        _terminalLaunchSize=configuration.Size;
+                        settings.GmCliInputProfile=settings.GmCliInputProfile.Snapshot();
+                        _productionConfig=settings;
+                        return configuration;
+                    },_cts.Token,ObserveMainHeldRoot,expectedGeneration);
                 }
                 catch(OwnedTerminalStartException ex) { AttachOwnedTerminalCore(ex.Owner,Console.OpenStandardOutput(),false);MarkTerminalUncertain();throw; }
-                catch { if(_mainRun?.RetainsAuthority==true)MarkTerminalUncertain();else _mainRun=null;throw; }
+                catch { if(_mainRun?.RetainsAuthority==true)MarkTerminalUncertain();else {_mainRun=null;_productionConfig=null;}throw; }
                 lock(_sync) { _status.CliLaunchCommand=configuration.Command; _status.ShellWorkingDirectory=configuration.Cwd; _status.WorkerStatuses=GmWorkerBridgePool.BuildInitialStatuses(settings.GmWorkerBridgeProfiles).ToList(); }
                 OpenOriginalStatusPublication(); AttachOwnedTerminal(session,Console.OpenStandardOutput());
                 await _firstStatus.Task; return;
@@ -1476,22 +1481,28 @@ internal sealed partial class BridgeHost : IDisposable
     {
         if(_productionConfig!=null)return _productionConfig;
         if(_windowsProductionConfig!=null)return _windowsProductionConfig;
-        try
-        {
-            if (!File.Exists(_configPath))
-                return new GameSettings();
+        // This raw read is tentative preflight only for a fresh production run.
+        try { return DecodeBridgeConfig(File.Exists(_configPath)?File.ReadAllText(_configPath,Encoding.UTF8):null); }
+        catch { return new GameSettings(); }
+    }
 
-            var json = File.ReadAllText(_configPath, Encoding.UTF8);
-            var loaded = JsonSerializer.Deserialize<GameSettings>(json, JsonOpts);
-            var settings = new GameSettings();
-            if (loaded != null)
-                settings.ApplyLoadedValues(loaded);
+    private static async Task<GameSettings> ReadAdmittedBridgeConfigAsync(FileSystemManager files,FileSystemManager.CanonicalWriteLease lease)
+    {
+        // Storage/refusal failures propagate. Only the existing JSON/default
+        // configuration decoding policy is shared with tentative preflight.
+        var json=await files.ReadFileAsync(lease,"config.json");
+        return DecodeBridgeConfig(json);
+    }
+
+    private static GameSettings DecodeBridgeConfig(string? json)
+    {
+        try {
+            var loaded=json==null?null:JsonSerializer.Deserialize<GameSettings>(json,JsonOpts);
+            var settings=new GameSettings();
+            if(loaded!=null)settings.ApplyLoadedValues(loaded);
             return settings;
         }
-        catch
-        {
-            return new GameSettings();
-        }
+        catch { return new GameSettings(); }
     }
 
     private BridgeStatus SnapshotStatus()

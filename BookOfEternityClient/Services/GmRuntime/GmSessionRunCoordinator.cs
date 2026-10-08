@@ -176,10 +176,15 @@ internal sealed partial class GmSessionRunCoordinator
         fixture.RequireAvailable();token.ThrowIfCancellationRequested();
         return LaunchAsync(id=>OwnedTerminalSessionFactory.PrepareSystemdControlledAsync(launch,fixture,id,token,held),token);
     }
-    internal Task<IOwnedTerminalSession> LaunchProductionAsync(ProductionMainConfiguration configuration,CancellationToken token,Action<int>? held=null)=>
-        LaunchAsync(id=>OwnedTerminalSessionFactory.PrepareProductionAsync(new(this,configuration),id,token,held),token);
-    internal Task<IOwnedTerminalSession> LaunchProductionBoundAsync(ProductionMainConfiguration configuration,string generation,CancellationToken token,Action<int>? held=null)=>
-        LaunchAsync(id=>OwnedTerminalSessionFactory.PrepareProductionAsync(new(this,configuration),id,token,held),token,generation);
+    internal Task<IOwnedTerminalSession> LaunchProductionAsync(
+        Func<FileSystemManager.CanonicalWriteLease,Task<ProductionMainConfiguration>> admitConfiguration,
+        CancellationToken token,Action<int>? held=null,string? expectedGeneration=null)
+    {
+        ProductionMainConfiguration? admitted=null;
+        return LaunchAsync(id=>OwnedTerminalSessionFactory.PrepareProductionAsync(
+            new(this,admitted??throw GmSessionRunPersistence.Invalid()),id,token,held),token,expectedGeneration,
+            async lease=>{admitted=await admitConfiguration(lease);});
+    }
     private void RequireProductionWorkerConjunction()
     {
         if(!_production)return;
@@ -190,18 +195,18 @@ internal sealed partial class GmSessionRunCoordinator
     // following consumer slice. This seam cannot admit a caller-selected backend.
     internal Task<IOwnedTerminalSession> LaunchWindowsPreparedAsync(
         Func<string,Task<OwnedTerminalSessionFactory.PreparedTerminal>> prepare,
-        CancellationToken token,string? expectedGeneration=null)
+        CancellationToken token,string? expectedGeneration=null,Func<FileSystemManager.CanonicalWriteLease,Task>? admitConfiguration=null)
     {
         if(!OperatingSystem.IsWindows() || _backend!=GmSessionRunBackend.WindowsJob || !_production || _windowsStartupObservation==null)
             throw GmSessionRunPersistence.Invalid();
-        return LaunchAsync(id=>{ValidateProductionPrepared();return prepare(id);},token,expectedGeneration);
+        return LaunchAsync(id=>{ValidateProductionPrepared();return prepare(id);},token,expectedGeneration,admitConfiguration);
     }
     internal void ValidateProductionPrepared()
     {
         _guard.Validate(); RequireProductionWorkerConjunction();
         if(!_production || _retired || _closed || _uncertain || _released || _terminal!=null || _persistence.HasDebt || _record?.Disposition!=GmSessionRunDisposition.Prepared)throw GmSessionRunPersistence.Invalid();
     }
-    private async Task<IOwnedTerminalSession> LaunchAsync(Func<string,Task<OwnedTerminalSessionFactory.PreparedTerminal>> prepare,CancellationToken token,string? expectedGeneration=null)
+    private async Task<IOwnedTerminalSession> LaunchAsync(Func<string,Task<OwnedTerminalSessionFactory.PreparedTerminal>> prepare,CancellationToken token,string? expectedGeneration=null,Func<FileSystemManager.CanonicalWriteLease,Task>? beforePrepared=null)
     {
         using var original=Enter(false);
         try
@@ -211,6 +216,14 @@ internal sealed partial class GmSessionRunCoordinator
         {
             var generation=expectedGeneration==null ? _files.GetOrCreateSessionGeneration(lease) : _files.ReadExistingSessionGeneration(lease);
             if(generation==null || (expectedGeneration!=null && generation!=expectedGeneration))throw GmSessionRunPersistence.Invalid();
+            // Initial config preflight is not publication authority. Resolve the
+            // admitted snapshot only after original recovery, without reopening
+            // this owner/lease or moving any effect beyond Prepared/release.
+            if(beforePrepared!=null) {
+                await beforePrepared(lease);
+                token.ThrowIfCancellationRequested();
+                if(_files.ReadExistingSessionGeneration(lease)!=generation)throw GmSessionRunPersistence.Invalid();
+            }
             var boot=_backend==GmSessionRunBackend.WindowsJob
                 ? (_windowsStartupObservation??throw GmSessionRunPersistence.Invalid()).Value : ReadBootIdentity();
             var identity=new GmSessionRunIdentity(_files.BasePath,Guid.NewGuid().ToString("N"),generation,

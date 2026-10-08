@@ -17990,6 +17990,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-config-preflight-neighbors",
+      "responsibility": "Seven exact existing ordinary production admission refusals preserve invalid config/package preflight and worker/storage barriers before creation while startup snapshot admission changes.",
+      "excludes": "No broad production lifecycle/consumer categories; no native Windows/provider execution.",
+      "changeHints": [
+        "BookOfEternityGMBridge/Program.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -25,8 +25,10 @@ Linux16 passes (worker2/Load9/status3/consoleLoad2); no actual worker was launch
 [Consumer evidence](recovery/storage-migration-bridge-consumers-20261008/manifest.json).
 Windows Bridge prepared ConPTY/Job/status activation is source-reviewed atc45 with
 Linux7 pure/helper controls; native3 compile/discovery only. Separate pre-recovery
-raw config/cache candidate is next: actual publication rollback vs unknown before
-launch, admitted same-owner snapshot required; no observed failure claimed yet.
+raw config/cache defect is causally confirmed atb169: exact disk rollbackA still
+launched/cachedB, while unknown refused before Prepared. Same-owner post-recovery
+snapshot correction is implemented with final10/source-review pending; no native
+execution or full F11 closure claimed. [Evidence](recovery/storage-migration-config-recovery-20261008/manifest.json).
 Windows legacy quarantine retains its Job/workspace/per-profile slot; verified absent
 Linux inventory is not a universal Windows worker quiescence/restart-fence claim. All other
 F/R families below remain open; no full migration completion claim.

@@ -19,8 +19,6 @@ internal sealed partial class BridgeHost
         _terminalLaunchSize=new(width,height);
         // The foreground probe settles before any main guard/Prepared or ConPTY.
         var observation=await ReadStartupObservationAsync();
-        _windowsProductionConfig=config;
-        _windowsProductionConfig.GmCliInputProfile=config.GmCliInputProfile.Snapshot();
         _neutralFiles=new FileSystemManager(_clientRoot,NullLogger<FileSystemManager>.Instance);
         IOwnedTerminalSession session;
         try {
@@ -32,7 +30,12 @@ internal sealed partial class BridgeHost
                     original.ReleaseOriginal();
                     return Task.CompletedTask;
                 }));
-            },_cts.Token,expectedGeneration);
+            },_cts.Token,expectedGeneration,async lease=> {
+                config=await ReadAdmittedBridgeConfigAsync(_neutralFiles,lease);
+                workingDirectory=ResolveGmBridgeShellWorkingDirectory(config.GmBridgeShellWorkingDirectory);
+                config.GmCliInputProfile=config.GmCliInputProfile.Snapshot();
+                _windowsProductionConfig=config;
+            });
         }
         catch(OwnedTerminalStartException failure) {
             AttachOwnedTerminalCore(failure.Owner,Console.OpenStandardOutput(),false);

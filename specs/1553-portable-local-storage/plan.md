@@ -1,3 +1,24 @@
+## F11 same-owner admitted configuration fix — 2026-10-08
+
+Independent causal RED/design/finite10 gate PASS (carrierc5f711); source/evidence
+acceptance pending for this implementation. Replaced the two sole-caller by-value
+Linux launch methods with an internal leased configuration factory. Existing first
+lease settles recovery, verifies expected generation, resolves admitted settings,
+rechecks generation/cancellation, then publishes Prepared. Original prepare consumes
+that returned configuration. Windows uses the same pre-Prepared callback to update
+its actual closure config/cwd before original suspended Prepare/bootstrap/status.
+Tentative config/package preflight stays before Open and uncached; original guard
+never releases/reopens. Leased text read errors propagate outside existing JSON/
+default decoding; admitted profile/draft binding/ChildEnvironment are rebuilt from
+settled bytes. No-owner failure clears cache; actual partial owner retains it.
+
+Final finite10: config2 + exact existing admission-refusal7 + installed-profile
+Load1. Known row adds a GREEN-only actual later committedB under original pin and
+verifies same run's semanticA snapshot persists; object identity is diagnostic only.
+Unknown control now also requires no tentative cache after no-owner refusal. Raw
+original RED remains unchanged. Fresh PlanOnly/actual/discovery and independent
+source/evidence gate pending; native Windows unexecuted. Next A03 remains open.
+
 ## F11 causal RED preserved — 2026-10-08
 
 Frozenb169 actual151909 complete2=1PASS/1FAIL15.3588079s, clean/both cleanup.

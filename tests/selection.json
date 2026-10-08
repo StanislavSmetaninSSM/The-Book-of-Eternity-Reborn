@@ -326,6 +326,24 @@
         "FR-010",
         "F11"
       ]
+    },
+    {
+      "category": "gm-main-config-preflight-neighbors",
+      "reason": "Preserve seven actual no-child production config/package/worker/storage admission refusals after same-owner post-recovery snapshot fix; exact method, not whole production suite.",
+      "contracts": [
+        "#1553",
+        "FR-010",
+        "F11"
+      ]
+    },
+    {
+      "category": "gm-load-installed-profile",
+      "reason": "Existing actual original Load fresh epoch must consume installed archive config after recovery; exact one neighbor for changed same-owner generation-bound startup factory.",
+      "contracts": [
+        "#1553",
+        "FR-010",
+        "F11"
+      ]
     }
   ]
 }

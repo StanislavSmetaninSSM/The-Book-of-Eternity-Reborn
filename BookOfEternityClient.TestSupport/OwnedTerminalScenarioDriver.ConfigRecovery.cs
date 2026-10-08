@@ -87,6 +87,8 @@ internal static partial class OwnedTerminalScenarioDriver
                     File.ReadAllBytes(journalPath).SequenceEqual(selectedJournal!),"Unknown bytes or original journal were changed.");
                 Require(startupFailure!=null && Field("_mainRun")==null && Field("_pty")==null && !File.Exists(recordPath) && metadataStages==0,
                     "Unknown config evidence admitted Prepared/child or retained a spurious no-child owner.");
+                evidence["NoOwnerCachedConfiguration"]=Field("_productionConfig")!=null;
+                Require(Field("_productionConfig")==null,"Refused no-owner startup retained tentative configuration for retry.");
                 var cold=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);
                 Exception? refused=null;try{await using var lease=await cold.AcquireCanonicalWriteLeaseAsync();}catch(Exception failure){refused=failure;}
                 evidence["FreshAdmissionFailure"]=refused?.ToString();Require(refused!=null,"Fresh admission ignored unknown publication evidence.");
@@ -119,6 +121,26 @@ internal static partial class OwnedTerminalScenarioDriver
             Require(cached.GmCliLaunchCommand==expected.GmCliLaunchCommand && cached.GmBridgeShellWorkingDirectory==expected.GmBridgeShellWorkingDirectory &&
                 cached.GmCliInputProfile.ObservationTimeoutMilliseconds==expected.GmCliInputProfile.ObservationTimeoutMilliseconds &&
                 cached.GmWorkerBridgeProfiles.Count==expected.GmWorkerBridgeProfiles.Count,"Admitted per-run config/profile/cache disagrees with recovered A.");
+            var status=JsonSerializer.SerializeToElement(Invoke("SnapshotStatus"));
+            Require(status.GetProperty("CliLaunchCommand").GetString()==expected.GmCliLaunchCommand &&
+                status.GetProperty("ShellWorkingDirectory").GetString()==expected.GmBridgeShellWorkingDirectory &&
+                status.GetProperty("WorkerStatuses").GetArrayLength()==expected.GmWorkerBridgeProfiles.Count,
+                "Original status was derived from transient preflight configuration.");
+            // GREEN extension: a later confirmed config publication is for a
+            // later epoch, not permission to replace this running snapshot.
+            var liveFiles=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);
+            var originalIdentity=main.Identity;
+            await main.RunOperationAsync(async()=>{await liveFiles.WriteFileAtomicBytesAsync("config.json",after);return 0;});
+            Require(File.ReadAllBytes(configPath).SequenceEqual(after) && !File.Exists(journalPath),"Later config publication did not actually commit B.");
+            var stillAdmitted=(GameSettings)Invoke("LoadBridgeConfig")!;
+            evidence["LaterConfigBCommitted"]=true;evidence["SameCachedObject"]=ReferenceEquals(cached,stillAdmitted);
+            Require(stillAdmitted.GmCliLaunchCommand==expected.GmCliLaunchCommand &&
+                stillAdmitted.GmBridgeShellWorkingDirectory==expected.GmBridgeShellWorkingDirectory &&
+                stillAdmitted.GmCliInputProfile.ObservationTimeoutMilliseconds==expected.GmCliInputProfile.ObservationTimeoutMilliseconds &&
+                stillAdmitted.GmWorkerBridgeProfiles.Count==expected.GmWorkerBridgeProfiles.Count &&
+                main.Identity==originalIdentity && ReferenceEquals(terminal,Field("_pty")),
+                "Later committed configuration replaced an existing original run/profile snapshot.");
+            evidence["RunningSnapshotUnchanged"]=true;
         }
         finally
         {
