@@ -18015,6 +18015,32 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-participating-outcomes-linux",
+      "responsibility": "Seven original retained control/PowerShell consumers prove actual command rollback, recoverable/foreign-byte uncertainty, committed cleanup debt, encoding/non-publication distinctions and actual immutable closing receipt.",
+      "excludes": "Native Windows, real GM/provider, whole-body atomicity, helper read-witness migration and broad worker/Bridge suites. Test bootstrap substitutes only process launch; commands and transport remain original.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+        "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+        "BookOfEternityClient.TestSupport/ParticipatingControlOutcomeScenario.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmParticipatingControlOutcomeTests.OriginalControlRetainsPublicationAndClosingDecision"
+          ]
+        }
+      ]
     }
   ]
 }

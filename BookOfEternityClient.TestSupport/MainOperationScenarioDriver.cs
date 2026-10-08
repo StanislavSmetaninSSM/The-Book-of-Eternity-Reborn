@@ -124,6 +124,8 @@ internal static class MainOperationScenarioDriver
             await pipe.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new{command="closeMainOperation",close})+"\n"),timeout.Token);
             using var closed=JsonDocument.Parse((await reader.ReadLineAsync(timeout.Token))!);
             if(closed.RootElement.GetProperty("state").GetInt32()!=3)throw new InvalidOperationException("Actual immutable close receipt not observed.");
+            if(mode.StartsWith("terminal-main-operation-outcome-",StringComparison.Ordinal))
+                await ParticipatingControlOutcomeScenario.RunAsync(mode["terminal-main-operation-outcome-".Length..],root,folder,host!,type,owner,result);
             if(mode=="terminal-main-operation-query") {
                 using var query=new NamedPipeClientStream(".",pipeName,PipeDirection.InOut,PipeOptions.Asynchronous);await query.ConnectAsync(timeout.Token);
                 await query.WriteAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new{command="mainOperationStatus",mainOperationClose=close})+"\n"),timeout.Token);
@@ -258,6 +260,10 @@ internal static class MainOperationScenarioDriver
             }
             await Call("StopShellAsync");
             if(GmSessionRunRecordCodec.Decode(File.ReadAllBytes(Path.Combine(root,".boe_runtime/gm-runs/main.json"))).Disposition!=GmSessionRunDisposition.Stopped)throw new InvalidOperationException("Closed original pin prevented durable scoped stop.");
+            if(mode.StartsWith("terminal-main-operation-outcome-",StringComparison.Ordinal)) {
+                result["OriginalOutcomeOwnerRetired"]=owner.Record?.Disposition==GmSessionRunDisposition.Stopped && !owner.RetainsAuthority;
+                if(!(bool)result["OriginalOutcomeOwnerRetired"]!)throw new InvalidOperationException("Original control owner was not actually retired.");
+            }
             result["ClosedObserved"]=true;result["DurableStopped"]=true;
             result["Success"]=true;return 0;
         } catch(Exception e){result["Failure"]=e.ToString();return 1;}

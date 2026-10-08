@@ -13,6 +13,7 @@ internal static class NativeHostScenarioDriver
 {
     internal static async Task<int> Main(string[] args)
     {
+        if(args.Length==3 && args[0].StartsWith("control-outcome-bootstrap-",StringComparison.Ordinal))return await ParticipatingControlOutcomeScenario.RunChildAsync(args[0]["control-outcome-bootstrap-".Length..],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-systemd-",StringComparison.Ordinal))return await SystemdControlledScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("production-main-",StringComparison.Ordinal))return await OwnedTerminalScenarioDriver.RunAsync(args[0],args[1],args[2]);
         if(args.Length==3 && args[0].StartsWith("terminal-main-crash-",StringComparison.Ordinal))return await MainRunCrashScenarioDriver.RunAsync(args[0],args[1],args[2]);

@@ -1,3 +1,33 @@
+## A03 finite original-control causal fixture checkpoint — 2026-10-08
+
+Test-only WIP: `gm-main-participating-outcomes-linux`, exactly seven rows.
+Four direct original C# consumers cover reached rollback plus later commit,
+foreign-byte uncertainty, committed journal debt, and encoding/non-publication
+controls. Three original PowerShell consumers cover caught recoverable uncertainty,
+prior commit plus caught rollback, and real closing failure after committed value.
+Only Open's test bootstrap selects the real hooked C# control process; original
+Send/Invoke/Close/Dispose remain in use. Original main receipt, exact disk/journal
+and actual next lease/recovery/member counters precede new reply-field assertions.
+
+Recoverable uncertainty holds an actual FileShare.None descriptor after the first
+selected MemberPublished. A conflicting real reader must refuse. The descriptor
+stays owned through complete mutation reply1, then releases before command2; no
+journal rewrite, synthetic disposition or production recovery hook. A scoped,
+nonthrowing FirstChance observer captures only the actual typed uncertainty whose
+inner chain contains the exact injected forward exception. All failure paths join
+owned cleanup. Main retirement and guardian cleanup are distinct required proofs.
+Runtime is unchanged. Fresh PlanOnly/build and independent fixture/selection gate
+must precede causal execution. Final GREEN will add only the exact existing
+oversized-unsent, post-receipt reply-loss and pre-receipt stdin-loss neighbors.
+
+F11 final independent SOURCE/SELECTION/EVIDENCE PASS at runtime43e/carriercc178,
+no findings: actual10 and all151 artifact/64 source pins verified. Parent restored
+`cc178b769f45d824d713e2e4a88768105c12461b` directly from GitHub into
+`/workspace/boe-1553-config-recovery-restore`: clean25964 tracked, fsck--full
+--no-reflogs exit0, all151 stored/expanded hashes and64 Git pins matched; no tests
+or builds in restore. Main remainsd024. Native Windows and remaining migration
+families remain open; no whole-body rollback or F13 role/read-witness expansion.
+
 ## F11 actual GREEN and discovery checkpoint — 2026-10-08
 
 Runtime43e2339bb712ba7f7e6c02bb0d93549dfd81142b has independent SOURCE/SELECTION
@@ -8,7 +38,7 @@ uses restoredA model/cwd/input/status; later committedB leaves the same running
 semanticA snapshot; unknown keeps evidence/no Prepared/no child/no tentative cache.
 Seven original preflight refusals preserve their no-canonical-effects checks;
 installed archive-profile Load consumes fresh settings under its new exact owner.
-Final independent EVIDENCE gate pending. [Complete raw/source-pinned packet](recovery/storage-migration-config-recovery-20261008/manifest.json).
+Final independent EVIDENCE gate PASS (cc178); see current checkpoint. [Complete raw/source-pinned packet](recovery/storage-migration-config-recovery-20261008/manifest.json).
 
 Discovery153552 valid471 categories/11260 methods, no unmapped/stale selectors,
 zero executed. Packet totals151 stored artifacts/64 historical Git source pins;
