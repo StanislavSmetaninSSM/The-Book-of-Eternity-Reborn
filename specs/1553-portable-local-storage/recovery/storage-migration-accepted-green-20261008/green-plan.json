@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-accepted-normalization-outcomes"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "28eacf4f5012cf597f473a28706e22a29f92ca8f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.4209556,
+  "Descriptors": [
+    {
+      "Name": "portable-accepted-normalization-outcomes-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-accepted-normalization-outcomes",
+      "Categories": [
+        "portable-accepted-normalization-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedCompensationUncertaintyRetainsPrimaryFailure|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedNormalizationPublicationRetainsStorageDecision|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AcceptedTurnCanonicalWriteFailure_ReturnsToCallerForOneFullRollback|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualAcceptedHandlerPreservesUncertainNormalizerDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedCompensationUncertaintyRetainsPrimaryFailure",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedTurnStorageOutcomeTests.ActualAcceptedNormalizationPublicationRetainsStorageDecision",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AcceptedTurnCanonicalWriteFailure_ReturnsToCallerForOneFullRollback",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualAcceptedHandlerPreservesUncertainNormalizerDecision",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

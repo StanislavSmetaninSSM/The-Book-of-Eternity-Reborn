@@ -6,16 +6,20 @@ F08/F11 bounded delta at83f6e9a7: reached facade uncertainty and warning-logger
 REDs corrected; actual failed browser rollback no longer replaces runtime with a
 false baseline or emits a restored/retry promise.19/19 Linux PASS; independent
 review PASS reported by parent. [Exact evidence](recovery/storage-migration-outcomes-green-20261008/manifest.json).
-QTE/pre-turn compensation-time typed propagation and ordinary close remain open.
+QTE/pre-turn compensation-time propagation is covered by the later 9e30 delta below; ordinary close and final cleanup remain open.
 No new continuation barrier or native Windows qualification is inferred.
 
-Expanded independent changeset audit candidates (parent reports source trace at852953b;
-not yet causal execution): accepted-turn normalizer typed uncertainty may be wrapped
-as CanonicalStateWriteException and enter before-image compensation (F08/F09).
-Prioritize after current QTE refresh correction, before F06. Windows Bridge status
-queue may have no initialized main-run/publisher in ConPtySession while consumers
-still read gm_bridge_status.json (F15 lifecycle/notification ownership). Verify exact
-old/new call chains and native boundary; Linux status tests cannot qualify Windows.
+Current A02 accepted-turn delta at28eacf4f: direct publication, actual before-image
+compensation and original accepted-handler carrier gaps were reproduced and corrected.
+Seven Linux cases PASS, including two known-failure rollback controls; independent
+review pending. [Evidence](recovery/storage-migration-accepted-green-20261008/manifest.json).
+Directory-specific uncertainty and treatment-owned settlement remain separate tails.
+Windows Bridge ownerless status/participating route (A01/F15) remains source-confirmed,
+not native-executed: reviewed direction binds the original prepared ConPty/Job to the
+existing coordinator/status/stop/Load lifecycle. Conservative provider-labelled WMI
+restart observation never authorizes cold adoption or reboot recovery. Native Windows
+qualification remains external and unexecuted. Priority: directory carrier, Bridge,
+then F06 and remaining F04/F05/F13/F14/F16/F18 families.
 
 T062 restoration delta:9e30 source has10/10 Linux PASS including actual second
 mirror publication after baseline restoration; earlier7 affected recovery neighbors

@@ -1,3 +1,16 @@
+## A02 bounded GREEN submitted for independent review — 2026-10-08
+
+Frozen28eacf4f5012cf597f473a28706e22a29f92ca8f: fresh seven-case PlanOnly/build,
+then7/7 Linux PASS in12.231s, complete/no skips/duplicates/timeouts, owned cleanup
+complete. Discovery catalog449/11230 valid,0executed,8.536s. [Original artifacts
+and exact source pins](recovery/storage-migration-accepted-green-20261008/manifest.json).
+These cases cover direct normalizer publication, actual before-image compensation
+uncertainty and the original GameEngine accepted-handler carrier; exact known-failure
+rollback controls remain green. Independent source/evidence review pending. Treatment-owned
+settlement and final cleanup remain distinct open tails; no whole-game/native Windows claim.
+Next bounded work is the directory-deletion carrier and original consumer/notice/closing
+boundary, followed by Windows Bridge original ownership and the remaining family map.
+
 ## A02 connected causal RED and minimal correction — 2026-10-08
 
 Frozen186c3cf9 fresh seven-case selection:4PASS/3FAIL,12.596s, complete and
