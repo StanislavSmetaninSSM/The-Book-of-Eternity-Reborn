@@ -374,6 +374,18 @@
         "FR-010",
         "A03"
       ]
+    },
+    {
+      "category": "portable-inactive-snapshot-evidence",
+      "reason": "F06 existing24 original private-consumer cases split from broad lifecycle owners to establish actual Linux physical-retirement baseline before minimal common CAS migration. Exact byte archive, eligibility refusals, reuse/conflict and deliberately partial removal are the affected contract.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-005",
+        "FR-006",
+        "F06",
+        "T063-REMAINING-CONSUMERS"
+      ]
     }
   ]
 }

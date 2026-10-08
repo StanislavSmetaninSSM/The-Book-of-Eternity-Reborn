@@ -1,3 +1,35 @@
+## F06 inactive snapshot retirement baseline selection — 2026-10-08
+
+A03 bounded final independent source/evidence/carrier PASS d36609fd/runtimee33c,
+no findings: actual10,169 artifacts/86 historical pins. Parent verified the same;
+fresh remote restore is pending. No A03 rerun or native Windows claim.
+
+Next authorized F06 uses exactly the existing24 original archive-consumer cases
+(1 success,18 refusal,5 copy/readback/drift/partial-removal faults), split unchanged
+into `portable-inactive-snapshot-evidence`. Runtime/tests are unchanged here; fresh
+PlanOnly/build and actual baseline are pending. Static chain reaches physical
+DeleteFileIfCurrentOwned→Windows-only OpenForRename on Linux; this is not yet an
+executed failure. No broad lifecycle or paused1536 treatment selection.
+
+Reviewed engineering direction after causal baseline: current trusted-local fixed
+subtree enumeration under the existing lease/generation; archive missing-copy CAS
+with exact readback/reuse; replace only this ordinary retirement caller's physical
+handle/delete authority with exact-byte CAS and full archive/remaining fixed-cohort
+revalidation after mutation hooks at existing prepared-publication validation seam.
+Every source deletion remains its own decision: payloads, authority, manifest LAST.
+Preserve prior committed partial removals and original evidence on refusal; typed
+Uncertain must escape generic catch. The diagnostic index never supplies mutation,
+rollback or restart authority. Missing authority after partial removal means exact
+refusal on retry, not archive-based reconstruction. Legacy physical API semantics
+stay scoped to their original callers/tests.
+
+After baseline add only missing meaningful current publication cuts: archive/source
+publication rollback, unknown bytes/generation, committed cleanup, archive/source
+mutation at selected deletion boundary, missing-authority retry and one original
+NormalizeRuntimeUiArtifacts reachability path. Freeze exact final count/selection
+before build/execution; independent source/selection/evidence review remains required.
+Native Windows body-required recipe is separate and unexecuted here.
+
 ## A03 actual original-consumer GREEN checkpoint — 2026-10-08
 
 Runtimee33c17b98484a5878460088fa58a2227c25084d6 independent SOURCE/SELECTION
@@ -19,7 +51,7 @@ Three existing neighbors pass. Pre-receipt stdin-loss intentionally keeps logica
 Unresolved authority and refuses Stopped (raw CleanupFailure); its original physical
 guardian is clean. Do not claim all10 logical owners Stopped. Oversized-unsent and
 post-receipt loss preserve original no-replay behavior. Discovery162739 valid473/
-11262,0executed9.9621335s. Final independent EVIDENCE/carrier gate pending.
+11262,0executed9.9621335s. Final independent EVIDENCE/carrier gate PASS d36609fd (169 artifacts/86 pins).
 Native Windows and wider F13 migration remain open. Next authorized block after
 bounded gate is F06 inactive-snapshot evidence portability, not1536 gameplay.
 

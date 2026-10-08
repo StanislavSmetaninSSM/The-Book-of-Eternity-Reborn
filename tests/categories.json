@@ -5731,7 +5731,6 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedMixedItemAndResourceConsumption_EveryPipelineFailureRestoresExpandedRootsAndExactRetryCommitsOnce",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreTokenRawValidationTerminalRollbackQuarantinesExactHeldRequestAndReleasesHold",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_WaitLifecyclePreservesRearmedPublicationForSameTurnRetry",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_ArchivesExactCohortWithoutTouchingWorldOrRollbackFiles",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LifeEvaluationSnapshot_ClientOwnedCurrentWorldDirectivesUseRollbackBaselineWhenCurrentFileIsCleared",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalBootstrapBaselineFiles_AreValidationSnapshottedButRollbackDeletedWhenTurnFails",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.MortalItemCanonicalRepair_RejectsStaleAcquisitionConfirmationUntilRewritten",
@@ -5864,8 +5863,6 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedItemConsumption_HeldLeaseRawAdmissionDoesNotReacquireCanonicalLock",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedItemConsumption_RepeatedRawItemAdmissionPreservesExactSealedSnapshotAndPlan",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_RepeatedRawItemAdmissionPreservesExactSealedSnapshotAndPlan",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_RefusesActiveForeignAndAmbiguousCohorts",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_RetainsEvidenceWhenArchivalCannotFinish",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadCanonicalBaselineSnapshotAsync_AbsentCanonicalFiles_DoNotInvalidateExistingBaseline",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadCanonicalBaselineSnapshotAsync_RejectsBomOnlySnapshotByteChange",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoadSelectedSaveAndRebindRuntime_UsesLoadedCanonicalStateInsteadOfSaveListMetadata",
@@ -18071,6 +18068,35 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_OriginalConnectionLossBoundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-inactive-snapshot-evidence",
+      "responsibility": "F06 exact signed inactive snapshot diagnostic archive and fixed-cohort retirement: one positive, eighteen active/foreign/ambiguous refusals and five original reached copy/readback/drift/partial-removal boundaries.",
+      "excludes": "Gameplay treatment or spiritual continuation, broad turn lifecycle suites, rollback authority from diagnostic archives, native Windows qualification or whole-cohort atomic deletion.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.InactiveSnapshotEvidence.cs",
+        "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.InactiveSnapshotEvidence.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_ArchivesExactCohortWithoutTouchingWorldOrRollbackFiles",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_RefusesActiveForeignAndAmbiguousCohorts",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_RetainsEvidenceWhenArchivalCannotFinish"
           ]
         }
       ]
