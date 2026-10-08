@@ -1,3 +1,19 @@
+## A01 reached original-owner purpose RED — 2026-10-08
+
+Source5b26 original Running owner direct-purpose row reached ordinary positive
+control, acquired SessionFinalization1, published selected actual member1 and exact
+attempted after bytes, no operation failure. Target assertion failed as intended;
+original guardian echild true/emergency0/failures0/deadline false. Genuine bound
+closing control PASS/generation read1. Combined plan9 fail-fast ran2=1P/1F; separate
+same-build corrected component7/7PASS8.048s. [Original scenario/guardian and raw TRX](recovery/storage-migration-owner-20261008/manifest.json)
+prove cause beyond wrapper driver-exit assertion. No native Windows bypass claim.
+
+Before runtime fix, add/run only one distinct readonly control: real original
+MainAdmission marked closing, no SessionOperationContext binding, generation read
+allowed but general mutation forbidden. This separates readonly capability from
+acquisition refusal. Final coherent selection becomes23 (20 earlier +3 finalization).
+Runtime P2 remains unfixed in this test-only checkpoint; consumer activation closed.
+
 ## A01 owner review P2 and fixture correction — 2026-10-08
 
 Independent owner source gate at5aa blocked on one P2: SessionFinalization purpose

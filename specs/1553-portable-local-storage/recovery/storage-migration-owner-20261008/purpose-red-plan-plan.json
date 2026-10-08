@@ -1,0 +1,71 @@
+{
+  "Categories": [
+    "gm-main-worker-absence-component",
+    "gm-main-finalization-capability-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "5b26c368721f2bfd43cac9d0a69b9704fcfc77ca",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 41.0677534,
+  "Descriptors": [
+    {
+      "Name": "gm-main-finalization-capability-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-finalization-capability-linux",
+      "Categories": [
+        "gm-main-finalization-capability-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainFinalizationCapabilityTests.OriginalRunningOwner_ActualBoundClosingKeepsGenerationVerification|FullyQualifiedName=BookOfEternityClient.Tests.GmMainFinalizationCapabilityTests.OriginalRunningOwner_PurposeAloneCannotRecoverOrPublish",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainFinalizationCapabilityTests.OriginalRunningOwner_ActualBoundClosingKeepsGenerationVerification",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainFinalizationCapabilityTests.OriginalRunningOwner_PurposeAloneCannotRecoverOrPublish",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-worker-absence-component-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-worker-absence-component",
+      "Categories": [
+        "gm-main-worker-absence-component"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.ExistingOrBlockedNamespaceRetainsEveryEvidenceByte|FullyQualifiedName=BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.LaterEmptyInventoryWithdrawsPreviouslyObservedAbsence|FullyQualifiedName=BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.RetainedOriginalContextCannotBeReinterpretedAsAbsentInventory|FullyQualifiedName=BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.VerifiedAbsenceDoesNotInitializeInventoryOrMainMetadata",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.ExistingOrBlockedNamespaceRetainsEveryEvidenceByte",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.LaterEmptyInventoryWithdrawsPreviouslyObservedAbsence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.RetainedOriginalContextCannotBeReinterpretedAsAbsentInventory",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.VerifiedAbsenceDoesNotInitializeInventoryOrMainMetadata",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

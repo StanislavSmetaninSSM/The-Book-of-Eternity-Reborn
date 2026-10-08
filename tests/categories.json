@@ -17678,7 +17678,34 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmMainFinalizationCapabilityTests.*"
+            "BookOfEternityClient.Tests.GmMainFinalizationCapabilityTests.OriginalRunningOwner_PurposeAloneCannotRecoverOrPublish",
+            "BookOfEternityClient.Tests.GmMainFinalizationCapabilityTests.OriginalRunningOwner_ActualBoundClosingKeepsGenerationVerification"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-finalization-readonly-linux",
+      "responsibility": "One real original Running owner control: genuine MainAdmission closing frame without SessionOperationContext binding obtains generation-read finalization lease but cannot publish canonical bytes. Isolates mutation gate from acquisition gate.",
+      "excludes": "Windows conjunction/native execution, fabricated owner, full lifecycle.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
+      ],
+      "related": [
+        "gm-main-finalization-capability-linux"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainFinalizationCapabilityTests.OriginalClosingFrame_FinalizationLeaseCanReadButCannotPublish"
           ]
         }
       ]

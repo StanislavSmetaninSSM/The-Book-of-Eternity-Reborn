@@ -206,6 +206,16 @@
         "FR-010",
         "T063-REMAINING-CONSUMERS"
       ]
+    },
+    {
+      "category": "gm-main-finalization-readonly-linux",
+      "reason": "One actual original owner/closing frame proves readonly lease independently of purpose acquisition and BindingState protection; causal RED before fix, no repeated earlier rows.",
+      "contracts": [
+        "#1553",
+        "A01",
+        "FR-010",
+        "T063-REMAINING-CONSUMERS"
+      ]
     }
   ]
 }

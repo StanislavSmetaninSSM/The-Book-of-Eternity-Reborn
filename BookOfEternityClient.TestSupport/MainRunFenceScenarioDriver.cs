@@ -155,7 +155,7 @@ internal static class MainRunFenceScenarioDriver
             await Call("StartShellAsync");
             var owner=(GmSessionRunCoordinator)Field("_mainRun")!;var terminal=(IOwnedTerminalSession)Field("_pty")!;
             var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var old=Read();
-            if(mode is "terminal-main-finalization-purpose" or "terminal-main-finalization-bound-close") {
+            if(mode is "terminal-main-finalization-purpose" or "terminal-main-finalization-readonly" or "terminal-main-finalization-bound-close") {
                 const string member="game_state/main-finalization.bin";
                 var target=files.ResolvePath(member);
                 byte[] before=[17,29,41],after=[53,67,79];
@@ -179,19 +179,29 @@ internal static class MainRunFenceScenarioDriver
                 await owner.RunOperationAsync(async()=>{await hooked.WriteFileAtomicBytesAsync(member,before);return 0;});
                 Require(published==1,"Ordinary positive control did not reach the selected current publisher.");
                 published=0;desired=after;
-                if(mode=="terminal-main-finalization-purpose") {
+                if(mode is "terminal-main-finalization-purpose" or "terminal-main-finalization-readonly") {
                     var acquired=0;Exception? failure=null;
                     await owner.RunOperationAsync(async()=>{
                         Require(!SessionOperationContext.TryGetExpectedGeneration(root,out _),"Direct-purpose case unexpectedly has a bound closing context.");
-                        try {await using var closing=await hooked.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.SessionFinalization);
-                            acquired++;await hooked.WriteFileAtomicBytesAsync(closing,member,after);}
+                        FileSystemManager.MainAdmission? closingScope=null;
+                        try {
+                            if(mode=="terminal-main-finalization-readonly") {
+                                closingScope=hooked.BeginMainAdmission();await closingScope.AcquireAsync();hooked.BeginMainOperationClosing();
+                            }
+                            await using var closing=await hooked.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.SessionFinalization);
+                            acquired++;
+                            Require(hooked.IsCurrentSessionGeneration(closing,owner.Identity.GenerationId),"Finalization generation read failed.");closingReads++;
+                            await hooked.WriteFileAtomicBytesAsync(closing,member,after);
+                        }
                         catch(Exception error){failure=error;}
+                        finally {if(closingScope!=null)await closingScope.DisposeAsync();}
                         return 0;
                     });
                     result["OrdinaryPositiveControlReached"]=true;result["FinalizationAcquired"]=acquired;
                     result["SelectedMemberPublished"]=published;result["TargetIsAttemptedAfter"]=File.ReadAllBytes(target).AsSpan().SequenceEqual(after);
-                    result["ObservedFailure"]=failure?.ToString();
-                    Require(failure is IOException && acquired==0 && published==0 && File.ReadAllBytes(target).AsSpan().SequenceEqual(before),
+                    result["ObservedFailure"]=failure?.ToString();result["FinalizationGenerationReads"]=closingReads;
+                    var expectedAcquired=mode=="terminal-main-finalization-readonly"?1:0;
+                    Require(failure is IOException && acquired==expectedAcquired && closingReads==expectedAcquired && published==0 && File.ReadAllBytes(target).AsSpan().SequenceEqual(before),
                         "Purpose alone granted finalization/recovery/mutation capability; inspect reached member/after-image diagnostics.");
                 } else {
                     await owner.RunOperationAsync(async()=>{

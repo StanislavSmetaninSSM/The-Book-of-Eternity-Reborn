@@ -1,0 +1,66 @@
+{
+  "Categories": [
+    "gm-main-worker-absence-component",
+    "gm-main-finalization-capability-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "5b26c368721f2bfd43cac9d0a69b9704fcfc77ca",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-main-finalization-capability-linux",
+      "Seconds": 6.4647263,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0557828,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0345085,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.169958,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:10.8080304",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 9,
+    "CompletedCases": 2,
+    "UnderfilledDescriptors": [
+      "gm-main-worker-absence-component-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 1,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}
