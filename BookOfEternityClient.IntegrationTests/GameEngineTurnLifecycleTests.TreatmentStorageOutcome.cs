@@ -61,7 +61,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var leases = cut.LeaseAttempts;
                 var recoveries = cut.RecoveryEvents;
                 var attempts = cut.RestoreReadAttempts;
-                disposalFailure = await Record.ExceptionAsync(async () => await transaction.DisposeAsync());
+                disposalFailure = await Record.ExceptionAsync(async () => await ((IAsyncDisposable)transaction).DisposeAsync());
                 disposalLeases = cut.LeaseAttempts - leases;
                 disposalRecovery = cut.RecoveryEvents - recoveries;
                 disposalAttempts = cut.RestoreReadAttempts - attempts;
@@ -84,6 +84,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             cut.Armed = false;
             retainedJournal ??= File.Exists(cut.JournalPath) ? File.ReadAllBytes(cut.JournalPath) : null;
             var memberBytes = cut.Target is null ? null : File.ReadAllBytes(cut.Target);
+            var publishedTreatmentRetained = cut.PublishedTreatmentImages.All(pair =>
+                File.Exists(pair.Key) && pair.Value.AsSpan().SequenceEqual(File.ReadAllBytes(pair.Key)));
             if (failure is not null) InvokePrivate(engine, "RecordGameLoopErrorObservation", failure);
             var notice = store.GetSnapshot();
             // Evidence has been captured. Explicit fixture-only repair now permits a fresh
@@ -110,7 +112,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 TypedCarrier = cut.OriginalUncertainty?.GetType().FullName,
                 Failure = failure?.ToString(), DisposalFailure = disposalFailure?.ToString(),
                 journalBeforeDispose, journalAfterDisposeExact, disposalLeases, disposalRecovery, disposalAttempts,
-                cut.MirrorDriftPrepared,
+                cut.MirrorDriftPrepared, publishedTreatmentRetained,
+                PublishedTreatmentImages = cut.PublishedTreatmentImages.ToDictionary(p => p.Key, p => Convert.ToBase64String(p.Value)),
+                JournalBytesBeforeCleanup = retainedJournal is null ? null : Convert.ToBase64String(retainedJournal),
                 JournalRetainedBeforeExplicitCleanup = retainedJournal is not null, restartBlocked,
                 BlockerFailure = blockerFailure?.ToString(),
                 JournalHashBeforeCleanup = retainedJournal is null ? null : Convert.ToHexString(SHA256.HashData(retainedJournal)),
@@ -128,7 +132,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (mode == "helper_restore") Assert.Equal(1, cut.BusinessCutCount);
             if (mode == "compensate_dispose") Assert.True(cut.SharingConflictObserved);
             else Assert.Equal(TreatmentStorageCut.ForeignBytes, memberBytes);
-            if (mode == "engine_mirror") Assert.True(cut.MirrorDriftPrepared);
+            if (mode == "engine_mirror")
+            {
+                Assert.True(cut.MirrorDriftPrepared);
+                Assert.Equal(4, cut.PublishedTreatmentImages.Count);
+                Assert.True(cut.TreatmentResourceChanged);
+                Assert.True(publishedTreatmentRetained);
+            }
             Assert.NotNull(failure);
             if (mode != "engine_mirror") { Assert.Null(blockerFailure); Assert.True(restartBlocked); }
             if (mode == "compensate_dispose")
@@ -168,6 +178,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         private readonly string _mode;
         private HeldTreatmentPipelineContext? _context;
         private FileStream? _holder;
+        private byte[]? _initialResourceBytes;
         private readonly InvalidOperationException _forward = new("actual treatment publication cut");
         private readonly EventHandler<FirstChanceExceptionEventArgs> _firstChance;
         internal TreatmentStorageCut(string mode)
@@ -203,9 +214,15 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal int PublicationsAfterCut { get; private set; }
         internal bool SharingConflictObserved { get; private set; }
         internal bool MirrorDriftPrepared { get; private set; }
+        internal bool TreatmentResourceChanged { get; private set; }
+        internal Dictionary<string, byte[]> PublishedTreatmentImages { get; } = new(StringComparer.Ordinal);
         internal CoordinatedStatePublicationUncertainException? OriginalUncertainty { get; private set; }
         internal string JournalPath => Path.Combine(_context!.FileSystem.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
-        internal void Attach(HeldTreatmentPipelineContext context) => _context = context;
+        internal void Attach(HeldTreatmentPipelineContext context)
+        {
+            _context = context;
+            _initialResourceBytes = File.ReadAllBytes(context.FileSystem.ResolvePath(ResourceMaterializationContract.StatePath));
+        }
         private Task BeforeLease()
         {
             if (!Armed) return Task.CompletedTask;
@@ -257,6 +274,17 @@ public sealed partial class GameEngineTurnLifecycleTests
             var target = json.RootElement.GetProperty("Members")[index].GetProperty("Path").GetString()!;
             if (_mode == "engine_mirror" && !string.Equals(target, _context!.FileSystem.ResolvePath(AfterlifeEntityProfileState.StatePath), StringComparison.Ordinal)) return;
             Target = target; TargetIndex = index; PublishedBytes = File.ReadAllBytes(target); Cuts++;
+            if (_mode == "engine_mirror")
+            {
+                foreach (var relative in new[] { ResourceMaterializationContract.StatePath,
+                    ResourceMaterializationContract.HistoryPath, WoundCarrierCatalog.PlayerPath, WoundHistoryState.HistoryPath })
+                {
+                    var path = _context!.FileSystem.ResolvePath(relative);
+                    PublishedTreatmentImages[path] = File.ReadAllBytes(path);
+                }
+                TreatmentResourceChanged = !_initialResourceBytes!.AsSpan().SequenceEqual(
+                    PublishedTreatmentImages[_context!.FileSystem.ResolvePath(ResourceMaterializationContract.StatePath)]);
+            }
             if (_mode == "compensate_dispose")
             {
                 _holder = new FileStream(target, FileMode.Open, FileAccess.ReadWrite, FileShare.None);

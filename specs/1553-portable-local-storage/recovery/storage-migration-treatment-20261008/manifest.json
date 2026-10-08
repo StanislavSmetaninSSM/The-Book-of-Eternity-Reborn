@@ -1,0 +1,34 @@
+{
+  "scope": "Test-only treatment3 compile failure; zero tests executed, not causal evidence.",
+  "initialCompile": {
+    "source": "b8c7dc35886f30b286f1caa99c9e3f04e906800a",
+    "artifacts": [
+      {
+        "path": "initial-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-220439-847-159415-2e39735516df45ff8b140bb92ca58113-categories/summary.json",
+        "sha256": "87f14bab56f695ea5413390df84e7bea16e5e21d9e3e582ffb3c4a8d94862e2d",
+        "originalSha256": "87f14bab56f695ea5413390df84e7bea16e5e21d9e3e582ffb3c4a8d94862e2d"
+      },
+      {
+        "path": "initial-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-220439-847-159415-2e39735516df45ff8b140bb92ca58113-categories/dotnet-test.log",
+        "sha256": "e08643aef3f26e6434bf79920bca60eb74b8550169763105b41f8570d30e5761",
+        "originalSha256": "23396b80e6c230b53e8fc176f2afeb3229f11885f52cfb95fa7648f916672477"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.TreatmentStorageOutcome.cs",
+        "sha256": "46052e202c9fdf40aacea504f3523e03498ba6cdb25a4b00e7cd70a96f1cbf66"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.cs",
+        "sha256": "ea4cfd9e7ed64bb1096f290518d12869755fe5351f509e4daa0e3bc9b3fe89cc"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "7f4f44e16121497a4c6e379e65935a7d134a94f217ea21204cfeb6b794fbc55f"
+      }
+    ]
+  }
+}

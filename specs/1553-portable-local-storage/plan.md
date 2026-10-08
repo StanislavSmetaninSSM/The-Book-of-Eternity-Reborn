@@ -1,3 +1,13 @@
+## Treatment fixture compile correction — 2026-10-08
+
+Initial Plan220439 at clean b8c failed compilation on the explicit IAsyncDisposable
+call (CS1061),81.7633710s,zero tests executed/both cleanup flags true. Raw log and
+summary plus three Git source pins are retained; this is not causal evidence.
+The fixture now calls the original explicit interface, includes full journal bytes
+before fixture cleanup and records exact published resource/wound state/history
+before the mirror cut and afterward. Exact three rows/runtime unchanged; independent
+fixture review and successful corrected PlanOnly remain required before actual.
+
 ## Treatment causal fixture candidate — 2026-10-08
 
 The concrete test-only category `portable-treatment-storage-causal-linux` contains
