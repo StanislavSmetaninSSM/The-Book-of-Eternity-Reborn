@@ -171,7 +171,7 @@
       },
       {
         "path": "initial-actual-timeout-owned-root.tar.gz",
-        "source": "/tmp/boe-treatment-121f-timeout-root.tar.gz",
+        "source": "/tmp/boe-treatment-121f-timeout-root.tar",
         "sha256": "48f6ac96b2ebf3384731777a56830951480ccf944a5e7a834a86db78477d6f47",
         "originalSha256": "fb472dd57d6741e8cddfc524a68b07ed534d990a125aa2a5ae713b9469a0bd9a"
       }
