@@ -18,7 +18,10 @@ public sealed class LocalWebUiSessionStatusService
         _timeProvider = timeProvider ?? TimeProvider.System;
     }
 
-    public async Task<LocalWebUiSessionStatus> BuildStatusAsync()
+    public Task<LocalWebUiSessionStatus> BuildStatusAsync() =>
+        SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, BuildStatusCoreAsync);
+
+    private async Task<LocalWebUiSessionStatus> BuildStatusCoreAsync()
     {
         var writeStatus = await _writeCoordinator.BuildStatusAsync();
         return BuildStatus(writeStatus);

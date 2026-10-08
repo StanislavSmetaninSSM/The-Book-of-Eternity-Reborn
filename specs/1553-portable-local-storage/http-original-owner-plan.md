@@ -90,8 +90,10 @@ Windows Bridge launch cannot establish this Linux Running-owner regression.
 Positive causal RED/GREEN must use the actual Linux production Bridge/relay;
 Windows independently preserves quiescent HTTP, queue and Load consumers.
 
-Current status: source/evidence diagnosis and independent design review complete;
-new runtime implementation and causal regression have not yet been executed.
+Current status: the eight-case Windows causal RED is retained below. Four public
+read entries now delegate their entire original bodies through the existing
+participating exact-generation context; fresh GREEN and Linux live-owner
+qualification are pending. No fence, owner, Load or HTTP response policy changed.
 
 Tests-first WIP: new Linux production relay mode requires genuine idle output
 (no setReady), ten real Kestrel DTOs and matching original close receipts,
