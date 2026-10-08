@@ -52,8 +52,24 @@ consumers, including failure readback. GM binding guards/examples are selected
 separately without unrelated afterlife matrices. PlanOnly precedes execution;
 NoBuild is allowed only after fresh successful selected-project builds. Existing
 category budgets and assertions are preserved. No runtime behavior has changed.
-Next action: fresh binding dependency/control PlanOnly and baseline. No current
-cloud test result or independent acceptance yet. Historical evidence follows.
+Owner steering (2026-10-08): pause B2–B5 growth for the portability and fixture
+trust clarification. No next test or implementation is authorized by that pause.
+Only the already running safe PlanOnly was allowed to finish. Production and test
+sources remain unchanged from the verified base; only this checkpoint and the
+bounded selection have been edited. Resume only after the parent's clarification.
+
+Fresh command: `pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1
+-Category spiritual-binding-result-dependency,spiritual-binding-control-boundaries
+-PlanOnly'` with the supplied cloud .NET/PowerShell environment. Artifact directory:
+`TestResults/test-categories/20261008-090318-653-3555-2b78896d87914918bbbcdc48cec641d3-categories`.
+At revision `95e4c90464aff4162a7f68f6359991b518ae724d` and a clean fingerprint,
+PlanOnly exited 0 in 1m58.858s; fresh integration and unit builds completed.
+It planned 2 descriptors / 12 cases (8 binding dependencies, 4 raw boundaries),
+executed **zero tests**, and completed owned-tree/runtime cleanup without timeout.
+`Selection.Complete=false` is expected for PlanOnly and is not gameplay PASS.
+This is neither a verified gameplay baseline nor a causal RED. Catalog audit,
+all runtime execution and independent B2–B5 review remain unrun. Historical
+acceptance evidence follows and has not been reclassified as current evidence.
 
 ## Current completion checkpoint — resumed 2026-09-30
 
