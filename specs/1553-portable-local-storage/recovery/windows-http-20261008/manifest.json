@@ -29,6 +29,11 @@
       "SHA256": "d731583cdf0a14f3561685b519a5856a392998f9d1ca4a383be5bbf83d76ee95"
     },
     {
+      "Path": "lifetime-red-original-results.zip",
+      "Bytes": 5344,
+      "SHA256": "f20682ab2bd23b2bd443ca784cd608b51e3a3fe5fc48873f938d2282eac2e7bb"
+    },
+    {
       "Path": "red-original-results.zip",
       "Bytes": 4149,
       "SHA256": "7e8fe24b3e3962ecd5e82fed17636bdce65c347b6fe5040958a8966ed5d6d72f"
@@ -38,5 +43,6 @@
       "Bytes": 1332,
       "SHA256": "1bf7fadf6b9ad1f98718367f71faf04075b12a28103b19d700143ce33ad041f9"
     }
-  ]
+  ],
+  "LifetimeRedSourceCommit": "b238e4ea946db38a5782d3c793b87a1e345a7c17"
 }

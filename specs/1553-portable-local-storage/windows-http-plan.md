@@ -102,4 +102,9 @@ independent fixtures, no budget increase or silent omission.
 Source review raised a semaphore-disposal race with a handler surviving aborted
 Kestrel shutdown. Before correction, add an actual host/DI/endpoint-filter
 shutdown regression and exact cancelled-invocation entry/permit assertions.
-These two tests form their own narrow lifetime category; compile/RED pending.
+At b238e4ea both lifetime tests completed: cancellation PASS; aborted shutdown
+FAIL with actual ObjectDisposedException from SemaphoreSlim.Release in the real
+admission filter. No skips, duplicates or timeout; owned cleanup complete.
+The correction removes IDisposable from the admission filter. Its managed-only
+semaphore never creates WaitHandle and remains alive with the in-flight handler;
+DI teardown cannot dispose it before the handler's finally. Final GREEN pending.

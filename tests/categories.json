@@ -14539,8 +14539,8 @@
     },
     {
       "id": "portable-load-browser-refresh",
-      "responsibility": "Actual browser HTTP typed load identity and complete exact-generation required refresh bundle; failure returns no partial surfaces. Uses per-test owned roots.",
-      "excludes": "Live browser access/visual QA, unchanged filesystem/resource/console cohorts, unrelated browser routes.",
+      "responsibility": "Actual browser HTTP bundle read/finalization cuts, save-ID admission and replacement lock identity; failure returns no partial surfaces. Uses per-test owned roots.",
+      "excludes": "Required-generation full Save/Load refresh scenarios belong to portable-load-browser-required-generation. No live browser access/visual QA, unchanged filesystem/resource/console cohorts or unrelated routes.",
       "changeHints": [
         "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
         "BookOfEternityClient/WebUi/BrowserLoadStateService.cs"

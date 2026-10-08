@@ -6,8 +6,10 @@ namespace BookOfEternityClient.WebUi;
 /// Queues this host's state handlers before they enter the finite physical owner
 /// guard. This is scheduling only; every handler retains its existing authority checks.
 /// </summary>
-internal sealed class BrowserRequestAdmission : IEndpointFilter, IDisposable
+internal sealed class BrowserRequestAdmission : IEndpointFilter
 {
+    // No WaitHandle is created. Keep this managed-only gate alive with in-flight
+    // handlers, which may unwind after an aborted host shutdown disposes DI.
     private readonly SemaphoreSlim _gate = new(1, 1);
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
@@ -20,6 +22,4 @@ internal sealed class BrowserRequestAdmission : IEndpointFilter, IDisposable
         }
         finally { _gate.Release(); }
     }
-
-    public void Dispose() => _gate.Dispose();
 }
