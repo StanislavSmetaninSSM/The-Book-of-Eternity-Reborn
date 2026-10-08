@@ -289,6 +289,24 @@
         "FR-010",
         "A01"
       ]
+    },
+    {
+      "category": "gm-main-windows-shell-resolution",
+      "reason": "Exact no-process shell selection component; inert paths establish priority/fixed fallback/refusal before native original preparation.",
+      "contracts": [
+        "#1553",
+        "FR-010",
+        "A01"
+      ]
+    },
+    {
+      "category": "gm-main-bridge-native-windows",
+      "reason": "Native body-required Windows original consumer smoke recipe only. Compile/discovery in Linux is zero execution; no native PASS.",
+      "contracts": [
+        "#1553",
+        "FR-010",
+        "A01"
+      ]
     }
   ]
 }

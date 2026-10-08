@@ -113,6 +113,7 @@ internal sealed partial class BridgeHost : IDisposable
     private GmSessionRunCoordinator? _mainRun;
     private GmSessionRunCoordinator? _lastMainRun;
     private GameSettings? _productionConfig;
+    private GameSettings? _windowsProductionConfig;
     internal Func<MainOperationClose,Task>? BeforeMainCloseReply;
     private BookOfEternityClient.Core.FileSystemManager? _neutralFiles;
     internal Action<BookOfEternityClient.Core.MainRunIoStage>? ObserveMainMetadata;
@@ -510,51 +511,7 @@ internal sealed partial class BridgeHost : IDisposable
                 OpenOriginalStatusPublication(); AttachOwnedTerminal(session,Console.OpenStandardOutput());
                 await _firstStatus.Task; return;
             }
-            var config = LoadBridgeConfig();
-            var shellExe = ResolveShellExecutable();
-            var shellArgs = BuildShellArguments(shellExe);
-            var workingDirectory = ResolveGmBridgeShellWorkingDirectory(config.GmBridgeShellWorkingDirectory);
-            var (width, height) = GetConsoleSize();
-            _terminalLaunchSize=new(width,height);
-            using var legacyAdmission=expectedGeneration==null?null:_neutralFiles!.BeginMainAdmission();
-            if(legacyAdmission!=null) {
-                await legacyAdmission.AcquireAsync(quiescentOnly:true);
-                await using var lease=await _neutralFiles!.AcquireCanonicalWriteLeaseAsync();
-                if(_neutralFiles.ReadExistingSessionGeneration(lease)!=expectedGeneration)throw new InvalidDataException("Loaded generation changed before legacy terminal creation.");
-            }
-            ConPtySession pty;
-            try { pty=ConPtySession.Start(shellExe,shellArgs,workingDirectory,width,height); }
-            catch(OwnedTerminalStartException ex) { AttachOwnedTerminalCore(ex.Owner,Console.OpenStandardOutput(),false); MarkTerminalUncertain(); throw; }
-            var outputWriter = Console.OpenStandardOutput();
-
-            var input = AttachOwnedTerminal(pty, outputWriter);
-
-            lock (_sync)
-            {
-                _status.ShellPid = pty.ProcessId;
-                _status.CliProcessId = null;
-                _status.CliLaunchCommand = config.GmCliLaunchCommand;
-                _status.ShellWorkingDirectory = workingDirectory;
-                _status.WorkerStatuses = GmWorkerBridgePool.BuildInitialStatuses(config.GmWorkerBridgeProfiles).ToList();
-                _status.Ready = false;
-                _status.State = "OperatorNotReady";
-                _status.LastError = null;
-                WriteStatusFile();
-            }
-
-            Console.WriteLine();
-            Console.WriteLine($"[Bridge] Hosted PTY shell started (pid={pty.ProcessId}).");
-            Console.WriteLine($"[Bridge] Working directory: {workingDirectory}");
-            Console.WriteLine($"[Bridge] Shell command: {shellExe} {shellArgs}");
-            if (string.IsNullOrWhiteSpace(config.GmCliLaunchCommand))
-                Console.WriteLine("[Bridge] GmCliLaunchCommand is empty. Type your CLI launch command manually, then mark bridge ready.");
-            else
-            {
-                Console.WriteLine($"[Bridge] Launch command: {config.GmCliLaunchCommand}");
-                var bootstrap = BuildShellBootstrap(config.GmCliLaunchCommand);
-                await Task.Delay(250, input.Token);
-                await WriteShellBootstrapAsync(input, bootstrap, input.Token);
-            }
+            await StartWindowsShellAsync(expectedGeneration);
 
     }
 
@@ -747,7 +704,7 @@ internal sealed partial class BridgeHost : IDisposable
         if(_mainRun!=null) {
             try { await _mainRun.ConfirmSettledStopAsync(session,await _terminalStopTask!); }
             catch { if(_mainRun.IsUncertain)MarkTerminalUncertain();throw; }
-            _lastMainRun=_mainRun;_mainRun=null;_productionConfig=null;
+            _lastMainRun=_mainRun;_mainRun=null;_productionConfig=null;_windowsProductionConfig=null;
         }
         lock (_sync)
         {
@@ -1470,37 +1427,6 @@ internal sealed partial class BridgeHost : IDisposable
             cliLaunchCommand;
     }
 
-    private string ResolveShellExecutable()
-    {
-        foreach (var candidate in new[] { "pwsh.exe", "powershell.exe" })
-        {
-            try
-            {
-                using var probe = Process.Start(new ProcessStartInfo
-                {
-                    FileName = candidate,
-                    ArgumentList = { "-NoLogo", "-NoProfile", "-Command", "$PSVersionTable.PSVersion.ToString()" },
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                });
-                if (probe == null)
-                    continue;
-
-                probe.WaitForExit(2000);
-                if (probe.ExitCode == 0)
-                    return candidate;
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        throw new InvalidOperationException("Neither pwsh.exe nor powershell.exe is available for bridge hosting.");
-    }
-
     private static string ResolveRepoRoot(string fallback, params string[] candidates)
     {
         foreach (var candidate in candidates.Where(candidate => !string.IsNullOrWhiteSpace(candidate)))
@@ -1547,6 +1473,7 @@ internal sealed partial class BridgeHost : IDisposable
     private GameSettings LoadBridgeConfig()
     {
         if(_productionConfig!=null)return _productionConfig;
+        if(_windowsProductionConfig!=null)return _windowsProductionConfig;
         try
         {
             if (!File.Exists(_configPath))

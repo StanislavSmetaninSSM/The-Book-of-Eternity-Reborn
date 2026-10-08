@@ -1,0 +1,39 @@
+using System.Reflection;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+// Real path resolution using inert files. No executable or native Windows owner runs.
+public sealed class GmWindowsShellResolutionTests
+{
+    [Theory]
+    [InlineData("preferred")]
+    [InlineData("fallback")]
+    [InlineData("missing")]
+    public void ResolvesExactConfigurationWithoutLaunchingAProbe(string mode)
+    {
+        var root=Path.Combine(Path.GetTempPath(),"boe-shell-resolution-"+Guid.NewGuid().ToString("N"));
+        var preferred=Path.Combine(root,"preferred");var system=Path.Combine(root,"system");
+        var pwsh=Path.Combine(preferred,"pwsh.exe");
+        var fallback=Path.Combine(system,"WindowsPowerShell","v1.0","powershell.exe");
+        Directory.CreateDirectory(preferred);Directory.CreateDirectory(Path.GetDirectoryName(fallback)!);
+        try {
+            if(mode=="preferred")File.WriteAllText(pwsh,"inert file; never execute");
+            if(mode!="missing")File.WriteAllText(fallback,"inert fallback; never execute");
+            var bridge=LoadBridge();
+            var resolver=bridge.GetType("BookOfEternityGMBridge.BridgeHost",true)!.GetMethod("ResolveWindowsShellExecutable",BindingFlags.Static|BindingFlags.NonPublic)!;
+            var search=string.Join(Path.PathSeparator,"", ".", "relative-path",preferred);
+            if(mode=="missing") {
+                var failure=Assert.Throws<TargetInvocationException>(()=>resolver.Invoke(null,[search,system]));
+                Assert.IsType<FileNotFoundException>(failure.InnerException);
+            } else {
+                var result=Assert.IsType<string>(resolver.Invoke(null,[search,system]));
+                Assert.Equal(mode=="preferred"?pwsh:fallback,result);
+                Assert.True(Path.IsPathFullyQualified(result));
+                Assert.Contains("never execute",File.ReadAllText(result));
+            }
+        } finally {Directory.Delete(root,true);}
+    }
+    internal static Assembly LoadBridge()=>Assembly.LoadFrom(Path.Combine(TestRepoPaths.RepoRoot,"BookOfEternityGMBridge/bin",
+        new DirectoryInfo(AppContext.BaseDirectory).Parent!.Name,"net8.0/BookOfEternityGMBridge.dll"));
+}

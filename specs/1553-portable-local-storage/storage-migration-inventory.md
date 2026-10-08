@@ -1,7 +1,7 @@
 > Current A01 checkpoint: shared probe-host71a561 independently accepted with3 actual
 > Linux cases, restored carrier5b6a6069. Shared original dispatch/Load5f1502b8 now has
-> fresh16/16 Linux GREEN and source/selection/RED review PASS; evidence review pending.
-> Windows production activation/native qualification remains the next separate block.
+> fresh16/16 Linux GREEN and independent source/selection/evidence PASS.
+> Windows original activation is now a source-review candidate; native execution remains open.
 
 ## Current A01 adapter and owner gates
 

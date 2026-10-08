@@ -1,3 +1,27 @@
+## A01 Windows original consumer activation candidate — 2026-10-08
+
+Shared5f150/carrier9228 independent Astra XHigh source/selection/evidence PASS:
+16 actual Linux cases, all scenarios/guardians and342 total artifacts110 historical
+source pins checked; no findings. This is separate from Windows activation below.
+Root fresh direct GitHub clone boe-1553-shared-consumers-restore is detached9228,
+clean25771 tracked, git fsck --full0; all342 stored/expanded artifacts and110 Git
+source pins verified without builds/tests. Latest accepted recovery endpoint9228.
+
+Minimal Windows route now consumes the accepted retained startup observation and
+original Windows coordinator/Prepared ConPTY/Running ACK/one release, then original
+status and lifetime tasks. Separate config cache preserves Windows worker capability.
+Proven dead ownerless ConPty.Start and unretained shell-probe process are removed;
+reviewed absolute PATH pwsh/fixed system fallback is configuration-only and has no
+post-Prepare fallback. No native old-route RED can execute on this Linux host.
+
+New finite verification: pure no-process resolver3 actual Linux controls; strict
+native original-host3 bodies compile/discover only (real WMI/ConPTY/status/pipe/
+participating write/close/Stopped with ordinary/extended/drive-case spellings).
+[Native recipe and remaining fault/quarantine obligations](windows-bridge-consumer-qualification.md).
+Native Windows activation source/selection review is pending; no Windows PASS,
+universal worker quiescence or full-migration completion is claimed. Existing accepted
+owner25/cleanup9/probe3/shared16 evidence remains frozen, without redundant reruns.
+
 ## A01 shared consumer GREEN — 2026-10-08
 
 Frozen5f1502b8 fresh PlanOnly143056 built16/5 with0 execution; actual143155

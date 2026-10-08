@@ -17883,6 +17883,56 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-windows-shell-resolution",
+      "responsibility": "Pure exact executable-path resolution with inert files, no process or native Windows execution.",
+      "excludes": "No broad worker/native fault or quarantine acceptance; remaining native recipe cuts remain separately required.",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
+        "BookOfEternityGMBridge/ConPtySession.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWindowsShellResolutionTests.ResolvesExactConfigurationWithoutLaunchingAProbe"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-bridge-native-windows",
+      "responsibility": "Body-required native Windows original WMI/ConPTY/Job host status, participating mutation/close and shutdown under ordinary, extended and drive-case roots. Empty manual CLI; no live provider.",
+      "excludes": "No broad worker/native fault or quarantine acceptance; remaining native recipe cuts remain separately required.",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
+        "BookOfEternityGMBridge/ConPtySession.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "windows-latest"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeWindowsOriginalHostTests.NativeOriginalHostPublishesStatusAndRetiresItsExactRun"
+          ]
+        }
+      ]
     }
   ]
 }
