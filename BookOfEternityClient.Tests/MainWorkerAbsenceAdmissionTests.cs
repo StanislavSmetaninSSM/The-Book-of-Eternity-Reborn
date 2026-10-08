@@ -16,7 +16,7 @@ public sealed class MainWorkerAbsenceAdmissionTests : IDisposable
         Assert.True(OperatingSystem.IsLinux());
         _files = new(_root, NullLogger<FileSystemManager>.Instance);
     }
-    private string Inventory => Path.Combine(_root, ".boe_runtime", "worker-runs");
+    private string Inventory => new WorkerLedgerTarget(_root).DirectoryPath;
     private void AssertNoMainPreparation()
     {
         Assert.False(Directory.Exists(Path.Combine(_root, ".boe_runtime", "gm-runs")));

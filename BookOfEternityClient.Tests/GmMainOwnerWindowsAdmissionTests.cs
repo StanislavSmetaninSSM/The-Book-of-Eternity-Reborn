@@ -1,6 +1,7 @@
 using System.Text;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services.GmRuntime;
+using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -48,7 +49,7 @@ public sealed class GmMainOwnerWindowsAdmissionTests : IDisposable
         var files = new FileSystemManager(Root(spelling), NullLogger<FileSystemManager>.Instance);
         var owner = await GmSessionRunCoordinator.OpenWindowsProductionAsync(files, Observation());
         Assert.True(owner.RetainsAuthority);
-        Assert.False(Directory.Exists(Path.Combine(_root, ".boe_runtime", "worker-runs")));
+        Assert.False(Directory.Exists(new WorkerLedgerTarget(_root).DirectoryPath));
         Assert.Null(files.CanonicalRootAuthorityIdentity.WorkerContext);
         using var cancelled = new CancellationTokenSource(); cancelled.Cancel();
         var prepareCalls = 0;
@@ -60,7 +61,7 @@ public sealed class GmMainOwnerWindowsAdmissionTests : IDisposable
         Assert.False(owner.RetainsAuthority);
         Assert.Null(files.CanonicalRootAuthorityIdentity.MainCoordinator);
         Assert.False(File.Exists(files.SessionGenerationPath));
-        Assert.False(Directory.Exists(Path.Combine(_root, ".boe_runtime", "worker-runs")));
+        Assert.False(Directory.Exists(new WorkerLedgerTarget(_root).DirectoryPath));
         if (prior == null) Assert.False(File.Exists(RecordPath));
         else Assert.Equal(prior, File.ReadAllBytes(RecordPath));
         using var nextGuard = await GmMainOwnerGuard.AcquireAsync(_root, attempts: 1);
@@ -74,7 +75,7 @@ public sealed class GmMainOwnerWindowsAdmissionTests : IDisposable
     public async Task ExistingInventoryRefusesWithoutAdoptionOrPreparation(string spelling, string kind)
     {
         var files = new FileSystemManager(Root(spelling), NullLogger<FileSystemManager>.Instance);
-        var inventory = Path.Combine(_root, ".boe_runtime", "worker-runs");
+        var inventory = new WorkerLedgerTarget(_root).DirectoryPath;
         Directory.CreateDirectory(Path.GetDirectoryName(inventory)!);
         string? evidence = null;
         var bytes = new byte[] { 9, 4, 2, 0, 255 };
@@ -106,7 +107,7 @@ public sealed class GmMainOwnerWindowsAdmissionTests : IDisposable
         await Assert.ThrowsAsync<IOException>(() => GmSessionRunCoordinator.OpenWindowsProductionAsync(files, Observation()));
         Assert.Equal(before, File.ReadAllBytes(RecordPath));
         Assert.False(File.Exists(files.SessionGenerationPath));
-        Assert.False(Directory.Exists(Path.Combine(_root, ".boe_runtime", "worker-runs")));
+        Assert.False(Directory.Exists(new WorkerLedgerTarget(_root).DirectoryPath));
         Assert.Null(files.CanonicalRootAuthorityIdentity.MainCoordinator);
         using var guard = await GmMainOwnerGuard.AcquireAsync(_root, attempts: 1);
     }

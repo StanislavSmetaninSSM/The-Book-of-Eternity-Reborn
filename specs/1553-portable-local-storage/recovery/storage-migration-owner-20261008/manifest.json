@@ -94,5 +94,126 @@
         "originalSha256": "74f610e70363c4dcbc6c567bf723144872ff0bce8a9a8c0640bbfb0defe55878"
       }
     ]
+  },
+  "intermediate": {
+    "source": "5aa734df10ebc12436f0a6b314e162c1f132a2b9",
+    "executed": 20,
+    "passed": 15,
+    "failed": 5,
+    "wallSeconds": 53.8085622,
+    "cleanupComplete": true,
+    "qualification": "Intermediate complete selection, NOT owner acceptance. Actual owner7+pipe6 PASS; absence component2 PASS/5 fixture failures from hard-coded worker-runs instead of WorkerLedgerTarget.worker-runs-v1. No Windows/runtime RED inferred. Independent finalization-capability P2 remains open.",
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "sha256": "497eedb8af8b077e3ad5a4ec203a0031f6cc008a67c651b49a34510716a8818a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+        "sha256": "398ab9432f99a3aee33be2a07395f8569ab30006130676c0cb5cf138f8baa278"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunRecord.cs",
+        "sha256": "9b87c57f63804de304bbd49e999ff06536c0fce4a592e9f3e81542adebba9f14"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationClient.cs",
+        "sha256": "16c4249eabac74054d46e0ab9ed58ceb9d6e3091d655abe449a8b2bc9176c981"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "sha256": "dbe9e1303e255d0150529ffd68f506cea6140b597463ef35b195eb2e6f0815fc"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/MainWorkerAbsenceAdmissionTests.cs",
+        "sha256": "e8a867cbce53b3cf737baa8db8bc379909eb0705d3d4263a75f6ef2ca39529d4"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmMainOwnerWindowsAdmissionTests.cs",
+        "sha256": "f28e24ddf518ba5352e3eba01c9a8ebe5044022e11bb2c591ce55758348e847f"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmWorkers/GmWorkerRunLedger.cs",
+        "sha256": "78323e87cade8ccc5c27871783cacac6cd086bd235f88883f888f0cdcf91c610"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "96d17ad5623be123bf35c8785045f202cdef8fa5e6afed8e11e2eb0f67b03cab"
+      }
+    ],
+    "artifacts": [
+      {
+        "path": "intermediate-plan-Build-unit.log.gz",
+        "source": "TestResults/test-categories/20261008-123759-531-46661-5817bcab86054c4180136581be5c0b99-categories/Build-unit.log",
+        "sha256": "406ec3b95e7288ff948b839c6f615039bdf9077100f7ce2a0859320e6cc1171b",
+        "originalSha256": "5a3b0f29468bc559d8ed5b75fcb4ff7c6680c3fb365a44219aa4792b0ee4cd8d"
+      },
+      {
+        "path": "intermediate-plan-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-123759-531-46661-5817bcab86054c4180136581be5c0b99-categories/dotnet-test.log",
+        "sha256": "40a2cad52441e7bb98caffc1c7ab636745185749ebe86518c1bf3fc66aa113c6",
+        "originalSha256": "5b24e2d2ef604b7d98365ce5ad3f40b1281fcb7a42ec9a22e60fea1aaac47bf6"
+      },
+      {
+        "path": "intermediate-plan-plan.json",
+        "source": "TestResults/test-categories/20261008-123759-531-46661-5817bcab86054c4180136581be5c0b99-categories/plan.json",
+        "sha256": "c25615fb7dbc71dfa3ce0d52bc5af8908f509750362144b4feca0163fef55df0",
+        "originalSha256": "c25615fb7dbc71dfa3ce0d52bc5af8908f509750362144b4feca0163fef55df0"
+      },
+      {
+        "path": "intermediate-plan-summary.json",
+        "source": "TestResults/test-categories/20261008-123759-531-46661-5817bcab86054c4180136581be5c0b99-categories/summary.json",
+        "sha256": "d2531b8ccc6ed7c32d80f77f93a7a6f9c705acf8e27b6bc1a5776ed08920d553",
+        "originalSha256": "d2531b8ccc6ed7c32d80f77f93a7a6f9c705acf8e27b6bc1a5776ed08920d553"
+      },
+      {
+        "path": "intermediate-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-124134-965-47299-9a82aec5a02b442e853e79b993d0d662-categories/dotnet-test.log",
+        "sha256": "b25a4292129de69693789fec7fa57da3c68995f662c37574fec5f9af733fea46",
+        "originalSha256": "a0c7aceb04c0db98cb11afa6baaae34d8fac6fce6703d2999954a6bc11d71259"
+      },
+      {
+        "path": "intermediate-gm-main-operation-native-linux-unit-001.trx.gz",
+        "source": "TestResults/test-categories/20261008-124134-965-47299-9a82aec5a02b442e853e79b993d0d662-categories/gm-main-operation-native-linux-unit-001.trx",
+        "sha256": "adcbdeaccb13ca490efc341714cbeae9bdaa74107ff6a7bce5c6d325d7a0706a",
+        "originalSha256": "42cd03ddfe44e1125cd8c772e7ace659ffb25c9a4a24b47a3274fd04d8d6fa25"
+      },
+      {
+        "path": "intermediate-gm-main-owner-conjunction-linux-unit-002.trx.gz",
+        "source": "TestResults/test-categories/20261008-124134-965-47299-9a82aec5a02b442e853e79b993d0d662-categories/gm-main-owner-conjunction-linux-unit-002.trx",
+        "sha256": "4f770d3c4a750caeebe42e56e79df207cffeafc78d5df68cbd747e91cf388b24",
+        "originalSha256": "c0ffefe4e094b3f389545ab431423f3fdd2e727b2005941dd9b43eb403baa58d"
+      },
+      {
+        "path": "intermediate-gm-main-worker-absence-component-unit-003.trx.gz",
+        "source": "TestResults/test-categories/20261008-124134-965-47299-9a82aec5a02b442e853e79b993d0d662-categories/gm-main-worker-absence-component-unit-003.trx",
+        "sha256": "ca5de0d9c0a8f7d080515ff43418be24a3e229d56ae12fa7c87718ba8faa23a5",
+        "originalSha256": "a915705fe1177f151943f0305e65537d82164fecc84d08245557434a59f2ee97"
+      },
+      {
+        "path": "intermediate-plan.json",
+        "source": "TestResults/test-categories/20261008-124134-965-47299-9a82aec5a02b442e853e79b993d0d662-categories/plan.json",
+        "sha256": "5518f6d9410d05d8516be5c01bfa0bfa08260140cb355ae6e647ee3ff923ace6",
+        "originalSha256": "5518f6d9410d05d8516be5c01bfa0bfa08260140cb355ae6e647ee3ff923ace6"
+      },
+      {
+        "path": "intermediate-summary.json",
+        "source": "TestResults/test-categories/20261008-124134-965-47299-9a82aec5a02b442e853e79b993d0d662-categories/summary.json",
+        "sha256": "ec68912bec7f646d0b7de2f4bb704d07c4d02f2ac18b44133a75584a9d629fb0",
+        "originalSha256": "ec68912bec7f646d0b7de2f4bb704d07c4d02f2ac18b44133a75584a9d629fb0"
+      },
+      {
+        "path": "intermediate-plan-runner.log.gz",
+        "source": "/tmp/boe-1553-owner-green-plan.log",
+        "sha256": "61d8d5b2b5a7466fb4a7b3ac0cd44d8862e8cab81f4739562b36b7cbb7f709a7",
+        "originalSha256": "02ea50e62b01b16567701df1a71af786c14ca7b2cbae590b6dd6f82099f3ffc4"
+      },
+      {
+        "path": "intermediate-runner.log.gz",
+        "source": "/tmp/boe-1553-owner-intermediate.log",
+        "sha256": "7fe7eac1f1a98eefcaefb2c890d7252b896e293213b5733c38c65d9dbbc29795",
+        "originalSha256": "5ebfb46eff096ad2f1ed184bdb70e6486fa302b23b71fd508ea67e8702bcdc10"
+      }
+    ]
   }
 }

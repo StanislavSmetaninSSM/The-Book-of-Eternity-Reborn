@@ -1,0 +1,104 @@
+{
+  "Categories": [
+    "gm-main-owner-conjunction-linux",
+    "gm-main-worker-absence-component",
+    "gm-main-operation-native-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "5aa734df10ebc12436f0a6b314e162c1f132a2b9",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.6766773,
+  "Descriptors": [
+    {
+      "Name": "gm-main-operation-native-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-operation-native-linux",
+      "Categories": [
+        "gm-main-operation-native-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary|FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualParticipatingBoundary",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_ActualPipeRetainsParticipatingOperation",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-owner-conjunction-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-owner-conjunction-linux",
+      "Categories": [
+        "gm-main-owner-conjunction-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute|FullyQualifiedName=BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory|FullyQualifiedName=BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RejectedMainAttempt_ReleasesOnlyItsBorrowedOriginalInventoryClient|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RejectedMainAttempt_ReleasesOnlyItsBorrowedOriginalInventoryClient",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation",
+          "Cases": 4
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-worker-absence-component-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-worker-absence-component",
+      "Categories": [
+        "gm-main-worker-absence-component"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.ExistingOrBlockedNamespaceRetainsEveryEvidenceByte|FullyQualifiedName=BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.LaterEmptyInventoryWithdrawsPreviouslyObservedAbsence|FullyQualifiedName=BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.RetainedOriginalContextCannotBeReinterpretedAsAbsentInventory|FullyQualifiedName=BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.VerifiedAbsenceDoesNotInitializeInventoryOrMainMetadata",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.ExistingOrBlockedNamespaceRetainsEveryEvidenceByte",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.LaterEmptyInventoryWithdrawsPreviouslyObservedAbsence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.RetainedOriginalContextCannotBeReinterpretedAsAbsentInventory",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MainWorkerAbsenceAdmissionTests.VerifiedAbsenceDoesNotInitializeInventoryOrMainMetadata",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -155,7 +155,55 @@ internal static class MainRunFenceScenarioDriver
             await Call("StartShellAsync");
             var owner=(GmSessionRunCoordinator)Field("_mainRun")!;var terminal=(IOwnedTerminalSession)Field("_pty")!;
             var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var old=Read();
-            if(mode=="terminal-main-save-load") {
+            if(mode is "terminal-main-finalization-purpose" or "terminal-main-finalization-bound-close") {
+                const string member="game_state/main-finalization.bin";
+                var target=files.ResolvePath(member);
+                byte[] before=[17,29,41],after=[53,67,79];
+                var desired=before;var published=0;var closingReads=0;
+                FileSystemManager? hooked=null;
+                var hooks=new FileSystemManagerHooks {
+                    LocalPublicationObserver=(phase,index)=>{
+                        if(phase!=TrustedLocalPublicationPhase.MemberPublished)return;
+                        using var journal=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(root,".boe_runtime/trusted-local-publication-v1/active.json")));
+                        var members=journal.RootElement.GetProperty("Members").EnumerateArray().ToArray();
+                        Require(index==0 && members.Length==1 && members[0].GetProperty("Path").GetString()==target,"Finalization fixture selected the wrong real member.");
+                        Require(File.ReadAllBytes(target).AsSpan().SequenceEqual(desired),"Actual selected member after-image was not published.");published++;
+                    },
+                    SessionOperationClosingAsync=async()=>{
+                        Require(mode=="terminal-main-finalization-bound-close","Direct-purpose row unexpectedly gained bound closing.");
+                        await using var closing=await hooked!.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.SessionFinalization);
+                        Require(hooked.IsCurrentSessionGeneration(closing,owner.Identity.GenerationId),"Authorized finalization lost original generation read.");closingReads++;
+                    }
+                };
+                hooked=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance,PhysicalLoadTransactionOperations.Instance,hooks);
+                await owner.RunOperationAsync(async()=>{await hooked.WriteFileAtomicBytesAsync(member,before);return 0;});
+                Require(published==1,"Ordinary positive control did not reach the selected current publisher.");
+                published=0;desired=after;
+                if(mode=="terminal-main-finalization-purpose") {
+                    var acquired=0;Exception? failure=null;
+                    await owner.RunOperationAsync(async()=>{
+                        Require(!SessionOperationContext.TryGetExpectedGeneration(root,out _),"Direct-purpose case unexpectedly has a bound closing context.");
+                        try {await using var closing=await hooked.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.SessionFinalization);
+                            acquired++;await hooked.WriteFileAtomicBytesAsync(closing,member,after);}
+                        catch(Exception error){failure=error;}
+                        return 0;
+                    });
+                    result["OrdinaryPositiveControlReached"]=true;result["FinalizationAcquired"]=acquired;
+                    result["SelectedMemberPublished"]=published;result["TargetIsAttemptedAfter"]=File.ReadAllBytes(target).AsSpan().SequenceEqual(after);
+                    result["ObservedFailure"]=failure?.ToString();
+                    Require(failure is IOException && acquired==0 && published==0 && File.ReadAllBytes(target).AsSpan().SequenceEqual(before),
+                        "Purpose alone granted finalization/recovery/mutation capability; inspect reached member/after-image diagnostics.");
+                } else {
+                    await owner.RunOperationAsync(async()=>{
+                        await SessionOperationContext.RunBoundAsync(hooked,owner.Identity.GenerationId,()=>hooked.WriteFileAtomicBytesAsync(member,after));return 0;
+                    });
+                    Require(closingReads==1 && published==1 && File.ReadAllBytes(target).AsSpan().SequenceEqual(after),"Actual bound closure or ordinary operation publication failed.");
+                    result["BoundClosingGenerationReads"]=closingReads;
+                }
+                Require(Read().Identity==old.Identity && Read().Disposition==GmSessionRunDisposition.Running && owner.RetainsAuthority,
+                    "Finalization check changed the original main run instead of closing its operation.");
+            }
+            else if(mode=="terminal-main-save-load") {
                 var before=File.ReadAllBytes(seedFiles.SessionGenerationPath);var count=Directory.GetFiles(seedFiles.ResolvePath("saves/manual_saves"),"*.zip").Length;
                 var unbound=await save!.CreateSaveAsync("unbound","synthetic F1 fixture");
                 Require(unbound.Disposition==SaveCreationDisposition.Uncertain,"Unbound save acquired Running original main authority or hid retained refusal.");

@@ -17657,6 +17657,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-finalization-capability-linux",
+      "responsibility": "Actual original Running neutral Bridge owner: direct purpose without a bound closing context cannot recover/publish; genuine bound closing retains generation verification and ordinary body publication. Positive reached publisher control and original guardian cleanup.",
+      "excludes": "Windows worker-inventory bypass or native qualification; no fabricated backend, full shutdown suite or production consumer activation.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainFinalizationCapabilityTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

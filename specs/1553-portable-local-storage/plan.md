@@ -1,3 +1,21 @@
+## A01 owner review P2 and fixture correction — 2026-10-08
+
+Independent owner source gate at5aa blocked on one P2: SessionFinalization purpose
+alone exempts Windows original-worker admission without actual closing, while the
+mutation gate forbids it only when owner admission is closed. Direct original
+Running RunOperationAsync with no bound context can therefore request that purpose;
+normal SessionOperationContext.BeginClosing already protects many ordinary writers
+and is not alleged to have published. Add a real original-owner direct-purpose
+case with reached ordinary-member positive control, plus genuine bound-close/read
+control, before restricting purpose/readonly capabilities. Runtime unchanged here.
+
+Intermediate5aa20 complete=15PASS/5FAIL53.809s, cleanup complete. Original owner7 and
+pipe6 PASS; component2 PASS/5 fixture failures: wrong literal worker-runs instead of
+actual WorkerLedgerTarget.worker-runs-v1. Both component/native fixtures now use the
+actual target object; no runtime RED is claimed. [Preserved original mixed artifacts](recovery/storage-migration-owner-20261008/manifest.json).
+Run focused corrected component7 + finalization2 before runtime correction, then
+fresh coherent22. Native27 remains unexecuted, consumer activation remains closed.
+
 ## A01 owner/worker conjunction WIP — 2026-10-08
 
 Frozena500 Linux original baseline7/7PASS16.263s, clean/full/cleanup; [raw evidence](recovery/storage-migration-owner-20261008/manifest.json).

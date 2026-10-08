@@ -1,0 +1,72 @@
+{
+  "Categories": [
+    "gm-main-owner-conjunction-linux",
+    "gm-main-worker-absence-component",
+    "gm-main-operation-native-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "5aa734df10ebc12436f0a6b314e162c1f132a2b9",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0524557,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0404337,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0824619,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 75.8524881,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0038168,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 14,
+  "WallTime": "00:01:19.8614426",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 20,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "gm-main-operation-native-linux-unit-001",
+      "gm-main-owner-conjunction-linux-unit-002",
+      "gm-main-worker-absence-component-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

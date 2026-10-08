@@ -196,6 +196,16 @@
         "FR-010",
         "T063-REMAINING-CONSUMERS"
       ]
+    },
+    {
+      "category": "gm-main-finalization-capability-linux",
+      "reason": "Independent P2: actual original Running callback direct finalization-purpose capability versus genuine bound closing. Reached positive ordinary current-publisher control before target assertion; shared Linux causal scope, not native Windows bypass proof.",
+      "contracts": [
+        "#1553",
+        "A01",
+        "FR-010",
+        "T063-REMAINING-CONSUMERS"
+      ]
     }
   ]
 }
