@@ -2,9 +2,10 @@
 
 Source: #1553 / T054-WINDOWS-HTTP. Verification/report-only branch
 `codex/1553-http-linux-audit-20261008`; product source, tests and catalog are
-unchanged. HOME-PC remains the product implementation writer. The latest owner
-instruction authorizes integration into main with GitHub CI disabled; the two
-workflows are already disabled_manually. No runtime/test change is made here.
+unchanged. HOME-PC remains the product implementation writer. Current scope is
+Linux verification and evidence publication on this report branch. Parent
+clarified that the historical merge/CI instruction applied to completed PR1555;
+no new remote merge, main change, CI/protection/settings change is authorized.
 
 Current T055 result: exact3d6cfd24898fa30b37764de688432455ac9a4660 passes the
 three selected Linux cases and the genuine installed NewGame/web/idle-relay
@@ -255,7 +256,16 @@ Unchanged native binaries retain their original0a build provenance; they were
 not relabelled as rebuilt at3d6. Installed player startup has no source/compiler.
 The archive preserves62raw/state/driver/build records with lengths/hashes.
 
-Independent final review and integration receipts follow this saved checkpoint.
+Independent final review and GitHub recovery receipts follow this saved checkpoint.
 Source headf22809819ebf6a4f6c78c77064d898df927676d1 adds only two metadata commits
 after reviewed/tested3d6; source/test bytes remain the qualified ones. No full
 suite, previous successful cohort, CLI model turn or live browser was repeated.
+
+Scope correction: before parent clarification, two workflow-disable calls were
+attempted and returned403 because both workflows were already inactive. Their
+state remains disabled_manually. A local unpushed merge88de5c7fa501b36cbb814f9082b122c71bf6e076
+was prepared in the earlier report checkout (parents a22f31b0 and f2280981).
+No PR, remote merge or main update was sent. The local commit is preserved without
+rollback; final report continues from the published a22f31b0 in an isolated
+worktree and excludes that local merge. Remote main remains6381a950. The exact
+incident receipt is scope-correction.json; this report does not claim a merge.

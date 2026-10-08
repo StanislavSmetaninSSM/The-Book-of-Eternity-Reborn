@@ -1,0 +1,80 @@
+{
+  "SchemaVersion": 1,
+  "TimestampUTC": "2026-10-08T07:13:53.910971+00:00",
+  "Task": "#1553 T055 HTTP original-owner independent Linux verification",
+  "Verdict": "PASS bounded targeted and installed HTTP/original lifecycle",
+  "ProductSource": "3d6cfd24898fa30b37764de688432455ac9a4660",
+  "ReportScope": "Only report/evidence; no product/source/tests/catalog edits and no new merge",
+  "CausalRed": {
+    "Source": "0a2843af69c521d7507a9e036cb5494d8c9d73cb",
+    "Category": "browser-original-owner-linux",
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1,
+    "CausalFailure": "six actual original-owner read HTTP500 plus two validation refusal DTOs; controls meaningful200",
+    "PreparationSucceeded": true,
+    "CompleteCleanup": true,
+    "TestsOnly09ComparedNotRerun": true
+  },
+  "TargetedGreen": {
+    "Selection": "specs/1553-portable-local-storage/recovery/http-original-owner-20261008/selection-linux.json",
+    "Categories": [
+      "browser-original-owner-linux",
+      "gm-load-browser-entry",
+      "gm-load-early-ack"
+    ],
+    "Executed": 3,
+    "Passed": 3,
+    "Failed": 0,
+    "DescriptorsCompleted": 3,
+    "Seconds": 141.0582708,
+    "TimeoutOrSkipOrDuplicate": false,
+    "OwnedAndRuntimeCleanupComplete": true
+  },
+  "ActualInstalledFlow": {
+    "Root": "/tmp/hl-55f91823",
+    "OrdinaryFreshNewGame": true,
+    "PersistentRelayOriginalRunningAndObservedReady": true,
+    "ReadinessOverride": false,
+    "HttpTotal": 133,
+    "Meaningful200": 133,
+    "Http500": 0,
+    "PreRelay200": 94,
+    "ActiveOriginalOwner200": 39,
+    "Seconds": 45.164,
+    "OriginalShutdownAttempts": 1,
+    "ExactIdentityStopped": "OwnedScopeEmpty",
+    "ClientWebBridgeExit0EofTermios": true,
+    "GuardianEchild": true,
+    "GuardianEmergencySignals": 0,
+    "GuardianFailures": 0,
+    "GuardianDeadline": false,
+    "ModelRequests": 0,
+    "RelaySubmit": false,
+    "GameTurnsAccepted": 0
+  },
+  "Review": {
+    "Reviewer": "/root/http_linux_evidence_review",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "SourceEvidence": "PASS exacta22 packet, bounded3GREEN/133HTTP plus original cleanup",
+    "FinalMetadata": "pending narrow review of current corrected carrier"
+  },
+  "Limits": [
+    "Browser UI NOT RUN: installed Chromium sandbox configuration refused; no bypass",
+    "No new model/gameplay/Windows execution/systemd/device/save qualification",
+    "Historical26HTTP500 and Uncertain retained; no replay",
+    "Synthetic PascalCase audio config resolves to defaults under actual case-sensitive camelCase settings decode; audio persistence not claimed"
+  ],
+  "Evidence": [
+    "original-owner-red-manifest.json",
+    "original-owner-green-manifest.json",
+    "original-owner-green-readback.json",
+    "original-owner-live-manifest.json",
+    "original-owner-live-meaningful-http-proof.json",
+    "original-owner-live-readback.json",
+    "original-owner-closed-space-cleanup.json",
+    "scope-correction.json"
+  ],
+  "Recovery": "fresh GitHub-only report restoration follows saved candidate; not a build/test/run"
+}

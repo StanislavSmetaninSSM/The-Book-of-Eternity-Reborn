@@ -1,0 +1,61 @@
+{
+  "Commit": "a22f31b00f0dc4769b05049d6bc7c6522497c49a",
+  "TimestampUTC": "2026-10-08T07:10:14.389412+00:00",
+  "Method": "official GitHub git/blobs API exact byte comparison",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/http-linux-coverage-audit-20261008.md",
+      "Bytes": 17033,
+      "SHA256": "d2dd17450b1ee108fcfb7fec27a647f250a49af8ab2f9cc55a71b2b77fb9b644",
+      "GitBlob": "a217ed8c3828582343225f95c16b613d8aeaa2e3"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-green-readback.json",
+      "Bytes": 961,
+      "SHA256": "e5aecabbeb6807c77edc2d84757366dbb58b3946d6b9315f4baf66018abc378e",
+      "GitBlob": "2acdb483803dfe9fba488609111bde20219282ba"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-live-diagnostic-source.json",
+      "Bytes": 120929,
+      "SHA256": "5560cfca603cb23b73a48087d4f076db2dec619dfd448c908539b96f632e9d49",
+      "GitBlob": "1bbb9e5e9a529aa65dfd1e5cb0709663cbf9f0be"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-live-evidence.zip",
+      "Bytes": 717509,
+      "SHA256": "06881a7f55462e5c640f076c79cf105a3ad89c2554e780cafa868946801a2a1a",
+      "GitBlob": "758872dd9eec5794ae4838218e5503360b93400c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-live-guardian.json",
+      "Bytes": 97,
+      "SHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "GitBlob": "65787fec7540656c9a32d8346944b23f7a59c2ac"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-live-http-responses.json",
+      "Bytes": 12051385,
+      "SHA256": "1db8892fcaafc8e230472e620845877fdffe258f1ee41188c73acd22b3720078",
+      "GitBlob": "fd107da40ec15bacd282c876ff23594f32b4e527"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-live-manifest.json",
+      "Bytes": 13675,
+      "SHA256": "415294718d527a8226155dad6d89285f58496fd5bb6becc87ae66ef50bf52850",
+      "GitBlob": "acd9a15662fba0fcf2bf086d0ded4b79006b0355"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-live-meaningful-http-proof.json",
+      "Bytes": 1872,
+      "SHA256": "4aa1afce4f8d1f5ee8b08c86f6bfdd11006be030d6b416dbbe56c90564a4acd3",
+      "GitBlob": "ab67ead6c609f041a215f25b67e5932050e5f211"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-live-result.json",
+      "Bytes": 71386,
+      "SHA256": "01d8fb9a72c65b09e1c89a5585c5c09a545e623137976c20901be99a0fc3c8dd",
+      "GitBlob": "b2dac5b0ed9cdd6af7cffc0b517ccdad8bbcf1f3"
+    }
+  ]
+}

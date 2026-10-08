@@ -1,0 +1,32 @@
+{
+  "TimestampUTC": "2026-10-08T07:13:11.846064+00:00",
+  "Correction": "Historical user CI/merge instruction applied to alreadycompletedPR1555; current task Linux evidence only",
+  "MainUnchanged": "6381a9507baae6bb2531e22e9a0ace839f03985f",
+  "PublishedOwnReport": "a22f31b00f0dc4769b05049d6bc7c6522497c49a",
+  "LocalOnlyMerge": "88de5c7fa501b36cbb814f9082b122c71bf6e076",
+  "LocalMergeParents": [
+    "a22f31b00f0dc4769b05049d6bc7c6522497c49a",
+    "f22809819ebf6a4f6c78c77064d898df927676d1"
+  ],
+  "LocalMergePreserved": true,
+  "LocalMergePublished": false,
+  "NewPullRequests": 0,
+  "RemoteMergesAttempted": 0,
+  "MainUpdatesAttempted": 0,
+  "WorkflowDisableCalls": [
+    {
+      "Id": 280957256,
+      "ResultHTTP": 403,
+      "SafeMessage": "Unable to disable a workflow that is not active.",
+      "ObservedState": "disabled_manually"
+    },
+    {
+      "Id": 374267479,
+      "ResultHTTP": 403,
+      "SafeMessage": "Unable to disable a workflow that is not active.",
+      "ObservedState": "disabled_manually"
+    }
+  ],
+  "FinalReportParent": "a22f31b00f0dc4769b05049d6bc7c6522497c49a",
+  "SettingsOrProtectionChanges": false
+}

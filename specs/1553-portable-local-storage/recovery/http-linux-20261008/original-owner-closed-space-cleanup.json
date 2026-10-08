@@ -1,0 +1,75 @@
+{
+  "TimestampUTC": "2026-10-08T07:12:30.284565+00:00",
+  "Source": "3d6cfd24898fa30b37764de688432455ac9a4660",
+  "PackageFilesVerified": 574,
+  "OriginalLifecycleProof": "/tmp/hl-55f91823/meaningful-http-proof.json",
+  "Preserved": "all state/history/main metadata/raw traces/manifests/native assets; historical Uncertain untouched",
+  "Removed": [
+    {
+      "Path": "/tmp/hl-55f91823/play/game_session/_runtime",
+      "Files": 574,
+      "Bytes": 93019796,
+      "Reason": "own confirmed-closed duplicate package or ignored verification build outputs"
+    },
+    {
+      "Path": "/tmp/relay-linux-regression-github-final/checkout/BookOfEternityClient/bin",
+      "Files": 222,
+      "Bytes": 43047005,
+      "Reason": "own confirmed-closed duplicate package or ignored verification build outputs"
+    },
+    {
+      "Path": "/tmp/relay-linux-regression-github-final/checkout/BookOfEternityClient/obj",
+      "Files": 28,
+      "Bytes": 42509055,
+      "Reason": "own confirmed-closed duplicate package or ignored verification build outputs"
+    },
+    {
+      "Path": "/tmp/relay-linux-regression-github-final/checkout/BookOfEternityGMBridge/bin",
+      "Files": 228,
+      "Bytes": 43434967,
+      "Reason": "own confirmed-closed duplicate package or ignored verification build outputs"
+    },
+    {
+      "Path": "/tmp/relay-linux-regression-github-final/checkout/BookOfEternityGMBridge/obj",
+      "Files": 28,
+      "Bytes": 839060,
+      "Reason": "own confirmed-closed duplicate package or ignored verification build outputs"
+    },
+    {
+      "Path": "/tmp/relay-linux-regression-github-final/checkout/BookOfEternityClient.Tests/bin",
+      "Files": 326,
+      "Bytes": 60384431,
+      "Reason": "own confirmed-closed duplicate package or ignored verification build outputs"
+    },
+    {
+      "Path": "/tmp/relay-linux-regression-github-final/checkout/BookOfEternityClient.Tests/obj",
+      "Files": 22,
+      "Bytes": 14916721,
+      "Reason": "own confirmed-closed duplicate package or ignored verification build outputs"
+    },
+    {
+      "Path": "/tmp/relay-linux-regression-github-final/checkout/BookOfEternityClient.TestSupport/bin",
+      "Files": 228,
+      "Bytes": 44736904,
+      "Reason": "own confirmed-closed duplicate package or ignored verification build outputs"
+    },
+    {
+      "Path": "/tmp/relay-linux-regression-github-final/checkout/BookOfEternityClient.TestSupport/obj",
+      "Files": 27,
+      "Bytes": 2340180,
+      "Reason": "own confirmed-closed duplicate package or ignored verification build outputs"
+    },
+    {
+      "Path": "/tmp/relay-linux-regression-github-final/checkout/tests/fixtures/PortableStorageCrashHost/bin",
+      "Files": 234,
+      "Bytes": 44847289,
+      "Reason": "own confirmed-closed duplicate package or ignored verification build outputs"
+    },
+    {
+      "Path": "/tmp/relay-linux-regression-github-final/checkout/tests/fixtures/PortableStorageCrashHost/obj",
+      "Files": 23,
+      "Bytes": 329241,
+      "Reason": "own confirmed-closed duplicate package or ignored verification build outputs"
+    }
+  ]
+}
