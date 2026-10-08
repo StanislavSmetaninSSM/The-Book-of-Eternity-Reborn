@@ -1,17 +1,13 @@
 ## Current F04/F05 checkpoint — 2026-10-08
 
-Unchanged baseline46 and new shared protocol4 independently accepted (carriers4f12/6e623).
-Both-platform fresh schema7/Daren cutover is now implemented WIP with read-only whole
-protocol admission before effects, exact old handler/refusal, normalized operands,
-context-first external dispatch and unchanged signed adoption. Source/evidence gate
-pending; finite Linux56 plus native28 compile/discovery0 selected. Native execution
-remains open. Historical frozen census rows below describe the prior source, not a
-claim that the current WIP still routes fresh Windows writes through the recorder.
-
-> Current A01 checkpoint: shared probe-host71a561 independently accepted with3 actual
-> Linux cases, restored carrier5b6a6069. Shared original dispatch/Load5f1502b8 now has
-> fresh16/16 Linux GREEN and independent source/selection/evidence PASS.
-> Windows original activation c45 has bounded source/component review PASS (Linux7); native execution remains open.
+Runtime242d independently source/selection PASS; actual56 Linux PASS (browser23,
+Daren23, whole-protocol4, signed direct-gacha6), complete/clean with both cleanup
+flags true. Final evidence/carrier review pending. Native28 compiled/discovered,
+zero executed. Fresh schema7 and registered profile use the current publisher on
+both platforms; original physical schema<=6 evidence keeps its handler/refusal.
+Exact grants and signed adoption remain unchanged, sequential restoration remains
+partial on later conflict. Historical census rows below describe their frozen prior
+source. Current R05/R06 decisions reflect the runtime and native qualification gap.
 
 ## Current A01 adapter and owner gates
 
@@ -80,8 +76,8 @@ source-reviewed c45 candidate with seven Linux component controls; actual native
 ConPty/Job lifecycle execution remains unqualified. Conservative provider-labelled WMI
 restart observation never authorizes cold adoption or reboot recovery. Native Windows
 qualification remains external and unexecuted. Bounded Bridge/shared consumers and A03 gates above are accepted within their
-stated platforms. F06 now has the34-case Linux GREEN below; next are F04/F05 and
-remaining F13/F14/F16/F18, cleanup and treatment-storage tails.
+stated platforms. F06 has34-case Linux GREEN; F04/F05 now has56-case shared Linux GREEN with final
+evidence review pending. Remaining F13/F14/F16/F18, dead code, cleanup and treatment-storage tails stay open.
 
 T062 restoration delta:9e30 source has10/10 Linux PASS including actual second
 mirror publication after baseline restoration; earlier7 affected recovery neighbors
@@ -143,8 +139,8 @@ counts, not defect counts. Existing F/T owners below are the single executable b
 | R04/R10, A04 | F01/F08, T062 | Actual unknown tree carrier, public Prepare, cleanup-to-notice and generation-close cuts reproduced. Common-carrier correctionfbec has15/15 Linux GREEN; independent source/evidence PASS; no full command-loop or whole-parent-operation atomicity claim. |
 | R14/R16/R21, A01 | F15/F07, T063 | Bounded adapter/owner/cleanup/probe/shared-consumer gates accepted as linked above; shared dispatch/Load5f150 has16 Linux PASS. Windows original prepared ConPty/Job activation c45 is source-reviewed with Linux7 component controls, native recipes unexecuted. Startup43e now freezes the same original post-recovery configuration (10 Linux PASS, independent cc178). WMI observation is never reboot authority; native Job faults/quarantine/Load and no universal Windows worker fence remain explicit limits. |
 | R15, A03 | F13/F08, T062/T063 | Actual six causal failures corrected at e33c: per-command publisher decisions, sticky uncertainty before another lease, outward semantic follow-up and exact original close/ACK with guarded local completion. Independent final d366 accepted10 Linux PASS; pre-receipt loss intentionally retains Unresolved. Broader GM helper generation/path/role/read-witness migration and native execution remain open; current control allowlist and no replay are preserved. |
-| R05 | F03/F04, T061/T063 | Console lifecycle accepted bounded Linux; corrected platform spellingd8b remains separate fromebd30 proof. Fresh Windows browser schema7 cutover still open, preserving original schema6 handler/refusal and signed direct-gacha admission. |
-| R06 | F05, T063 | Fresh Windows registered Daren profile/declared browser participant follows F04 admission/order/path cutover; old external evidence remains original-owned. Select actual public QTE/profile callers and exact bytes/absence/recovery. |
+| R05 | F03/F04, T061/T063 | Console lifecycle accepted bounded Linux; corrected platform spellingd8b remains separate fromebd30 proof. Fresh both-platform browser schema7 cutover242d source/selection PASS and shared Linux56 GREEN; final evidence gate pending, native28 unexecuted. Original schema6 handler/refusal and signed direct-gacha adoption remain preserved. |
+| R06 | F05, T063 | Registered Daren fresh standalone/declared routes now use the current publisher on both platforms at242d. Context-first original external evidence stays original-owned. Shared Linux public QTE/profile/exact bytes/absence/recovery included in56 GREEN; native existing/absent/extended recipes remain unexecuted. |
 | R07 | F06, T063 | Original Linux24 baseline21PASS/3 physical-deletion failures preserved. Runtime47ce exact-byte CAS/fixed-tree/full-archive-and-remaining-cohort guards has independent source/selection PASS and actual34/34 Linux GREEN (24 original +10 current cuts/caller). Independent final evidence/carrier PASS2f373. Partial removals remain committed, authority-missing retry refuses, unknown retains journal/archive; no diagnostic adoption or whole-cohort atomicity. Native Windows unexecuted. |
 | R03/R13 | F02/F09/F10, T062/T064 | Backup/distribution migrated individually; accepted restoration evidence above. Final QTE baseline cleanup remains: original ResolveActiveAction terminal result → actual backup deletion unknown/logger cut, sibling-directory/root pruning controls. Pre-turn cleanup similarly retains established outcome/evidence. |
 | R04/R12 | F08/F09/F12, T062 | Two treatment contours remain: helper/engine compensation actual publication uncertainty (preserve FailTaken restart blocker/HeldBlocked/Unsafe contracts), and successful treatment followed by actual runtime mirror uncertainty then truthful notice. Post-seal binding itself reads authority; not a third forward-write defect. Use direct original coordinator, avoid finally-reacquire fixture masking; no B2–B5 business resumption. |

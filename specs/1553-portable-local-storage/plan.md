@@ -1,3 +1,23 @@
+## F04/F05 runtime GREEN checkpoint — 2026-10-08
+
+Runtime242d1114847ad147b6b5475429bf67df6b34ba5a independent SOURCE/SELECTION
+PASS, no findings. Fresh Plan173159 successful84/5/0 (46.1329604s), including
+native28 discovery only. Actual173755 Linux56/56 PASS,4/4 complete31.2896542s,
+clean exact source, no skips/duplicates and both cleanup flags true. All protocol
+cuts1, negative recovery/mutation0, neutral recovery4/mutation6; original browser23,
+Daren23 and signed-adoption6 passed. [Raw/source-pinned packet](recovery/storage-migration-browser-daren-20261008/manifest.json).
+Discovery173857 validates category ownership with0 execution (10.1630267s).
+Independent final raw/evidence/carrier gate pending. No runtime retest requested.
+
+Fresh both-platform browser/profile source now uses the common contract; original
+schema<=6 physical evidence retains its supported handler or refusal. Linux56 is
+shared-route evidence. Native28 remains unexecuted and cannot qualify Windows
+filesystem aliases, physical old receipts or recovery. No operation-wide atomicity
+upgrade, new grants, unsigned adoption, or GM/gameplay contract change.
+Next after this bounded evidence gate: remaining F13 helper/F14 daemon snapshots,
+F16 direct effects, F18 reached-cut reconciliation, F17 dead code, final cleanup and
+treatment storage propagation. All remain open; B2–B5 gameplay stays paused.
+
 ## F04/F05 coherent runtime cutover WIP — 2026-10-08
 
 Protocol control carrier6e623754 independently accepted: actual4 shared Linux
