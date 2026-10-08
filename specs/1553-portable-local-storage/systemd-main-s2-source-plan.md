@@ -38,3 +38,7 @@ Exact read-only probe: [script](recovery/systemd-s2-read-only-probe.py), [result
 - [ ] Independent evidence/metadata review; normal checkpoint/push exact remote/byte readback and new direct GitHub-only clean restoration; handoff. Do not enable SupportsPidfdScopes or public selector, implement S3, install manager or make GM requests.
 
 No game/GM-authored contract changes: client-owned observation adapter, no prompt/mechanic/model/settings changes. Existing spec FR-009/012/013/014/015, main/worker/generation conjunction and trusted-local player governance preserved. This does not add save protection from the player. User authorized independent controlled/source progress under approved design; no new product decision is needed for conservative refusal while unqualified.
+
+Design review Sol6.1/xhigh PASS at73d58e5e: pinned namespace FD to prevent reuse; before/after directory/events/path identity; behavioral causal baseline instead of type-presence assertion. Pure compileable source stub has no observation implementation; positive tests must fail. Connected fault must include second post-reap sample after initial Empty. Original public gates and full S2/S3 remain closed.
+
+Causal baseline: preparation CS0539/0tests retained separately. After fixture Dispose correction, actual connected3/3 executed FAIL (source Bind explicitly not implemented), cleanup complete/3guardian ECHILD0emergency; runner failed before source29cases, those are unexecuted. No implementation behavior yet. Exact logs retained under recovery/systemd-s2a.

@@ -2,6 +2,80 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "id": "gm-main-systemd-cgroup-connected",
+      "responsibility": "Concrete source through real original neutral Bridge/PTy/pidfd, fresh empty then post-reap replacement/read-fault refusal",
+      "excludes": "No live manager/cgroup positive qualification or public backend/GM/Windows",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/SystemdCgroupSource.cs",
+        "BookOfEternityClient.TestSupport/SystemdControlledScenarioDriver.cs"
+      ],
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainSystemdCgroupConnectedTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "id": "gm-main-systemd-cgroup-affected",
+      "responsibility": "Exact original cgroup observation and public-selection refusal boundaries affected by new source",
+      "excludes": "No unchanged S1 cohorts or native/Windows/environment qualification",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/SystemdCgroupSource.cs"
+      ],
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainSystemdContractTests.HeldRoot_CannotBindEmptyCgroup",
+            "BookOfEternityClient.Tests.GmMainSystemdContractTests.OriginalCgroup_RejectsUnqualifiedEvidence",
+            "BookOfEternityClient.Tests.GmMainSystemdContractTests.OriginalCgroup_RequiresFreshSameIdentityEmptyAfterPopulation",
+            "BookOfEternityClient.Tests.GmMainSystemdContractTests.PublicProductionSelection_RemainsClosedBeforePackageOrDirectory"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-main-systemd-cgroup-source",
+      "responsibility": "S2A concrete original readonly cgroup mapping/events source, controlled frames and own regular-file FD pin/negative filesystem tests",
+      "excludes": "No actual manager/cgroup positive qualification, public activation, services, native Windows or GM requests",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/SystemdCgroupSource.cs",
+        "BookOfEternityClient/Services/GmRuntime/LinuxSystemdCgroupFiles.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainSystemdCgroupSourceTests.*"
+          ]
+        }
+      ]
+    },
+    {
       "id": "gm-main-systemd-affected",
       "responsibility": "Exact NativeLineage held/release/main-fence/stop and unchanged Windows ownership source boundaries affected by S1 shared seams",
       "excludes": "No old cohort sequence, full suite, worker qualification or native Windows execution.",
@@ -590,7 +664,7 @@
     },
     {
       "id": "daren-standalone-browser-dispatch",
-      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
+      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent \u00d7 commit/rollback), no broader browser cohort.",
       "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",

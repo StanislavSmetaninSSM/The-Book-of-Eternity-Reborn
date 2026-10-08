@@ -14,14 +14,16 @@ internal static class SystemdControlledScenarioDriver
 {
     internal static async Task<int> RunAsync(string mode,string package,string folder)
     {
-        var bus=new ControlledBus {FixtureFolder=folder,Mode=mode};var cgroup=new ControlledCgroup(bus) {Mode=mode};var fixture=new SystemdControlledFixture(bus,cgroup);
-        if(mode=="terminal-systemd-connected") {
+        var bus=new ControlledBus {FixtureFolder=folder,Mode=mode};var cgroup=new ControlledCgroup(bus) {Mode=mode};var sourceFiles=mode.StartsWith("terminal-systemd-cgroup-",StringComparison.Ordinal)?new CgroupFiles(bus):null;
+        ISystemdCgroupSource source=sourceFiles==null?cgroup:new SystemdCgroupSource(sourceFiles);
+        var fixture=new SystemdControlledFixture(bus,source);
+        if(mode is "terminal-systemd-connected" or "terminal-systemd-cgroup-connected") {
             var code=await OwnedTerminalScenarioDriver.RunSystemdBridgeAsync(package,folder,fixture);
             var record=ReadRecord(folder);var facts=JsonSerializer.Deserialize<Dictionary<string,object?>>(File.ReadAllText(Path.Combine(folder,"scenario.json")))!;
             facts["ActualScopePreparedRunningStopping"]=bus.Stages.Contains(GmSessionRunDisposition.Prepared) && bus.Stages.Contains(GmSessionRunDisposition.Running) && bus.Stages.Contains(GmSessionRunDisposition.Stopping);
             facts["OriginalPidfdTransferred"]=bus.ActualPidfd;facts["OneScopeStartStop"]=bus.StartCount==1 && bus.StopCount==1;
-            facts["ActualDisposedAndStoppedAck"]=bus.Disposed && cgroup.Disposed && record.Disposition==GmSessionRunDisposition.Stopped;
-            var success=code==0 && bus.ActualPidfd && bus.SubscribedBeforeStart && bus.Stages.Contains(GmSessionRunDisposition.Running) && bus.StopCount==1 && bus.Disposed && cgroup.Disposed && record.Disposition==GmSessionRunDisposition.Stopped;
+            facts["ActualDisposedAndStoppedAck"]=bus.Disposed && (sourceFiles?.Disposed??cgroup.Disposed) && record.Disposition==GmSessionRunDisposition.Stopped;
+            var success=code==0 && bus.ActualPidfd && bus.SubscribedBeforeStart && bus.Stages.Contains(GmSessionRunDisposition.Running) && bus.StopCount==1 && bus.Disposed && (sourceFiles?.Disposed??cgroup.Disposed) && record.Disposition==GmSessionRunDisposition.Stopped;
             facts["Success"]=success;File.WriteAllText(Path.Combine(folder,"scenario.json"),JsonSerializer.Serialize(facts));return success?0:1;
         }
         var ioMode=mode switch {"terminal-systemd-io-drain"=>"terminal-main-output-drain","terminal-systemd-io-fault"=>"terminal-main-output-fault","terminal-systemd-stopped-debt"=>"terminal-main-stopped-debt-epoch","terminal-systemd-native-dispose-fault"=>"terminal-main-native-dispose-fault","terminal-systemd-bus-dispose-fault"=>"terminal-main-bus-dispose-fault",_=>null};
@@ -76,6 +78,27 @@ internal static class SystemdControlledScenarioDriver
             File.WriteAllText(Path.Combine(folder,"scenario.json"),JsonSerializer.Serialize(facts2));
         }
     }
+    // Controlled kernel observations only. The concrete production source parses,
+    // sequences and binds them; real original PTY/pidfd/coordinator remains intact.
+    private sealed class CgroupFiles(ControlledBus bus):ISystemdCgroupFiles {
+        internal bool Disposed;private PinOwner? _pin;private int _stopReads;
+        public void PinNamespace() { }
+        public string NamespaceOf(int? pid)=>"cgroup:[42]";
+        public string ReadMountInfo()=>"9 1 0:42 / /controlled-mount rw - cgroup2 none rw\n";
+        public string ReadMembership(int pid)=>"0::"+bus.Group+"\n";
+        public ISystemdCgroupPin Pin(SystemdCgroupMount mount,string group)=>_pin=new PinOwner(this,new(group,mount.MountId,mount.Device,1));
+        public void Dispose()=>Disposed=true;
+        private sealed class PinOwner(CgroupFiles files,SystemdCgroupIdentity id):ISystemdCgroupPin {
+            public SystemdCgroupIdentity Identity=>files._stopReads>=2 && busMode(files)=="terminal-systemd-cgroup-late-replacement"?id with {Inode=2}:id;
+            private static string? busMode(CgroupFiles f)=>f.Mode;
+            public byte[] ReadEventsChecked() {
+                if(files.Stopping && ++files._stopReads>=2 && files.Mode=="terminal-systemd-cgroup-late-read-fault")throw new IOException("controlled second post-reap events fault");
+                return System.Text.Encoding.UTF8.GetBytes(files.Stopping?"populated 0\nfrozen 0\n":"populated 1\nfrozen 0\n");
+            }
+            public void Dispose() { }
+        }
+        private bool Stopping=>bus.StopCount>0;private string? Mode=>bus.Mode;
+    }
     private static GmSessionRunRecord ReadRecord(string folder)=>GmSessionRunRecordCodec.Decode(File.ReadAllBytes(Path.Combine(Directory.GetDirectories(folder,"neutral-session-*").Single(),".boe_runtime/gm-runs/main.json")));
     private static void Require(bool value,string message){if(!value)throw new InvalidOperationException(message);}
     internal sealed class ControlledBus : ISystemdBusTransport
@@ -86,7 +109,7 @@ internal static class SystemdControlledScenarioDriver
         public Task<string> AuthorityLost=>_lost.Task;
         public bool SupportsPidfdScopes=>true;
         internal int StartCount,StopCount;internal bool SubscribedBeforeStart,ActualPidfd,Disposed;
-        internal string? Root,Mode,FixtureFolder;internal Action? BeforeRelease,CancelStart;internal List<GmSessionRunDisposition> Stages=[];
+        internal string? Root,Mode,FixtureFolder,Group;internal Action? BeforeRelease,CancelStart;internal List<GmSessionRunDisposition> Stages=[];
         public Task SubscribeAsync(CancellationToken token){SubscribedBeforeStart=true;return Task.CompletedTask;}
         public Task StartScopeAsync(SystemdScopeRequest request,CancellationToken token){
             StartCount++;Require(SubscribedBeforeStart,"Subscription followed mutation.");
@@ -109,6 +132,7 @@ internal static class SystemdControlledScenarioDriver
             if(Mode=="terminal-systemd-release-ack" && Stages.LastOrDefault()==GmSessionRunDisposition.Running){BeforeRelease?.Invoke();BeforeRelease=null;}
             if(Mode=="terminal-systemd-release-loss" && Stages.LastOrDefault()==GmSessionRunDisposition.Running)_lost.TrySetResult("controlled before-A1 manager loss");
             if(Mode=="terminal-systemd-late-loss" && StopCount==1 && fd==null && ++_stopObservations==2)_lost.TrySetResult("controlled after-native manager loss");
+            Group="/controlled/"+name;
             return Task.FromResult(new SystemdUnitSnapshot(Mode=="terminal-systemd-changed-unit" && Stages.LastOrDefault()==GmSessionRunDisposition.Stopping?"/org/freedesktop/systemd1/unit/replacement":"/org/freedesktop/systemd1/unit/controlled",new string(Mode=="terminal-systemd-changed-invocation" && Stages.LastOrDefault()==GmSessionRunDisposition.Stopping?'c':'a',32),"/controlled/"+name,Mode=="terminal-systemd-wrong-fd"?"/org/freedesktop/systemd1/unit/other":"/org/freedesktop/systemd1/unit/controlled"));
         }
         private int _stopObservations;

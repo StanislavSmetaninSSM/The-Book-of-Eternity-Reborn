@@ -2,34 +2,26 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-relay-reusable-contract",
-      "reason": "New shared exact-byte/identity/atomic publication/close API",
+      "category": "gm-main-systemd-cgroup-source",
+      "reason": "Missing concrete original source and bounded readonly descriptor/parser failure semantics; controlled data only",
       "contracts": [
-        "T043-RELAY-REUSABLE-CONTRACT",
+        "T041-SYSTEMD-S2A",
         "#1553"
       ]
     },
     {
-      "category": "gm-relay-reusable-main",
-      "reason": "New relocated shared path through actual original production Bridge/helper and stop/I-O/ACK",
+      "category": "gm-main-systemd-cgroup-connected",
+      "reason": "Concrete source connected with original neutral terminal success and post-reap faults; fake kernel never qualification",
       "contracts": [
-        "T043-RELAY-REUSABLE-CONTRACT",
+        "T041-SYSTEMD-S2A",
         "#1553"
       ]
     },
     {
-      "category": "gm-relay-transport",
-      "reason": "Directly changed persistent transport and legacy forwarder/resources",
+      "category": "gm-main-systemd-cgroup-affected",
+      "reason": "Only existing source observation and closed public admission regression methods",
       "contracts": [
-        "T043-RELAY-REUSABLE-CONTRACT",
-        "#1553"
-      ]
-    },
-    {
-      "category": "gm-relay-repair",
-      "reason": "Fixed consumer relocation/forwarding and current actual repair interface",
-      "contracts": [
-        "T043-RELAY-REUSABLE-CONTRACT",
+        "T041-SYSTEMD-S2A",
         "#1553"
       ]
     }
