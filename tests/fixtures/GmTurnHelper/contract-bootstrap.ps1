@@ -14,6 +14,8 @@ function Start-BoeHelperProcess {
  param([string]$Root,[AllowNull()][string]$ExpectedGeneration)
  $start=[Diagnostics.ProcessStartInfo]::new('dotnet');$start.UseShellExecute=$false;$start.RedirectStandardInput=$true;$start.RedirectStandardOutput=$true;$start.RedirectStandardError=$true
  $expected=if($ExpectedGeneration){$ExpectedGeneration}else{'initialize'}
- foreach($argument in @($script:ContractSupport,'helper-current-bootstrap',$Root,$script:ContractFolder,$expected,'original-contract')){[void]$start.ArgumentList.Add($argument)}
+ $arguments=@($script:ContractSupport,'helper-current-bootstrap',$Root,$script:ContractFolder,$expected,'original-contract')
+ if($start.PSObject.Properties['ArgumentList']){foreach($argument in $arguments){[void]$start.ArgumentList.Add($argument)}}
+ else{$start.Arguments=($arguments|ForEach-Object{ConvertTo-BoeWindowsArgument $_}) -join ' '}
  return [Diagnostics.Process]::Start($start)
 }

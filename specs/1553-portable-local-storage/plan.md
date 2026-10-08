@@ -1,3 +1,29 @@
+## F13 native fixture setup correction — 2026-10-08
+
+Root and independent review confirmed the original22 Windows setup gap. The bounded
+correction shares genuine bootstrap and prepared-script hook injection across Linux
+and Windows, with unconditional actual cut/PID/join assertions. Windows retains the
+original powershell.exe choice and PS5.1-compatible argument quoting; Linux alone uses
+the guardian. All launched Process/IO instances remain owned through normal settlement.
+Timeout is fixture failure, never a skipped-body success. No new Windows Job subsystem
+or native cleanup guarantee is introduced. This closes the intended setup shape in
+source, pending frozen review; native PS5.1 execution and abnormal cleanup remain
+unexecuted and unqualified. The prior paragraph below records the finding historically.
+
+## F13 first full-unit compilation result — 2026-10-08
+
+Frozen eaa4e5eb PlanOnly195312 failed compilation (zero selected/executed,50.0001594s,
+both runner cleanup flags true). Seven diagnostics share one cause: the new CLI
+entry used a value-return in a top-level program whose existing branches use
+Environment.ExitCode plus bare return. This checkpoint restores that existing entry
+pattern. Original log/summary and exact source are archived; this is not runtime RED.
+
+The original22 Windows fixture also remains a known source-recipe gap: its retained
+historical launcher lacks new genuine bootstrap and the moved hook injection. Native
+execution is not merely pending evidence for a ready fixture; review must close or
+explicitly separate that setup gap before claiming a native recipe. Linux full-unit
+source/fixture review continues; no actual GREEN is authorized or executed yet.
+
 ## F13 full-unit fixture/selection draft freeze — 2026-10-08
 
 The proposed final selection is now exact53: causal9 + isolated realm1,

@@ -17,7 +17,11 @@ using BookOfEternityClient.WebUi;
 // ═══════════════════════════════════════════════════
 
 var helperExitCode = await BookOfEternityClient.Services.GmRuntime.GmTurnHelperControl.TryRunAsync(args);
-if (helperExitCode.HasValue) return helperExitCode.Value;
+if (helperExitCode.HasValue)
+{
+    Environment.ExitCode = helperExitCode.Value;
+    return;
+}
 
 var participatingExitCode = await BookOfEternityClient.Services.GmRuntime.GmMainParticipatingControl.TryRunAsync(args);
 if (participatingExitCode.HasValue)

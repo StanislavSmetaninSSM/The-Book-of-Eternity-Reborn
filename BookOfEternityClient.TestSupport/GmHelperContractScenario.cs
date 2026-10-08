@@ -14,9 +14,17 @@ internal static class GmHelperContractScenario
 {
     internal static async Task<(int ExitCode,string StdOut,string StdErr)> RunOwnedAsync(string command)
     {
-        if(!OperatingSystem.IsLinux())throw new PlatformNotSupportedException("This fixture requires actual Linux/pwsh; native PS5.1 is separate.");
+        if(!OperatingSystem.IsLinux()&&!OperatingSystem.IsWindows())throw new PlatformNotSupportedException("The owned contract fixture supports Linux and Windows only.");
         var root=TestRepoPaths.RepoRoot;var folder=Path.Combine(root,"TestResults/native-terminal",Guid.NewGuid().ToString("N"));Directory.CreateDirectory(folder);
         await File.WriteAllTextAsync(Path.Combine(folder,"original.ps1"),command);
+        if(OperatingSystem.IsWindows())
+        {
+            // Same setup and assertions, but no Linux guardian is claimed here.
+            // Actual PS5.1 and abnormal native cleanup remain unexecuted recipes.
+            if(await RunDriverAsync(folder)!=0)throw new InvalidOperationException("Native original helper fixture failed: "+await File.ReadAllTextAsync(Path.Combine(folder,"scenario.json")));
+        }
+        else
+        {
         var build=new ProcessStartInfo("pwsh"){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
         foreach(var arg in new[]{"-NoProfile","-File",Path.Combine(root,"scripts/build-linux-supervisor.ps1"),"-OutputDirectory",folder,"-IncludeHostGuardian"})build.ArgumentList.Add(arg);
         var compiled=await JoinAsync(build,TimeSpan.FromSeconds(40));await File.WriteAllTextAsync(Path.Combine(folder,"build.log"),compiled.StdOut+compiled.StdErr);
@@ -27,6 +35,7 @@ internal static class GmHelperContractScenario
         using var guardian=JsonDocument.Parse(await File.ReadAllBytesAsync(Path.Combine(folder,"guardian.json")));var g=guardian.RootElement;
         if(guarded.ExitCode!=0||!g.GetProperty("echild").GetBoolean()||g.GetProperty("emergencySignals").GetInt32()!=0||g.GetProperty("failures").GetInt32()!=0||g.GetProperty("deadline").GetBoolean()||g.GetProperty("driverExitCode").GetInt32()!=0)
             throw new InvalidOperationException("Original helper contract ownership failed: "+guarded.StdErr+guarded.StdOut);
+        }
         using var scenario=JsonDocument.Parse(await File.ReadAllBytesAsync(Path.Combine(folder,"scenario.json")));var s=scenario.RootElement;
         if(!s.GetProperty("Success").GetBoolean())throw new InvalidOperationException("Original contract fixture did not settle.");
         return(s.GetProperty("ExitCode").GetInt32(),s.GetProperty("StdOut").GetString()!,s.GetProperty("StdErr").GetString()!);
@@ -51,9 +60,9 @@ internal static class GmHelperContractScenario
             }
             var glue=Path.Combine(TestRepoPaths.RepoRoot,"tests/fixtures/GmTurnHelper/contract-bootstrap.ps1");
             string Q(string value)=>"'"+value.Replace("'","''")+"'";
-            command=Regex.Replace(command,@"(?m)^\. '[^\r\n]*GM_Turn_Helper\.ps1'\s*$",m=>m.Value+Environment.NewLine+". "+Q(glue)+" -Folder "+Q(folder)+" -TestSupport "+Q(typeof(GmHelperContractScenario).Assembly.Location));
+            command=Regex.Replace(command,@"(?m)^\. '[^\r\n]*GM_Turn_Helper\.ps1'[ \t]*$",m=>m.Value+Environment.NewLine+". "+Q(glue)+" -Folder "+Q(folder)+" -TestSupport "+Q(typeof(GmHelperContractScenario).Assembly.Location));
             await File.WriteAllTextAsync(Path.Combine(folder,"owned.ps1"),command,new UTF8Encoding(false));
-            var start=new ProcessStartInfo("pwsh"){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
+            var start=new ProcessStartInfo(OperatingSystem.IsWindows()?"powershell.exe":"pwsh"){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
             foreach(var arg in new[]{"-NoLogo","-NoProfile","-NonInteractive","-File",Path.Combine(folder,"owned.ps1")})start.ArgumentList.Add(arg);
             var execution=await JoinAsync(start,TimeSpan.FromSeconds(25));evidence["ExitCode"]=execution.ExitCode;evidence["StdOut"]=execution.StdOut;evidence["StdErr"]=execution.StdErr;
             var joined=File.Exists(Path.Combine(folder,"joined.jsonl"))?File.ReadAllLines(Path.Combine(folder,"joined.jsonl")).Select(x=>JsonDocument.Parse(x)).ToArray():[];

@@ -883,5 +883,129 @@
         "sha256": "c1df2e48eb40d22f32c7671cd911ea9fb74e320e2dd6b5e7479ff91f1724a018"
       }
     ]
+  },
+  "unitCompileFailure": {
+    "qualification": "Compilation only: Program top-level helper int return conflicted with existing void-return branches; zero planned/executed, no runtime inference.",
+    "source": "eaa4e5eb",
+    "artifacts": [
+      {
+        "path": "unit-compile-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-195312-947-113966-1cb7b5d8fd7248a897466b5ad184df5d-categories/dotnet-test.log",
+        "sha256": "5f24cc57dc52d619d41a988f1d818892087d789db39f2e896054db2657fe05e6",
+        "originalSha256": "6e23b02c5086cb6b5afac229ac43fcc82848879eb005bc313a68bd18c4f633d5"
+      },
+      {
+        "path": "unit-compile-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-195312-947-113966-1cb7b5d8fd7248a897466b5ad184df5d-categories/summary.json",
+        "sha256": "cef53feb014277fba2e3c407fe70068b85f9c0ce1cb9920f3b81adcba3c85aac",
+        "originalSha256": "cef53feb014277fba2e3c407fe70068b85f9c0ce1cb9920f3b81adcba3c85aac"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "sha256": "4c16bffe3350b111adc20a70cd059984ff0ce5285286b2dee32ede9d65fd618d"
+      },
+      {
+        "path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+        "sha256": "d7a46514973be6be8797fba9b1a44dd7db7e20d457292e1317f01e86472cdcb6"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "0d7f458568613c79504e90498a99940fb93218102715e4374ce879a7227fdb5e"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+        "sha256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "sha256": "288255dd158fc146cf017b2be9211c5f583bd71fba76b5572e89768225fa1e40"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "59f2a05861551526b0199eb6cfa06ad5e36dc395fef397b46496928fbe4f02b7"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+        "sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+        "sha256": "693e601b81568ba9e6b478b57666f6e1d3f8eec172bc49b41958892ef2370642"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+        "sha256": "881559a5e20ce76489f16a2fecda55dc5a7c932bceccd6eee3ad6d0cd6161982"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/GmTurnHelperStorageScenario.cs",
+        "sha256": "fc98680894411328558a119672cc5bc8ef4e6419dead4e585dde971a18ff2ee1"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+        "sha256": "683f2ed819ebabcda73019d0e26d84312e76ae2ba5ab3ab2a9d6fc47f2babead"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmTurnHelperStorageTests.cs",
+        "sha256": "489db102fe398b0de31a218486d3e8ea5fd4985e52e8f89699cee8a21d7fe1d7"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+        "sha256": "a71ecce4a60b8285b91e53f75fd0292b902b860ed664c02fc93695656ce3fda6"
+      },
+      {
+        "path": "tests/fixtures/GmTurnHelper/storage.ps1",
+        "sha256": "1df291475bd3fcafb28a42257cae28810ef7de523ff0bceee49c2c62d34f3995"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "41f458779ed08e5fa66b7f605de3b168f6ff0076de74f0edaa2dfceef2123bb5"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "c1df2e48eb40d22f32c7671cd911ea9fb74e320e2dd6b5e7479ff91f1724a018"
+      },
+      {
+        "path": "BookOfEternityClient/Program.cs",
+        "sha256": "1f1fb082619ef1edd5c93de5c792b12f9ffe27d5651fc650c6aa4b920c356bee"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GmHelperCanonicalScope.cs",
+        "sha256": "9ae86f4903aea2f527cec28642b24f83a74a64cb79b9825183b0809264297f7a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs",
+        "sha256": "9617ab1f851b5c673b9661ba759e53649a739e57fe3e590bd50a79c1eb9a26b9"
+      },
+      {
+        "path": "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1",
+        "sha256": "b64e33743b03f095d7a165277e5b7dbaa47733ed7e28220c2199fa0e829ae15e"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/GmHelperCurrentScenario.cs",
+        "sha256": "3c82bd4822130d46cc7e4b9933986ec84572de1a198e5c3522c348f21a028356"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/GmHelperContractScenario.cs",
+        "sha256": "28afe747b44b6c6bbff57b1e977dfdde103677994405fd3ada1a858f8e425208"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmTurnHelperCurrentTests.cs",
+        "sha256": "6e35e4b4649d65dba03c399ccee68e4b32679318ec70206285fc8fcaedef2de8"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs",
+        "sha256": "abb274aca4818d9b869f903c9d0c067961407686399a1be1eece020dacbed285"
+      },
+      {
+        "path": "tests/fixtures/GmTurnHelper/current.ps1",
+        "sha256": "76dc7641ed4065ae98f5062104047c3ae11e5964c3529a88fc3850dd11680113"
+      },
+      {
+        "path": "tests/fixtures/GmTurnHelper/contract-bootstrap.ps1",
+        "sha256": "6cfc5c8e116fc1d38b3eafb95dd93c05fcc8d09cc8ef81695e952642d1534b4e"
+      }
+    ]
   }
 }

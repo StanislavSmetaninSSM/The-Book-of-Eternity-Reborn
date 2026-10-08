@@ -1781,7 +1781,7 @@ public sealed class GmTurnHelperContractTests
             foreach (var item in cases)
             {
                 var session = Path.Combine(root, item.Name, "game_session");
-                if (OperatingSystem.IsLinux() && (item.ReplaceRequestAtLock || item.PublishNewerReady || item.ReadyDuringRequestHash))
+                if (item.ReplaceRequestAtLock || item.PublishNewerReady || item.ReadyDuringRequestHash)
                 {
                     using var cut = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(root, item.Name, "helper-race-reached.json")));
                     Assert.Equal(1, cut.RootElement.GetProperty("Cuts").GetInt32());
@@ -5659,37 +5659,8 @@ public sealed class GmTurnHelperContractTests
         Assert.Contains("Add-Member -NotePropertyName $key -NotePropertyValue $defaults[$key] -Force", launcher, StringComparison.Ordinal);
     }
 
-    private static (int ExitCode, string StdOut, string StdErr) RunPowerShell(string command)
-    {
-        if (OperatingSystem.IsLinux())
-            return GmHelperContractScenario.RunOwnedAsync(command).GetAwaiter().GetResult();
-        var scriptPath = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-test-" + Guid.NewGuid().ToString("N") + ".ps1");
-        File.WriteAllText(scriptPath, command, Encoding.UTF8);
-
-        try
-        {
-            using var process = Process.Start(new ProcessStartInfo
-            {
-                FileName = "powershell.exe",
-                Arguments = "-NoLogo -NoProfile -ExecutionPolicy Bypass -File " + QuoteProcessArgument(scriptPath),
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                StandardOutputEncoding = Encoding.UTF8,
-                StandardErrorEncoding = Encoding.UTF8
-            }) ?? throw new InvalidOperationException("Failed to start powershell.exe.");
-
-            var stdout = process.StandardOutput.ReadToEnd();
-            var stderr = process.StandardError.ReadToEnd();
-            process.WaitForExit(10_000);
-            return (process.ExitCode, stdout, stderr);
-        }
-        finally
-        {
-            try { File.Delete(scriptPath); } catch { /* ignored */ }
-        }
-    }
+    private static (int ExitCode, string StdOut, string StdErr) RunPowerShell(string command) =>
+        GmHelperContractScenario.RunOwnedAsync(command).GetAwaiter().GetResult();
 
     private static Process StartDaemon(string session, string logPath)
     {
