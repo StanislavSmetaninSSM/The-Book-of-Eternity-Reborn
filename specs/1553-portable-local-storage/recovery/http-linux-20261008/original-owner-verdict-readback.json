@@ -1,0 +1,37 @@
+{
+  "Commit": "c890d9e66abac96975ee163a1414cb3f0ff8f157",
+  "TimestampUTC": "2026-10-08T07:14:37.185138+00:00",
+  "Method": "official GitHub git/blobs API exact byte comparison",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/http-linux-coverage-audit-20261008.md",
+      "Bytes": 17762,
+      "SHA256": "3305e5aff36c569840296b85276523ecf9b5fee857eedccc25efdd4107b80226",
+      "GitBlob": "990357aafb7084cb53a6ce0d28df0d9c982d5bdd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-closed-space-cleanup.json",
+      "Bytes": 3087,
+      "SHA256": "30fb8a371158e99f2ebc0b3746ded7e7ebf6d32aca8d74127d10ed01ed6e8cf1",
+      "GitBlob": "acff961aa935a791d02e5a6666bb72f692722382"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-final-verdict.json",
+      "Bytes": 3056,
+      "SHA256": "041c3c9dc0001e87eb2a055bdfa78afb6b146a16b554ae69e35a03c2cdff995c",
+      "GitBlob": "ef4ab9177e70b910670fb8b11caff63fcd6b6cfd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-live-readback.json",
+      "Bytes": 2834,
+      "SHA256": "235e99d025dd4b7659af75b76312b1b613f11d48b9efb3a6000ec6ee5d5da3a4",
+      "GitBlob": "07232ed09da283d364e90d9e008d96b532ed144c"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/scope-correction.json",
+      "Bytes": 1140,
+      "SHA256": "adc668c2c1a04ba89b4abe5dc5f4ffc5e2cf64eadfce5158b6a60373b13c1424",
+      "GitBlob": "d4eb7ca40a79227de485201695f0d2ff800906c9"
+    }
+  ]
+}

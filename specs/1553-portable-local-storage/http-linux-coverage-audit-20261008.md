@@ -269,3 +269,12 @@ No PR, remote merge or main update was sent. The local commit is preserved witho
 rollback; final report continues from the published a22f31b0 in an isolated
 worktree and excludes that local merge. Remote main remains6381a950. The exact
 incident receipt is scope-correction.json; this report does not claim a merge.
+
+Independent Sol6.1/xhigh final source/evidence/metadata review: PASS on corrected
+carrier c890d9e66abac96975ee163a1414cb3f0ff8f157, no required fixes. Fresh direct
+GitHub depth1 restoration of that carrier passed:24,890tracked files /420,150,500
+bytes, clean checkout, all Git blob identities and fsck connectivity verified;
+eight evidence archives /359member hashes match. See original-owner-independent-review.json
+and original-owner-fresh-restoration-proof.json. This restores the report tree,
+not a new test or product launch. Final delivery metadata is checked separately
+after direct GitHub fetch into the same initially empty restoration.

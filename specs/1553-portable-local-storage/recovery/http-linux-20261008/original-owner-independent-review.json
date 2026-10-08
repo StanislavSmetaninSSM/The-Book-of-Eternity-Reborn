@@ -1,0 +1,28 @@
+{
+  "TimestampUTC": "2026-10-08T07:17:24.602662+00:00",
+  "Reviewer": "/root/http_linux_evidence_review",
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "ReviewedCarrier": "c890d9e66abac96975ee163a1414cb3f0ff8f157",
+  "Verdict": "PASS",
+  "RequiredFixes": [],
+  "Verified": [
+    "Exact source3d6 pins, causal RED1FAIL and targetedGREEN3PASS",
+    "133meaningful200 installedHTTP/originalowner and scopedstop/I/O/guardian",
+    "62livearchive members,574packagecatalog and113baselinefrontend byte identities",
+    "Nine officialAPIreadbacks ofa22 and metadata scope correction",
+    "Local-only merge88de excluded from report ancestry"
+  ],
+  "Limit": "Final source/evidence and prepared metadata delta reviewed; final publication/direct GitHub fetch verification is checked by executor after commit.",
+  "FinalMetadataDeltaReview": {
+    "Base": "c890d9e66abac96975ee163a1414cb3f0ff8f157",
+    "PreparedFiles": 5,
+    "Verdict": "PASS",
+    "RequiredFixes": [],
+    "VerifiedRestorationFiles": 24890,
+    "VerifiedRestorationBytes": 420150500,
+    "VerifiedArchives": 8,
+    "VerifiedMembers": 359,
+    "OfficialC890Readbacks": 5
+  }
+}

@@ -1,6 +1,6 @@
 {
   "SchemaVersion": 1,
-  "TimestampUTC": "2026-10-08T07:13:53.910971+00:00",
+  "TimestampUTC": "2026-10-08T07:17:24.602662+00:00",
   "Task": "#1553 T055 HTTP original-owner independent Linux verification",
   "Verdict": "PASS bounded targeted and installed HTTP/original lifecycle",
   "ProductSource": "3d6cfd24898fa30b37764de688432455ac9a4660",
@@ -58,7 +58,8 @@
     "Model": "gpt-6.1-sol",
     "ReasoningEffort": "xhigh",
     "SourceEvidence": "PASS exacta22 packet, bounded3GREEN/133HTTP plus original cleanup",
-    "FinalMetadata": "pending narrow review of current corrected carrier"
+    "FinalMetadata": "PASS corrected c890 carrier; no required fixes",
+    "ReviewedCarrier": "c890d9e66abac96975ee163a1414cb3f0ff8f157"
   },
   "Limits": [
     "Browser UI NOT RUN: installed Chromium sandbox configuration refused; no bypass",
@@ -74,7 +75,20 @@
     "original-owner-live-meaningful-http-proof.json",
     "original-owner-live-readback.json",
     "original-owner-closed-space-cleanup.json",
-    "scope-correction.json"
+    "scope-correction.json",
+    "original-owner-independent-review.json",
+    "original-owner-fresh-restoration-proof.json",
+    "original-owner-verdict-readback.json"
   ],
-  "Recovery": "fresh GitHub-only report restoration follows saved candidate; not a build/test/run"
+  "Recovery": {
+    "RestoredCarrier": "c890d9e66abac96975ee163a1414cb3f0ff8f157",
+    "TrackedFiles": 24890,
+    "TrackedBytes": 420150500,
+    "Clean": true,
+    "FsckConnectivity": true,
+    "ArchivesVerified": 8,
+    "MembersVerified": 359,
+    "Method": "fresh empty-directory direct GitHub depth1 single-branch clone; no local objects/alternates; all tracked bytes recomputed against Git blob identity",
+    "FinalDeliveryMetadata": "will be fetched directly from GitHub into this initially empty restoration and checked; no new build/test/run"
+  }
 }

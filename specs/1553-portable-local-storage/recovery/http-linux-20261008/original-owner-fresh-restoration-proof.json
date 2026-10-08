@@ -1,0 +1,63 @@
+{
+  "TimestampUTC": "2026-10-08T07:15:45.753072+00:00",
+  "RestoredCommit": "c890d9e66abac96975ee163a1414cb3f0ff8f157",
+  "Tree": "b3c885822cc327c70ca84b19509f860fbf59664c",
+  "Directory": "/tmp/http-owner-github-final-20261008",
+  "Method": "fresh empty-directory direct GitHub depth1 single-branch clone; no local objects/alternates; all tracked bytes recomputed against Git blob identity",
+  "TrackedFiles": 24890,
+  "TrackedBytes": 420150500,
+  "InventorySHA256": "5000f5358bb106d4ac819abf055b385d17939f8bd29bd09280bf0a734acee6b2",
+  "Clean": true,
+  "FsckConnectivity": true,
+  "Archives": [
+    {
+      "Path": "causal-green-evidence.zip",
+      "Bytes": 182145,
+      "SHA256": "2baecf45b37597f137e590ac0aecf010a340ef9f20fd74e9f1d7f661bb617120",
+      "VerifiedMembers": 5
+    },
+    {
+      "Path": "causal-red-evidence.zip",
+      "Bytes": 182351,
+      "SHA256": "d2afbf69d306ccaac18a576167ecafec20020d705872e370b3e904d81b24a88c",
+      "VerifiedMembers": 6
+    },
+    {
+      "Path": "green-selection-evidence.zip",
+      "Bytes": 189734,
+      "SHA256": "1884014cc2e39a4f0e057bcd59314fb8743e5faffc0c8eea93242032b848ea41",
+      "VerifiedMembers": 9
+    },
+    {
+      "Path": "live-baseline-evidence.zip",
+      "Bytes": 498560,
+      "SHA256": "e3d367fee6fe8794e680da8c0daf74d91871d97cf03c3d28dd271941b644091e",
+      "VerifiedMembers": 61
+    },
+    {
+      "Path": "live-green-evidence.zip",
+      "Bytes": 593334,
+      "SHA256": "165aee08ea9deac1ff0252710ba1a80c8623212f411f8ad0ad7e135fbf5253bf",
+      "VerifiedMembers": 65
+    },
+    {
+      "Path": "original-owner-green-evidence.zip",
+      "Bytes": 521653,
+      "SHA256": "fe3b9862cf6505f9a92fa7816618e7ba6b3cf2b1a95afdb51d5b2b981d7caa64",
+      "VerifiedMembers": 111
+    },
+    {
+      "Path": "original-owner-live-evidence.zip",
+      "Bytes": 717509,
+      "SHA256": "06881a7f55462e5c640f076c79cf105a3ad89c2554e780cafa868946801a2a1a",
+      "VerifiedMembers": 62
+    },
+    {
+      "Path": "original-owner-red-evidence.zip",
+      "Bytes": 282597,
+      "SHA256": "ed3eca7591b7d02092641a9458b90aa45f977711cf3bb3fbb7690a9534568f18",
+      "VerifiedMembers": 40
+    }
+  ],
+  "NoBuildTestBrowserCliRun": true
+}
