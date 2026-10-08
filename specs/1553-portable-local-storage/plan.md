@@ -1,3 +1,28 @@
+## F06 original retirement causal baseline — 2026-10-08
+
+Independent baseline source/selection PASS68c5. Fresh Plan163158 built24/1/0,
+53.5021731s. Actual163401 complete24:21PASS3FAIL,20.8674397s, clean68c5 and both
+cleanup flags true/no skips/duplicates. [Raw/source-pinned baseline](recovery/storage-migration-inactive-evidence-20261008/manifest.json).
+All failures reach Archive129→DeleteFileIfCurrentOwned2185→Windows-only
+OpenForRename677: positive retirement first deletion; readback fault/retention
+assertions pass then clean retry fails at test212; partial-removal invocation fails
+before its intended final manifest cut at test189. No fixture/platform-skip PASS,
+no claim that the partial-removal hook was reached.
+
+Next bounded fixture proposal: ten new current-boundary cases (archive rollback/
+expected-absence race; source rollback/unknown/committed-debt; prepublication
+replacement; late complete-archive/remaining-source/new-member refusal; actual
+NormalizeRuntimeUiArtifacts caller), plus missing-authority retry within existing
+partial-removal row. Final count34 subject to independent fixture/selection review.
+Known old backend failure is causal; new current publisher cuts remain unexecuted,
+not falsely described as reached RED. No runtime edit yet.
+
+Parent fresh GitHub restore of accepted A03 carrierd36609fd into
+`/workspace/boe-1553-participating-outcomes-restore`: detached clean26137 tracked,
+fsck--full exit0, all169 artifacts (stored/expanded) and86 historical Git pins
+matched; no builds/tests. Main remainsd024. This is the latest accepted remote
+recovery endpoint; current F06 checkpoint is separately published WIP.
+
 ## F06 inactive snapshot retirement baseline selection — 2026-10-08
 
 A03 bounded final independent source/evidence/carrier PASS d36609fd/runtimee33c,
