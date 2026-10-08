@@ -134,8 +134,10 @@ Actual environment: Linux x86_64/glibc2.41, SDK10.0.401, .NET/ASP.NET8.0.31,
 PowerShell7.5.4, `/usr/bin/python3`3.13.5, Node24.19.0 and retained native compiler
 provenance cc14.2.0 (no native rebuild here). environment.json contains exact output.
 
-Independent Sol6.1/xhigh source/evidence/metadata review is in progress; final
-verdict and fresh GitHub-only restoration remain pending. This is a completed
+Independent Sol6.1/xhigh source/evidence/metadata review: PASS on candidate
+e469976bb2aeb999b1c645630423f1e47c43b335, no required fixes; see independent-review.json.
+Final remote delivery/fresh GitHub-only restoration remains pending at this verdict
+carrier. This is a completed
 bounded verification with an independently localized remaining product failure,
 not acceptance of all web behavior. System/runtime/private credentials and
 protected session storage are outside this task. Next product-writer slice:
@@ -143,3 +145,8 @@ original-owner participation for real active session/game-screen reads, preservi
 main/worker/generation authority and negative controls, followed by its own causal
 tests and the same fresh HTTP comparison. Browser UI still needs an environment
 with a working sandbox; do not bypass the current refusal.
+
+To free disk for fresh restoration, only two confirmed-closed duplicate installed
+packages and eight ignored local build-output directories were removed. All
+lengths/hashes were retained in closed-fixture-space-cleanup.json; isolated game
+state/history/main records/raw traces remain. No historical Uncertain was changed.

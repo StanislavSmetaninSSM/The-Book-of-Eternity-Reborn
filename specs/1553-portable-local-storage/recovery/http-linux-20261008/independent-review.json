@@ -1,0 +1,59 @@
+{
+  "TimestampUTC": "2026-10-08T06:31:45.805349+00:00",
+  "ReviewerAgent": "/root/http_linux_evidence_review",
+  "Model": "gpt-6.1-sol",
+  "ReasoningEffort": "xhigh",
+  "Mode": "Independent read-only review; no file edits or reruns",
+  "Candidate": "e469976bb2aeb999b1c645630423f1e47c43b335",
+  "Verdict": "PASS",
+  "RequiredFixes": [],
+  "Scope": "Source/evidence/metadata for bounded Linux HTTP audit and comparison; not acceptance of unresolved active-owner product behavior",
+  "Verified": {
+    "Red9": {
+      "Executed": 9,
+      "Passed": 8,
+      "Failed": 1,
+      "Failure": "Actual HTTP500 at expected200 assertion before zero-contention assertion"
+    },
+    "Green9": {
+      "Executed": 9,
+      "Passed": 9,
+      "Failed": 0
+    },
+    "GreenSelection": {
+      "Executed": 33,
+      "Passed": 33,
+      "Failed": 0,
+      "Descriptors": 5,
+      "UniqueCases": 33
+    },
+    "LiveBoth": {
+      "RequestsEach": 133,
+      "Http200Each": 107,
+      "Http500Each": 26,
+      "PreRelay200Each": 94,
+      "ActiveOwnerSessionAndGameScreen500EvenSequential": true,
+      "AllRemainingFailureBodiesAtMainAdmission65": true,
+      "OriginalIdentityScopedShutdownEach": 1,
+      "MatchingStoppedOwnedScopeEmpty": true,
+      "ExitZeroEofTermiosEach": 3,
+      "GuardianEchildNoEmergencySignals": true,
+      "ModelRequests": 0
+    },
+    "BaselineArchiveArtifacts": 61,
+    "GreenArchiveArtifacts": 65,
+    "CandidateApiReadbackFiles": 8,
+    "ProductCodeTestsCatalogScriptsChanged": false
+  },
+  "Remaining": {
+    "ActiveOwnerProductScenario": "FAIL: session/game-screen participating original-owner admission missing",
+    "BrowserUI": "NOT RUN: installed Chromium SUID sandbox helper misconfigured; no security bypass",
+    "FinalDelivery": "Final remote SHA/readback and fresh GitHub-only restoration pending at this carrier"
+  },
+  "Notes": [
+    "Baseline original abort is driver preparation failure, not a product HTTP RED",
+    "Historical export125 observations does not represent125 passing unique cases",
+    "No Windows-only or measured Windows/Linux performance claim",
+    "Native Windows/systemd/gameplay/model acceptance outside scope"
+  ]
+}

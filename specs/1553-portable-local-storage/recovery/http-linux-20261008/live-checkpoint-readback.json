@@ -1,0 +1,61 @@
+{
+  "Commit": "e469976bb2aeb999b1c645630423f1e47c43b335",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/http-linux-coverage-audit-20261008.md",
+      "Bytes": 9264,
+      "SHA256": "22cb64241c89fc55869d17f317a2824822acc29bef2c1cb3c0204a9acbee62a2",
+      "GitBlob": "a1a4e4e0ba91912044f1d251c9d6c14795d67b76",
+      "Route": "contents-base64"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/green-result.json",
+      "Bytes": 71403,
+      "SHA256": "e537e202f661f588d2241e964594dad0ec8c52c1cec68d5010c25034aae2e389",
+      "GitBlob": "ef4bd3830cffa07379f0b829315bb0990da25e49",
+      "Route": "contents-base64"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/green-http-responses.json",
+      "Bytes": 8617820,
+      "SHA256": "c1838dd666ee930a015e2e44f885762f2934b82cf0f199169ec331b3dc4841b0",
+      "GitBlob": "be9e6a3dae790d8dc3c92ccb6fc78a7b5dacf472",
+      "Route": "git-blob-base64"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/green-guardian.json",
+      "Bytes": 97,
+      "SHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "GitBlob": "65787fec7540656c9a32d8346944b23f7a59c2ac",
+      "Route": "contents-base64"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/green-diagnostic-source.json",
+      "Bytes": 120747,
+      "SHA256": "6c1232fd293247b23644febffbccf48c3958fcd99066015ad3e8a6d30007e13e",
+      "GitBlob": "bf9b75c05b0053c8db7d3962708f10d150199b64",
+      "Route": "contents-base64"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/live-comparison.json",
+      "Bytes": 13680,
+      "SHA256": "dcd48fced7178fc306debcbf3c498491f866739d946c9bf0b60c3632aeaf7c49",
+      "GitBlob": "22ab7e62799e8c2070281f50318860956c01acc0",
+      "Route": "contents-base64"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/live-green-manifest.json",
+      "Bytes": 12193,
+      "SHA256": "9353b5ca5ee060c8cdf278632252d71c5b0f80275fc84124ce8daebd4b57fe11",
+      "GitBlob": "ca116621629288496db9df0fa9e31a3e88f63203",
+      "Route": "contents-base64"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/live-green-evidence.zip",
+      "Bytes": 593334,
+      "SHA256": "165aee08ea9deac1ff0252710ba1a80c8623212f411f8ad0ad7e135fbf5253bf",
+      "GitBlob": "c536dc0387a88a90cf01a6ddbe0a068805512280",
+      "Route": "contents-base64"
+    }
+  ]
+}
