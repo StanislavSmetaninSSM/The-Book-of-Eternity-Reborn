@@ -225,6 +225,10 @@ internal static class ParticipatingControlOutcomeScenario
         evidence["ActualHelper"]=helper.RootElement.Clone();evidence["ActualPowerShell"]=report.RootElement.Clone();
         var actual=helper.RootElement;var ps=report.RootElement;
         Require(child.ExitCode==0 && receipts.Count==1,"Original PowerShell transport/close fixture failed: "+await errors);
+        Require(ps.GetProperty("transportDisposed").GetBoolean(),"Original PowerShell did not dispose/join its helper transport.");
+        var helperExit=ps.GetProperty("helperExitCode").GetInt32();
+        Require(actual.TryGetProperty("HelperExit",out var ended) ? helperExit==ended.GetInt32() :
+            helperExit==2 && actual.TryGetProperty("HelperFailure",out _),"Original nested helper did not record completion matching its joined process exit.");
         if(mode=="ps-uncertain") {
             Require(actual.GetProperty("PublicationCuts").GetInt32()==1 && actual.GetProperty("KnownBAndJournalAtReply1").GetBoolean() && actual.GetProperty("OriginalSharingHolderReleased").GetBoolean() && actual.GetProperty("OriginalUncertainFailure").ValueKind==JsonValueKind.String,"Actual recoverable uncertainty sharing cut not reached.");
             Require(actual.GetProperty("SecondCommandLeases").GetInt32()==0 && actual.GetProperty("ActualRecoveryMembers").GetInt32()==0 && actual.GetProperty("SecondMemberPublications").GetInt32()==0 && ps.GetProperty("secondRefused").GetBoolean(),"Causal RED: caught actual recoverable uncertainty admitted a second command/recovery.");

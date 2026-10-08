@@ -20,7 +20,10 @@ Runtime is unchanged. Initial c6eda Plan160249 built7/1/0 successfully (84.06588
 Parent fixture correction: retain/check the exact original owner in finally even
 when an expected causal assertion fails; record Stopped and no retained authority,
 not only attempted cleanup. Corrected fresh PlanOnly and independent fixture/
-selection gate must precede causal execution. Final GREEN will add only the exact existing
+selection gate must precede causal execution. Corrected56cdf Plan160536 also
+built7/1/0 successfully42.0588782s. Final fixture adds explicit original PS
+transport disposal and joined helper exit matching its final report; forced pwsh
+timeout/kill is only fixture failure, never accepted causal evidence. Final GREEN will add only the exact existing
 oversized-unsent, post-receipt reply-loss and pre-receipt stdin-loss neighbors.
 
 F11 final independent SOURCE/SELECTION/EVIDENCE PASS at runtime43e/carriercc178,

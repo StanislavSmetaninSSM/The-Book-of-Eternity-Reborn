@@ -40,6 +40,7 @@ try {
 $ctx=$script:ObservedContext
 $report=[ordered]@{
  value=$value;firstReply=$script:firstReply;failedReply=$script:failedReply;firstCaught=$script:firstCaught;secondRefused=$script:secondRefused
+ transportDisposed=$ctx.disposed;helperExitCode=$ctx.exitCode
  lost=$ctx.lost;closeOutcome=$ctx.closeOutcome;terminalClose=$ctx.terminalClose;originalClose=$ctx.originalClose;closeObserved=$ctx.closeObserved
  establishedResult=$(if($failure){$failure.Data['EstablishedOperationResult']}else{$null})
  establishedOutcome=$(if($failure){$failure.Data['EstablishedOperationOutcome']}else{$null})
