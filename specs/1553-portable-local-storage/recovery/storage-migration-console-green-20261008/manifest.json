@@ -6,8 +6,24 @@
     "portable-pending-beforeimage-admission"
   ],
   "commands": [
-    "pwsh -NoLogo -NoProfile -Command ./scripts/test-csharp.ps1 -Category portable-console-rollback-preparation,portable-pending-beforeimage-admission -PlanOnly",
-    "pwsh -NoLogo -NoProfile -Command ./scripts/test-csharp.ps1 -Category portable-console-rollback-preparation,portable-pending-beforeimage-admission -NoBuild"
+    {
+      "executable": "pwsh",
+      "arguments": [
+        "-NoLogo",
+        "-NoProfile",
+        "-Command",
+        "./scripts/test-csharp.ps1 -Category portable-console-rollback-preparation,portable-pending-beforeimage-admission -PlanOnly"
+      ]
+    },
+    {
+      "executable": "pwsh",
+      "arguments": [
+        "-NoLogo",
+        "-NoProfile",
+        "-Command",
+        "./scripts/test-csharp.ps1 -Category portable-console-rollback-preparation,portable-pending-beforeimage-admission -NoBuild"
+      ]
+    }
   ],
   "planned": 30,
   "executed": 30,
@@ -26,8 +42,7 @@
     "Component/original consumer and controlled failure tests, not live CLI/GM qualification.",
     "Native Windows unexecuted.",
     "Cold pre-handoff or incomplete cleanup refuses and retains evidence; no automatic resumable console transaction.",
-    "Other migration families and full FR-010 remain open.",
-    "Catalog and independent evidence review pending."
+    "Other migration families and full FR-010 remain open."
   ],
   "sourcePins": [
     {
@@ -140,5 +155,83 @@
       "originalSha256": "de7767694e80c58da03f08bd0ec5c3c7e35156a9c536016661884c225c4cb1e3",
       "source": "TestResults/test-categories/20261008-100823-496-13359-86e8bda771fa4a4c91935d537b43f9f4-categories/summary.json"
     }
-  ]
+  ],
+  "catalog": {
+    "source": "4b2bdfa0159ab0e25ac0c0fcc1cb7be1ec9c699c",
+    "runtimeSource": "ebd645ccd671f086dc5eded9f5b7f4a96a71432d",
+    "command": {
+      "executable": "pwsh",
+      "arguments": [
+        "-NoLogo",
+        "-NoProfile",
+        "-Command",
+        "./scripts/test-csharp.ps1 -ValidateCatalog"
+      ]
+    },
+    "categories": 443,
+    "methodsFiles": 11218,
+    "executed": 0,
+    "exitCode": 0,
+    "cleanupComplete": true,
+    "wallSeconds": 64.1843906,
+    "artifacts": [
+      {
+        "path": "catalog-Build-integration.log.gz",
+        "sha256": "3db1b8acd07368458267fa97a0502817e12a76f119a7c2391ee96b98bc742d73",
+        "originalSha256": "064eaf65c9ed7691746f30d2a23ba409ea0e7afc6c21eccd4f60674439fd3b89",
+        "source": "TestResults/test-categories/20261008-101038-093-14187-63b7c585292842068a346ad436968010-categories/Build-integration.log"
+      },
+      {
+        "path": "catalog-Build-unit.log.gz",
+        "sha256": "1bb51ec31b94fcab295dbe82e7b245e4ffc8a5b329924215b36c4aa46f8d3ee9",
+        "originalSha256": "5390085d12fc009ce51a18877cc73247c0895b91a87e2dc430d1858bd6afb094",
+        "source": "TestResults/test-categories/20261008-101038-093-14187-63b7c585292842068a346ad436968010-categories/Build-unit.log"
+      },
+      {
+        "path": "catalog-catalog-audit.json",
+        "sha256": "e1c6c3cd1573c712ea2139e64f03073b470b62545e55050f3dd29cdac65fadb1",
+        "originalSha256": "e1c6c3cd1573c712ea2139e64f03073b470b62545e55050f3dd29cdac65fadb1",
+        "source": "TestResults/test-categories/20261008-101038-093-14187-63b7c585292842068a346ad436968010-categories/catalog-audit.json"
+      },
+      {
+        "path": "catalog-dotnet-test.log.gz",
+        "sha256": "d11a37d7b9831ddf7b944e64c928669d7331d6f71dc623436f2bc267c184d175",
+        "originalSha256": "1241136749c177681c2c194c0c540f7ed77f638b485bd63a45dd44a1668f5c37",
+        "source": "TestResults/test-categories/20261008-101038-093-14187-63b7c585292842068a346ad436968010-categories/dotnet-test.log"
+      },
+      {
+        "path": "catalog-summary.json",
+        "sha256": "9aa189f5b244b2d7f7dfb18675ea41f4afc0f20af9bb334e0fa347d08bd9c1ba",
+        "originalSha256": "9aa189f5b244b2d7f7dfb18675ea41f4afc0f20af9bb334e0fa347d08bd9c1ba",
+        "source": "TestResults/test-categories/20261008-101038-093-14187-63b7c585292842068a346ad436968010-categories/summary.json"
+      }
+    ]
+  },
+  "evidenceReview": "Independent Astra XHigh PASS; exact ebd645cc original summary/plan/two TRXs independently verified 30/30, no findings. Catalog supplement is discovery only.",
+  "windowsOwnerRecipe": {
+    "source": "ebd645ccd671f086dc5eded9f5b7f4a96a71432d",
+    "status": "Not executed; no native Windows PASS claim.",
+    "commands": [
+      {
+        "executable": "pwsh",
+        "arguments": [
+          "-NoLogo",
+          "-NoProfile",
+          "-Command",
+          "./scripts/test-csharp.ps1 -Category portable-console-rollback-preparation -PlanOnly"
+        ]
+      },
+      {
+        "executable": "pwsh",
+        "arguments": [
+          "-NoLogo",
+          "-NoProfile",
+          "-Command",
+          "./scripts/test-csharp.ps1 -Category portable-console-rollback-preparation -NoBuild"
+        ]
+      }
+    ],
+    "expectedCases": 16,
+    "note": "Use NoBuild only after successful fresh PlanOnly build. The neighbor category asserts Linux and is not the Windows recipe. No HOME-PC/desktop task is requested here."
+  }
 }

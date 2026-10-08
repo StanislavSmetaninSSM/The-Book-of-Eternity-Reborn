@@ -5,8 +5,10 @@ Frozen runtime/tests `ebd645ccd671f086dc5eded9f5b7f4a96a71432d`:
 neighbor cases, 2/2 complete descriptors, zero skips/duplicates/timeouts, complete
 owned cleanup, 22.945 seconds. Fresh PlanOnly30/2 succeeded (zero executed).
 [Raw GREEN and exact source pins](recovery/storage-migration-console-green-20261008/manifest.json).
-Independent Astra XHigh source gate PASS at this exact source. Discovery-only
-catalog and independent evidence review remain pending; T061 is not closed yet.
+Independent Astra XHigh source and evidence gates PASS at this exact source.
+Discovery-only catalog carrier4b2bdfa0 passed443 categories/11218 methods-files,
+zero executed, complete cleanup,64.184 seconds. This closes the bounded Linux
+F03 gate; T061 native Windows qualification remains unexecuted.
 
 The current console producer now uses common trusted-local publication and a
 separate generation-checked evidence cohort. An opaque marker makes absence-only
@@ -24,9 +26,8 @@ original3/1PASS2FAIL (legacy physical create-only route); expanded9/1PASS8FAIL
 same/new-file cleanup-debt reuse, corrected before GREEN. Build failures and the
 IOException retry-count fixture failure are explicitly distinguished.
 
-Next: publish this evidence checkpoint, run discovery-only ValidateCatalog,
-independent evidence review, then proceed to T062 ordinary outcome/notification
-boundaries. T063–T065 and all other families stay open. Native Windows is unrun;
+Next: publish the final bounded evidence/catalog carrier for parent fresh remote
+restore, then proceed to T062 ordinary outcome/notification boundaries. T063–T065 and all other families stay open. Native Windows is unrun;
 no live GM, aggregate tests, CI, merge or #1536 B2–B5 work. Cold refusal before
 handoff/incomplete cleanup is retained evidence, not resumed-turn qualification.
 

@@ -1,5 +1,36 @@
 # Storage migration inventory — 2026-10-08, review candidate
 
+## Current migration delta (baseline index below remains pinned to d024)
+
+F03 common console stage/admission/restore/cleanup has bounded Linux acceptance at
+runtime `ebd645ccd671f086dc5eded9f5b7f4a96a71432d`: 16 meaningful original console
+and controlled lifecycle/save-load cases plus14 existing signed-before-image
+neighbor cases PASS; independent source/evidence gates PASS, catalog443/11218
+valid with zero execution. [Exact source/evidence and Windows16-case recipe](recovery/storage-migration-console-green-20261008/manifest.json).
+Current namespace is separate from old browser evidence, includes an opaque
+absence-only refusal marker and exact generation/byte ownership. Marker is never
+restore authority; cold signed admission caches the complete storage cohort before
+original cancellation removes request/manifest. Pre-handoff/incomplete-cleanup
+cold refusal remains explicit; native Windows and whole-game qualification remain
+open. Lexical baseline rows are not regenerated or silently relabeled current.
+
+Further independently traced, still-unexecuted migration candidates: F16
+`ImageService.CleanupExtraImages` → raw game_session image deletes via
+`TryDeleteFile`, original caller `GameEngine.OptionsAndSettings`; explicit external
+`ExportEntityImage` remains technical export. Image constructor, mod listing and
+world-profile listing create game_session directories; classify those individually,
+not blanket technical initialization. Guardian library directory is BasePath/
+system_guardians; canonical attraction request is separate. F10 QTE empty backup
+directory deletion occurs under a caller lease but needs the existing guarded
+empty-directory helper/generation boundary. F14 watchers enter participating
+operations and startup/poll fallback; they remain eligibility hints, not an
+established lost-publication defect. F13 raw GM helper writes need witness and
+read-baseline checks under the same owned C# operation; existing control-only
+entrypoint cannot simply be broadened to all GM paths. F08/F11 is next: actual
+ordinary uncertain/committed-debt outcome and original browser rollback/cache/
+notice behavior. These are source traces, not fabricated executed failures.
+
+
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), approved spec FR-001–011/015 and the owner's explicit request to find and migrate all remaining old write, recovery and notification mechanisms. Branch `1553-storage-migration-cloud-20261008`; source `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`; comparison `1fc5e59` (full resolved SHA in manifest). #1536 B2–B5 stays paused on its separate branch. This is an inventory/design milestone, not runtime acceptance.
 
 ## Reproducible scope and confidence
