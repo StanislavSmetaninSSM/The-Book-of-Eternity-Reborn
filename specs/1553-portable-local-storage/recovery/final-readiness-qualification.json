@@ -73,7 +73,7 @@
     "Groups": 1,
     "Runner": "ubuntu-24.04",
     "WindowsJobs": 0,
-    "Hosted": "BLOCKED: .NET CI workflow280957256 disabled_manually; no current hosted run/checks",
+    "Hosted": "BLOCKED: .NET CI workflow280957256 disabled_manually; no selected hosted result observed/no attached checks",
     "ObservedHead": "72ffde8cab4d3272630a114a4456084f657207e8"
   },
   "Reviews": {
@@ -93,6 +93,17 @@
       "model": "gpt-6.1-sol",
       "reasoningEffort": "xhigh",
       "RequiredCorrections": 0
+    },
+    "IntegrationGateMetadata": {
+      "source": "6ecf7d25726dd2de9318064b935c2de89a63a94d",
+      "reviewer": "/root/final_readiness_design_review",
+      "model": "gpt-6.1-sol",
+      "reasoningEffort": "xhigh",
+      "result": "Other facts/closure PASS; two narrow wording corrections applied",
+      "corrections": [
+        "Claim only no selected hosted result observed/no attached checks from archived responses",
+        "Routine branch publication preserved; remove blanket no branch operation claim"
+      ]
     }
   },
   "Merge": {
