@@ -101,6 +101,12 @@ try {
             }
         }
         $catalog = Read-Fixture @((New-Category 'known'))
+        Test-Case 'Schema one requires an integer rather than coercible text boolean or floating point' {
+            foreach ($schema in @('1', $true, [double]1)) {
+                $request = New-Selection @('known'); $request.schemaVersion = $schema
+                Assert-Rejected { Get-TestCategoryCiMatrix $catalog $request }
+            }
+        }
         Test-Case 'Empty schema unknown and duplicate selections fail without broad fallback' {
             foreach ($request in @(@{schemaVersion=1;selections=@()}, @{schemaVersion=2;selections=@()},
                 (New-Selection @('missing')), (New-Selection @('known','known')))) {

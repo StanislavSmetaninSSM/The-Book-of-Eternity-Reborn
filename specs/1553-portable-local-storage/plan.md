@@ -7619,4 +7619,3 @@ Sol design PASS; explicit catalog runner groups, no dropped selection and stable
 all-groups-success check implemented. Only pure routing/catalog assertions, no
 runtime cohorts or platform qualification. [Plan/handoff](ci-platform-selection.md).
 Systemd deferral/overall merge readiness still pending; Windows native is postmerge.
-

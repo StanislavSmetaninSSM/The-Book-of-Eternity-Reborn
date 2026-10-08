@@ -762,4 +762,3 @@ CI platform clarification T052-CI-PLATFORM-SELECTION (source #1553/#1505): expli
 selected native tests must run on their declared CI host; unavailable categories
 cannot be silently dropped or count as PASS. This repairs verification plumbing
 only, not game/GM behavior or native Windows/systemd acceptance. [Bounded plan](ci-platform-selection.md).
-
