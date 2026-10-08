@@ -1,3 +1,22 @@
+## F11 actual GREEN and discovery checkpoint — 2026-10-08
+
+Runtime43e2339bb712ba7f7e6c02bb0d93549dfd81142b has independent SOURCE/SELECTION
+PASS. Fresh Plan152721 built10/3/0; actual153335 complete10/10PASS,3/3 descriptors,
+67.4510723s, clean exact source, no skips/duplicates and both cleanup flags true.
+All10 original scenario/guardian records inspected: actual configured child now
+uses restoredA model/cwd/input/status; later committedB leaves the same running
+semanticA snapshot; unknown keeps evidence/no Prepared/no child/no tentative cache.
+Seven original preflight refusals preserve their no-canonical-effects checks;
+installed archive-profile Load consumes fresh settings under its new exact owner.
+Final independent EVIDENCE gate pending. [Complete raw/source-pinned packet](recovery/storage-migration-config-recovery-20261008/manifest.json).
+
+Discovery153552 valid471 categories/11260 methods, no unmapped/stale selectors,
+zero executed. Packet totals151 stored artifacts/64 historical Git source pins;
+no binaries. Native Windows remains unexecuted; these Linux original-consumer
+results do not qualify native config rollback/ConPTY/WMI/Job behavior. Next bounded
+A03 covers actual participating per-command outcomes and immutable original close;
+no whole-body rollback, F13 role/read-witness expansion or new journal.
+
 ## F11 same-owner admitted configuration fix — 2026-10-08
 
 Independent causal RED/design/finite10 gate PASS (carrierc5f711); source/evidence

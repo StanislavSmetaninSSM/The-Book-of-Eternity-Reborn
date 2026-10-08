@@ -27,7 +27,7 @@ Windows Bridge prepared ConPTY/Job/status activation is source-reviewed atc45 wi
 Linux7 pure/helper controls; native3 compile/discovery only. Separate pre-recovery
 raw config/cache defect is causally confirmed atb169: exact disk rollbackA still
 launched/cachedB, while unknown refused before Prepared. Same-owner post-recovery
-snapshot correction is implemented with final10/source-review pending; no native
+snapshot correction43e has source/selection PASS and actual10/10 Linux GREEN; final evidence review pending. No native
 execution or full F11 closure claimed. [Evidence](recovery/storage-migration-config-recovery-20261008/manifest.json).
 Windows legacy quarantine retains its Job/workspace/per-profile slot; verified absent
 Linux inventory is not a universal Windows worker quiescence/restart-fence claim. All other

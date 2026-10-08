@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "gm-main-config-recovery-linux",
+    "gm-main-config-preflight-neighbors",
+    "gm-load-installed-profile"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "43e2339bb712ba7f7e6c02bb0d93549dfd81142b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 40.8215685,
+  "Descriptors": [
+    {
+      "Name": "gm-load-installed-profile-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-load-installed-profile",
+      "Categories": [
+        "gm-load-installed-profile"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_FreshLaunchConsumesInstalledArchiveProfile",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_FreshLaunchConsumesInstalledArchiveProfile",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-config-preflight-neighbors-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-config-preflight-neighbors",
+      "Categories": [
+        "gm-main-config-preflight-neighbors"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.AdmissionRefusal_RealOrdinaryEntrypointBeforeCreation",
+          "Cases": 7
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-config-recovery-linux-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-config-recovery-linux",
+      "Categories": [
+        "gm-main-config-recovery-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmBridgeOriginalConsumerTests.ProductionStartupConfigurationUsesSettledCanonicalSnapshot",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmBridgeOriginalConsumerTests.ProductionStartupConfigurationUsesSettledCanonicalSnapshot",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

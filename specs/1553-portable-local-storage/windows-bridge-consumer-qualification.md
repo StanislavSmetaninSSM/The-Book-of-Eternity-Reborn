@@ -84,3 +84,13 @@ expired-pin receipt; no synthetic Windows ledger or worker-capability removal.
 
 The metadata adapter retains the approved process-crash scope. Its Windows final
 file acknowledgement is not Linux directory-fsync equivalence or a power-loss claim.
+
+## F11 configuration admission follow-up
+
+43e changes both production launch paths to freeze settings under the original
+post-recovery canonical lease before Prepared. Linux actual original config rollback/
+unknown controls and eight exact neighbors pass10/10; source/selection review PASS,
+final evidence review pending. [Pinned evidence](recovery/storage-migration-config-recovery-20261008/manifest.json).
+The earlier native3 PlanOnly remains historical c45/zero execution. Native Windows
+config rollback/unknown preparation, WMI and real ConPTY/Job qualification are still
+required; Linux controlled CLI results do not replace those bodies.
