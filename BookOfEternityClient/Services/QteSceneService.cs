@@ -2363,6 +2363,13 @@ public sealed partial class QteSceneService
         {
             await RestoreQteNormalizationBaselineAsync(writeLease, baseline);
         }
+        catch (CoordinatedStatePublicationUncertainException uncertain)
+        {
+            // Preserve the established storage decision and the distinct failure
+            // that required compensation. No runtime refresh can confirm this cut.
+            uncertain.Data["QteOperationFailure"] = originalFailure;
+            throw;
+        }
         catch (Exception restorationFailure)
         {
             recoveryFailures.Add(restorationFailure);

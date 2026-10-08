@@ -76,7 +76,12 @@ public sealed partial class QteSceneServiceTests
         Assert.Equal(unknown, File.ReadAllBytes(files.ResolvePath(target)));
         Assert.Equal(journal, File.ReadAllBytes(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
         Assert.NotEmpty(Directory.GetFiles(files.ResolvePath(QteNormalizerBackupDirectory), "*", SearchOption.AllDirectories));
-        if (observation == "carrier") Assert.IsType<CoordinatedStatePublicationUncertainException>(failure);
+        if (observation == "carrier")
+        {
+            var uncertain = Assert.IsType<CoordinatedStatePublicationUncertainException>(failure);
+            var original = Assert.IsType<InvalidOperationException>(uncertain.Data["QteOperationFailure"]);
+            Assert.Contains("Локальный QTE outcome нарушил контракт состояния", original.Message, StringComparison.Ordinal);
+        }
         else Assert.Equal(0, laterReads);
     }
 

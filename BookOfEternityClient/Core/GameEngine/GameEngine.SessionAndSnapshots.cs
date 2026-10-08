@@ -2223,7 +2223,7 @@ public partial class GameEngine
                 if (_fs.FileExists(writeLease, trackedFile))
                     _fs.DeleteFile(writeLease, trackedFile);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
             {
                 failures.Add(new IOException(
                     $"Failed to delete new canonical file '{trackedFile}' during rollback.",
@@ -2237,7 +2237,7 @@ public partial class GameEngine
             {
                 await _fs.WriteFileAtomicBytesAsync(writeLease, original, content);
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
             {
                 failures.Add(new IOException(
                     $"Failed to restore canonical file '{original}' from rollback evidence.",

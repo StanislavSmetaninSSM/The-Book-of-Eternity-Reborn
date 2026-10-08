@@ -178,6 +178,78 @@
       "source": "TestResults/test-categories/20261008-104807-326-23739-ed2a35eec2724eab901da34891e5102f-categories/summary.json",
       "sha256": "bfaa2b8436035c7e34fc92845e503d5c6bdb00c935787e6e2d56d7287fff56a4",
       "originalSha256": "bfaa2b8436035c7e34fc92845e503d5c6bdb00c935787e6e2d56d7287fff56a4"
+    },
+    {
+      "path": "exact-plan-Build-integration.log.gz",
+      "source": "TestResults/test-categories/20261008-104938-227-24330-97c065f5eede44b39fc51b98b333dfc2-categories/Build-integration.log",
+      "sha256": "9e58eb89db78e9875865e575b1ab522a44e742d2ce208312e124627a8dd08800",
+      "originalSha256": "9784053e20a795f4b4a2216d6c8b4d89ef6e726c79e644ea1269905a90a2a98b"
+    },
+    {
+      "path": "exact-plan-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-104938-227-24330-97c065f5eede44b39fc51b98b333dfc2-categories/dotnet-test.log",
+      "sha256": "126e183300a09430d05eea3e2ce04ba6bb0fa613af641aba6ccb646342c0083a",
+      "originalSha256": "b86194fb670f4b6e8ca3733210708a0c5804b117230c6c62ec9520ca5dd9abf9"
+    },
+    {
+      "path": "exact-plan-plan.json",
+      "source": "TestResults/test-categories/20261008-104938-227-24330-97c065f5eede44b39fc51b98b333dfc2-categories/plan.json",
+      "sha256": "7df5c932f2cdb1007179d5ebd174c5b32ccaa0562a4b8a844e795d924afd3e3f",
+      "originalSha256": "7df5c932f2cdb1007179d5ebd174c5b32ccaa0562a4b8a844e795d924afd3e3f"
+    },
+    {
+      "path": "exact-plan-summary.json",
+      "source": "TestResults/test-categories/20261008-104938-227-24330-97c065f5eede44b39fc51b98b333dfc2-categories/summary.json",
+      "sha256": "62babf78717169dbd78d18df02269074f971537a8b1908353294147c21f22e0d",
+      "originalSha256": "62babf78717169dbd78d18df02269074f971537a8b1908353294147c21f22e0d"
+    },
+    {
+      "path": "exact-red-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-105030-745-24567-a35ece6c563a4754923ea957883044f9-categories/dotnet-test.log",
+      "sha256": "932321182fd0491ec9574fe7e781278f4afa89675f47fa615004aa4c17af3f89",
+      "originalSha256": "0414ca907b1daa6f629a0527d3c0ff1beb5c6c1a022a8d6e53711e7a7b2492fb"
+    },
+    {
+      "path": "exact-red-plan.json",
+      "source": "TestResults/test-categories/20261008-105030-745-24567-a35ece6c563a4754923ea957883044f9-categories/plan.json",
+      "sha256": "ce841a211c0d185c1536d90341284289d18902bc2c501db9a01363e708510f0f",
+      "originalSha256": "ce841a211c0d185c1536d90341284289d18902bc2c501db9a01363e708510f0f"
+    },
+    {
+      "path": "exact-red-portable-restoration-publication-outcomes-integration-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-105030-745-24567-a35ece6c563a4754923ea957883044f9-categories/portable-restoration-publication-outcomes-integration-001.trx",
+      "sha256": "9359b2cb5bab23c4aa86dfc6100c3e67692e562e25ebdbf1ea7ce14e33ae15ba",
+      "originalSha256": "1867a303b207a9b7be68f37d905adef0ee51cd1967a67abac3760a37e8ec7b64"
+    },
+    {
+      "path": "exact-red-summary.json",
+      "source": "TestResults/test-categories/20261008-105030-745-24567-a35ece6c563a4754923ea957883044f9-categories/summary.json",
+      "sha256": "7bf81c923efa167b028a4485982b0c2783c53e11c75ed7490cd4b4eb63608c7b",
+      "originalSha256": "7bf81c923efa167b028a4485982b0c2783c53e11c75ed7490cd4b4eb63608c7b"
+    },
+    {
+      "path": "neighbors-green-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-105114-160-24860-4d3d401241d946de8cabc3cc1de13b4a-categories/dotnet-test.log",
+      "sha256": "1699c7c47e7378679809ab7b9bdeac39bdc11072bf41e3bdc2a27a69468903e8",
+      "originalSha256": "6f460340e1814f658a7b7fed224d695f891615f8cec310c766603856f23cd346"
+    },
+    {
+      "path": "neighbors-green-plan.json",
+      "source": "TestResults/test-categories/20261008-105114-160-24860-4d3d401241d946de8cabc3cc1de13b4a-categories/plan.json",
+      "sha256": "3e4107582f6997acd1a28e0fbffe9750d937b0949f9c02f0d86e5b5a1feea5b1",
+      "originalSha256": "3e4107582f6997acd1a28e0fbffe9750d937b0949f9c02f0d86e5b5a1feea5b1"
+    },
+    {
+      "path": "neighbors-green-portable-ordinary-outcome-recovery-neighbors-integration-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-105114-160-24860-4d3d401241d946de8cabc3cc1de13b4a-categories/portable-ordinary-outcome-recovery-neighbors-integration-001.trx",
+      "sha256": "ebc0eb0ca600dc1e0eccf5e3d481882f51a97690c620e3ea45bd6a6d464285bd",
+      "originalSha256": "248c66589c023ed888c9081fe97473d7f1749eb91730c23a03c7834b61d2dbc7"
+    },
+    {
+      "path": "neighbors-green-summary.json",
+      "source": "TestResults/test-categories/20261008-105114-160-24860-4d3d401241d946de8cabc3cc1de13b4a-categories/summary.json",
+      "sha256": "5daf0ef1801badc5e610b04f0d78b506739751162886245cda0037000f7ff741",
+      "originalSha256": "5daf0ef1801badc5e610b04f0d78b506739751162886245cda0037000f7ff741"
     }
   ],
   "diagnosticSource": "77be7a6a46b127d3397373e082f46ab742eb1930",
@@ -191,5 +263,58 @@
     "failed": 4,
     "wallSeconds": 8.1581079,
     "cause": "Old exact InvalidData expectations now receive intentional typed common uncertainty at actual browser2/Daren2 publication cuts; cold admission types unchanged."
-  }
+  },
+  "causalSource": "cb65eedaa2fd76d1abea17d7b0e23385a2a2eca1",
+  "causalRed": {
+    "executed": 9,
+    "passed": 4,
+    "failed": 5,
+    "wallSeconds": 9.9698877,
+    "cause": "ActualQTE forward15 then exactoriginal10 restoration unknownbytes loses typed carrier. Existing read barrier yields0postcut readhook calls even beforefix (PASScontrol). Pre-turn actualwrite/delete uncertainty wraps carrier and attempts1/3 latermutations. Allcut/journal/evidence assertions reached."
+  },
+  "neighborGreen": {
+    "source": "cb65eedaa2fd76d1abea17d7b0e23385a2a2eca1",
+    "executed": 7,
+    "passed": 7,
+    "failed": 0,
+    "wallSeconds": 8.6530745
+  },
+  "causalSourcePins": [
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "sha256": "aedb827fecd686b904f549d4c22008176932896edb8f2c7b73c194476d272d50"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "sha256": "fa94cbea79dfba212d4cdbc00d412949d06c0d1fbe63c0b9845df39a7b98f26a"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.RestorationOutcome.cs",
+      "sha256": "86c34f1391356da63caa93e08addfc7e63f1180f7871eb49df08478723cdf540"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.RestorationOutcome.cs",
+      "sha256": "9781676653f832cb9bdf48e44a851b2916b45485fffe8446e43e619a18c2ef2a"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "sha256": "d54cde2330e6b549b6c65ece9d8c30a10d95c91244da1bea4623a593a0ffd8cb"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxBoundaryTests.Recovery.cs",
+      "sha256": "9f1b08b3511fab820eb476834f8abd21c6c564dd3aae8c62bdf5b3171c9ad2f1"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxBoundaryTests.cs",
+      "sha256": "37ecb0d7508ad687a789fa5844986fdc36fea35bbde5e99c7ffb6f1de95b3fbf"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "dc754947a40dd674a038dafdf3f0829a2fcf29a6d7f277c5f0a1625a956281bc"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "9ed62e4e577e8a725e83e008d1015df928b720cbabf917710dbae626f01bdbd1"
+    }
+  ]
 }

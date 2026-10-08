@@ -1,3 +1,22 @@
+## T062 reached restoration RED and minimal propagation correction — 2026-10-08
+
+Frozen cb65eeda restoration9 completed4PASS/5FAIL (9.970s): QTE forward15 then
+exact-original10 restoration cut reaches unknown bytes, retained journal/backups
+and wrong generic outer carrier. Post-cut read control already PASS because the
+existing journal barrier prevents reader-hook entry; do not claim unsafe actual
+reads. Pre-turn write/delete cuts lose the type and attempt1/3 later mutations.
+Affected recovery neighbors7 now7PASS (8.653s), exact cuts and cold refusal intact.
+[Source-pinned raw evidence and fixture history](recovery/storage-migration-restoration-red-20261008/manifest.json).
+
+Minimal correction: QTE rethrows the same typed uncertain object before runtime
+refresh, retains the original validator failure in Data[QteOperationFailure].
+Pre-turn two mutation catch clauses exclude that carrier, stopping later attempts;
+ordinary known-failure aggregation and permitted partial restore stay unchanged.
+Fresh build/GREEN and independent source/evidence review remain pending. Final
+QTE/engine backup cleanup debt/logger behavior, custom directory-tree uncertainty
+and original participating close outcome are distinct still-open F08/F10 tails.
+Previously accepted distributor weather.backup cleanup is not QTE final cleanup.
+
 ## T062 second fixture observation / neighbor regression — 2026-10-08
 
 Source852953b3: QTE forward route first publishes semantically10 with different
