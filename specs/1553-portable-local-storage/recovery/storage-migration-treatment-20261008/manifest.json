@@ -1,5 +1,5 @@
 {
-  "scope": "Treatment storage causal packet: accepted two actual ec30e boundary REDs plus isolated d72a mirror RED; earlier compile/timeout/setup failures retained separately. No production fix/GREEN/native claim.",
+  "scope": "Treatment storage migration: original helper settlement/Dispose/mirror and pre-canonical terminal typed uncertainty, composed16 unique Linux passing obligations (9@e311,1@ef0e,3@8fcbb,3@522293), not one fresh16 run. Historical compile/timeout/setup/mixed failures retained with exact qualifications. Native, injected secondary-close failure and whole-gameplay atomicity remain unqualified.",
   "initialCompile": {
     "source": "b8c7dc35886f30b286f1caa99c9e3f04e906800a",
     "artifacts": [
@@ -1235,5 +1235,165 @@
         "sha256": "0ebf495c393c9dc7108b0a1c03071336dafcf4f0c4d3cda5006184f84be38900"
       }
     ]
-  }
+  },
+  "finalTerminalGreen": {
+    "source": "522293211630f2024ca0e68e44fd7f4f6af0eb03",
+    "qualification": "Final changed-method terminal3 PASS; composed16 unique passing obligations span e311,ef0e,8fcbb,522293 and are not one fresh16 run. Catalog discovery zero execution; native and whole-turn atomicity unqualified.",
+    "artifacts": [
+      {
+        "path": "finalTerminalGreen-0-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-235142-804-185906-af513958f36442dfbff2986d95b45234-categories/Build-integration.log",
+        "sha256": "b6f19fe354517647c14e6915b25c0f0271e3832616f8881ce741a6b1783c8db7",
+        "originalSha256": "d3a3305405392163c56c13c3041dffcf4f9b11d1b84205087523c387ca6a49e1"
+      },
+      {
+        "path": "finalTerminalGreen-0-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-235142-804-185906-af513958f36442dfbff2986d95b45234-categories/dotnet-test.log",
+        "sha256": "09287aa83730ac81caffa611b7624c20976f4f0193c2c98411496df2f0b2492f",
+        "originalSha256": "106a55feb3fefd43a390630eaae44ab5e0c35cc2a10da3342e7f3b5c1eec10b8"
+      },
+      {
+        "path": "finalTerminalGreen-0-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-235142-804-185906-af513958f36442dfbff2986d95b45234-categories/plan.json",
+        "sha256": "b9376e8989e6fd586b6bf5b6fc4471d40994c8fa47230df2bb0a756755b3349c",
+        "originalSha256": "b9376e8989e6fd586b6bf5b6fc4471d40994c8fa47230df2bb0a756755b3349c"
+      },
+      {
+        "path": "finalTerminalGreen-0-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-235142-804-185906-af513958f36442dfbff2986d95b45234-categories/summary.json",
+        "sha256": "b24e5c046f7267cd822a9e1700a3fb82c5de97dbef07eb1de07b18d9ee853faa",
+        "originalSha256": "b24e5c046f7267cd822a9e1700a3fb82c5de97dbef07eb1de07b18d9ee853faa"
+      },
+      {
+        "path": "finalTerminalGreen-1-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-235247-144-186105-7e213ee02b084b59b9d66e6e8423d026-categories/dotnet-test.log",
+        "sha256": "4e936a4fe3b16979803828dc5cd75a185b83843abc370bf3f72b2fbf375fe0f2",
+        "originalSha256": "793777cde09c9c98fcdd20745f0de24c6dcedb12c3f580feba78173eefdeb678"
+      },
+      {
+        "path": "finalTerminalGreen-1-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-235247-144-186105-7e213ee02b084b59b9d66e6e8423d026-categories/plan.json",
+        "sha256": "0407717c221be1ad5413f364a9cbb752680f6524b49cbbdf6efa2535ecd0a63a",
+        "originalSha256": "0407717c221be1ad5413f364a9cbb752680f6524b49cbbdf6efa2535ecd0a63a"
+      },
+      {
+        "path": "finalTerminalGreen-1-portable-treatment-terminal-causal-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-235247-144-186105-7e213ee02b084b59b9d66e6e8423d026-categories/portable-treatment-terminal-causal-linux-integration-001.trx",
+        "sha256": "eff4aeb2c110af85deb4f4dfbeeed6c71b77932d00de1d8d2a4535516b282204",
+        "originalSha256": "ec1147be6360b04a0cffc02ae2c91651c1f17e5b04123c32c0812aac521ad341"
+      },
+      {
+        "path": "finalTerminalGreen-1-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-235247-144-186105-7e213ee02b084b59b9d66e6e8423d026-categories/summary.json",
+        "sha256": "829240fbf5a039c82ca8292fbf6ba4e4b6f507b9f2e183123cdbd62d7259bb67",
+        "originalSha256": "829240fbf5a039c82ca8292fbf6ba4e4b6f507b9f2e183123cdbd62d7259bb67"
+      },
+      {
+        "path": "finalTerminalGreen-2-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-235321-377-186383-8f2a100a92434f788ae06b692971dcab-categories/catalog-audit.json",
+        "sha256": "b7f2d2908e86960ddef8bc05a062ed4d8fac506e17e29404fc3363618e5ad344",
+        "originalSha256": "b7f2d2908e86960ddef8bc05a062ed4d8fac506e17e29404fc3363618e5ad344"
+      },
+      {
+        "path": "finalTerminalGreen-2-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-235321-377-186383-8f2a100a92434f788ae06b692971dcab-categories/dotnet-test.log",
+        "sha256": "057757ef4ab79db9eaab1e6e59fc3fe217b0b486c44b06dedf0572ce1c37821a",
+        "originalSha256": "411188e2b37312b5c8bed9e10b16eaca8f64efe7f59b1dbac254be3ff604a709"
+      },
+      {
+        "path": "finalTerminalGreen-2-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-235321-377-186383-8f2a100a92434f788ae06b692971dcab-categories/summary.json",
+        "sha256": "98c1aa501e8d46b913ec18af02210fd463c1cf214686e70b22b3a8453486a561",
+        "originalSha256": "98c1aa501e8d46b913ec18af02210fd463c1cf214686e70b22b3a8453486a561"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.TreatmentStorageOutcome.cs",
+        "sha256": "5cec1bbaeb21da6acbba4bdbb7d55e0c7a9c66f212aaaf2474808f5fdaad1230"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.cs",
+        "sha256": "75c7a9946f3dfeeb62b1d8828d46e6960a82c52ff01e3cfd73a2900552ee244d"
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+        "sha256": "93b2767e7711609eeddb6a66a189ae0da135330d0a1fd423d466ad2e76efd8b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+        "sha256": "65dbab31e85f55a090d80e0a6937b0ef287d39121a95b68c810c9c06351cbee8"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "dc9a7da0614e05ec48297293b7b03b52fa9a71e5d4ac3eb229b1cc181e898618"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "sha256": "a7c808e436213bd9f52ddf193e127eec43118e6deef190254c5757f69a1397b5"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "sha256": "176b0af190ab7c536f3af98303753e8bd9fba00ac0b81b44f879648789b8f013"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
+        "sha256": "4e248b04c73731e2cc0c5c4b35e69d1bdbd141a6bace970cabba7e64589b0f70"
+      },
+      {
+        "path": "BookOfEternityClient/Core/StateManager.cs",
+        "sha256": "fdf7fa9d071c750a18a27eab0d0ac25dd2d036a3eec06544fe639fd699c4d997"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "de6dd343d07ff9e9467001be3c14f662220a85f13a5d551c2ddd153ab5a3e7fd"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "79a0003c7c5f68fffcc51bb2892fcf1425d26f56e0ce45a4fc06c63d7307486e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+        "sha256": "3bacf2c2294c88b10acd0d137c153ba2e219acc93903e74cad155081474d4705"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStatePlanner.cs",
+        "sha256": "b59594676efb70723398dad68418059d5f796bfff72d5ff4910a60219641654c"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeResourceOwnerComposer.cs",
+        "sha256": "c87f38ca05631b68f928b31111164326202a7e9dee38e80fdc54399cd81505cc"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalResourceQuartetTransaction.cs",
+        "sha256": "4d9460fefdd82276f37bb30b5c38416f67f6b3bb2ea12176a868380fb59d84db"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalResourceOwnerAuthorityComposer.cs",
+        "sha256": "0ebf495c393c9dc7108b0a1c03071336dafcf4f0c4d3cda5006184f84be38900"
+      }
+    ]
+  },
+  "acceptedComposition": [
+    {
+      "source": "e311087c33945941daf6bf1809409455741b97a7",
+      "passedCases": 9,
+      "scope": "Original three actual CSP controls and six known passing neighbors from actual230555."
+    },
+    {
+      "source": "ef0e317cdc5db3ef4370642679c5269a0a92ed39",
+      "passedCases": 1,
+      "scope": "Exact foreign-plan retention plus original blocker from actual233306."
+    },
+    {
+      "source": "8fcbb0779fac318f406463b668d3582bf075f654",
+      "passedCases": 3,
+      "scope": "Corrected current health, Guardian cleanup and known Unsafe partial-restoration neighbors from actual234717; two terminal passes superseded by final522293."
+    },
+    {
+      "source": "522293211630f2024ca0e68e44fd7f4f6af0eb03",
+      "passedCases": 3,
+      "scope": "Final original terminal actualCSP plus known safe HeldBlocked and failed restoration Aggregate at actual235247."
+    }
+  ]
 }

@@ -1,3 +1,30 @@
+## Treatment bounded final source and raw evidence — 2026-10-08
+
+Independent SOURCE/EXACT-SELECTION gate passed522293. Matching Plan235142 fresh
+integration build38.6836s /wall42.2256921s selected3/1/0; actual235247 completed3/3
+PASS in20.2677092s, no skips/duplicates/timeout, both runner cleanup flags true.
+Parent and independent raw reviews PASS: terminal real MemberPublished/index0 and
+TerminalReleaseOnly receipt preserve the SAME actual CSP, retained authentic59089-byte
+journal/foreign member before explicit fixture recovery and exact restart blocker;
+zero later reached restoration reads/publications/leases/recovery. Actual typed player
+follow-up has no retry suggestion. Known terminal2 retain HeldBlocked and Aggregate.
+Owned fixture is removed. Secondary-close preservation is source-reviewed; no injected
+secondary-close fault, native Windows or whole-turn atomicity claim is made.
+
+Final composition is16 DISTINCT passing obligations, not one fresh16 execution:
+9@e311 (causal3+known6), foreign1@ef0e, nonterminal corrected3@8fcbb, final terminal3@522293.
+All prior compile/timeout/fixture/mixed failures remain preserved. Discovery235321 is
+exact clean522293, catalog495/11284 valid,0 executed,7.8217134s, both cleanup flags true.
+Complete treatment packet100 artifacts/164 historical pins verifies stored, expanded,
+original bytes and Git objects; final independent saved-carrier/docs gate and parent fresh
+GitHub-only restoration follow this freeze. No broader rerun is needed for evidence/docs.
+
+Current crosswalk/selection now reconciles accepted scoped F13/F14/F17 work; historical
+d024 family table remains labeled baseline. Remaining F10 cleanup/progression consumers,
+F16 media/listings and F18 observer migration remain open under the same authorization.
+F17 previous parent fresh restore2fcd is accepted (27823 tracked/treea5c57bfbc8506cf985b1f30c7875ee33e6817ea2,
+11 artifacts/7 currentpins+5 historical censuspins, fsck0); no dead-code RED/native claim.
+
 ## Treatment original terminal propagation candidate — 2026-10-08
 
 The actual8fcbb terminal fault now has parent raw causal acceptance. The original
