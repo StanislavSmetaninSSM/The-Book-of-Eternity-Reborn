@@ -39,6 +39,11 @@ function Read-TestCategoryCatalog {
                 throw "Category '$($category.id)' requires boolean '$requirement'."
             }
         }
+        if ($category.requirements.Contains('ciRunner') -and
+            ($category.requirements.ciRunner -isnot [string] -or
+                $category.requirements.ciRunner -cnotin @('ubuntu-24.04', 'windows-latest'))) {
+            throw "Category '$($category.id)' ciRunner must be ubuntu-24.04 or windows-latest."
+        }
         if (@($category.changeHints).Count -eq 0 -or -not $category.Contains('related')) {
             throw "Category '$($category.id)' requires change hints and explicit related links."
         }
@@ -75,6 +80,47 @@ function Read-TestCategoryCatalog {
         }
     }
     return $catalog
+}
+
+function Get-TestCategoryCiMatrix {
+    [CmdletBinding()]
+    param([Parameter(Mandatory)]$Catalog, [Parameter(Mandatory)]$Selection)
+    if ($Selection -isnot [Collections.IDictionary] -or
+        -not $Selection.Contains('schemaVersion') -or $Selection.schemaVersion -ne 1 -or
+        -not $Selection.Contains('selections') -or $Selection.selections -isnot [array] -or
+        $Selection.selections.Count -eq 0) {
+        throw 'CI requires schemaVersion 1 and explicit nonempty selections; there is no default suite.'
+    }
+    $groups = [ordered]@{}
+    $seen = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
+    foreach ($entry in $Selection.selections) {
+        if ($entry -isnot [Collections.IDictionary]) { throw 'Invalid CI selection entry.' }
+        foreach ($field in @('category', 'reason')) { Assert-CatalogText $entry[$field] "selection.$field" }
+        if (-not $seen.Add($entry.category)) { throw "Duplicate selected category '$($entry.category)'." }
+        if (-not $entry.Contains('contracts') -or $entry.contracts -isnot [array] -or $entry.contracts.Count -eq 0) {
+            throw 'Each CI selection requires explicit affected contracts.'
+        }
+        foreach ($contract in $entry.contracts) { Assert-CatalogText $contract 'selection.contracts' }
+        $category = @($Catalog.categories | Where-Object { $_.id -ceq $entry.category })
+        if ($category.Count -ne 1) { throw "Unknown selected category '$($entry.category)'." }
+        # Absent metadata retains this workflow's existing Windows convention.
+        # It does not certify that an unannotated category is portable.
+        $runner = if ($category[0].requirements.Contains('ciRunner')) { $category[0].requirements.ciRunner } else { 'windows-latest' }
+        if ($runner -isnot [string] -or $runner -cnotin @('ubuntu-24.04', 'windows-latest')) {
+            throw 'Unsupported CI runner; no runnable matrix emitted.'
+        }
+        if (-not $groups.Contains($runner)) {
+            $groups[$runner] = [ordered]@{
+                runner = $runner; platform = $(if ($runner -ceq 'ubuntu-24.04') { 'linux' } else { 'windows' })
+                frontend = $false; selection = @{ schemaVersion = 1; selections = @() }
+            }
+        }
+        $group = $groups[$runner]
+        $group.selection.selections += $entry
+        $group.frontend = $group.frontend -or $category[0].requirements.frontendBuild -or
+            @($category[0].selectors | Where-Object { $_.project -ceq 'frontend' }).Count -gt 0
+    }
+    return @{ include = @($groups.Values) }
 }
 
 function New-CategoryInventoryIndex {
@@ -191,4 +237,4 @@ function Assert-TestCategoryFrontendIsolation {
     if ($Source -match $pattern) { throw "Frontend test '$Path' imports another test entrypoint. Extract shared helpers instead of hiding an aggregate run." }
 }
 
-Export-ModuleMember -Function Read-TestCategoryCatalog, Resolve-TestCategorySelection, Test-TestCategoryInventory, Assert-TestCategoryFrontendIsolation
+Export-ModuleMember -Function Read-TestCategoryCatalog, Resolve-TestCategorySelection, Test-TestCategoryInventory, Assert-TestCategoryFrontendIsolation, Get-TestCategoryCiMatrix

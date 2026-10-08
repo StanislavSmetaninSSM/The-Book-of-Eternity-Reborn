@@ -3,7 +3,15 @@
   "selections": [
     {
       "category": "test-ci-platform-contracts",
-      "reason": "Causal source/metadata RED of fixed Windows workflow before implementing explicit platform routing",
+      "reason": "Pure CI platform routing, exact selection conservation, invalid input and stable workflow result contracts",
+      "contracts": [
+        "#1553",
+        "T052-CI-PLATFORM-SELECTION"
+      ]
+    },
+    {
+      "category": "test-ci-platform-affected",
+      "reason": "Existing catalog selection and inventory compatibility affected by optional ciRunner metadata",
       "contracts": [
         "#1553",
         "T052-CI-PLATFORM-SELECTION"
