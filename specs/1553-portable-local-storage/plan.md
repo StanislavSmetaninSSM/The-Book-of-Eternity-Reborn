@@ -1,3 +1,11 @@
+## A01 cleanup fixture compile correction — 2026-10-08
+
+Initial4ec10b93 PlanOnly131633 failed compilation: new TestSupport helper omitted
+the existing Services namespace import (CS0246 for the common uncertainty carrier).
+Zero tests executed; this is not causal RED. Import-only correction follows;
+[original build log and summary](recovery/storage-migration-main-cleanup-20261008/manifest.json)
+remain preserved. Runtime unchanged; rerun fresh seven-row PlanOnly before actual.
+
 ## A01 consumer prerequisite: retained worker cleanup — 2026-10-08
 
 Parent fresh GitHub restore offd5871ff is clean25336 tracked, fsck connectivity0;

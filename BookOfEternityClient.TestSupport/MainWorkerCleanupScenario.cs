@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmRuntime;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging.Abstractions;

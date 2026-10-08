@@ -1,0 +1,33 @@
+{
+  "compileFailure": {
+    "source": "4ec10b9318ace27bf5f29158f6bc76487cce5d21",
+    "executed": 0,
+    "qualification": "Missing Services import in new TestSupport fixture caused CS0246. Build failure, not causal runtime RED.",
+    "artifacts": [
+      {
+        "path": "compile-failure-summary.json",
+        "source": "TestResults/test-categories/20261008-131633-826-54486-67fa6b670ef74af792520a48e29b1969-categories/summary.json",
+        "sha256": "e1afc521bafb70be89e7d6fbbb68bfe3acd9802d6b581877b35b79e355ade699",
+        "originalSha256": "e1afc521bafb70be89e7d6fbbb68bfe3acd9802d6b581877b35b79e355ade699"
+      },
+      {
+        "path": "compile-failure-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-131633-826-54486-67fa6b670ef74af792520a48e29b1969-categories/dotnet-test.log",
+        "sha256": "5fc1ded4fa0eb3292fe6226b0f82cb27aa112659d5b379ce4c20bbe1d07c82e7",
+        "originalSha256": "4939310aa2750c16676eecbbf9c4d5a98dfb5d4185abeb4d7d1036d4d5f80d04"
+      },
+      {
+        "path": "compile-failure-boe-1553-main-cleanup-red-plan.log.gz",
+        "source": "/tmp/boe-1553-main-cleanup-red-plan.log",
+        "sha256": "19023e9c053b7153723198e8803331bca594a9596657e1b0886658b1f9c3e948",
+        "originalSha256": "5699498a8781e1fe5aa564a092122dd9322995cd37a421e0a9a9df84e59b66f3"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.TestSupport/MainWorkerCleanupScenario.cs",
+        "sha256": "d0ec16bb80b593d17417932da0a63b26fdc8ee171b7aa9bca7c475a8fa2cf934"
+      }
+    ]
+  }
+}
