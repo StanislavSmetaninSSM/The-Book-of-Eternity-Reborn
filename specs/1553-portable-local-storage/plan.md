@@ -1,3 +1,13 @@
+## F13 observed-disposal ordering correction — 2026-10-08
+
+Clean f63 Plan200257 compiled exact53/6 with zero execution (60.4605113s, both cleanup
+flags true). Review found the new malformed-response fixture would wait for natural
+exit before closing the original stdin, although the helper was correctly waiting for
+its next command. Both observers now mirror production Dispose: close only that
+retained input endpoint, then observe natural exit before invoking actual Dispose/IO
+join. The pre-force exit assertion is retained. This is active transport-loss/EOF
+settlement, not caller cancellation. Same53; no actual execution yet.
+
 ## F13 same-row transport/production launch refinements — 2026-10-08
 
 Within existing53, large-read now retains the actual production process factory and

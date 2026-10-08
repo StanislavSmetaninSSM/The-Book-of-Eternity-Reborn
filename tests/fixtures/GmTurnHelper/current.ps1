@@ -7,7 +7,11 @@ $script:Joined=[Collections.Generic.List[object]]::new();$script:OriginalDispose
 function Dispose-GmOperationTransport {
  param($Context)
  if($Context.disposed){return (& $script:OriginalDispose $Context)}
- $pidValue=$Context.process.Id;$exited=$Context.process.WaitForExit(3500)
+ $pidValue=$Context.process.Id
+ # Match original Dispose ordering: release only the retained input endpoint,
+ # then prove natural exit before its force-stop fallback can run.
+ try{$Context.process.StandardInput.Close()}catch{}
+ $exited=$Context.process.WaitForExit(3500)
  & $script:OriginalDispose $Context
  $script:Joined.Add([pscustomobject]@{ProcessId=$pidValue;ExitedBeforeDispose=$exited;ExitCode=$Context.exitCode;OriginalClose=$Context.originalClose;TerminalClose=$Context.terminalClose;CloseObserved=$Context.closeObserved;LocalScopeCompleted=$Context.localScopeCompleted;Outcome=$Context.closeOutcome;Uncertain=$Context.publicationUncertain;Lost=$Context.lost;LastReply=$Context.lastCommandReply})
 }

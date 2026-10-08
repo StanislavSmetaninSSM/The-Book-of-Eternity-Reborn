@@ -6,7 +6,11 @@ if(-not $script:ContractDispose){$script:ContractDispose=${function:Dispose-GmOp
 function Dispose-GmOperationTransport {
  param($Context)
  if($Context.disposed){return (& $script:ContractDispose $Context)}
- $originalPid=$Context.process.Id;$exited=$Context.process.WaitForExit(3500)
+ $originalPid=$Context.process.Id
+ # Match original Dispose ordering: release only the retained input endpoint,
+ # then prove natural exit before its force-stop fallback can run.
+ try{$Context.process.StandardInput.Close()}catch{}
+ $exited=$Context.process.WaitForExit(3500)
  & $script:ContractDispose $Context
  [IO.File]::AppendAllText((Join-Path $script:ContractFolder 'joined.jsonl'),((@{ProcessId=$originalPid;ExitedBeforeDispose=$exited;ExitCode=$Context.exitCode}|ConvertTo-Json -Compress)+[Environment]::NewLine))
 }
