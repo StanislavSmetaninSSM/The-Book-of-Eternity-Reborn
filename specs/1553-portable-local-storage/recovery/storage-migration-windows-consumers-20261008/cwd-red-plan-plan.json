@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-windows-cwd-resolution"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "046d5dc9fbb71ac25896a4593557f13d807723c7",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 45.6707364,
+  "Descriptors": [
+    {
+      "Name": "gm-main-windows-cwd-resolution-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-windows-cwd-resolution",
+      "Categories": [
+        "gm-main-windows-cwd-resolution"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWindowsShellResolutionTests.WorkingDirectoryResolutionDoesNotCreateCanonicalStateBeforeAdmission",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWindowsShellResolutionTests.WorkingDirectoryResolutionDoesNotCreateCanonicalStateBeforeAdmission",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

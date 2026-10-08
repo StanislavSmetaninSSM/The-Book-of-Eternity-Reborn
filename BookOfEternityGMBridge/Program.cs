@@ -1457,7 +1457,8 @@ internal sealed partial class BridgeHost : IDisposable
             var fullPath = Path.IsPathRooted(configured)
                 ? Path.GetFullPath(configured)
                 : Path.GetFullPath(Path.Combine(_sessionPath, configured));
-            Directory.CreateDirectory(fullPath);
+            if(!Directory.Exists(fullPath))
+                throw new DirectoryNotFoundException("Configured shell working directory must already exist before original admission.");
             return fullPath;
         }
 

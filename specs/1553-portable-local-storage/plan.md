@@ -1,3 +1,19 @@
+## A01 Windows cwd causal correction — 2026-10-08
+
+046d fresh Plan145416 built3/0. Actual145552 complete3:2PASS/1FAIL7.2128880s,
+clean source/both cleanup flags. Raw TRX stdout records missing configured canonical
+child returned and targetCreated=True with no failure, then no-main/no-terminal
+checks pass before required absence fails. Existing/default controls pass.
+[Original causal packet](recovery/storage-migration-windows-consumers-20261008/manifest.json).
+
+Minimal correction requires an existing configured directory and preserves relative
+resolution/default fallback, with no new creation authority. Exact diagnostics
+contract reads its moved Windows helper; finite final selection7 = resolver3 +
+cwd3 +that exact diagnostic1. New helper/tests explicitly named in category hints
+and evidence pins. Corrected source/selection review pending; actual7 waits PASS.
+Native3 remains compiled/discovery0 only and all listed native fault/quarantine
+obligations remain open. This causal Linux helper correction is not Windows execution.
+
 ## A01 Windows source review correction checkpoint — 2026-10-08
 
 Independent89ed source/selection review is BLOCKED on two bounded P2s: configured

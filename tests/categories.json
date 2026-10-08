@@ -17890,7 +17890,8 @@
       "excludes": "No broad worker/native fault or quarantine acceptance; remaining native recipe cuts remain separately required.",
       "changeHints": [
         "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
-        "BookOfEternityGMBridge/ConPtySession.cs"
+        "BookOfEternityGMBridge/ConPtySession.cs",
+        "BookOfEternityClient.Tests/GmWindowsShellResolutionTests.cs"
       ],
       "related": [],
       "requirements": {
@@ -17915,7 +17916,8 @@
       "excludes": "No broad worker/native fault or quarantine acceptance; remaining native recipe cuts remain separately required.",
       "changeHints": [
         "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
-        "BookOfEternityGMBridge/ConPtySession.cs"
+        "BookOfEternityGMBridge/ConPtySession.cs",
+        "BookOfEternityClient.Tests/GmBridgeWindowsOriginalHostTests.cs"
       ],
       "related": [],
       "requirements": {
@@ -17936,12 +17938,13 @@
     },
     {
       "id": "gm-main-windows-cwd-resolution",
-      "responsibility": "Actual private Bridge cwd resolver: existing configured/default paths and missing canonical child refusal before main admission.",
+      "responsibility": "Actual private Bridge cwd resolver: existing configured/default paths and missing canonical child refusal before main admission. Exact moved-shell diagnostics contract only, not its broad worker cohort.",
       "excludes": "Native Windows execution or creation authority; no full Bridge diagnostics cohort.",
       "changeHints": [
         "BookOfEternityGMBridge/Program.cs",
         "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
-        "BookOfEternityClient.Tests/GmWindowsShellResolutionTests.cs"
+        "BookOfEternityClient.Tests/GmWindowsShellResolutionTests.cs",
+        "BookOfEternityClient.Tests/GmBridgeDiagnosticsContractTests.cs"
       ],
       "related": [],
       "requirements": {
@@ -17955,7 +17958,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.GmWindowsShellResolutionTests.WorkingDirectoryResolutionDoesNotCreateCanonicalStateBeforeAdmission"
+            "BookOfEternityClient.Tests.GmWindowsShellResolutionTests.WorkingDirectoryResolutionDoesNotCreateCanonicalStateBeforeAdmission",
+            "BookOfEternityClient.Tests.GmBridgeDiagnosticsContractTests.BridgeHost_DefaultShellWorkingDirectoryUsesGameSessionIsolation"
           ]
         }
       ]

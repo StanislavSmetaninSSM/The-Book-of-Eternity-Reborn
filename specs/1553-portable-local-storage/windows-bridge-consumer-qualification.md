@@ -15,7 +15,8 @@ a probe and never searches implicit current/relative directories. Existence is o
 configuration; original ConPTY preparation establishes actual launch validity. No
 fallback occurs after choosing the executable/Prepared/ACK/release/uncertainty.
 Existing shell arguments, quoted executable handling, bootstrap and manual empty CLI
-are retained. A separate Windows configuration cache does not trigger the existing
+are retained. Configured working directories must already exist; resolution creates
+no canonical child before admission and preserves relative/default path selection. A separate Windows configuration cache does not trigger the existing
 Linux production-worker capability refusal.
 
 The actual retained WMI probe settles before acquiring the main guard or publishing
