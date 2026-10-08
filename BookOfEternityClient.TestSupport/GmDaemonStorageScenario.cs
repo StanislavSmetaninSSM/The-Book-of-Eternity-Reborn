@@ -25,15 +25,18 @@ internal static class GmDaemonStorageScenario
     {
         var evidence=new Dictionary<string,object?> { ["ProcessId"]=Environment.ProcessId };
         var lastAction="admission";var contention=0;var reads=0;var recoveries=0;
+        Action<string,string>? currentHook=null;
         var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance,PhysicalLoadTransactionOperations.Instance,new FileSystemManagerHooks {
             CanonicalWriteLockContendedAsync=()=>{
                 Interlocked.Increment(ref contention);
                 PublishTechnicalMarker(Path.Combine(folder,"canonical-contended.json"),JsonSerializer.Serialize(new {Action=lastAction,Count=contention}));
                 return Task.CompletedTask;
             },
-            BeforeCanonicalReadOpenAsync=_=>{Interlocked.Increment(ref reads);return Task.CompletedTask;},
+            BeforeCanonicalReadOpenAsync=path=>{Interlocked.Increment(ref reads);currentHook?.Invoke("read",path);return Task.CompletedTask;},
+            AfterCanonicalMutationBoundaryValidatedAsync=path=>{currentHook?.Invoke("publish",path);return Task.CompletedTask;},
             LocalPublicationRecoveryObserver=(_,_)=>Interlocked.Increment(ref recoveries)
         });
+        currentHook=GmDaemonCurrentScenario.CreateHook(files,folder,evidence);
         using var input=new ObservedInput(Console.OpenStandardInput(),action=>lastAction=action);
         var exit=2;
         try {exit=await GmMainParticipatingControl.RunAsync(files,input,Console.OpenStandardOutput());evidence["Completed"]=true;return exit;}

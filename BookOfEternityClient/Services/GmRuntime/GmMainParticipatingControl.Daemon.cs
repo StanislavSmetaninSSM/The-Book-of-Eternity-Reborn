@@ -80,6 +80,7 @@ internal static partial class GmMainParticipatingControl
 
         private static async Task<object> SnapshotAsync(FileSystemManager files,Request request)
         {
+            if(request.Generation!=null&&(!SessionOperationContext.TryGetExpectedGeneration(files.BasePath,out var bound)||bound!=request.Generation))return new {matches=false};
             await using var lease=await files.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.PublicationReadQuiescence);
             var scope=new GmHelperCanonicalScope(files,lease,false);
             if(request.Generation!=null&&files.ReadLocalGenerationSnapshot(lease).Binding.Id!=request.Generation)return new {matches=false};
@@ -120,6 +121,7 @@ internal static partial class GmMainParticipatingControl
             // Existing mutation role is unchanged; broader reads cannot create a
             // broader writer. The target itself must have an explicit witness.
             var path=NormalizeControlPath(request.Path);
+            if(request.Generation==null||!SessionOperationContext.TryGetExpectedGeneration(files.BasePath,out var bound)||bound!=request.Generation)return new {matches=false};
             await using var lease=await files.AcquireCanonicalWriteLeaseAsync();
             files.EnsureWorkerGeneralMutationAllowed(lease);
             var scope=new GmHelperCanonicalScope(files,lease,false);

@@ -4926,7 +4926,7 @@ function Test-PendingTurnSnapshotRollbackBackupHashes {
             return $false
         }
 
-        $backupPath = Join-Path $GameSessionPath ($backupRelativePath.Replace("/", "\"))
+        $backupPath = [IO.Path]::Combine($GameSessionPath,$backupRelativePath.Replace('/',[IO.Path]::DirectorySeparatorChar))
         if (!(Test-GmDaemonPath $backupPath)) {
             return $false
         }
@@ -4961,7 +4961,7 @@ function Test-PendingTurnSnapshotFileHashes {
             return $false
         }
 
-        $snapshotPath = Join-Path $GameSessionPath ($snapshotRelativePath.Replace("/", "\"))
+        $snapshotPath = [IO.Path]::Combine($GameSessionPath,$snapshotRelativePath.Replace('/',[IO.Path]::DirectorySeparatorChar))
         if (!(Test-GmDaemonPath $snapshotPath)) {
             return $false
         }
@@ -6602,8 +6602,8 @@ function Get-CorrelatedTerminalSignal {
         if($observed.kind -ceq 'Missing'){continue}
         $fileName = Split-Path $path -Leaf
         if ($null -eq $signal) {
-            Write-Log "  Removed unreadable terminal signal artifact: $fileName" -Level "WARN" -Color Yellow
-            [void](Remove-GmDaemonObservedFile $observed)
+            if(Remove-GmDaemonObservedFile $observed){Write-Log "  Removed unreadable terminal signal artifact: $fileName" -Level "WARN" -Color Yellow}
+            else{Write-Log "  Terminal signal changed; replacement retained: $fileName" -Level "WARN" -Color Yellow}
             continue
         }
 
@@ -6622,8 +6622,8 @@ function Get-CorrelatedTerminalSignal {
             continue
         }
 
-        Write-Log "  Removed stale terminal signal artifact: $fileName (sessionId/requestId/turnNumber mismatch)" -Level "WARN" -Color Yellow
-        [void](Remove-GmDaemonObservedFile $observed)
+        if(Remove-GmDaemonObservedFile $observed){Write-Log "  Removed stale terminal signal artifact: $fileName (sessionId/requestId/turnNumber mismatch)" -Level "WARN" -Color Yellow}
+        else{Write-Log "  Terminal signal changed; replacement retained: $fileName" -Level "WARN" -Color Yellow}
     }
 
     if ($matchedSignals.Count -gt 1) {
@@ -6666,8 +6666,8 @@ function Resolve-DaemonTimeoutTerminalConflict {
     if ($successSignals.Count -eq 1 -and $timeoutSignals.Count -gt 0 -and ($successSignals.Count + $timeoutSignals.Count) -eq $MatchedSignals.Count) {
         foreach ($timeoutSignal in $timeoutSignals) {
             $fileName = Split-Path $timeoutSignal.Path -Leaf
+            if(-not (Remove-GmDaemonObservedFile $timeoutSignal.Observation)){Write-Log "  Timeout signal changed; replacement retained: $fileName" -Level "WARN" -Color Yellow;return $null}
             Write-Log "  Removed stale daemon timeout terminal signal artifact: $fileName" -Level "WARN" -Color Yellow
-            if(-not (Remove-GmDaemonObservedFile $timeoutSignal.Observation)){return $null}
         }
 
         return $successSignals[0]

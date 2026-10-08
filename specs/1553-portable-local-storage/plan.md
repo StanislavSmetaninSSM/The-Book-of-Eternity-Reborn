@@ -1,3 +1,26 @@
+## F14 connected runtime/current-fixture WIP — 2026-10-08
+
+The accepted causal packet remains `383268f9`: five QTE rows (two positive PASS,
+three causal failures) and separate four delivery PASS. Parent fresh GitHub-only
+restore verified all80 stored/expanded artifacts and48 historical source pins,
+clean27473-file tree, full fsck0. No additional causal execution is claimed.
+
+The whole daemon wiring and fourteen current controls are now drafted. They cover
+large/path-distinct snapshots; separate malformed-successful-response and lost
+request-end transport boundaries; incomplete request refusal; config/cache/repair/
+terminal read refusal; exact observed Ready deletion and notes rewrite races;
+authentic portable pending-turn authority, changed manifest witness and declared
+read refusal; and post-send refusal retaining the original delivery/operation.
+The two transport-loss rows first retire the actual original owner, then use a local
+guarded scope with no remote receipt claim. Other rows retain the original Running
+connection. These are unbuilt/unreviewed/unexecuted WIP, not acceptance evidence.
+
+Standalone read admission/completion now also carries the bounded read-refusal
+marker; conditional write decisions retain their publication classification. Final
+source/fixture/selection review and a matching successful build precede execution.
+Existing A03 loss/oversize and one focused F13 nested-default neighbor remain to be
+registered for the final finite selection; no full suites or native run are planned.
+
 ## F14 connected consumer wiring WIP — 2026-10-08
 
 Unbuilt/unreviewed whole-consumer draft now routes canonical daemon bytes, metadata

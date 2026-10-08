@@ -266,6 +266,7 @@ function Invoke-GmDaemonStorageRequest {
     if(-not $context){throw (New-GmDaemonReadFailure 'An original daemon operation is required.' $null)}
     $bytes=[Text.UTF8Encoding]::new($false,$true).GetBytes((ConvertTo-Json -InputObject $Request -Depth 100 -Compress))
     $transfer=[guid]::NewGuid().ToString('N')
+    try {
     [void](Send-GmOperationCommand $context @{action='daemon-request-begin';transfer=$transfer;length=[long]$bytes.LongLength;hash=(Get-GmDaemonBytesHash $bytes)})
     for($offset=0L;$offset -lt $bytes.LongLength;$offset+=$count){
         $count=[int][Math]::Min(32768,$bytes.LongLength-$offset)
@@ -273,6 +274,11 @@ function Invoke-GmDaemonStorageRequest {
     }
     # Valid negative storage/decision replies stay outside malformed-wire handling.
     $header=Send-GmOperationCommand $context @{action='daemon-request-end';transfer=$transfer}
+    } catch {
+        if(Test-GmDaemonReadFailure $_){throw}
+        if($context.lost -or $Request.action -ceq 'snapshot'){throw (New-GmDaemonReadFailure 'Original daemon request or reply unavailable; no replay.' $_.Exception)}
+        throw
+    }
     $buffer=[IO.MemoryStream]::new()
     try {
         if($header.transfer -cne $transfer -or $header.length -le 0 -or $header.hash -cnotmatch '^[0-9a-f]{64}$'){throw 'Invalid daemon response header.'}
@@ -312,7 +318,11 @@ function Invoke-GmDaemonStorageRequest {
 function Get-GmDaemonSnapshot {
     param([string[]]$Paths=@(),[string[]]$Trees=@(),$Expected=$null,[string]$Generation=$null)
     if($null -eq $Expected){$Expected=New-GmDaemonPathMap}
-    return Invoke-GmParticipatingConsumer $GameSessionPath {Invoke-GmDaemonStorageRequest @{action='snapshot';paths=$Paths;trees=$Trees;expected=$Expected;generation=$Generation}}
+    try {return Invoke-GmParticipatingConsumer $GameSessionPath {Invoke-GmDaemonStorageRequest @{action='snapshot';paths=$Paths;trees=$Trees;expected=$Expected;generation=$Generation}}}
+    catch {
+        if(Test-GmDaemonReadFailure $_){throw}
+        throw (New-GmDaemonReadFailure 'Original daemon read admission or completion was refused.' $_.Exception)
+    }
 }
 function Invoke-GmDaemonConditionalMutation {
     param([string]$Path,[AllowNull()][byte[]]$Bytes,$Expected,[string]$Generation,[switch]$Delete)

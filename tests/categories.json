@@ -18508,6 +18508,36 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-gm-daemon-storage-current-linux",
+      "responsibility": "F14 fourteen original-connection consumer, exact-cohort/CAS and bounded transport controls. Twelve Running scopes plus two explicitly local stopped-main transport-loss scopes.",
+      "excludes": "No provider, desktop, native Windows, full client continuation or blanket logical retirement for separate A03 loss neighbors.",
+      "changeHints": [
+        "BookOfEternityClient/game_master_daemon.ps1",
+        "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+        "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+        "BookOfEternityClient.TestSupport/GmDaemonStorageScenario.cs",
+        "tests/fixtures/GmDaemonStorage/qte.ps1",
+        "BookOfEternityClient.TestSupport/GmDaemonCurrentScenario.cs",
+        "tests/fixtures/GmDaemonStorage/current.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions"
+          ]
+        }
+      ]
     }
   ]
 }

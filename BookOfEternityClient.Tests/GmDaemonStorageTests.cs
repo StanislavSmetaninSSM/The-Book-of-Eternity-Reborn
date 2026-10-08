@@ -6,6 +6,39 @@ namespace BookOfEternityClient.Tests;
 public sealed class GmDaemonStorageTests
 {
     [Theory]
+    [InlineData("large-batch") ]
+    [InlineData("malformed-response") ]
+    [InlineData("request-end-loss") ]
+    [InlineData("malformed-request") ]
+    [InlineData("config-refusal") ]
+    [InlineData("cache-refusal") ]
+    [InlineData("repair-refusal") ]
+    [InlineData("terminal-refusal") ]
+    [InlineData("ready-race") ]
+    [InlineData("notes-race") ]
+    [InlineData("cohort-positive") ]
+    [InlineData("cohort-change") ]
+    [InlineData("cohort-read-refusal") ]
+    [InlineData("post-send-refusal") ]
+    public async Task OriginalConnectionPreservesWholeDaemonStorageDecisions(string mode)
+    {
+        string? folder=null;
+        try {await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-daemon-current-"+mode,path=>folder=path);}
+        finally
+        {
+            if(folder!=null&&File.Exists(Path.Combine(folder,"scenario.json")))
+            {
+                using var report=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(folder,"scenario.json")));
+                var value=report.RootElement;
+                Assert.False(value.TryGetProperty("DaemonCleanupFailures",out var failures),failures.ToString());
+                Assert.True(value.GetProperty("OriginalDaemonOwnerRetired").GetBoolean());
+                Assert.True(value.GetProperty("PowerShellExited").GetBoolean());
+                Assert.False(value.TryGetProperty("ForcedPowerShellTermination",out _));
+            }
+        }
+    }
+
+    [Theory]
     [InlineData("request-rollback")]
     [InlineData("request-commit")]
     [InlineData("request-unknown")]

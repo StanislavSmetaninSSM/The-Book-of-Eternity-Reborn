@@ -1,4 +1,4 @@
-param([string]$RepoRoot,[string]$SessionPath,[string]$Folder,[string]$TestSupport)
+param([string]$RepoRoot,[string]$SessionPath,[string]$Folder,[string]$TestSupport,[string]$Mode="qte")
 $ErrorActionPreference='Stop'
 . (Join-Path $RepoRoot 'BookOfEternityClient/Launcher/gm_main_operation.ps1')
 # Only the owned helper bootstrap is substituted to attach observation hooks.
@@ -41,6 +41,7 @@ $tokens=$null;$errors=$null
 $ast=[Management.Automation.Language.Parser]::ParseFile($daemon,[ref]$tokens,[ref]$errors)
 if($errors.Count){throw 'Original daemon parse failed.'}
 $names=@('Read-QteDaemonEligibility','Process-QteEffectResolutionRequest','Process-QteEffectResolutionRequestCore','Get-QteEffectResolutionRequestKey','Test-QteEffectResolutionRequestStillCurrent','Test-QteEffectResolutionReadyMatchesRequest','Build-QteEffectResolutionDispatchMessage','Read-GmPromptPending','Test-GmPromptSourceCurrent','Get-GmPromptContentHash','New-GmPromptOperation','New-GmPromptDelivery','Test-GmPromptDeliveryIdentity','Invoke-GmPromptControl','Send-ToGmBridge','Send-ToCliWindow','Dispatch-WithRetry','Complete-GmPromptDispatch','Test-GmPromptDispatchPaused','New-GmDispatchDiagnostics','Get-GameConfig','New-DefaultGmWorkerBridgeProfiles','Convert-RetiredCodexLaunchDefaults','Get-GmBridgeStatus','Ensure-GmBridgeStarted','Write-Log','Write-DaemonJsonFileBestEffort','Write-DaemonStatus')
+if($Mode -ne 'qte'){$names=@($ast.FindAll({param($n)$n -is [Management.Automation.Language.FunctionDefinitionAst]},$true)|ForEach-Object Name)}
 $definitions=@($ast.FindAll({param($n)$n -is [Management.Automation.Language.FunctionDefinitionAst]},$true)|Where-Object Name -in $names)
 if($definitions.Count -ne $names.Count){throw 'Original daemon function selection incomplete.'}
 $definitionFile=Join-Path $Folder 'original-daemon-functions.ps1'
@@ -63,7 +64,10 @@ function Invoke-GmPromptControl {
  if($Command -cne 'dispatchPrompt'){throw 'Unexpected lower delivery command.'}
  $entry=[ordered]@{command=$Command;payload=($Operation.PayloadJson|ConvertFrom-Json);sourceHash=$Operation.SourceHash}
  $script:Dispatches.Add($entry)
+ $script:LastFixtureOperation=$Operation
+ if($Mode -eq 'post-send-refusal'){[IO.File]::WriteAllText((Join-Path $Folder 'post-send-armed'),'armed')}
  Write-FixtureMarker -Path (Join-Path $Folder 'dispatch-entered.json') -Json ($entry|ConvertTo-Json -Depth 12 -Compress)
+ if($Mode -eq 'post-send-refusal'){return (New-GmPromptDelivery $Operation 'submission-observed' 'fixture-observed')}
  return (New-GmPromptDelivery $Operation 'not-written' 'fixture-no-send')
 }
 function Set-Clipboard {param($Value)throw 'Forbidden desktop fallback.'}
@@ -71,14 +75,17 @@ $failure=$null
 try {
  Invoke-GmParticipatingConsumer $SessionPath {
   $context=$global:BoeMainOperationContext
-  if(-not $context.originalClose){throw 'Fixture requires an actual Running main grant.'}
+  if($Mode -notin @('malformed-response','request-end-loss') -and -not $context.originalClose){throw 'Fixture requires an actual Running main grant.'}
   Write-FixtureMarker -Path (Join-Path $Folder 'admitted.json') -Json ($context.originalClose|ConvertTo-Json -Depth 10 -Compress)
-  if([Console]::ReadLine() -cne 'go'){throw 'Original fixture release was not received.'}
-  Process-QteEffectResolutionRequest -RequestPath (Join-Path $SessionPath 'input/qte_effect_resolution_request.json')
+  if($Mode -eq 'qte'){
+   if([Console]::ReadLine() -cne 'go'){throw 'Original fixture release was not received.'}
+   Process-QteEffectResolutionRequest -RequestPath (Join-Path $SessionPath 'input/qte_effect_resolution_request.json')
+  }else{. (Join-Path $RepoRoot 'tests/fixtures/GmDaemonStorage/current.ps1')}
  }
 } catch {$failure=$_.Exception}
 $ctx=$script:ObservedContext
 [IO.File]::WriteAllText((Join-Path $Folder 'powershell.json'),([ordered]@{
+ currentPassed=($script:CurrentPassed -eq $true);currentEvidence=$script:CurrentEvidence
  daemonReadRefused=($null -ne $failure -and $failure.Data['GmDaemonReadRefused'] -eq $true)
  dispatches=$script:Dispatches.ToArray();failure=$(if($failure){$failure.ToString()}else{$null});errorCount=$script:ErrorCount
  helperPid=$script:OriginalHelperPid;helperExitedBeforeDispose=$script:HelperExitedBeforeDispose;helperExitCode=$ctx.exitCode

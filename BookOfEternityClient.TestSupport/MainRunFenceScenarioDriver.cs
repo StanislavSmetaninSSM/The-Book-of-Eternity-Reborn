@@ -161,6 +161,12 @@ internal static class MainRunFenceScenarioDriver
                 try {await GmDaemonStorageScenario.ExerciseAsync(mode["terminal-main-daemon-storage-".Length..],files,owner,folder,()=>Call("StopShellAsync"),result);}
                 finally {await control.CancelAsync();await server;}
             }
+            else if(mode.StartsWith("terminal-main-daemon-current-",StringComparison.Ordinal)) {
+                using var control=new CancellationTokenSource();
+                var server=(Task)type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[control.Token])!;
+                try {await GmDaemonCurrentScenario.ExerciseAsync(mode["terminal-main-daemon-current-".Length..],files,owner,folder,()=>Call("StopShellAsync"),result);}
+                finally {await control.CancelAsync();await server;}
+            }
             else if(mode.StartsWith("terminal-main-helper-current-",StringComparison.Ordinal)) {
                 helperOwner=owner;
                 await owner.RunOperationAsync(async()=>{await GmHelperCurrentScenario.SeedAsync(files);return 0;});
