@@ -1,3 +1,24 @@
+## F04/F05 corrected GREEN checkpoint — 2026-10-08
+
+Runtimec8d882cd57a9780c66f505b951f70968a660ac98 independent corrected SOURCE,
+FIXTURE/SELECTION and RAW EVIDENCE PASS; parent independently confirms. Fresh
+Plan174428 built87/5/0 (96.9589648s), including native30 discovery only. Actual174630
+Linux57/57 PASS,4/4 complete27.9506879s, exact clean source, no skips/duplicates and
+both cleanup flags true. New neutral-only case cut1/recovery3/exactSnapshot=True;
+all prior56 controls complete. This is shared Linux behavior evidence and a new
+GREEN fixture extension, not native Windows RED/qualification. [Complete pinned packet](recovery/storage-migration-browser-daren-20261008/manifest.json).
+Catalog174728 valid480 categories/11273 methods, unmapped/stale empty,0 executed.
+Final carrier hash/pin review and parent fresh remote restore pending.
+
+Parent-found neutral-only scratch P2 is closed in source: post-original recovery
+reclassifies all browser evidence before allowing the original common publisher,
+then rechecks strictly. Previous242d56 and3066 integrity evidence stays historical;
+its initial source acceptance was reopened for this correction. Native30 remains
+unexecuted, including old physical receipts, case aliases and ordinary/extended
+neutral-only recovery. No native support/full migration/all-or-none claim.
+Next authorized families remain F13/F14, F16, F18/F17 and cleanup/treatment storage.
+No further F04/F05 runtime rerun unless review or a relevant change requires it.
+
 ## F04/F05 neutral-only correction WIP — 2026-10-08
 
 Runtime242d Linux56 source/raw evidence remains valid; final acceptance is held on

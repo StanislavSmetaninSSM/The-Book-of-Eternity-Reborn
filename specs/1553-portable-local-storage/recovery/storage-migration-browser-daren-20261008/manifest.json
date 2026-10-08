@@ -585,5 +585,237 @@
         "sha256": "d2e97d81e51f0d674b54a2a905b51afef0fb404167856a8905cf2c77e36e170a"
       }
     ]
+  },
+  "neutralCorrection": {
+    "qualification": "Independent corrected SOURCE/FIXTURE/SELECTION and RAW EVIDENCE PASS. Parent independently confirms57. Final carrier integrity gate pending. New neutral-only Linux1 is GREEN extension; native30 compile/discovery0, no Windows qualification. Previous242d56 remains historical scoped evidence; its source gate reopened for this corrected P2.",
+    "actual": {
+      "planned": 57,
+      "executed": 57,
+      "passed": 57,
+      "complete": true,
+      "seconds": 27.9506879
+    },
+    "native": {
+      "planned": 30,
+      "executed": 0
+    },
+    "catalog": {
+      "Valid": true,
+      "Methods": 11273,
+      "Categories": 480,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "source": "c8d882cd57a9780c66f505b951f70968a660ac98",
+    "artifacts": [
+      {
+        "path": "neutral-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-174428-618-101639-1f62a67561094e7a8b32df0e2d5acef1-categories/Build-integration.log",
+        "sha256": "0f86e822465c7688a3a6b167a3599a24b8ca22214c1ab45d3092a70a299f12e9",
+        "originalSha256": "d250966bd3ddffb72a7b478c85d1de6bf084705431dfd53d28069f1950a29239"
+      },
+      {
+        "path": "neutral-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-174428-618-101639-1f62a67561094e7a8b32df0e2d5acef1-categories/dotnet-test.log",
+        "sha256": "a5903e0ddce910b5fcf2d44cff8f70eac09cf3447b745f253a4fd1089e403574",
+        "originalSha256": "2f9f9136b01acea41c1cdef42050e0fb484fc01a2d209d603443da3c3e44ccc1"
+      },
+      {
+        "path": "neutral-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-174428-618-101639-1f62a67561094e7a8b32df0e2d5acef1-categories/plan.json",
+        "sha256": "6c3d164a60b369d6a1eab8a0f8fa579fd9f0cf890265f696c0cb0aed27906cc0",
+        "originalSha256": "6c3d164a60b369d6a1eab8a0f8fa579fd9f0cf890265f696c0cb0aed27906cc0"
+      },
+      {
+        "path": "neutral-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-174428-618-101639-1f62a67561094e7a8b32df0e2d5acef1-categories/summary.json",
+        "sha256": "2f0d7fb6458e387cfe56c439965ce68bf02c109745d66aa7070e660defb43e43",
+        "originalSha256": "2f0d7fb6458e387cfe56c439965ce68bf02c109745d66aa7070e660defb43e43"
+      },
+      {
+        "path": "neutral-green-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-174630-259-102059-0a178aa63a004ab9a8e4eda852d362f6-categories/dotnet-test.log",
+        "sha256": "a09f8dcf0f27b69087178557075763513709e26deaf3bf7d337122f20c6482fa",
+        "originalSha256": "0b26e80abf344f78450c1ffa52e3adb0500874790d396167f416308a87195363"
+      },
+      {
+        "path": "neutral-green-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-174630-259-102059-0a178aa63a004ab9a8e4eda852d362f6-categories/plan.json",
+        "sha256": "c8f45300f05b798b3fd8def0eed3a90fea496e8b82d45afd950e02bf8230d6c5",
+        "originalSha256": "c8f45300f05b798b3fd8def0eed3a90fea496e8b82d45afd950e02bf8230d6c5"
+      },
+      {
+        "path": "neutral-green-portable-browser-direct-gacha-adoption-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-174630-259-102059-0a178aa63a004ab9a8e4eda852d362f6-categories/portable-browser-direct-gacha-adoption-linux-integration-001.trx",
+        "sha256": "4305445382f7db4903120b9981993a9dce09bc7232e19d567c8e4d9aa3f9ea58",
+        "originalSha256": "3e60aa1370f28655fef9be47ade53cd6db6fa9b2235f86876ed882e835f89974"
+      },
+      {
+        "path": "neutral-green-portable-browser-protocol-admission-linux-integration-002.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-174630-259-102059-0a178aa63a004ab9a8e4eda852d362f6-categories/portable-browser-protocol-admission-linux-integration-002.trx",
+        "sha256": "5e088e7904d3e446e003d99e956378e47a597a17fc583ab72a0ec7b544827cfd",
+        "originalSha256": "160e1caba596e47ed800e3cad985251c5df36c06c60c951146b7d6aed39d3478"
+      },
+      {
+        "path": "neutral-green-portable-browser-protocol-consumers-linux-integration-003.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-174630-259-102059-0a178aa63a004ab9a8e4eda852d362f6-categories/portable-browser-protocol-consumers-linux-integration-003.trx",
+        "sha256": "cc59d34001731e4fa8a02c2f23f00589df33a1828c7ddeae4ce8f41316ec0261",
+        "originalSha256": "a95a737b8d944ff130bb6d571a62f5acdbf66c2caeb08bbda9effef8576cb283"
+      },
+      {
+        "path": "neutral-green-portable-daren-protocol-consumers-linux-integration-004.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-174630-259-102059-0a178aa63a004ab9a8e4eda852d362f6-categories/portable-daren-protocol-consumers-linux-integration-004.trx",
+        "sha256": "baa512437f1923b2748848ec309375ea0b2b4941a71fd557a03ce8053153590e",
+        "originalSha256": "fa7db32337b61b492781470065a6d804ef957519e68d2ce5b055cb94c66c13c8"
+      },
+      {
+        "path": "neutral-green-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-174630-259-102059-0a178aa63a004ab9a8e4eda852d362f6-categories/summary.json",
+        "sha256": "b58a3b12253e8d5349dc6aa447b00ae6fae3d882606f28a756429d485d1a717f",
+        "originalSha256": "b58a3b12253e8d5349dc6aa447b00ae6fae3d882606f28a756429d485d1a717f"
+      },
+      {
+        "path": "neutral-plan-driver-boe-browser-daren-corrected-plan.log.gz",
+        "source": "/tmp/boe-browser-daren-corrected-plan.log",
+        "sha256": "6e1fb759255f6405d6fce7e7fc428085ecd497b6d247958390e38e5e2086948b",
+        "originalSha256": "e704a7d2f09e45939a600ddbc337a67b4c71316b3e3eba83c79a8c5ce968c643"
+      },
+      {
+        "path": "neutral-green-driver-boe-browser-daren-corrected-green.log.gz",
+        "source": "/tmp/boe-browser-daren-corrected-green.log",
+        "sha256": "2e2f012ab9d413a058a792359d5112d0820d752bcb552bf51b385087ada7a5c0",
+        "originalSha256": "836378f8a5aea8ebdeffc41517cae1dec3e4fc1f39159efb46c209b9db485bf5"
+      },
+      {
+        "path": "neutral-catalog-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-174728-161-103142-0596495f1b6c4d1a97e7429f0b1aeb05-categories/catalog-audit.json",
+        "sha256": "487a962f24072dafa3023cc6fb5ca5eb6d7c6f4cf62860cde1f9ce46b0fc138a",
+        "originalSha256": "487a962f24072dafa3023cc6fb5ca5eb6d7c6f4cf62860cde1f9ce46b0fc138a"
+      },
+      {
+        "path": "neutral-catalog-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-174728-161-103142-0596495f1b6c4d1a97e7429f0b1aeb05-categories/dotnet-test.log",
+        "sha256": "ec5785e2881fafce4538d97fc217f67823342ccdf24b4f8645bf9f640d48b35b",
+        "originalSha256": "ee2ad13acc85aad567592ccb3d7976760fffdd7feba13a0cc53d445ee9925b89"
+      },
+      {
+        "path": "neutral-catalog-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-174728-161-103142-0596495f1b6c4d1a97e7429f0b1aeb05-categories/summary.json",
+        "sha256": "37cd6465c8e8b0c21b22211e3f18395bc7a5274a866f199eaee1689bff821bfc",
+        "originalSha256": "37cd6465c8e8b0c21b22211e3f18395bc7a5274a866f199eaee1689bff821bfc"
+      },
+      {
+        "path": "neutral-catalog-driver-boe-browser-daren-corrected-catalog.log.gz",
+        "source": "/tmp/boe-browser-daren-corrected-catalog.log",
+        "sha256": "3f125048c0b99e8fd9d37d70cdaf808cb46db7e039cfd522105aa3470c5e4781",
+        "originalSha256": "9a85c0a8a27611a4c49145d71e10fb429d2b5ac6a9e30c5c20db81b155d584c5"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "ec05408d0e2d041133af2eb3c06c480783a68bcc53c10e7e79ef3c749c1a18bb"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+        "sha256": "1e1bca8520a3e65d2177a9819af87f10adbcef65a7fb77fb2628a0bcb322abb7"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs",
+        "sha256": "2345923f3a46e23e4c997a3107a5ca2b3a446d402ac05f698a489fc9277e32cb"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "ee5d37a59cc7e41f0d1ad5b1dd5176084a96cbb812ff3be2c8e81a503f51af90"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "sha256": "edc49b28ed6a75346b83538ec550058afc7a889535232d6e92320c427ff43e56"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+        "sha256": "fe8da16e44de41740550260583bfb9ae1bb170bed98bd70c903bcd9f5b8ab556"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalBrowser.cs",
+        "sha256": "9f1ffe9323e7ea146d3da61fb7f3e907e58de370ab1c927d8f9597d15de1af37"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalRecovery.cs",
+        "sha256": "385e5b7d62360681e89ef506dddf5de67137295fc093cd3bf158131cf1c04b3f"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalDirectGacha.cs",
+        "sha256": "4416fa9a8002ed65fba07505edbdf17065652c254072846e526f8317a2359ed4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
+        "sha256": "61e8fa7d5edae3f52cef85d42060a9ecc5cc11d73a136e152cd0f07bc96b9488"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+        "sha256": "2a786979f80bd5003f41cbc30bd33ceee8af03a66f99f546761c3c97a7edb647"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxTests.cs",
+        "sha256": "39552cd948c01a23ae77625ef1a581a8b3031a2adee4f54574dabafec50b718e"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxBoundaryTests.cs",
+        "sha256": "4540aae8567ecd3b9124e0838d0a111674c5df495f225e80aa54c455fb5cb03a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxBoundaryTests.External.cs",
+        "sha256": "facc58bb177cbfd924f03cc1c9bb0a3ec2800a78abbb4cc00cbe153f028e0e96"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxBoundaryTests.Recovery.cs",
+        "sha256": "9f1b08b3511fab820eb476834f8abd21c6c564dd3aae8c62bdf5b3171c9ad2f1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxTests.cs",
+        "sha256": "0634da994a648114a9367917a5c723dc22114ea279fa7abc1ea750e0be66a3d9"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxTests.Consumers.cs",
+        "sha256": "25901cfcb19554ff8e3abd8cfd4fd96e778f46a4da8c414015e91795c970efd6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxBoundaryTests.cs",
+        "sha256": "37ecb0d7508ad687a789fa5844986fdc36fea35bbde5e99c7ffb6f1de95b3fbf"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxFixture.cs",
+        "sha256": "5427bd7b18d5137828ff5c2a15d4cfe447b74447803e120f68bab5161da80026"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "612b362561e09cd091647decad60637ea463d6a439ea865f02da36c30e0c4ae5"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "ed517db734e38c0fd4f3468c3106960c5c42f80c892ef2b559414ab3ac1f14ae"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserProtocolCutoverTests.cs",
+        "sha256": "c2da7ea7eaa91bbba5cc1e93a7731f0bc9b0d76781fa09fee142c3a442bbb609"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserProtocolCutoverTests.Windows.cs",
+        "sha256": "d0b7c308e6528da861e40fe6165c129bf2974d39ee0797eaf7044d50f61dcd79"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.BrowserProtocol.cs",
+        "sha256": "2c94c73cffaf46b11440dbd62b7ef680934ea56a33fdb16096511aa7eb45eb1d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.DirectGachaLinux.cs",
+        "sha256": "7ba157c0fc7eee4cc1b851b19a616de2b4b2484b13fdf0f023efc8f7b5ae250b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxFixture.cs",
+        "sha256": "d2e97d81e51f0d674b54a2a905b51afef0fb404167856a8905cf2c77e36e170a"
+      }
+    ]
   }
 }

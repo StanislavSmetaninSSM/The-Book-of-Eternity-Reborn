@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "portable-browser-protocol-consumers-linux",
+    "portable-daren-protocol-consumers-linux",
+    "portable-browser-protocol-admission-linux",
+    "portable-browser-direct-gacha-adoption-linux",
+    "portable-browser-protocol-native-windows"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "c8d882cd57a9780c66f505b951f70968a660ac98",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0581691,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.039531,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.089588,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 92.733473,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0042318,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:01:36.9589648",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 87,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-browser-direct-gacha-adoption-linux-integration-001",
+      "portable-browser-protocol-admission-linux-integration-002",
+      "portable-browser-protocol-consumers-linux-integration-003",
+      "portable-browser-protocol-native-windows-integration-004",
+      "portable-daren-protocol-consumers-linux-integration-005"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
