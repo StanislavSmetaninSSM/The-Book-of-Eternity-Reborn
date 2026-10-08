@@ -457,18 +457,12 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("wound_post_seal", 1)]
     [InlineData("wound_output", 1)]
     [InlineData("critical_validation", 1)]
-    [InlineData("runtime_refresh", 2)]
-    public Task GuaranteedResourceQuantity_RealGameEngineBoundaryFailureCompensatesExactHeldPlan(
-        string boundary, int occurrence) => RunKnownTreatmentBoundaryAsync(boundary, occurrence);
-
-    [Theory]
     [InlineData("full_state_validation", 1)]
     [InlineData("cleanup", 1)]
-    [InlineData("transaction_commit_conflict", 1)]
-    public Task GuaranteedResourceQuantity_RemainingEngineBoundaryFailureRetainsOriginalContract(
-        string boundary, int occurrence) => RunKnownTreatmentBoundaryAsync(boundary, occurrence);
-
-    private async Task RunKnownTreatmentBoundaryAsync(string boundary, int occurrence)
+    [InlineData("runtime_refresh", 2)]
+    public async Task GuaranteedMixedItemAndResourceConsumption_EveryPipelineFailureRestoresExpandedRootsAndExactRetryCommitsOnce(
+        string boundary,
+        int occurrence)
     {
         var fault = new AcceptedTreatmentPipelineFault(boundary, occurrence);
         await using var context = await CreateHeldTreatmentPipelineContextAsync(
@@ -502,7 +496,6 @@ public sealed partial class GameEngineTurnLifecycleTests
                 null);
         });
 
-        WriteTreatmentNeighborDiagnostic(context, fault, boundary, exception, accepted, commandBefore);
         Assert.True(
             fault.Fired,
             $"Observed={string.Join(", ", fault.ObservedPhases)}; " +
@@ -1421,13 +1414,18 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("wound_post_seal", 1)]
     [InlineData("wound_output", 1)]
     [InlineData("critical_validation", 1)]
+    [InlineData("runtime_refresh", 2)]
+    public Task GuaranteedResourceQuantity_RealGameEngineBoundaryFailureCompensatesExactHeldPlan(
+        string boundary, int occurrence) => RunKnownTreatmentBoundaryAsync(boundary, occurrence);
+
+    [Theory]
     [InlineData("full_state_validation", 1)]
     [InlineData("cleanup", 1)]
-    [InlineData("runtime_refresh", 2)]
     [InlineData("transaction_commit_conflict", 1)]
-    public async Task GuaranteedResourceQuantity_RealGameEngineBoundaryFailureCompensatesExactHeldPlan(
-        string boundary,
-        int occurrence)
+    public Task GuaranteedResourceQuantity_RemainingEngineBoundaryFailureRetainsOriginalContract(
+        string boundary, int occurrence) => RunKnownTreatmentBoundaryAsync(boundary, occurrence);
+
+    private async Task RunKnownTreatmentBoundaryAsync(string boundary, int occurrence)
     {
         var fault = new AcceptedTreatmentPipelineFault(boundary, occurrence);
         await using var context = await CreateHeldTreatmentPipelineContextAsync(fault);
@@ -1461,6 +1459,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 null);
         });
 
+        WriteTreatmentNeighborDiagnostic(context, fault, boundary, exception, accepted, commandBefore);
         Assert.True(
             fault.Fired,
             $"The existing filesystem hook did not reach '{boundary}' occurrence {occurrence}. " +
@@ -1512,9 +1511,11 @@ public sealed partial class GameEngineTurnLifecycleTests
                 "transaction_commit_conflict",
                 StringComparison.Ordinal))
         {
-            Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
-                context.FileSystem,
-                context.Lease));
+            Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(context.FileSystem, context.Lease,
+                out var retainedForeignBinding, out var retainedForeign));
+            Assert.True(retainedForeign.Success);
+            Assert.Same(fault.ForeignPlan, retainedForeign.Plan);
+            Assert.Equal(fault.ForeignBindingFingerprint, AcceptedMechanicsPlanFingerprints.ComputeInput(retainedForeignBinding));
             AssertTreatmentPublicationRestartBlocked(context);
         }
         else

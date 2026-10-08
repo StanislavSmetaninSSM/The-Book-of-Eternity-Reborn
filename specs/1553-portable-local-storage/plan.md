@@ -1,3 +1,15 @@
+## Treatment diagnostic split correction — 2026-10-08
+
+727ff diagnostic Plan231351 failed compilation20.7085858s, zero actual tests. An
+ambiguous text edit selected the similarly annotated mixed-item theory, introduced a
+duplicate resource method and misplaced diagnostics. Independent review blocked it.
+The mixed-item theory is restored byte-exact from086e, verified as a complete source
+segment. Only the exact named resource-only boundary method is now split5+3; its
+original private body receives diagnostics and the exact foreign-plan oracle. Each
+public/private declaration is unique. Production remains unchanged; failed build is
+archived separately and has no causal meaning. Focused source review precedes another
+matching Plan6; no actual until both succeed.
+
 ## Treatment isolated remaining-six diagnostic source — 2026-10-08
 
 Actual230555 classification is four unreached-cut assertions and two reached later-oracle
