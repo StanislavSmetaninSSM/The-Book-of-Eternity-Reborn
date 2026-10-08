@@ -1,3 +1,17 @@
+## A02 connected causal RED and minimal correction — 2026-10-08
+
+Frozen186c3cf9 fresh seven-case selection:4PASS/3FAIL,12.596s, complete and
+owned cleanup complete. Both compensation cuts reached before unknown bytes/journal
+assertions; old code aggregates the typed error and starts one later mutation.
+Original GameEngine accepted handler reaches index publication but replaces the
+carrier with recovery InvalidData. No rollback-message output is claimed.
+[Original source-pinned evidence](recovery/storage-migration-accepted-red-20261008/manifest.json).
+Minimal correction stops before-image iteration on typed uncertainty, preserves
+its original normalization cause on the same object, and lets that object cross
+the accepted-handler boundary. Fresh seven-case GREEN and independent review
+remain pending. Next priorities: directory carrier, Windows original Bridge owner,
+then F06 and other registered families; native Windows remains unexecuted.
+
 ## A02 direct GREEN / compensation fixture and original handler — 2026-10-08
 
 Sourcec9233593 actual5complete:direct3PASS, newcompensation2 fixtureFAIL with

@@ -130,5 +130,102 @@
     "failed": 2,
     "wallSeconds": 9.3961234,
     "qualification": "Earlier direct3 GREEN. New compensation2 never reached intendedcut: resource_state unchanged at selectedhistory. Fixturefailure only; inspectactualpublicationorder andselect priorchangeddefinitions."
+  },
+  "sevenCaseBaseline": {
+    "source": "186c3cf9c9d731ee6ce77780b687613504fa0406",
+    "executed": 7,
+    "passed": 4,
+    "failed": 3,
+    "wallSeconds": 12.5962249,
+    "cleanupComplete": true,
+    "qualification": "Both compensation cuts reached with retained unknown definitions/journal before wrong Aggregate carrier and one later mutation. Original GameEngine accepted handler index publication reached with unknown bytes/journal before InvalidData masks storage carrier. Four direct/known rollback controls PASS. No claim that rollback text was printed.",
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/AcceptedTurnStorageOutcomeTests.cs",
+        "sha256": "d923dbb1b1f73baa0351fdc5cd4cdd119618e24de6f65c8e69e1ea868cdab64b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.AcceptedStorageOutcome.cs",
+        "sha256": "4504f3b45534e8bc4ec97f10ba829f6a79606e49bf20916303797ae63cde65d5"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+        "sha256": "7bbc442db0546fc2fbb3a24fbbde5d35b7966e2f6eae89e1e8d598d725694dbc"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "sha256": "704e7e7e0445654f2ba2c375bf78d5b612a53c7b51ccfc1cc0acafa7b0983d97"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "8fe49babdb31cd2b886c4ac7cc3fb2649ab3f617611abdeb077dca6f67a7e243"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "f25c2bc532676fa0b2f2ab65317061439992fc9d19671f0cf755e7e6f8bcfd7e"
+      }
+    ],
+    "artifacts": [
+      {
+        "path": "seven-plan-plan.json",
+        "source": "TestResults/test-categories/20261008-112027-093-31459-3f7a1bfb31e447be87ff7c7072e26a09-categories/plan.json",
+        "sha256": "3acbdca5d225a608d6b253f599f02d3b98a5b482a2820db165721b55abc37401",
+        "originalSha256": "3acbdca5d225a608d6b253f599f02d3b98a5b482a2820db165721b55abc37401"
+      },
+      {
+        "path": "seven-plan-summary.json",
+        "source": "TestResults/test-categories/20261008-112027-093-31459-3f7a1bfb31e447be87ff7c7072e26a09-categories/summary.json",
+        "sha256": "b6f9733c9716d354475f3ba99c8616cbb565784d37cc21ce7958fe4656877f65",
+        "originalSha256": "b6f9733c9716d354475f3ba99c8616cbb565784d37cc21ce7958fe4656877f65"
+      },
+      {
+        "path": "seven-plan-Build-integration.log.gz",
+        "source": "TestResults/test-categories/20261008-112027-093-31459-3f7a1bfb31e447be87ff7c7072e26a09-categories/Build-integration.log",
+        "sha256": "72346c43acc86cced4a3d417ed425f3c96662fcc4dd099205389a204a7dbd982",
+        "originalSha256": "83d5300e1587f2b23b3c013caa362035dcf746d72d430249c377942908651311"
+      },
+      {
+        "path": "seven-plan-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-112027-093-31459-3f7a1bfb31e447be87ff7c7072e26a09-categories/dotnet-test.log",
+        "sha256": "8f7e9c0b114fa060ab8641aabed7a9b7ee60fcc548c41a71ffd2fdbb8b7c8a34",
+        "originalSha256": "54056ddc13549158686a0e818c61c4bccc47328efa414b4402a196f6a8f8a3ad"
+      },
+      {
+        "path": "seven-red-plan.json",
+        "source": "TestResults/test-categories/20261008-112119-873-31713-eb8c9465240d4aa48bab172879a6bbb4-categories/plan.json",
+        "sha256": "66075fb4d25561fc6d257214ad43478fc9cc824d9fba713ee3d4e169495eefb9",
+        "originalSha256": "66075fb4d25561fc6d257214ad43478fc9cc824d9fba713ee3d4e169495eefb9"
+      },
+      {
+        "path": "seven-red-portable-accepted-normalization-outcomes-integration-001.trx.gz",
+        "source": "TestResults/test-categories/20261008-112119-873-31713-eb8c9465240d4aa48bab172879a6bbb4-categories/portable-accepted-normalization-outcomes-integration-001.trx",
+        "sha256": "661c84f43f146a56c5f7648b88e65b147788064406ff026708b6d66e987f9954",
+        "originalSha256": "cbf43fac4fdd00fe14900ab1477ccd8bd6337fb6f18112a84acf00beeed97320"
+      },
+      {
+        "path": "seven-red-summary.json",
+        "source": "TestResults/test-categories/20261008-112119-873-31713-eb8c9465240d4aa48bab172879a6bbb4-categories/summary.json",
+        "sha256": "48fcafad02990d11d6708bf93420ffd922e63aff31ca135bbc8173e192dfb027",
+        "originalSha256": "48fcafad02990d11d6708bf93420ffd922e63aff31ca135bbc8173e192dfb027"
+      },
+      {
+        "path": "seven-red-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-112119-873-31713-eb8c9465240d4aa48bab172879a6bbb4-categories/dotnet-test.log",
+        "sha256": "a3b14f935fdc0f6510a5bf50b2806ebf64d0c737d8159fc9293a57849233ae81",
+        "originalSha256": "e4b8c0e7fb62c04e10033071d1ee74974bfae28120fd588207da666702dd1cf9"
+      },
+      {
+        "path": "seven-plan-runner.log.gz",
+        "source": "/tmp/boe-1553-a02-seven-plan.log",
+        "sha256": "945e9b6153d64777ba61230f20171f5a89d95e9d3636c2eec7c97904f0ca5d6b",
+        "originalSha256": "6d4875c3443042c29c9d1aca8acde979b6c707f56ff66145a61daa94eb05b588"
+      },
+      {
+        "path": "seven-red-runner.log.gz",
+        "source": "/tmp/boe-1553-a02-seven-red.log",
+        "sha256": "38780bbe9fabd5800de9e95733365a7bf055ac2fc4ed628742eebda81034d677",
+        "originalSha256": "a2e3b4aab457616b057a9e7d8ef74a01d8b828b25e81b3e24593873c747b025e"
+      }
+    ]
   }
 }

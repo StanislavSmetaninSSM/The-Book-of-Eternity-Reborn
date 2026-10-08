@@ -1847,6 +1847,11 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 if (spiritualPreflight is null || spiritualWritesStarted)
                     await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
             }
+            catch (CoordinatedStatePublicationUncertainException uncertain)
+            {
+                uncertain.Data["AcceptedTurnNormalizationFailure"] = exception;
+                throw;
+            }
             catch (Exception rollbackException)
             {
                 rollbackFailures.Add(rollbackException);
@@ -1924,7 +1929,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
                     beforeImage.Path,
                     beforeImage.Bytes);
             }
-            catch (Exception exception)
+            catch (Exception exception) when (exception is not CoordinatedStatePublicationUncertainException)
             {
                 failures.Add(new InvalidOperationException(
                     $"Failed to restore exact canonical before-image for '{beforeImage.Path}'.",

@@ -691,6 +691,10 @@ public partial class GameEngine
             {
                 throw;
             }
+            catch (CoordinatedStatePublicationUncertainException)
+            {
+                throw;
+            }
             catch (SessionReplacedException)
             {
                 throw;
