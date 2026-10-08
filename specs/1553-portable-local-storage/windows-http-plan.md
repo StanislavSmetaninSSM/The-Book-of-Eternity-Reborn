@@ -88,3 +88,18 @@ state endpoints; original five bypass API routes remain outside the route group.
 No endpoint payload, filesystem guard, retry or relay source changed. Queue wait
 uses request cancellation, and only an acquired permit is released in finally.
 GREEN and independent implementation/evidence review remain pending.
+
+First candidate7e4d66df: all9 admission cases PASS. The14-case existing Load
+descriptor exceeded its own5minute budget; no TRX/completed-case denominator was
+produced for it, and settings8 never ran. Whole runner wall7m34s, complete original
+owned/runtime cleanup. The runner's error text names its17minute aggregate budget,
+but the actual failing descriptor budget is5minutes. No hang or root cause for
+this incomplete category has been established; an owned fresh test root was still
+created near the cutoff. Split the four expensive required-generation full
+Save/Load scenarios into their own5minute category; retain all14 cases and their
+independent fixtures, no budget increase or silent omission.
+
+Source review raised a semaphore-disposal race with a handler surviving aborted
+Kestrel shutdown. Before correction, add an actual host/DI/endpoint-filter
+shutdown regression and exact cancelled-invocation entry/permit assertions.
+These two tests form their own narrow lifetime category; compile/RED pending.

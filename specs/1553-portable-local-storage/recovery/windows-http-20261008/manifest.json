@@ -1,8 +1,13 @@
 {
-  "ProbeSourceCommit": "406423aea14dfa4231853913f9ab298756270432",
+  "ProbeRedSourceCommit": "406423aea14dfa4231853913f9ab298756270432",
   "TestRedSourceCommit": "9dfa154d90f3da003d186fc1e3781d2cbd405b91",
-  "HttpProductChangedForTheseRedRuns": false,
+  "IncompleteGreenSourceCommit": "7e4d66df17f933b1d9a4d9e7e36a6202bb84a272",
   "Files": [
+    {
+      "Path": "first-green-incomplete-original-results.zip",
+      "Bytes": 5815,
+      "SHA256": "3f797302b1471427eed36d0169b2c60c568f59b9b1d8291d1f093edac648ec67"
+    },
     {
       "Path": "http-empty-first.json",
       "Bytes": 19712,
@@ -30,8 +35,8 @@
     },
     {
       "Path": "selection-http.json",
-      "Bytes": 779,
-      "SHA256": "a3646ed9a671d8083ed6e31659f3e7839fc6e6020a979f6b798dd4f0f15b9aa9"
+      "Bytes": 1332,
+      "SHA256": "1bf7fadf6b9ad1f98718367f71faf04075b12a28103b19d700143ce33ad041f9"
     }
   ]
 }

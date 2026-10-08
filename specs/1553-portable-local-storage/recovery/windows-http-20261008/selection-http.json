@@ -2,6 +2,22 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-load-browser-required-generation",
+      "reason": "Preserve all four exact-generation Save/Load/refresh controls after splitting the slow native category; no cases dropped",
+      "contracts": [
+        "#1553",
+        "T054-WINDOWS-HTTP"
+      ]
+    },
+    {
+      "category": "browser-http-admission-lifetime",
+      "reason": "Review regression for host disposal versus surviving handler and exact cancelled queue permit ownership",
+      "contracts": [
+        "#1553",
+        "T054-WINDOWS-HTTP"
+      ]
+    },
+    {
       "category": "browser-http-admission",
       "reason": "Causal real HTTP parallel admission, cancellation/failure release and Load/static bypass; physical owner refusal preserved",
       "contracts": [

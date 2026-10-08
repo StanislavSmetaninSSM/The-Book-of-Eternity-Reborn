@@ -21,8 +21,9 @@ public sealed class LocalWebUiRequestAdmissionTests : IDisposable
             var queued = client.GetAsync("/api/audio/settings");
             try
             {
-                // The unchanged physical guard exhausts 200 attempts * 50ms.
-                // An ordinary sibling request must wait before entering that boundary.
+                // The unchanged physical guard retries 200 times with 50ms delays.
+                // Native scheduling can extend that window; the exact contention
+                // assertion below proves sibling work waited before that boundary.
                 await Task.Delay(TimeSpan.FromSeconds(11.5));
             }
             finally { release.TrySetResult(); }

@@ -2,6 +2,28 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-load-browser-required-generation",
+      "responsibility": "Actual Save/Load followed by complete required-generation browser refresh: current, stale, missing and unreadable-settings outcomes in independent roots",
+      "excludes": "Live GM continuation, user saves, other bundle read/closing cuts owned by portable-load-browser-refresh",
+      "changeHints": ["BookOfEternityClient/WebUi/LocalWebUiHost.cs", "BookOfEternityClient/WebUi/BrowserLoadStateService.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration"] }]
+    },
+    {
+      "id": "browser-http-admission-lifetime",
+      "responsibility": "Actual filter cancellation entry/permit ownership and real Kestrel aborted shutdown with a surviving owned handler",
+      "excludes": "No GM/provider, filesystem authority changes, normal shutdown qualification or unrelated browser routes",
+      "changeHints": ["BookOfEternityClient/WebUi/BrowserRequestAdmission.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "windows-latest" },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.LocalWebUiRequestAdmissionLifetimeTests.*"] }]
+    },
+    {
       "id": "browser-http-admission",
       "responsibility": "Real HTTP state request admission outside the physical guard retry window, cancellation/failure release, out-of-band Load completion/cancel and static/media delivery; independent physical guard refusal remains authoritative",
       "excludes": "No provider/GM launch, user saves, fresh-GM continuation or unrelated gameplay; does not shorten validation or change filesystem authority",
@@ -14534,7 +14556,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_*",
+          "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads",
             "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds",
             "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked",
             "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock"
