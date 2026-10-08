@@ -9,6 +9,11 @@ The finalization P2 has two reached REDs and corrected acquisition/readonly/no-r
 controls. Windows inventory admission stays positively absent/no retained context;
 Linux retained inventory is preserved. No Windows native support claim follows.
 
+Connected retained worker cleanup9141 is independently accepted9/9 Linux, with
+actual main plus NoLaunch worker authority; no actual worker launch. Exact exhausted
+pin fallback preserves any prior canonical audit uncertainty until real Appended.
+[Cleanup evidence](recovery/storage-migration-main-cleanup-20261008/manifest.json).
+
 Next separate block: actual Bridge prepared ConPTY/Job/status/Load/worker consumers,
 including retained boot-probe cleanup debt and exact worker audit fallback. All other
 F/R families below remain open; no full migration completion claim.

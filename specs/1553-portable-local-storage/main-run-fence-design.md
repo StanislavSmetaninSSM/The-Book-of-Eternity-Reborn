@@ -210,6 +210,17 @@ existing worker-purpose/inventory condition AND generation/storage condition**.
 | Worker task/audit/publication | Main condition additionally applies, without broadening existing exact worker purposes or recreating accepted permits. Worker state still owns its reservation/slot. Original worker process/workspace cleanup remains independently possible without canonical writes. |
 | Diagnostics | Strict bounded no-recovery reader and live volatile pipe status. Existing `ReadFileAsync`, save-list and status helpers that can acquire a recovery lease are not automatically diagnostic. Stale canonical status never grants authority. |
 
+Required quarantine terminal audit also retains its own established outcome. An
+actually exhausted matching original operation pin may make canonical audit
+unavailable, allowing the existing exact-event local receipt after confirmed
+original cleanup. Closed-but-live pins, metadata/guard failures, wrong owners and
+unknown publication are not that classification. Once required canonical audit
+has become Uncertain, the retained cleanup owner keeps that exact cause: neither
+later admission loss nor session replacement permits local receipt or slot release.
+Only the actual canonical callback confirming Appended (including exact equivalent
+event after valid recovery) clears this audit debt. No new journal or canonical
+permission follows from cleanup; permanently unavailable authority may retain debt.
+
 For real separate clients, extend the **existing real pipe loop** with a typed,
 bounded begin/finish operation-pin exchange. The live owner mints an opaque pin on
 an original control connection; capability factories are internal and bind the

@@ -1,3 +1,23 @@
+## A01 retained cleanup gate accepted — 2026-10-08
+
+Runtime9141d1ba independent Astra XHigh source/selection/evidence PASS, no findings.
+Fresh PlanOnly132342 built unit+integration,9 cases/2 descriptors/zero executed.
+Actual1325419/9PASS,2/2complete,29.4945312s,clean exact source, no skips/duplicates,
+both cleanup flags true. Seven actual main guardians show complete original exit;
+NoLaunch worker cleanup is explicit, no worker process/native Windows qualification.
+Catalog132651 valid463/11253, unmapped/stale empty, zero executed.
+[Raw RED/GREEN, scenario/guardian and source pins](recovery/storage-migration-main-cleanup-20261008/manifest.json).
+
+Only exhausted exact original pins permit local receipt fallback, with original
+required-audit uncertainty retained until actual Appended. Confirmed stop/output
+and workspace authority remain separate. This closes the connected prerequisite;
+next separate block wires original Windows prepared ConPTY/Job, retained startup
+probe, first status, stop/Load and full cancellable worker dispatch. Preserve manual
+OperatorNotReady/StartedNotReady UI semantics only with exact Running ACK/terminal/
+generation ownership. No ownerless _pty fallback, copied PID, new ledger or relaxed
+root/file grants. Root fresh recoverability currently provesfd587; it may combine
+this accepted cleanup carrier with the subsequent consumer checkpoint.
+
 ## A01 cleanup causal RED and minimal correction — 2026-10-08
 
 Cleanfc0ba7 seven cases complete2PASS/5FAIL17.9156794s, cleanup both true, all original
