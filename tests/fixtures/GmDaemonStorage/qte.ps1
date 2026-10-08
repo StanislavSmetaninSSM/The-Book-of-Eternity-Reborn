@@ -79,6 +79,7 @@ try {
 } catch {$failure=$_.Exception}
 $ctx=$script:ObservedContext
 [IO.File]::WriteAllText((Join-Path $Folder 'powershell.json'),([ordered]@{
+ daemonReadRefused=($null -ne $failure -and $failure.Data['GmDaemonReadRefused'] -eq $true)
  dispatches=$script:Dispatches.ToArray();failure=$(if($failure){$failure.ToString()}else{$null});errorCount=$script:ErrorCount
  helperPid=$script:OriginalHelperPid;helperExitedBeforeDispose=$script:HelperExitedBeforeDispose;helperExitCode=$ctx.exitCode
  disposed=$ctx.disposed;lost=$ctx.lost;closeObserved=$ctx.closeObserved;terminalClose=$ctx.terminalClose;originalClose=$ctx.originalClose

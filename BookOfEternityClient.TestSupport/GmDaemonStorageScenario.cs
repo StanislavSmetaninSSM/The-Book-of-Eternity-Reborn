@@ -148,7 +148,17 @@ internal static class GmDaemonStorageScenario
             Require(item.GetProperty("sourceHash").GetString()==Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(Packet(tag)))&&
                 item.GetProperty("payload").GetProperty("text").GetString()!.Contains("requestId=request-"+tag,StringComparison.Ordinal),"Frozen daemon dispatch does not match recovered authority.");
         }
-        if(mode=="request-unknown")Require(ps.GetProperty("failure").ValueKind==JsonValueKind.String,"Storage read refusal was hidden from original outer consumer.");
+        var close=ps.GetProperty("terminalClose");var admittedClose=ps.GetProperty("originalClose");
+        foreach(var name in new[]{"pinId","closeId","operationId"})
+            Require(close.GetProperty(name).GetString()==admittedClose.GetProperty(name).GetString(),"Original close identifiers changed.");
+        Require(close.GetProperty("identity").GetRawText()==admittedClose.GetProperty("identity").GetRawText(),"Original close identity changed.");
+        Require(!close.GetProperty("closingFailed").GetBoolean(),"Closing failure cannot stand in for a daemon read refusal.");
+        if(mode=="request-unknown") {
+            Require(ps.GetProperty("failure").ValueKind==JsonValueKind.String&&ps.GetProperty("daemonReadRefused").GetBoolean(),"Genuine storage read refusal was hidden from original outer consumer.");
+            Require(close.GetProperty("outcome").GetInt32()==(int)MainOperationOutcome.Failed,"Read refusal must close Failed without inventing a publication decision.");
+        } else {
+            Require(ps.GetProperty("failure").ValueKind==JsonValueKind.Null&&close.GetProperty("outcome").GetInt32()==(int)MainOperationOutcome.Completed,"Known producer decision did not complete the original consumer normally.");
+        }
     }
 
     private static void PublishTechnicalMarker(string path,string json)

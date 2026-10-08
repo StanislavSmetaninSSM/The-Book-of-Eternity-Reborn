@@ -1,3 +1,15 @@
+## F14 fixture closing-oracle correction — 2026-10-08
+
+Initial5e3 fresh Plan205957 built unit successfully,9/2 planned,0 executed,
+82.7455194s. Independent fixture review found one missing negative: any observed
+close/arbitrary failure could masquerade as an authoritative read refusal. The
+same five rows now require exact original close identity/IDs and ACK, no closing
+failure, Completed with no error for known decisions, and a genuine bounded
+read-refusal marker with Failed for unknown. This asserts the future read carrier
+without adding a production selector or synthesizing publication Uncertain.
+Raw producer/dispatch/close evidence remains captured before semantic assertions.
+Actual execution remains held until corrected fixture gate and matching build.
+
 ## F14 test-only fixture checkpoint — 2026-10-08
 
 Frozen initial scope: five actual original-admitted QTE publication cases plus
