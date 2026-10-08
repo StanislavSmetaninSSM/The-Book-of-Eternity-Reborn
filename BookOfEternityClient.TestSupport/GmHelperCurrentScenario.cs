@@ -23,6 +23,8 @@ internal static class GmHelperCurrentScenario
         var report=new Dictionary<string,object?>{["ProcessId"]=Environment.ProcessId};
         var cuts=0;var leases=0;var recovery=0;FileSystemManager? files=null;
         files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance,PhysicalLoadTransactionOperations.Instance,new FileSystemManagerHooks{
+            BeforeCanonicalMutationAsync=path=>{InjectContractRace("publish",path);return Task.CompletedTask;},
+            BeforeCanonicalReadOpenAsync=path=>{InjectContractRace("read",path);return Task.CompletedTask;},
             AfterCanonicalWriteLockOpenedAsync=()=>{leases++;return Task.CompletedTask;},
             CanonicalWriteLockContendedAsync=()=>{if(mode=="admission-cancel")File.WriteAllText(Path.Combine(folder,"helper-contended"),"actual canonical lock");return Task.CompletedTask;},
             SessionOperationClosingAsync=()=>{if(mode=="admission-cancel")File.WriteAllText(Path.Combine(folder,"helper-closing"),"actual bound closing");return Task.CompletedTask;},
@@ -40,6 +42,18 @@ internal static class GmHelperCurrentScenario
                 throw new InvalidOperationException("actual dedicated helper publication cut");
             }
         });
+        void InjectContractRace(string phase,string path)
+        {
+            if(mode!="original-contract")return;
+            var planPath=Path.Combine(root,"helper-race.json");var receipt=Path.Combine(root,"helper-race-reached.json");
+            if(!File.Exists(planPath)||File.Exists(receipt))return;
+            using var plan=JsonDocument.Parse(File.ReadAllBytes(planPath));var spec=plan.RootElement;
+            if(spec.GetProperty("phase").GetString()!=phase||spec.GetProperty("target").GetString()!=path)return;
+            foreach(var mutation in spec.GetProperty("writes").EnumerateArray())
+                File.WriteAllBytes(files!.ResolvePath(mutation.GetProperty("path").GetString()!),mutation.GetProperty("bytes").GetBytesFromBase64());
+            File.WriteAllText(receipt,JsonSerializer.Serialize(new{Phase=phase,Path=path,ProcessId=Environment.ProcessId,Cuts=1}));
+            report["OriginalContractRaceReached"]=true;
+        }
         try {var exit=mode=="admission-cancel"
                 ?await GmTurnHelperControl.RunInterruptibleAsync(files,Console.OpenStandardInput(),Console.OpenStandardOutput(),expected)
                 :await GmTurnHelperControl.RunAsync(files,Console.OpenStandardInput(),Console.OpenStandardOutput(),expected=="initialize"?null:expected);report["ExitCode"]=exit;return exit;}
@@ -57,6 +71,8 @@ internal static class GmHelperCurrentScenario
         await files.WriteFileAtomicAsync(lease,"output/helper-large.json",JsonSerializer.Serialize(new {value=new string('Ж',60000)}));
         await files.WriteFileAtomicAsync(lease,"output/A.json","{\"value\":\"A\"}");
         await files.WriteFileAtomicAsync(lease,"output/a.json","{\"value\":\"a\"}");
+        await files.WriteFileAtomicAsync(lease,@"output/literal\leaf.json","{\"value\":\"literal\"}");
+        await files.WriteFileAtomicAsync(lease,"output/literal/leaf.json","{\"value\":\"slash-sibling\"}");
     }
 
     internal static async Task<int> RunAsync(string mode,string folder)

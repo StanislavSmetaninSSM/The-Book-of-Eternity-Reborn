@@ -211,6 +211,8 @@ $script:ActorLocationLabel = (New-StringFromCodePoints @(0x0422, 0x0435, 0x043A,
 function Write-GmTurnHelperBootstrap {
     $helperPath = Join-Path $PSScriptRoot "Launcher\GM_Turn_Helper.ps1"
     $content = @(
+        "# Init binds the existing session generation; each helper call owns a short admitted scope.",
+        "# After a storage-uncertain/transport-loss failure, retain evidence and stop this helper session; do not retry or re-Initialize it.",
         ". $(Quote-PowerShellSingleQuotedString $helperPath)",
         "Initialize-BoeGmTurnHelper -GameSessionPath $(Quote-PowerShellSingleQuotedString $GameSessionPath)"
     ) -join [Environment]::NewLine

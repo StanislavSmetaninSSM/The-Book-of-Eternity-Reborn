@@ -1,3 +1,27 @@
+## F13 full-unit fixture/selection draft freeze — 2026-10-08
+
+The proposed final selection is now exact53: causal9 + isolated realm1,
+`portable-gm-helper-current-linux`18, `portable-gm-helper-original-contracts-linux`22,
+`gm-main-helper-outcome-loss-neighbors`2 and `gm-main-helper-bounds-linux`1. The original
+20 methods/22 rows moved from their broad historical category without duplicate
+membership. Their business assertions remain; Linux setup now creates genuine
+configuration/generation and joins original pwsh/helper children under the native
+fixture guardian. The six-subcase spiritual positive uses a30-second guardian budget;
+other current controls retain the original15-second guardian. This is fixture ownership,
+not gameplay or provider execution. Historical Windows execution remains unqualified.
+
+Old spiritual lock substitution now uses actual canonical mutation hooks; the
+competing-Ready-between-reads case uses actual BeforeCanonicalReadOpen. Each injection
+requires a saved exact hook/path/cut receipt. No production fault selector is added.
+The host path reconstruction uses .NET Combine, preserving literal Linux backslashes;
+the existing case-baseline row also proves literal and slash-sibling separation.
+
+Four changed PowerShell sources parse successfully; **C# compilation and all53 actual
+results are pending**. The entire runtime/fixture/selection needs independent review
+before GREEN execution. No new actual tests have run since the accepted causal packet.
+The initial full-unit PlanOnly is permitted to expose compilation/tooling problems;
+these must remain distinct from causal or runtime test evidence.
+
 ## F13 cancellation and current-control draft checkpoint — 2026-10-08
 
 This checkpoint extends the unbuilt helper draft with an owned pre-active Linux

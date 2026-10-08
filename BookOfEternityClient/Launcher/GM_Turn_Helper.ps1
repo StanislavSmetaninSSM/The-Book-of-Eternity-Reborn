@@ -34,7 +34,7 @@ function Resolve-BoeSessionPath {
     Assert-BoeGmTurnHelperInitialized
     if(-not $script:BoeHelperScope){return Invoke-BoeHelperScope -Body {Resolve-BoeSessionPath $RelativePath}}
     $relative=Invoke-BoeHelperRequest @{action='normalize';path=$RelativePath}
-    return [IO.Path]::GetFullPath((Join-Path $script:BoeGameSessionPath ($relative.Replace('/',[IO.Path]::DirectorySeparatorChar))))
+    return [IO.Path]::GetFullPath(([IO.Path]::Combine($script:BoeGameSessionPath,$relative.Replace('/',[IO.Path]::DirectorySeparatorChar))))
 }
 
 function Read-BoeJson {
@@ -1420,7 +1420,7 @@ function Normalize-BoeRelativePath {
         return ""
     }
 
-    return $RelativePath.Replace('\', '/').TrimStart('/').Trim()
+    return $RelativePath.Replace([IO.Path]::DirectorySeparatorChar, '/').TrimStart('/').Trim()
 }
 
 function Convert-BoeFullPathToSessionRelativePath {
@@ -1973,7 +1973,7 @@ function Get-BoeRawMortalWorldProfileMutations {
             }
 
             $seenCurrentPaths[$relativePath] = $true
-            $snapshotPath = Join-Path $snapshotRoot ($relativePath.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
+            $snapshotPath = [IO.Path]::Combine($snapshotRoot,$relativePath.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
             if (!(Test-BoePath -LiteralPath $snapshotPath)) {
                 $violations += [pscustomobject]@{
                     path = $relativePath
@@ -2007,7 +2007,7 @@ function Get-BoeRawMortalWorldProfileMutations {
         "game_state/combat",
         "game_state/quests"
     )) {
-        $snapshotPrefixRoot = Join-Path $snapshotRoot ($prefix.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
+        $snapshotPrefixRoot = [IO.Path]::Combine($snapshotRoot,$prefix.Replace('/', [System.IO.Path]::DirectorySeparatorChar))
         if (!(Test-BoePath -LiteralPath $snapshotPrefixRoot)) {
             continue
         }
@@ -2328,7 +2328,7 @@ function Normalize-BoePlayerFacingOutputPayload {
         [object]$Data
     )
 
-    $normalizedPath = $RelativePath.Replace('\', '/').TrimStart('/').ToLowerInvariant()
+    $normalizedPath = $RelativePath.Replace([IO.Path]::DirectorySeparatorChar, '/').TrimStart('/').ToLowerInvariant()
     if ($normalizedPath -eq 'output/narrative_response.json') {
         $response = Get-BoeJsonValue -Object $Data -Names @('response')
         if ($response -is [string]) {

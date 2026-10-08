@@ -6262,37 +6262,18 @@
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Daemon_QteEffectResolutionDispatchesWithoutOrdinaryTurnAuthority",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.GmOutputGuidance_RequiresActualParagraphBreaksInsteadOfPowerShellTokens",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_AddBoeJsonArrayItemPreservesArraysWhenJsonPropertyIsSingleObject",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeGuardianTradeInventoryRequestWritesCanonicalInventoryAndReceipt",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeNpcTradeInventoryRequestFindsSameTurnInitialIdAndWritesReceipt",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeNpcTradeInventoryRequestRejectsItemsWithoutTradeItemClass",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionRejectsStringAmountBeforeAnyWrite",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionWritesClosedReceiptsThenReadyWithoutOrdinaryTurnAuthority",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesAfterlifeMentorShowcaseAndLeavesPendingForClientCleanup",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesMortalShowcaseAndLeavesPendingForClientCleanup",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnAllowsSemanticallySameMortalWorldSnapshotJsonInAfterlifeRealm",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnIgnoresMortalWorldRollbackArtifactsInAfterlifeRealm",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsClientOwnedFilesModifiedEntries",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsClientOwnedWorldSetupFilesModifiedEntries",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsFirstChaosSeaSystemGuardianBootstrapMirrorMutation",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsMissingPendingSnapshotContext",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsMortalWorldProfileFilesModifiedInAfterlifeRealm",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsRawDeletedMortalWorldProfileFileInAfterlifeRealm",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsRawMortalWorldProfileMutationInAfterlifeRealm",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsRequestThatAlreadyHasTerminalError",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnWritesCorrelatedTerminalSignal",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeValidationRepairAllowsRepairReadyAfterAcceptedTurnCompletion",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeValidationRepairRejectsRawNewMortalWorldProfileFileInAfterlifeRealm",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_DotSourceDoesNotEnableStrictModeForGmTurnScripts",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_FailBoeTurnWritesCorrelatedTerminalSignalAndFailsShellCommand",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_GetBoeJsonValueReadsFirstExistingJsonProperty",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_ReadBoeJsonReturnsObjectsThatAllowMissingPropertyDotAssignment",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SetBoeJsonPropertyReplacesExistingNonPropertyMember",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationCopiesExplicitNoneMaterializeAndDependentResponses",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationDoesNotAdoptCompetingReadyAsOverwriteBaseline",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationRejectsMalformedAndUncorrelatedRawEnvelopes",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationRejectsPublicationRaceWithoutOverwritingNewerReady",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonClampsDepthAbovePowerShellLimit",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonNormalizesPlayerFacingPowerShellLineBreakArtifacts",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsAcceptedMechanicsClientOwnedAuthorityFiles",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsClientOwnedAbsoluteRuntimeFiles",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsClientOwnedRuntimeFiles",
@@ -6300,7 +6281,6 @@
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsMortalWorldProfileFilesInAfterlifeRealm",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsPendingTurnSnapshotAuthority",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsRuntimeWriteAfterTerminalError",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.LauncherConfigDefaults_UseForceWhenAddingMissingProperties",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.MortalBootstrapGuidance_UsesStructuredGmAuthorityAndPreservesOpeningWorldEvent"
           ]
@@ -18302,13 +18282,16 @@
     {
       "id": "portable-gm-helper-admission-causal-linux",
       "responsibility": "F13 actual original PowerShell helper: held real publication versus Init/read/realm/outer terminal completion, public Load generation replacement before a recoverable journal, normalized scope/type and missing/malformed existing generation. Exact nine causal rows (realm-link is separately owned) under the original process guardian.",
-      "excludes": "No new helper transport/runtime yet, no fake publication outcome, broad GM/daemon/contract suites, native Windows/PowerShell5.1, provider or gameplay execution.",
+      "excludes": "No fake publication outcome, broad GM/daemon/contract suites, native Windows/PowerShell5.1, provider or gameplay execution.",
       "changeHints": [
         "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
         "BookOfEternityClient/Core/SessionOperationContext.cs",
         "BookOfEternityClient/Core/FileSystemManager.cs",
         "BookOfEternityClient.TestSupport/GmTurnHelperStorageScenario.cs",
-        "tests/fixtures/GmTurnHelper/storage.ps1"
+        "tests/fixtures/GmTurnHelper/storage.ps1",
+        "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs",
+        "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1",
+        "BookOfEternityClient/Core/GmHelperCanonicalScope.cs"
       ],
       "related": [],
       "requirements": {
@@ -18330,13 +18313,16 @@
     {
       "id": "portable-gm-helper-realm-link-causal-linux",
       "responsibility": "F13 original helper realm-link policy read through an actual fixture-owned symlink. Exact one row, isolated from the nine previously reached causal failures; original pwsh/IO and fresh canonical ownership cleanup required.",
-      "excludes": "No new helper transport/runtime yet, no fake publication outcome, broad GM/daemon/contract suites, native Windows/PowerShell5.1, provider or gameplay execution.",
+      "excludes": "No fake publication outcome, broad GM/daemon/contract suites, native Windows/PowerShell5.1, provider or gameplay execution.",
       "changeHints": [
         "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
         "BookOfEternityClient/Core/SessionOperationContext.cs",
         "BookOfEternityClient/Core/FileSystemManager.cs",
         "BookOfEternityClient.TestSupport/GmTurnHelperStorageScenario.cs",
-        "tests/fixtures/GmTurnHelper/storage.ps1"
+        "tests/fixtures/GmTurnHelper/storage.ps1",
+        "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs",
+        "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1",
+        "BookOfEternityClient/Core/GmHelperCanonicalScope.cs"
       ],
       "related": [],
       "requirements": {
@@ -18351,6 +18337,88 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmTurnHelperStorageTests.OriginalHelperRejectsRealmLinkBeforePolicyWrite"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-gm-helper-current-linux",
+      "responsibility": "F13 exact18 current-role controls: bounded chunks/large UTF8, actual wait cancellation and original closing fence, partial transfer close, publication outcomes, role/path/baseline/parse semantics; owned processes and original-main retirement.",
+      "excludes": "No full helper/daemon cohort, provider, live GM or native Windows/PowerShell5.1. SIGINT proves the owned Linux helper role, not PowerShell keyboard interruption.",
+      "changeHints": [
+        "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1",
+        "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs",
+        "BookOfEternityClient/Core/GmHelperCanonicalScope.cs",
+        "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "BookOfEternityClient.TestSupport/GmHelperCurrentScenario.cs",
+        "BookOfEternityClient.TestSupport/MainRunFenceScenarioDriver.cs",
+        "tests/fixtures/GmTurnHelper/current.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 8,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperPreservesOwnedTransportPolicyAndOutcomes"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-gm-helper-original-contracts-linux",
+      "responsibility": "F13 exact20 original public methods/22 rows: completion/QTE, serialization, mutable/stale read, NPC/Guardian/training, snapshot policy and actual spiritual publication/read witnesses. Original business assertions with genuine bootstrap and owned Linux pwsh/helper execution.",
+      "excludes": "No full helper/daemon cohort, provider, live GM or native Windows/PowerShell5.1. SIGINT proves the owned Linux helper role, not PowerShell keyboard interruption.",
+      "changeHints": [
+        "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1",
+        "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs",
+        "BookOfEternityClient/Core/GmHelperCanonicalScope.cs",
+        "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "BookOfEternityClient.TestSupport/GmHelperContractScenario.cs",
+        "BookOfEternityClient.TestSupport/GmHelperCurrentScenario.cs",
+        "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs",
+        "tests/fixtures/GmTurnHelper/contract-bootstrap.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 8,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionWritesClosedReceiptsThenReadyWithoutOrdinaryTurnAuthority",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionRejectsStringAmountBeforeAnyWrite",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnWritesCorrelatedTerminalSignal",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsMissingPendingSnapshotContext",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_FailBoeTurnWritesCorrelatedTerminalSignalAndFailsShellCommand",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonClampsDepthAbovePowerShellLimit",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonNormalizesPlayerFacingPowerShellLineBreakArtifacts",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_ReadBoeJsonReturnsObjectsThatAllowMissingPropertyDotAssignment",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeNpcTradeInventoryRequestFindsSameTurnInitialIdAndWritesReceipt",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeGuardianTradeInventoryRequestWritesCanonicalInventoryAndReceipt",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesMortalShowcaseAndLeavesPendingForClientCleanup",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesAfterlifeMentorShowcaseAndLeavesPendingForClientCleanup",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeValidationRepairAllowsRepairReadyAfterAcceptedTurnCompletion",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsFirstChaosSeaSystemGuardianBootstrapMirrorMutation",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsRawDeletedMortalWorldProfileFileInAfterlifeRealm",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnAllowsSemanticallySameMortalWorldSnapshotJsonInAfterlifeRealm",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationCopiesExplicitNoneMaterializeAndDependentResponses",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationRejectsPublicationRaceWithoutOverwritingNewerReady",
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationDoesNotAdoptCompetingReadyAsOverwriteBaseline"
           ]
         }
       ]

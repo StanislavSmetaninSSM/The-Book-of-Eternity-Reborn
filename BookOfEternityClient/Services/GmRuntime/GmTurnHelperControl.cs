@@ -86,7 +86,7 @@ internal static class GmTurnHelperControl
             {
                 // Lease disposal happens before binding finalization reacquires its
                 // read-only closing lease; there is never a nested lock acquisition.
-                await using var lease=await files.AcquireCanonicalWriteLeaseAsync(write?FileSystemManager.CanonicalWritePurpose.SessionMutation:FileSystemManager.CanonicalWritePurpose.PublicationReadQuiescence,admissionCancellation);
+                await using var lease=await files.AcquireCanonicalWriteLeaseAsync(write?CanonicalWritePurpose.SessionMutation:CanonicalWritePurpose.PublicationReadQuiescence,admissionCancellation);
                 var config=await files.ReadFileBytesAsync(lease,"config.json")??throw new InvalidDataException("Initialized configuration is absent.");
                 _=StateManager.PrepareLocalLoadSettings(config);
                 var scope=new GmHelperCanonicalScope(files,lease,write);

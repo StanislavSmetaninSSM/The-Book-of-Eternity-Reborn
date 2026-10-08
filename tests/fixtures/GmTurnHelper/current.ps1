@@ -91,6 +91,10 @@ try {
    Require (-not $script:BoeHelperFailure) 'Committed debt became uncertainty.'
   }
   'case-baselines' {
+   $literal=Read-BoeJson 'output/literal\leaf.json';Require ($literal.value -ceq 'literal') 'Literal Linux backslash changed target during policy/read normalization.'
+   $literal.value='updated-literal';Write-BoeJson 'output/literal\leaf.json' $literal
+   Require ((Read-BoeJson 'output/literal/leaf.json').value -ceq 'slash-sibling') 'Literal target changed its slash sibling.'
+   Require ((Read-BoeJson 'output/literal\leaf.json').value -ceq 'updated-literal') 'Literal destination publication was redirected.'
    $upper=Read-BoeJson 'output/A.json';$lower=Read-BoeJson 'output/a.json'
    [IO.File]::WriteAllText((Join-Path $SessionPath 'output/A.json'),'{"value":"other"}')
    $lower.value='updated-lower';Write-BoeJson 'output/a.json' $lower

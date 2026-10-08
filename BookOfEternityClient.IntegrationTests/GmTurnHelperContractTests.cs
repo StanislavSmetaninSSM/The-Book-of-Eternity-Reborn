@@ -1578,10 +1578,10 @@ public sealed class GmTurnHelperContractTests
     /// Rechecks both publication witnesses under the real write lock, including Ready changes for the same request.
     /// </summary>
     /// <param name="replaceRequest">
-    /// Whether the competing writer advances the continuation correlation before lock acquisition.
+    /// Whether the competing writer advances correlation at the actual prepublication mutation hook.
     /// </param>
     /// <param name="publishNewerReady">
-    /// Whether the competing writer also publishes the successor response before the helper acquires its lock.
+    /// Whether the competing writer publishes a successor response at the same actual mutation hook.
     /// </param>
     [Theory]
     [InlineData(true, false)]
@@ -1678,7 +1678,7 @@ public sealed class GmTurnHelperContractTests
     /// Whether the helper must publish a correlated Ready without changing turn inputs.
     /// </param>
     /// <param name="ReplaceRequestAtLock">
-    /// Whether a competing writer replaces the request immediately before the real write lock is acquired.
+    /// Whether a competing writer replaces the request at the real canonical publication boundary.
     /// </param>
     /// <param name="PublishNewerReady">
     /// Whether the competing writer also publishes a Ready that the stale helper must preserve.
@@ -1757,27 +1757,17 @@ public sealed class GmTurnHelperContractTests
                         expectedReady[item.Name] = successorReady;
                     if (item.ReadyBeforeInvocation)
                         File.WriteAllText(Path.Combine(session, readyRelative), successorReady, new UTF8Encoding(false));
-                    if (item.ReadyDuringRequestHash)
+                    if (item.ReplaceRequestAtLock || item.PublishNewerReady || item.ReadyDuringRequestHash)
                     {
-                        script.AppendLine("$script:actualSpiritualHash = ${function:Get-BoeSha256Hex}");
-                        script.AppendLine("$script:spiritualHashRaceInjected = $false");
-                        script.AppendLine("function Get-BoeSha256Hex { param([byte[]]$Bytes)");
-                        script.AppendLine("if (!$script:spiritualHashRaceInjected) { $script:spiritualHashRaceInjected = $true");
-                        script.AppendLine("[IO.File]::WriteAllText(" + QuotePowerShell(Path.Combine(session, readyRelative)) + ", " +
-                            QuotePowerShell(successorReady) + ", [Text.UTF8Encoding]::new($false))");
-                        script.AppendLine("}; & $script:actualSpiritualHash -Bytes $Bytes }");
+                        var writes = new List<object>();
+                        if (item.ReplaceRequestAtLock)
+                            writes.Add(new { path = requestRelative, bytes = Encoding.UTF8.GetBytes(successor) });
+                        if (item.PublishNewerReady || item.ReadyDuringRequestHash)
+                            writes.Add(new { path = readyRelative, bytes = Encoding.UTF8.GetBytes(successorReady) });
+                        File.WriteAllText(Path.Combine(root, item.Name, "helper-race.json"), JsonSerializer.Serialize(new {
+                            phase = item.ReadyDuringRequestHash ? "read" : "publish", target = readyRelative, writes
+                        }));
                     }
-                    script.AppendLine("$script:actualSpiritualLock = ${function:Acquire-BoeCanonicalWriteLock}");
-                    script.AppendLine("$script:spiritualRaceInjected = $false");
-                    script.AppendLine("function Acquire-BoeCanonicalWriteLock {");
-                    script.AppendLine("if (!$script:spiritualRaceInjected) { $script:spiritualRaceInjected = $true");
-                    if (item.ReplaceRequestAtLock)
-                        script.AppendLine("[IO.File]::WriteAllText(" + QuotePowerShell(Path.Combine(session, requestRelative)) + ", " +
-                            QuotePowerShell(successor) + ", [Text.UTF8Encoding]::new($false))");
-                    if (item.PublishNewerReady)
-                        script.AppendLine("[IO.File]::WriteAllText(" + QuotePowerShell(Path.Combine(session, readyRelative)) + ", " +
-                            QuotePowerShell(successorReady) + ", [Text.UTF8Encoding]::new($false))");
-                    script.AppendLine("}; & $script:actualSpiritualLock }");
                 }
                 var invocation = "Complete-BoeValidationRepair" + (item.ResponseJson is null ? "" :
                     " -SpiritualWoundContinuationJson " + QuotePowerShell(item.ResponseJson));
@@ -1791,6 +1781,13 @@ public sealed class GmTurnHelperContractTests
             foreach (var item in cases)
             {
                 var session = Path.Combine(root, item.Name, "game_session");
+                if (OperatingSystem.IsLinux() && (item.ReplaceRequestAtLock || item.PublishNewerReady || item.ReadyDuringRequestHash))
+                {
+                    using var cut = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(root, item.Name, "helper-race-reached.json")));
+                    Assert.Equal(1, cut.RootElement.GetProperty("Cuts").GetInt32());
+                    Assert.Equal(item.ReadyDuringRequestHash ? "read" : "publish", cut.RootElement.GetProperty("Phase").GetString());
+                    Assert.Equal(readyRelative, cut.RootElement.GetProperty("Path").GetString());
+                }
                 using var outcome = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, item.Name, "result.json")));
                 var error = outcome.RootElement.GetProperty("failure").GetString();
                 var readyPath = Path.Combine(session, readyRelative);
@@ -5664,6 +5661,8 @@ public sealed class GmTurnHelperContractTests
 
     private static (int ExitCode, string StdOut, string StdErr) RunPowerShell(string command)
     {
+        if (OperatingSystem.IsLinux())
+            return GmHelperContractScenario.RunOwnedAsync(command).GetAwaiter().GetResult();
         var scriptPath = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-test-" + Guid.NewGuid().ToString("N") + ".ps1");
         File.WriteAllText(scriptPath, command, Encoding.UTF8);
 
