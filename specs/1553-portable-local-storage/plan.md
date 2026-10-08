@@ -1,3 +1,20 @@
+## F13 focused original-contract result — 2026-10-08
+
+Independent focused source/fixture/selection PASS6ed and matching Plan201824
+(23/2/0,56.6871566s) preceded actual201932. Original22 executed21 PASS/1 FAIL,
+77.0724524s, clean source/no timeout/both cleanup; realm1 remained unexecuted after
+fail-fast. All22 fixture scopes now record positive bootstrap insertion, complete
+original helper joins and released canonical ownership. The twenty prior fixture
+failures are corrected; one underlying diagnostic compatibility issue is now exposed.
+
+The stale read-modify-write is actually refused before publication, preserving the
+competing generation2 file. Its original script catches the historical diagnostic
+`changed since Read-BoeJson`; the new valid-negative reply instead surfaces only a
+generic storage refusal, so that script exits1. This is diagnostic loss, not an
+observed stale write. The exact21P1F runner/scenario/guardian/helper/script packet is
+preserved before correction. A bounded cause-code projection and focused verification
+remain to be reviewed; no completed F13 or native claim.
+
 ## F13 first runtime evidence and original-contract fixture correction — 2026-10-08
 
 Independent source/fixture/selection PASS6d26 and matching Plan200814 (53/6/0,
