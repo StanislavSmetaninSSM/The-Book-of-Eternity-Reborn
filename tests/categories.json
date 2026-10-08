@@ -17712,6 +17712,37 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-finalization-quiescent-neighbors",
+      "responsibility": "Two exact quiescent original SessionOperationContext closing controls: escaped writer refused after closing starts, and actual tree uncertainty preserved when closing observes generation replacement. Shared finalization capability correction neighbors.",
+      "excludes": "Broad session-operation/directory cohorts; native Windows owner qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "BookOfEternityClient/Core/SessionOperationContext.cs"
+      ],
+      "related": [
+        {
+          "id": "gm-main-finalization-capability-linux",
+          "when": "Shared finalization acquisition or no-recovery validation changes"
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter",
+            "BookOfEternityClient.Tests.PortableDirectoryDeletionClosingTests.ActualTreeDecisionSurvivesClosingGenerationReplacement"
+          ]
+        }
+      ]
     }
   ]
 }

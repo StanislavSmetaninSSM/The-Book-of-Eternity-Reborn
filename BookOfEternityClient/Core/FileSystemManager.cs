@@ -3723,8 +3723,10 @@ public partial class FileSystemManager
                 workerContext?.ValidateCanonical(this, writeLease);
                 workerContext?.ValidateBeforeRecovery();
                 writeLease.WorkerRootPin = workerContext?.PinCanonical();
-                if(purpose==CanonicalWritePurpose.SessionFinalization && (writeLease.MainAdmission!.Closing || writeLease.MainAdmission.BoundClosing)) {
-                    writeLease.MainAdmission.Validate(writeLease);return writeLease;
+                if(purpose==CanonicalWritePurpose.SessionFinalization) {
+                    // Closing verifies the current generation without replaying
+                    // publication recovery or granting mutation authority.
+                    writeLease.MainAdmission!.Validate(writeLease);return writeLease;
                 }
                 EnsureMainBeforeRecovery(writeLease);
                 if (OperatingSystem.IsLinux())

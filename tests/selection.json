@@ -216,6 +216,16 @@
         "FR-010",
         "T063-REMAINING-CONSUMERS"
       ]
+    },
+    {
+      "category": "gm-main-finalization-quiescent-neighbors",
+      "reason": "Two exact existing no-active-main closing controls affected by shared finalization capability restriction, including actual uncertainty and generation-replacement precedence.",
+      "contracts": [
+        "#1553",
+        "FR-004",
+        "FR-010",
+        "A01"
+      ]
     }
   ]
 }

@@ -252,9 +252,9 @@ internal static class SessionOperationContext
                 }
                 catch (Exception closingFailure) when (operationFailure != null)
                 {
-                    // The finalization lease still acquires, recovers, checks
-                    // generation and disposes normally. Retain replacement even
-                    // if disposal masked the exception raised by its check.
+                    // The read-only finalization lease still acquires, checks
+                    // generation without recovery, and disposes normally. Retain
+                    // replacement even if disposal masked its check exception.
                     var replacement = closingFailure as SessionReplacedException ??
                         operationFailure as SessionReplacedException ??
                         state.GetEstablishedReplacement(operationFailure);

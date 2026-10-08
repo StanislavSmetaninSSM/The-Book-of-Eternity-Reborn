@@ -48,6 +48,9 @@ public partial class FileSystemManager
         {_files=files;_parent=parent;_requested=requested;_participating=participating;}
         internal async Task AcquireAsync(CancellationToken token=default,bool closing=false,bool quiescentOnly=false)
         {
+            // Finalization borrows an actual original closing frame. The purpose
+            // value alone cannot bypass admission or acquire recovery authority.
+            if(closing && !BoundClosing)throw GmSessionRunPersistence.Invalid();
             if(quiescentOnly && _requested?.Pin!=null)throw GmSessionRunPersistence.Invalid();
             if(_requested?.Owner.RootIdentity==_files.CanonicalRootAuthorityIdentity)_requested.Owner.ValidateAccessAcquisition(_requested,closing);
             for(var p=_parent;p!=null;p=p._parent)
@@ -101,6 +104,8 @@ public partial class FileSystemManager
         internal void Validate(CanonicalWriteLease? lease)
         {
             if(_closed || _access==null)throw GmSessionRunPersistence.Invalid();
+            if(lease?.Purpose==CanonicalWritePurpose.SessionFinalization && !BoundClosing)
+                throw GmSessionRunPersistence.Invalid();
             if(_access.Remote is { } remote) {
                 if(lease?.Purpose==CanonicalWritePurpose.SessionReplacement)throw GmSessionRunPersistence.Invalid();
                 remote.Validate(_files.BasePath,lease?.Purpose==CanonicalWritePurpose.SessionFinalization);
@@ -200,7 +205,7 @@ public partial class FileSystemManager
     private void EnsureMainMutationAllowed(CanonicalWriteLease lease)
     {
         if(lease.MainAdmission==null)throw GmSessionRunPersistence.Invalid();
-        if(lease.MainAdmission.MetadataOnly || (lease.MainAdmission.Closing && lease.Purpose==CanonicalWritePurpose.SessionFinalization))
+        if(lease.MainAdmission.MetadataOnly || lease.Purpose==CanonicalWritePurpose.SessionFinalization)
             throw GmSessionRunPersistence.Invalid();
         lease.MainAdmission.Validate(lease);
     }

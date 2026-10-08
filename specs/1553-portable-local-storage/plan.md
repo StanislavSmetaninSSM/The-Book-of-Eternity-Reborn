@@ -1,3 +1,22 @@
+## A01 finalization capability correction — 2026-10-08
+
+Readonly RED66d47 independently reaches a real closing frame, acquired lease1,
+generation read1, actual MemberPublished1/exact after bytes; one case completeFAIL,
+8.693s, guardian echild/no emergency/failure/deadline and cleanup complete. Together
+with5b26 direct-purpose RED this proves acquisition and mutation boundaries separately.
+[Original raw packets and source pins](recovery/storage-migration-owner-20261008/manifest.json).
+
+Minimal correction requires an actual same-root BoundClosing frame before finalization
+acquisition and on held validation. Every finalization lease is read-only at canonical
+mutation gates; acquisition validates generation/owner without publication recovery.
+The sole production caller already marks the original frame closing. Preserve owner,
+remote pin, generation, worker checks and replacement precedence; no consumer activation.
+
+Fresh finite25 selection: original owner7, absence component7, actual original pipe6,
+finalization capability2, readonly1, exact quiescent closing neighbors2. Native owner27
+is compilation/discovery only, zero Windows execution. Source/evidence independent
+review remains required before the next Bridge/ConPTY/status/worker consumer block.
+
 ## A01 readonly planning correction — 2026-10-08
 
 The first readonly PlanOnly refused catalog loading before build/discovery/execution:
