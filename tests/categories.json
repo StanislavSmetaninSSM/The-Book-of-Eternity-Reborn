@@ -18100,6 +18100,39 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-inactive-snapshot-publication",
+      "responsibility": "F06 ten exact current publication and original normalization cases: archive absence CAS/rollback; per-source rollback, uncertainty and committed debt; generation refusal; complete archive and remaining fixed-cohort validation after actual prior removal.",
+      "excludes": "Native Windows execution, diagnostic archive adoption, whole-cohort atomicity, broad lifecycle or treatment gameplay. New current source cuts cannot reach through the historical physical deletion route.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.InactiveSnapshotEvidence.cs",
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.InactiveSnapshotPublication.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-inactive-snapshot-evidence",
+          "when": "Changing the original fixed cohort retirement and partial-removal contract."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_CurrentPublicationPreservesExactRemainingCohort",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_OriginalRuntimeNormalizationReachesCurrentRetirement"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -1,3 +1,19 @@
+## F06 current-boundary fixture WIP — 2026-10-08
+
+Test-only packet: ten new cases in `portable-inactive-snapshot-publication`, plus
+missing-authority retry assertions within the existing partial-removal row.
+Together with `portable-inactive-snapshot-evidence` the finite final selection is
+34 cases/two categories. Runtime is unchanged; new fixtures are unbuilt/unrun and
+await independent source/selection review. The baseline21PASS/3FAIL below remains
+the only executed F06 evidence. New current source publication cuts are not claimed
+as reached historical RED; the old physical deletion blocks them.
+
+The late archive corruption selects the blob of an already removed source; remaining
+source drift uses a distinct third payload. Actual journal/member/absence observations
+precede outcome assertions. Generation change is a prepublication replacement refusal,
+not publication uncertainty. The original NormalizeRuntimeUiArtifacts method supplies
+one caller reachability control. No native Windows execution or new archive authority.
+
 ## F06 original retirement causal baseline — 2026-10-08
 
 Independent baseline source/selection PASS68c5. Fresh Plan163158 built24/1/0,

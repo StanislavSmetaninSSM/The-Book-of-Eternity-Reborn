@@ -195,6 +195,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             AssertInactiveSnapshotEvidenceArchive(before, after);
             Assert.True(after.ContainsKey(Path.Combine("game_state", "control", "pending_turn_snapshot.json")));
             Assert.True(after.Keys.Count(IsInactiveSnapshotEvidenceSource) < before.Keys.Count(IsInactiveSnapshotEvidenceSource));
+            Assert.False(after.ContainsKey(PendingTurnSnapshotAuthority.AuthorityPath));
+            // Diagnostics never become authority to finish an interrupted removal.
+            Assert.False(Assert.IsType<bool>(await InvokePrivateTaskResultAsync(
+                fixture.Engine, "ArchiveInactivePendingSnapshotEvidenceAsync")));
+            await AssertSpiritualEntryGuardFilesAsync(context, after);
             foreach (var pair in before.Where(pair => !IsInactiveSnapshotEvidenceSource(pair.Key)))
                 Assert.Equal(pair.Value, after[pair.Key]);
         }
