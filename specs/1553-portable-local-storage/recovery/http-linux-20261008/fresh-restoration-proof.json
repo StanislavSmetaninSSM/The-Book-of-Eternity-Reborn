@@ -1,0 +1,53 @@
+{
+  "TimestampUTC": "2026-10-08T06:34:16.013573+00:00",
+  "Source": "Direct GitHub depth1 single-branch clone into new empty directory; no local checkout/objects/stash/source caches copied",
+  "CloneCommand": "git clone --depth 1 --single-branch --branch codex/1553-http-linux-audit-20261008 https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git /tmp/http-linux-audit-github-final-20261008",
+  "Repository": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+  "Branch": "codex/1553-http-linux-audit-20261008",
+  "Commit": "8a64cbf621d7acea6419b301a321d27dde39049f",
+  "Tree": "ce05b1ea36c015d7755e3a51e9dca03a4b517eec",
+  "Root": "/tmp/http-linux-audit-github-final-20261008",
+  "Clean": true,
+  "FsckConnectivity": true,
+  "TrackedFilesHashVerified": 24864,
+  "TrackedBytesHashVerified": 404015430,
+  "SymlinksHashedWithoutFollowing": 0,
+  "ObjectAlternates": false,
+  "ArchiveVerifications": [
+    {
+      "Manifest": "live-baseline-manifest.json",
+      "Archive": "live-baseline-evidence.zip",
+      "ArtifactsVerified": 61,
+      "ArchiveSHA256": "e3d367fee6fe8794e680da8c0daf74d91871d97cf03c3d28dd271941b644091e"
+    },
+    {
+      "Manifest": "live-green-manifest.json",
+      "Archive": "live-green-evidence.zip",
+      "ArtifactsVerified": 65,
+      "ArchiveSHA256": "165aee08ea9deac1ff0252710ba1a80c8623212f411f8ad0ad7e135fbf5253bf"
+    },
+    {
+      "Manifest": "causal-red-manifest.json",
+      "Archive": "causal-red-evidence.zip",
+      "ArtifactsVerified": 6,
+      "ArchiveSHA256": "d2afbf69d306ccaac18a576167ecafec20020d705872e370b3e904d81b24a88c"
+    },
+    {
+      "Manifest": "causal-green-manifest.json",
+      "Archive": "causal-green-evidence.zip",
+      "ArtifactsVerified": 5,
+      "ArchiveSHA256": "2baecf45b37597f137e590ac0aecf010a340ef9f20fd74e9f1d7f661bb617120"
+    },
+    {
+      "Manifest": "green-selection-manifest.json",
+      "Archive": "green-selection-evidence.zip",
+      "ArtifactsVerified": 9,
+      "ArchiveSHA256": "1884014cc2e39a4f0e057bcd59314fb8743e5faffc0c8eea93242032b848ea41"
+    }
+  ],
+  "Scope": "Full report-branch tree and evidence restoration; no build, tests, browser/CLI/model rerun",
+  "SourceVerificationCommits": {
+    "Red": "9dfa154d90f3da003d186fc1e3781d2cbd405b91",
+    "Green": "3d205d317244b977460fc5537f66fa35e8bc567b"
+  }
+}

@@ -136,8 +136,15 @@ provenance cc14.2.0 (no native rebuild here). environment.json contains exact ou
 
 Independent Sol6.1/xhigh source/evidence/metadata review: PASS on candidate
 e469976bb2aeb999b1c645630423f1e47c43b335, no required fixes; see independent-review.json.
-Final remote delivery/fresh GitHub-only restoration remains pending at this verdict
-carrier. This is a completed
+Metadata carrier8a64cbf621d7acea6419b301a321d27dde39049f also received independent
+Sol6.1/xhigh PASS. Fresh direct GitHub depth1 restoration of that carrier passed:
+24,864 tracked files /404,015,430 bytes hash-verified against Git blobs, matching
+treece05b1ea36c015d7755e3a51e9dca03a4b517eec, clean checkout and fsck connectivity.
+All five evidence archives and their member hashes were verified after restoration;
+see fresh-restoration-proof.json. This restores the full report-branch tree, not a
+new build/test/browser/CLI run. The final delivery metadata will be fetched directly
+from GitHub into the same initially empty repository and checked separately.
+This is a completed
 bounded verification with an independently localized remaining product failure,
 not acceptance of all web behavior. System/runtime/private credentials and
 protected session storage are outside this task. Next product-writer slice:

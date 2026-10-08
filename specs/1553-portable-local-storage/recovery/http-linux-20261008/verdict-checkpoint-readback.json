@@ -1,0 +1,29 @@
+{
+  "Commit": "8a64cbf621d7acea6419b301a321d27dde39049f",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/http-linux-coverage-audit-20261008.md",
+      "Bytes": 9709,
+      "GitBlob": "c607f3a05b0c55c4acb4bc1b90af4969703da72e",
+      "SHA256": "de75762eaef3f71ebe905f9878c96f8ba85ddbe9e06d8d8f2b8a5fa08166151b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/independent-review.json",
+      "Bytes": 2170,
+      "GitBlob": "31c2bf343d4414fad572b612ac982948478e9908",
+      "SHA256": "6e769e5334b3373254b9615581d7bb3a662309a3eee01fc1d6d486d025ef9e73"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/closed-fixture-space-cleanup.json",
+      "Bytes": 317052,
+      "GitBlob": "602547be6bbfe78345db4f53bc3f85ce573937d4",
+      "SHA256": "035edc31b261dcb2f9fea268e6a9d5dbf974f44ac219111312db1baa2259abdd"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/live-checkpoint-readback.json",
+      "Bytes": 2592,
+      "GitBlob": "52b29adb9d8a7f5068ecfcb70a607fa9c802b9b8",
+      "SHA256": "52ce9d21ed308bf2b916f78f4d7cdaf051ae920af4b986611c21c8bb64d121ee"
+    }
+  ]
+}

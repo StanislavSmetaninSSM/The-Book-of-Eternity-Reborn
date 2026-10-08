@@ -48,12 +48,21 @@
   "Remaining": {
     "ActiveOwnerProductScenario": "FAIL: session/game-screen participating original-owner admission missing",
     "BrowserUI": "NOT RUN: installed Chromium SUID sandbox helper misconfigured; no security bypass",
-    "FinalDelivery": "Final remote SHA/readback and fresh GitHub-only restoration pending at this carrier"
+    "FinalDelivery": "Fresh direct GitHub restoration at8a64cbf6 passed; see fresh-restoration-proof.json. Final metadata tip will be fetched/verified into the same GitHub-only fresh repository."
   },
   "Notes": [
     "Baseline original abort is driver preparation failure, not a product HTTP RED",
     "Historical export125 observations does not represent125 passing unique cases",
     "No Windows-only or measured Windows/Linux performance claim",
     "Native Windows/systemd/gameplay/model acceptance outside scope"
-  ]
+  ],
+  "MetadataCarrierReview": {
+    "Candidate": "8a64cbf621d7acea6419b301a321d27dde39049f",
+    "ReviewerAgent": "/root/http_linux_evidence_review",
+    "Model": "gpt-6.1-sol",
+    "ReasoningEffort": "xhigh",
+    "Verdict": "PASS",
+    "RequiredFixes": [],
+    "Scope": "Four metadata/report files only; no tests or process probes rerun"
+  }
 }
