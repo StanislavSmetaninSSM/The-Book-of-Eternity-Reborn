@@ -19,7 +19,7 @@
   },
   "evidence": {
     "source": "5a7fb8d1e1fa8ada39cee857b7fcbc82719df847",
-    "verdict": "PASS subject to named corrected metadata",
+    "verdict": "PASS",
     "uniquePassed": 30,
     "currentPins": 75,
     "actualStopSeparateFromGuardian": true,
@@ -27,7 +27,11 @@
       "Relay reuse24 unchanged+1 reviewed test-runner delta; S2A16 unchanged"
     ]
   },
-  "metadata": "pending separate review",
+  "metadata": {
+    "source": "c104e5b272033ac8bc386bede32c92aa4899d005",
+    "verdict": "PASS",
+    "requiredCorrections": 0
+  },
   "sourceCorrection": {
     "source": "3f9c388e4fca9192e8246afbfed9461c972049b7",
     "verdict": "PASS",
