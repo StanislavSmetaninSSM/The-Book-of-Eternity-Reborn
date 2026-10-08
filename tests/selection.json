@@ -111,6 +111,24 @@
         "FR-004",
         "T062-STORAGE-OUTCOMES"
       ]
+    },
+    {
+      "category": "gm-main-platform-owner",
+      "reason": "A01 shared original coordinator Prepared/Running/release/retirement seam: exact existing real Linux owner and lost ACK baseline before host backend/Windows adapter wiring.",
+      "contracts": [
+        "#1553",
+        "A01",
+        "T063-REMAINING-CONSUMERS"
+      ]
+    },
+    {
+      "category": "gm-main-status-early-exit-affected-linux",
+      "reason": "A01 shared status original admission and fault/stall retirement; actual Linux original processes, no Windows qualification.",
+      "contracts": [
+        "#1553",
+        "A01",
+        "T063-REMAINING-CONSUMERS"
+      ]
     }
   ]
 }

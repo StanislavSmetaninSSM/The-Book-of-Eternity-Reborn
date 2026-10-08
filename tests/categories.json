@@ -17480,6 +17480,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-platform-owner",
+      "responsibility": "A01 exact existing original Bridge owner before interactive release and retained lost-start ACK controls for the shared platform coordinator seam. Linux actual processes, not native Windows proof.",
+      "excludes": "Whole main/worker/systemd cohorts, provider/live GM and native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "BookOfEternityGMBridge/Program.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement",
+            "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ReleasedOriginal_LostStartedAckRetainsAuthorityAndClosedInput"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -1,3 +1,33 @@
+## A01 Windows Bridge original-owner implementation checkpoint — 2026-10-08
+
+A04 independent Astra XHigh source/evidence PASS atfbec;15 exact GREEN and catalog
+451/11232/0, carrier15b108e8 published/readback. Parent verifies recovery separately.
+A01 is independently source-confirmed: fresh Windows ConPty.Start has no main-run
+coordinator/status publisher. Native old-path RED cannot run in this Linux cloud;
+do not substitute source strings/simulated backend for native execution. First
+baseline is existing actual Linux original owner2 + status fault/stall/admission3,
+then minimal shared host dispatch/Windows prepared adapter and bounded components.
+
+Reviewed implementation direction: same ConPty.Prepare suspended process/Job joins
+coordinator Prepared→Running→one release; same original identity owns status,
+participating pins, Stop/drains/disposal/Stopped and Load restart. Keep Windows
+shell/args/cwd/size/manual bootstrap; don't feed it Linux production configuration.
+Use trusted host backend and existing platform root comparison, exact terminal
+adapter/run identity; no cold nonterminal adoption or VerifiedHostReboot producer.
+
+Windows startup observation: fixed resolved local PowerShell foreground process,
+NoLogo/NoProfile/NonInteractive/EncodedCommand, fixed CimCmdlets Get-CimInstance
+singleton LastBootUpTime, invariant UTC with provider label. Strict output4KiB,
+stderr8KiB, observation5s+settlement1s application budgets. Parse only exit0+both
+successful EOF and settled original process. On failure signal only original
+process, retain unsettled process/tasks/CTS in Bridge-owned debt slot beyond any
+refused coordinator; block next probe/launch until actual settlement. Read before
+Prepared and canonical write lease. No COM Task-timeout leak, package dependency,
+user interpolation, PID reopen, WMI-service kill, GUID/uptime/old-record fallback.
+Observation is not unique boot proof; native WMI/ConPty/Job remains unexecuted.
+Independent reviewer approved this bounded adapter design using the existing
+ClipboardCommandReader ownership pattern; it is not clipboard semantic API reuse.
+
 ## A04 bounded GREEN and unified audit backlog — 2026-10-08
 
 Frozenfbec8cfcdfd9acda56bf2dc3cf7d5fb82bf244a8: fresh PlanOnly/build15/3,
