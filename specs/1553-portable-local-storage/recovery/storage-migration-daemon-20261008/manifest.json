@@ -2116,9 +2116,9 @@
         "originalSha256": "d320c3c12b47d6b57d95591d81cb6fe6bf64c240c337892fcfc15c845101b556"
       },
       {
-        "path": "green-6f95a42afbd443d4add6b72de981dd4b-retained-0-pending_turn_snapshot.json",
+        "path": "green-6f95a42afbd443d4add6b72de981dd4b-retained-0-pending_turn_snapshot.json.gz",
         "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/6f95a42afbd443d4add6b72de981dd4b/neutral-session-c74bcf704d254ab48a4420f2da4a505d/game_session/game_state/control/pending_turn_snapshot.json",
-        "sha256": "3e3d7e09b3076dfc0e77a425d4aa4499057c982f1291972bdaa3aff238ba7dee",
+        "sha256": "54ffc65c4359f7146ecb206ef5b7b1e927289c0aca556b5209e3f0a0167dfc28",
         "originalSha256": "3e3d7e09b3076dfc0e77a425d4aa4499057c982f1291972bdaa3aff238ba7dee"
       },
       {

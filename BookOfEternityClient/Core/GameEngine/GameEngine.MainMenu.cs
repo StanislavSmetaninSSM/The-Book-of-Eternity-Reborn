@@ -3190,54 +3190,6 @@ public partial class GameEngine
         await HandleReturnToChaosSeaFromShiningAbode();
     }
 
-    private string CreateGameSessionSafetyBackup(string operationTag)
-    {
-        var backupRoot = Path.Combine(
-            Path.GetTempPath(),
-            $"boe-game-session-backup-{operationTag}-{Guid.NewGuid():N}");
-        CopyDirectoryRecursive(_fs.GameSessionPath, backupRoot);
-        return backupRoot;
-    }
-
-    private void RestoreGameSessionSafetyBackup(string backupRoot)
-    {
-        var targetRoot = _fs.GameSessionPath;
-        if (Directory.Exists(targetRoot))
-            Directory.Delete(targetRoot, recursive: true);
-
-        CopyDirectoryRecursive(backupRoot, targetRoot);
-    }
-
-    private static void CleanupGameSessionSafetyBackup(string backupRoot)
-    {
-        try
-        {
-            if (Directory.Exists(backupRoot))
-                Directory.Delete(backupRoot, recursive: true);
-        }
-        catch
-        {
-            // best-effort cleanup
-        }
-    }
-
-    private static void CopyDirectoryRecursive(string sourceDir, string destinationDir)
-    {
-        Directory.CreateDirectory(destinationDir);
-
-        foreach (var file in Directory.GetFiles(sourceDir, "*", SearchOption.TopDirectoryOnly))
-        {
-            var destinationFile = Path.Combine(destinationDir, Path.GetFileName(file));
-            File.Copy(file, destinationFile, overwrite: true);
-        }
-
-        foreach (var directory in Directory.GetDirectories(sourceDir, "*", SearchOption.TopDirectoryOnly))
-        {
-            var destinationChild = Path.Combine(destinationDir, Path.GetFileName(directory));
-            CopyDirectoryRecursive(directory, destinationChild);
-        }
-    }
-
     private async Task<JsonObject?> TryReadShiningAbodeStateRootAsync()
     {
         var json = await _fs.ReadFileAsync("game_state/meta/shining_abode_state.json");

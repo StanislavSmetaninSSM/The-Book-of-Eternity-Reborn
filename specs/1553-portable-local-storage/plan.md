@@ -1,3 +1,30 @@
+## F17 exact unreachable-helper removal candidate — 2026-10-08
+
+F14 final carrier946419 has independent integrity/docs PASS414 artifacts/132 pins.
+Parent fresh GitHub-only restore `/workspace/boe-1553-daemon-final-restore` is clean
+at exact946419, tree40967df26400199b8a8567caf748216f8e3855f8,27810 tracked files,
+no alternates/full fsck0,all414/132 reverified; no build/test ran in that restore.
+
+The new tracked reference census at946419 confirms only the four private MainMenu
+session-safety/copy helper declarations and their closed internal/self-call cluster,
+and the declaration-only DeleteFileIfCurrentOwnedAsync left by accepted F06 CAS.
+Exactly those five methods are removed. Production reflection, exact-name lifecycle
+reflection and explicit console method arrays provide no invocation. This is repository
+reachability proof, not an arbitrary external-reflection guarantee or runtime RED.
+Live original schema6 generator, owned byte-write/authority-delete primitives, shared
+physical/hash helpers, replacement helpers and separate ConsoleE2ESandbox copies remain.
+
+One unchanged `InactiveSnapshotEvidence_OriginalRuntimeNormalizationReachesCurrentRetirement`
+Fact moves uniquely from its former boundary category into
+`portable-storage-dead-helper-current-route` (integration1). Fresh compilation,
+post-removal reference census, independent diff/selection review and this one actual
+current-route check are planned; no full lifecycle suite or native execution.
+
+Evidence-only housekeeping gzip-wraps the exact596-byte cohort-change manifest with
+its intentional trailing space. Expanded/original bytes and historical source pins
+are unchanged; this resolves diff-check whitespace without sanitizing causal evidence.
+F17 source/selection/build/actual gates remain pending. T062–T065 stay unchecked.
+
 ## Current F14 bounded Linux delivery — 2026-10-08
 
 Runtime `8ddf1325` has independent SOURCE/FIXTURE/EXACT-SELECTION and RAW EVIDENCE

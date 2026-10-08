@@ -18118,8 +18118,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_CurrentPublicationPreservesExactRemainingCohort",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_OriginalRuntimeNormalizationReachesCurrentRetirement"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_CurrentPublicationPreservesExactRemainingCohort"
           ]
         }
       ]
@@ -18565,6 +18564,32 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperNestedDefaultRoleRemainsSeparate"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-storage-dead-helper-current-route",
+      "responsibility": "F17 one unchanged original runtime normalization route after exact-five unreachable helper removal; compile and tracked reference census are the dead-code guards.",
+      "excludes": "No fabricated dead-code RED, broader inactive/lifecycle suite or native Windows execution.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.InactiveSnapshotEvidence.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InactiveSnapshotEvidence_OriginalRuntimeNormalizationReachesCurrentRetirement"
           ]
         }
       ]
