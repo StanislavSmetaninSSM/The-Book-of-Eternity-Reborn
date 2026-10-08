@@ -1,4 +1,4 @@
-## F17 exact unreachable-helper removal candidate — 2026-10-08
+## F17 exact unreachable-helper removal evidence — 2026-10-08
 
 F14 final carrier946419 has independent integrity/docs PASS414 artifacts/132 pins.
 Parent fresh GitHub-only restore `/workspace/boe-1553-daemon-final-restore` is clean
@@ -23,7 +23,13 @@ current-route check are planned; no full lifecycle suite or native execution.
 Evidence-only housekeeping gzip-wraps the exact596-byte cohort-change manifest with
 its intentional trailing space. Expanded/original bytes and historical source pins
 are unchanged; this resolves diff-check whitespace without sanitizing causal evidence.
-F17 source/selection/build/actual gates remain pending. T062–T065 stay unchecked.
+Independent source/exact-selection and raw evidence gates PASS at50e0678.
+Fresh Plan215014 compiled integration1/zero execution,47.7822248s; actual215250
+ran exact1/1 PASS,9.6334700s,clean source/no skip/duplicates/timeout, both cleanup
+flags true. Discovery215321 is valid490/11279,zero executed8.0353796s.
+The saved manifest preserves11 original/stored/expanded artifacts and seven current
+source pins; the reference census retains five pre-removal historical pins. Final
+carrier review follows; no dead-code RED/native claim. T062–T065 stay unchecked.
 
 ## Current F14 bounded Linux delivery — 2026-10-08
 
@@ -47,7 +53,8 @@ the separate A03 caught-loss neighbor intentionally remains logically Unresolved
 Stop refusal while its physical guardian is healthy. No blanket logical-retirement claim.
 
 Saved packet now414 stored/expanded/original artifacts and132 historical Git source
-pins; final carrier integrity review and parent fresh GitHub-only restore follow.
+pins; final carrier integrity review and parent fresh GitHub-only restore PASS,
+as recorded in the current F17 checkpoint above.
 No native Windows, provider/desktop, full client QTE continuation or whole-migration
 claim. F17 exact dead helpers, treatment-storage tails, F10 cleanup, F16 media and F18
 fault-hook migration remain open under the existing queue; T062–T065 remain unchecked.
