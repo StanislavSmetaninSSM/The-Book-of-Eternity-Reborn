@@ -1,3 +1,5 @@
+Current continuation: [S2A source plan](systemd-main-s2-source-plan.md), T041-SYSTEMD-S2A. Read-only environment evidence confirms no accessible user manager; public backend stays closed. Implement independent concrete original cgroup observation and controlled consumers; full native S2/S3 remain unqualified. Native Windows is after merge, not a pre-merge gate.
+
 # T043 reusable relay final bounded verdict carrier
 
 Actual separateSol6.1/xhigh metadataPASS atclean15a5ccae, no requiredfixes.

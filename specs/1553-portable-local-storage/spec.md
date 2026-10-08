@@ -1,3 +1,5 @@
+Implementation checkpoint clarification (2026-10-08): closed S2A original read-only cgroup source/controlled tests may progress without manager setup. Full systemd S2 positive environment and S3 public activation remain mandatory/open; native Windows verification is scheduled after merge by parent. See [source plan](systemd-main-s2-source-plan.md). Source #1553.
+
 ## Bounded reusable relay — reviewed source/evidence
 
 Frozen1350a16c shared developer transport/local worker/fixed real consumer:
