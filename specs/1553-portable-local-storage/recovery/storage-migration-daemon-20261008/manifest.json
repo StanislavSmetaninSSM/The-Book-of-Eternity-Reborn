@@ -811,5 +811,121 @@
         "sha256": "0d0897f348986c585c989a48ac43070b398fd45914852f10065bcd5033715afe"
       }
     ]
+  },
+  "runtimeCorrectedPlan": {
+    "qualification": "Corrected runtime candidate built;27 planned6descriptors0execution. Tiny explicit inert configuration fixture follow-up required before actual.",
+    "source": "cfb4b8a162aa185e31d6822e0dfb654881394684",
+    "artifacts": [
+      {
+        "path": "runtime-corrected-plan-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-213848-679-147726-f18cf7253a134bd9be5464408a6706c2-categories/Build-unit.log",
+        "sha256": "bf96b6ea56ce48c5d6b2f6b577c10ca691c2cfb2f794b811d9250386893ddca3",
+        "originalSha256": "7525adb6062ef3c0ee908370ba959cb00cc56c1a67a714bbaeca7ed943ac22b8"
+      },
+      {
+        "path": "runtime-corrected-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-213848-679-147726-f18cf7253a134bd9be5464408a6706c2-categories/dotnet-test.log",
+        "sha256": "0e8e4fa1eae9763f3fd5c662a4a6b4cfb293f9fa6ff61088dbd7f307c0f5b043",
+        "originalSha256": "c57bbd5aa98786ba36f7042a905b962fcfeba8bbb9a216b2aa8b0954c5441595"
+      },
+      {
+        "path": "runtime-corrected-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-213848-679-147726-f18cf7253a134bd9be5464408a6706c2-categories/plan.json",
+        "sha256": "37e304cc80bb49e4ecddaaf3b289222d92be126d00f353b51a717676cd7bc427",
+        "originalSha256": "37e304cc80bb49e4ecddaaf3b289222d92be126d00f353b51a717676cd7bc427"
+      },
+      {
+        "path": "runtime-corrected-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-213848-679-147726-f18cf7253a134bd9be5464408a6706c2-categories/summary.json",
+        "sha256": "b905b6bb05bec5ab3abf37b5d11a30d4b1bb7bf67cad7a8264483fcdf28cc68d",
+        "originalSha256": "b905b6bb05bec5ab3abf37b5d11a30d4b1bb7bf67cad7a8264483fcdf28cc68d"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/game_master_daemon.ps1",
+        "sha256": "f1f9fd80e0e26570990a35ad6009429025d4620e31404ae0aad554ca4c9b445d"
+      },
+      {
+        "path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+        "sha256": "9ec146965c358bf28424154c1d9fa1fa5e626cb0b5568911a12b130dfb6ab97d"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "0d7f458568613c79504e90498a99940fb93218102715e4374ce879a7227fdb5e"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "sha256": "288255dd158fc146cf017b2be9211c5f583bd71fba76b5572e89768225fa1e40"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "59f2a05861551526b0199eb6cfa06ad5e36dc395fef397b46496928fbe4f02b7"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+        "sha256": "223ff5442373639857570fa6a86b3c0b9a85e3ffd51697699c19afb171045202"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs",
+        "sha256": "199378d4f0477a2cfdd7e7afc6745ffdebe58935f49b5169342e0e58d0b9b2c9"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/GmDaemonStorageScenario.cs",
+        "sha256": "7e0999ec31ca4a54b95b3a24e0c5b2f3bfb872b4014d9264fd061f3818823911"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/MainRunFenceScenarioDriver.cs",
+        "sha256": "f98226800d1befa8115453cd7c2da36df49ca6db5bb61483f9a42e9bdf936139"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+        "sha256": "4e51319a09b2b559cac9ad9b073fd7a082048f511b59a39883f0f09e1c2c55ce"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmDaemonStorageTests.cs",
+        "sha256": "0d7090490f8280034528a07cb64846c531dc92550e979f02740d8d8d58e712f2"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmDaemonPromptDeliveryTests.cs",
+        "sha256": "a04b96fa53ad983f0277ee60dc7101214e5a8c926e0b87dae042bcf22673b028"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+        "sha256": "a71ecce4a60b8285b91e53f75fd0292b902b860ed664c02fc93695656ce3fda6"
+      },
+      {
+        "path": "tests/fixtures/GmDaemonStorage/qte.ps1",
+        "sha256": "22b5b2ff8aff98f40d44eb99adf5ae8f17d7b1ab4b1bf9a4007c4425cf93bb3a"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "596ffe863c044f190d8f9886d8b4e48c6ae266fe91676d041fd946affdf8daa2"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "c1df2e48eb40d22f32c7671cd911ea9fb74e320e2dd6b5e7479ff91f1724a018"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.Daemon.cs",
+        "sha256": "4488491ac2911d8b4c49347d10760106fc72e9c37f9a0169aa4d37f303cea349"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/GmDaemonCurrentScenario.cs",
+        "sha256": "339a2492da9b74d24f44b7c89bb2f8935cddc0d75e6739d594977eafe8a6b655"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmTurnHelperCurrentTests.cs",
+        "sha256": "de3c3e326b89d8d624a0213041e593aef90adb1c21a66fc8f03c6050a2787ec4"
+      },
+      {
+        "path": "tests/fixtures/GmDaemonStorage/current.ps1",
+        "sha256": "a70b4181605980181aa9f4441df3a53fe6363df37019dba7d6e725a3d1f6c6fb"
+      },
+      {
+        "path": "tests/fixtures/GmPromptDelivery/daemon-functions.ps1",
+        "sha256": "0d0897f348986c585c989a48ac43070b398fd45914852f10065bcd5033715afe"
+      }
+    ]
   }
 }

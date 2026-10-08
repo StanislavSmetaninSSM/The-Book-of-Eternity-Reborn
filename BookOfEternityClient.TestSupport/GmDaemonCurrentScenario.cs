@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmRuntime;
 
@@ -24,6 +25,9 @@ internal static class GmDaemonCurrentScenario
     {
         await using(var lease=await files.AcquireCanonicalWriteLeaseAsync())
         {
+            await files.WriteFileAtomicBytesAsync(lease,"config.json",JsonSerializer.SerializeToUtf8Bytes(new GameSettings {
+                GmBridgeEnabled=true,GmBridgeBackend="OwnedTerminal",GmBridgeAutoStart=false,GmCliLaunchCommand="exit 74"
+            }));
             foreach(var pair in new Dictionary<string,string>{
                 ["input/turn_request.json"]="{\"sessionId\":\"session\",\"requestId\":\"request\",\"turnNumber\":1,\"playerAction\":\"inert\"}",
                 [Snapshot]="{\"baseline\":true}",["output/daemon-declared.rollback"]="{\"baseline\":true}",

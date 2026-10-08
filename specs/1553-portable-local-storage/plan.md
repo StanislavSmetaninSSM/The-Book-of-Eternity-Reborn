@@ -1,3 +1,12 @@
+## F14 explicit inert current-fixture configuration — 2026-10-08
+
+Corrected clean cfb4 Plan213848 succeeded:27/six/zero executed,37.4337876s,
+both cleanup flags true. Runtime remains unexecuted. Current fixtures now explicitly
+publish OwnedTerminal/enabled/AutoStart=false/exit74 configuration under the same
+original owner before their hooks or child launch, matching the accepted causal
+fixture; config refusal and post-send routing no longer rely on bootstrap defaults.
+Exact27 selection and production runtime are unchanged by this fixture follow-up.
+
 ## F14 final bounded source-review correction candidate — 2026-10-08
 
 The dynamic manifest witness mismatch is an ordinary incoherent sample, not proof

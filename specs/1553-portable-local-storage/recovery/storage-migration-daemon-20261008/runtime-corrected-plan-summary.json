@@ -1,0 +1,78 @@
+{
+  "Categories": [
+    "portable-gm-daemon-qte-storage-causal-linux",
+    "portable-gm-daemon-storage-delivery-neighbors",
+    "portable-gm-daemon-storage-current-linux",
+    "gm-main-helper-outcome-loss-neighbors",
+    "gm-main-helper-bounds-linux",
+    "portable-gm-daemon-helper-close-neighbor"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "cfb4b8a162aa185e31d6822e0dfb654881394684",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0564789,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0348658,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0815888,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 33.5127119,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.005204,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:00:37.4337876",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 6,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 27,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "gm-main-helper-bounds-linux-unit-001",
+      "gm-main-helper-outcome-loss-neighbors-unit-002",
+      "portable-gm-daemon-helper-close-neighbor-unit-003",
+      "portable-gm-daemon-qte-storage-causal-linux-unit-004",
+      "portable-gm-daemon-storage-current-linux-unit-005",
+      "portable-gm-daemon-storage-delivery-neighbors-unit-006"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}
