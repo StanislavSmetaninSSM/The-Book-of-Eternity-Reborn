@@ -1,0 +1,94 @@
+{
+  "Categories": [
+    "portable-gm-helper-admission-causal-linux",
+    "portable-gm-helper-realm-link-causal-linux",
+    "portable-gm-helper-current-linux",
+    "portable-gm-helper-original-contracts-linux",
+    "gm-main-helper-outcome-loss-neighbors",
+    "gm-main-helper-bounds-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "6d26f9a5e90c723d444bd1332fb5b268335e0b4b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-main-helper-bounds-linux",
+      "Seconds": 5.061331,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-main-helper-outcome-loss-neighbors",
+      "Seconds": 17.8551255,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-gm-helper-admission-causal-linux",
+      "Seconds": 25.3135662,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-gm-helper-current-linux",
+      "Seconds": 53.6268957,
+      "BudgetMinutes": 8,
+      "Completed": true
+    },
+    {
+      "Category": "portable-gm-helper-original-contracts-linux",
+      "Seconds": 74.1276995,
+      "BudgetMinutes": 8,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.060895,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0420407,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0853826,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:03:04.3810941",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 6,
+    "CompletedDescriptors": 5,
+    "PlannedCases": 53,
+    "CompletedCases": 52,
+    "UnderfilledDescriptors": [
+      "portable-gm-helper-realm-link-causal-linux-unit-006"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 52,
+    "Executed": 52,
+    "Passed": 32,
+    "Failed": 20
+  },
+  "DuplicateTests": []
+}

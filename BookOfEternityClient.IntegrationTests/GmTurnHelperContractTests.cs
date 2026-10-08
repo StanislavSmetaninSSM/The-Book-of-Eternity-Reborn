@@ -1740,8 +1740,11 @@ public sealed class GmTurnHelperContractTests
                     Directory.CreateDirectory(Path.GetDirectoryName(path)!);
                     File.WriteAllText(path, input.Value, new UTF8Encoding(false));
                 }
-                retained[item.Name] = inputs.ToDictionary(pair => pair.Key,
-                    pair => File.ReadAllBytes(Path.Combine(session, pair.Key)), StringComparer.Ordinal);
+                // Bootstrap belongs to fixture setup, before the exact before-image
+                // inventory. The later child must preserve these actual config bytes.
+                GmHelperContractScenario.PrepareSessionAsync(session).GetAwaiter().GetResult();
+                retained[item.Name] = inputs.Keys.Append("config.json").ToDictionary(path => path,
+                    path => File.ReadAllBytes(Path.Combine(session, path)), StringComparer.Ordinal);
                 script.AppendLine(". " + QuotePowerShell(helper));
                 script.AppendLine("Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session));
                 if (item.ReplaceRequestAtLock || item.PublishNewerReady ||

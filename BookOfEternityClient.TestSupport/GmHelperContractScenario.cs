@@ -52,15 +52,18 @@ internal static class GmHelperContractScenario
             {
                 var session=match.Groups[1].Value.Replace("''","'");
                 if(Path.GetFileName(session)!="game_session"||!Directory.Exists(session))throw new InvalidDataException("Original fixture session is absent.");
-                var files=new FileSystemManager(Path.GetDirectoryName(session)!,NullLogger<FileSystemManager>.Instance);
-                if(roots.Any(f=>f.BasePath==files.BasePath))continue;
-                await using(var lease=await files.AcquireCanonicalWriteLeaseAsync())
-                    files.BootstrapLocalStorage(lease,null,JsonSerializer.SerializeToUtf8Bytes(new GameSettings()));
-                roots.Add(files);
+                if(roots.Any(f=>f.GameSessionPath==session))continue;
+                roots.Add(await PrepareSessionAsync(session));
             }
             var glue=Path.Combine(TestRepoPaths.RepoRoot,"tests/fixtures/GmTurnHelper/contract-bootstrap.ps1");
             string Q(string value)=>"'"+value.Replace("'","''")+"'";
-            command=Regex.Replace(command,@"(?m)^\. '[^\r\n]*GM_Turn_Helper\.ps1'[ \t]*$",m=>m.Value+Environment.NewLine+". "+Q(glue)+" -Folder "+Q(folder)+" -TestSupport "+Q(typeof(GmHelperContractScenario).Assembly.Location));
+            // Exact literal emitted by these test bodies; works at either a newline
+            // or a semicolon command boundary without rewriting their business code.
+            var sourceCommand=". "+Q(Path.Combine(TestRepoPaths.RepoRoot,"BookOfEternityClient","Launcher","GM_Turn_Helper.ps1"));
+            var insertionCount=Regex.Matches(command,Regex.Escape(sourceCommand)).Count;
+            if(roots.Count!=0&&insertionCount==0)throw new InvalidDataException("Original fixture helper dot-source was not identified before launch.");
+            command=command.Replace(sourceCommand,sourceCommand+"; . "+Q(glue)+" -Folder "+Q(folder)+" -TestSupport "+Q(typeof(GmHelperContractScenario).Assembly.Location),StringComparison.Ordinal);
+            evidence["BootstrapInsertions"]=insertionCount;
             await File.WriteAllTextAsync(Path.Combine(folder,"owned.ps1"),command,new UTF8Encoding(OperatingSystem.IsWindows()));
             var start=new ProcessStartInfo(OperatingSystem.IsWindows()?"powershell.exe":"pwsh"){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
             foreach(var arg in new[]{"-NoLogo","-NoProfile","-NonInteractive","-ExecutionPolicy","Bypass","-File",Path.Combine(folder,"owned.ps1")})start.ArgumentList.Add(arg);
@@ -84,6 +87,17 @@ internal static class GmHelperContractScenario
             evidence["CanonicalOwnershipReleased"]=failures.Count==0;if(failures.Count!=0){evidence["CleanupFailures"]=failures;evidence["Success"]=false;}
             await File.WriteAllTextAsync(Path.Combine(folder,"scenario.json"),JsonSerializer.Serialize(evidence));
         }
+    }
+
+    internal static async Task<FileSystemManager> PrepareSessionAsync(string session)
+    {
+        if(Path.GetFileName(session)!="game_session"||!Directory.Exists(session))throw new InvalidDataException("Original fixture session is absent.");
+        var files=new FileSystemManager(Path.GetDirectoryName(session)!,NullLogger<FileSystemManager>.Instance);
+        await using var lease=await files.AcquireCanonicalWriteLeaseAsync();
+        var config=await files.ReadFileBytesAsync(lease,"config.json");
+        files.BootstrapLocalStorage(lease,config,JsonSerializer.SerializeToUtf8Bytes(new GameSettings()));
+        if(files.ReadExistingSessionGeneration(lease)==null)throw new InvalidDataException("Original fixture generation is absent after bootstrap.");
+        return files;
     }
 
     private static async Task<(int ExitCode,string StdOut,string StdErr)> JoinAsync(ProcessStartInfo start,TimeSpan budget)

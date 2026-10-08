@@ -1,3 +1,30 @@
+## F13 first runtime evidence and original-contract fixture correction — 2026-10-08
+
+Independent source/fixture/selection PASS6d26 and matching Plan200814 (53/6/0,
+63.3921768s, both builds successful) preceded actual200948. The run executed52/53
+in5/6 descriptors:32 PASS,20 FAIL,184.3810941s, no timeout, both runner cleanup
+flags true. Final realm-link1 was not started. Parent and independent reviewer
+accepted the first30 actual PASS: causal9, current18 and A03 neighbors3. Their
+runtime/fixtures remain unchanged; the pre-receipt loss neighbor deliberately
+retains logical Unresolved/Stop refusal despite a healthy physical guardian.
+
+Original22 comprised two QTE PASS, fifteen missing test-bootstrap/report failures
+(the standalone-line matcher missed semicolon dot-source commands), and five exact
+inventory failures because genuine setup added config.json after the before-image
+capture. These are fixture failures, not twenty demonstrated runtime defects. All22
+original fixture scopes released canonical ownership and had healthy guardians.
+The full mixed run, all52 scenario folders, helper reports, joined records and
+original/prepared scripts are preserved, alongside the intervening PlanOnly runs.
+
+The correction uses the exact dot-source literal emitted by these test bodies,
+records a positive insertion count before launching PowerShell, and handles both
+newline and semicolon forms. Shared genuine setup now runs before spiritual
+before-image capture; exact config bytes join the unchanged full inventory checks.
+Production code is unchanged. Focused follow-up selection is original22 plus the
+previously unexecuted realm1 (23/2); prior30 need no repeat. Frozen correction review
+and a matching fresh build precede actual23. Native Windows/PS5.1, pwsh keyboard
+interruption and full migration remain unqualified.
+
 ## F13 terminating transport JSON correction — 2026-10-08
 
 Clean f453 Plan200510 built53/6/0 (56.8006029s, exit0, both cleanup flags true).
