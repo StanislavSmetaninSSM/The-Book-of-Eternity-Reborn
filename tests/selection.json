@@ -2,8 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-treatment-mirror-causal-linux",
+      "reason": "T062 isolated original engine mirror fixture correction; previous mirror cut was unreached. Exact one case, no repeat of accepted two causal boundaries.",
+      "contracts": ["#1553", "FR-003", "FR-004", "FR-006", "T062-STORAGE-OUTCOMES"]
+    },
+    {
       "category": "portable-treatment-storage-causal-linux",
-      "reason": "T062 three actual treatment storage outcomes: original helper settlement, original compensation/disposal, and published-treatment runtime mirror/notice. Test-only causal capture before fixes.",
+      "reason": "T062 two actual treatment storage outcomes: original helper settlement and original compensation/disposal. Causal RED retained at ec30e; no repeat for mirror-only correction.",
       "contracts": ["#1553", "FR-003", "FR-004", "FR-006", "T062-STORAGE-OUTCOMES"]
     },
     {

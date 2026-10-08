@@ -19,8 +19,14 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Theory]
     [InlineData("helper_restore")]
     [InlineData("compensate_dispose")]
-    [InlineData("engine_mirror")]
-    public async Task TreatmentStorage_OriginalPublicationUncertaintyRetainsDecision(string mode)
+    public Task TreatmentStorage_OriginalPublicationUncertaintyRetainsDecision(string mode) =>
+        RunTreatmentStorageScenarioAsync(mode);
+
+    [Fact]
+    public Task TreatmentStorage_OriginalEngineMirrorUncertaintyRetainsDecision() =>
+        RunTreatmentStorageScenarioAsync("engine_mirror");
+
+    private async Task RunTreatmentStorageScenarioAsync(string mode)
     {
         using var cut = new TreatmentStorageCut(mode);
         await using var context = await CreateHeldTreatmentPipelineContextAsync(null, hooks: cut.Hooks);
@@ -28,6 +34,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         await context.ReleaseLeaseAsync();
         Exception? failure;
         Exception? disposalFailure = null;
+        AcceptedTurnValidationDisposition? engineDisposition = null;
         var disposalLeases = 0;
         var disposalRecovery = 0;
         var disposalAttempts = 0;
@@ -74,7 +81,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 var manifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
                 var snapshot = await InvokePrivateTaskResultAsync(engine, "LoadValidatedPendingTurnSnapshotContextAsync", manifest, true);
                 failure = await Record.ExceptionAsync(async () =>
-                    await InvokePrivateAsync<AcceptedTurnValidationDisposition>(engine,
+                    engineDisposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(engine,
                         "ValidateAcceptedTurnOutcomeWithRepairLoopAsync", "storage-only treatment mirror", snapshot,
                         null, HeldTreatmentPipelineContext.Turn, null));
             }
@@ -104,7 +111,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             var raw = new
             {
-                mode, cut.BusinessCutCount, cut.PublishedTreatmentMembers, cut.Cuts,
+                mode, engineDisposition, cut.BusinessCutCount, cut.PublishedTreatmentMembers, cut.Cuts,
                 cut.Target, cut.TargetIndex, cut.SharingConflictObserved, cut.CutPhase, cut.CutPhaseStack,
                 cut.OriginalCohortRestoredBeforeCut, cut.BusinessReadPath,
                 MemberAfterDispose = memberAfterDispose is null ? null : Convert.ToBase64String(memberAfterDispose),
@@ -113,7 +120,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 TypedCarrier = cut.OriginalUncertainty?.GetType().FullName,
                 Failure = failure?.ToString(), DisposalFailure = disposalFailure?.ToString(),
                 journalBeforeDispose, journalAfterDisposeExact, disposalLeases, disposalRecovery, disposalAttempts,
-                cut.MirrorDriftPrepared, cut.MirrorBeforeValue, cut.MirrorForeignValue, cut.TreatmentResourceChanged, publishedTreatmentRetained,
+                cut.MirrorDriftPrepared, cut.MirrorLeaseStack, cut.MirrorLeaseAttempt, cut.MirrorBeforeValue, cut.MirrorForeignValue, cut.TreatmentResourceChanged, publishedTreatmentRetained,
                 BusinessCausePreserved = cut.HasBusinessCause(failure),
                 BusinessCause = cut.BusinessFailure.ToString(),
                 PublishedTreatmentImages = cut.PublishedTreatmentImages.ToDictionary(p => p.Key, p => Convert.ToBase64String(p.Value)),
@@ -138,6 +145,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (mode == "engine_mirror")
             {
                 Assert.True(cut.MirrorDriftPrepared);
+                Assert.NotEqual(cut.MirrorBeforeValue, cut.MirrorForeignValue);
                 Assert.Equal(4, cut.PublishedTreatmentImages.Count);
                 Assert.True(cut.TreatmentResourceChanged);
                 Assert.True(publishedTreatmentRetained);
@@ -231,6 +239,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal int PublicationsAfterCut { get; private set; }
         internal bool SharingConflictObserved { get; private set; }
         internal bool MirrorDriftPrepared { get; private set; }
+        internal string? MirrorLeaseStack { get; private set; }
+        internal int MirrorLeaseAttempt { get; private set; }
         internal int MirrorBeforeValue { get; private set; }
         internal int MirrorForeignValue { get; private set; }
         internal string? CutPhase { get; private set; }
@@ -260,10 +270,15 @@ public sealed partial class GameEngineTurnLifecycleTests
             if (!Armed) return Task.CompletedTask;
             LeaseAttempts++;
             if (_mode == "engine_mirror" && !MirrorDriftPrepared && PublishedTreatmentMembers > 0 &&
-                OnStack("RefreshRuntimeStateAsync") && OnStack("RefreshGameStateAsync"))
+                !File.Exists(JournalPath) && _originalRegistryState!.GetType()
+                    .GetField("_openTreatmentPublicationReceipt", BindingFlags.Instance | BindingFlags.NonPublic)!
+                    .GetValue(_originalRegistryState) is MortalWoundTreatmentPublicationTakeReceipt)
             {
-                // Controlled external mirror drift after treatment publication, before the
-                // original runtime refresh takes its lease. The normalizer had repaired it.
+                // The original normalizer owns one lease across all its publication.
+                // This next acquisition, with committed members and the same open receipt,
+                // is after that scope. Retain its stack as evidence, not selection authority.
+                MirrorLeaseStack = new StackTrace().ToString();
+                MirrorLeaseAttempt = LeaseAttempts;
                 var path = _context!.FileSystem.ResolvePath(AfterlifeEntityProfileState.StatePath);
                 var root = ParseJsonObjectBytes(File.ReadAllBytes(path));
                 var profile = root["profiles"]!.AsArray().OfType<JsonObject>().Single(p => p["actorType"]!.GetValue<string>() == "player_soul");

@@ -1,3 +1,24 @@
+## Treatment two causal boundaries; isolated mirror correction — 2026-10-08
+
+Clean ec30e actual222606 completed3/3 in23.5902898s (0P3F), both runner cleanup
+flags and all three owned fixture removals true. Independent raw review accepts TWO
+causal boundaries: helper actual publications4/business1/full original cohort restored,
+MemberPublished0 cut1/real Unknown,29 later reached restoration reads/zero later
+publications, aggregate wrapper and generic retry notice; disposal actual share-conflict
+cut1/Unknown, then original Dispose acquires one lease and observes three recovery
+phases, removes journal and restores target absence. Both retain their exact original
+restart blocker/ConfirmedHeld. Later Same/notice assertions were not reached; those
+raw facts were independently inspected. Full journals/member bytes remain archived.
+
+Mirror had publications8 but driftfalse/cut0/failure null: fixture-unreached, not RED.
+Only its Fact now gets the narrow `portable-treatment-mirror-causal-linux` owner. The
+original normalizer holds one lease; first new acquisition after actual committed
+members while its original receipt remains open introduces the already-designed mirror
+drift, with exact lease ordinal/stack/value evidence and actual profile MemberPublished
+still required. No physical async ancestor is assumed. Engine disposition is recorded.
+The unchanged two causal cases will not rerun for this fixture correction. Runtime
+unchanged; focused source/selection review and matching one-case Plan precede actual.
+
 ## Treatment observed fixture correction candidate — 2026-10-08
 
 Failure carrier ef1 preserves the incomplete actual run. The exact retired engine

@@ -3,14 +3,16 @@
   "categories": [
     {
       "id": "portable-treatment-storage-causal-linux",
-      "responsibility": "Three actual held-treatment publication uncertainty boundaries: original normalizer helper settlement, retained Compensate/Dispose, original engine profile mirror and player notice.",
+      "responsibility": "Two actual held-treatment publication uncertainty boundaries: original normalizer helper settlement and retained Compensate/Dispose.",
       "excludes": "No B2-B5 gameplay, provider, native Windows, full treatment cohort, or whole-turn atomicity claim.",
       "changeHints": [
         "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
         "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
         "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
       ],
-      "related": [],
+      "related": [
+        "portable-treatment-mirror-causal-linux"
+      ],
       "requirements": {
         "frontendBuild": false,
         "exclusive": true,
@@ -23,6 +25,34 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TreatmentStorage_OriginalPublicationUncertaintyRetainsDecision"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-treatment-mirror-causal-linux",
+      "responsibility": "One actual published-treatment engine profile mirror publication uncertainty and original player notice; isolated correction of the previously unreached fixture.",
+      "excludes": "No B2-B5 gameplay, provider, native Windows, full treatment cohort, or whole-turn atomicity claim.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs"
+      ],
+      "related": [
+        "portable-treatment-storage-causal-linux"
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TreatmentStorage_OriginalEngineMirrorUncertaintyRetainsDecision"
           ]
         }
       ]
@@ -893,7 +923,7 @@
     },
     {
       "id": "daren-standalone-browser-dispatch",
-      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent \u00d7 commit/rollback), no broader browser cohort.",
+      "responsibility": "#1553 T031 exactly the changed original Daren store declared-browser dispatch regression4rows (existing/absent × commit/rollback), no broader browser cohort.",
       "excludes": "No stub profile consumer, gameplay/economy/tier/text/model changes, live console/provider/saves/browser or Windows/fullgame qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
@@ -18468,11 +18498,20 @@
         "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs"
       ],
       "related": [],
-      "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
       "timeoutMinutes": 5,
       "expectedSeconds": null,
       "selectors": [
-        { "project": "integration", "tests": ["BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite"] }
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite"
+          ]
+        }
       ]
     },
     {
