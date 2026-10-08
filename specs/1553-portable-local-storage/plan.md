@@ -1,3 +1,26 @@
+## A01 probe host causal RED and retention correction — 2026-10-08
+
+Corrected3b091 actual134833 complete2/2FAIL9.0174631s, clean source and cleanup.
+Control positively retained the original probe, then Run exited on the explicit
+empty-command refusal before control admission. Dispose entered (_inputClosed)
+and returned with CTS cancelled/gate disposed while that original remained live.
+[Raw corrected RED](recovery/storage-migration-bridge-consumers-20261008/manifest.json).
+Independent fixture/source review PASS; no native Windows inference.
+
+Minimal host correction keeps distinct startup refusal diagnostics/control alive,
+refuses bounded start/stop/shutdown while unsettled, and seals new-start admission
+before foreground drain. It joins the admitted-start gate then releases it before
+waiting for actual process/I/O settlement. Run's outer exit and Dispose cannot
+abandon that slot; cancellation/gate cleanup follows settlement. Terminal uncertainty
+and original main ownership are unchanged; Windows production read remains unwired.
+
+Selected fresh3 = corrected control and Dispose plus one requested outer-exit row.
+The latter cancels the real host CTS after actual pipe refusal, proves closing entry
+and pending Run until settlement. Earlier missing startup retention prevents a
+separate reached pre-fix outer-finally RED; this is explicitly a new GREEN boundary.
+Keep positive shutdown after settlement in the control row. Runtime review and
+fresh GREEN pending; subsequent native consumer wiring remains separate.
+
 ## A01 probe fixture review correction — 2026-10-08
 
 Initial1b34 actual134524 executed2/2, both failed, cleanup true. Raw control stopped

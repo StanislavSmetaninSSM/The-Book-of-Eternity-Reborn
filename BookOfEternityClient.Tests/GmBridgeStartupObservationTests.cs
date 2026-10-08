@@ -16,6 +16,7 @@ public sealed class GmBridgeStartupObservationTests
     [Theory]
     [InlineData("control")]
     [InlineData("dispose")]
+    [InlineData("outer-exit")]
     public async Task OriginalProbeDebtRetainsHostUntilActualProcessAndIoSettle(string mode)
     {
         Assert.True(OperatingSystem.IsLinux());
@@ -92,6 +93,16 @@ public sealed class GmBridgeStartupObservationTests
                 }
                 Assert.False(run.IsCompleted); Assert.False(cts.IsCancellationRequested);
                 Assert.NotNull(await Record.ExceptionAsync(() => Call("StopShellAsync")));
+                if (mode == "outer-exit")
+                {
+                    cts.Cancel(); // real outer loop exit, not a synthetic terminal failure
+                    var closing = Stopwatch.StartNew();
+                    while (!(bool)Field("_inputClosed")! && closing.Elapsed < TimeSpan.FromSeconds(2)) await Task.Delay(10);
+                    Assert.True((bool)Field("_inputClosed")!);
+                    Assert.False(run.IsCompleted);
+                    Assert.False((bool)Field("_writeGateDisposed")!);
+                    Assert.False(probe.TrySettle());
+                }
             }
             Assert.Equal(1, starts);
             Assert.Null(Field("_mainRun")); Assert.Null(Field("_pty"));
@@ -102,8 +113,11 @@ public sealed class GmBridgeStartupObservationTests
             if (disposal != null) await disposal.WaitAsync(TimeSpan.FromSeconds(3));
             else
             {
-                using var reply = await Request(pipe, "shutdown");
-                Assert.True(reply.RootElement.GetProperty("ok").GetBoolean());
+                if (mode != "outer-exit")
+                {
+                    using var reply = await Request(pipe, "shutdown");
+                    Assert.True(reply.RootElement.GetProperty("ok").GetBoolean());
+                }
                 Assert.Equal(0, await ((Task<int>)run!).WaitAsync(TimeSpan.FromSeconds(3)));
                 ((IDisposable)host).Dispose();
             }

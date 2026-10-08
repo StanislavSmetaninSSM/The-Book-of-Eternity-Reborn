@@ -203,6 +203,12 @@ internal sealed partial class BridgeHost : IDisposable
 
     public async Task<int> RunAsync()
     {
+        try { return await RunControlLoopAsync(); }
+        finally { await CloseStartupObservationAdmissionAndDrainAsync(); }
+    }
+
+    private async Task<int> RunControlLoopAsync()
+    {
         if (OperatingSystem.IsWindows()) { NativeMethods.SetConsoleCP(65001); NativeMethods.SetConsoleOutputCP(65001); }
         Console.InputEncoding = Encoding.UTF8;
         Console.OutputEncoding = Encoding.UTF8;
@@ -211,6 +217,7 @@ internal sealed partial class BridgeHost : IDisposable
         PrintBanner();
 
         try { await StartShellAsync(); }
+        catch(StartupObservationUnavailableException ex) { ReportDiagnosticStartupException(ex); /* Pre-Prepared original probe is still owned by this host. */ }
         catch(OwnedTerminalStartException ex) { ReportDiagnosticStartupException(ex); /* Original owner retained; keep diagnostics/control alive. */ }
         catch(Exception ex) when(_mainRun?.RetainsAuthority==true) { ReportDiagnosticStartupException(ex); MarkTerminalUncertain(); /* Exact no-child debt also retains diagnostics, never release replay. */ }
         var serverTask = RunServerLoopAsync(_cts.Token);
@@ -242,6 +249,8 @@ internal sealed partial class BridgeHost : IDisposable
         }
         finally
         {
+            await CloseStartupObservationAdmissionAndDrainAsync();
+            _cts.Cancel();
             try { await serverTask; } catch { /* ignored */ }
             try { await StopShellAsync(); } finally { if(controlKeys)Console.TreatControlCAsInput=previousControlKeys; }
             SafeDeleteStatusFile();
@@ -614,6 +623,7 @@ internal sealed partial class BridgeHost : IDisposable
 
     private async Task StopShellCoreAsync()
     {
+        RequireStartupObservationSettled();
         InputLifetime? input;
         IOwnedTerminalSession? pty;
         lock (_sync)
@@ -837,6 +847,7 @@ internal sealed partial class BridgeHost : IDisposable
         // Observation never acknowledges trust/update prompts or clears an uncertain operation.
         lock (_sync)
         {
+            if (_startupObservationFailed) { _status.Ready=false; _status.State="StartupObservationUnavailable"; return Task.CompletedTask; }
             if (_terminalUncertain) { _status.Ready=false; _status.State="TerminalUncertain"; TryWriteInputStatus(); return Task.CompletedTask; }
             var profile = LoadBridgeConfig().GmCliInputProfile.Snapshot();
             if (_inputLifetime != null && !_inputLifetime.Revoked && !_inputLifetime.ManualTakeover &&
@@ -1823,6 +1834,7 @@ internal sealed partial class BridgeHost : IDisposable
     public void Dispose()
     {
         lock (_sync) _inputClosed = true;
+        CloseStartupObservationAdmissionAndDrainAsync().GetAwaiter().GetResult();
         _cts.Cancel();
         try { StopShellAsync().GetAwaiter().GetResult(); }
         catch (TimeoutException) { return; } // Retain the gate/CTS and actual tasks for a later drain attempt.

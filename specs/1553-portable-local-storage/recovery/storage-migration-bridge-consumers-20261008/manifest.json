@@ -212,5 +212,109 @@
         "sha256": "ea95538b54a45d59400d18a50e782e951800a67d8b5daab89e7b122f9295232c"
       }
     ]
+  },
+  "probeRed": {
+    "planned": 2,
+    "executed": 2,
+    "failed": 2,
+    "complete": true,
+    "qualification": "Corrected inert fixture. Actual retained process positively reached; Run exits on explicit empty-command refusal, Dispose actually entered then cancelled/disposed/returned before original settlement. Shared host component, not native Windows.",
+    "source": "3b0914788708bfa5449179f1a0754c73e9d6df8e",
+    "artifacts": [
+      {
+        "path": "probe-red-plan-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134728-791-60874-79486f376850474e90cd94195fdec377-categories/Build-unit.log",
+        "sha256": "bc98dba2b4dbde6a07efeb947bb5352696e22146babbf061017a7c695b791015",
+        "originalSha256": "5856343009cce6cdbbafd60d4ba3d2e350c951508bc0bd65694fd39d5af83a62"
+      },
+      {
+        "path": "probe-red-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134728-791-60874-79486f376850474e90cd94195fdec377-categories/dotnet-test.log",
+        "sha256": "b12c7b1352856369cc568ab1d5274d762a65ad2aa9b69676d944d1921b63ddda",
+        "originalSha256": "cfd551cd531644edf6bc5e35e47569c1a231601059ffb1da21685f4ea7d8bd8f"
+      },
+      {
+        "path": "probe-red-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134728-791-60874-79486f376850474e90cd94195fdec377-categories/plan.json",
+        "sha256": "3e8f845a1411a25ff567d8cab569949199cd58e991c4d655b3eea6763e8b62d1",
+        "originalSha256": "3e8f845a1411a25ff567d8cab569949199cd58e991c4d655b3eea6763e8b62d1"
+      },
+      {
+        "path": "probe-red-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134728-791-60874-79486f376850474e90cd94195fdec377-categories/summary.json",
+        "sha256": "017c41bb07c4afa14f7988f284ab942b31f9773d80e75f380e2bf95787850bc9",
+        "originalSha256": "017c41bb07c4afa14f7988f284ab942b31f9773d80e75f380e2bf95787850bc9"
+      },
+      {
+        "path": "probe-red-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134833-880-61160-aeb5379a26c44d679cc77ae46febddd9-categories/dotnet-test.log",
+        "sha256": "11514f8e99caa9d2ff9a209ccf847a22ed7ea739f1cd1899c7e2c28b3ed84a6a",
+        "originalSha256": "1118ac4af1714e82b38c59673084691935d97dd0c0a8935c38c6bd31053f79dc"
+      },
+      {
+        "path": "probe-red-actual-gm-main-startup-probe-host-linux-unit-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134833-880-61160-aeb5379a26c44d679cc77ae46febddd9-categories/gm-main-startup-probe-host-linux-unit-001.trx",
+        "sha256": "ec4bd1c85be5674e0ec59e21ab8b9888b8aa35966bd90133044fd554a7b56ae1",
+        "originalSha256": "7ad547d104b0cae2ee3389b712ad31b84a4d87abb65d15ae14de3732c36fa190"
+      },
+      {
+        "path": "probe-red-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134833-880-61160-aeb5379a26c44d679cc77ae46febddd9-categories/plan.json",
+        "sha256": "af73de42ac3be3dfd70f2893413d502a655ed3eb75e3e6fd88d1f8fc26a60fb5",
+        "originalSha256": "af73de42ac3be3dfd70f2893413d502a655ed3eb75e3e6fd88d1f8fc26a60fb5"
+      },
+      {
+        "path": "probe-red-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134833-880-61160-aeb5379a26c44d679cc77ae46febddd9-categories/summary.json",
+        "sha256": "febb4c2ef95b146760521b3b68410ad0ecc83222ab17cb6bc4c1ff4a8b8d2821",
+        "originalSha256": "febb4c2ef95b146760521b3b68410ad0ecc83222ab17cb6bc4c1ff4a8b8d2821"
+      },
+      {
+        "path": "probe-red-plan-runner-boe-1553-probe-host-corrected-red-plan.log.gz",
+        "source": "/tmp/boe-1553-probe-host-corrected-red-plan.log",
+        "sha256": "22790fd0e71311c7d4c86ce25ddbf2491171c5cc565d67fd1394168fe260b19c",
+        "originalSha256": "a0562cc55afa8699c757a681aad2208eebd580f028a4c633275baaf8697e15aa"
+      },
+      {
+        "path": "probe-red-actual-runner-boe-1553-probe-host-corrected-red-actual.log.gz",
+        "source": "/tmp/boe-1553-probe-host-corrected-red-actual.log",
+        "sha256": "1e6f7ff09c7c681bd8da9a2924d6e697c92bf068dc185cf169eea82f2828d4c6",
+        "originalSha256": "136ad68c715db3fa2e802fbdbe756dbffaa3f241350500a979191b9a3a9d8089"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityGMBridge/Program.cs",
+        "sha256": "2c1a43334d6391f84726fb54eaebf027f17b19ffd37599862f0c82798099f1d8"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.LoadSession.cs",
+        "sha256": "61055512203b6c639f2737858eb3e84dfc51863e466949cde965c1524d82b0c5"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs",
+        "sha256": "6c81145fdae9396dba4214861ce1465e40075d33009dc520c4257b48b271dc7d"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservationProbe.cs",
+        "sha256": "1af28e67d431bf4e13673c44916cb4f8b543b787267ab5d4b8d4180f141f54b1"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "e86fd8d37da1ea13f29a868cc6c4c60c0256dbbd847f545d0bf8a366afaa0134"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "26eacb304bd66a955b90d29557b66f37a00d6d92ef590474758f8778083ecdea"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.StartupObservation.cs",
+        "sha256": "4ee4b3683d64ccdd0a1567b1bf23aeb2c35bf83e37ddde469ca8153d7b0a5a9d"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmBridgeStartupObservationTests.cs",
+        "sha256": "85a18a58b4d7f951986367caedf125fb1a3c452cef38f62247f990e85f563759"
+      }
+    ]
   }
 }
