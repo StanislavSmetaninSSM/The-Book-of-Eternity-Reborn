@@ -39,8 +39,15 @@ Native Linux controlled RED/GREEN archives are published in carrier
 7afb19349519bacb959b5ccad3069226c669efa1 under recovery/http-linux-20261008;
 [t055-linux-controlled-readback.json](t055-linux-controlled-readback.json) records
 direct SHA/entry/source-pin/receipt verification. GREEN is3/3PASS with10correct
-HTTP DTOs and10matching original closes. The post-fix original live133 series
-and final exact-carrier restoration remain pending.
+HTTP DTOs and10matching original closes. The post-fix original live133 series is verified in final Linux carrier
+[9e277a67](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/9e277a67534f718e8456e92e46b3a807ecdade2a/specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-final-verdict.json):133meaningful200, original RPC/queue/I-O/Stopped identity and clean guardian.
+[t055-linux-live-readback.json](t055-linux-live-readback.json) records the62-entry
+archive verification and unchanged final-carrier raw Git blobs. Model requests0;
+Linux browser UI/audio persistence/devices not qualified.
+
+Direct GitHub-only restoration off228 verified76changedfiles and all included
+payloads, clean; independent review PASS. The final metadata carrier is checked
+again before delivery, with no build or rerun from the restoration.
 
 Catalog/PlanOnly original archives preserve clean36ca4961 inventory:441categories,
 11207methods,14descriptors/83planned cases. Both executed0tests; no83-case PASS
