@@ -1,3 +1,22 @@
+## F14 connected consumer wiring WIP — 2026-10-08
+
+Unbuilt/unreviewed whole-consumer draft now routes canonical daemon bytes, metadata
+and tree observations through the same admitted connection. QTE eligibility batches
+request+Ready; pending-turn parsing determines a second exact request/manifest/
+authority-witness cohort; repair/terminal watermarks use the opened-file snapshot;
+observed-key cache is refreshed under admission and separated by actual generation.
+Ready/timeout cleanup and notes backfill carry exact byte and generation witnesses
+to conditional common publication. Parse-only fallbacks remain, marked storage
+refusals rethrow; repository source/script discovery and watcher wake-up hints remain
+technical. Read maps preserve host path comparison. Transport rejects empty/null/
+malformed successful response objects instead of treating them as missing.
+
+Only PowerShell syntax parsing ran successfully for the three touched scripts. No
+C# build or runtime tests yet; connected fixture migration and finite whole-consumer
+controls are still open before source/selection/GREEN gates. Parent fresh causal
+restore383268f9 is clean detached GitHub-only27473 files,treea8aace0497ad36a6bedf0ce4462b3331e7e53451,
+no alternates,80 stored/expanded artifacts48 pins verified,full fsck0; no tests there.
+
 ## F14 original-connection transport foundation WIP — 2026-10-08
 
 Saved an unbuilt/unreviewed same-connection daemon exchange and PowerShell snapshot/

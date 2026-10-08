@@ -23,6 +23,7 @@ internal static partial class GmMainParticipatingControl
             public Dictionary<string,string?> Expected {get;set;}=new();
             public string? Path {get;set;}
             public string? Bytes {get;set;}
+            public string? Generation {get;set;}
         }
         private sealed class WitnessChangedException : InvalidOperationException { }
         private sealed record FileObservation(string Path,string Kind,byte[]? Bytes,string? Hash,DateTime? LastWriteTimeUtc);
@@ -81,6 +82,7 @@ internal static partial class GmMainParticipatingControl
         {
             await using var lease=await files.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.PublicationReadQuiescence);
             var scope=new GmHelperCanonicalScope(files,lease,false);
+            if(request.Generation!=null&&files.ReadLocalGenerationSnapshot(lease).Binding.Id!=request.Generation)return new {matches=false};
             if(!await MatchesAsync(files,lease,scope,request.Expected))return new {matches=false};
             var comparer=OperatingSystem.IsWindows()?StringComparer.OrdinalIgnoreCase:StringComparer.Ordinal;
             var paths=new HashSet<string>(request.Paths.Select(scope.Normalize),comparer);
@@ -101,7 +103,7 @@ internal static partial class GmMainParticipatingControl
             // batch, including admitted read hooks. No JSON grants authority.
             if(!await MatchesAsync(files,lease,scope,request.Expected))return new {matches=false};
             files.VerifyCurrentSessionOperation(lease);
-            return new {matches=true,files=observations,trees};
+            return new {matches=true,generation=files.ReadLocalGenerationSnapshot(lease).Binding.Id,files=observations,trees};
         }
 
         private static async Task<bool> MatchesAsync(FileSystemManager files,FileSystemManager.CanonicalWriteLease lease,
@@ -126,7 +128,7 @@ internal static partial class GmMainParticipatingControl
             foreach(var entry in request.Expected)
                 if(!expected.TryAdd(scope.Normalize(entry.Key),entry.Value))throw new InvalidDataException("Duplicate daemon witness.");
             if(!expected.ContainsKey(path))throw new InvalidDataException("Missing daemon target witness.");
-            async Task ValidateAsync(){if(!await MatchesAsync(files,lease,scope,expected))throw new WitnessChangedException();}
+            async Task ValidateAsync(){if(request.Generation==null||files.ReadLocalGenerationSnapshot(lease).Binding.Id!=request.Generation||!await MatchesAsync(files,lease,scope,expected))throw new WitnessChangedException();}
             try
             {
                 await ValidateAsync();

@@ -155,7 +155,7 @@ $script:CorrelatedRepairPollMilliseconds = 200
 
 Invoke-GmParticipatingConsumer $GameSessionPath {
     foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
-        if (!(Test-Path $dir)) { Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $dir }
+        if (!(Test-GmDaemonPath $dir)) { Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $dir }
     }
 }
 
@@ -233,7 +233,7 @@ function Copy-GmContextPackFile {
 
     $destinationPath = Join-Path $script:GmContextPackRoot $RelativePath
     $destinationDir = Split-Path -Parent $destinationPath
-    if (!(Test-Path $destinationDir)) {
+    if (!(Test-GmDaemonPath $destinationDir)) {
         Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $destinationDir
     }
 
@@ -476,9 +476,9 @@ function Get-GmExperienceIssueKinds {
 }
 
 function Get-GmExperienceQuery {
-    if (Test-Path $RepairRequestFile) {
+    if (Test-GmDaemonPath $RepairRequestFile) {
         try {
-            $repair = Get-Content -Path $RepairRequestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            $repair = Get-GmDaemonText $RepairRequestFile | ConvertFrom-Json
             return [ordered]@{
                 realm = Get-GmExperienceObjectRealm -Object $repair
                 mode = "validation_repair"
@@ -486,12 +486,13 @@ function Get-GmExperienceQuery {
                 taskTypes = @()
             }
         }
-        catch { }
+        catch {
+        Assert-GmNotDaemonReadFailure $_ }
     }
 
-    if (Test-Path $TerminalProtocolFailureRequestFile) {
+    if (Test-GmDaemonPath $TerminalProtocolFailureRequestFile) {
         try {
-            $failure = Get-Content -Path $TerminalProtocolFailureRequestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            $failure = Get-GmDaemonText $TerminalProtocolFailureRequestFile | ConvertFrom-Json
             return [ordered]@{
                 realm = Get-GmExperienceObjectRealm -Object $failure
                 mode = "terminal_protocol"
@@ -499,12 +500,13 @@ function Get-GmExperienceQuery {
                 taskTypes = @()
             }
         }
-        catch { }
+        catch {
+        Assert-GmNotDaemonReadFailure $_ }
     }
 
-    if (Test-Path $TurnRequestFile) {
+    if (Test-GmDaemonPath $TurnRequestFile) {
         try {
-            $turnRequest = Get-Content -Path $TurnRequestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            $turnRequest = Get-GmDaemonText $TurnRequestFile | ConvertFrom-Json
             return [ordered]@{
                 realm = Get-GmExperienceObjectRealm -Object $turnRequest
                 mode = "ordinary"
@@ -512,7 +514,8 @@ function Get-GmExperienceQuery {
                 taskTypes = @()
             }
         }
-        catch { }
+        catch {
+        Assert-GmNotDaemonReadFailure $_ }
     }
 
     return [ordered]@{
@@ -902,12 +905,12 @@ function Get-GmExperienceLessons {
         [int]$MaxBytes = 12000
     )
 
-    if (!(Test-Path $script:GmTrajectoryLedgerPath)) {
+    if (!(Test-GmDaemonPath $script:GmTrajectoryLedgerPath)) {
         return @()
     }
 
     $records = @()
-    foreach ($line in @(Get-Content -Path $script:GmTrajectoryLedgerPath -Encoding UTF8 -ErrorAction SilentlyContinue)) {
+    foreach ($line in @(Get-GmDaemonLines $script:GmTrajectoryLedgerPath)) {
         if ([string]::IsNullOrWhiteSpace($line)) { continue }
         try {
             $record = $line | ConvertFrom-Json
@@ -918,7 +921,8 @@ function Get-GmExperienceLessons {
                 $records += $record
             }
         }
-        catch { }
+        catch {
+        Assert-GmNotDaemonReadFailure $_ }
     }
 
     $records = @($records | Sort-Object @{ Expression = { if ($_.createdAt) { [datetime]$_.createdAt } else { [datetime]::MinValue } }; Descending = $true })
@@ -945,7 +949,7 @@ function Get-GmExperienceLessons {
 
 function Write-GmExperienceLessons {
     $lessonsDir = Split-Path $script:GmExperienceLessonJsonPath -Parent
-    if (!(Test-Path $lessonsDir)) {
+    if (!(Test-GmDaemonPath $lessonsDir)) {
         Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $lessonsDir
     }
 
@@ -1001,14 +1005,15 @@ function Get-GmExperiencePromptDigest {
         [int]$MaxFixChars = 520
     )
 
-    if (!(Test-Path $script:GmExperienceLessonJsonPath)) {
+    if (!(Test-GmDaemonPath $script:GmExperienceLessonJsonPath)) {
         return ""
     }
 
     try {
-        $payload = Get-Content -LiteralPath $script:GmExperienceLessonJsonPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $payload = Get-GmDaemonText $script:GmExperienceLessonJsonPath | ConvertFrom-Json
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return ""
     }
 
@@ -1087,7 +1092,7 @@ function Build-FirstMortalBootstrapDispatchMessage {
 
 function Write-GmSafeProbes {
     $probeDir = Split-Path $script:GmSafeProbeJsonPath -Parent
-    if (!(Test-Path $probeDir)) {
+    if (!(Test-GmDaemonPath $probeDir)) {
         Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $probeDir
     }
 
@@ -1228,7 +1233,7 @@ function Write-GmSafeProbes {
 
 function Write-GmLiveTestRubric {
     $rubricDir = Split-Path $script:GmLiveTestRubricJsonPath -Parent
-    if (!(Test-Path $rubricDir)) {
+    if (!(Test-GmDaemonPath $rubricDir)) {
         Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $rubricDir
     }
 
@@ -1327,7 +1332,7 @@ function Write-GmLiveTestRubric {
 }
 
 function Write-GmContextPack {
-    if (!(Test-Path $script:GmContextPackRoot)) {
+    if (!(Test-GmDaemonPath $script:GmContextPackRoot)) {
         Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $script:GmContextPackRoot
     }
 
@@ -2891,12 +2896,12 @@ function Get-GameConfig {
         GmWorkerBridgeProfiles = New-DefaultGmWorkerBridgeProfiles
     }
 
-    if (!(Test-Path $configPath)) {
+    if (!(Test-GmDaemonPath $configPath)) {
         return [pscustomobject]$defaults
     }
 
     try {
-        $loaded = Get-Content -Path $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $loaded = Get-GmDaemonText $configPath | ConvertFrom-Json
         foreach ($key in @($defaults.Keys)) {
             if ($null -eq $loaded.$key) {
                 $loaded | Add-Member -NotePropertyName $key -NotePropertyValue $defaults[$key] -Force
@@ -2906,17 +2911,18 @@ function Get-GameConfig {
         return (Convert-RetiredCodexLaunchDefaults -Config $loaded)
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return [pscustomobject]$defaults
     }
 }
 
 function Get-GmBridgeStatus {
-    if (!(Test-Path $BridgeStatusFile)) {
+    if (!(Test-GmDaemonPath $BridgeStatusFile)) {
         return $null
     }
 
     try {
-        $status = Get-Content -Path $BridgeStatusFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $status = Get-GmDaemonText $BridgeStatusFile | ConvertFrom-Json
         if ($null -eq $status.helperPid) {
             return $status
         }
@@ -2926,11 +2932,13 @@ function Get-GmBridgeStatus {
             return $status
         }
         catch {
+        Assert-GmNotDaemonReadFailure $_
             # PID liveness is diagnostic; it never authorizes canonical deletion.
             return $null
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return $null
     }
 }
@@ -2957,6 +2965,7 @@ function Ensure-GmBridgeStarted {
         Write-Log "  -> Requested GM bridge auto-start" -Color DarkGray
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  -> GM bridge auto-start failed: $_" -Level "WARN" -Color Yellow
     }
 }
@@ -2986,6 +2995,7 @@ function Refresh-GmBridgeReadiness {
         return $response.status
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         $stopwatch.Stop()
         Write-Log "  -> GM bridge readiness refresh via diagnostics failed after $($stopwatch.ElapsedMilliseconds)ms: $_" -Level "WARN" -Color Yellow
         return $null
@@ -3011,6 +3021,7 @@ function Get-GmBridgeDiagnosticsSnapshot {
         return $responseJson | ConvertFrom-Json
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  -> GM bridge idle-terminal diagnostics failed: $_" -Level "WARN" -Color Yellow
         return $null
     }
@@ -3076,22 +3087,7 @@ function Test-GmBridgeReturnedIdleWithoutTerminalSignal {
 
 function ConvertTo-GmSessionRelativePath {
     param([string]$FullName)
-
-    if ([string]::IsNullOrWhiteSpace($FullName)) {
-        return ""
-    }
-
-    $root = [IO.Path]::GetFullPath($GameSessionPath)
-    if (-not $root.EndsWith([IO.Path]::DirectorySeparatorChar)) {
-        $root += [IO.Path]::DirectorySeparatorChar
-    }
-
-    $full = [IO.Path]::GetFullPath($FullName)
-    if ($full.StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)) {
-        return $full.Substring($root.Length).Replace("\", "/")
-    }
-
-    return $full.Replace("\", "/")
+    return ConvertTo-GmDaemonRelativePath $FullName
 }
 
 function Test-GmTerminalPayloadCandidatePath {
@@ -3101,7 +3097,7 @@ function Test-GmTerminalPayloadCandidatePath {
         return $false
     }
 
-    $normalized = $RelativePath.Replace("\", "/")
+    $normalized = if([IO.Path]::DirectorySeparatorChar -eq '\'){$RelativePath.Replace('\','/')}else{$RelativePath}
     if ($normalized.EndsWith(".tmp", [System.StringComparison]::OrdinalIgnoreCase)) {
         return $false
     }
@@ -3116,26 +3112,13 @@ function Test-GmTerminalPayloadCandidatePath {
 }
 
 function Get-GmTerminalPayloadFileSnapshot {
-    $snapshot = @{}
-    $roots = @(
-        $OutputDir,
-        (Join-Path $GameSessionPath "game_state"),
-        (Join-Path $GameSessionPath "lore")
-    )
-
-    foreach ($root in $roots) {
-        if (!(Test-Path $root)) {
-            continue
-        }
-
-        Get-ChildItem -LiteralPath $root -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object {
-            $relativePath = ConvertTo-GmSessionRelativePath -FullName $_.FullName
-            if (Test-GmTerminalPayloadCandidatePath -RelativePath $relativePath) {
-                $snapshot[$relativePath] = "$($_.LastWriteTimeUtc.Ticks):$($_.Length)"
-            }
+    $snapshot=New-GmDaemonPathMap
+    $batch=Get-GmDaemonSnapshot -Trees @('output','game_state','lore')
+    foreach($file in $batch.files){
+        if($file.kind -ceq 'File' -and (Test-GmTerminalPayloadCandidatePath -RelativePath $file.path)){
+            $snapshot[$file.path]="$(([datetime]$file.lastWriteTimeUtc).Ticks):$([Convert]::FromBase64String([string]$file.bytes).LongLength)"
         }
     }
-
     return $snapshot
 }
 
@@ -3383,24 +3366,12 @@ function Get-GmValidationRepairTargetFiles {
 
 function Get-GmValidationRepairTargetSnapshot {
     param([string[]]$TargetFiles)
-
-    $snapshot = [ordered]@{}
-    foreach ($relativePath in @($TargetFiles)) {
-        $normalized = ConvertTo-GmValidationRepairTargetPath -Path $relativePath
-        if (-not $normalized) {
-            continue
-        }
-
-        $fullPath = Join-Path $GameSessionPath $normalized
-        if (Test-Path $fullPath) {
-            $item = Get-Item $fullPath
-            $snapshot[$normalized] = "$($item.LastWriteTimeUtc.Ticks):$($item.Length)"
-        }
-        else {
-            $snapshot[$normalized] = "<missing>"
-        }
+    $snapshot=New-GmDaemonPathMap
+    $paths=@($TargetFiles|ForEach-Object{ConvertTo-GmValidationRepairTargetPath -Path $_}|Where-Object{$_})
+    $batch=Get-GmDaemonSnapshot -Paths $paths
+    foreach($file in $batch.files){
+        $snapshot[$file.path]=if($file.kind -ceq 'Missing'){'<missing>'}elseif($file.kind -ceq 'File'){"$(([datetime]$file.lastWriteTimeUtc).Ticks):$([Convert]::FromBase64String([string]$file.bytes).LongLength)"}else{throw (New-GmDaemonReadFailure 'Repair target is not a regular file.' $null)}
     }
-
     return $snapshot
 }
 
@@ -3450,14 +3421,15 @@ function Test-GmValidationRepairWatchStillCurrent {
         return $false
     }
 
-    if (-not (Test-Path $RepairRequestFile)) {
+    if (-not (Test-GmDaemonPath $RepairRequestFile)) {
         return $false
     }
 
     try {
-        $currentRepairRequest = Get-Content -Path $RepairRequestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $currentRepairRequest = Get-GmDaemonText $RepairRequestFile | ConvertFrom-Json
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return $false
     }
 
@@ -3479,7 +3451,7 @@ function Test-GmValidationRepairArtifactWritingStall {
     }
 
     $readyPath = Join-Path $ControlDir "validation_repair_ready.json"
-    if (Test-Path $readyPath) {
+    if (Test-GmDaemonPath $readyPath) {
         return [pscustomobject]([ordered]@{
             isStalled = $false
             completed = $true
@@ -3640,6 +3612,7 @@ function Stop-GmBridgeAfterTurnTimeout {
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         $cleanup.status = "shutdown-failed"
         $cleanup.error = $_.Exception.Message
     }
@@ -3656,16 +3629,19 @@ function Stop-GmBridgeAfterTurnTimeout {
 
 function Read-GmPromptPending {
     param([string]$Path)
-    $bytes = [IO.File]::ReadAllBytes($Path)
-    [pscustomobject]@{ Hash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes));
-        Request=([Text.Encoding]::UTF8.GetString($bytes).TrimStart([char]0xFEFF) | ConvertFrom-Json) }
+    $file=Get-GmDaemonFileObservation $Path
+    if($file.kind -cne 'File'){throw (New-GmDaemonReadFailure 'Pending daemon file is absent or not regular.' $null)}
+    $bytes=[Convert]::FromBase64String([string]$file.bytes)
+    [pscustomobject]@{Hash=([string]$file.hash).ToUpperInvariant();Observation=$file;LastWriteTimeUtc=[datetime]$file.lastWriteTimeUtc;
+        Request=([Text.Encoding]::UTF8.GetString($bytes).TrimStart([char]0xFEFF) | ConvertFrom-Json)}
 }
 
 function Test-GmPromptSourceCurrent {
     param([string]$Path, [string]$Hash)
     if (-not $Path) { return $true }
-    try { return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([IO.File]::ReadAllBytes($Path))) -ceq $Hash }
-    catch { return $false }
+    try { return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData((Get-GmDaemonFileBytes $Path))) -ceq $Hash }
+    catch {
+        Assert-GmNotDaemonReadFailure $_ return $false }
 }
 
 function Get-GmPromptContentHash {
@@ -3728,7 +3704,8 @@ function Invoke-GmPromptControl {
         if (-not (Test-GmPromptDeliveryIdentity $Operation $response.promptDelivery)) { throw 'Mismatched prompt delivery identity.' }
         return $response.promptDelivery
     }
-    catch { return (New-GmPromptDelivery $Operation 'unknown-outcome' 'launcher-or-transport-ambiguous') }
+    catch {
+        Assert-GmNotDaemonReadFailure $_ return (New-GmPromptDelivery $Operation 'unknown-outcome' 'launcher-or-transport-ambiguous') }
 }
 
 function Send-ToGmBridge {
@@ -3758,7 +3735,8 @@ function Write-Log {
             $relativeLog=[IO.Path]::GetRelativePath([IO.Path]::GetFullPath($GameSessionPath),[IO.Path]::GetFullPath($LogFile)).Replace("\","/")
             if ($relativeLog.StartsWith("../") -or [IO.Path]::IsPathRooted($relativeLog)) { Add-Content -LiteralPath $LogFile -Value $logLine -Encoding UTF8 -ErrorAction SilentlyContinue }
             else { Write-GmCanonicalText -SessionPath $GameSessionPath -Path $LogFile -Value $logLine -Append }
-        } catch { }
+        } catch {
+        Assert-GmNotDaemonReadFailure $_ }
     }
 }
 
@@ -3779,19 +3757,21 @@ function Test-DaemonProcessAlive {
         return $true
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return $false
     }
 }
 
 function Read-DaemonStatus {
-    if (!(Test-Path $DaemonStatusFile)) {
+    if (!(Test-GmDaemonPath $DaemonStatusFile)) {
         return $null
     }
 
     try {
-        return Get-Content -Path $DaemonStatusFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        return Get-GmDaemonText $DaemonStatusFile | ConvertFrom-Json
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return $null
     }
 }
@@ -3832,6 +3812,7 @@ function Write-DaemonJsonFileBestEffort {
         Write-GmCanonicalText -SessionPath $GameSessionPath -Path $Path -Value ($Payload | ConvertTo-Json -Depth $Depth)
         return $true
     } catch {
+        Assert-GmNotDaemonReadFailure $_
         # Bounded volatile diagnostics survive a closed/lost operation. They are
         # not another canonical writer and cannot authorize continuation.
         $script:LastUnpublishedDaemonDiagnostic = [pscustomobject]@{path=$Path;payload=$Payload}
@@ -3916,7 +3897,7 @@ function Assert-SingleDaemonInstance {
 
 function Update-DaemonHeartbeat {
     $nowUtc = (Get-Date).ToUniversalTime()
-    if (!(Test-Path $DaemonStatusFile)) {
+    if (!(Test-GmDaemonPath $DaemonStatusFile)) {
         $script:DaemonLastHeartbeatUtc = $nowUtc
         Write-DaemonStatus -Status "running" -Reason "status_file_missing"
         return
@@ -3937,7 +3918,7 @@ function Update-DaemonProcessingHeartbeat {
     )
 
     $nowUtc = (Get-Date).ToUniversalTime()
-    if ((Test-Path $DaemonStatusFile) -and ($nowUtc - $script:DaemonLastHeartbeatUtc).TotalSeconds -lt 5) {
+    if ((Test-GmDaemonPath $DaemonStatusFile) -and ($nowUtc - $script:DaemonLastHeartbeatUtc).TotalSeconds -lt 5) {
         return
     }
 
@@ -4006,12 +3987,12 @@ function New-GmTrajectoryRealmResolution {
 
 function Get-GmTrajectorySoulStateRealmCandidate {
     $soulStatePath = Join-Path $GameSessionPath "game_state\meta\soul_state.json"
-    if (!(Test-Path $soulStatePath)) {
+    if (!(Test-GmDaemonPath $soulStatePath)) {
         return $null
     }
 
     try {
-        $soulState = Get-Content -Path $soulStatePath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $soulState = Get-GmDaemonText $soulStatePath | ConvertFrom-Json
         if ($null -ne $soulState.currentRealm -and -not [string]::IsNullOrWhiteSpace([string]$soulState.currentRealm)) {
             return [pscustomobject]@{
                 Source = "soul_state.currentRealm"
@@ -4020,6 +4001,7 @@ function Get-GmTrajectorySoulStateRealmCandidate {
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return [pscustomobject]@{
             Source = "soul_state.currentRealm"
             RawValue = ""
@@ -4312,17 +4294,18 @@ function Test-GmRequestCorrelation {
 function Read-CorrelatedValidationRepairRequest {
     param([object]$TurnRequest)
 
-    if (!(Test-Path $RepairRequestFile)) {
+    if (!(Test-GmDaemonPath $RepairRequestFile)) {
         return $null
     }
 
     try {
-        $repair = Get-Content -Path $RepairRequestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $repair = Get-GmDaemonText $RepairRequestFile | ConvertFrom-Json
         if (Test-GmRequestCorrelation -ExpectedRequest $TurnRequest -CandidateRequest $repair) {
             return $repair
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return $null
     }
 
@@ -4371,17 +4354,17 @@ function Get-GmTrajectoryRollbackEvents {
     param([datetime]$SinceUtc)
 
     $reportPath = Join-Path $ControlDir "validation_auto_rollback_report.json"
-    if (!(Test-Path $reportPath)) {
+    if (!(Test-GmDaemonPath $reportPath)) {
         return @()
     }
 
     try {
-        $fileInfo = Get-Item $reportPath
+        $fileInfo = Get-GmDaemonFileInfo $reportPath
         if ($SinceUtc -ne [datetime]::MinValue -and $fileInfo.LastWriteTimeUtc -lt $SinceUtc) {
             return @()
         }
 
-        $report = Get-Content -Path $reportPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $report = Get-GmDaemonText $reportPath | ConvertFrom-Json
         $issueCount = if ($null -ne $report.issues) { @($report.issues).Count } else { 0 }
         $restoredCount = if ($null -ne $report.restoredFiles) { @($report.restoredFiles).Count } else { 0 }
         $deletedCount = if ($null -ne $report.deletedFiles) { @($report.deletedFiles).Count } else { 0 }
@@ -4397,6 +4380,7 @@ function Get-GmTrajectoryRollbackEvents {
         })
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return @([ordered]@{
             path = "game_state/control/validation_auto_rollback_report.json"
             unreadable = $true
@@ -4552,12 +4536,12 @@ function Get-GmTrajectoryWorkerEvents {
     param([datetime]$SinceUtc)
 
     $auditPath = Join-Path $ControlDir "gm_worker_audit.jsonl"
-    if (!(Test-Path $auditPath)) {
+    if (!(Test-GmDaemonPath $auditPath)) {
         return @()
     }
 
     $events = @()
-    foreach ($line in @(Get-Content -Path $auditPath -Encoding UTF8 -ErrorAction SilentlyContinue)) {
+    foreach ($line in @(Get-GmDaemonLines $auditPath)) {
         if ([string]::IsNullOrWhiteSpace($line)) { continue }
         try {
             $auditEvent = $line | ConvertFrom-Json
@@ -4566,7 +4550,8 @@ function Get-GmTrajectoryWorkerEvents {
                 try {
                     $timestampUtc = ([datetimeoffset]::Parse([string]$auditEvent.timestampUtc)).UtcDateTime
                 }
-                catch { }
+                catch {
+        Assert-GmNotDaemonReadFailure $_ }
             }
 
             if ($SinceUtc -ne [datetime]::MinValue -and $timestampUtc -ne [datetime]::MinValue -and $timestampUtc -lt $SinceUtc) {
@@ -4576,6 +4561,7 @@ function Get-GmTrajectoryWorkerEvents {
             $events += (ConvertTo-GmTrajectoryWorkerEvent -AuditEvent $auditEvent)
         }
         catch {
+        Assert-GmNotDaemonReadFailure $_
             $events += [ordered]@{
                 eventId = ""
                 eventType = "unreadable"
@@ -4693,7 +4679,7 @@ function Write-GmTrajectoryRecord {
             durationSeconds = $DurationSeconds
             rubric = [ordered]@{
                 validTurn = [string]::Equals($ValidationStatus, "accepted", [System.StringComparison]::OrdinalIgnoreCase)
-                playerFacingOutputPresent = Test-Path (Join-Path $OutputDir "narrative_response.json")
+                playerFacingOutputPresent = Test-GmDaemonPath (Join-Path $OutputDir "narrative_response.json")
                 implementationSourceRead = $false
                 rawWrongRealmWrite = $rawWrongRealmWrite
                 manualReasoningNeeded = $false
@@ -4703,7 +4689,7 @@ function Write-GmTrajectoryRecord {
         }
 
         $ledgerDir = Split-Path $script:GmTrajectoryLedgerPath -Parent
-        if (!(Test-Path $ledgerDir)) {
+        if (!(Test-GmDaemonPath $ledgerDir)) {
             Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $ledgerDir
         }
 
@@ -4711,6 +4697,7 @@ function Write-GmTrajectoryRecord {
         Update-GmLiveTestNoteRecordLinks -RequestId $requestId -RecordId ([string]$record.recordId)
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  Failed to write GM trajectory ledger: $_" -Level "WARN" -Color Yellow
     }
 }
@@ -4726,14 +4713,17 @@ function Update-GmLiveTestNoteRecordLinks {
     }
 
     $notesPath = Join-Path $ControlDir "gm_live_test_notes.jsonl"
-    if (!(Test-Path $notesPath)) {
+    $observed=Get-GmDaemonFileObservation $notesPath
+    if ($observed.kind -ceq 'Missing') {
         return
     }
 
     try {
         $changed = $false
         $updatedLines = @()
-        foreach ($line in @(Get-Content -Path $notesPath -Encoding UTF8 -ErrorAction SilentlyContinue)) {
+        $view=[pscustomobject]@{matches=$true;generation=$observed.generation;files=@($observed)}
+        $lines=Invoke-GmDaemonSnapshotView $view {Get-GmDaemonLines $notesPath}
+        foreach ($line in @($lines)) {
             if ([string]::IsNullOrWhiteSpace($line)) {
                 $updatedLines += $line
                 continue
@@ -4755,6 +4745,7 @@ function Update-GmLiveTestNoteRecordLinks {
                 }
             }
             catch {
+        Assert-GmNotDaemonReadFailure $_
                 # Preserve malformed manual notes; validation/audit can report them separately.
             }
 
@@ -4762,10 +4753,14 @@ function Update-GmLiveTestNoteRecordLinks {
         }
 
         if ($changed) {
-            Write-GmCanonicalText -SessionPath $GameSessionPath -Path $notesPath -Value $updatedLines
+            $expected=New-GmDaemonPathMap;$expected.Add([string]$observed.path,$observed.hash)
+            $text=(@($updatedLines) -join [Environment]::NewLine)+[Environment]::NewLine
+            $decision=Invoke-GmDaemonConditionalMutation -Path $observed.path -Bytes ([Text.UTF8Encoding]::new($false).GetBytes($text)) -Expected $expected -Generation $observed.generation
+            if(-not $decision.matches){Write-Log '  Live-test notes changed; retaining the competing append without replay.' -Level 'WARN' -Color Yellow}
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  Failed to backfill GM live-test note record links: $_" -Level "WARN" -Color Yellow
     }
 }
@@ -4932,15 +4927,15 @@ function Test-PendingTurnSnapshotRollbackBackupHashes {
         }
 
         $backupPath = Join-Path $GameSessionPath ($backupRelativePath.Replace("/", "\"))
-        if (!(Test-Path -LiteralPath $backupPath)) {
+        if (!(Test-GmDaemonPath $backupPath)) {
             return $false
         }
 
         $actualHash = if ($HashBytesExactly) {
-            Get-Sha256HexFromBytes -Bytes ([System.IO.File]::ReadAllBytes($backupPath))
+            Get-Sha256HexFromBytes -Bytes ((Get-GmDaemonFileBytes $backupPath))
         }
         else {
-            $content = Get-Content -LiteralPath $backupPath -Raw -Encoding UTF8
+            $content = Get-GmDaemonText $backupPath
             Get-Sha256HexFromText -Text $content
         }
         if (-not [string]::Equals($actualHash, [string]$hashProperty.Value, [System.StringComparison]::OrdinalIgnoreCase)) {
@@ -4967,15 +4962,15 @@ function Test-PendingTurnSnapshotFileHashes {
         }
 
         $snapshotPath = Join-Path $GameSessionPath ($snapshotRelativePath.Replace("/", "\"))
-        if (!(Test-Path -LiteralPath $snapshotPath)) {
+        if (!(Test-GmDaemonPath $snapshotPath)) {
             return $false
         }
 
         $actualHash = if ($HashBytesExactly) {
-            Get-Sha256HexFromBytes -Bytes ([System.IO.File]::ReadAllBytes($snapshotPath))
+            Get-Sha256HexFromBytes -Bytes ((Get-GmDaemonFileBytes $snapshotPath))
         }
         else {
-            $content = Get-Content -LiteralPath $snapshotPath -Raw -Encoding UTF8
+            $content = Get-GmDaemonText $snapshotPath
             Get-Sha256HexFromText -Text $content
         }
         if (-not [string]::Equals($actualHash, [string]$hashProperty.Value, [System.StringComparison]::OrdinalIgnoreCase)) {
@@ -4993,7 +4988,7 @@ function Test-PendingTurnSnapshotAuthorityEnvelope {
     )
 
     try {
-        $authority = Get-Content -Path $PendingTurnSnapshotAuthorityFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $authority = Get-GmDaemonText $PendingTurnSnapshotAuthorityFile | ConvertFrom-Json
         $formatVersion = [int](Get-JsonIntValue -Object $authority -Names @("formatVersion"))
         if (@(2, 3, 4) -notcontains $formatVersion) {
             Write-Log "  Pending turn snapshot authority has unsupported formatVersion." -Level "WARN" -Color Yellow
@@ -5081,6 +5076,7 @@ function Test-PendingTurnSnapshotAuthorityEnvelope {
         return $true
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  Pending turn snapshot authority is unreadable: $_" -Level "WARN" -Color Yellow
         return $false
     }
@@ -5110,9 +5106,41 @@ function Get-MissingHarnessToolFromTerminalError {
 }
 
 function Test-TurnRequestHasPendingSnapshotContext {
+    param([psobject]$TurnRequest,[string]$RequestPath=$TurnRequestFile,[string]$ExpectedSourceHash='')
+    $initial=Get-GmDaemonSnapshot -Paths @($PendingTurnSnapshotManifestFile,$PendingTurnSnapshotAuthorityFile,$RequestPath)
+    $expected=New-GmDaemonPathMap
+    foreach($file in $initial.files){$expected.Add([string]$file.path,$file.hash)}
+    if($ExpectedSourceHash){$expected[(ConvertTo-GmDaemonRelativePath $RequestPath)]=$ExpectedSourceHash.ToLowerInvariant()}
+    $paths=[Collections.Generic.List[string]]::new()
+    foreach($file in $initial.files){$paths.Add([string]$file.path)}
+    # Only parsing and declaration discovery occur between the two batches.
+    # Neither these bytes nor a declared filename authorizes publication/adoption.
+    try {
+        $declared=Invoke-GmDaemonSnapshotView $initial {
+            if(-not (Test-GmDaemonPath $PendingTurnSnapshotManifestFile) -or -not (Test-GmDaemonPath $PendingTurnSnapshotAuthorityFile)){return $null}
+            $manifest=Get-GmDaemonText $PendingTurnSnapshotManifestFile|ConvertFrom-Json
+            $authority=Get-GmDaemonText $PendingTurnSnapshotAuthorityFile|ConvertFrom-Json
+            $payload=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String([string]$authority.payloadJsonBase64))|ConvertFrom-Json
+            $declaredPaths=[Collections.Generic.List[string]]::new()
+            foreach($object in @($manifest,$payload)){
+                foreach($name in @('files','rollbackBackups')){
+                    foreach($property in @(Get-JsonObjectProperties (Get-JsonPropertyValue $object @($name)))){$declaredPaths.Add([string]$property.Value)}
+                }
+            }
+            return [pscustomobject]@{Paths=$declaredPaths.ToArray()}
+        }
+        if($null -eq $declared){return $false}
+        foreach($path in @($declared.Paths)){if(-not [string]::IsNullOrWhiteSpace($path)){$paths.Add($path)}}
+        $batch=Get-GmDaemonSnapshot -Paths $paths.ToArray() -Expected $expected -Generation $initial.generation
+        if(-not $batch.matches){return $false}
+        return Invoke-GmDaemonSnapshotView $batch {Test-TurnRequestHasPendingSnapshotContextCore -TurnRequest $TurnRequest}
+    } catch {Assert-GmNotDaemonReadFailure $_;return $false}
+}
+
+function Test-TurnRequestHasPendingSnapshotContextCore {
     param([psobject]$TurnRequest)
 
-    if (!(Test-Path $PendingTurnSnapshotManifestFile) -or !(Test-Path $PendingTurnSnapshotAuthorityFile)) {
+    if (!(Test-GmDaemonPath $PendingTurnSnapshotManifestFile) -or !(Test-GmDaemonPath $PendingTurnSnapshotAuthorityFile)) {
         return $false
     }
 
@@ -5124,7 +5152,7 @@ function Test-TurnRequestHasPendingSnapshotContext {
             return $false
         }
 
-        $manifest = Get-Content -Path $PendingTurnSnapshotManifestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $manifest = Get-GmDaemonText $PendingTurnSnapshotManifestFile | ConvertFrom-Json
         $manifestSessionId = [string]$manifest.sessionId
         $manifestRequestId = [string]$manifest.requestId
         $manifestTurnNumber = [int]$manifest.turnNumber
@@ -5135,6 +5163,7 @@ function Test-TurnRequestHasPendingSnapshotContext {
             (Test-PendingTurnSnapshotAuthorityEnvelope -Manifest $manifest -TurnRequest $TurnRequest)
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  Pending turn snapshot context is unreadable: $_" -Level "WARN" -Color Yellow
         return $false
     }
@@ -5147,16 +5176,28 @@ function Test-ObservedTerminalRequestKey {
         return $false
     }
 
+    Load-ObservedTerminalRequestKeys
     return $script:ObservedTerminalRequestKeys.Contains($Key)
 }
 
 function Load-ObservedTerminalRequestKeys {
-    if (!(Test-Path $ObservedTerminalRequestKeysFile)) {
+    $batch=Get-GmDaemonSnapshot -Paths @($ObservedTerminalRequestKeysFile)
+    if($script:ObservedTerminalGeneration -cne $batch.generation){
+        $script:ObservedTerminalRequestKeys.Clear()
+        $script:ObservedTerminalGeneration=$batch.generation
+    }
+    # Same-generation volatile observations intentionally survive a failed save;
+    # a different generation never inherits their work-suppression authority.
+    Invoke-GmDaemonSnapshotView $batch {Load-ObservedTerminalRequestKeysCore}
+}
+
+function Load-ObservedTerminalRequestKeysCore {
+    if (!(Test-GmDaemonPath $ObservedTerminalRequestKeysFile)) {
         return
     }
 
     try {
-        $root = Get-Content -Path $ObservedTerminalRequestKeysFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $root = Get-GmDaemonText $ObservedTerminalRequestKeysFile | ConvertFrom-Json
         $keys = @()
         if ($root -is [System.Array]) {
             $keys = @($root)
@@ -5173,6 +5214,7 @@ function Load-ObservedTerminalRequestKeys {
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  Failed to load observed terminal request keys: $_" -Level "WARN" -Color Yellow
     }
 }
@@ -5180,7 +5222,7 @@ function Load-ObservedTerminalRequestKeys {
 function Save-ObservedTerminalRequestKeys {
     try {
         $controlDir = Split-Path $ObservedTerminalRequestKeysFile -Parent
-        if (!(Test-Path $controlDir)) {
+        if (!(Test-GmDaemonPath $controlDir)) {
             Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $controlDir
         }
 
@@ -5193,6 +5235,7 @@ function Save-ObservedTerminalRequestKeys {
         Write-GmCanonicalText -SessionPath $GameSessionPath -Path $ObservedTerminalRequestKeysFile -Value ($payload | ConvertTo-Json -Depth 4)
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  Failed to save observed terminal request keys: $_" -Level "WARN" -Color Yellow
     }
 }
@@ -5201,6 +5244,7 @@ function Add-ObservedTerminalRequestKey {
     param([string]$Key)
 
     if (![string]::IsNullOrWhiteSpace($Key)) {
+        Load-ObservedTerminalRequestKeys
         if ($script:ObservedTerminalRequestKeys.Add($Key)) {
             Save-ObservedTerminalRequestKeys
         }
@@ -5218,13 +5262,13 @@ Write-Host ""
 Write-Log "Game Session : $GameSessionPath" -Color Gray
 if ((Get-GameConfig).GmBridgeEnabled -and (Get-GameConfig).GmBridgeBackend -in @('ConPTYBridge','OwnedTerminal')) {
     Write-Log "GM Backend   : $((Get-GameConfig).GmBridgeBackend)" -Color Gray
-    if (Test-Path $BridgeStatusFile) {
+    if (Test-GmDaemonPath $BridgeStatusFile) {
         Write-Log "Bridge Status: '$BridgeStatusFile'" -Color Gray
     } else {
         Write-Log "Bridge Status: configured bridge not started yet; dispatch waits or refuses" -Color Yellow
     }
 }
-elseif (Test-Path $CliBindingFile) {
+elseif (Test-GmDaemonPath $CliBindingFile) {
     Write-Log "CLI Binding  : '$CliBindingFile'" -Color Gray
 } elseif ($CliWindowTitle) {
     Write-Log "CLI Window   : '$CliWindowTitle' (title fallback)" -Color Gray
@@ -5335,12 +5379,12 @@ function Invoke-RightClickPaste {
 }
 
 function Get-BoundCliTarget {
-    if (!(Test-Path $CliBindingFile)) {
+    if (!(Test-GmDaemonPath $CliBindingFile)) {
         return $null
     }
 
     try {
-        $binding = Get-Content -Path $CliBindingFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $binding = Get-GmDaemonText $CliBindingFile | ConvertFrom-Json
         if ($null -eq $binding.processId -or $null -eq $binding.mainWindowHandle) {
             Write-Log "  -> Binding file is missing processId/mainWindowHandle. Falling back." -Level "WARN" -Color Yellow
             return $null
@@ -5366,6 +5410,7 @@ function Get-BoundCliTarget {
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  -> Failed to read binding file. Falling back." -Level "WARN" -Color Yellow
         return $null
     }
@@ -5456,6 +5501,7 @@ function Send-ToCliWindow {
         return "sent"
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  -> SendKeys failed: $_. Command in clipboard." -Level "WARN" -Color Yellow
         return "failed"
     }
@@ -5468,7 +5514,7 @@ function Dispatch-WithRetry {
     $config = Get-GameConfig
     $bridge = $config.GmBridgeEnabled -and $config.GmBridgeBackend -in @('ConPTYBridge','OwnedTerminal')
     if ($bridge -and -not $Operation) {
-        if ($PendingPath -and !(Test-Path $PendingPath)) { return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails 0 0) }
+        if ($PendingPath -and !(Test-GmDaemonPath $PendingPath)) { return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails 0 0) }
         if (-not $ExpectedSourceHash -and $PendingPath) { $ExpectedSourceHash = (Read-GmPromptPending $PendingPath).Hash }
         if (-not (Test-GmPromptSourceCurrent $PendingPath $ExpectedSourceHash)) { return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails 0 0) }
         Ensure-GmBridgeStarted
@@ -5573,18 +5619,19 @@ function Test-QteEffectResolutionRequestStillCurrent {
         [string]$ExpectedRequestKey
     )
 
-    if (!(Test-Path $RequestPath) -or [string]::IsNullOrWhiteSpace($ExpectedRequestKey)) {
+    if (!(Test-GmDaemonPath $RequestPath) -or [string]::IsNullOrWhiteSpace($ExpectedRequestKey)) {
         return $false
     }
 
     try {
-        $current = Get-Content -Path $RequestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $current = Get-GmDaemonText $RequestPath | ConvertFrom-Json
         return [string]::Equals(
             (Get-QteEffectResolutionRequestKey -Request $current),
             $ExpectedRequestKey,
             [System.StringComparison]::Ordinal)
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return $false
     }
 }
@@ -5595,12 +5642,12 @@ function Test-QteEffectResolutionReadyMatchesRequest {
         [string]$ReadyPath = $QteEffectResolutionReadyFile
     )
 
-    if ($null -eq $Request -or !(Test-Path $ReadyPath)) {
+    if ($null -eq $Request -or !(Test-GmDaemonPath $ReadyPath)) {
         return $false
     }
 
     try {
-        $ready = Get-Content -Path $ReadyPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $ready = Get-GmDaemonText $ReadyPath | ConvertFrom-Json
         if (-not [string]::Equals(
                 [string]$ready.status,
                 "success",
@@ -5633,6 +5680,7 @@ function Test-QteEffectResolutionReadyMatchesRequest {
             [int64]$ready.acceptedSourceTurn -eq [int64]$Request.acceptedSourceTurn
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return $false
     }
 }
@@ -5657,6 +5705,16 @@ After that helper call, stop immediately and do not report or write anything els
 "@
 }
 
+function Read-QteDaemonEligibility {
+    param([string]$RequestPath)
+    $batch=Get-GmDaemonSnapshot -Paths @($RequestPath,$QteEffectResolutionReadyFile)
+    return Invoke-GmDaemonSnapshotView $batch {
+        if(-not (Test-GmDaemonPath $RequestPath)){return $null}
+        $pending=Read-GmPromptPending $RequestPath
+        return [pscustomobject]@{Pending=$pending;ReadyMatches=(Test-QteEffectResolutionReadyMatchesRequest -Request $pending.Request -ReadyPath $QteEffectResolutionReadyFile)}
+    }
+}
+
 function Process-QteEffectResolutionRequest {
     param([string]$RequestPath)
     Invoke-GmParticipatingConsumer $GameSessionPath { Process-QteEffectResolutionRequestCore -RequestPath $RequestPath }
@@ -5670,11 +5728,9 @@ function Process-QteEffectResolutionRequestCore {
 
     try {
         Start-Sleep -Milliseconds 150
-        if (!(Test-Path $RequestPath)) {
-            return
-        }
-
-        $pendingSnapshot = Read-GmPromptPending -Path $RequestPath
+        $eligibility=Read-QteDaemonEligibility $RequestPath
+        if($null -eq $eligibility){return}
+        $pendingSnapshot = $eligibility.Pending
         $request = $pendingSnapshot.Request
         if (-not [string]::Equals(
                 [string]$request.requestKind,
@@ -5689,9 +5745,7 @@ function Process-QteEffectResolutionRequestCore {
             throw "Dedicated QTE effect-resolution request has no correlation authority."
         }
 
-        if (Test-QteEffectResolutionReadyMatchesRequest `
-                -Request $request `
-                -ReadyPath $QteEffectResolutionReadyFile) {
+        if ($eligibility.ReadyMatches) {
             Write-Log "  Found correlated QTE effect-resolution ready marker; waiting for client consumption." -Color DarkGray
             return
         }
@@ -5767,6 +5821,7 @@ function Process-QteEffectResolutionRequestCore {
         Write-Log "  QTE effect receipt wait reached the configured timeout; dedicated authority remains pending." -Level "WARN" -Color Yellow
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         $script:ErrorCount++
         Write-Log "  QTE effect receipt dispatch error: $_" -Level "ERROR" -Color Red
     }
@@ -5788,7 +5843,7 @@ function Process-TurnCore {
     $script:IsProcessing = $true
 
     Start-Sleep -Milliseconds 300
-    if (!(Test-Path $RequestPath)) {
+    if (!(Test-GmDaemonPath $RequestPath)) {
         $script:IsProcessing = $false
         return
     }
@@ -5802,7 +5857,7 @@ function Process-TurnCore {
             return
         }
 
-        if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest)) {
+        if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest -RequestPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash)) {
             Write-Log "  Skipping stale turn request without matching pending snapshot context (requestKey=$turnRequestKey)." -Level "WARN" -Color Yellow
             Add-ObservedTerminalRequestKey -Key $turnRequestKey
             return
@@ -5907,7 +5962,7 @@ function Process-TurnCore {
         # A captured correlated terminal may still be logged after client consumption.
         # Replacement bytes never inherit that observation; no new terminal writes use this exception.
         if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash) -and
-            ($null -eq $terminalSignal -or (Test-Path -LiteralPath $RequestPath))) { return }
+            ($null -eq $terminalSignal -or (Test-GmDaemonPath $RequestPath))) { return }
         $elapsed = 0
         $artifactWriteStallWatchState = @{}
         $outputWithoutTerminalWatchState = New-GmOutputWithoutTerminalWatchState
@@ -5918,12 +5973,12 @@ function Process-TurnCore {
 
             # The old invocation cannot act on replacement bytes, even if snapshot context still matches.
             if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
-            if (!(Test-Path $RequestPath)) {
+            if (!(Test-GmDaemonPath $RequestPath)) {
                 Write-Log "  Turn cancelled by client" -Level "WARN" -Color Yellow
                 break
             }
 
-            if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest)) {
+            if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest -RequestPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash)) {
                 Write-Log "  Turn wait closed because the client no longer has matching pending snapshot context. The client likely consumed the terminal signal first." -Level "WARN" -Color Yellow
                 Add-ObservedTerminalRequestKey -Key $turnRequestKey
                 break
@@ -5931,7 +5986,7 @@ function Process-TurnCore {
 
             $terminalSignal = Get-CorrelatedTerminalSignal -TurnRequest $turnRequest -CompletionPath $completionPath -ErrorPath $errorPath
             if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash) -and
-                ($null -eq $terminalSignal -or (Test-Path -LiteralPath $RequestPath))) { return }
+                ($null -eq $terminalSignal -or (Test-GmDaemonPath $RequestPath))) { return }
 
             if ($null -eq $terminalSignal -and $elapsed % 15 -eq 0 -and (Test-GmBridgeReturnedIdleWithoutTerminalSignal -ElapsedSeconds $elapsed)) {
                 if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
@@ -6107,6 +6162,7 @@ function Process-TurnCore {
                 Write-Log "  Terminal error ($([math]::Round($duration, 1))s): $errorMessage" -Level "TURN" -Color Yellow
             }
             catch {
+        Assert-GmNotDaemonReadFailure $_
                 Write-Log "  Terminal error ($([math]::Round($duration, 1))s): unreadable turn_error.json" -Level "TURN" -Color Yellow
             }
             if ([string]::IsNullOrWhiteSpace($missingHarnessTool)) {
@@ -6129,6 +6185,7 @@ function Process-TurnCore {
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         $script:ErrorCount++
         Write-Log "  Error: $_" -Level "ERROR" -Color Red
     }
@@ -6146,14 +6203,13 @@ function Process-RepairRequest {
 function Process-RepairRequestCore {
     param([string]$RepairPath)
 
-    if (!(Test-Path $RepairPath)) { return }
+    if (!(Test-GmDaemonPath $RepairPath)) { return }
 
     try {
-        $fileInfo = Get-Item $RepairPath
+        $pendingSnapshot = Read-GmPromptPending -Path $RepairPath
+        $fileInfo = [pscustomobject]@{LastWriteTimeUtc=$pendingSnapshot.LastWriteTimeUtc}
         if ($fileInfo.LastWriteTimeUtc -le $script:LastRepairRequestWrite) { return }
         $script:LastRepairRequestWrite = $fileInfo.LastWriteTimeUtc
-
-        $pendingSnapshot = Read-GmPromptPending -Path $RepairPath
         $repair = $pendingSnapshot.Request
         $turnNumber = if ($repair.turnNumber) { [int]$repair.turnNumber } else { -1 }
         $requestId = if ($repair.requestId) { $repair.requestId } else { "<missing-requestId>" }
@@ -6357,6 +6413,7 @@ function Process-RepairRequestCore {
             -StartedAtUtc $fileInfo.LastWriteTimeUtc
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         $script:ErrorCount++
         Write-Log "Repair watcher error: $_" -Level "ERROR" -Color Red
     }
@@ -6403,14 +6460,13 @@ function Process-TerminalProtocolFailureRequest {
 function Process-TerminalProtocolFailureRequestCore {
     param([string]$FailurePath)
 
-    if (!(Test-Path $FailurePath)) { return }
+    if (!(Test-GmDaemonPath $FailurePath)) { return }
 
     try {
-        $fileInfo = Get-Item $FailurePath
+        $pendingSnapshot = Read-GmPromptPending -Path $FailurePath
+        $fileInfo = [pscustomobject]@{LastWriteTimeUtc=$pendingSnapshot.LastWriteTimeUtc}
         if ($fileInfo.LastWriteTimeUtc -le $script:LastTerminalProtocolFailureWrite) { return }
         $script:LastTerminalProtocolFailureWrite = $fileInfo.LastWriteTimeUtc
-
-        $pendingSnapshot = Read-GmPromptPending -Path $FailurePath
         $failure = $pendingSnapshot.Request
         $turnNumber = if ($failure.turnNumber) { [int]$failure.turnNumber } else { -1 }
         $requestId = if ($failure.requestId) { $failure.requestId } else { "<missing-requestId>" }
@@ -6472,6 +6528,7 @@ function Process-TerminalProtocolFailureRequestCore {
             -MissingHarnessTool "terminal_protocol_failure"
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         $script:ErrorCount++
         Write-Log "Terminal protocol failure watcher error: $_" -Level "ERROR" -Color Red
     }
@@ -6481,16 +6538,20 @@ function Read-ReadySignal {
     param(
         [string]$Path,
         [int]$MaxAttempts = 3,
-        [int]$DelayMs = 150
+        [int]$DelayMs = 150,
+        [ref]$Observation
     )
 
     for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
-        if (!(Test-Path $Path)) {
+        $observed=Get-GmDaemonFileObservation $Path
+        if($Observation){$Observation.Value=$observed}
+        if ($observed.kind -ceq 'Missing') {
             return $null
         }
 
         try {
-            $content = Get-Content -Path $Path -Raw -Encoding UTF8
+            $view=[pscustomobject]@{matches=$true;generation=$observed.generation;files=@($observed)}
+            $content=Invoke-GmDaemonSnapshotView $view {Get-GmDaemonText $Path}
             if ([string]::IsNullOrWhiteSpace($content)) {
                 throw "Ready signal file is empty."
             }
@@ -6503,6 +6564,7 @@ function Read-ReadySignal {
             return $signal
         }
         catch {
+        Assert-GmNotDaemonReadFailure $_
             if ($attempt -lt $MaxAttempts) {
                 Start-Sleep -Milliseconds $DelayMs
                 continue
@@ -6535,15 +6597,13 @@ function Get-CorrelatedTerminalSignal {
 
     foreach ($candidate in $candidates) {
         $path = $candidate.Path
-        if (!(Test-Path $path)) {
-            continue
-        }
-
-        $signal = Read-ReadySignal -Path $path
+        $observed=$null
+        $signal = Read-ReadySignal -Path $path -Observation ([ref]$observed)
+        if($observed.kind -ceq 'Missing'){continue}
         $fileName = Split-Path $path -Leaf
         if ($null -eq $signal) {
             Write-Log "  Removed unreadable terminal signal artifact: $fileName" -Level "WARN" -Color Yellow
-            Remove-GmCanonicalFile -SessionPath $GameSessionPath -Path $path
+            [void](Remove-GmDaemonObservedFile $observed)
             continue
         }
 
@@ -6557,12 +6617,13 @@ function Get-CorrelatedTerminalSignal {
                 Path = $path
                 Kind = $candidate.Kind
                 Signal = $signal
+                Observation = $observed
             }
             continue
         }
 
         Write-Log "  Removed stale terminal signal artifact: $fileName (sessionId/requestId/turnNumber mismatch)" -Level "WARN" -Color Yellow
-        Remove-GmCanonicalFile -SessionPath $GameSessionPath -Path $path
+        [void](Remove-GmDaemonObservedFile $observed)
     }
 
     if ($matchedSignals.Count -gt 1) {
@@ -6606,7 +6667,7 @@ function Resolve-DaemonTimeoutTerminalConflict {
         foreach ($timeoutSignal in $timeoutSignals) {
             $fileName = Split-Path $timeoutSignal.Path -Leaf
             Write-Log "  Removed stale daemon timeout terminal signal artifact: $fileName" -Level "WARN" -Color Yellow
-            Remove-GmCanonicalFile -SessionPath $GameSessionPath -Path $timeoutSignal.Path
+            if(-not (Remove-GmDaemonObservedFile $timeoutSignal.Observation)){return $null}
         }
 
         return $successSignals[0]
@@ -6753,6 +6814,7 @@ try {
             }
         }
         catch {
+        Assert-GmNotDaemonReadFailure $_
             $script:ErrorCount++
             $script:DaemonLastLoopError = New-DaemonErrorPayload -ErrorRecord $_ -Phase "main_loop"
             Write-Log "Main loop error recovered: $($_.Exception.Message)" -Level "ERROR" -Color Red
@@ -6762,6 +6824,7 @@ try {
     }
 }
 catch {
+        Assert-GmNotDaemonReadFailure $_
     $script:DaemonFatalError = $_
     $script:ErrorCount++
     Write-Log "Fatal daemon error: $($_.Exception.Message)" -Level "ERROR" -Color Red

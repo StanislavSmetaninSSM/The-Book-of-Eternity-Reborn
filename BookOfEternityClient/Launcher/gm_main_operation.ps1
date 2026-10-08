@@ -275,7 +275,7 @@ function Invoke-GmDaemonStorageRequest {
     $header=Send-GmOperationCommand $context @{action='daemon-request-end';transfer=$transfer}
     $buffer=[IO.MemoryStream]::new()
     try {
-        if($header.transfer -cne $transfer -or $header.length -lt 0 -or $header.hash -cnotmatch '^[0-9a-f]{64}$'){throw 'Invalid daemon response header.'}
+        if($header.transfer -cne $transfer -or $header.length -le 0 -or $header.hash -cnotmatch '^[0-9a-f]{64}$'){throw 'Invalid daemon response header.'}
         while($buffer.Length -lt [long]$header.length){
             $reply=Send-GmOperationCommand $context @{action='daemon-response-chunk';transfer=$transfer;offset=$buffer.Length}
             if($reply.transfer -cne $transfer -or $reply.offset -ne $buffer.Length){throw 'Invalid daemon response identity.'}
@@ -287,7 +287,22 @@ function Invoke-GmDaemonStorageRequest {
         $result=$buffer.ToArray()
         if((Get-GmDaemonBytesHash $result) -cne $header.hash){throw 'Daemon response hash changed.'}
         $json=[Text.UTF8Encoding]::new($false,$true).GetString($result)
-        return ConvertFrom-Json -InputObject $json -ErrorAction Stop
+        $payload=ConvertFrom-Json -InputObject $json -ErrorAction Stop
+        if($null -eq $payload -or $payload -isnot [pscustomobject] -or $payload.matches -isnot [bool]){throw 'Invalid daemon response object.'}
+        if($Request.action -ceq 'snapshot' -and $payload.matches){
+            if($payload.generation -cnotmatch '^[0-9a-f]{32}$' -or $payload.files -isnot [array] -or $payload.trees -isnot [array]){throw 'Invalid daemon snapshot shape.'}
+            $seen=New-GmDaemonPathMap
+            foreach($file in $payload.files){
+                if([string]::IsNullOrWhiteSpace([string]$file.path) -or $file.kind -cnotin @('File','Directory','Missing')){throw 'Invalid daemon file observation.'}
+                $seen.Add([string]$file.path,$true)
+                if($file.kind -ceq 'File'){
+                    $content=[Convert]::FromBase64String([string]$file.bytes)
+                    if((Get-GmDaemonBytesHash $content) -cne $file.hash -or -not $file.lastWriteTimeUtc){throw 'Invalid daemon file bytes/hash.'}
+                    [void][datetime]::Parse([string]$file.lastWriteTimeUtc,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind)
+                } elseif($null -ne $file.bytes -or $null -ne $file.hash -or $null -ne $file.lastWriteTimeUtc){throw 'Invalid absent/directory observation.'}
+            }
+        }
+        return $payload
     } catch {
         if(Test-GmDaemonReadFailure $_){throw}
         $context.lost=$true
@@ -295,12 +310,86 @@ function Invoke-GmDaemonStorageRequest {
     } finally {$buffer.Dispose()}
 }
 function Get-GmDaemonSnapshot {
-    param([string[]]$Paths=@(),[string[]]$Trees=@(),$Expected=$null)
+    param([string[]]$Paths=@(),[string[]]$Trees=@(),$Expected=$null,[string]$Generation=$null)
     if($null -eq $Expected){$Expected=New-GmDaemonPathMap}
-    return Invoke-GmDaemonStorageRequest @{action='snapshot';paths=$Paths;trees=$Trees;expected=$Expected}
+    return Invoke-GmParticipatingConsumer $GameSessionPath {Invoke-GmDaemonStorageRequest @{action='snapshot';paths=$Paths;trees=$Trees;expected=$Expected;generation=$Generation}}
 }
 function Invoke-GmDaemonConditionalMutation {
-    param([string]$Path,[AllowNull()][byte[]]$Bytes,$Expected,[switch]$Delete)
+    param([string]$Path,[AllowNull()][byte[]]$Bytes,$Expected,[string]$Generation,[switch]$Delete)
     $action=if($Delete){'delete-if-current'}else{'write-if-current'}
-    return Invoke-GmDaemonStorageRequest @{action=$action;path=$Path;bytes=$(if($Delete){$null}else{[Convert]::ToBase64String($Bytes)});expected=$Expected}
+    return Invoke-GmParticipatingConsumer $GameSessionPath {Invoke-GmDaemonStorageRequest @{action=$action;path=$Path;bytes=$(if($Delete){$null}else{[Convert]::ToBase64String($Bytes)});expected=$Expected;generation=$Generation}}
+}
+function ConvertTo-GmDaemonRelativePath {
+    param([string]$Path)
+    $root=[IO.Path]::GetFullPath($GameSessionPath).TrimEnd([IO.Path]::DirectorySeparatorChar)+[IO.Path]::DirectorySeparatorChar
+    $absolute=[IO.Path]::GetFullPath($(if([IO.Path]::IsPathRooted($Path)){$Path}else{[IO.Path]::Combine($root,$Path)}))
+    $comparison=if([IO.Path]::DirectorySeparatorChar -eq '\'){[StringComparison]::OrdinalIgnoreCase}else{[StringComparison]::Ordinal}
+    if(-not $absolute.StartsWith($root,$comparison)){throw (New-GmDaemonReadFailure 'Daemon target is outside the original session.' $null)}
+    $relative=$absolute.Substring($root.Length)
+    if([IO.Path]::DirectorySeparatorChar -eq '\'){$relative=$relative.Replace('\','/')}
+    return $relative
+}
+function Invoke-GmDaemonSnapshotView {
+    param($Snapshot,[scriptblock]$Body)
+    if(-not $Snapshot.matches){throw (New-GmDaemonReadFailure 'Daemon snapshot witness changed.' $null)}
+    $old=$script:GmDaemonSnapshotView;$map=New-GmDaemonPathMap
+    foreach($item in $Snapshot.files){$item|Add-Member -NotePropertyName generation -NotePropertyValue $Snapshot.generation -Force;$map.Add([string]$item.path,$item)}
+    try{$script:GmDaemonSnapshotView=$map;return (& $Body)}
+    finally{$script:GmDaemonSnapshotView=$old}
+}
+function Get-GmDaemonFileObservation {
+    param([string]$Path)
+    $relative=ConvertTo-GmDaemonRelativePath $Path
+    if($null -ne $script:GmDaemonSnapshotView){
+        if(-not $script:GmDaemonSnapshotView.ContainsKey($relative)){throw (New-GmDaemonReadFailure 'File was not part of the admitted daemon cohort.' $null)}
+        return $script:GmDaemonSnapshotView[$relative]
+    }
+    $snapshot=Get-GmDaemonSnapshot -Paths @($relative)
+    if(-not $snapshot.matches -or @($snapshot.files).Count -ne 1){throw (New-GmDaemonReadFailure 'Daemon snapshot is incomplete.' $null)}
+    $snapshot.files[0]|Add-Member -NotePropertyName generation -NotePropertyValue $snapshot.generation -Force
+    return $snapshot.files[0]
+}
+function Test-GmDaemonPath {
+    param([string]$Path)
+    return (Get-GmDaemonFileObservation $Path).kind -cne 'Missing'
+}
+function Get-GmDaemonFileBytes {
+    param([string]$Path)
+    $file=Get-GmDaemonFileObservation $Path
+    if($file.kind -ceq 'Missing'){return $null}
+    if($file.kind -cne 'File'){throw (New-GmDaemonReadFailure 'Daemon file target has the wrong kind.' $null)}
+    return ,([Convert]::FromBase64String([string]$file.bytes))
+}
+function Get-GmDaemonText {
+    param([string]$Path)
+    $bytes=Get-GmDaemonFileBytes $Path
+    if($null -eq $bytes){return $null}
+    return [Text.Encoding]::UTF8.GetString($bytes).TrimStart([char]0xFEFF)
+}
+function Get-GmDaemonLines {
+    param([string]$Path)
+    $text=Get-GmDaemonText $Path
+    if($null -eq $text){return}
+    $reader=[IO.StringReader]::new($text)
+    try{while($null -ne ($line=$reader.ReadLine())){$line}}finally{$reader.Dispose()}
+}
+function Get-GmDaemonFileInfo {
+    param([string]$Path)
+    $file=Get-GmDaemonFileObservation $Path
+    if($file.kind -ceq 'Missing'){return $null}
+    if($file.kind -cne 'File'){throw (New-GmDaemonReadFailure 'Daemon metadata target has the wrong kind.' $null)}
+    return [pscustomobject]@{FullName=[IO.Path]::Combine($GameSessionPath,([string]$file.path).Replace('/',[IO.Path]::DirectorySeparatorChar));Length=[Convert]::FromBase64String([string]$file.bytes).LongLength;LastWriteTimeUtc=[datetime]$file.lastWriteTimeUtc;LastWriteTime=([datetime]$file.lastWriteTimeUtc).ToLocalTime();Observation=$file}
+}
+function Get-GmDaemonTreeFiles {
+    param([string]$Path)
+    $snapshot=Get-GmDaemonSnapshot -Trees @((ConvertTo-GmDaemonRelativePath $Path))
+    if(-not $snapshot.matches){throw (New-GmDaemonReadFailure 'Daemon tree observation changed.' $null)}
+    Invoke-GmDaemonSnapshotView $snapshot {foreach($file in $snapshot.files){Get-GmDaemonFileInfo $file.path}}
+}
+
+function Remove-GmDaemonObservedFile {
+    param($Observation)
+    $expected=New-GmDaemonPathMap;$expected.Add([string]$Observation.path,$Observation.hash)
+    $result=Invoke-GmDaemonConditionalMutation -Path $Observation.path -Expected $expected -Generation $Observation.generation -Delete
+    return [bool]$result.matches
 }
