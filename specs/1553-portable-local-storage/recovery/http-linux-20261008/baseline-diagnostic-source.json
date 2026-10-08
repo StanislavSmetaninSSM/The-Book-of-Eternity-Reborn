@@ -1,0 +1,12 @@
+{
+  "BaselineCheckpoint": "3ce1ab52b0a4e41dbe9717b52681236bd368c9b9",
+  "Main": "6381a9507baae6bb2531e22e9a0ace839f03985f",
+  "RuntimeCode": "0067874e15f479327dc37268fc891f51e3a2713d",
+  "PackagedBuildRevision": "4070ad6c400b086e857b200eb5587ba8dad2db5f",
+  "WebCoreSourceEqualMain": true,
+  "PackageSource": "/tmp/reusable-relay-4eb3eeaf1ad0483981eea51abc3ea5fa/ship",
+  "PackageRuntimeDllSHA256": "083e5874eda407ca656e25632c6979b1b7a1e3da4d7412c1c3616104fd4199dd",
+  "CompilerAtPlayerStartup": false,
+  "NewGameRequested": true,
+  "NoHttpFix": true
+}

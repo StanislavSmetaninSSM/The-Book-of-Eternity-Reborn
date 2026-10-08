@@ -1,0 +1,752 @@
+[
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-explicit-root-diagnostic-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+    "outcome": "Passed",
+    "duration": "00:00:01.4020306"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-explicit-root-diagnostic-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"current\")",
+    "outcome": "Passed",
+    "duration": "00:00:04.8721765"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-explicit-root-diagnostic-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"settings-failure\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.6174512"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-explicit-root-diagnostic-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"stale\")",
+    "outcome": "Passed",
+    "duration": "00:00:02.4364594"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-explicit-root-diagnostic-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"missing\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.6811112"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-fixture-context-failure-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"missing\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.1120990"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-fixture-context-failure-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"settings-failure\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.1000645"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-fixture-context-failure-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+    "outcome": "Failed",
+    "duration": "00:00:00.1010456"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-fixture-context-failure-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"stale\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.1117570"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-fixture-context-failure-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"current\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.8098784"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/launcher-load-green-gm-load-installed-profile-unit-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_FreshLaunchConsumesInstalledArchiveProfile",
+    "outcome": "Passed",
+    "duration": "00:00:23.0449360"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/runtime-preparation-failure-gm-load-installed-profile-unit-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_FreshLaunchConsumesInstalledArchiveProfile",
+    "outcome": "Failed",
+    "duration": "00:01:05.4347602"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-managed-green-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"stale\")",
+    "outcome": "Passed",
+    "duration": "00:00:03.0368694"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-managed-green-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"missing\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.4879195"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-managed-green-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"current\")",
+    "outcome": "Passed",
+    "duration": "00:00:05.6619066"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-managed-green-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"settings-failure\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.5497874"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/final-readiness/schema-managed-green-gm-load-ordinary-schema-integration-001.trx.gz",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+    "outcome": "Passed",
+    "duration": "00:00:01.3751981"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-red-browser-route/gm-main-browser-bundle-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+    "outcome": "Failed",
+    "duration": "00:00:04.5746608"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-browser-windows-unavailable/gm-main-affected-browser-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"cached-settings\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.8827393"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-browser-windows-unavailable/gm-main-affected-browser-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-close\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.4007175"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-browser-windows-unavailable/gm-main-affected-browser-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"mixed-request\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.1909883"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-browser-windows-unavailable/gm-main-affected-browser-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"game-read-failure\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.1818795"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-browser-windows-unavailable/gm-main-affected-browser-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"stale\")",
+    "outcome": "Passed",
+    "duration": "00:00:02.6439940"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-browser-windows-unavailable/gm-main-affected-browser-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"no-active\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.6034644"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-browser-windows-unavailable/gm-main-affected-browser-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"absent-authority\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.1646874"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-browser-windows-unavailable/gm-main-affected-browser-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-read\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.1672085"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-browser-windows-unavailable/gm-main-affected-browser-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"settings-failure\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.8460148"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-browser-windows-unavailable/gm-main-affected-browser-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"missing\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.7093386"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-affected-browser-windows-unavailable/gm-main-affected-browser-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"current\")",
+    "outcome": "Passed",
+    "duration": "00:00:05.2009289"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-bundle-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"stale\")",
+    "outcome": "Failed",
+    "duration": "00:00:01.4239683"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-bundle-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"current\")",
+    "outcome": "Failed",
+    "duration": "00:00:02.3260116"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-bundle-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"settings-failure\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.7770357"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-bundle-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"missing\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.7485140"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t041-f2-green-browser-bundle/gm-main-browser-bundle-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+    "outcome": "Passed",
+    "duration": "00:00:05.4055335"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/b2b-services-green/portable-settings-endpoints-integration-003.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.BrowserAudioService_SerializesSharedSettingsUpdates",
+    "outcome": "Passed",
+    "duration": "00:00:00.0009481"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/b2b-services-green/portable-settings-endpoints-integration-003.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_UpdatesAndPersistsSharedSettingsWithClampedVolumes",
+    "outcome": "Passed",
+    "duration": "00:00:00.0867745"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/b2b-services-green/portable-settings-endpoints-integration-003.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.AudioSettingsEndpoint_LoadsSharedSettingsAndReturnsSafeCatalog",
+    "outcome": "Passed",
+    "duration": "00:00:00.0561594"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-cache-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"current\")",
+    "outcome": "Passed",
+    "duration": "00:00:03.4180017"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-cache-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"absent-authority\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.0900372"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-cache-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"cached-settings\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.6561266"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-cache-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"missing\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.7181303"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-cache-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"no-active\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.6353737"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-cache-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"settings-failure\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.2626857"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-cache-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-read\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.6420109"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-cache-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-close\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.6753433"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-cache-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"game-read-failure\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.6460466"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-cache-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"stale\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.7432026"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-cache-red/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"mixed-request\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.0905283"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-bundle-candidate/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"stale\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.0131859"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-bundle-candidate/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"missing\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.7730688"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-bundle-candidate/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"current\")",
+    "outcome": "Passed",
+    "duration": "00:00:03.4077071"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-bundle-candidate/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"settings-failure\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.7066738"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-review-candidate/portable-load-browser-refresh-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"game-read-failure\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.0487336"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-review-candidate/portable-load-browser-refresh-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"mixed-request\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.0487231"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-review-candidate/portable-load-browser-refresh-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"absent-authority\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.0504835"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-review-candidate/portable-load-browser-refresh-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"stale\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.7286127"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-review-candidate/portable-load-browser-refresh-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-close\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.0540658"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-review-candidate/portable-load-browser-refresh-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"cached-settings\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.0504639"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-review-candidate/portable-load-browser-refresh-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-read\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.0521286"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-review-candidate/portable-load-browser-refresh-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"missing\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.7613176"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-review-candidate/portable-load-browser-refresh-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"settings-failure\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.3248484"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-review-candidate/portable-load-browser-refresh-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"current\")",
+    "outcome": "Passed",
+    "duration": "00:00:02.9253177"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-review-candidate/portable-load-browser-refresh-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"no-active\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.0516696"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-http-green/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"game-read-failure\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.6580556"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-http-green/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"settings-failure\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.7146509"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-http-green/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"stale\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.7312791"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-http-green/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"cached-settings\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.6817261"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-http-green/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-close\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.6171951"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-http-green/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"missing\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.7701002"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-http-green/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"current\")",
+    "outcome": "Passed",
+    "duration": "00:00:02.9617210"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-http-green/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"mixed-request\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.0879884"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-http-green/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"no-active\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.6010422"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-http-green/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-read\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.1159647"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-browser-http-green/portable-load-browser-refresh-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"absent-authority\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.0990652"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-independent-ack-red/20261006-225720-279-520944-75b13f455e284c5aa32b76e9397c5602-categories/gm-load-early-ack-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_PrematureAckCannotAuthorizeFreshLaunch",
+    "outcome": "Failed",
+    "duration": "00:00:20.9636945"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-lost-load-green-rollback-transient/20261006-233353-364-545981-016056569c7648e886bd2380ba3ec0d0-categories/gm-load-lost-reply-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LostLoadReplyNeverStartsFresh",
+    "outcome": "Passed",
+    "duration": "00:00:21.0082685"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-lost-load-green-rollback-transient/20261006-233353-364-545981-016056569c7648e886bd2380ba3ec0d0-categories/gm-load-rollback-cut-unit-002.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualRollbackCutOutcome",
+    "outcome": "Failed",
+    "duration": "00:00:22.2449929"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-storage-cuts-first/20261006-233158-216-544523-67d12e5093b44ea19b1d4965fcf6b3f1-categories/gm-load-storage-faults-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualStorageCutOutcomes(fault: \"uncertain\")",
+    "outcome": "Passed",
+    "duration": "00:00:12.2838340"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-storage-cuts-first/20261006-233158-216-544523-67d12e5093b44ea19b1d4965fcf6b3f1-categories/gm-load-storage-faults-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualStorageCutOutcomes(fault: \"rollback\")",
+    "outcome": "Failed",
+    "duration": "00:00:25.0298361"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-storage-admission-first/20261006-232725-978-541982-bcb06fc95ccb4badba320f87ec367e34-categories/gm-load-storage-faults-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_TypedStorageAndIndependentAdmission(fault: \"rollback\")",
+    "outcome": "Failed",
+    "duration": "00:00:05.9658859"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-storage-admission-first/20261006-232725-978-541982-bcb06fc95ccb4badba320f87ec367e34-categories/gm-load-storage-faults-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_TypedStorageAndIndependentAdmission(fault: \"uncertain\")",
+    "outcome": "Failed",
+    "duration": "00:00:06.0443043"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-storage-admission-first/20261006-232725-978-541982-bcb06fc95ccb4badba320f87ec367e34-categories/gm-load-storage-faults-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_TypedStorageAndIndependentAdmission(fault: \"no-active\")",
+    "outcome": "Passed",
+    "duration": "00:00:20.7819965"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-storage-admission-first/20261006-232725-978-541982-bcb06fc95ccb4badba320f87ec367e34-categories/gm-load-storage-faults-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_TypedStorageAndIndependentAdmission(fault: \"worker-debt\")",
+    "outcome": "Passed",
+    "duration": "00:00:12.6149900"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-lost-load-bundle-progress/20261006-233006-886-543766-3bd6037c34dd4bceb3198b65d22dd9ea-categories/gm-load-lost-reply-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LostLoadReplyNeverStartsFresh",
+    "outcome": "Failed",
+    "duration": "00:00:19.1108653"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-connected-positive-first/20261006-224544-097-515233-7da0d9384b734f07933825b07ef784f4-categories/gm-load-session-lifecycle-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LoadFullBundleCurrentAckFreshEpoch",
+    "outcome": "Passed",
+    "duration": "00:00:23.2275019"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t031-browser-green-final/20261006-215038-359-495127-c31933f4f9ad40c4be9867c0bcfc737b-categories/browser-rollback-linux-boundaries-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"no-active\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.8973790"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t031-browser-green-final/20261006-215038-359-495127-c31933f4f9ad40c4be9867c0bcfc737b-categories/browser-rollback-linux-boundaries-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-close\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.2334413"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t031-browser-green-final/20261006-215038-359-495127-c31933f4f9ad40c4be9867c0bcfc737b-categories/browser-rollback-linux-boundaries-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"absent-authority\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.1931423"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t031-browser-green-final/20261006-215038-359-495127-c31933f4f9ad40c4be9867c0bcfc737b-categories/browser-rollback-linux-boundaries-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"game-read-failure\")",
+    "outcome": "Passed",
+    "duration": "00:00:02.6991677"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t031-browser-green-final/20261006-215038-359-495127-c31933f4f9ad40c4be9867c0bcfc737b-categories/browser-rollback-linux-boundaries-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"cached-settings\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.4298568"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t031-browser-green-final/20261006-215038-359-495127-c31933f4f9ad40c4be9867c0bcfc737b-categories/browser-rollback-linux-boundaries-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+    "outcome": "Passed",
+    "duration": "00:00:03.2099859"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t031-browser-green-final/20261006-215038-359-495127-c31933f4f9ad40c4be9867c0bcfc737b-categories/browser-rollback-linux-boundaries-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"mixed-request\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.1494241"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/t031-browser-green-final/20261006-215038-359-495127-c31933f4f9ad40c4be9867c0bcfc737b-categories/browser-rollback-linux-boundaries-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-read\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.9611840"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-restart-faults-first/20261006-231522-961-532223-6770872ca76742cfa1c5af7a545a5275-categories/gm-load-restart-faults-unit-003.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalRestartFaults(fault: \"cancel-after-decision\")",
+    "outcome": "Passed",
+    "duration": "00:00:22.6123795"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-restart-faults-first/20261006-231522-961-532223-6770872ca76742cfa1c5af7a545a5275-categories/gm-load-restart-faults-unit-003.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalRestartFaults(fault: \"restart-reply-loss\")",
+    "outcome": "Passed",
+    "duration": "00:00:21.7231785"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-restart-faults-first/20261006-231522-961-532223-6770872ca76742cfa1c5af7a545a5275-categories/gm-load-restart-faults-unit-003.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalRestartFaults(fault: \"load-reply-loss\")",
+    "outcome": "Failed",
+    "duration": "00:00:21.2594383"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-restart-faults-first/20261006-231522-961-532223-6770872ca76742cfa1c5af7a545a5275-categories/gm-load-restart-faults-unit-003.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalRestartFaults(fault: \"generation-race\")",
+    "outcome": "Passed",
+    "duration": "00:00:25.6389261"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-profile-green-lost-load-timeout/20261006-232134-890-535152-504192cd83a14233ac02a4740645a2de-categories/gm-load-installed-profile-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_FreshLaunchConsumesInstalledArchiveProfile",
+    "outcome": "Passed",
+    "duration": "00:00:23.0002808"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-profile-green-lost-load-timeout/20261006-232134-890-535152-504192cd83a14233ac02a4740645a2de-categories/gm-load-lost-reply-unit-002.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LostLoadReplyNeverStartsFresh",
+    "outcome": "Failed",
+    "duration": "00:00:19.4572076"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-reviewed-positive-green/20261006-230718-483-527065-f469d7c5d50c4eb0803f2b7b22ab71c0-categories/gm-load-early-ack-unit-002.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_PrematureAckCannotAuthorizeFreshLaunch",
+    "outcome": "Passed",
+    "duration": "00:00:22.4553997"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-reviewed-positive-green/20261006-230718-483-527065-f469d7c5d50c4eb0803f2b7b22ab71c0-categories/gm-load-session-lifecycle-unit-004.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LoadFullBundleCurrentAckFreshEpoch",
+    "outcome": "Passed",
+    "duration": "00:00:21.5915972"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-schema-and-storage-green/20261006-234111-028-549482-8473dea9851d4f9f8f0d4b5cb1f226d2-categories/gm-load-storage-faults-unit-004.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualStorageCutOutcomes(fault: \"uncertain\")",
+    "outcome": "Passed",
+    "duration": "00:00:13.2631146"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-schema-and-storage-green/20261006-234111-028-549482-8473dea9851d4f9f8f0d4b5cb1f226d2-categories/gm-load-ordinary-schema-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"stale\")",
+    "outcome": "Passed",
+    "duration": "00:00:03.0831154"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-schema-and-storage-green/20261006-234111-028-549482-8473dea9851d4f9f8f0d4b5cb1f226d2-categories/gm-load-ordinary-schema-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"current\")",
+    "outcome": "Passed",
+    "duration": "00:00:04.7164333"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-schema-and-storage-green/20261006-234111-028-549482-8473dea9851d4f9f8f0d4b5cb1f226d2-categories/gm-load-ordinary-schema-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"missing\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.6768074"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-schema-and-storage-green/20261006-234111-028-549482-8473dea9851d4f9f8f0d4b5cb1f226d2-categories/gm-load-ordinary-schema-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+    "outcome": "Passed",
+    "duration": "00:00:01.2654601"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-schema-and-storage-green/20261006-234111-028-549482-8473dea9851d4f9f8f0d4b5cb1f226d2-categories/gm-load-ordinary-schema-integration-002.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"settings-failure\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.7210949"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-schema-and-storage-green/20261006-234111-028-549482-8473dea9851d4f9f8f0d4b5cb1f226d2-categories/gm-load-rollback-cut-unit-003.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_ActualRollbackCutOutcome",
+    "outcome": "Passed",
+    "duration": "00:00:19.8521113"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-lost-load-phase-red/20261006-232410-284-536767-cba15b16ade74f97a6800baeb1b18337-categories/gm-load-lost-reply-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LostLoadReplyNeverStartsFresh",
+    "outcome": "Failed",
+    "duration": "00:00:18.7261478"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-stop-faults-green/20261006-231204-813-530053-14f4ffc02ad147219a9bf28e090fe7b3-categories/gm-load-stop-faults-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalStopAndRefreshFaults(fault: \"manual-cancel\")",
+    "outcome": "Passed",
+    "duration": "00:00:23.1310317"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-stop-faults-green/20261006-231204-813-530053-14f4ffc02ad147219a9bf28e090fe7b3-categories/gm-load-stop-faults-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalStopAndRefreshFaults(fault: \"refresh-refused\")",
+    "outcome": "Passed",
+    "duration": "00:00:21.4815826"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-stop-faults-green/20261006-231204-813-530053-14f4ffc02ad147219a9bf28e090fe7b3-categories/gm-load-stop-faults-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalStopAndRefreshFaults(fault: \"stop-reply-loss\")",
+    "outcome": "Passed",
+    "duration": "00:00:13.3865556"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-stop-faults-green/20261006-231204-813-530053-14f4ffc02ad147219a9bf28e090fe7b3-categories/gm-load-stop-faults-unit-001.trx",
+    "name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_OriginalStopAndRefreshFaults(fault: \"stop-uncertain\")",
+    "outcome": "Passed",
+    "duration": "00:00:11.4910482"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-ordinary-schema-causal-red/20261006-233643-229-547533-abb3f31379324a14abe9e4cb12d88de5-categories/gm-load-affected-backend-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-close\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.9719696"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-ordinary-schema-causal-red/20261006-233643-229-547533-abb3f31379324a14abe9e4cb12d88de5-categories/gm-load-affected-backend-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"mixed-request\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.1475534"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-ordinary-schema-causal-red/20261006-233643-229-547533-abb3f31379324a14abe9e4cb12d88de5-categories/gm-load-affected-backend-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"rotate-read\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.1972770"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-ordinary-schema-causal-red/20261006-233643-229-547533-abb3f31379324a14abe9e4cb12d88de5-categories/gm-load-affected-backend-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"cached-settings\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.6795089"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-ordinary-schema-causal-red/20261006-233643-229-547533-abb3f31379324a14abe9e4cb12d88de5-categories/gm-load-affected-backend-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"settings-failure\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.9008394"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-ordinary-schema-causal-red/20261006-233643-229-547533-abb3f31379324a14abe9e4cb12d88de5-categories/gm-load-affected-backend-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"missing\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.6752724"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-ordinary-schema-causal-red/20261006-233643-229-547533-abb3f31379324a14abe9e4cb12d88de5-categories/gm-load-affected-backend-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"game-read-failure\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.7264178"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-ordinary-schema-causal-red/20261006-233643-229-547533-abb3f31379324a14abe9e4cb12d88de5-categories/gm-load-affected-backend-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"current\")",
+    "outcome": "Failed",
+    "duration": "00:00:02.4051376"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-ordinary-schema-causal-red/20261006-233643-229-547533-abb3f31379324a14abe9e4cb12d88de5-categories/gm-load-affected-backend-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"absent-authority\")",
+    "outcome": "Passed",
+    "duration": "00:00:00.1548023"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-ordinary-schema-causal-red/20261006-233643-229-547533-abb3f31379324a14abe9e4cb12d88de5-categories/gm-load-affected-backend-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads(scenario: \"no-active\")",
+    "outcome": "Passed",
+    "duration": "00:00:01.0117385"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-ordinary-schema-causal-red/20261006-233643-229-547533-abb3f31379324a14abe9e4cb12d88de5-categories/gm-load-affected-backend-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration(scenario: \"stale\")",
+    "outcome": "Failed",
+    "duration": "00:00:00.7021868"
+  },
+  {
+    "artifact": "specs/1553-portable-local-storage/recovery/evidence/load-ux-ordinary-schema-causal-red/20261006-233643-229-547533-abb3f31379324a14abe9e4cb12d88de5-categories/gm-load-affected-backend-integration-001.trx",
+    "name": "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadEndpoint_ReturnsCompleteBundleFromOriginalGuard",
+    "outcome": "Failed",
+    "duration": "00:00:00.6306161"
+  }
+]

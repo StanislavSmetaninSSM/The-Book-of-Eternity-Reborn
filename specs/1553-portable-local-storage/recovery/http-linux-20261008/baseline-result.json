@@ -1,0 +1,458 @@
+{
+  "AcceptedGameTurns": 0,
+  "GenuineActionsSent": 0,
+  "GateAnswers": 0,
+  "QueryAnswers": 0,
+  "ConfiguredModel": "codex-agent/gpt-6.1-sol-test-relay",
+  "ConfiguredCommand": "& '/usr/bin/python3' '/tmp/h3-82779715/relay/codex-gm-relay.py' --session '/tmp/h3-82779715/play/game_session' --queue '/tmp/h3-82779715/queue' --model gpt-6.1-sol",
+  "ConfiguredCwd": "/tmp/h3-82779715/play/game_session",
+  "NoReadyOverride": true,
+  "OrdinaryNewGame": true,
+  "LogicalLifecycleVerified": true,
+  "TestRelay": true,
+  "OpenCodeProviderCalls": 0,
+  "RelayQueue": "/tmp/h3-82779715/queue",
+  "Diagnostic": "bounded live HTTP baseline",
+  "ModelRequests": 0,
+  "NewGameInitialized": true,
+  "UiBrowserQualified": false,
+  "HttpFixIncluded": false,
+  "InitialBootstrapRequest": {
+    "sessionId": "0ad8f44f-0b86-409d-bfee-871bd8b9d2cf",
+    "requestId": "9b4e8f44b1aa4983ab7915ecc940706a",
+    "turnNumber": 1,
+    "playerAction": "Душа по имени «Облачная HTTP проверка» пробуждается в Море Хаоса. Хранитель: Спокойный Хранитель маяка на берегу Моря Хаоса.. Опиши обитель Хранителя и первую встречу с ним. Это начало нового пути — душа ещё не воплотилась в смертную жизнь.",
+    "timestamp": "2026-10-08T06:03:59.3767117Z",
+    "gameMode": "normal",
+    "preGeneratedDices1d20": [
+      13,
+      7,
+      16,
+      17,
+      20,
+      1,
+      3,
+      3,
+      2,
+      16,
+      5,
+      14,
+      8,
+      8,
+      10,
+      18,
+      5,
+      16,
+      13,
+      8
+    ],
+    "gachaBaseResult": {
+      "diceUsed": [],
+      "baseScore": 28,
+      "baseRarity": "Common",
+      "formula": "client-computed gacha base (range 4-80)"
+    },
+    "systemReminder": "CRITICAL SYSTEM REMINDER — This is NOT a D&D system!\n\nCHARACTERISTICS: Range 1-100 (not 3-18). Base stats start at 1 per characteristic. Players distribute points (8 at incarnation + 5 per level). Do NOT use D&D-style modifiers like (stat-10)/2.\n\nACTION CHECK FORMULA (Block 12):\n  StatModificator = CappedStatValue + LevelScaling\n  where CappedStatValue = min(CharacterLevel*0.5+20, StatValueWithBonuses)\n  and LevelScaling = floor(CharacterLevel * 0.8)\n  Difference = (PlayerDiceResult + StatModificator) - (GMDice + ActionDifficultModificator)\n\nThe 'computedCharacteristics' field in this request contains the client-computed standard, permanently modified, and fully modified values for each characteristic. USE THESE VALUES for action checks — do not recalculate from scratch.\n\nstatsIncreased: The client automatically applies +1 to base stats with Training Cap enforcement (stat < PlayerLevel*2). You do NOT need to use setCharacteristics for training increases.\n\nsetCharacteristics: Use ONLY for extraordinary events (divine intervention, meta-commands). It bypasses the Training Cap.\n\nREALM SEGREGATION — ABSOLUTE LAW:\nRead Context.worldState.currentRealm (projected from game_state/meta/soul_state.json.currentRealm) BEFORE applying any mechanic.\n\nIF Context.worldState.currentRealm = Shining Abode AND game_state/meta/shining_abode_state.json.preparedIncarnationPackage is a VALID bootstrap package object:\n  TREAT THIS AS Shining Abode pending-bootstrap handoff, NOT as ordinary active Shining Abode.\n  ALLOWED: only canonical TriggerIncarnation / game_state/control/incarnation_trigger.json for next-life bootstrap. GM MUST preserve game_state/meta/shining_abode_state.json.preparedIncarnationPackage exactly as provided; do not remove, clear, rename, or mutate it. The client runtime consumes and clears the frozen package only after successful Mortal World bootstrap.\n  FORBIDDEN: ordinary Guardian interactions, ordinary Abode interactions, ordinary afterlife interactions, archive/relic/world-setup meta flows, unrelated pending contract closure, Life Evaluation, Shining return, Chaos Sea travel, Mortal World systems. If any unresolved afterlife pending/control contract exists, or if game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict is present, Soul Gates must block this handoff until it is resolved or repaired.\n\nIF Context.worldState.currentRealm = Shining Abode AND game_state/meta/shining_abode_state.json.preparedIncarnationPackage is present but not a valid bootstrap package:\n  TREAT THIS AS Shining Abode package fault. Fail closed, preserve the package and pending Shining contracts for repair, and do NOT process ordinary Shining gameplay or handoff.\n\nELSE IF REALM = Chaos Sea:\n  FORBIDDEN: experienceGained, statsIncreased, statsDecreased, currentPoiseChange, currentEnergyChange, currentHealthChange, moneyChange, activeSkillChanges, passiveSkillChanges, skillMasteryChanges, UpdateInventory, UpdateNPCs, NPCsInScene, UpdateQuests, worldEventsLog, factionDataChanges, currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.\n  FORBIDDEN ALSO: direct writes to game_state/meta/shining_abode_state.json. Ordinary Chaos Sea turns may read stored Shining state for lifecycle preconditions, but Shining owner-state mutations belong only to ordinary Shining Abode contracts, Shining pending-bootstrap preservation, or client-owned local routes.\n  ALLOWED: UpdateGuardians, Soul Relic systems, Ink Feather spending, Gacha, guardian/abode afterlife interactions, afterlifeSpiritualConflictUpdate, afterlifeEntityProfileUpdates / afterlifeEntityCustomStateChanges / afterlifeFateCardUnlocks / afterlifeActorGoalUpdates / afterlifeActorQuestUpdates / afterlifeActorActivityUpdates / completeAfterlifeActorActivities / afterlifeRelationshipChanges / afterlifeRelationshipLockUpdates / afterlifeBreakthroughQuestUpdates / afterlifeActorMaskAdds / afterlifeActorMaskUpdates / afterlifeActorMaskRemovals / afterlifeActorActiveMaskChanges / afterlifeEntityProgressionOverrides / afterlifeSpecialArtLearningReceipts for afterlife entity profiles, afterlifeThreatsToAdd / afterlifeThreatsToUpdate / completeAfterlifeThreatActivities / afterlifeThreatsToRemove for game_state/meta/afterlife_active_threats.json persistent afterlife threats, afterlifeChronicleUpdates for game_state/meta/afterlife_chronicles.json external memory, afterlifeGlobalFlagUpdates for game_state/meta/afterlife_global_flags.json global facts, afterlifeStoryOutline for game_state/meta/afterlife_story_outline.json private Writer's Room planning, hidden main-story state game_state/meta/main_story_saref_state.json for Крылья над Бездной, Life Evaluation only on dedicated Life Evaluation turns, and Chaos Sea TriggerIncarnation setup.\n  AFTERLIFE ENTITY PROFILES: use game_state/meta/afterlife_entity_profiles.json only through the profile command surfaces above for significant afterlife actors, customStates maintenance, fateCards, actor goals/personal quests/current activities, afterlife relationship gates, masks, forced progression overrides, and special-art teaching. Relationship gates use afterlifeRelationshipChanges / afterlifeRelationshipLockUpdates / afterlifeBreakthroughQuestUpdates with axes trust/romance/rivalry/oath/fear/reverence/debt; values >= 50 require breakthrough lock/proof, values <= -50 require redemption or point-of-no-return proof, and completed gate quests clear linked quest ids only through _clear_. Masks use masks[] and activeMaskId; activeMaskId must be _true_self_ or an existing masks[].maskId, concealedTruth/directives/linkedThreatId/linkedSarefAgentId stay hidden from normal player UI until isRevealed=true, and Mortal NPCMaskAdds is forbidden. Fate Cards unlock only through afterlifeFateCardUnlocks with appliedAtTurn, evidence, and at least one guardian/player/political/combat/training effect; locked/hidden/available cards must not grant active effects. Goals require gmThoughtsSummary; currentActivity must link to the current goal and an active personalQuest; close activities only through completeAfterlifeActorActivities. Final soul death requires resolved conflict recentConflicts[].soulDissipationProof with targetStabilityCoefficient; if the player soul is dispersed, write soul_state.terminalGameOver.message exactly as documented.\n  AFTERLIFE ACTIVE THREATS: use game_state/meta/afterlife_active_threats.json only through afterlifeThreatsToAdd, afterlifeThreatsToUpdate, completeAfterlifeThreatActivities, and afterlifeThreatsToRemove for persistent afterlife dangers. Canonical threats[] include currentActivity, impactProfile, visibleToPlayer, optional sarefLink, and ledger[]; currentActivity closes only through completeAfterlifeThreatActivities, hidden visibleToPlayer=false threats must not leak to normal player UI, and Mortal worldMapUpdates.activeThreats is forbidden.\n  CHAOS SEA GUARDIAN POLITICS: in ordinary Chaos Sea only, use game_state/meta/chaos_sea_guardian_politics.json through guardianPoliticalRelationUpdates, guardianPoliticalProjectUpdates, guardianPoliticalInfluenceUpdates, guardianPoliticalChronicleUpdates, and completeGuardianPoliticalProjects. Canonical state stores relations[], projects[], influenceZones[], chronicle[], playerRole, sarefLinks[], and openConflicts[]; relationType may include alliance, rivalry, debt, fear, patronage, memory_oath, trade, hostility, or hidden_dependency. Every political consequence must be explicit. Hidden/gm_only or isPlayerVisible=false details may guide GM reasoning but must not leak to normal player UI or /guardian_politics. Do not use Shining faction political memory or Mortal faction files.\n  AFTERLIFE CHRONICLES: use game_state/meta/afterlife_chronicles.json through afterlifeChronicleUpdates for Внешняя память посмертия. Write lastEventsDescription for the current turn; eventDescriptions[] is read-only archive memory and must not appear inside afterlifeChronicleUpdates. Valid scopeType values include chaos_sea_region, shining_abode_district, guardian_abode, guardian_scene, resident_scene, faction_zone, memory_scene, source_of_light, and saref_story. Do not use worldEventsLog/currentLocationData/worldMapUpdates as afterlife memory.\n  AFTERLIFE GLOBAL FLAGS: use game_state/meta/afterlife_global_flags.json through afterlifeGlobalFlagUpdates for durable afterlife facts; do not use Mortal worldStateFlags. Include flagId, category, state, visibility, turn fields, reason, evidence, linkedActors/linkedChronicles, gmThoughtsSummary, and obsoleteReason for obsolete flags. Hidden/gm_only flags must not leak to normal player UI.\n  AFTERLIFE WRITER'S ROOM: use game_state/meta/afterlife_story_outline.json through afterlifeStoryOutline for private flexible GM planning. It is not player-visible, not a prophecy, and not an order to force future outcomes; if player choices break the plan, update the plan.\n  SAREF MAIN STORY: do not reveal Сареф or Крылья Ангелов while revealStage=unknown|shadow. If you use a Saref advantage, it must exist in sarefAdvantages[], have state available/passive, and the sceneType must match applicableScenes[] or any. Consumed one-use advantages must end as state=spent with matching spentAudit and sarefAdvantageUses[]; suppressed/disabled/spent/unknown advantages cannot be claimed. Quest 4 memory restoration is the playable memoryScene layer Воспоминание, not Mortal World and not Memory Gates; it does not create pendingMemoryLegacy unless the player separately uses Memory Gates. Close it only through sarefMainStoryUpdate.mode=record_memory_scene with role, boundaries[], 3-5 abilities[], requiredStoryNodes[], successCondition, closureTarget, resolvedAtTurn, non-physical evidence only (memory, image, echo, knowledge trace, or soul resonance), and guardianQuestlines[].questStates[].memorySceneProof. If game_state/control/pending_saref_wings_infiltration.json exists, close it only through sarefMainStoryUpdate.mode=reveal_wings|refuse_wings|block_wings with matching requestId, positive resolvedAtTurn, and wingsInfiltration.status; risky/desperate routes require listed disadvantages. A final deal requires postStoryAgenda.state=oathbound_to_saref; continue play through assignments[] linked to Shining factionConflictCampaigns[], use saref_directive breakthroughs for direct orders, do not let the player leave Wings by ordinary voluntary action, and write dominationScene once no significant non-Wings faction can oppose Saref. Later agenda changes use sarefMainStoryUpdate.mode=record_oathbound_agenda. If Saref defeats the player, record only through sarefMainStoryUpdate.mode=record_defeat_outcome into defeatOutcomes[]; valid outcomeType values are forced_oath, exile_to_chaos_sea, memory_suppression, soul_dissipation, and pyrrhic_escape, with gmMotivation and matching playerOathState/exileAudit/memorySuppressionAudit/soulDissipationProofId/mitigation.\n  AFTERLIFE INK FEATHER EXCEPTIONS: Donate to Guardian, Cultivate Enlightenment (experienceGain = costInFeathers * 4; 60 Enlightenment XP is ascension-ready), Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when pending_abode_offering.offeringType = ink_feathers.\n  Sell Relic is a separate guardian trade interaction, not an Ink Feather action.\n  If game_state/meta/shining_abode_state.json.availability = active, game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict is absent, and afterlife_return_guard is absent, or semantic-valid (`reason=post_life_return`) and inactive, the player MAY use the client-owned local command /reenter_shining_abode to re-enter the already-active Shining Abode. A malformed guard, a parsed guard with the wrong reason, or an active spiritual conflict still blocks re-entry until client normalization clears it or the GM closes the conflict. This is an ordinary return route, not Ascension, and not a GM-authored turn.\n  LIFE EVALUATION REWARD GUARANTEE:\n    - Every completed mortal life MUST grant at least 10 Ink Feathers.\n    - Every completed mortal life MUST grant at least one NEW Soul Relic with a new relicId.\n    - Reward quality may vary by achievements, but zero-reward life evaluation is a protocol violation.\n    - If the completed life clearly strengthened a Guardian's domain, you MAY emit guardianPowerEvents with reasonType=resonance and full resonanceAudit on the dedicated Life Evaluation turn only.\n\nELSE IF REALM = Shining Abode:\n  FORBIDDEN: experienceGained, statsIncreased, statsDecreased, currentPoiseChange, currentEnergyChange, currentHealthChange, moneyChange, activeSkillChanges, passiveSkillChanges, skillMasteryChanges, UpdateInventory, UpdateNPCs, NPCsInScene, UpdateQuests, worldEventsLog, factionDataChanges, currentLocationData, timeChange, setWorldTime, weatherChange, enemiesData, alliesData, combat_log_markdown.\n  ALLOWED: Shining core actions, Shining trade, Shining politics, read-only Shining audit, local afterlife resource/relic flows, afterlifeSpiritualConflictUpdate, afterlifeEntityProfileUpdates / afterlifeEntityCustomStateChanges / afterlifeFateCardUnlocks / afterlifeActorGoalUpdates / afterlifeActorQuestUpdates / afterlifeActorActivityUpdates / completeAfterlifeActorActivities / afterlifeRelationshipChanges / afterlifeRelationshipLockUpdates / afterlifeBreakthroughQuestUpdates / afterlifeActorMaskAdds / afterlifeActorMaskUpdates / afterlifeActorMaskRemovals / afterlifeActorActiveMaskChanges / afterlifeEntityProgressionOverrides / afterlifeSpecialArtLearningReceipts for afterlife entity profiles, afterlifeThreatsToAdd / afterlifeThreatsToUpdate / completeAfterlifeThreatActivities / afterlifeThreatsToRemove for game_state/meta/afterlife_active_threats.json persistent afterlife threats, afterlifeChronicleUpdates for game_state/meta/afterlife_chronicles.json external memory, afterlifeGlobalFlagUpdates for game_state/meta/afterlife_global_flags.json global facts, afterlifeStoryOutline for game_state/meta/afterlife_story_outline.json private Writer's Room planning, hidden main-story state game_state/meta/main_story_saref_state.json for Крылья над Бездной, and guardian/resident state only when an explicit afterlife contract authorizes it.\n  AFTERLIFE ENTITY PROFILES: use game_state/meta/afterlife_entity_profiles.json only through the profile command surfaces above for significant afterlife actors, customStates maintenance, fateCards, actor goals/personal quests/current activities, afterlife relationship gates, masks, forced progression overrides, and special-art teaching. Relationship gates use afterlifeRelationshipChanges / afterlifeRelationshipLockUpdates / afterlifeBreakthroughQuestUpdates with axes trust/romance/rivalry/oath/fear/reverence/debt; values >= 50 require breakthrough lock/proof, values <= -50 require redemption or point-of-no-return proof, and completed gate quests clear linked quest ids only through _clear_. Masks use masks[] and activeMaskId; activeMaskId must be _true_self_ or an existing masks[].maskId, concealedTruth/directives/linkedThreatId/linkedSarefAgentId stay hidden from normal player UI until isRevealed=true, and Mortal NPCMaskAdds is forbidden. Fate Cards unlock only through afterlifeFateCardUnlocks with appliedAtTurn, evidence, and at least one guardian/player/political/combat/training effect; locked/hidden/available cards must not grant active effects. Goals require gmThoughtsSummary; currentActivity must link to the current goal and an active personalQuest; close activities only through completeAfterlifeActorActivities. Final soul death requires resolved conflict recentConflicts[].soulDissipationProof with targetStabilityCoefficient; if the player soul is dispersed, write soul_state.terminalGameOver.message exactly as documented.\n  AFTERLIFE ACTIVE THREATS: use game_state/meta/afterlife_active_threats.json only through afterlifeThreatsToAdd, afterlifeThreatsToUpdate, completeAfterlifeThreatActivities, and afterlifeThreatsToRemove for persistent afterlife dangers. Canonical threats[] include currentActivity, impactProfile, visibleToPlayer, optional sarefLink, and ledger[]; currentActivity closes only through completeAfterlifeThreatActivities, hidden visibleToPlayer=false threats must not leak to normal player UI, and Mortal worldMapUpdates.activeThreats is forbidden.\n  AFTERLIFE CHRONICLES: use game_state/meta/afterlife_chronicles.json through afterlifeChronicleUpdates for Внешняя память посмертия. Write lastEventsDescription for the current turn; eventDescriptions[] is read-only archive memory and must not appear inside afterlifeChronicleUpdates. Valid scopeType values include chaos_sea_region, shining_abode_district, guardian_abode, guardian_scene, resident_scene, faction_zone, memory_scene, source_of_light, and saref_story. Do not use worldEventsLog/currentLocationData/worldMapUpdates as afterlife memory.\n  AFTERLIFE GLOBAL FLAGS: use game_state/meta/afterlife_global_flags.json through afterlifeGlobalFlagUpdates for durable afterlife facts; do not use Mortal worldStateFlags. Include flagId, category, state, visibility, turn fields, reason, evidence, linkedActors/linkedChronicles, gmThoughtsSummary, and obsoleteReason for obsolete flags. Hidden/gm_only flags must not leak to normal player UI.\n  AFTERLIFE WRITER'S ROOM: use game_state/meta/afterlife_story_outline.json through afterlifeStoryOutline for private flexible GM planning. It is not player-visible, not a prophecy, and not an order to force future outcomes; if player choices break the plan, update the plan.\n  SAREF MAIN STORY: do not reveal Сареф or Крылья Ангелов while revealStage=unknown|shadow. If you use a Saref advantage, it must exist in sarefAdvantages[], have state available/passive, and the sceneType must match applicableScenes[] or any. Consumed one-use advantages must end as state=spent with matching spentAudit and sarefAdvantageUses[]; suppressed/disabled/spent/unknown advantages cannot be claimed. Quest 4 memory restoration is the playable memoryScene layer Воспоминание, not Mortal World and not Memory Gates; it does not create pendingMemoryLegacy unless the player separately uses Memory Gates. Close it only through sarefMainStoryUpdate.mode=record_memory_scene with role, boundaries[], 3-5 abilities[], requiredStoryNodes[], successCondition, closureTarget, resolvedAtTurn, non-physical evidence only (memory, image, echo, knowledge trace, or soul resonance), and guardianQuestlines[].questStates[].memorySceneProof. If game_state/control/pending_saref_wings_infiltration.json exists, close it only through sarefMainStoryUpdate.mode=reveal_wings|refuse_wings|block_wings with matching requestId, positive resolvedAtTurn, and wingsInfiltration.status; risky/desperate routes require listed disadvantages. A final deal requires postStoryAgenda.state=oathbound_to_saref; continue play through assignments[] linked to Shining factionConflictCampaigns[], use saref_directive breakthroughs for direct orders, do not let the player leave Wings by ordinary voluntary action, and write dominationScene once no significant non-Wings faction can oppose Saref. Later agenda changes use sarefMainStoryUpdate.mode=record_oathbound_agenda. If Saref defeats the player, record only through sarefMainStoryUpdate.mode=record_defeat_outcome into defeatOutcomes[]; valid outcomeType values are forced_oath, exile_to_chaos_sea, memory_suppression, soul_dissipation, and pyrrhic_escape, with gmMotivation and matching playerOathState/exileAudit/memorySuppressionAudit/soulDissipationProofId/mitigation.\n  FORBIDDEN ALSO: Life Evaluation, ordinary Chaos Sea travel, and direct incarnation setup unless this state first becomes Shining pending-bootstrap through a valid preparedIncarnationPackage.\n  AFTERLIFE INK FEATHER EXCEPTIONS: Donate to Guardian, Cultivate Enlightenment (experienceGain = costInFeathers * 4; 60 Enlightenment XP is ascension-ready), Guardian Favor, Memory Gates, Soul Imprint, ABODE_OFFERING only when pending_abode_offering.offeringType = ink_feathers.\n  Shining Abode is the ascended endgame free-roleplay zone above the Chaos Sea. It still uses afterlife/guardian systems, not Mortal World systems.\n  The player may use the client-owned local command /return_to_chaos_sea, or the legacy alias /new_game_plus, to start the Shining Abode New Cycle only when game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict is absent: return to Chaos Sea, seal the Shining Abode, reset Enlightenment/Просветление to baseline, and preserve Ink Feathers, Soul Relics, Guardians, Shining achievements, halls, factions, and Radiance progress. There is no separate destructive global New Game+ reset path.\n\nIF REALM = Mortal World:\n  FORBIDDEN: UpdateGuardians, Guardian-specific reputation/project/musings/lore commands, Abode navigation, Soul Relic Gacha, afterlife-only spending of Ink Feathers, and direct writes to game_state/meta/guardian_abode_residents.json, game_state/meta/guardian_thought_journal.json, game_state/meta/guardian_social_journal.json, game_state/meta/guardian_projects.json, game_state/meta/guardian_project_journal.json, game_state/meta/abode_power_journal.json, or game_state/meta/shining_abode_state.json.\n  ALLOWED: combat, NPCs, quests, inventory, factions, weather, time, world progression.\n  NARROW GUARDIAN QUEST PROGRESS EXCEPTION: guardianQuestProgressUpdates may update only existing guardian.questManagement.activeQuests[] to active, ready_to_turn_in, failed, or expired during Mortal World play. It must not change Guardian reputation, identity, Abode, gacha, projects, completed quests, or close/reward the quest. If the mortal objective was an item, record readyToTurnInEvidence as a non-physical echo/memory/imprint/resonance; the Guardian does NOT receive a physical mortal inventory item.\n  MORTAL-WORLD INK FEATHER EXCEPTIONS: Reveal Fate, Rewrite Fate, Sacrifice to Chaos, Absorb Feathers, Learn Skill, Fate Shield, Seal in Ink.\n  LOCAL NPC TRADE: Some NPCs may have a client-side Buy/Sell panel for mortal-world goods only. This panel does NOT create turn_request.json, does NOT use Ink Feathers, and does NOT trade Soul Relics.\n  If the player later asks a merchant NPC about an item just bought from that merchant's local stock, treat the item as known to that merchant and do not act surprised by its existence.\n  QTE OFFERS: game_state/core/game_settings.json.qteEventsEnabled controls whether QTE is allowed.\n    - If qteEventsEnabled = false, DO NOT write output/qte_offer.json.\n    - QTE is a rare cinematic tool, not a replacement for normal action checks.\n    - QTE is allowed only in Mortal World and only on an ordinary player-driven turn (not incarnation, life evaluation, repair, transition, or other system flow).\n    - QTE offer turn MUST NOT also resolve ordinary state changes for the same situation; leave game_state/lore/stories untouched and write only output/qte_offer.json plus narrative/interface/debug outputs.\n    - QTE offer is delivered through output/qte_offer.json and then resolved locally by the client after player Accept/Decline.\n    - qte_offer.json MUST define startChapterId; chapter array order does not define the scene start.\n    - QTE primaryCharacteristic MUST use canonical lowercase stat ids (strength, dexterity, constitution, intelligence, wisdom, faith, attractiveness, trade, persuasion, perception, luck, speed).\n    - For BranchChoice, check.config.choiceGrade MUST be exactly success, partial, or fail.\n    - Every terminal outcome MUST carry a complete responseFragment for local application.\n    - declineHint and cinematicJustification, if provided, are shown to the player in the offer prompt; keep them concise.\n    - responseFragment MUST NOT use ordinary image_prompt; use sceneImagePrompt / chapterImagePrompt / outcomeImagePrompt instead.\n    - Successful QTE terminal outcomes MUST grant positive experienceGained at minimum; the client will locally add it to the authoritative XP counter in experience.json.\n    - If experience.json already contains level/progress metadata (level or playerLevel, experience or currentExperience, experienceForNextLevel), the client will also process the local level-up transition.\n\nThe Mortal-World and Chaos-Sea Ink Feather whitelists are mutually exclusive.\n\nLORE / META BOOTSTRAP — HARD REQUIREMENT:\n  - On the first Chaos Sea turn of a new game, create:\n    lore/chaos_sea/cosmology.json\n    lore/chaos_sea/soul_system_lore.json\n    lore/chaos_sea/guardians_lore.json\n    lore/codex_entries.json\n    game_state/meta/achievements.json\n  - On every new Mortal World incarnation, create:\n    lore/current_world/world_setting.json\n    lore/current_world/geography.json\n    lore/current_world/history.json\n    lore/current_world/cultures.json\n    lore/current_world/threats.json\n  - Optional supplemental Mortal-World lore: lore/current_world/npcs_lore.json when this life needs persistent NPC backstory/world-lore support.\n  - Missing bootstrap lore/codex/achievement files will cause client validation failure.\n\nQUEST UPDATE PROTOCOL — HARD REQUIREMENT:\n  - On quest creation, send the full quest object with detailsLog.\n  - On quest-log updates, send questId + newDetailsLogEntry instead of resending the whole detailsLog array.\n  - quest_history.json is canonically stored as questHistory + questRewards + questChains; legacy questLog is only shorthand input.\n  - questRewards itemsReceived/skillsUnlocked/relationshipChanges must resolve to current inventory/skills/NPC relationship authority, or use structured authorityStatus HistoricalOnly/Unavailable records with player-facing reason; bare strings are allowed only when they resolve to current detail authority.\n\nPROGRESSION CONTROL — CLIENT-AUTHORITATIVE SCHEDULER:\nThis request contains a 'progressionControl' object. Treat it as authoritative system control, not optional advice.\n  - In Mortal World, it defines the baseline world time and mandatory 240-minute world cycles / 1440-minute faction cycles.\n  - In Chaos Sea, it defines mandatory bounded hub / guardian-project / resident-agency cycles for this turn.\n  - In Shining Abode, it defines mandatory bounded Shining Abode / Shining faction / Shining trade / guardian-project / resident-agency cycles for this turn.\n  - If afterlifeCatchupRequired=true, process only afterlifeCatchupSummaryEventsRequired bounded summary outcomes. Do NOT simulate every raw elapsed afterlife cycle.\n  - If a mustEvaluate* flag is true, that contour MUST be processed this turn.\n  - If a mustEvaluate* flag is false, there is no mandatory progression debt for that contour this turn.\nYou MUST evaluate and process all required cycles for the active realm.\nIf progression is processed, you MUST write progressionProcessingReport to game_state/control/progression_report.json and report the exact processed cycle counts and new last-* markers.\nIf no cycles are due, you may write zero counts or omit the report.\nIn Shining Abode, verified progressionProcessingReport is a narrow scheduler-owned allowance: it permits only scheduler-owned Shining/resident/trade progression fields. It does NOT authorize unrelated availability, coreActionReceipts[], gates, gachaSystem.gachaHistory, pendingNativeFactionDiscovery, preparedIncarnationPackage, lightSparks, treasury, or sourceOfLightCapstone unless that surface's own client-authored contract is also closed in the same accepted turn.\n\nIf a forbidden key appears in your draft response for the active realm, REMOVE it before finalizing.\n\nMATH ASSISTANT / МАТЕМАТИК:\nUse `mathRequests[]` / `mathAudit[]` for non-trivial mechanical arithmetic instead of relying only on prose. These fields write `game_state/meta/math_audit.json`. `mathRequests[]` is only a calculation request; `mathAudit[]` records the checked result with `formulaVersion = math_assistant_v1`, numeric variables, rounding, and `applicationState` (`calculated_only`, `applied_to_state`, or `mismatch_repair_blocking`). If the number changed game state, still write the actual target state/receipt surface and reference it through `mathAudit[].referencedBy[]`.\nFor Mortal player health, energy, and poise, use `resourceChanges[]` against exact targetId `player_current`; never emit legacy percentage or current*Change fields. The common resource authority validates the operation, source, amount, chronology, bounds, and atomic state/history publication.\nFor afterlife spiritual combat formulas, references to supported numeric paths such as `afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount` or a `diceAudit.margin` path require `mathAudit.result` to exactly equal that field. The afterlife validator still checks the full conflict/reward contract separately.\n\nNPC AGENCY — HARD REQUIREMENT:\nYou MUST declare NPC reasoning scope BEFORE narration instead of silently skipping or guessing it.\nYour gm_thoughts_markdown MUST contain:\n## Охват NPC-анализа\n- Режим / Mode: [Scene-local | World-progression | Guardian-centric | Mixed]\n- Релевантные акторы / Relevant actors: [...]\n- Почему они релевантны / Why they are relevant: ...\n- Акторы вне охвата / Actors outside scope: [...]\n- Почему они вне охвата / Why they are outside scope: ...\nScene-local MAY use `Relevant actors: нет` only when the turn truly has no actor that must reason or react with agency.\nThen, for every declared relevant actor, you MUST provide a reasoning block:\n### [Actor Name]\n- Текущая локация / Current location\n- Ситуация / Current situation\n- Мысли / Internal thoughts\n- Действия / Intended actions\nFor EVERY relevant NPC block, the current-location line is mandatory: explicitly state where the NPC is now and whether they stay there or relocate this turn.\nMissing scope declaration or missing/empty actor reasoning blocks will cause client rejection.\nIf you narrate a meaningful NPC reaction or introduce a new named NPC, you MUST also register/update the relevant NPC state. Narrative-only NPCs without state consequences are protocol violations.\nIf you emit structured actor updates such as UpdateNPCs, NPCGoalUpdates, NPCActivityUpdates, or UpdateGuardians, those actors MUST appear in Relevant actors and MUST have full reasoning blocks. Scene-local with `Relevant actors: нет` is valid only when no structured actor updates are emitted.\nThe same scope discipline applies to afterlife residents when you change them with UpdateGuardianAbodeResidents, residentThoughtJournalUpdates, residentInteractionLogUpdates, or UpdateGuardianAbodeResidentHistoryLog.\nIf a turn changes a resident's abode devotion, restlessness, migration state, or other resident-facing social state, that resident MUST appear in Relevant actors and MUST have a reasoning block.\n\nGUARDIAN AGENCY — HARD REQUIREMENT:\nIn Chaos Sea, use the same declared-scope model for relevant Guardians.\nFor Guardian-centric turns, the active Guardian MUST appear in the declared relevant actors and MUST have a full reasoning block before narration if activeGuardian is explicitly set in state.\nDo NOT skip Guardian reasoning just because the player is the current conversational focus.\n\nETERNAL GUARDIAN PRESETS:\nFor player-facing roleplay, these are called Eternal Guardians. In technical files/contracts, they are still named system guardian presets.\nIf the client-selected guardian request references an Eternal Guardian preset, you MUST materialize that exact named guardian rather than inventing a nearby substitute.\nWhen you create or rematerialize a guardian from an Eternal Guardian preset, write guardian.sourcePreset with:\n  - presetId\n  - displayName\n  - version\n  - library\nDo NOT drop sourcePreset metadata for client-selected Eternal Guardians.\nCanonical guardian identity now uses:\n  - canonicalName\n  - nameVariants { default, optional feminine/masculine/neutral }\n  - manifestation { currentDisplayName, formFlexibility, currentPresentationStyle, currentPronouns, appearanceDescription, optional presentationReason }\n  - manifestationHistory (past forms only; may be empty)\nDo NOT rely on legacy guardian.name as the primary identity field.\nIf the Guardian changes visible form, update manifestation and move the previous form into manifestationHistory.\n\nGUARDIAN PROJECT TRACKER — AFTERLIFE ONLY:\nGuardian project lifecycle no longer uses UpdateGuardians.updateProject.\nUse these dedicated top-level surfaces instead:\n  - startGuardianProjects\n  - guardianProjectUpdates\n  - completeGuardianProjects\n  - guardianPowerEvents\n  - afterlifeArchiveUpdates\nAuthoritative tracker lives in game_state/meta/guardian_projects.json.\nPlayer-facing readable chronology lives in game_state/meta/guardian_project_journal.json.\nPlayer-facing power history lives in game_state/meta/abode_power_journal.json.\nAfterlife-owned lore/secret offerings live in game_state/meta/soul_state.json.afterlifeArchive.stored.\nIf the player initiates archive consultation or archive project fuel, read the matching pending request in game_state/control/ and materialize a canonical result; the client does NOT derive archive compatibility from guardian domain.\nKeep at most one active guardian project per guardian in v1.\nAny Abode Power change must go through guardianPowerEvents or be materialized by the client from project completion into guardianPowerEvents-compatible history.\nGuardian project progress belongs to the tracker surfaces, not to raw guardian.currentProject.\nDo NOT mutate guardian.abodePower.currentPower directly in narrative surfaces without a matching power event and audit trail.\nIf guardianProjectUpdates carries meaningful project help or sabotage, include structured assistAudit / sabotageAudit:\n  - assistAudit uses DomainRelevance, RiskOrCost, ScarcityOrUniqueness, DirectProjectImpact, assistScore, classification\n  - sabotageAudit uses HostileReach, ProjectExposure, DamageIntent, DamageAchieved, PlayerComplicity, sabotageSeverityScore, classification\nThe client may materialize project_assist / rival_defense / rival_strike power events from those audits.\nFor political project terminals:\n  - completed offensive_intrigue must point at targetGuardianId; the client will deterministically compute targetLoss, pressureDelta, and stabilityDamage from current powers and political shields\n  - completed counter_rival_operation must point at targetGuardianId; the client will deterministically apply pressure/stability relief to the rival active pressure project if it exists\n  - guardians use guardianRelationships as the canonical directed inter-guardian standing network with attitudeScore/attitudeTier; prefer rival/enemy targets, treat competitive targets as lower-priority valid pressure, treat neutral targets as valid but weakly motivated pressure, and require an explicit betrayal reason before targeting ally/trusted guardians\n  - temporary anti-target coordination is valid only as derived coalition behavior: two Guardians may align against the same third Guardian only when they are non-hostile toward each other, both mark that third Guardian as rival/enemy, and there is an explicit current political project trace against that same target\n  - completed abode_fortification materializes persistent safePressure / defenseRating bonuses\n  - sabotaged abode_fortification may leave a temporaryProjectModifier for the next internal project start\n\nNEXT-LIFE SCENARIO CORE / GUARDIAN CORRECTIONS:\nThe client may maintain a machine-readable next-life scenario manifest at game_state/control/next_life_scenario_core.json.\nTreat scenarioCoreAssertions in that file as hard confirmed start facts.\ncandidateAssertions in that file are NOT binding unless the client already promoted them into scenarioCoreAssertions.\nThe client may also maintain game_state/control/archive_candidate_manifest.json during Life Evaluation.\nTreat archive_candidate_manifest.json as client-authored intake state for codex-derived discoveries that the player may preserve into the afterlife archive.\nThe client may maintain:\n  - game_state/control/pending_archive_consultation_request.json\n  - game_state/control/pending_archive_project_fuel_request.json\nTreat them as client-authored requests over a reserved archive entry. The entry is locked client-side but not yet consumed.\nDo NOT overwrite the pending files in GM output.\nResolve them by:\n  - materializing the canonical result in guardian project tracker/journal state when accepted\n  - and returning archiveActionResolutions in soul_state with requestId, archiveId, requestedMode and status=accepted|rejected|cancelled.\nFor accepted archive consultation, also include machine-readable whitelist outcome fields in archiveActionResolutions: guaranteedArchiveQuestCount, questHookCount, specialQuestLineUnlocks, visibleRivalClueBonus, archiveWarningTierBonus.\nFor accepted archive project fuel, also include machine-readable resultMode = project_work | pressure_relief and resultAmount > 0 in archiveActionResolutions.\nAccepted archive actions consume the reserved entry; rejected/cancelled actions release it back into the archive.\nIf game_state/world/guardian_corrections.json exists for the current mortal life, treat it as a client-authored explanation of which compatible Guardian corrections were applied and why.\nGuardian corrections are additions around the player's confirmed scenario core. They are not permission to negate, rewrite, or silently downgrade explicit player-authored start facts.\nDo NOT edit next_life_scenario_core.json, archive_candidate_manifest.json, or guardian_corrections.json in GM output; read them as input contracts only.\n\nABODE OFFERINGS — AFTERLIFE ONLY:\nIf game_state/control/pending_abode_offering.json exists, treat it as a client-authored request for a whitelisted offering to a specific Guardian's Abode.\nDo NOT edit pending_abode_offering.json in GM output; read it as input contract only.\nResolve the offering through guardianPowerEvents with reasonType=offering and a full offering audit.\nWhitelisted offering types may include:\n  - ink_feathers\n  - soul_relic\n  - archive_lore_fragment\n  - archive_secret_record\nOnly ink_feathers is also [INK_FEATHER_ACTION: ABODE_OFFERING] and requires output/ink_feather_action_result.json.\nFor soul_relic, archive_lore_fragment, or archive_secret_record, resolve plain [ABODE_OFFERING] through guardianPowerEvents only; do not write output/ink_feather_action_result.json or costInFeathers.\nUse afterlifeArchiveUpdates only for exceptional/system archive rewards.\nOrdinary codex-derived archive intake is client-driven through archive_candidate_manifest.json and soul_state.afterlifeArchive.stored; do not improvise it from mortal inventory/items.json.\nDo NOT mutate guardian.abodePower.currentPower directly for an offering without the matching power event.\n\nLOCAL GUARDIAN TRADE REQUESTS:\nIf game_state/control/pending_guardian_trade_request.json exists, treat it as a client-authored request to materialize guardian.tradeInventory for the current return cycle.\nDo NOT derive trade stock from guardian.domain in the client or assume the client will do it for you.\nAnswer the request by writing an explicit guardian.tradeInventory into guardians.json / activeGuardian mirror with matching tradeCycleId and a valid items array.\nClose the request canonically through UpdateGuardianTradeInventoryReceipts in guardians.json with matching requestId, tradeCycleId, itemCount, resolvedAtTurn, and resolvedAtUtc.\n\nPLAYER-FOUNDED GUARDIAN FOUNDATION:\nIf game_state/control/pending_player_guardian_foundation.json exists, treat it as a client-authored late-game Chaos Sea ritual to found a new guardian mantle after Shining return.\nThe player remains player_soul. Do NOT rewrite soul_state or narration as if the soul directly became an ordinary guardian actor.\nResolve the ritual by:\n  - creating a NEW guardian through UpdateGuardians.create with full canonical guardian shape,\n  - setting originType=player_founded_ascended_soul,\n  - setting founderLoyaltyTier=soulbound,\n  - setting foundationSource=shining_return and foundationRequestId,\n  - keeping the previous guardian in guardians[],\n  - making the new guardian the current activeGuardian,\n  - binding chaosSeaNavigation.currentAbodeId to the new guardian abode,\n  - writing soul_state.playerFoundedGuardianId,\n  - appending guardians.json.playerGuardianFoundationHistory[] receipt.\nIn v1 this route is single-use per save. Do NOT create a second player-founded guardian if one already exists.\n\nLOCAL NPC TRADE REQUESTS — MortalWorldProfile-only:\nIf game_state/control/pending_npc_trade_inventory_requests.json or [NPC_TRADE_REQUEST] is present in MortalWorldProfile, treat it as a client-authored request to materialize explicit npc.tradeInventory for the current world-time trade cycle.\nIf the same pending file or tag appears while currentRealm is Chaos Sea or Shining Abode, it is wrong-realm repair-only context: preserve it, do NOT materialize NPC stock, do NOT write UpdateNpcTradeInventoryReceipts, and do NOT mutate game_state/npcs/* from afterlife.\nDo NOT generate or infer NPC stock on the client.\nIn MortalWorldProfile only, prefer the GM turn helper: build a valid $items array with itemData.tradeItemClass, then call Complete-BoeNpcTradeInventoryRequest -RequestId '<requestId>' -Items $items. The helper finds NPCs by NPCId/npcId/id/initialId, recalculates slot prices from pricingTradeTier, writes explicit npc.tradeInventory with matching tradeCycleId/refreshAfterWorldDate/items, and closes the request through UpdateNpcTradeInventoryReceipts.\nIf you cannot use the helper, answer each request by writing explicit npc.tradeInventory into npc_core.json with matching tradeCycleId, refreshAfterWorldDate, and a valid items array, then close each request canonically through UpdateNpcTradeInventoryReceipts in npc_core.json with matching requestId, npcId, tradeCycleId, merchantProfile, itemCount, resolvedAtTurn, and resolvedAtUtc.\n\nLOCAL SHINING TRADE REQUESTS — ORDINARY ACTIVE SHINING ABODE ONLY:\nIf game_state/control/pending_shining_trade_inventory_requests.json exists while currentRealm is Shining Abode, shining_abode_state.availability is active, and preparedIncarnationPackage is null/absent, treat it as a client-authored request to materialize explicit shining faction tradeInventory for the current return cycle.\nIf this file appears in Chaos Sea, sealed Shining state, Shining pending-bootstrap handoff, or Shining package fault, it is wrong-realm/mode repair-only context: preserve it and do NOT resolve Shining trade receipts or mutate Shining trade stock from that turn.\nThese requests may be created automatically by the client when the Soul returns to the active Shining Abode after a new mortal life.\nDo NOT infer or generate Shining stock on the client.\nAnswer each request by writing explicit faction.tradeInventory into shining_abode_state.json with matching tradeCycleId, generationTradeTier, generationRarityCeiling, serviceMultiplierSnapshot and a valid items array.\nClose each request canonically through faction.tradeInventoryReceipts[] with matching requestId, factionId, tradeCycleId, itemCount, soldOutCount, resolvedAtTurn and resolvedAtUtc.\n\nSHINING FACTION PENDING CONTRACTS — ORDINARY ACTIVE SHINING ABODE ONLY:\nIf game_state/control/pending_shining_faction_foundings.json, pending_shining_faction_realignments.json, or pending_shining_faction_leadership_transitions.json exists, treat it as a client-authored Shining political contract.\nResolve these only in ordinary active Shining Abode: currentRealm=Shining Abode, availability=active, and preparedIncarnationPackage null/absent.\nIf any of these files appears in Chaos Sea, sealed Shining state, Shining pending-bootstrap handoff, or Shining package fault, preserve it as wrong-realm/mode repair-only context and do NOT use Mortal World factionDataChanges.\nFoundings close through canonical Shining faction state plus factionFoundingReceipts[] with exact quoted cost fields.\nRealignments close through canonical resident/faction alignment state plus factionRealignmentReceipts[] and required resident history when accepted/departed.\nLeadership transitions close through faction head state, leadership history, and leadershipReceipts[]; do not invent vacancy fills outside the explicit leadership contract.\n\nSOURCE OF LIGHT CAPSTONE — ORDINARY ACTIVE SHINING ABODE ONLY:\nIf game_state/control/pending_source_of_light_capstone.json exists, treat it as a client-authored Source of Light capstone request, not a Shining core action.\nResolve it only in ordinary active Shining Abode, after full Radiance, with no active spiritual conflict and no active/malformed overlapping afterlife pending/control contract.\nClose it by writing the Source of Light scene, setting shining_abode_state.json.sourceOfLightCapstone.completed, granting soul_state.afterlifeCombatProfile.capstones.lightIncarnate (light_incarnate / Воплощение Света), and adding exactly one stored Soul Relic source_of_light_incarnated_light / Воплощенный Свет.\nDo NOT write coreActionReceipts[] for Source of Light, do NOT equip the relic automatically, and do NOT clear the pending file unless the completed marker, passive, and stored relic tuple match the request.\n\nRIVAL SOUL ARCS — MORTAL WORLD ONLY:\nUse UpdateRivalSoulArcs to track parallel destiny lines for OTHER souls in the current mortal life.\nThese arcs are milestone-based world pressures, not a full second-protagonist simulation.\nKeep at most:\n  - 1 active major arc\n  - 1 active minor arc\nEach rival arc must include:\n  - arcId\n  - scope = major | minor\n  - arcType\n  - status = latent | rising | intersecting | resolved | failed\n  - sponsorGuardianRef\n  - rivalSoul\n  - objective\n  - playerIntersection\n  - milestones\n  - currentStage\n  - publicSignals\n  - resolution\nIf a hostile rival arc directly targets the player, you MUST surface at least two visible clues before direct collision or terminal harm.\nIf the arc becomes personal for the player, create or update a normal player-facing soul quest through UpdateSoulQuests and link it with relatedRivalArcId.\nIf you surface a rival arc clue through worldEventsLog, mark that world event with relatedRivalArcId too, so the player can recognize it as part of a parallel destiny line instead of random background noise.\nEvery publicSignals[] item must include visibleToPlayer=true|false explicitly; do not omit the field.\nFor rival-thread clue logic, linked worldEventsLog entries count as player-visible only when visibility is Public, Regional, or player_known.\nIf a Secret or Faction-Internal world event becomes known to the player through actual play, convert the linked player-facing world event entry to visibility=player_known so it can count as a visible clue without pretending it was always public.\nHidden Secret/Faction-Internal linked world events do NOT spend visible lore_research clue budget until they actually become Public, Regional, or player_known.\nWhen practical, add turn/timestamp/date information to publicSignals or linked world events, and describe consequences/impact/follow-up in those world events, so the player's rival-thread journal can show a clearer chronology and visible world changes.\nIf a new player-visible rival clue is revealed specifically through completed lore_research support, include bonusClueSourceProjectId, bonusClueRevealId, and optional bonusClueCost on that reveal surface so the client can spend life-bound clue budget deterministically.\nIf the SAME extra clue is mirrored through both publicSignals and linked worldEventsLog, reuse the same bonusClueRevealId on both surfaces so the client spends clue budget only once.\nDo NOT use rival arcs in Chaos Sea or Shining Abode.\n\nGUARDIAN-FORCED INCARNATION — HARD REQUIREMENT:\nIf game_state/control/afterlife_return_guard.json is semantic-valid (`reason = post_life_return`) and has remainingProtectedTurns > 0, the soul has just returned from a mortal life and MUST receive at least one ordinary afterlife turn before any Guardian-forced incarnation.\nIf afterlife_return_guard.json is malformed, unreadable, or parsed with the wrong reason, Guardian-forced incarnation is ALSO forbidden fail-closed until client normalization clears that invalid guard state.\nDo NOT immediately kick the soul back into a new life on that protected return turn.\nDo NOT immediately kick the soul back into a new life while afterlife_return_guard.json remains invalid or unreadable either; fail closed until client normalization clears that guard state.\nGuardian-forced incarnation is legal only on an ordinary player-driven Chaos Sea turn and only with one valid proof path:\n  - legacy explicit player provocation against the current active Guardian, using playerAction evidence such as [GUARDIAN_PROVOCATION: guardianId]\n  - or current-turn afterlife spiritual conflict proof in game_state/meta/afterlife_spiritual_conflict_state.json.recentConflicts[] where mode=resolve, resolutionState=resolved, resolvedAtTurn is the current turn, guardianId matches, operationType=force_incarnation, and playerOutcome/resolutionKind shows player loss, surrender, or concession\nIf you write game_state/control/incarnation_trigger.json in this forced mode, include:\n  - source = guardian_forced\n  - guardianId\n  - severityBand = harsh | severe\n  - reason\n  - provocationSummary\n  - worldDescription, characterDescription, circumstances\nThe resulting start must be harsh but survivable. Do NOT create an unwinnable deathtrap.\n\nSOUL IDENTITY CONTINUITY:\nIf game_state/meta/soul_state.json contains previousSoulNames, they are former names of the SAME soul.\nDo NOT treat a renamed soul as a different person and do NOT reset Guardian continuity because of a soul rename.\nIf game_state/meta/soul_state.json contains soulFormDescription, it is player-authored roleplay identity for how the soul appears in afterlife scenes. Use it in prose when relevant, but do NOT overwrite or normalize it from ordinary GM output.\n\nSOUL RELIC GACHA — ANTI-CHEAT PROTOCOL:\nThe 'preGeneratedDices1d20' field is the authoritative dice pool for your normal checks. Start from the FIRST die in that list.\nThe 'gachaBaseResult' field is a SEPARATE client-computed gacha outcome. Do NOT assume any dice were consumed from preGeneratedDices1d20 to produce it.\nIts thresholds remain: 4-48=Common, 49-67=Uncommon, 68-75=Rare, 76-79=Epic, 80=Legendary.\nIf playerAction contains [CHAOS_SEA_DIRECT_GACHA], this is a DIRECT pull from the Chaos Sea, not a Guardian-mediated pull.\n  - Do NOT apply Guardian reputation bonuses, penalties, discounts, jealousy/social effects, or other Guardian modifiers.\n  - Preserve the exact cost phrase from playerAction: '<N> Чернильных Перьев' or '<N> Ink Feathers'. The validator uses it as prepaid cost proof.\n  - Treat gachaBaseResult.baseRarity as the exact final rarity. Direct /gacha has NO upgrade or downgrade path.\n  - Add the relic directly to soul state via metaStateUpdates.soulRelicOperations.addRelic.\nIf the pull is Guardian-mediated, the 'baseRarity' from gachaBaseResult is the MINIMUM rarity. You may ONLY upgrade it using documented modifiers:\n  - Abode Power rarity ceiling bonus: abodePower.currentPower >= 60 gives +1 allowed rarity step.\n  - Completed relic_forging Guardian project bonus: spend the documented one-use project bonus and record sourceProjectId.\n  - Guardian reputation affects the canonical gacha_attempts resource maximum and trade pricing, not rarity odds.\n  - Hard/Impossible mortal-world difficulty modifiers do not change afterlife Guardian gacha rarity unless validator/audit support is explicitly added.\nGuardian-mediated pulls are LIMITED per Guardian per return from mortal life:\n  - Hostile(-100..-51): blocked\n  - Wary/Neutral(-50..49): 1 attempt\n  - Friendly(50..129): 2 attempts\n  - Devoted/Legendary(130..300): 3 attempts\n  - If that Guardian's exact canonical gacha_attempts resource current value is 0, DO NOT emit processGacha for them.\nIf a Guardian-mediated pull finishes above baseRarity, include gachaBonusAudit with:\n  - baseRarity\n  - abodePowerBonusSteps\n  - relicForgingBonusSteps\n  - finalRarity\n  - sourceProjectId if relic forging bonus was actually spent\nCompleted recipe-driven guardian projects may be TEMPORARY:\n  - relic_forging lasts only until the next local trade refresh and one guardian-mediated gacha use\n  - lore_research life-bound hook/clue bonuses last only for the target incarnation\n  - soul_preparation applies only to the next life and is consumed at correction resolution\nDirect /gacha remains neutral and does NOT consume Guardian charges.\nYou MUST NOT downgrade, upgrade, or ignore the client-computed baseRarity for direct /gacha. Log the full calculation in gm_thoughts_markdown.\n\nSHINING RELIC GACHA:\nIf game_state/control/pending_shining_abode_actions.json exists with actionType=pull_relic_gacha, treat it as a faction-banner relic pull inside the active Shining Abode.\nUse turn_request.gachaBaseResult.baseRarity as the MINIMUM rarity floor for the pull.\nShining banner modifiers may only increase or preserve that base rarity; they must not downgrade it.\nThe client-authored request includes projectedGachaBonusSteps and returnCycleId. Do NOT exceed that projected bonus ceiling.\nResolve the pull by:\n  - adding exactly one Soul Relic result to soul state,\n  - appending exactly one matching shining_abode_state.json.gachaSystem.gachaHistory[] entry; the client consumes one canonical gacha_attempts resource unit,\n  - writing a matching coreActionReceipts[] entry with requestId, actionType=pull_relic_gacha, factionId, returnCycleId, relicId, relicName, baseRarity, finalRarity, resolvedAtTurn and resolvedAtUtc.\nShining relic gacha consumes the quoted Ink Feather cost from the request and does NOT use Light Sparks.\nThe client owns the guarded quartet game_state/resources/resource_definitions.json, resource_state.json, resource_history.json, and resource_owner_authority.json. GM MUST NOT write any quartet root; missing/stale owner authority fails closed outside Fresh New Game bootstrap, and Mortal-incarnation bootstrap requires the exact existing quartet. Author only the documented Guardian/Shining outcome and audit fields.\n\n\n\nSYSTEM MODS:\n  - No active global system mods are enabled for this session.\n  - Ignore files in game_session/mods unless they appear in game_state/core/system_mods.json.activeMods[].\n\nACTOR MEMORY DIGEST:\n- Active Guardian: Спокойный Хранитель маяка на\n- Guardian event memory: no curated social summary yet for Спокойный Хранитель маяка на.\n",
+    "progressionControl": {
+      "currentRealm": "Chaos Sea",
+      "currentWorldTimeInMinutes": 0,
+      "lastWorldSimulationTimeInMinutes": 0,
+      "lastFactionSimulationTimeInMinutes": 0,
+      "worldCycleMinutes": 240,
+      "factionCycleMinutes": 1440,
+      "worldCyclesAlreadyPendingBeforeTurn": 0,
+      "factionCyclesAlreadyPendingBeforeTurn": 0,
+      "mustEvaluateWorldProgression": false,
+      "mustEvaluateFactionProgression": false,
+      "currentChaosSeaTurnOrdinal": 0,
+      "nextChaosSeaTurnOrdinal": 1,
+      "lastChaosSeaSimulationOrdinal": 0,
+      "lastGuardianProjectCycleOrdinal": 0,
+      "nextGuardianProjectCycleOrdinal": 1,
+      "lastResidentAgencyCycleOrdinal": 0,
+      "lastShiningAbodeCycleOrdinal": 0,
+      "lastShiningFactionCycleOrdinal": 0,
+      "lastShiningTradeCycleOrdinal": 0,
+      "chaosSeaCycleEquivalentHours": 24,
+      "nextResidentAgencyCycleOrdinal": 1,
+      "nextShiningAbodeCycleOrdinal": 0,
+      "nextShiningFactionCycleOrdinal": 0,
+      "nextShiningTradeCycleOrdinal": 0,
+      "chaosSeaCyclesExpectedThisTurn": 1,
+      "guardianProjectCyclesExpectedThisTurn": 1,
+      "residentAgencyCyclesExpectedThisTurn": 1,
+      "shiningAbodeCyclesExpectedThisTurn": 0,
+      "shiningFactionCyclesExpectedThisTurn": 0,
+      "shiningTradeCyclesExpectedThisTurn": 0,
+      "mustEvaluateChaosSeaProgression": true,
+      "mustEvaluateGuardianProjectProgression": true,
+      "mustEvaluateResidentAgencyProgression": true,
+      "mustEvaluateShiningAbodeProgression": false,
+      "mustEvaluateShiningFactionProgression": false,
+      "mustEvaluateShiningTradeProgression": false,
+      "afterlifeCatchupRequired": false,
+      "afterlifeCatchupElapsedCycles": 0,
+      "afterlifeCatchupPressureTier": "none",
+      "afterlifeCatchupSummaryEventsRequired": 0,
+      "afterlifeCatchupContours": []
+    },
+    "effectSkillScopeCatalog": {
+      "schemaVersion": 1,
+      "targets": []
+    }
+  },
+  "LoopbackHostListening": true,
+  "RootPage": {
+    "Stage": "new-game-root-page",
+    "Path": "/",
+    "StartedAt": 4.385677,
+    "Status": 200,
+    "Body": "<!doctype html>\n<html lang=\"ru\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"theme-color\" content=\"#0a0705\" />\n    <meta name=\"color-scheme\" content=\"dark\" />\n    <meta name=\"description\" content=\"Книга Вечности: Перерождение — браузерный клиент ролевой игры нового поколения.\" />\n    <title>Книга Вечности: Перерождение — Браузерный клиент</title>\n    <script type=\"module\" crossorigin src=\"/assets/index-C3WrO_KC.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-DrvFFnc7.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n",
+    "ContentType": "text/html; charset=utf-8",
+    "DurationSeconds": 0.177189
+  },
+  "OriginalRunningStatus": {
+    "ok": true,
+    "status": {
+      "terminalRunId": "ea7d01ef2d774fcdbd79df18388f3ab1",
+      "terminalGuarantee": "ordinary-same-namespace-lineage",
+      "terminalUncertain": false,
+      "terminalOwnerRetained": true,
+      "inputBindingId": "b60a186f789c4ea4908ac715019be9b5",
+      "backend": "native-lineage",
+      "state": "OperatorNotReady",
+      "ready": false,
+      "helperPid": 956067,
+      "sessionPath": "/tmp/h3-82779715/play/game_session",
+      "shellPid": 956083,
+      "pipeName": "og-8b9d72cabb6c",
+      "cliLaunchCommand": "& '/usr/bin/python3' '/tmp/h3-82779715/relay/codex-gm-relay.py' --session '/tmp/h3-82779715/play/game_session' --queue '/tmp/h3-82779715/queue' --model gpt-6.1-sol",
+      "shellWorkingDirectory": "/tmp/h3-82779715/play/game_session",
+      "lastPromptDispatchState": "None",
+      "startedAtUtc": "2026-10-08T06:04:23.1192391+00:00",
+      "updatedAtUtc": "2026-10-08T06:04:23.8493693+00:00",
+      "workerStatuses": [
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "validation_repair_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "narrative_draft_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "analysis_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "guardian_abode_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "soul_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "inventory_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "skill_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "npc_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        }
+      ]
+    }
+  },
+  "OriginalRunningRecord": {
+    "SchemaVersion": 1,
+    "Identity": {
+      "RootKey": "/tmp/h3-82779715/play",
+      "RunId": "ea7d01ef2d774fcdbd79df18388f3ab1",
+      "GenerationId": "14ad68fa6b87461cba7b3d758fb3965b",
+      "Epoch": 1,
+      "Backend": "LinuxSupervisor",
+      "HostInstanceId": "8b6c16ee013d42d79019905e79b1e1b1",
+      "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+    },
+    "Disposition": "Running",
+    "StopEvidence": null
+  },
+  "RelayReadiness": {
+    "terminalRunId": "ea7d01ef2d774fcdbd79df18388f3ab1",
+    "terminalGuarantee": "ordinary-same-namespace-lineage",
+    "terminalUncertain": false,
+    "terminalOwnerRetained": true,
+    "inputBindingId": "b60a186f789c4ea4908ac715019be9b5",
+    "backend": "native-lineage",
+    "state": "Ready",
+    "ready": true,
+    "helperPid": 956067,
+    "sessionPath": "/tmp/h3-82779715/play/game_session",
+    "shellPid": 956083,
+    "pipeName": "og-8b9d72cabb6c",
+    "cliLaunchCommand": "& '/usr/bin/python3' '/tmp/h3-82779715/relay/codex-gm-relay.py' --session '/tmp/h3-82779715/play/game_session' --queue '/tmp/h3-82779715/queue' --model gpt-6.1-sol",
+    "shellWorkingDirectory": "/tmp/h3-82779715/play/game_session",
+    "lastPromptDispatchState": "None",
+    "startedAtUtc": "2026-10-08T06:04:23.1192391+00:00",
+    "updatedAtUtc": "2026-10-08T06:04:24.0905302+00:00",
+    "workerStatuses": [
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "validation_repair_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+      },
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "narrative_draft_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+      },
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "analysis_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+      },
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "guardian_abode_content_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+      },
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "soul_content_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+      },
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "inventory_content_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+      },
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "skill_content_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+      },
+      {
+        "outputsSettled": false,
+        "cleanupDeferred": false,
+        "workerId": "npc_content_codex",
+        "state": "disabled",
+        "ready": false,
+        "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+      }
+    ]
+  },
+  "PersistentRelayReady": true,
+  "NoRelaySubmit": true,
+  "WebStopped": true,
+  "RelayExecutionClosed": true,
+  "ShutdownReceipt": {
+    "ok": true,
+    "status": {
+      "terminalRunId": "ea7d01ef2d774fcdbd79df18388f3ab1",
+      "terminalGuarantee": "ordinary-same-namespace-lineage",
+      "terminalUncertain": false,
+      "terminalStop": {
+        "identity": {
+          "runId": "ea7d01ef2d774fcdbd79df18388f3ab1",
+          "backend": "native-lineage",
+          "guarantee": "ordinary-same-namespace-lineage",
+          "rootPid": 956083
+        },
+        "state": "stopped-within-scope",
+        "reason": "stop-requested",
+        "cleanupComplete": true,
+        "authorityRetained": false
+      },
+      "terminalOwnerRetained": false,
+      "inputBindingId": "b60a186f789c4ea4908ac715019be9b5",
+      "backend": "native-lineage",
+      "state": "ShuttingDown",
+      "ready": false,
+      "helperPid": 956067,
+      "sessionPath": "/tmp/h3-82779715/play/game_session",
+      "pipeName": "og-8b9d72cabb6c",
+      "cliLaunchCommand": "& '/usr/bin/python3' '/tmp/h3-82779715/relay/codex-gm-relay.py' --session '/tmp/h3-82779715/play/game_session' --queue '/tmp/h3-82779715/queue' --model gpt-6.1-sol",
+      "shellWorkingDirectory": "/tmp/h3-82779715/play/game_session",
+      "lastPromptDispatchState": "None",
+      "startedAtUtc": "2026-10-08T06:04:23.1192391+00:00",
+      "updatedAtUtc": "2026-10-08T06:04:25.7719259+00:00",
+      "workerStatuses": [
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "validation_repair_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "narrative_draft_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "analysis_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "guardian_abode_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "soul_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "inventory_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "skill_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        },
+        {
+          "outputsSettled": false,
+          "cleanupDeferred": false,
+          "workerId": "npc_content_codex",
+          "state": "disabled",
+          "ready": false,
+          "updatedAtUtc": "2026-10-08T06:04:23.5530957+00:00"
+        }
+      ]
+    }
+  },
+  "StoppedRecord": {
+    "SchemaVersion": 1,
+    "Identity": {
+      "RootKey": "/tmp/h3-82779715/play",
+      "RunId": "ea7d01ef2d774fcdbd79df18388f3ab1",
+      "GenerationId": "14ad68fa6b87461cba7b3d758fb3965b",
+      "Epoch": 1,
+      "Backend": "LinuxSupervisor",
+      "HostInstanceId": "8b6c16ee013d42d79019905e79b1e1b1",
+      "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+    },
+    "Disposition": "Stopped",
+    "StopEvidence": {
+      "Identity": {
+        "RootKey": "/tmp/h3-82779715/play",
+        "RunId": "ea7d01ef2d774fcdbd79df18388f3ab1",
+        "GenerationId": "14ad68fa6b87461cba7b3d758fb3965b",
+        "Epoch": 1,
+        "Backend": "LinuxSupervisor",
+        "HostInstanceId": "8b6c16ee013d42d79019905e79b1e1b1",
+        "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+      },
+      "Kind": "OwnedScopeEmpty",
+      "ObservedBootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+    }
+  },
+  "Terminals": {
+    "client": {
+      "ExitCode": 0,
+      "EOF": true,
+      "TermiosRestored": true,
+      "CapturedBytes": 4431
+    },
+    "web": {
+      "ExitCode": 0,
+      "EOF": true,
+      "TermiosRestored": true,
+      "CapturedBytes": 0
+    },
+    "bridge": {
+      "ExitCode": 0,
+      "EOF": true,
+      "TermiosRestored": true,
+      "CapturedBytes": 510
+    }
+  },
+  "ShutdownAttempts": 1,
+  "ElapsedSeconds": 28.027,
+  "HttpRequests": 133,
+  "StatusCounts": {
+    "200": 107,
+    "500": 26
+  },
+  "Http500": 26
+}
