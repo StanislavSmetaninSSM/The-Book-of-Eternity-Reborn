@@ -794,7 +794,12 @@
   "WindowsAfterMerge": true,
   "GMRequests": 0,
   "MergePerformed": false,
-  "EvidenceReview": "pending",
+  "EvidenceReview": {
+    "Model": "gpt-6.1-sol",
+    "Reasoning": "xhigh",
+    "SHA": "d99659fb49b9884e6743d4a7b036d5f6696a36f9",
+    "Verdict": "PASS:18pins/59artifacts/counts/fingerprints/42union/6guardians independently verified"
+  },
   "MetadataReview": "pending",
   "FinalDelivery": "Writer final remote/readback and fresh GitHub-only restore required after metadata carrier"
 }

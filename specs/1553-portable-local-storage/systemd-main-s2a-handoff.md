@@ -20,7 +20,7 @@ No existing coordinator/schema1/launcher was replaced. Connected fixtures inject
 | Guardian |6total/6ECHILD, emergency0/failure0/deadlinefalse; physical cleanup never promotes logical Uncertain |
 | Discovery / selection |432categories/11192methods-files,0tests; PlanOnly42cases/3descriptors,0tests |
 | Source evidence |18source pins/59artifact records; both dirty GREEN fingerprints reconstructed exactly from committed source/test blobs |
-| Reviews |Actual Sol6.1/xhigh design PASS73d58e5e; source PASS2ad77e29 after two P2 verification requests closed; evidence/metadata pending |
+| Reviews |Actual Sol6.1/xhigh design PASS73d58e5e; source PASS2ad77e29 after two P2 verification requests closed; evidence PASSd99659fb; metadata pending |
 
 The positive Bridge case uses two inputs, original Running identity and actual disposal/StoppedACK. Two fault cases first observe Empty, then replace identity or lose reading on the post-native-reap sample; input closes and the original owner/durable nonterminal remains retained. Native FD fixtures use owned regular directories and synthetic event bytes; separate tests check real self-namespace NSFS statx, exact owned FD closure/EBADF, and initial symlink/partial-open refusal. These do not qualify a systemd scope.
 
