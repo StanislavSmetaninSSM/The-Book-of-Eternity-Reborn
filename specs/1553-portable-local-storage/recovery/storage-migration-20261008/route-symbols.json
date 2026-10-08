@@ -6,7 +6,10 @@
     "AppendFileAtomicIfCurrentSessionAsync",
     "CompareExchangeFileBytesAsync",
     "DeleteFile",
-    "UsesTrustedLocalWriter"
+    "UsesTrustedLocalWriter",
+    "WriteManifestForGmAsync",
+    "WriteAttractionRequestAsync",
+    "ClearAttractionRequest"
   ],
   "F02": [
     "CreateBackup",
@@ -44,7 +47,8 @@
     "DeleteFileIfCurrentOwnedAsync",
     "DeleteFileIfCurrentAuthorityAsync",
     "ApplyPlayerSoulProfileClientAuthorityAsync",
-    "ApplyPlayerSoulProfileClientAuthorityForRefreshAsync"
+    "ApplyPlayerSoulProfileClientAuthorityForRefreshAsync",
+    "ArchiveInactivePendingSnapshotEvidenceAsync"
   ],
   "F07": [
     "BeginLoadTransaction",
@@ -96,7 +100,11 @@
     "GmSessionRunPersistence",
     "WorkerRunLedgerPersistence",
     "GmWorkerExecutionWorkspace",
-    "PublishOriginalStatusAsync"
+    "PublishOriginalStatusAsync",
+    "LinuxCreateOnlyDirectoryRename",
+    "RenameAt2",
+    "MoveSyntheticRuntimeBundleIntoCanonicalSessionAsync",
+    "GmWorkerSyntheticBundlePublication"
   ],
   "F17": [
     "CreateGameSessionSafetyBackup",
@@ -105,10 +113,47 @@
     "CopyDirectoryRecursive"
   ],
   "F18": [
+    "AfterCanonicalMutationBoundaryValidatedAsync",
+    "AfterCanonicalReadAttemptAsync",
+    "AfterCanonicalReadInitialValidationAsync",
+    "AfterCanonicalWriteLockOpenedAsync",
+    "AfterExactPhysicalReadInitialValidationAsync",
+    "AfterLoadDirectoryMoveAsync",
+    "AfterLoadStagingFinalValidationAsync",
+    "AfterPhysicalFileAuthorityValidatedAsync",
     "AfterPhysicalFilePublishedAsync",
-    "BeforePhysicalSourcePublishedAsync",
+    "AfterRuntimeFileReadInitialValidationAsync",
+    "AfterRuntimeFileReadOpenedAsync",
+    "AfterRuntimeMutationBoundaryValidatedAsync",
+    "AfterSessionLifecycleLockOpenedAsync",
+    "BeforeCanonicalExistenceFollowUpProbeAsync",
     "BeforeCanonicalMutationAsync",
+    "BeforeCanonicalMutationBoundaryAsync",
+    "BeforeCanonicalReadOpenAsync",
+    "BeforeCanonicalWriteLockOpenAsync",
+    "BeforeCreateDirectory",
+    "BeforeDeleteDirectory",
+    "BeforeDeleteFile",
+    "BeforeLoadDirectoryMoveAsync",
+    "BeforeLoadPublicationGuardRootDeleteAsync",
+    "BeforeMainBorrowRetainAsync",
+    "BeforeMoveDirectory",
+    "BeforePhysicalRollbackAbsenceFinalValidationAsync",
+    "BeforePhysicalSourcePublishedAsync",
+    "BeforeRuntimeFileCreateAsync",
+    "BeforeRuntimeFileReadOpenAsync",
+    "BeforeSessionLifecycleLockOpenAsync",
+    "BeforeWriteAllTextAtomic",
+    "CanonicalWriteLockContendedAsync",
+    "DirectoryExists",
+    "FileExists",
+    "LoadOperationObserver",
     "LocalPublicationObserver",
-    "LocalPublicationRecoveryObserver"
+    "LocalPublicationRecoveryObserver",
+    "MainOwnerLockContendedAsync",
+    "SessionLifecycleLockContendedAsync",
+    "SessionOperationClosingAsync",
+    "SupportsDescriptorBoundCreateOnlyPublicationOverride",
+    "SupportsReversibleFileReplacementOverride"
   ]
 }

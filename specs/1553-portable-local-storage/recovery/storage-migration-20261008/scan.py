@@ -13,6 +13,7 @@ RULES = {
  'raw_filesystem': r'\b(?:System\.IO\.)?(?:File|Directory|FileInfo|DirectoryInfo)\.\w+\s*\(|\bnew\s+(?:FileStream|StreamWriter|FileInfo|DirectoryInfo|FileSystemWatcher)\s*\(',
  'physical_adapter': r'\b(?:PhysicalFileAuthority|ReversibleFilePublication)\.\w+|\b(?:RenameOpenedObjectRelative|CreateNewWritableFile|DeleteOpenedFile|DeleteOpenedDirectory|CreateHardLinkRelative)\s*\(',
  'current_publisher': r'\b(?:TrustedLocalFilePublication|TrustedLocalFileScope|TrustedLocalFileImage|TrustedLocalNamespacePlan|TrustedLocalPublicationOutcome|TrustedLocalPublicationDisposition|TrustedLocalPublicationPhase)\b|\b(?:PublishLocal\w*|PublishStandaloneDarenProfileAsync|RecoverTrustedLocalStorage|RequireCommittedLocalPublication|UsesTrustedLocalWriter)\s*\(',
+ 'authority_read': r'\b(?:ReadFileAsync|ReadFileBytesAsync|ReadFileSync|ReadFileSnapshotAsync|ReadLocalFileBytesAsync|ReadOriginalFileBytesAsync|FileExists|DirectoryExists|DirectoryHasContent|EnumerateFiles|ReadExistingSessionGeneration)\s*\(',
  'facade_io': r'\b(?:WriteFile\w*|AppendFile\w*|DeleteFile\w*|DeleteDirectory\w*|CreateDirectory\w*|CopyFile\w*|MoveFile\w*|ReadOriginalFile\w*|WriteRuntime\w*|ReadRuntime\w*|WriteExact\w*)\s*\(',
  'transaction_recovery': r'\b(?:Create\w*Backup\w*|Restore\w*|Recover\w*|Roll[Bb]ack\w*|TryRestore\w*|Cleanup\w*Backup\w*|Resolve\w*(?:Recovery|Publication)\w*|Stage\w*(?:Transaction|Rollback|Snapshot)\w*|Commit\w*(?:Transaction|Publication|Progress)\w*|TryCommit\w*|Publish\w*(?:Async|Outcome|Deferred))\s*\(|\b(?:MutationIntentRecorder|IsLegacyStorageRecovery|ExternalPublicationContext|PendingLocalDecision)\b',
  'observer_hook': r'\b(?:AfterPhysicalFilePublishedAsync|BeforePhysicalSourcePublishedAsync|AfterPhysicalFileAuthorityValidatedAsync|BeforePhysicalRollbackAbsenceFinalValidationAsync|BeforeCanonicalMutationAsync|BeforeCanonicalMutationBoundaryAsync|AfterCanonicalMutationBoundaryValidatedAsync|LocalPublicationObserver|LocalPublicationRecoveryObserver|AfterFileMutationAppliedAsync|BeforeFileMutationRollback|AfterBackupsCapturedAsync|BeforeBackupCleanupAsync|AfterWriteAppliedAsync|afterWriteApplied|afterPublished|beforeSourcePublished)\b',
@@ -21,6 +22,9 @@ RULES = {
  'script_filesystem': r'\b(?:Set-Content|Add-Content|Out-File|New-Item|Remove-Item|Move-Item|Copy-Item|Rename-Item|Export-Clixml|Export-Csv)\b|\.(?:write_text|write_bytes|unlink|mkdir|rmdir|rename|replace|touch|open)\s*\(|\b(?:os|shutil|fs|fsp)\.(?:replace|rename|remove|unlink|mkdir|makedirs|rmdir|rmtree|copy|copy2|copytree|move|writeFile\w*|appendFile\w*|rename\w*|unlink\w*|mkdir\w*|rm\w*|createWriteStream)\s*\(|\bopen\s*\([^\n]*[\"\'][wax][b+]?|^\s*(?:cp|mv|rm|mkdir|install|tee)\s+',
  'powershell_dotnet_io': r'\[(?:System\.)?IO\.(?:File|Directory|FileStream|StreamWriter)\]::\w+|\b(?:Register-ObjectEvent|Unregister-Event|Wait-Event|WaitForChanged|EnableRaisingEvents)\b',
  'frontend_storage_events': r'\b(?:localStorage|sessionStorage|indexedDB|EventSource)\b|\.\s*(?:addEventListener|removeEventListener|dispatchEvent|invalidateQueries)\s*\(',
+ 'callback_boundary': r'\b(?:Before|After)[A-Z]\w*\b|\b\w*(?:Hooks|Observer|ContendedAsync|ClosingAsync)\b',
+ 'callback_declaration': r'\b(?:Action|Func)(?:<[^;\n]+>)?\??\s+\w+\s*(?=[{;=,)])',
+ 'managed_native_entrypoint': r'\b(?:LinuxCreateOnlyDirectoryRename|RenameAt2|DllImport|LibraryImport)\b|EntryPoint\s*=\s*"(?:renameat2?|unlinkat?|mkdirat?|fsync|fdatasync|WriteFile|CreateFile\w*)"',
  'native_storage': r'\b(?:fsync|fdatasync|renameat2?|unlinkat?|mkdirat?|ftruncate|FlushFileBuffers|MoveFileEx\w*|ReplaceFile\w*|SetFileInformationByHandle|CreateFile\w*|WriteFile)\s*\(',
 }
 PATTERNS={k:re.compile(v,re.MULTILINE) for k,v in RULES.items()}
@@ -28,7 +32,7 @@ def git(*args): return subprocess.check_output(['git',*args],cwd=ROOT).decode()
 changed=set(git('diff','--name-only',OLD+'..'+BASE).splitlines())
 def classify(path,family,symbol):
     test=any(x in path for x in ['.Tests/','.IntegrationTests/','.TestSupport/','tests/','/tests/'])
-    if family=='observer_hook':
+    if family in ['observer_hook','callback_boundary','callback_declaration']:
         if symbol.startswith(('LocalPublicationObserver','LocalPublicationRecoveryObserver')):
             return 'migrated','current phase API; each use still needs reached-cut and ordering assertions'
         return 'remains-to-migrate','route/phase audit required; retained recorder/recovery uses may be intentional, ordinary-route assumptions are not portable'
