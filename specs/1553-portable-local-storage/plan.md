@@ -1,3 +1,15 @@
+## Treatment exact receipt oracle correction — 2026-10-08
+
+Review rejected a post-evidence full current-graph export/Compose oracle: after Unknown,
+partial restoration is supported and does not promise a valid whole graph. The fixture
+now retains the actual generation registry under its original initial lease, observes
+its original taken receipt at the actual publication cut, and probes the existing exact
+receipt restart-blocker API after explicit evidence-preserving fixture repair/recovery.
+ConfirmedHeld uses the original immutable accepted context. No new receipt or authority
+is created by this observation. Teardown also records/asserts original fixture removal.
+Intermediate ffcb Plan220913 succeeded3/one/zero43.4720675s and is preserved; no causal
+execution yet. Exactthree and production unchanged; focused gate/fresh build pending.
+
 ## Treatment original-cause fixture refinement — 2026-10-08
 
 Intermediate d0c Plan220710 compiled exact3/one/zero successfully45.6252156s,

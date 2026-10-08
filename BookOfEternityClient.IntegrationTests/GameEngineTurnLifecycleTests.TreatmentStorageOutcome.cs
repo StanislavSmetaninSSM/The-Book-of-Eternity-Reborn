@@ -1,6 +1,7 @@
 using System.Buffers.Binary;
 using System.Diagnostics;
 using System.Runtime.ExceptionServices;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -98,7 +99,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 blockerFailure = await Record.ExceptionAsync(async () =>
                 {
                     await context.AcquireLeaseAsync();
-                    AssertTreatmentPublicationRestartBlocked(context);
+                    Assert.True(AcceptedTurnAuthorityRegistry.HasExactMortalWoundTreatmentPublicationRestartBlocker(
+                        context.FileSystem, context.Lease, Assert.IsType<MortalWoundTreatmentPublicationTakeReceipt>(cut.OriginalReceipt)));
                     await AssertConfirmedHeldLiveRegistryProbeAsync(context);
                     restartBlocked = true;
                     await context.ReleaseLeaseAsync();
@@ -108,6 +110,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 mode, cut.BusinessCutCount, cut.PublishedTreatmentMembers, cut.Cuts,
                 cut.Target, cut.TargetIndex, cut.SharingConflictObserved,
+                OriginalReceiptCaptured = cut.OriginalReceipt is not null,
                 cut.RestoreReadAttemptsAfterCut, cut.PublicationsAfterCut,
                 TypedCarrier = cut.OriginalUncertainty?.GetType().FullName,
                 Failure = failure?.ToString(), DisposalFailure = disposalFailure?.ToString(),
@@ -165,6 +168,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             // No canonical read/recovery in fixture teardown: retain evidence until owned directory disposal.
             if (transaction is not null)
                 _directGachaOutput?.WriteLine("Original transaction Dispose was not reached; fixture failed before its lifecycle boundary.");
+            await context.DisposeAsync();
+            var removed = !Directory.Exists(context.Root);
+            _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new { mode, OwnedTreatmentFixtureRemoved = removed }));
+            Assert.True(removed, "The original treatment fixture directory was not removed.");
         }
     }
 
@@ -181,6 +188,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         private HeldTreatmentPipelineContext? _context;
         private FileStream? _holder;
         private byte[]? _initialResourceBytes;
+        private object? _originalRegistryState;
         private readonly InvalidOperationException _forward = new("actual treatment publication cut");
         internal InvalidOperationException BusinessFailure { get; } = new("known post-publication treatment validation failure");
         private readonly EventHandler<FirstChanceExceptionEventArgs> _firstChance;
@@ -220,10 +228,15 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal bool TreatmentResourceChanged { get; private set; }
         internal Dictionary<string, byte[]> PublishedTreatmentImages { get; } = new(StringComparer.Ordinal);
         internal CoordinatedStatePublicationUncertainException? OriginalUncertainty { get; private set; }
+        internal MortalWoundTreatmentPublicationTakeReceipt? OriginalReceipt { get; private set; }
         internal string JournalPath => Path.Combine(_context!.FileSystem.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
         internal void Attach(HeldTreatmentPipelineContext context)
         {
             _context = context;
+            // Retain the real already-populated generation registry under the fixture's
+            // existing lease. At the cut we observe its actual taken receipt; no token is minted.
+            _originalRegistryState = typeof(AcceptedTurnAuthorityRegistry).GetMethod("GetState",
+                BindingFlags.Static | BindingFlags.NonPublic)!.Invoke(null, [context.FileSystem, context.Lease]);
             _initialResourceBytes = File.ReadAllBytes(context.FileSystem.ResolvePath(ResourceMaterializationContract.StatePath));
         }
         private Task BeforeLease()
@@ -276,6 +289,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             using var json = ReadJournalMetadata(File.ReadAllBytes(JournalPath));
             var target = json.RootElement.GetProperty("Members")[index].GetProperty("Path").GetString()!;
             if (_mode == "engine_mirror" && !string.Equals(target, _context!.FileSystem.ResolvePath(AfterlifeEntityProfileState.StatePath), StringComparison.Ordinal)) return;
+            OriginalReceipt = Assert.IsType<MortalWoundTreatmentPublicationTakeReceipt>(
+                _originalRegistryState!.GetType().GetField("_openTreatmentPublicationReceipt",
+                    BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(_originalRegistryState));
             Target = target; TargetIndex = index; PublishedBytes = File.ReadAllBytes(target); Cuts++;
             if (_mode == "engine_mirror")
             {
