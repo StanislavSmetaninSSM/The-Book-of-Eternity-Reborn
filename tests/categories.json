@@ -17579,6 +17579,34 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-owner-conjunction-linux",
+      "responsibility": "A01 bounded original Linux production owner/worker conjunction, refused borrowed inventory release, retained uncertain owner and cold nonterminal refusal before host-specific owner changes. Shared membership is deliberately deduplicated by the runner.",
+      "excludes": "Windows native main/worker qualification, ConPTY/status activation, full production admission or daemon consumers.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OrdinaryBridge_ConfiguredCliUsesDurableOriginalProductionRoute",
+            "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.OriginalProduction_UncertainRetainsOwnerAndWorkerInventory",
+            "BookOfEternityClient.Tests.GmMainProductionAdmissionTests.RejectedMainAttempt_ReleasesOnlyItsBorrowedOriginalInventoryClient",
+            "BookOfEternityClient.Tests.GmMainRunFenceTests.ColdNonterminal_RefusesBeforeRecoveryAndMutation"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -1,3 +1,31 @@
+## A01 owner/worker conjunction baseline checkpoint — 2026-10-08
+
+Independent Astra XHigh metadata source/bounded evidence PASS at76d8d83a, carrier
+63bb7924; parent independently verified30 artifacts/10 source pins,7+7 Linux PASS,
+native32 planned/0executed and catalog. Native qualification remains open. Begin
+separate owner block with seven existing actual Linux production/worker/cold-refusal
+controls, before runtime changes. No ConPTY/status/dispatch consumer wiring yet.
+
+Reviewed owner direction: trusted host backend; captured provider-labelled Windows
+observation supplied before owner/Prepared, never inferred from record or reboot.
+Windows production admission requires verified absent worker namespace AND no
+retained root worker context, without Attach/fixture-mode/empty-ledger manufacture.
+Repeat before recovery/preparation and on original/remote/held mutation admission;
+keep finalization and independent cleanup possible. Linux retained worker inventory
+contract stays unchanged. Across-process root operands use existing canonical
+spelling and locally trusted backend comparison; in-process frames use original
+root identity. Exact stored identities, pin/generation checks and Ordinal file grants
+remain unchanged. A later consumer gate must connect the same suspended ConPTY
+owner and status/Load/dispatch, not mint a second owner.
+
+Transferred-worker cleanup remains later: generic IsAdmissionRefusal currently
+marks metadata corruption/CAS/fsync errors too. Do not catch that broad marker as
+CanonicalAuditUnavailable. Establish exact lost-original-pin refusal plus negative
+metadata-corruption/publication controls before allowing the existing local receipt
+fallback. F13 later migration must validate one owned normalized target before
+logical guards/read witnesses; sibling-prefix and dot-segment raw helper predicates
+are not retained. Neither tail is implemented or dynamically qualified here.
+
 ## A01 metadata component evidence checkpoint — 2026-10-08
 
 Frozen76d8d83a: fresh Linux7 build/PlanOnly and7/7PASS6.908s, full selection,

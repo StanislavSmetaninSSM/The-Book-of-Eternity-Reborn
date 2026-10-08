@@ -1,3 +1,14 @@
+## Current A01 adapter gates and next owner block
+
+Boot component fed43297: independent source/evidence PASS,16 actual Linux controlled
+process cases. Metadata adapter76d8d83a/carrier63bb7924: independent source/bounded
+evidence PASS, original Linux7 baseline+7 GREEN; native Windows32 only compiled and
+planned,0executed. Neither gate qualifies Windows production activation. Exact raw
+carriers are linked in the current plan. Next owner/worker conjunction follows the
+approved positive-absence/no-retained-context route and preserves Linux inventory;
+then separate ConPTY/status/Load/worker consumers. Remaining F/R families below stay
+open as listed; no full migration completion claim.
+
 # Storage migration inventory — 2026-10-08, review candidate
 
 ## Current migration delta (baseline index below remains pinned to d024)

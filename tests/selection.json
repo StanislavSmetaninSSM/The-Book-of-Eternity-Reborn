@@ -156,6 +156,16 @@
         "A01",
         "T063-REMAINING-CONSUMERS"
       ]
+    },
+    {
+      "category": "gm-main-owner-conjunction-linux",
+      "reason": "Separate A01 owner/worker gate: actual Linux configured owner, uncertain retained inventory, exact refused borrowed-client release and four cold nonterminal controls. Baseline before host-specific owner conjunction; no simulated Windows success.",
+      "contracts": [
+        "#1553",
+        "A01",
+        "FR-010",
+        "T063-REMAINING-CONSUMERS"
+      ]
     }
   ]
 }
