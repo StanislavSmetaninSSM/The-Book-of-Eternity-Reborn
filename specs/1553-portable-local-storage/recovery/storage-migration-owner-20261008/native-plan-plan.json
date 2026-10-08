@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "gm-main-owner-native-windows"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "c5bc8dd6ee8f3e6242503ecbe0ffdf8ed10fca34",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.5891685,
+  "Descriptors": [
+    {
+      "Name": "gm-main-owner-native-windows-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-owner-native-windows",
+      "Categories": [
+        "gm-main-owner-native-windows"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOwnerWindowsAdmissionTests.ChangedStartupObservationCannotAdmitColdNonterminal|FullyQualifiedName=BookOfEternityClient.Tests.GmMainOwnerWindowsAdmissionTests.ExistingInventoryRefusesWithoutAdoptionOrPreparation|FullyQualifiedName=BookOfEternityClient.Tests.GmMainOwnerWindowsAdmissionTests.OriginalAdmissionAndCancelledPreparationCreateNoWorkerInventory",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 27,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOwnerWindowsAdmissionTests.ChangedStartupObservationCannotAdmitColdNonterminal",
+          "Cases": 12
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOwnerWindowsAdmissionTests.ExistingInventoryRefusesWithoutAdoptionOrPreparation",
+          "Cases": 9
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOwnerWindowsAdmissionTests.OriginalAdmissionAndCancelledPreparationCreateNoWorkerInventory",
+          "Cases": 6
+        }
+      ]
+    }
+  ]
+}

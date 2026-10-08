@@ -1,0 +1,103 @@
+{
+  "Categories": [
+    "gm-main-owner-conjunction-linux",
+    "gm-main-worker-absence-component",
+    "gm-main-operation-native-linux",
+    "gm-main-finalization-capability-linux",
+    "gm-main-finalization-readonly-linux",
+    "gm-main-finalization-quiescent-neighbors"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "c5bc8dd6ee8f3e6242503ecbe0ffdf8ed10fca34",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-main-finalization-capability-linux",
+      "Seconds": 5.8698925,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-main-finalization-quiescent-neighbors",
+      "Seconds": 2.8185964,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-main-finalization-readonly-linux",
+      "Seconds": 4.443095,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-main-operation-native-linux",
+      "Seconds": 33.1650758,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-main-owner-conjunction-linux",
+      "Seconds": 12.4506853,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-main-worker-absence-component",
+      "Seconds": 3.2148079,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0432542,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0363239,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0885687,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0057468,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 23,
+  "WallTime": "00:01:05.8668401",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 6,
+    "CompletedDescriptors": 6,
+    "PlannedCases": 25,
+    "CompletedCases": 25,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 25,
+    "Executed": 25,
+    "Passed": 25,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

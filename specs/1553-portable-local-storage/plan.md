@@ -1,3 +1,25 @@
+## A01 owner/worker bounded gate accepted — 2026-10-08
+
+Runtimec5bc8dd6: independent Astra XHigh source/selection/evidence PASS, no findings.
+Fresh PlanOnly130313 built successfully,25 cases/6 descriptors/zero executed. Actual
+130415 completed25/25PASS,6/6,65.8668401s,clean exact source,no skips/duplicates and
+both cleanup flags true. Original scenarios prove purpose-only acquisition refused,
+real closing generation read allowed with mutation refused, and legitimate bound
+closing succeeds; original guardians confirm complete settlement. Native27 only
+compiled/discovered by PlanOnly130558,0executed. Catalog130628 valid461/11252,
+unmapped/stale empty,0executed. [Exact frozen source and raw evidence](recovery/storage-migration-owner-20261008/manifest.json).
+
+This closes the isolated owner/worker conjunction block, not Windows native support
+or consumer activation. Next separate A01 slice wires the SAME prepared ConPTY/Job,
+long-lived startup-probe debt slot, first owner-bound status, original stop/Load and
+worker dispatch. Keep Windows worker inventory positively absent/no retained context;
+never adopt unsupported ledger. Preserve Linux production worker admission and Windows
+worker capability, captured input cancellation, original pin/cleanup ownership and
+exact close. Quarantine fallback must distinguish actual lost original admission
+from metadata corruption/IO; the current generic refusal marker alone is insufficient.
+Native WMI/ConPTY/Job/sharing/path/body qualification remains unexecuted. Root owns
+fresh remote recovery of this carrier; latest completed clean recovery remains63bb.
+
 ## A01 finalization capability correction — 2026-10-08
 
 Readonly RED66d47 independently reaches a real closing frame, acquired lease1,
