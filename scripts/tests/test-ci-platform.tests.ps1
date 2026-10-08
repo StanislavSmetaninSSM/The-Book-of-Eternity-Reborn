@@ -139,6 +139,55 @@ try {
             Assert-That ($workflow -match 'check-dotnet-warning-budget.ps1 -LogPath \$_\.FullName -MaxWarnings 158' -and
                 $workflow -match 'contents: read' -and $workflow -notmatch 'contents: write') 'Existing verification budget or permissions changed.'
         }
+        Test-Case 'Actual final workflow script rejects failed skipped cancelled and missing results' {
+            $workflow = Get-Content (Join-Path $root '.github/workflows/dotnet-ci.yml') -Raw
+            Assert-That ($workflow -match '(?s)BOE_TEST_RESULT:.*?run: \|\r?\n(.*)$') 'Final gate script missing.'
+            $gate = [scriptblock]::Create(($Matches[1] -replace '(?m)^          ', ''))
+            $previousPlan = $env:BOE_PLAN_RESULT; $previousTest = $env:BOE_TEST_RESULT
+            try {
+                foreach ($planResult in @('success','failure','skipped','cancelled','')) {
+                    foreach ($testResult in @('success','failure','skipped','cancelled','')) {
+                        $env:BOE_PLAN_RESULT = $planResult; $env:BOE_TEST_RESULT = $testResult
+                        if ($planResult -ceq 'success' -and $testResult -ceq 'success') { & $gate }
+                        else { Assert-Rejected { & $gate } }
+                    }
+                }
+            }
+            finally { $env:BOE_PLAN_RESULT = $previousPlan; $env:BOE_TEST_RESULT = $previousTest }
+        }
+        Test-Case 'Actual materializer preserves JSON and refuses wrong catalog group or actual host' {
+            $workflow = Get-Content (Join-Path $root '.github/workflows/dotnet-ci.yml') -Raw
+            Assert-That ($workflow -match '(?ms)^      - name: Validate actual host and materialize exact group\r?\n.*?^        run: \|\r?\n(.*?)(?=^      - name:)') 'Materializer script missing.'
+            $materialize = [scriptblock]::Create(($Matches[1] -replace '(?m)^          ', ''))
+            $fixture = Join-Path $temp 'workflow-fixture'
+            New-Item -ItemType Directory -Path (Join-Path $fixture 'scripts/testing'), (Join-Path $fixture 'tests') -Force | Out-Null
+            Copy-Item (Join-Path $root 'scripts/testing/TestCategoryCatalog.psm1') (Join-Path $fixture 'scripts/testing')
+            Copy-Item (Join-Path $root 'tests/categories.json') (Join-Path $fixture 'tests')
+            $previousLocation = Get-Location; $previousSelection = $env:BOE_CI_SELECTION; $previousRunner = $env:BOE_CI_RUNNER
+            try {
+                Set-Location $fixture
+                $request = New-Selection @('test-ci-platform-contracts')
+                $request.selections[0].reason = "Actual Δ`nselection"
+                $env:BOE_CI_SELECTION = $request | ConvertTo-Json -Depth 12
+                $env:BOE_CI_RUNNER = 'ubuntu-24.04'
+                if ([OperatingSystem]::IsLinux()) {
+                    & $materialize
+                    $actual = Get-Content TestResults/ci-selection.json -Raw | ConvertFrom-Json -AsHashtable
+                    Assert-That ($actual.selections.Count -eq 1 -and $actual.selections[0].reason -ceq $request.selections[0].reason) 'Real workflow lost selection bytes.'
+                    Remove-Item -LiteralPath TestResults/ci-selection.json
+                }
+                else { Assert-Rejected { & $materialize } }
+                $env:BOE_CI_RUNNER = 'windows-latest'
+                Assert-Rejected { & $materialize } # Linux catalog group cannot be relabeled.
+                $env:BOE_CI_SELECTION = (New-Selection @('test-ci-platform-affected')) | ConvertTo-Json -Depth 12
+                if ([OperatingSystem]::IsLinux()) { Assert-Rejected { & $materialize } }
+                Assert-That (-not (Test-Path TestResults/ci-selection.json)) 'Refused group produced a usable selection.'
+            }
+            finally {
+                Set-Location $previousLocation
+                $env:BOE_CI_SELECTION = $previousSelection; $env:BOE_CI_RUNNER = $previousRunner
+            }
+        }
     }
 }
 finally { Remove-Item -LiteralPath $temp -Recurse -Force }

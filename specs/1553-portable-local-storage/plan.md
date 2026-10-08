@@ -7613,3 +7613,10 @@ Final implementation `dc29b37d0c3e3067acf9943a048360fbba66d0e3` adds only a host
 Independent final actual **gpt-6.1-sol/xhigh PASS** at complete candidate `a5aefe8f8151c67a15fa107e78b487581bd43458`, tested source `dc29b37d0c3e3067acf9943a048360fbba66d0e3`; no remaining actionable findings. Reviewer independently verified37distinctGREEN,243/10741discovery0execution,10manifests54artifacts stored/decompressedhashes,8inputs/DLL/PDB/14unchangedfiles/3closuretrees/11XML and clean GitHub-only restore5497tracked/75changedbytes/8inputs/exacttree. P1 shell-cancellation server loss is causally reproduced and fixed. Benign fixture CS4014 is documented without an unnecessary passing-test repeat. [Review and restoration evidence](recovery/evidence/gm-input-review/manifest.json) brings the retained packet to11manifests/57artifacts. Only T042-INPUT-LIFETIME is complete; mainT042 and later transaction/readiness/daemon/native work remain open. Final verdict metadata is ordinarily published/read back and restored into another empty GitHub-only directory; exact final carrier and restore are in local handoff without a self-referential SHA. No next slice started.
 
 Current owner-authorized fallback: [T043-RELAY-GM-BOUNDED](relay-gm-bounded-plan.md), separate test transport with live Codex-agent generation; no OpenCode/provider compatibility claim or network bypass.
+Bounded CI repair T052-CI-PLATFORM-SELECTION, source #1553/#1505: accepted read-only
+audit identified fixed Windows workflow vs native Linux S2A fixtures. Independent
+Sol design PASS; explicit catalog runner groups, no dropped selection and stable
+all-groups-success check implemented. Only pure routing/catalog assertions, no
+runtime cohorts or platform qualification. [Plan/handoff](ci-platform-selection.md).
+Systemd deferral/overall merge readiness still pending; Windows native is postmerge.
+

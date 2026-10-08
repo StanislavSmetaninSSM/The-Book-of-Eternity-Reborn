@@ -758,3 +758,8 @@ T042 consumes one existing native-owned terminal, fixed inert fixture only.
 at `595436cf`; [qualified scope and untested boundaries](recovery/owned-main-terminal-neutral.json).
 This closes the neutral implementation task only. FullT041/US4 and main run/write
 fence/systemd/native Windows/live-provider/save/cold requirements remain open.
+CI platform clarification T052-CI-PLATFORM-SELECTION (source #1553/#1505): explicit
+selected native tests must run on their declared CI host; unavailable categories
+cannot be silently dropped or count as PASS. This repairs verification plumbing
+only, not game/GM behavior or native Windows/systemd acceptance. [Bounded plan](ci-platform-selection.md).
+

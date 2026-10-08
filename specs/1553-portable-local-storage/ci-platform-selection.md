@@ -33,4 +33,23 @@ after merge by parent. Systemd deferral and overall merge readiness remain pendi
 
 ## Evidence and verdict
 
-Design review, causal run, GREEN and recovery evidence pending.
+Independent read-only Sol6.1/xhigh design PASS at 8661262e. Exact native source
+and connected categories receive Linux metadata; affected stays default Windows.
+Workflow fail-fast is false; artifacts are unique per platform; final check
+keeps the original name and requires exact success from both prerequisites.
+
+RED at 195343bf: runner exit1, two actually executed PowerShell assertions FAIL
+(fixed Windows binding, absent planner); zero accepted adapter results and no
+C# execution. Preparation succeeded, cleanup complete. [RED manifest](recovery/ci-platform-selection/red/manifest.json).
+
+GREEN1: 25/25 (16 new routing +9 existing catalog assertions), two complete
+descriptors, exit0/cleanup complete. [Manifest](recovery/ci-platform-selection/green1/manifest.json).
+GREEN2 adds inert execution of the real workflow final-gate and materializer
+scripts under controlled environment/temp directories: 18/18 new-file assertions,
+exit0/cleanup complete. Existing9 unchanged PASS reused; 27 distinct assertions
+accepted in total, not43 distinct. No S2A/runtime cohorts or native Windows run.
+Actual PowerShell7.5.4, SDK10.0.401, .NET8runtime8.0.31 were read locally.
+
+Source/evidence review and discovery/restoration gates pending. Hosted Actions
+matrix and native Windows remain unexecuted; branch protection requirements
+remain unknown after the read-only403. No workflow_dispatch/PR/merge here.
