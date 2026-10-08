@@ -2,8 +2,43 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-treatment-terminal-causal-linux",
+      "responsibility": "Actual original pre-canonical terminal consumer: typed publication Uncertain at command MemberPublished must remain the exact outward carrier, preserve journal/blocker and avoid generic retry.",
+      "excludes": "No broad treatment/gameplay category or native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-treatment-storage-causal-linux",
+          "when": "Typed uncertainty propagation or retained original transaction lifetime changes."
+        },
+        {
+          "id": "portable-treatment-mirror-causal-linux",
+          "when": "Original engine mirror uncertainty compensation or player projection changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TreatmentStorage_OriginalPreCanonicalTerminalUncertaintyRetainsDecision"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-treatment-storage-neighbors-remaining-linux",
-      "responsibility": "Six unresolved neighboring obligations isolated after actual15 mixed result: three remaining engine boundary rows, Unsafe, terminal restore and terminal safe cleanup. Positive diagnostics precede unchanged assertions; exact foreign plan replaces an overbroad global-cache absence oracle.",
+      "responsibility": "Five corrected known neighboring obligations: health, cleanup, Unsafe partial restoration and two terminal failure stages. Exact path/receipt/bytes and positive current phases replace unreached deep-ancestor selectors.",
       "excludes": "No broad treatment/gameplay category or native Windows qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
@@ -41,7 +76,7 @@
     },
     {
       "id": "portable-treatment-storage-neighbors-linux",
-      "responsibility": "Six already passing known treatment neighbors: five original engine boundary rows and rearmed retry. Excludes separately isolated unresolved six.",
+      "responsibility": "Seven established passing known boundary/rearmed/foreign-plan neighbors; separately retained across fixture-only corrections.",
       "excludes": "No broad treatment/gameplay category or native Windows qualification.",
       "changeHints": [
         "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
@@ -70,7 +105,8 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_RealGameEngineBoundaryFailureCompensatesExactHeldPlan",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_WaitLifecyclePreservesRearmedPublicationForSameTurnRetry"
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_WaitLifecyclePreservesRearmedPublicationForSameTurnRetry",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_ForeignPlanRetainedWhileOriginalPublicationBlocked"
           ]
         }
       ]

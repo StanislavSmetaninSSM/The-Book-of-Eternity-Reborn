@@ -1,3 +1,28 @@
+## Treatment current-boundary fixture correction — 2026-10-08
+
+Diagnostic233306 is accepted as1P5F with the source causes below. Remaining selection
+is now five known neighbors plus one distinct original terminal publication-Unknown
+consumer. Previously passing foreign identity row moves to the retained known category;
+prior9 and foreign1 are not repeated for these fixture-only changes.
+
+Terminal known stages require the actual original taken receipt, original command/pending
+bytes and ordered quarantine/restore mutations, retaining prepublication IOException.
+The Unsafe test deliberately refuses the command restoration: require absence for that
+member, exact before-images for every other selected member, original business/Unsafe
+cause and exact consumed-receipt blocker plus ConfirmedHeld. No fabricated repair or
+current-graph recomposition supplies authority. Cleanup requires actual Guardian command
+field, prior critical phase and actual treatment publication. Full validation records three
+current health Core/Refresh visits and requires original receipt/treatment publication at
+its selected third visit; missed/shifted visits remain fixture failures.
+
+The new terminal1 uses genuine rollback authority and the original engine terminal
+consumer. At actual command MemberPublished/index0 it creates a real foreign-image
+Uncertain, records raw journal/member/receipt/counters before explicit fixture recovery,
+and requires same outward typed carrier, blocker and non-retry notice. Production is
+unchanged: this should qualify the separately identified generic-catch propagation gap.
+Frozen source/selection review precedes matching Plan6, then actual5+1 separately if
+fail-fast category ordering leaves either unexecuted. No additional gameplay/native claim.
+
 ## Treatment diagnostic six result — 2026-10-08
 
 Clean ef0e matching Plan233108 completed6/1/0 in88.0552999s; actual233306

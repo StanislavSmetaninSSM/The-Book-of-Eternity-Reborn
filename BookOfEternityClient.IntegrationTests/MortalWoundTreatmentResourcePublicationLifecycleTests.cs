@@ -1421,9 +1421,12 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Theory]
     [InlineData("full_state_validation", 1)]
     [InlineData("cleanup", 1)]
-    [InlineData("transaction_commit_conflict", 1)]
     public Task GuaranteedResourceQuantity_RemainingEngineBoundaryFailureRetainsOriginalContract(
         string boundary, int occurrence) => RunKnownTreatmentBoundaryAsync(boundary, occurrence);
+
+    [Fact]
+    public Task GuaranteedResourceQuantity_ForeignPlanRetainedWhileOriginalPublicationBlocked() =>
+        RunKnownTreatmentBoundaryAsync("transaction_commit_conflict", 1);
 
     private async Task RunKnownTreatmentBoundaryAsync(string boundary, int occurrence)
     {
@@ -1498,6 +1501,13 @@ public sealed partial class GameEngineTurnLifecycleTests
                 AcceptedTurnValidationDisposition.RetryablePublicationRearmed,
                 accepted);
         }
+        if (boundary == "full_state_validation")
+        {
+            Assert.Equal(3, fault.MatchedHealthRefreshes);
+            Assert.Equal(3, fault.HealthVisits.Count);
+            Assert.True(fault.PublishedTreatmentMembers > 0);
+            Assert.NotNull(fault.OriginalReceipt);
+        }
         await AssertExactTreatmentTransactionBytesAsync(context, before);
         Assert.Equal(
             commandBefore,
@@ -1564,6 +1574,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             await context.FileSystem.ReadFileBytesAsync(
                 AcceptedMechanicsPlan.WoundCommandPath));
 
+        var before = await CaptureExactTreatmentTransactionBytesAsync(context);
         fault.Arm(context);
         AcceptedTurnValidationDisposition? disposition = null;
         var exception = await Record.ExceptionAsync(async () =>
@@ -1587,14 +1598,18 @@ public sealed partial class GameEngineTurnLifecycleTests
             UnsafeTreatmentPublicationSettlementExceptionName,
             aggregate.GetType().Name);
         Assert.Null(disposition);
-        Assert.Equal(
-            commandBefore,
-            await context.FileSystem.ReadFileBytesAsync(
-                AcceptedMechanicsPlan.WoundCommandPath));
+        Assert.NotNull(commandBefore);
+        Assert.Null(await context.FileSystem.ReadFileBytesAsync(AcceptedMechanicsPlan.WoundCommandPath));
+        await AssertExactTreatmentTransactionBytesAsync(context,
+            before.Where(pair => pair.Key != AcceptedMechanicsPlan.WoundCommandPath)
+                .ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal));
+        Assert.Contains("wound_output", aggregate.ToString(), StringComparison.Ordinal);
+        Assert.Contains("restoration failure", aggregate.ToString(), StringComparison.Ordinal);
 
         await context.AcquireLeaseAsync();
         await AssertConfirmedHeldLiveRegistryProbeAsync(context);
-        AssertTreatmentPublicationRestartBlocked(context);
+        Assert.True(AcceptedTurnAuthorityRegistry.HasExactMortalWoundTreatmentPublicationRestartBlocker(
+            context.FileSystem, context.Lease, Assert.IsType<MortalWoundTreatmentPublicationTakeReceipt>(fault.OriginalReceipt)));
     }
 
     [Fact]
@@ -1672,7 +1687,8 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         await context.AcquireLeaseAsync();
         await AssertConfirmedHeldLiveRegistryProbeAsync(context);
-        AssertTreatmentPublicationRestartBlocked(context);
+        Assert.True(AcceptedTurnAuthorityRegistry.HasExactMortalWoundTreatmentPublicationRestartBlocker(
+            context.FileSystem, context.Lease, Assert.IsType<MortalWoundTreatmentPublicationTakeReceipt>(fault.OriginalReceipt)));
     }
 
     [Fact]
@@ -1721,7 +1737,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 AcceptedMechanicsPlan.WoundCommandPath));
         await context.AcquireLeaseAsync();
         await AssertConfirmedHeldLiveRegistryProbeAsync(context);
-        AssertTreatmentPublicationRestartBlocked(context);
+        Assert.True(AcceptedTurnAuthorityRegistry.HasExactMortalWoundTreatmentPublicationRestartBlocker(
+            context.FileSystem, context.Lease, Assert.IsType<MortalWoundTreatmentPublicationTakeReceipt>(fault.OriginalReceipt)));
     }
 
     [Theory]
@@ -3155,6 +3172,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             await context.AcquireLeaseAsync();
             if (composePublication)
                 await RestoreHeldTreatmentAndComposeSameSemanticPlanAsync(context);
+            fault?.CaptureOriginalAuthority(context);
             return context;
         }
         catch
@@ -5345,7 +5363,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new
         {
             TreatmentNeighbor = stage, fault.Fired, fault.ObservedPhases, fault.MatchedHealthRefreshes,
-            fault.MutationPaths, fault.LeaseStacks, fault.FaultMutationImages,
+            fault.MutationPaths, fault.LeaseStacks, fault.FaultMutationImages, fault.HealthVisits,
+            fault.PublishedTreatmentMembers, OriginalReceiptCaptured = fault.OriginalReceipt is not null,
             Failure = exception?.ToString(), Disposition = disposition?.ToString(),
             CommandBefore = Convert.ToBase64String(commandBefore),
             CommandAfter = File.Exists(commandPath) ? Convert.ToBase64String(File.ReadAllBytes(commandPath)) : null,
@@ -5366,6 +5385,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         private int _compoundFailureStage;
         private bool _armed;
         private HeldTreatmentPipelineContext? _context;
+        private object? _registryState;
+        private byte[]? _originalCommand;
+        private byte[]? _originalPending;
 
         internal AcceptedTreatmentPipelineFault(
             string boundary,
@@ -5378,7 +5400,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                 BeforeCanonicalWriteLockOpenAsync =
                     OnBeforeCanonicalWriteLockOpenAsync,
                 AfterCanonicalReadInitialValidationAsync = OnCanonicalReadAsync,
-                BeforeCanonicalMutationAsync = OnCanonicalMutationAsync
+                BeforeCanonicalMutationAsync = OnCanonicalMutationAsync,
+                LocalPublicationObserver = OnPublished
             };
         }
 
@@ -5391,10 +5414,51 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal List<string> LeaseStacks { get; } = new();
         internal List<object> FaultMutationImages { get; } = new();
         internal int MatchedHealthRefreshes => _acceptedPipelineHealthRefreshes;
+        internal int PublishedTreatmentMembers { get; private set; }
+        internal MortalWoundTreatmentPublicationTakeReceipt? OriginalReceipt { get; private set; }
+        internal List<object> HealthVisits { get; } = new();
+
+        internal void CaptureOriginalAuthority(HeldTreatmentPipelineContext context)
+        {
+            _context = context;
+            _registryState = typeof(AcceptedTurnAuthorityRegistry).GetMethod("GetState",
+                BindingFlags.Static | BindingFlags.NonPublic)!.Invoke(null, [context.FileSystem, context.Lease]);
+        }
+        private MortalWoundTreatmentPublicationTakeReceipt? OpenReceipt =>
+            _registryState?.GetType().GetField("_openTreatmentPublicationReceipt",
+                BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(_registryState)
+                as MortalWoundTreatmentPublicationTakeReceipt;
+        private static bool BytesEqual(byte[]? left, byte[]? right) =>
+            left is null ? right is null : right is not null && left.AsSpan().SequenceEqual(right);
+        private bool ObserveOriginalReceipt()
+        {
+            var receipt = OpenReceipt;
+            if (receipt is null) return false;
+            OriginalReceipt ??= receipt;
+            Assert.Same(OriginalReceipt, receipt);
+            Assert.Same(_context!.Plan, receipt.Plan);
+            return true;
+        }
+        private void OnPublished(TrustedLocalPublicationPhase phase, int index)
+        {
+            if (!_armed || _boundary is not ("full_state_validation" or "cleanup" or "wound_output_compensation_restore_failure") ||
+                phase != TrustedLocalPublicationPhase.MemberPublished || !ObserveOriginalReceipt()) return;
+            var journal = Path.Combine(_context!.FileSystem.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+            using var document = ReadJournalMetadata(File.ReadAllBytes(journal));
+            var path = document.RootElement.GetProperty("Members")[index].GetProperty("Path").GetString();
+            if (new[] { ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,
+                WoundCarrierCatalog.PlayerPath, WoundHistoryState.HistoryPath }.Any(relative =>
+                    _context.FileSystem.ResolvePath(relative) == path)) PublishedTreatmentMembers++;
+        }
 
         internal void Arm(HeldTreatmentPipelineContext? context = null)
         {
             _context = context;
+            if (context is not null)
+            {
+                _originalCommand = ReadOptionalTreatmentMember(context.FileSystem.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath));
+                _originalPending = ReadOptionalTreatmentMember(context.FileSystem.ResolvePath(WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
+            }
             _armed = true;
         }
 
@@ -5463,12 +5527,19 @@ public sealed partial class GameEngineTurnLifecycleTests
                     _boundary,
                     "full_state_validation",
                     StringComparison.Ordinal) &&
-                StackContains("EnsureClientOwnedSystemFilesHealthyAsync") &&
+                StackContains("EnsureClientOwnedSystemFilesHealthyCoreAsync") &&
                 StackContains("RefreshGameStateAsync"))
             {
                 _acceptedPipelineHealthRefreshes++;
+                HealthVisits.Add(new { Visit = _acceptedPipelineHealthRefreshes,
+                    ReceiptOpen = OpenReceipt is not null, PublishedTreatmentMembers,
+                    Stack = new StackTrace().ToString() });
                 if (_acceptedPipelineHealthRefreshes == 3)
+                {
+                    Assert.True(PublishedTreatmentMembers > 0);
+                    Assert.True(ObserveOriginalReceipt());
                     return FireCanonicalWriteLockFailure("full_state_validation");
+                }
                 return Task.CompletedTask;
             }
 
@@ -5536,7 +5607,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                     "pre_canonical_terminal_quarantine_cancellation" or
                     "pre_canonical_terminal_quarantine_session_replaced" &&
                 _compoundFailureStage == 0 &&
-                StackContains("WriteQuarantinedDurableSurfacesAsync") &&
+                (_boundary == "pre_canonical_terminal_quarantine_safe_failure"
+                    ? ObserveOriginalReceipt() && BytesEqual(_originalCommand, ReadOptionalTreatmentMember(_context!.FileSystem.ResolvePath(path)))
+                    : StackContains("WriteQuarantinedDurableSurfacesAsync")) &&
                 string.Equals(
                     path,
                     AcceptedMechanicsPlan.WoundCommandPath,
@@ -5565,7 +5638,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                     StringComparison.Ordinal))
             {
                 if (_compoundFailureStage == 0 &&
-                    StackContains("WriteQuarantinedDurableSurfacesAsync") &&
+                    ObserveOriginalReceipt() &&
+                    BytesEqual(_originalCommand, ReadOptionalTreatmentMember(_context!.FileSystem.ResolvePath(path))) &&
                     string.Equals(
                         path,
                         AcceptedMechanicsPlan.WoundCommandPath,
@@ -5576,7 +5650,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                     return Task.CompletedTask;
                 }
                 if (_compoundFailureStage == 1 &&
-                    StackContains("WriteQuarantinedDurableSurfacesAsync") &&
+                    ObserveOriginalReceipt() &&
+                    BytesEqual(_originalPending, ReadOptionalTreatmentMember(_context!.FileSystem.ResolvePath(path))) &&
+                    !BytesEqual(_originalCommand, ReadOptionalTreatmentMember(_context.FileSystem.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath))) &&
                     string.Equals(
                         path,
                         WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
@@ -5588,7 +5664,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                         "Injected pre-canonical pending quarantine failure."));
                 }
                 if (_compoundFailureStage == 2 &&
-                    StackContains("RestoreExactBeforeImagesAsync") &&
+                    ObserveOriginalReceipt() &&
+                    !BytesEqual(_originalCommand, ReadOptionalTreatmentMember(_context!.FileSystem.ResolvePath(path))) &&
                     string.Equals(
                         path,
                         AcceptedMechanicsPlan.WoundCommandPath,
@@ -5730,7 +5807,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 PlanningContext: context);
         }
 
-        private static string? ClassifyCurrentPhase(string path, bool isMutation)
+        private string? ClassifyCurrentPhase(string path, bool isMutation)
         {
             if (isMutation)
             {
@@ -5738,8 +5815,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                            path,
                            "game_state/meta/guardians.json",
                            StringComparison.Ordinal) &&
-                       StackContains(
-                           "RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync")
+                       _observedPhases.Contains("critical_validation") && PublishedTreatmentMembers > 0 &&
+                       ObserveOriginalReceipt() &&
+                       JsonNode.Parse(File.ReadAllBytes(_context!.FileSystem.ResolvePath(path))) is JsonObject guardian &&
+                       guardian.ContainsKey(GuardianProjectState.QuestProgressUpdatesProperty)
                     ? "cleanup"
                     : null;
             }

@@ -26,10 +26,14 @@ public sealed partial class GameEngineTurnLifecycleTests
     public Task TreatmentStorage_OriginalEngineMirrorUncertaintyRetainsDecision() =>
         RunTreatmentStorageScenarioAsync("engine_mirror");
 
+    [Fact]
+    public Task TreatmentStorage_OriginalPreCanonicalTerminalUncertaintyRetainsDecision() =>
+        RunTreatmentStorageScenarioAsync("pre_canonical_terminal");
+
     private async Task RunTreatmentStorageScenarioAsync(string mode)
     {
         using var cut = new TreatmentStorageCut(mode);
-        await using var context = await CreateHeldTreatmentPipelineContextAsync(null, hooks: cut.Hooks,
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(null, withRollbackAuthority: mode == "pre_canonical_terminal", hooks: cut.Hooks,
             configureBeforePreparation: mode == "engine_mirror" ? cut.SeedConsistentMirrorAsync : null);
         cut.Attach(context);
         await context.ReleaseLeaseAsync();
@@ -80,6 +84,18 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 failure = await Record.ExceptionAsync(() => NormalizeTreatmentStorageAsync(context));
             }
+            else if (mode == "pre_canonical_terminal")
+            {
+                var manifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
+                var rollback = await InvokePrivateTaskResultAsync(engine, "GetValidatedRollbackSnapshotAsync", manifest);
+                Assert.NotNull(rollback);
+                Assert.True(ReadTreatmentRollbackCount(rollback, "BackupFiles") > 0);
+                Assert.True(ReadTreatmentRollbackCount(rollback, "BaselineFiles") > 0);
+                cut.TerminalRollbackValidated = true;
+                failure = await Record.ExceptionAsync(async () =>
+                    engineDisposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(engine,
+                        "SettlePreCanonicalTreatmentPublicationBeforeTerminalRollbackAsync", rollback, "validation_failed"));
+            }
             else
             {
                 var manifest = await InvokePrivateTaskResultAsync(engine, "LoadPendingTurnSnapshotManifestAsync");
@@ -115,7 +131,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             var raw = new
             {
-                mode, engineDisposition, cut.BusinessCutCount, cut.PublishedTreatmentMembers, cut.Cuts,
+                mode, engineDisposition, cut.TerminalRollbackValidated, cut.BusinessCutCount, cut.PublishedTreatmentMembers, cut.Cuts,
                 cut.Target, cut.TargetIndex, cut.SharingConflictObserved, cut.CutPhase, cut.CutPhaseStack,
                 cut.OriginalCohortRestoredBeforeCut, cut.BusinessReadPath,
                 MemberAfterDispose = memberAfterDispose is null ? null : Convert.ToBase64String(memberAfterDispose),
@@ -142,7 +158,14 @@ public sealed partial class GameEngineTurnLifecycleTests
             // Establish the actual fault and physical evidence before checking the new propagation contract.
             Assert.Equal(1, cut.Cuts);
             Assert.Equal(0, cut.TargetIndex);
-            Assert.True(cut.PublishedTreatmentMembers > 0);
+            if (mode == "pre_canonical_terminal")
+            {
+                Assert.True(cut.TerminalRollbackValidated);
+                Assert.NotNull(cut.OriginalReceipt);
+                Assert.Equal("original-terminal-quarantine", cut.CutPhase);
+                Assert.Null(engineDisposition);
+            }
+            else Assert.True(cut.PublishedTreatmentMembers > 0);
             Assert.NotNull(cut.OriginalUncertainty);
             Assert.NotNull(retainedJournal);
             if (mode == "helper_restore") { Assert.Equal(1, cut.BusinessCutCount); Assert.True(cut.OriginalCohortRestoredBeforeCut); Assert.True(cut.HasBusinessCause(failure)); }
@@ -256,6 +279,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal FileSystemManagerHooks Hooks { get; }
         internal bool Armed { get; set; }
         internal bool SettlementArmed { get; set; }
+        internal bool TerminalRollbackValidated { get; set; }
         internal int BusinessCutCount { get; private set; }
         internal int PublishedTreatmentMembers { get; private set; }
         internal int Cuts { get; private set; }
@@ -499,11 +523,14 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 "helper_restore" => restored,
                 "compensate_dispose" => SettlementArmed && durable,
+                "pre_canonical_terminal" => TerminalRollbackValidated && relativePath == AcceptedMechanicsPlan.WoundCommandPath &&
+                    BytesEqual(_originalBeforeImages[_context!.FileSystem.ResolvePath(relativePath)],
+                        ReadOptionalTreatmentMember(_context.FileSystem.ResolvePath(relativePath))),
                 _ => MirrorDriftPrepared && relativePath == AfterlifeEntityProfileState.StatePath
             };
             if (restored) OriginalCohortRestoredBeforeCut = true;
             _selectedMutationPath = selected ? _context!.FileSystem.ResolvePath(relativePath) : null;
-            _selectedPhase = selected ? (_mode == "engine_mirror" ? "profile-mirror-refresh" : "original-transaction-restoration") : null;
+            _selectedPhase = selected ? (_mode == "engine_mirror" ? "profile-mirror-refresh" : _mode == "pre_canonical_terminal" ? "original-terminal-quarantine" : "original-transaction-restoration") : null;
             _selectedStack = selected ? new StackTrace().ToString() : null;
             return Task.CompletedTask;
         }
