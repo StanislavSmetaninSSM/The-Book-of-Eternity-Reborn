@@ -106,6 +106,8 @@ public sealed partial class BrowserProtocolCutoverTests
                     _files, lease, [Member], "external_pending",
                     rollbackExternalFileIds: [ExplorerLocalTurnRollbackArtifacts.DarenRewardProfileExternalFileId]);
                 Assert.Equal(7, transaction.SchemaVersion); Assert.NotNull(transaction.LocalTransaction);
+                lease.ExternalPublicationContext = transaction.LocalTransaction;
+                Assert.Same(transaction.LocalTransaction, lease.ExternalPublicationContext);
             }
             var store = new DarenRewardProfileFileStore(_files); store.EnsureWriteSupported(lease);
             Assert.Equal(existed ? Before : null, await store.ReadExactBytesAsync(lease));

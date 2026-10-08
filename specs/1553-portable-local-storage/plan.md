@@ -23,7 +23,11 @@ profile scratch must be filtered before relative conversion. Native execution is
 The exact original Stage body is structurally extracted for authentic6 fixtures;
 existing OS dispatch remains unchanged. No production cutover or classifier yet.
 
-Next: frozen fixture/source selection review and fresh32 PlanOnly, then Linux4 only.
+Initial96ae Plan172229 compiled/discovered32/2/0, no actual tests. Independent
+fixture review found the extended declared-profile test omitted the coordinator
+assignment of returned LocalTransaction to the same lease. This fixture-only
+correction binds and asserts that exact returned object; current OS routing unchanged.
+Next: corrected frozen fixture/source review and fresh32 PlanOnly, then Linux4 only.
 Runtime classifier/path/context-first dispatch implementation has a separate source
 and evidence gate. No GM-authored contract change; no prompt/example update needed.
 
