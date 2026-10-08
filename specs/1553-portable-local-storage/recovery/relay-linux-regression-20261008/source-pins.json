@@ -1,0 +1,241 @@
+{
+  "timestampUTC": "2026-10-08T05:01:59.170227+00:00",
+  "checkout": "3ce1ab52b0a4e41dbe9717b52681236bd368c9b9",
+  "runtime": "0067874e15f479327dc37268fc891f51e3a2713d",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+      "bytes": 1054,
+      "sha256": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.Relay.cs",
+      "bytes": 7453,
+      "sha256": "f23be2bd721853a1f53fcb77ba941585c72aafc93c2886d233a0de82894ce3bd",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.cs",
+      "bytes": 32727,
+      "sha256": "b3bad0946187bf227e996ea454f5623fa8ea600a05bdf065acda0dc541349ce2",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "bytes": 1682,
+      "sha256": "7fdfb57115042c44afaed4258ff39dc970a3a2f13860c575febf0cbd36edbcb0",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmRelayRepairTests.cs",
+      "bytes": 1922,
+      "sha256": "eec9dff7e313249350d382d524bbad6fd0e900efb15c071e805665b95804d76e",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmRelayReusableTests.cs",
+      "bytes": 2021,
+      "sha256": "3d81e6c272e3ed215f18038b7511a3505f66cee9e8c7f80f6f8b3e9407432eab",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/GmRelayTransportTests.cs",
+      "bytes": 2874,
+      "sha256": "cb23d753f6386f0ee4d4fd976ac3fd319e73c248a16ecf6e47b79cce4dac821e",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs",
+      "bytes": 19937,
+      "sha256": "169f5c21cdca33d80670acfd328b54bf498e843bb3878190e1f36c60a369fec5",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+      "bytes": 117669,
+      "sha256": "f24a483eb936b50f13faa8b7ab16aadefeba66a93b609dfdb04605ecccec5f1c",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
+      "bytes": 20668,
+      "sha256": "92982796e3573122cbd2b8045835b6090b5564010ebd59043a1fb075a109f55e",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/TerminalScreen.cs",
+      "bytes": 4389,
+      "sha256": "437973f7adbe3ac6f1e0b5fa57d3d3091731dda2331d7aa51b3cebb03324527c",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "scripts/build-linux-supervisor.ps1",
+      "bytes": 4556,
+      "sha256": "ed7f9ed701801e95562afc76ead02c4e4887aee054c873d162bc0f81f3c15914",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/windows-relay-20261008/selection-linux.json",
+      "bytes": 1020,
+      "sha256": "e7c87b31e7c9f37fd152342fe7fd94f8487ec1102a58497e5b158566e37677df",
+      "ref": "3ce1ab52b0a4e41dbe9717b52681236bd368c9b9",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1195941,
+      "sha256": "3331118bbecc167f6478aedf6eb6022adc5e01941dc5ad4fdb6205762d2c3de9",
+      "ref": "3ce1ab52b0a4e41dbe9717b52681236bd368c9b9",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tests/fixtures/LinuxHost/host-guardian.c",
+      "bytes": 9633,
+      "sha256": "1b6802637dc6ae2fc30df6f8fe82e0b1467c63f1ea3cf533e690a8ca691440e3",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tests/fixtures/ProductionMain/codex-gm-relay.py",
+      "bytes": 374,
+      "sha256": "4e976ec833ea94e1d31c92b1b24b7a972fa399561ddf7e1f9e4063cb0ee8ca9a",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tests/fixtures/ProductionMain/live-game-one-turn.py",
+      "bytes": 36250,
+      "sha256": "c42d6f98bfdc6a822f91212c183524d64d5767c8ee2ce0445cb10636c2225f62",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tests/fixtures/ProductionMain/relay-apply-response.ps1",
+      "bytes": 392,
+      "sha256": "1fe960625a0d6bf5198441217fc976ec66aeab1e2da309d149716c42b55aeff8",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tests/fixtures/ProductionMain/relay-repair-checks.py",
+      "bytes": 5623,
+      "sha256": "f04b747c99a0c0d2557395697528e8be275a90453f3b0934901fd877ce6aaa8d",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tests/fixtures/ProductionMain/relay-reusable-checks.py",
+      "bytes": 6334,
+      "sha256": "e6e115e98c3848741c1ba1c6cb0572605d007d8f4cad684effd82af233ce09e6",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tests/fixtures/ProductionMain/relay-transport-checks.py",
+      "bytes": 8307,
+      "sha256": "e357f27b384d7a5318e49307efbdcffe2a9ee06bb153bf71e76d8de371ab6410",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 1237,
+      "sha256": "5be469daeb6b3bd69441609f01aef494a05a6558f35943bcf562d7c6a5503ab9",
+      "ref": "3ce1ab52b0a4e41dbe9717b52681236bd368c9b9",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tools/gm-relay/.gitignore",
+      "bytes": 13,
+      "sha256": "32dae3052f331ee34d628ef535709b301259a45df7c7522c4d35dcf49873f00b",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tools/gm-relay/README.md",
+      "bytes": 10365,
+      "sha256": "f4077bf12f87090d6f4a3e0d8cc45cd02b95ebc33fafe9310db16fe57fd1f82d",
+      "ref": "3ce1ab52b0a4e41dbe9717b52681236bd368c9b9",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tools/gm-relay/input-profile.json",
+      "bytes": 183,
+      "sha256": "b639df2a9bf75f786fedf8978a0098d6079492a1a8233ddc14e18d613c12afb7",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tools/gm-relay/relay-apply-response.ps1",
+      "bytes": 2045,
+      "sha256": "a478ca9b5ff24613ec4f2c2792f35674fa086708c0fb5053281648eba65d2ca6",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tools/gm-relay/relay_cli.py",
+      "bytes": 9599,
+      "sha256": "0c8c0992db3e863d36914045cdaddd10d9a9b8a327bf70b4e7c26822acff5606",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tools/gm-relay/relay_contract.py",
+      "bytes": 9311,
+      "sha256": "9d233029aba0777b279b32e2fc0ca531f6b0f11f360090a1b8a9ed8deb9913ba",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tools/gm-relay/relay_platform.py",
+      "bytes": 8320,
+      "sha256": "3090305caa50c9458d1dedc4831f073f367883913336be614f2e1aaae50eb124",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tools/gm-relay/relay_worker.py",
+      "bytes": 2133,
+      "sha256": "0b3d570d228281060c2586bf4a258ffea74f4f2e25a5a0547d25566f95ed4870",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "native/linux/boe-lineage-supervisor.c",
+      "bytes": 24566,
+      "sha256": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    },
+    {
+      "path": "tests/fixtures/ProductionMain/configured-neutral-cli.c",
+      "bytes": 4877,
+      "sha256": "b6fe081dd23f54df320875a9e86d01c8536ae40bd85bf1d6d726630bb6e551b4",
+      "ref": "0067874e15f479327dc37268fc891f51e3a2713d",
+      "referenceBytesEqual": true
+    }
+  ],
+  "changedFromCheckpoint": [
+    "specs/1553-portable-local-storage/relay-linux-regression-20261008.md"
+  ]
+}

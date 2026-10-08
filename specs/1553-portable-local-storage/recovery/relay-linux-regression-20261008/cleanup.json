@@ -1,0 +1,229 @@
+{
+  "guardians": [
+    {
+      "root": "/tmp/rr-3bce52ec52bf42adaf0b2e0cf8931b9d",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "root": "/tmp/rr-348ddd25a49c4cc8923012b32770b445",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "root": "/tmp/rr-1ea6d9119e34485c9b679a0a479354d5",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "root": "/tmp/rt-a9b2f3a91cc84c6bbc1fd8a46dfcf7a7",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "root": "/tmp/rt-5d38dc9aa7a74ae1a2d58bc99fd046eb",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "root": "/tmp/rt-49ac9954ea154c07b95f351a44af5df7",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "root": "/tmp/rt-f6f1a7cb81df40229b0acb82b7a5e00d",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "root": "/tmp/rt-ed3405f758a543718308d4c3afd85007",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "root": "/tmp/rt-fd881b73194a404199e94b5558753dc9",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "root": "/tmp/rt-50b6af5a70834041ac6ea30acabe5257",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "root": "/tmp/rt-611d9c96ceaf4d6ebc4a01dd7efaa107",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "root": "/tmp/reusable-relay-4eb3eeaf1ad0483981eea51abc3ea5fa",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "root": "/tmp/reusable-relay-4027792c21a24dcd8fcdc41a85831d7d",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "root": "/tmp/reusable-relay-42289e59a1654b3ca4101dc08ed21492",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    }
+  ],
+  "originalBridge": [
+    {
+      "root": "/tmp/reusable-relay-4eb3eeaf1ad0483981eea51abc3ea5fa",
+      "runId": "507483bc5c7f40a6a87f8afb0b89944a",
+      "execution": {
+        "Executed": true,
+        "ExitCode": 0,
+        "ChildExited": true,
+        "IoDrained": true
+      },
+      "originalIdentityMatches": true,
+      "closed": {
+        "ExecutionDisabled": true,
+        "ChildExited": true,
+        "IoDrained": true,
+        "RelayPid": 953193
+      },
+      "retiredPidsAbsent": {
+        "953155": true,
+        "953172": true
+      }
+    },
+    {
+      "root": "/tmp/reusable-relay-4027792c21a24dcd8fcdc41a85831d7d",
+      "runId": "9a8ebf88ea704869869193bbe014ec54",
+      "execution": {
+        "Executed": true,
+        "ExitCode": 0,
+        "ChildExited": true,
+        "IoDrained": true
+      },
+      "originalIdentityMatches": true,
+      "closed": {
+        "ExecutionDisabled": true,
+        "ChildExited": true,
+        "IoDrained": true,
+        "RelayPid": 953010
+      },
+      "retiredPidsAbsent": {
+        "952972": true,
+        "952988": true
+      }
+    },
+    {
+      "root": "/tmp/reusable-relay-42289e59a1654b3ca4101dc08ed21492",
+      "runId": "0adf421d96db43cd836a56a9b4b93ee7",
+      "execution": {
+        "Executed": true,
+        "ExitCode": 1,
+        "ChildExited": true,
+        "IoDrained": true
+      },
+      "originalIdentityMatches": true,
+      "closed": {
+        "ExecutionDisabled": true,
+        "ChildExited": true,
+        "IoDrained": true,
+        "RelayPid": 952776
+      },
+      "retiredPidsAbsent": {
+        "952738": true,
+        "952754": true
+      }
+    }
+  ],
+  "all14ECHILD": true,
+  "emergencySignals": 0,
+  "failures": 0,
+  "deadlines": 0,
+  "runnerOwnedTreeCleanup": true,
+  "runnerRuntimeCleanup": true
+}

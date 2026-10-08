@@ -37,6 +37,53 @@ fixture space; their top-level proofs and inventories remain locally preserved.
    checkpoint with exact remote SHA and byte readback. Reproducible defects go
    to the parent/HOME-PC implementation writer; this executor makes no fixes.
 
-WIP: tests and independent result review have not run. The separate reported
-Windows24/24 and ordinary Bridge transport evidence are historical external
-evidence, not Linux results or gameplay qualification.
+## Executed Linux result
+
+Fresh selected unit build and PlanOnly succeeded in108.248s, discovering four
+descriptors/32cases and executing zero. The same freshly built unit binaries then
+executed the exact selection with NoBuild: **32/32 PASS**, zero skips/failures/
+duplicate IDs, four completed descriptors, complete selection, no timeout,
+67.879s total wall time. Runner owned-tree and runtime cleanup both succeeded.
+
+| Category | Passed cases |
+| --- | ---: |
+| gm-relay-reusable-contract |17|
+| gm-relay-reusable-main |3|
+| gm-relay-transport |9|
+| gm-relay-repair |3|
+
+Commands, run from the isolated checkout after existing activation:
+
+```powershell
+pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile specs/1553-portable-local-storage/recovery/windows-relay-20261008/selection-linux.json -PlanOnly -Parallelism 1
+pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile specs/1553-portable-local-storage/recovery/windows-relay-20261008/selection-linux.json -NoBuild -Parallelism 1
+```
+
+Actual tested checkout/build revision is report-only WIP
+`4070ad6c400b086e857b200eb5587ba8dad2db5f`. Runtime/test bytes remain the frozen
+0067874e source; selection/catalog/documentation bytes are from checkpoint3ce1.
+[Exact source pins](recovery/relay-linux-regression-20261008/source-pins.json)
+distinguish these references. No runtime or test fix was made.
+
+All14independent scenario guardians observed ECHILD, driverexit0, zero emergency
+signals/failures/deadlines. Three production Bridge cases preserve original
+identity/inventory, actual T042 submit and shared worker/helper consumption,
+queue-close before stop, child exit and drained I/O, original scoped Stopped/ACK
+and authority retirement. Two ordinary synthetic packets succeed; the deliberately
+invalid completion packet returns consumerexit1 and still closes cleanly.
+Their original helper/shell PIDs are absent after retirement. Guardian cleanup
+is separately recorded and does not substitute for these logical stop assertions.
+
+[Evidence manifest](recovery/relay-linux-regression-20261008/manifest.json)
+retains452exact artifacts in a572,087-byte ZIP: runner plans/logs/TRX,17contract
+fixtures,14owned scenario roots, synthetic queue packets and native build provenance.
+[Cleanup](recovery/relay-linux-regression-20261008/cleanup.json),
+[32unique case identities](recovery/relay-linux-regression-20261008/test-cases.json)
+and [environment](recovery/relay-linux-regression-20261008/environment.json)
+are separately readable. Packaged binaries are hash-recorded, not embedded.
+
+WIP: independent Sol6.1/xhigh result/coverage review is next. The separate reported
+Windows24/24 and ordinary Bridge transport evidence remain external evidence;
+this Linux verification makes no Windows, provider, gameplay, full systemd,
+HTTP500 diagnosis, cold recovery or whole-game acceptance claim. Catalog and
+implementation branch remain unchanged; no new catalog audit or full suite was run.

@@ -1,0 +1,194 @@
+[
+  {
+    "descriptor": "gm-relay-transport-unit-004",
+    "testId": "54817098-557b-36d0-cd85-cb680a3220f1",
+    "name": "BookOfEternityClient.Tests.GmRelayTransportTests.RealRelay_IsolatedTransportAndClosure(mode: \"close-before-snapshot\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-transport-unit-004",
+    "testId": "ee66fb19-744f-ef50-da09-357fc79f964d",
+    "name": "BookOfEternityClient.Tests.GmRelayTransportTests.RealRelay_IsolatedTransportAndClosure(mode: \"once\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-transport-unit-004",
+    "testId": "bbd714da-10cf-5b95-942b-d6ce30e36e5a",
+    "name": "BookOfEternityClient.Tests.GmRelayTransportTests.RealRelay_IsolatedTransportAndClosure(mode: \"started-metadata-failure\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-transport-unit-004",
+    "testId": "7072ccad-2a34-9383-b405-d37f46d07a5a",
+    "name": "BookOfEternityClient.Tests.GmRelayTransportTests.RealRelay_IsolatedTransportAndClosure(mode: \"guardian-budgets\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-transport-unit-004",
+    "testId": "596797fc-1720-9801-48ce-b74031d1dbdd",
+    "name": "BookOfEternityClient.Tests.GmRelayTransportTests.RealRelay_IsolatedTransportAndClosure(mode: \"wrong-reply\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-transport-unit-004",
+    "testId": "e2f5d691-3b4b-57cb-e76b-995fa5e60d95",
+    "name": "BookOfEternityClient.Tests.GmRelayTransportTests.RealRelay_IsolatedTransportAndClosure(mode: \"close-held-child\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-transport-unit-004",
+    "testId": "1c11ee0f-a820-268a-3284-5be3bd2e3674",
+    "name": "BookOfEternityClient.Tests.GmRelayTransportTests.ActualDriver_RetainsTurnReceiptAndRefusesUnclosedRollback",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-transport-unit-004",
+    "testId": "5dfe8d23-9928-d754-6cb2-344a3fa7dc1e",
+    "name": "BookOfEternityClient.Tests.GmRelayTransportTests.RealRelay_IsolatedTransportAndClosure(mode: \"paste\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-transport-unit-004",
+    "testId": "4d8d6dfa-cc7f-bc46-3371-1457ffe22114",
+    "name": "BookOfEternityClient.Tests.GmRelayTransportTests.RealRelay_IsolatedTransportAndClosure(mode: \"stale\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-repair-unit-001",
+    "testId": "39dd6135-bd7e-115b-4a25-33b4ef58ffa6",
+    "name": "BookOfEternityClient.Tests.GmRelayRepairTests.RealRepair_ActualDaemonShapeAndHelper(mode: \"stale-repair\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-repair-unit-001",
+    "testId": "7312bcfa-a87f-8486-4a2e-9dea77af0157",
+    "name": "BookOfEternityClient.Tests.GmRelayRepairTests.RealRepair_ActualDaemonShapeAndHelper(mode: \"real-repair\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-repair-unit-001",
+    "testId": "76826b28-04dd-9fe7-ff2f-f1c6952254cb",
+    "name": "BookOfEternityClient.Tests.GmRelayRepairTests.RealRepair_ActualDaemonShapeAndHelper(mode: \"helper-signature\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-main-unit-003",
+    "testId": "39fd4072-e111-0eb9-8cb8-76f00bd9d6b9",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.ProductionBridge_RelocatedWorkerConsumerAndOriginalRetirement(mode: \"production-main-relay-consumer-error\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-main-unit-003",
+    "testId": "5c23f049-ea60-30c5-e488-3cd3c0b317b7",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.ProductionBridge_RelocatedWorkerConsumerAndOriginalRetirement(mode: \"production-main-relay-multiline\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-main-unit-003",
+    "testId": "80faec4b-e743-b35a-396c-0362b8875f0e",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.ProductionBridge_RelocatedWorkerConsumerAndOriginalRetirement(mode: \"production-main-relay-reusable\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "0367a5a6-05a6-1765-2e6e-0c024101d399",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"close-gate-timeout\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "5a1c8c4a-597c-d016-455f-33ede1f3dbce",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"changed-request\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "10ca53f9-07df-776e-60b7-199870786883",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"wrong-turn\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "d49c4930-29a8-83cf-4508-929b93cf4f65",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"partial-publication\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "e0cacb10-4cc6-abe2-9b1a-d7ed756e8cc9",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"repair-read\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "c7a400b7-caaa-8ed0-8b38-aa42df8eeda2",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"missing-adapter\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "f20ad00e-3144-f222-b317-f2bed58e0857",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"malformed-packet\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "1aa0266f-6d0c-b57f-0b21-57e201e38af9",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"read\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "9e872d4a-9aa0-b13a-f0d2-cdd24753f7d1",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"duplicate\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "56df2d21-0bf1-f040-3892-7dc58a2059fa",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"packet-bound\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "1edb1418-6fbe-1e41-9d01-32dc3115bc8c",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"changed-prompt\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "2a42e296-37e7-05fd-8c5b-284a704d6627",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"atomic-no-replace\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "38ad062c-e2f7-329d-3cd2-6d288cc7a0bd",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"changed-authority\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "5dc34845-c20f-e719-2e67-89b79566e852",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"close-unconfirmed\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "4f326951-2949-c23d-9a6e-dc1d2a0e4764",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"incomplete\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "3f66b709-f8d3-394e-3fb5-8f4aa449e191",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"closed\")",
+    "outcome": "Passed"
+  },
+  {
+    "descriptor": "gm-relay-reusable-contract-unit-002",
+    "testId": "058bae6f-f337-811e-b1a7-9fdf63674057",
+    "name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"wrong-queue\")",
+    "outcome": "Passed"
+  }
+]
