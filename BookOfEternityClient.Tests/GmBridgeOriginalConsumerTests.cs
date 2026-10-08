@@ -3,6 +3,12 @@ namespace BookOfEternityClient.Tests;
 public sealed class GmBridgeOriginalConsumerTests
 {
     [Theory]
+    [InlineData("rollback")]
+    [InlineData("unknown")]
+    public Task ProductionStartupConfigurationUsesSettledCanonicalSnapshot(string boundary) =>
+        ProductionMainLinuxFixture.RunAsync("production-main-config-recovery-"+boundary);
+
+    [Theory]
     [InlineData("slot")]
     [InlineData("lease")]
     public Task PrivateWorkerDispatch_BorrowsOriginalPinAndCapturedInputCancellation(string boundary) =>

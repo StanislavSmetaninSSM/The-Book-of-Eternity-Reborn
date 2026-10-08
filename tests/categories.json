@@ -17963,6 +17963,33 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-config-recovery-linux",
+      "responsibility": "Actual canonical config publication held while original production Bridge waits for its original guard: known rollback binds launched inert CLI and cached profile to settled bytes; unknown publication retains evidence and admits no Prepared/child.",
+      "excludes": "Native Windows/provider execution, broad Bridge lifecycle or worker launch.",
+      "changeHints": [
+        "BookOfEternityGMBridge/Program.cs",
+        "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.ConfigRecovery.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeOriginalConsumerTests.ProductionStartupConfigurationUsesSettledCanonicalSnapshot"
+          ]
+        }
+      ]
     }
   ]
 }

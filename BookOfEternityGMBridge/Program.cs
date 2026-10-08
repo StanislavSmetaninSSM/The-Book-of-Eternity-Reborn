@@ -117,6 +117,7 @@ internal sealed partial class BridgeHost : IDisposable
     internal Func<MainOperationClose,Task>? BeforeMainCloseReply;
     private BookOfEternityClient.Core.FileSystemManager? _neutralFiles;
     internal Action<BookOfEternityClient.Core.MainRunIoStage>? ObserveMainMetadata;
+    internal Func<Task>? ObserveMainGuardContention; // Test-only observation of actual original guard contention.
     internal Action<int>? ObserveMainHeldRoot;
     // Explicit isolated tests may supply a source-root-bound pool; ordinary
     // profiles and bridge requests cannot enable a different worker backend.
@@ -500,7 +501,7 @@ internal sealed partial class BridgeHost : IDisposable
                 _neutralFiles=new BookOfEternityClient.Core.FileSystemManager(_clientRoot,Microsoft.Extensions.Logging.Abstractions.NullLogger<BookOfEternityClient.Core.FileSystemManager>.Instance);
                 IOwnedTerminalSession session;
                 try {
-                    _mainRun=await GmSessionRunCoordinator.OpenProductionAsync(_neutralFiles,ObserveMainMetadata);
+                    _mainRun=await GmSessionRunCoordinator.OpenProductionAsync(_neutralFiles,ObserveMainMetadata,ObserveMainGuardContention);
                     session=expectedGeneration==null
                         ? await _mainRun.LaunchProductionAsync(configuration,_cts.Token,ObserveMainHeldRoot)
                         : await _mainRun.LaunchProductionBoundAsync(configuration,expectedGeneration,_cts.Token,ObserveMainHeldRoot);

@@ -48,7 +48,7 @@ internal sealed partial class GmSessionRunCoordinator
         WindowsStartupObservation? windowsStartupObservation,Action<MainRunIoStage>? observe)
     {_files=files;_guard=guard;_production=production;_windowsStartupObservation=windowsStartupObservation;_persistence=new(guard,observe);}
     internal static Task<GmSessionRunCoordinator> OpenNeutralAsync(FileSystemManager files,Action<MainRunIoStage>? observe=null)=>OpenAsync(files,false,observe);
-    internal static Task<GmSessionRunCoordinator> OpenProductionAsync(FileSystemManager files,Action<MainRunIoStage>? observe=null)=>OpenAsync(files,true,observe);
+    internal static Task<GmSessionRunCoordinator> OpenProductionAsync(FileSystemManager files,Action<MainRunIoStage>? observe=null,Func<Task>? guardContended=null)=>OpenAsync(files,true,observe,guardContended:guardContended);
     internal static Task<GmSessionRunCoordinator> OpenWindowsProductionAsync(FileSystemManager files,
         WindowsStartupObservation observation,Action<MainRunIoStage>? observe=null)
     {
@@ -57,11 +57,11 @@ internal sealed partial class GmSessionRunCoordinator
         return OpenAsync(files,true,observe,observation);
     }
     private static async Task<GmSessionRunCoordinator> OpenAsync(FileSystemManager files,bool production,
-        Action<MainRunIoStage>? observe,WindowsStartupObservation? windowsStartupObservation=null)
+        Action<MainRunIoStage>? observe,WindowsStartupObservation? windowsStartupObservation=null,Func<Task>? guardContended=null)
     {
         if(OperatingSystem.IsWindows() && (!production || windowsStartupObservation==null))
             throw new PlatformNotSupportedException("Windows main admission requires its captured startup observation.");
-        var guard=await GmMainOwnerGuard.AcquireAsync(files.BasePath);
+        var guard=await GmMainOwnerGuard.AcquireAsync(files.BasePath,contended:guardContended);
         GmSessionRunCoordinator? owner=null;
         try
         {

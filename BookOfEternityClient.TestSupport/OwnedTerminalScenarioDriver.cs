@@ -142,6 +142,10 @@ internal static partial class OwnedTerminalScenarioDriver
                 host = Activator.CreateInstance(type, [launch.Scratch, pipe]);
                 if(systemd==null)Invoke("ConfigureNeutral",launch);else Invoke("ConfigureSystemdControlled",launch,systemd);
             }
+            if(mode.StartsWith("production-main-config-recovery-",StringComparison.Ordinal)) {
+                await RunStartupConfigRecoveryAsync(mode.EndsWith("unknown",StringComparison.Ordinal),folder,host!,type,result);
+                result["Success"]=true;return 0;
+            }
             if(mode=="terminal-partial-start")File.SetUnixFileMode(Path.Combine(package,"neutral-cli"),UnixFileMode.UserRead|UnixFileMode.UserWrite);
             try { await (Task)Invoke("StartShellAsync")!; }
             catch(OwnedTerminalStartException ex) when(mode=="terminal-partial-start") {

@@ -1,3 +1,21 @@
+## F11 original startup config causal checkpoint — 2026-10-08
+
+Test-only two-case selection `gm-main-config-recovery-linux` holds real config
+publication at its exact MemberPublished/journal member and starts shipped actual
+production Bridge with explicit inert configured CLI. Optional null-by-default
+contention observation threads through the existing original guard callback only;
+no admission/recovery behavior changes. Both versions must reach actual guard
+contention before releasing publisher. Pre-recovery cachedB is diagnostic, not an
+acceptance precondition. Known rollback checks exactA before original child args,
+cwd, input profile/cache; unknown valid-inertC checks retained journal/no Prepared
+or child and fresh refusal. Original guardian/stop own cleanup. Fresh PlanOnly,
+causal run and independent fixture/source review pending; no runtime fix yet.
+
+Previous Windows component gate c45/9c8 independently PASS, all35 artifacts/52
+source pins verified. Root restored9c8cf50b9ee0c7507e38099d841a33130a098550 directly
+from GitHub in new `/workspace/boe-1553-windows-consumers-restore`, clean25811 tracked,
+`git fsck --full`0; no builds/tests in restore. Native Windows remains unexecuted.
+
 ## A01 bounded Windows source/component checkpoint — 2026-10-08
 
 Correctedc45 source/selection and bounded evidence review PASS, no new findings.

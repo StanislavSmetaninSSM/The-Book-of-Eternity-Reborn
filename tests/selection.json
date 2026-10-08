@@ -316,6 +316,16 @@
         "FR-010",
         "A01"
       ]
+    },
+    {
+      "category": "gm-main-config-recovery-linux",
+      "reason": "F11 causal original config writer and production startup through actual guard contention, positive known rollback and unknown refusal. Test-only baseline before config snapshot admission correction; no prior accepted aggregate rerun.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-010",
+        "F11"
+      ]
     }
   ]
 }
