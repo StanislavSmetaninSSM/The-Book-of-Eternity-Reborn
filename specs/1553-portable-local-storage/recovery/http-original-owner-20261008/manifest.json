@@ -96,5 +96,134 @@
     },
     "ModelRequests": 0,
     "OriginalShutdownAndGuardianConfirmed": true
+  },
+  "WindowsGreen": {
+    "Source": "3d6cfd24898fa30b37764de688432455ac9a4660",
+    "Revision": {
+      "Head": "3d6cfd24898fa30b37764de688432455ac9a4660",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "Archive": "windows-green-original-results.zip",
+    "SHA256": "456ee98b1d6862bcb5f09c31aea5a8a7ef8fca58652057d2abfc2d240ab6e2e3",
+    "Bytes": 199936,
+    "Planned": 33,
+    "Completed": 33,
+    "Passed": 33,
+    "Failed": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "WallTime": "00:10:03.4032157",
+    "BuildErrors": 0,
+    "BuildWarnings": 22,
+    "ProductDLLSHA256": "eecbdd4577fe551e92e8a7f3fd951a5103fdb957809e7f6993497c938ceae2fc",
+    "ArchiveEntries": [
+      {
+        "Path": "browser-http-admission-integration-001.trx",
+        "Bytes": 15905,
+        "SHA256": "db06d27174997e69abd866c39303f3ac10dd603a6db27d958b17651968b1c2fc"
+      },
+      {
+        "Path": "browser-http-admission-lifetime-integration-002.trx",
+        "Bytes": 4862,
+        "SHA256": "810c72c07e7adb9882c8ff3ecd4f60cf641a56a8c32681c5d490c693ef7bb4b7"
+      },
+      {
+        "Path": "browser-read-authority-integration-003.trx",
+        "Bytes": 14231,
+        "SHA256": "a3a36208308345d121bd02fe955641bfb59d447b434ada7dd971207330200aac"
+      },
+      {
+        "Path": "Build-integration.log",
+        "Bytes": 20889,
+        "SHA256": "ebf2e5a6dd83befa9e36a98eded22de11ba7de85e6c363e877ae4638801031d4"
+      },
+      {
+        "Path": "dotnet-test.log",
+        "Bytes": 1561243,
+        "SHA256": "2d23d5844b7220bd5d7f2f7ee995c3c4a99a4c761d9b3736ed20e6f41afc97ca"
+      },
+      {
+        "Path": "owned-process-201fae9984384142b2f209c3838a14e7.json",
+        "Bytes": 745,
+        "SHA256": "e46b0f6d2645381ea3bab6aab1797133901b70fc539d97c58adb4e1fbe2505bb"
+      },
+      {
+        "Path": "owned-process-4b4ccff63b214b798933162b8833684a.json",
+        "Bytes": 813,
+        "SHA256": "f93c471f7d4bc63b6ff0cfe0416701e282fcc1536cc8ad4d285a88e24edbdce6"
+      },
+      {
+        "Path": "owned-process-4cbfa8bb1b884944a6d79b1f0a5bb13d.json",
+        "Bytes": 255,
+        "SHA256": "0ca6872d297efd0a89bb88f6ed1559faae313c28aaf2e183cc9a0749d449c939"
+      },
+      {
+        "Path": "owned-process-4ff59b1d7a7b439fb5b00d040a6b2c9e.json",
+        "Bytes": 105,
+        "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+      },
+      {
+        "Path": "owned-process-6d4738eaa209456bb7a991262a3b4bb6.json",
+        "Bytes": 1281,
+        "SHA256": "7a8b7ed071cafdff73f6ba191d93553244d9799bc9cacb4b04f7158b78aee710"
+      },
+      {
+        "Path": "owned-process-934360edb554484b8325fe14712613ed.json",
+        "Bytes": 268,
+        "SHA256": "306607b911cf581ab7b6a29665a4314a782ae5d0be97324ab3f6ff99faeb9a6f"
+      },
+      {
+        "Path": "owned-process-d3302023d1794759b4a8026475f5c899.json",
+        "Bytes": 90,
+        "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+      },
+      {
+        "Path": "owned-process-e55269ff2f0c4493a8b0946104c7468b.json",
+        "Bytes": 53,
+        "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+      },
+      {
+        "Path": "owned-process-f533bacf451b482d86ba46e4cf0998a6.json",
+        "Bytes": 1033,
+        "SHA256": "bba5b58d387d0010e990cb75970a574f2da245d8563485df6c6a4787af3bc32e"
+      },
+      {
+        "Path": "owned-process-fa73c98bd35944b4899fdb274944a177.json",
+        "Bytes": 652,
+        "SHA256": "0aa84f74cb703c519544f230d963f12baaabfc325bd16ec45be693e41274cde8"
+      },
+      {
+        "Path": "owned-process-launcher.ps1",
+        "Bytes": 751,
+        "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+      },
+      {
+        "Path": "plan.json",
+        "Bytes": 8913,
+        "SHA256": "d1135247203fa69d03ef4011ca8253ff75510ec0c062fbdfa4f63649dd87fd17"
+      },
+      {
+        "Path": "portable-load-browser-refresh-integration-004.trx",
+        "Bytes": 17393,
+        "SHA256": "34e6f4bfd1069384f5c310a5fb80bd82fe6dc3cf0bb635f3c5279c2eb6533d1b"
+      },
+      {
+        "Path": "portable-load-browser-required-generation-integration-005.trx",
+        "Bytes": 7977,
+        "SHA256": "2346588e9f9418669aede75cdb4fb2f0c385e92a570f9bf40e45507e718e5352"
+      },
+      {
+        "Path": "summary.json",
+        "Bytes": 3642,
+        "SHA256": "83acdcc433447681c4489c8a7644dae390368781c8a777b995ce06b448df3035"
+      },
+      {
+        "Path": "wrapper.log",
+        "Bytes": 10653,
+        "SHA256": "553bde37b0113bf252757f105715e67c494f68e3795c087cacbd3050392669b7"
+      }
+    ]
   }
 }
