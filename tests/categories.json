@@ -1,40 +1,128 @@
 {
   "schemaVersion": 1,
   "categories": [
-    {"id":"browser-read-authority","responsibility":"T055 four real HTTP read entry points refuse Stopping authority and finalization failure, retaining the same generation; validation must not mask refusal as HTTP200","excludes":"No synthetic record qualifies live-owner success; no provider calls, actual Linux owner belongs to browser-original-owner-linux","changeHints":["BookOfEternityClient/WebUi/LocalWebUiSessionStatusService.cs","BookOfEternityClient/WebUi/BrowserGameScreenService.cs","BookOfEternityClient/WebUi/BrowserLifecycleDashboardService.cs"],"related":[],"requirements":{"frontendBuild":false,"exclusive":true},"timeoutMinutes":3,"expectedSeconds":null,"selectors":[{"project":"integration","tests":["BookOfEternityClient.Tests.BrowserReadAuthorityTests.*"]}]},
-    {"id":"browser-original-owner-linux","responsibility":"T055 actual production Bridge and idle shared relay: four serial plus six parallel HTTP DTOs, ten exact original pin close receipts, unchanged owner/generation, no prompt requests and original queue/terminal shutdown","excludes":"Windows direct ConPTY has no production main coordinator; no readiness override, synthetic Running owner, model/provider calls or gameplay acceptance","changeHints":["BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.HttpReads.cs","BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs"],"related":[],"requirements":{"frontendBuild":false,"exclusive":true,"ciRunner":"ubuntu-24.04"},"timeoutMinutes":3,"expectedSeconds":null,"selectors":[{"project":"unit","tests":["BookOfEternityClient.Tests.BrowserOriginalOwnerLinuxTests.*"]}]},
+    {
+      "id": "browser-read-authority",
+      "responsibility": "T055 four real HTTP read entry points refuse Stopping authority and finalization failure, retaining the same generation; validation must not mask refusal as HTTP200",
+      "excludes": "No synthetic record qualifies live-owner success; no provider calls, actual Linux owner belongs to browser-original-owner-linux",
+      "changeHints": [
+        "BookOfEternityClient/WebUi/LocalWebUiSessionStatusService.cs",
+        "BookOfEternityClient/WebUi/BrowserGameScreenService.cs",
+        "BookOfEternityClient/WebUi/BrowserLifecycleDashboardService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserReadAuthorityTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "browser-original-owner-linux",
+      "responsibility": "T055 actual production Bridge and idle shared relay: four serial plus six parallel HTTP DTOs, ten exact original pin close receipts, unchanged owner/generation, no prompt requests and original queue/terminal shutdown",
+      "excludes": "Windows direct ConPTY has no production main coordinator; no readiness override, synthetic Running owner, model/provider calls or gameplay acceptance",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.HttpReads.cs",
+        "BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserOriginalOwnerLinuxTests.*"
+          ]
+        }
+      ]
+    },
     {
       "id": "portable-load-browser-required-generation",
       "responsibility": "Actual Save/Load followed by complete required-generation browser refresh: current, stale, missing and unreadable-settings outcomes in independent roots",
       "excludes": "Live GM continuation, user saves, other bundle read/closing cuts owned by portable-load-browser-refresh",
-      "changeHints": ["BookOfEternityClient/WebUi/LocalWebUiHost.cs", "BookOfEternityClient/WebUi/BrowserLoadStateService.cs"],
+      "changeHints": [
+        "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+        "BookOfEternityClient/WebUi/BrowserLoadStateService.cs"
+      ],
       "related": [],
-      "requirements": { "frontendBuild": false, "exclusive": true },
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
       "timeoutMinutes": 5,
       "expectedSeconds": null,
-      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration"] }]
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration"
+          ]
+        }
+      ]
     },
     {
       "id": "browser-http-admission-lifetime",
       "responsibility": "Actual filter cancellation entry/permit ownership and real Kestrel aborted shutdown with a surviving owned handler",
       "excludes": "No GM/provider, filesystem authority changes, normal shutdown qualification or unrelated browser routes",
-      "changeHints": ["BookOfEternityClient/WebUi/BrowserRequestAdmission.cs"],
+      "changeHints": [
+        "BookOfEternityClient/WebUi/BrowserRequestAdmission.cs"
+      ],
       "related": [],
-      "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "windows-latest" },
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "windows-latest"
+      },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
-      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.LocalWebUiRequestAdmissionLifetimeTests.*"] }]
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.LocalWebUiRequestAdmissionLifetimeTests.*"
+          ]
+        }
+      ]
     },
     {
       "id": "browser-http-admission",
       "responsibility": "Real HTTP state request admission outside the physical guard retry window, cancellation/failure release, out-of-band Load completion/cancel and static/media delivery; independent physical guard refusal remains authoritative",
       "excludes": "No provider/GM launch, user saves, fresh-GM continuation or unrelated gameplay; does not shorten validation or change filesystem authority",
-      "changeHints": ["BookOfEternityClient/WebUi/LocalWebUiHost.cs", "BookOfEternityClient/WebUi/BrowserRequestAdmission.cs"],
+      "changeHints": [
+        "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+        "BookOfEternityClient/WebUi/BrowserRequestAdmission.cs"
+      ],
       "related": [],
-      "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "windows-latest" },
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "windows-latest"
+      },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
-      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.*"] }]
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.*"
+          ]
+        }
+      ]
     },
     {
       "id": "gm-main-linux-guide",
@@ -5900,7 +5988,12 @@
         "BookOfEternityClient/Services/GameEngine*",
         "BookOfEternityClient/Services/*Afterlife*"
       ],
-      "related": [],
+      "related": [
+        {
+          "id": "portable-console-rollback-preparation",
+          "when": "Incarnation or console local preparation changes staged exact before-images, originally absent setup files, consumption or cleanup."
+        }
+      ],
       "requirements": {
         "frontendBuild": false,
         "exclusive": true
@@ -5931,7 +6024,6 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CollectIncarnationBlockersAsync_SystemGuardianAttractionBlocksIncarnation",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CollectIncarnationBlockersAsync_ValidManifestationRequestDoesNotBlockSoulGates",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumePendingShiningMemorySelectionAsync_ReportsFailedZeroCandidateCommit",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_AbsentAfterlifePendingContracts_AreNotRollbackBaseline",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreatePreTurnBackup_BrowserDirectGachaRollbackEvidenceOverridesPostSpendSoulBackup",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreatePreTurnBackup_UnreadableCanonicalFileFailsClosed",
@@ -5939,8 +6031,6 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GetBlockingShiningPendingContractPathsAsync_DeletesExplicitEmptyFilesButKeepsMalformedAndActive",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_CanonicalRefreshReturnsOneOpaqueOpenTransactionCarrier",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HandleIncarnation_SessionReplacementAfterBinding_DoesNotReadOrMutateReplacement",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.NormalizeRuntimeUiArtifactsAsync_PreservesResolvedShiningPendingRequestDuringActiveSnapshot",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_PresenceMetadataDoesNotChangeCanonicalRestoreSemantics",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_RestoresExactOriginalBytesWithoutAddingBom",
@@ -14558,7 +14648,7 @@
         {
           "project": "integration",
           "tests": [
-          "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads",
+            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads",
             "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds",
             "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked",
             "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock"
@@ -17124,6 +17214,33 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmRelayWindowsTests.*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-console-rollback-preparation",
+      "responsibility": "Original console/incarnation preparation stages exact rollback evidence, survives lore deletion, retains original absence through signed snapshot overlay and restores consumed preparation with cleanup.",
+      "excludes": "Other afterlife transitions, browser rollback, binding gameplay and native Windows qualification.",
+      "changeHints": [
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts*",
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles"
           ]
         }
       ]

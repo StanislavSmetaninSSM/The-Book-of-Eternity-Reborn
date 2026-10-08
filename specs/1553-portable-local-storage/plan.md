@@ -1,5 +1,21 @@
 ## Active storage migration inventory — 2026-10-08 (WIP)
 
+Independent Astra XHigh completeness followup accepted exact inventory carrier
+`eb60495facd1ed1c4ca31a932296787f135b6162`: four findings corrected, no new delta
+findings; five artifact hashes and 29,941 unique lexical-only rows inspected.
+Parent inspected the correction diff. T060 closes only this gate; all migration,
+actual runtime reachability and native Windows claims remain open.
+
+T061 first causal slice: split exactly three existing incarnation local-prep
+methods from the 60-method afterlife category into
+`portable-console-rollback-preparation`; preserve all methods and assertions.
+Run PlanOnly, then the same three original consumer methods as baseline/RED
+before any runtime edit. They exercise stage, world-lore deletion, signed
+snapshot overlay with original absence, consumed restore and cleanup. Add real
+failure/retry/recovery controls after the boundary is established. Current
+runtime is unchanged; no RED/GREEN result exists yet. Selection reasons are
+recorded in tests/selection.json; no other family or aggregate is scheduled.
+
 Source [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
 Latest owner instruction authorizes systematic inventory → independent completeness
 review → bounded migration of remaining write/recovery/notification consumers.
@@ -19,10 +35,9 @@ match counts do not prove migration or defects. First priorities: console rollba
 legacy-root lifecycle, generic uncertain-result/compensation/visibility boundary,
 whole Windows browser/Daren consumers, helper/daemon protocols and stale test cuts.
 Original old-evidence recovery/refusal and separate native/IPC authority remain.
-No new runtime, tests, category changes or execution yet. Independent Astra XHigh
-completeness review is required before implementation; all new tasks remain open.
-Next: publish this candidate and request that review, then execute only its first
-coherent slice with causal boundary evidence and current category selection.
+No runtime or test-body changes yet. The independent completeness gate above is
+accepted; remaining T061–T065 tasks stay open. Next: publish the bounded selection,
+then PlanOnly and original console-preparation causal baseline.
 
 ## Native Windows continuation 2026-10-08
 
