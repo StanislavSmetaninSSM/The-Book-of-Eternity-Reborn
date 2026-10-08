@@ -17933,6 +17933,32 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-windows-cwd-resolution",
+      "responsibility": "Actual private Bridge cwd resolver: existing configured/default paths and missing canonical child refusal before main admission.",
+      "excludes": "Native Windows execution or creation authority; no full Bridge diagnostics cohort.",
+      "changeHints": [
+        "BookOfEternityGMBridge/Program.cs",
+        "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
+        "BookOfEternityClient.Tests/GmWindowsShellResolutionTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWindowsShellResolutionTests.WorkingDirectoryResolutionDoesNotCreateCanonicalStateBeforeAdmission"
+          ]
+        }
+      ]
     }
   ]
 }

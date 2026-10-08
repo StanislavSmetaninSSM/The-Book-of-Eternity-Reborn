@@ -1,0 +1,127 @@
+{
+  "scope": "A01 bounded shared Bridge consumer evidence. Native Windows unexecuted.",
+  "initial": {
+    "qualification": "Ungated intermediate resolver3 Linux PASS; native3 only compiled/discovered,0executed. Source review blocked cwd side effect and stale moved diagnostics contract.",
+    "planned": 6,
+    "executed": 3,
+    "passed": 3,
+    "nativeExecuted": 0,
+    "source": "89ed58f20c3e93f205f04a78aa5350887151da00",
+    "artifacts": [
+      {
+        "path": "initial-plan-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-144912-299-73101-b7c760f52cb7401ea7a5e67200df889c-categories/Build-unit.log",
+        "sha256": "ceb597ef2de7d2d78f548f17fd92ffcd12c8d093364e331fb5bdd9dc9bdedba6",
+        "originalSha256": "8de442cfa17e295f1e5c334cdfbde77ddcb46116e84b9774918f1f378050c0b3"
+      },
+      {
+        "path": "initial-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-144912-299-73101-b7c760f52cb7401ea7a5e67200df889c-categories/dotnet-test.log",
+        "sha256": "29b5fd6c4014629ca09dbe30ad2addb8ad6369e2e2d79bb3be87acb43ab27313",
+        "originalSha256": "b1afd4bfc2b260ddcce9324c36ca038ef7eb85e45af4a30ef9a93d74aa001324"
+      },
+      {
+        "path": "initial-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-144912-299-73101-b7c760f52cb7401ea7a5e67200df889c-categories/plan.json",
+        "sha256": "20efbd091099355de0be44927cac8803933971e292e746fd837619af0fe6ba87",
+        "originalSha256": "20efbd091099355de0be44927cac8803933971e292e746fd837619af0fe6ba87"
+      },
+      {
+        "path": "initial-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-144912-299-73101-b7c760f52cb7401ea7a5e67200df889c-categories/summary.json",
+        "sha256": "1cc2e52969ae6fd46deb6ce58011e8d965dd6383e014936b1a0067759d8524dc",
+        "originalSha256": "1cc2e52969ae6fd46deb6ce58011e8d965dd6383e014936b1a0067759d8524dc"
+      },
+      {
+        "path": "initial-resolver-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-145104-655-73736-b8a00ef6015e48c4a774295b621c55ce-categories/dotnet-test.log",
+        "sha256": "1c114cfc3dc15ee6889d74bc49ad0985a212e6229a97678ce2c417607788f747",
+        "originalSha256": "dad74173869d9a6f2179de01296529b8574aa3fae5d731b0734331d3ee9b902b"
+      },
+      {
+        "path": "initial-resolver-gm-main-windows-shell-resolution-unit-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-145104-655-73736-b8a00ef6015e48c4a774295b621c55ce-categories/gm-main-windows-shell-resolution-unit-001.trx",
+        "sha256": "37d3bb5a83229b0b65c515de75f87350631fb7de90c859de3bc46d09ea07ff9d",
+        "originalSha256": "808767e6be0c6604e368409651429ce3d7d8a4be5caf701b8b5c817e632f0c25"
+      },
+      {
+        "path": "initial-resolver-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-145104-655-73736-b8a00ef6015e48c4a774295b621c55ce-categories/plan.json",
+        "sha256": "5852ef3004e3bb58425924e5f444877964399e392e7b8c0bfd711166801a71ee",
+        "originalSha256": "5852ef3004e3bb58425924e5f444877964399e392e7b8c0bfd711166801a71ee"
+      },
+      {
+        "path": "initial-resolver-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-145104-655-73736-b8a00ef6015e48c4a774295b621c55ce-categories/summary.json",
+        "sha256": "72b8ecf131a1c85a69440071e1d97eb94de0875962f55bcfaca69c597361be38",
+        "originalSha256": "72b8ecf131a1c85a69440071e1d97eb94de0875962f55bcfaca69c597361be38"
+      },
+      {
+        "path": "initial-plan-runner-boe-1553-windows-consumer-plan.log.gz",
+        "source": "/tmp/boe-1553-windows-consumer-plan.log",
+        "sha256": "38a5566d70f58aa16f3091768c46cfcdbe28ca14ee4c913b37a3909a8de3fb71",
+        "originalSha256": "80dcb4c7f2eeb06a56af6e9e7dc1938060ff11cb6497294ee5705b2dd037dc24"
+      },
+      {
+        "path": "initial-resolver-runner-boe-1553-windows-shell-actual.log.gz",
+        "source": "/tmp/boe-1553-windows-shell-actual.log",
+        "sha256": "f9474a60d4706d8c17e65539f33d3ac7866504c67ee133b306c46da2c6450eda",
+        "originalSha256": "5105ea417671dd350899c5629ea1258fcfd09e24dbdaaa34f4828fde96139b9d"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityGMBridge/Program.cs",
+        "sha256": "395a4da7c89667869fcc3ae4e33f0120829f01228cf2efabe8ba742734d41ea7"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
+        "sha256": "f2826b4a8236a9f883ac1ca5628f61fd10d2d578e7cc4fb9f234daf6eb8e017a"
+      },
+      {
+        "path": "BookOfEternityGMBridge/ConPtySession.cs",
+        "sha256": "950937c493c51bbf09d514c22b6dc388ccd8960c2ef365871158ef7e77443b90"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.StartupObservation.cs",
+        "sha256": "e55f5c28bb76504950174e859033a7182472e6900adb4fc51e95495b148a93a5"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+        "sha256": "4a685b8c461b7888e8597f3c31b7c921b05d318d7c3a2c9d321e883314791a42"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.LoadSession.cs",
+        "sha256": "5aabda6fcb9b05f168a3bcbf34611fe13ed4c6d318b6841e036da4e60a2d6a43"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmWindowsShellResolutionTests.cs",
+        "sha256": "b2ef7d1966f044e22b27671bdb1009ed08c54e2044c5301c2a030c19472ff21b"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmBridgeWindowsOriginalHostTests.cs",
+        "sha256": "e02c85e0e13defbe19fa1f3a888cf2f374e67b12e12cf53524dec8543c96f0de"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmBridgeDiagnosticsContractTests.cs",
+        "sha256": "455531a7c373a0c545e6a98cdba5f30d420f1c7bf321279db042b4cc7541a442"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "sha256": "2fa9ddb2c4a9b974f379413c150e21a175b8867e7ed8e4568f0e967f4842d9b1"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservationProbe.cs",
+        "sha256": "1af28e67d431bf4e13673c44916cb4f8b543b787267ab5d4b8d4180f141f54b1"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "0daa71cf17daf5e77c6552af8e07929cd5188864542434a9b928b8026ea9e415"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "f6b26979ef02bef0e5dee781de170bc736719bec723c77fe32888b8f49752e93"
+      }
+    ]
+  }
+}

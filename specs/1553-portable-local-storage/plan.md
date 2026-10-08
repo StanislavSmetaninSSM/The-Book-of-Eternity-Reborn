@@ -1,3 +1,19 @@
+## A01 Windows source review correction checkpoint — 2026-10-08
+
+Independent89ed source/selection review is BLOCKED on two bounded P2s: configured
+cwd resolution still raw-creates a canonical child before probe/admission; the exact
+moved-source diagnostics contract still looks only in Program. Pure resolver3 had
+already passed145104 (7.4121421s), but is an ungated intermediate result, not Windows
+acceptance. Fresh Plan144912 built6/2/0; native3 executed0.
+[Preserved intermediate evidence](recovery/storage-migration-windows-consumers-20261008/manifest.json).
+
+Test-only cwd3 now invokes the real private helper and records returned path,
+actual canonical-child presence and failure before assertions. Existing configured
+and default path controls accompany missing-child refusal. Runtime remains89ed for
+causal RED; final proposed bounded7 = resolver3 +cwd3 +one exact moved diagnostics
+method, after minimal existing-directory-only correction and source/selection PASS.
+No broad gm-worker-proposals run. Native activation qualification remains pending.
+
 ## A01 Windows original consumer activation candidate — 2026-10-08
 
 Shared5f150/carrier9228 independent Astra XHigh source/selection/evidence PASS:

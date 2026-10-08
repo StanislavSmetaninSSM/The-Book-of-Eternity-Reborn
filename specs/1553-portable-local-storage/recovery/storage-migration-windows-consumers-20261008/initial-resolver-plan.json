@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "gm-main-windows-shell-resolution"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "89ed58f20c3e93f205f04a78aa5350887151da00",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.0087696,
+  "Descriptors": [
+    {
+      "Name": "gm-main-windows-shell-resolution-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-windows-shell-resolution",
+      "Categories": [
+        "gm-main-windows-shell-resolution"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWindowsShellResolutionTests.ResolvesExactConfigurationWithoutLaunchingAProbe",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWindowsShellResolutionTests.ResolvesExactConfigurationWithoutLaunchingAProbe",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}
