@@ -1,3 +1,11 @@
+## F13 competing-Ready fixture target correction — 2026-10-08
+
+The actual read hook now selects the existing request before Ready witness capture.
+Selecting absent Ready itself would never reach BeforeCanonicalReadOpen, because the
+trusted reader returns missing before opening. Publication race rows still select the
+actual Ready mutation boundary. Each row asserts its exact reached target/phase.
+This is a source-level fixture correction before execution, not a runtime RED.
+
 ## F13 native fixture setup correction — 2026-10-08
 
 Root and independent review confirmed the original22 Windows setup gap. The bounded

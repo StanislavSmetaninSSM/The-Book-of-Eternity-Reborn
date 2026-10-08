@@ -1687,7 +1687,7 @@ public sealed class GmTurnHelperContractTests
     /// Whether a competing Ready is already present when the helper is invoked.
     /// </param>
     /// <param name="ReadyDuringRequestHash">
-    /// Whether a competing Ready appears after the request read but before the Ready witness read.
+    /// Whether a competing Ready appears at the actual existing-request read, before Ready witness capture.
     /// </param>
     private sealed record SpiritualHelperCase(string Name, string RequestJson, string? ResponseJson,
         bool Accepted, bool ReplaceRequestAtLock = false, bool PublishNewerReady = false,
@@ -1765,7 +1765,7 @@ public sealed class GmTurnHelperContractTests
                         if (item.PublishNewerReady || item.ReadyDuringRequestHash)
                             writes.Add(new { path = readyRelative, bytes = Encoding.UTF8.GetBytes(successorReady) });
                         File.WriteAllText(Path.Combine(root, item.Name, "helper-race.json"), JsonSerializer.Serialize(new {
-                            phase = item.ReadyDuringRequestHash ? "read" : "publish", target = readyRelative, writes
+                            phase = item.ReadyDuringRequestHash ? "read" : "publish", target = item.ReadyDuringRequestHash ? requestRelative : readyRelative, writes
                         }));
                     }
                 }
@@ -1786,7 +1786,7 @@ public sealed class GmTurnHelperContractTests
                     using var cut = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(root, item.Name, "helper-race-reached.json")));
                     Assert.Equal(1, cut.RootElement.GetProperty("Cuts").GetInt32());
                     Assert.Equal(item.ReadyDuringRequestHash ? "read" : "publish", cut.RootElement.GetProperty("Phase").GetString());
-                    Assert.Equal(readyRelative, cut.RootElement.GetProperty("Path").GetString());
+                    Assert.Equal(item.ReadyDuringRequestHash ? requestRelative : readyRelative, cut.RootElement.GetProperty("Path").GetString());
                 }
                 using var outcome = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, item.Name, "result.json")));
                 var error = outcome.RootElement.GetProperty("failure").GetString();
