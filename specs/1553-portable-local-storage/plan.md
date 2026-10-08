@@ -1,3 +1,23 @@
+## F06 exact-byte retirement implementation WIP — 2026-10-08
+
+Independent fixture/selection/design PASS3cbe5fa8; baseline evidence independently
+verified10 artifacts/10 pins. Runtime now uses a lease-validated fixed subtree
+inventory and exact-byte CAS only at this ordinary consumer. Missing archive copies
+require expected absence, including a narrow post-hook prepublication guard. Each
+source deletion validates complete archive bytes plus the exact remaining original
+cohort and blockers after both mutation hooks and on every publication retry.
+Generation is checked before and after awaited guard reads. Confirmed removals alone
+advance the remaining set; payloads, authority, manifest-last order is unchanged.
+Original legacy physical deletion API remains unchanged. Typed publication Uncertain
+escapes the ordinary refusal catch; archive metadata never grants mutation authority.
+
+The existing private prepared guard is now awaited Func<Task> at the identical
+per-attempt boundary. The two existing synchronous directory/backup guards only gain
+CompletedTask wrappers. Internal CAS refuses a supplied ordinary guard on a legacy
+route. No lease is released/reacquired. Runtime source/selection gate and fresh
+PlanOnly34 are pending; actual34 must wait for that gate. Native Windows remains
+unexecuted. New current-source cuts are post-migration controls, not historical RED.
+
 ## F06 current-boundary fixture WIP — 2026-10-08
 
 Test-only packet: ten new cases in `portable-inactive-snapshot-publication`, plus

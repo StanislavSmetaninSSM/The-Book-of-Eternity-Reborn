@@ -108,6 +108,18 @@ public partial class FileSystemManager
         return true;
     }
 
+    // Fixed caller-selected subtree only: no path is discovered from diagnostic metadata.
+    internal IReadOnlyList<string> EnumerateCanonicalLocalTreeFiles(CanonicalWriteLease lease, string relativeRoot)
+    {
+        EnsureCanonicalWriteLeaseActive(lease);
+        VerifyCurrentSessionOperation(lease);
+        EnsureSafeCanonicalRelativePath(relativeRoot);
+        var paths = EnumerateLocalTreeFiles(new TrustedLocalFileScope([GameSessionPath]), ResolvePath(relativeRoot))
+            .Select(path => GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows())).ToArray();
+        VerifyCurrentSessionOperation(lease);
+        return paths;
+    }
+
     private static IReadOnlyList<string> EnumerateLocalTreeFiles(TrustedLocalFileScope scope, string root,
         Func<string, bool>? exclude = null, bool jsonOnly = false, List<string>? inspectedDirectories = null)
     {

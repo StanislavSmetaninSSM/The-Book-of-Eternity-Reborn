@@ -130,7 +130,7 @@ public partial class FileSystemManager
         }
         Revalidate();
         if (!generation.Binding.Exists) members.Add(GenerationCreation(Guid.NewGuid().ToString("N")));
-        var outcome = await PublishLocalCoreAsync(lease, generation.Binding, members, CancellationToken.None, Revalidate);
+        var outcome = await PublishLocalCoreAsync(lease, generation.Binding, members, CancellationToken.None, () => { Revalidate(); return Task.CompletedTask; });
         if (outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain)
             throw new CoordinatedStatePublicationUncertainException(outcome.Failure);
         if (outcome.Disposition != TrustedLocalPublicationDisposition.Committed)

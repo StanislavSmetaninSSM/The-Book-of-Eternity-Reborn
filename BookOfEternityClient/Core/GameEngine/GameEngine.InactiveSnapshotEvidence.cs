@@ -90,7 +90,18 @@ public partial class GameEngine
                 {
                     var existing = await _fs.ReadFileBytesAsync(lease, copy.Key);
                     if (existing is null)
-                        await _fs.WriteFileAtomicBytesAsync(lease, copy.Key, copy.Value);
+                    {
+                        async Task ValidateArchiveCreationAsync()
+                        {
+                            _fs.VerifyCurrentSessionOperation(lease);
+                            if (await _fs.ReadFileBytesAsync(lease, copy.Key) is not null)
+                                throw new InvalidDataException("A diagnostic archive name appeared before creation.");
+                            _fs.VerifyCurrentSessionOperation(lease);
+                        }
+                        if (await _fs.CompareExchangeFileBytesAsync(lease, copy.Key, null, copy.Value,
+                                ValidateArchiveCreationAsync) != CanonicalFileMutationResult.Applied)
+                            return false;
+                    }
                     else if (!existing.AsSpan().SequenceEqual(copy.Value))
                         return false;
                     var readback = await _fs.ReadFileBytesAsync(lease, copy.Key);
@@ -98,47 +109,45 @@ public partial class GameEngine
                         return false;
                 }
 
-                // Retain verified read handles denying writes/deletes until all source deletions finish.
-                using var sessionRoot = PhysicalFileAuthority.OpenStableDirectory(_fs.GameSessionPath, "Snapshot evidence root");
-                using var archiveDirectory = PhysicalFileAuthority.OpenExistingStableDirectory(
-                    sessionRoot, Path.Combine(_fs.GameSessionPath, archiveRoot), "Snapshot evidence archive");
-                var retainedCopies = new List<FileStream>();
-                try
+                var remaining = new SortedDictionary<string, byte[]>(originals, StringComparer.Ordinal);
+                async Task ValidateRemainingEvidenceAsync()
                 {
+                    _fs.VerifyCurrentSessionOperation(lease);
+                    if (HasInactiveSnapshotEvidenceBlocker(lease))
+                        throw new InvalidDataException("An active control now requires the snapshot evidence.");
+                    // Include the archive of already removed sources: partial progress
+                    // never weakens the complete diagnostic evidence requirement.
                     foreach (var copy in copies)
                     {
-                        var retained = PhysicalFileAuthority.OpenReadFile(archiveDirectory,
-                            Path.Combine(_fs.GameSessionPath, copy.Key), "Snapshot evidence blob", asynchronous: true)
-                            ?? throw new InvalidDataException("Snapshot evidence copy disappeared.");
-                        retainedCopies.Add(retained);
-                        using var bytes = new MemoryStream();
-                        await retained.CopyToAsync(bytes);
-                        if (!bytes.ToArray().AsSpan().SequenceEqual(copy.Value))
-                            return false;
+                        var bytes = await _fs.ReadFileBytesAsync(lease, copy.Key);
+                        if (bytes is null || !bytes.AsSpan().SequenceEqual(copy.Value))
+                            throw new InvalidDataException("The complete diagnostic archive changed before retirement.");
                     }
                     var current = await ReadInactiveSnapshotEvidenceCohortAsync(lease);
-                    if (HasInactiveSnapshotEvidenceBlocker(lease) ||
-                        current.Count != originals.Count || originals.Any(pair =>
-                            !current.TryGetValue(pair.Key, out var bytes) || !bytes.AsSpan().SequenceEqual(pair.Value)))
-                        return false;
+                    if (HasInactiveSnapshotEvidenceBlocker(lease) || current.Count != remaining.Count ||
+                        remaining.Any(pair => !current.TryGetValue(pair.Key, out var bytes) ||
+                            !bytes.AsSpan().SequenceEqual(pair.Value)))
+                        throw new InvalidDataException("The remaining fixed snapshot evidence changed before retirement.");
                     _fs.VerifyCurrentSessionOperation(lease);
-                    // Keep the manifest until last so interrupted removal retains its identity plus the complete archive.
-                    foreach (var pair in originals.OrderBy(pair => pair.Key == PendingTurnSnapshotManifestPath ? 2 :
-                                 pair.Key == PendingTurnSnapshotAuthority.AuthorityPath ? 1 : 0))
-                    {
-                        await _fs.DeleteFileIfCurrentOwnedAsync(lease, pair.Key, new[] { ComputeSha256(pair.Value) });
-                        if (_fs.FileExists(lease, pair.Key))
-                            return false;
-                    }
-                    return true;
                 }
-                finally
+
+                await ValidateRemainingEvidenceAsync();
+                // Each removal is its own byte decision. Keep the manifest until last;
+                // a later refusal never rolls back earlier confirmed removals.
+                foreach (var pair in originals.OrderBy(pair => pair.Key == PendingTurnSnapshotManifestPath ? 2 :
+                             pair.Key == PendingTurnSnapshotAuthority.AuthorityPath ? 1 : 0))
                 {
-                    foreach (var retained in retainedCopies)
-                        retained.Dispose();
+                    if (await _fs.CompareExchangeFileBytesAsync(lease, pair.Key, pair.Value, null,
+                            ValidateRemainingEvidenceAsync) != CanonicalFileMutationResult.Applied)
+                        return false;
+                    if (_fs.FileExists(lease, pair.Key))
+                        return false;
+                    remaining.Remove(pair.Key);
                 }
+                return true;
             });
         }
+        catch (CoordinatedStatePublicationUncertainException) { throw; }
         catch (SessionReplacedException) { throw; }
         catch (OperationCanceledException) { throw; }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or
@@ -185,30 +194,7 @@ public partial class GameEngine
         foreach (var path in new[] { PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath })
             if (_fs.FileExists(lease, path))
                 paths.Add(path);
-        using var sessionRoot = PhysicalFileAuthority.OpenStableDirectory(_fs.GameSessionPath, "Snapshot evidence inventory root");
-        var pendingDirectories = new Stack<string>();
-        if (_fs.DirectoryExists(lease, PendingTurnSnapshotDirectory))
-            pendingDirectories.Push(PendingTurnSnapshotDirectory);
-        while (pendingDirectories.TryPop(out var relativeDirectory))
-        {
-            using var directory = PhysicalFileAuthority.OpenExistingStableDirectory(sessionRoot,
-                Path.Combine(_fs.GameSessionPath, relativeDirectory), "Snapshot evidence inventory directory");
-            foreach (var child in Directory.EnumerateFileSystemEntries(directory.FullPath))
-            {
-                var relative = Path.GetRelativePath(_fs.GameSessionPath, child).Replace('\\', '/');
-                switch (PhysicalFileAuthority.ProbeNamespaceEntry(directory, child, "Snapshot evidence inventory entry"))
-                {
-                    case PhysicalFileAuthority.NamespaceEntryKind.Directory:
-                        pendingDirectories.Push(relative);
-                        break;
-                    case PhysicalFileAuthority.NamespaceEntryKind.RegularFile:
-                        paths.Add(relative);
-                        break;
-                    default:
-                        throw new InvalidDataException("Snapshot evidence inventory contains a changed or non-regular entry.");
-                }
-            }
-        }
+        paths.AddRange(_fs.EnumerateCanonicalLocalTreeFiles(lease, PendingTurnSnapshotDirectory));
         foreach (var path in paths)
         {
             var bytes = await _fs.ReadFileBytesAsync(lease, path)

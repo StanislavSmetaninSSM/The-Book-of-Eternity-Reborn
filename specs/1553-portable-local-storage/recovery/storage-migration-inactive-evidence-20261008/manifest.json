@@ -113,5 +113,89 @@
         "sha256": "8eaa0c8449aeaf608d186cf75249001036820279ebe1980dcf88d9bdbd22dfde"
       }
     ]
+  },
+  "fixturePlan": {
+    "qualification": "Initial test-only successful build and exact34/2 discovery, zero execution. Archive absent-read fixture corrected subsequently at3cbe; no actual claims.",
+    "planned": 34,
+    "executed": 0,
+    "source": "56c87170b69c5e5dee6699d12e3330329d3bfb28",
+    "artifacts": [
+      {
+        "path": "fixture-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-164632-310-90931-fc56e58ed5854a92ad64040933c12ad3-categories/Build-integration.log",
+        "sha256": "92dcf369037317e0005ef479e25039c5dbdca50bc1cabf6ea5d3cc1f196d1d85",
+        "originalSha256": "8a8de1e242e58b47a99b18a4f665bc8b5582815584d1141b17f8a81ec6eda569"
+      },
+      {
+        "path": "fixture-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-164632-310-90931-fc56e58ed5854a92ad64040933c12ad3-categories/dotnet-test.log",
+        "sha256": "e12cd52a9a599d3b63a1aed56016db0bdc65be1fab955284b39662b52f2ba786",
+        "originalSha256": "b4451bb9e2ae2f5c0c9ab9d7a86fbbdafc6c08eb37ee8456dabc229b0b17c177"
+      },
+      {
+        "path": "fixture-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-164632-310-90931-fc56e58ed5854a92ad64040933c12ad3-categories/plan.json",
+        "sha256": "8c14f328de3add568d1da95c485757fc2d8cc926091ecf46046c8171b1b9ff0b",
+        "originalSha256": "8c14f328de3add568d1da95c485757fc2d8cc926091ecf46046c8171b1b9ff0b"
+      },
+      {
+        "path": "fixture-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-164632-310-90931-fc56e58ed5854a92ad64040933c12ad3-categories/summary.json",
+        "sha256": "e7cd78f5cdabab248f4708b8df75d4625e77aa3ccafe0c5ecb1d720fd55bb653",
+        "originalSha256": "e7cd78f5cdabab248f4708b8df75d4625e77aa3ccafe0c5ecb1d720fd55bb653"
+      },
+      {
+        "path": "fixture-plan-driver-boe-f06-publication-plan.log.gz",
+        "source": "/tmp/boe-f06-publication-plan.log",
+        "sha256": "824ff2eba8e7798240b7d6940ca2d934e86e905cf101a6feca263bf1e732b056",
+        "originalSha256": "b19f63438dcc7433ec45085d1fa2d6290c2371d1023da906cec72f47c22f9e5b"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.InactiveSnapshotEvidence.cs",
+        "sha256": "063f61d540c85837324a9eab0c6e213e454be8dd7c7eb39c71e5d08c45601ca2"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "dc9a7da0614e05ec48297293b7b03b52fa9a71e5d4ac3eb229b1cc181e898618"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "f25109b6907162495002af23fca3bf84a172fff361152b826a2e82b1bc15e32e"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "4d3baf5391aecc148f92400ca10131731aa0effef4f485f48be5390cd9169b99"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "sha256": "6d8312a8ad842467ea378421b4c978beeffa7cef2c98c1b6590a9aca9c594d86"
+      },
+      {
+        "path": "BookOfEternityClient/Core/PhysicalFileAuthority.cs",
+        "sha256": "84b5cd866cbc2a6c091d608afbf167fbd61199d0891987c2b32b6c1549bd3bca"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.InactiveSnapshotEvidence.cs",
+        "sha256": "00ca5aa933242ed1b94ed13e508bd789bf0a9c7d066a6386d0d6bb69c52e1c29"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs",
+        "sha256": "96a9111f4e8c6acda2e490e56ff2e398dfe45c2d9150bdff62c34ae24074c5c2"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "960512072b90c43a4812f236d02f08c2434e992f007c921240faacd27089d69b"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "32e79e2c788f32cf5a63853177e75fee30015ab0b528ee41335e7b70d2f17fe2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.InactiveSnapshotPublication.cs",
+        "sha256": "e59dc8ee95b2c0e7581fe6e9a2c25b6c4a2c33962e3e463a6d345bc77cec6d50"
+      }
+    ]
   }
 }

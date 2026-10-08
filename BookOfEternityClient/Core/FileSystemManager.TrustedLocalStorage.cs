@@ -131,7 +131,8 @@ public partial class FileSystemManager
     }
 
     internal Task<TrustedLocalPublicationOutcome> PublishLocalFilesAsync(CanonicalWriteLease lease,
-        IReadOnlyList<CanonicalLocalFileChange> changes, CancellationToken cancellationToken = default)
+        IReadOnlyList<CanonicalLocalFileChange> changes, CancellationToken cancellationToken = default,
+        Func<Task>? validatePreparedNamespace = null)
     {
         lease.EnsureNoPendingLocalDecision();
         VerifyCurrentSessionOperation(lease);
@@ -140,12 +141,12 @@ public partial class FileSystemManager
         var generation = GetOrCreateSessionGeneration(lease);
         return PublishLocalCoreAsync(lease, TrustedLocalGeneration.Existing(generation),
             changes.Select(change => new TrustedLocalFileChange(ResolvePath(change.RelativePath), change.Before, change.After)).ToArray(),
-            cancellationToken);
+            cancellationToken, validatePreparedNamespace);
     }
 
     private async Task<TrustedLocalPublicationOutcome> PublishLocalCoreAsync(CanonicalWriteLease lease,
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes, CancellationToken cancellationToken,
-        Action? validatePreparedNamespace = null, bool standaloneDarenProfile = false)
+        Func<Task>? validatePreparedNamespace = null, bool standaloneDarenProfile = false)
     {
         lease.EnsureNoPendingLocalDecision();
         if (standaloneDarenProfile)
@@ -201,7 +202,7 @@ public partial class FileSystemManager
             for (var attempt = 0; ; attempt++)
             {
                 EnsureWorkerPurposePublication(lease, generation, changes);
-                validatePreparedNamespace?.Invoke();
+                if (validatePreparedNamespace != null) await validatePreparedNamespace();
                 var outcome = publisher.PublishWithOutcome(lease, generation, changes, _hooks?.LocalPublicationObserver);
                 if (outcome.Disposition != TrustedLocalPublicationDisposition.RolledBack ||
                     outcome.Failure is InvalidDataException || outcome.Failure == null ||

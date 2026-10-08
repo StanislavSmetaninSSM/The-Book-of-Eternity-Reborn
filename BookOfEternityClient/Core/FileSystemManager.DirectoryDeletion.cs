@@ -52,7 +52,7 @@ public partial class FileSystemManager
         if (!generation.Binding.Exists)
             changes.Add(GenerationCreation(Guid.NewGuid().ToString("N")));
         var outcome = await PublishLocalCoreAsync(lease, generation.Binding, changes,
-            CancellationToken.None, RevalidateTree);
+            CancellationToken.None, () => { RevalidateTree(); return Task.CompletedTask; });
         if (outcome.Disposition != TrustedLocalPublicationDisposition.Committed)
         {
             RequireCommittedLocalPublication(outcome);

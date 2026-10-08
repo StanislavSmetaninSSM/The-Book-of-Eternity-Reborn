@@ -962,13 +962,16 @@ public partial class FileSystemManager
         CanonicalWriteLease writeLease,
         string relativePath,
         byte[]? expectedContent,
-        byte[]? desiredContent)
+        byte[]? desiredContent,
+        Func<Task>? validatePreparedNamespace = null)
     {
         if (writeLease.WorkerPurpose?.Dispatch is { } dispatch)
             dispatch.ValidateReservation(this, writeLease, relativePath, expectedContent, desiredContent);
         else EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         var useLocalWriter = UsesTrustedLocalWriter(writeLease, relativePath);
+        if (!useLocalWriter && validatePreparedNamespace != null)
+            throw new InvalidOperationException("A prepared ordinary guard cannot replace legacy publication authority.");
         var currentContent = useLocalWriter
             ? await ReadLocalFileBytesAsync(writeLease, relativePath)
             : await ReadFileBytesCoreAsync(relativePath);
@@ -978,7 +981,8 @@ public partial class FileSystemManager
         if (useLocalWriter)
         {
             RequireCommittedLocalPublication(await PublishLocalFilesAsync(writeLease,
-                [new(relativePath, currentContent, desiredContent)]));
+                [new(relativePath, currentContent, desiredContent)],
+                validatePreparedNamespace: validatePreparedNamespace));
             return CanonicalFileMutationResult.Applied;
         }
 
