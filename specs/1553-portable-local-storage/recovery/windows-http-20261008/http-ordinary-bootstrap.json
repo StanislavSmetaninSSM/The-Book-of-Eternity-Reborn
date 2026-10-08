@@ -1,0 +1,16 @@
+{
+  "Source": "406423aea14dfa4231853913f9ab298756270432",
+  "CreatedThroughOrdinaryConsoleNewGame": true,
+  "TurnRequestSHA256": "ed60cf930c72658a41ae2c4f6a295e35dc9f74433b9278388a16f0e6711ade19",
+  "TurnNumber": 1,
+  "RequestId": "f92cd399fe1b4c30a5a4383060b8a7fa",
+  "ObservedWait": "Мастер игры размышляет...",
+  "BridgeAutoStart": false,
+  "ConfiguredCommandIsInert": true,
+  "ProviderRequests": 0,
+  "UiEvidence": "executor tool transcript only",
+  "CapturedUtc": "2026-10-08T05:11:26.0245885Z",
+  "PendingRequestAbsentAfterCancellation": true,
+  "CancellationUi": "Переходный ход отменён; ordinary eight-item main menu observed",
+  "NormalConsoleExitCode": 0
+}

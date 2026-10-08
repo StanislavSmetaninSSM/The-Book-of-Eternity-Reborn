@@ -1,0 +1,165 @@
+{
+  "StartedUtc": "2026-10-08T05:13:29.5334262Z",
+  "FinishedUtc": "2026-10-08T05:14:23.8710301Z",
+  "Root": "C:\\Temp\\boe-win-6381a950-20261008T030647Z\\data\\http-ordinary-new-game",
+  "ProcessId": 34444,
+  "Stopped": true,
+  "Disposed": true,
+  "Fatal": null,
+  "Observations": [
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/main-menu",
+      "Status": 200,
+      "Milliseconds": 13961,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/session",
+      "Status": 200,
+      "Milliseconds": 386,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/game-screen",
+      "Status": 500,
+      "Milliseconds": 12372,
+      "ErrorBody": "",
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/audio/settings",
+      "Status": 200,
+      "Milliseconds": 837,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-0",
+      "Route": "/api/client/settings",
+      "Status": 200,
+      "Milliseconds": 648,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/main-menu",
+      "Status": 200,
+      "Milliseconds": 12850,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/session",
+      "Status": 500,
+      "Milliseconds": 12236,
+      "ErrorBody": "",
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/game-screen",
+      "Status": 500,
+      "Milliseconds": 12234,
+      "ErrorBody": "",
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/audio/settings",
+      "Status": 200,
+      "Milliseconds": 13087,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "parallel-1",
+      "Route": "/api/client/settings",
+      "Status": 500,
+      "Milliseconds": 12234,
+      "ErrorBody": "",
+      "Exception": null
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/main-menu",
+      "Status": 200,
+      "Milliseconds": 11691,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/session",
+      "Status": 200,
+      "Milliseconds": 94,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/game-screen",
+      "Status": 200,
+      "Milliseconds": 14414,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/audio/settings",
+      "Status": 200,
+      "Milliseconds": 219,
+      "ErrorBody": null,
+      "Exception": null
+    },
+    {
+      "Batch": "serial",
+      "Route": "/api/client/settings",
+      "Status": 200,
+      "Milliseconds": 184,
+      "ErrorBody": null,
+      "Exception": null
+    }
+  ],
+  "ServerLogs": [
+    {
+      "Utc": "2026-10-08T05:13:42.5896878Z",
+      "Category": "Microsoft.AspNetCore.Server.Kestrel",
+      "Level": "Error",
+      "EventId": 13,
+      "Message": "Connection id \u00220HNP4VBI6O2VU\u0022, Request id \u00220HNP4VBI6O2VU:00000001\u0022: An unhandled exception was thrown by the application.",
+      "Exception": "System.IO.IOException: The process cannot access the file \u0027C:\\Temp\\boe-win-6381a950-20261008T030647Z\\data\\http-ordinary-new-game\\.boe_runtime\\locks\\gm-main-owner.lock\u0027 because it is being used by another process.\r\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)\r\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable\u00601 unixCreateMode)\r\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable\u00601 unixCreateMode)\r\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)\r\n   at BookOfEternityClient.Core.GmMainOwnerGuard.AcquireAsync(String root, CancellationToken token, Func\u00601 contended, Int32 attempts, Nullable\u00601 retryDelay) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\GmSessionRunPersistence.cs:line 129\r\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\FileSystemManager.MainRunFence.cs:line 70\r\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3633\r\n   at BookOfEternityClient.Core.StateManager.RefreshGameStateAsync() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\StateManager.cs:line 123\r\n   at BookOfEternityClient.WebUi.BrowserGameScreenService.BuildAsync() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\BrowserGameScreenService.cs:line 34\r\n   at BookOfEternityClient.WebUi.LocalWebUiHost.\u003C\u003Ec.\u003C\u003CBuild\u003Eb__2_14\u003Ed.MoveNext() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\LocalWebUiHost.cs:line 147\r\n--- End of stack trace from previous location ---\r\n   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task\u00601 task, HttpContext httpContext)\r\n   at Microsoft.AspNetCore.Routing.EndpointRoutingMiddleware.\u003CInvoke\u003Eg__AwaitMatcher|10_0(EndpointRoutingMiddleware middleware, HttpContext httpContext, Task\u00601 matcherTask)\r\n   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication\u00601 application)"
+    },
+    {
+      "Utc": "2026-10-08T05:13:56.3938104Z",
+      "Category": "Microsoft.AspNetCore.Server.Kestrel",
+      "Level": "Error",
+      "EventId": 13,
+      "Message": "Connection id \u00220HNP4VBI6O2VV\u0022, Request id \u00220HNP4VBI6O2VV:00000002\u0022: An unhandled exception was thrown by the application.",
+      "Exception": "System.IO.IOException: The process cannot access the file \u0027C:\\Temp\\boe-win-6381a950-20261008T030647Z\\data\\http-ordinary-new-game\\.boe_runtime\\locks\\gm-main-owner.lock\u0027 because it is being used by another process.\r\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)\r\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable\u00601 unixCreateMode)\r\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable\u00601 unixCreateMode)\r\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)\r\n   at BookOfEternityClient.Core.GmMainOwnerGuard.AcquireAsync(String root, CancellationToken token, Func\u00601 contended, Int32 attempts, Nullable\u00601 retryDelay) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\GmSessionRunPersistence.cs:line 129\r\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\FileSystemManager.MainRunFence.cs:line 70\r\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3633\r\n   at BookOfEternityClient.Core.StateManager.RefreshGameStateAsync() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\StateManager.cs:line 123\r\n   at BookOfEternityClient.WebUi.BrowserGameScreenService.BuildAsync() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\BrowserGameScreenService.cs:line 34\r\n   at BookOfEternityClient.WebUi.LocalWebUiHost.\u003C\u003Ec.\u003C\u003CBuild\u003Eb__2_14\u003Ed.MoveNext() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\LocalWebUiHost.cs:line 147\r\n--- End of stack trace from previous location ---\r\n   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task\u00601 task, HttpContext httpContext)\r\n   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication\u00601 application)"
+    },
+    {
+      "Utc": "2026-10-08T05:13:56.3931997Z",
+      "Category": "Microsoft.AspNetCore.Server.Kestrel",
+      "Level": "Error",
+      "EventId": 13,
+      "Message": "Connection id \u00220HNP4VBI6O2VS\u0022, Request id \u00220HNP4VBI6O2VS:00000002\u0022: An unhandled exception was thrown by the application.",
+      "Exception": "System.IO.IOException: The process cannot access the file \u0027C:\\Temp\\boe-win-6381a950-20261008T030647Z\\data\\http-ordinary-new-game\\.boe_runtime\\locks\\gm-main-owner.lock\u0027 because it is being used by another process.\r\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)\r\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable\u00601 unixCreateMode)\r\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable\u00601 unixCreateMode)\r\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)\r\n   at BookOfEternityClient.Core.GmMainOwnerGuard.AcquireAsync(String root, CancellationToken token, Func\u00601 contended, Int32 attempts, Nullable\u00601 retryDelay) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\GmSessionRunPersistence.cs:line 129\r\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\FileSystemManager.MainRunFence.cs:line 70\r\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingCurrentSessionAsync[T](FileSystemManager files, Func\u00601 operation, Func\u00601 establishedOutcome) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\SessionOperationContext.cs:line 113\r\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingCurrentSessionAsync[T](FileSystemManager files, Func\u00601 operation, Func\u00601 establishedOutcome) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\SessionOperationContext.cs:line 134\r\n   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.RunBoundTransactionAsync[T](Func\u00602 operation) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\BrowserLocalWriteCoordinator.cs:line 241\r\n   at BookOfEternityClient.WebUi.BrowserClientSettingsService.BuildAsync() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\BrowserClientSettingsService.cs:line 39\r\n   at BookOfEternityClient.WebUi.LocalWebUiHost.\u003C\u003Ec.\u003C\u003CBuild\u003Eb__2_15\u003Ed.MoveNext() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\LocalWebUiHost.cs:line 156\r\n--- End of stack trace from previous location ---\r\n   at Microsoft.AspNetCore.Http.RequestDelegateFactory.ExecuteTaskResult[T](Task\u00601 task, HttpContext httpContext)\r\n   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication\u00601 application)"
+    },
+    {
+      "Utc": "2026-10-08T05:13:56.3948329Z",
+      "Category": "Microsoft.AspNetCore.Server.Kestrel",
+      "Level": "Error",
+      "EventId": 13,
+      "Message": "Connection id \u00220HNP4VBI6O2VU\u0022, Request id \u00220HNP4VBI6O2VU:00000002\u0022: An unhandled exception was thrown by the application.",
+      "Exception": "System.IO.IOException: The process cannot access the file \u0027C:\\Temp\\boe-win-6381a950-20261008T030647Z\\data\\http-ordinary-new-game\\.boe_runtime\\locks\\gm-main-owner.lock\u0027 because it is being used by another process.\r\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)\r\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable\u00601 unixCreateMode)\r\n   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable\u00601 unixCreateMode)\r\n   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options)\r\n   at BookOfEternityClient.Core.GmMainOwnerGuard.AcquireAsync(String root, CancellationToken token, Func\u00601 contended, Int32 attempts, Nullable\u00601 retryDelay) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\GmSessionRunPersistence.cs:line 129\r\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\FileSystemManager.MainRunFence.cs:line 70\r\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\Core\\FileSystemManager.cs:line 3633\r\n   at BookOfEternityClient.WebUi.BrowserLocalWriteCoordinator.BuildStatusAsync() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\BrowserLocalWriteCoordinator.cs:line 27\r\n   at BookOfEternityClient.WebUi.LocalWebUiSessionStatusService.BuildStatusAsync() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\LocalWebUiSessionStatusService.cs:line 23\r\n   at BookOfEternityClient.WebUi.LocalWebUiHost.\u003C\u003Ec.\u003C\u003CBuild\u003Eb__2_13\u003Ed.MoveNext() in C:\\Temp\\boe-win-6381a950-20261008T030647Z\\http-worktree\\BookOfEternityClient\\WebUi\\LocalWebUiHost.cs:line 142\r\n--- End of stack trace from previous location ---\r\n   at Microsoft.AspNetCore.Http.RequestDelegateFactory.\u003CExecuteTaskOfTFast\u003Eg__ExecuteAwaited|132_0[T](Task\u00601 task, HttpContext httpContext, JsonTypeInfo\u00601 jsonTypeInfo)\r\n   at Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http.HttpProtocol.ProcessRequests[TContext](IHttpApplication\u00601 application)"
+    }
+  ]
+}

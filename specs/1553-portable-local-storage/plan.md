@@ -1,3 +1,15 @@
+## Native Windows continuation 2026-10-08
+
+Source #1553; [approved bounded plan and execution ledger](relay-windows-plan.md).
+Branch `codex/1553-windows-relay-20261008`, base
+`6381a9507baae6bb2531e22e9a0ace839f03985f`, published and verified before edits.
+Windows report separately preserved/reviewed at
+`686964164641b3eb3a5a13ff8854b74aa1490189`. Relay runtime/tests0067874e now have
+24/24 native Windows PASS and separate actual ordinary Bridge/worker/helper/
+original Job cleanup. Next: independent source/evidence review and exact remote
+recovery. Linux regression unrun; HTTP diagnosis remains a separate next block.
+No main/merge/CI/security/auth changes are authorized here.
+
 ## Current final-readiness boundary — owner-approved deferral
 
 Owner accepts explicit OwnedTerminal/NativeLineage Linux use while mandatory actual systemd S2/S3 remain unavailable/deferred and backend OFF. Native Windows validation is scheduled AFTER completion/merge in parent-coordinated «Лориан-Codex bridge»; it is not a pre-merge PASS gate. [Current accepted/deferred map and bounded final plan](final-readiness.md) supersedes historical next-step labels below. LATEST owner+parent instruction2026-10-08 now authorizes this sole writer to disable GitHub CI and merge PR1555 using existing ADMIN rights; the former parent-only/no-merge hold is superseded. Hosted FAIL remains FAIL; accepted local evidence is the owner's integration basis. Source #1553.

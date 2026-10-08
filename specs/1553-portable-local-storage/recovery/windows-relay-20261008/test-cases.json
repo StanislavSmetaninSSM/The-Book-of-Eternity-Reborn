@@ -1,0 +1,146 @@
+[
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayWindowsTests.OriginalConPty_UnicodeWorkerCloseAndRestoration(mode: \"success\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:04.0829636",
+    "TRX": "gm-relay-native-windows-unit-001.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayWindowsTests.OriginalConPty_UnicodeWorkerCloseAndRestoration(mode: \"close-child\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:04.1765413",
+    "TRX": "gm-relay-native-windows-unit-001.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayWindowsTests.OriginalConPty_UnicodeWorkerCloseAndRestoration(mode: \"consumer-error\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:04.8645368",
+    "TRX": "gm-relay-native-windows-unit-001.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayWindowsTests.NativeRuntime_HelpIndependentGateAndPipe(mode: \"gate\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:01.6692381",
+    "TRX": "gm-relay-native-windows-unit-001.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayWindowsTests.OriginalConPty_UnicodeWorkerCloseAndRestoration(mode: \"invalid-input\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:02.2425494",
+    "TRX": "gm-relay-native-windows-unit-001.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayWindowsTests.NativeRuntime_HelpIndependentGateAndPipe(mode: \"help\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.3181803",
+    "TRX": "gm-relay-native-windows-unit-001.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayWindowsTests.NativeRuntime_HelpIndependentGateAndPipe(mode: \"pipe\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.2262326",
+    "TRX": "gm-relay-native-windows-unit-001.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"closed\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.2045912",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"close-gate-timeout\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:01.1724507",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"missing-adapter\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.1750652",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"packet-bound\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.1600428",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"repair-read\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.6241535",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"wrong-queue\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.1757111",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"incomplete\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.1656442",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"changed-authority\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.1574806",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"close-unconfirmed\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.1682946",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"duplicate\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.1650808",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"read\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.1844870",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"atomic-no-replace\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.1724521",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"changed-prompt\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.1726086",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"wrong-turn\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.1845034",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"malformed-packet\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.1720623",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"changed-request\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.1785218",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  },
+  {
+    "Name": "BookOfEternityClient.Tests.GmRelayReusableTests.WorkerContract_ExactBytesIdentityPublicationAndClose(scenario: \"partial-publication\")",
+    "Outcome": "Passed",
+    "Duration": "00:00:00.1723451",
+    "TRX": "gm-relay-reusable-contract-unit-002.trx"
+  }
+]

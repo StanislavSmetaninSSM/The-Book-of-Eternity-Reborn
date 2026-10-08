@@ -1,0 +1,165 @@
+{
+  "Carrier": "a22f31b00f0dc4769b05049d6bc7c6522497c49a",
+  "Source": "3d6cfd24898fa30b37764de688432455ac9a4660",
+  "Archive": "original-owner-live-evidence.zip",
+  "Bytes": 717509,
+  "SHA256": "06881a7f55462e5c640f076c79cf105a3ad89c2554e780cafa868946801a2a1a",
+  "VerifiedArchiveEntries": 62,
+  "Requests": 133,
+  "RouteCounts": {
+    "/": 1,
+    "/api/session": 44,
+    "/api/game-screen": 44,
+    "/api/audio/settings": 44
+  },
+  "StageCounts": {
+    "new-game-root-page": 1,
+    "new-game-sequential": 3,
+    "new-game-three-parallel-round1": 3,
+    "new-game-three-parallel-round2": 3,
+    "new-game-three-parallel-round3": 3,
+    "new-game-three-parallel-round4": 3,
+    "new-game-three-parallel-round5": 3,
+    "new-game-three-parallel-round6": 3,
+    "new-game-three-parallel-round7": 3,
+    "new-game-three-parallel-round8": 3,
+    "new-game-three-parallel-round9": 3,
+    "new-game-three-parallel-round10": 3,
+    "new-game-three-parallel-round11": 3,
+    "new-game-three-parallel-round12": 3,
+    "new-game-refresh-three-tabs-round1": 9,
+    "new-game-refresh-three-tabs-round2": 9,
+    "new-game-refresh-three-tabs-round3": 9,
+    "new-game-refresh-three-tabs-round4": 9,
+    "new-game-refresh-three-tabs-round5": 9,
+    "new-game-refresh-three-tabs-round6": 9,
+    "relay-running-sequential": 3,
+    "relay-running-three-parallel-round1": 3,
+    "relay-running-three-parallel-round2": 3,
+    "relay-running-three-parallel-round3": 3,
+    "relay-running-three-parallel-round4": 3,
+    "relay-running-three-parallel-round5": 3,
+    "relay-running-three-parallel-round6": 3,
+    "relay-running-three-parallel-round7": 3,
+    "relay-running-three-parallel-round8": 3,
+    "relay-running-three-parallel-round9": 3,
+    "relay-running-three-parallel-round10": 3,
+    "relay-running-three-parallel-round11": 3,
+    "relay-running-three-parallel-round12": 3
+  },
+  "OriginalIdentity": {
+    "RootKey": "/tmp/hl-55f91823/play",
+    "RunId": "ff58bc8934e64d5dbc32faf57ab8c745",
+    "GenerationId": "c364292a81c74e2f884e0b025bb0e099",
+    "Epoch": 1,
+    "Backend": "LinuxSupervisor",
+    "HostInstanceId": "ca85786f92b34b42b12ac30db2cc8e6c",
+    "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+  },
+  "ModelRequests": 0,
+  "NoReadyOverride": true,
+  "OriginalNewGame": true,
+  "OriginalShutdownAndIOConfirmed": true,
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 1,
+    "failures": 0,
+    "deadline": false
+  },
+  "PackageProvenance": "original-owner-live-diagnostic-source.json",
+  "Proof": {
+    "Source": "3d6cfd24898fa30b37764de688432455ac9a4660",
+    "Root": "/tmp/hl-55f91823",
+    "Verdict": "PASS bounded installed HTTP/original lifecycle",
+    "Requests": 133,
+    "Meaningful200": 133,
+    "ObjectDTOs": 132,
+    "HTML": 1,
+    "Routes": {
+      "/": 1,
+      "/api/session": 44,
+      "/api/game-screen": 44,
+      "/api/audio/settings": 44
+    },
+    "PreRelay200": 94,
+    "ActiveOriginalOwner200": 39,
+    "ModelRequests": 0,
+    "UiBrowserQualified": false,
+    "OriginalIdentity": {
+      "RootKey": "/tmp/hl-55f91823/play",
+      "RunId": "ff58bc8934e64d5dbc32faf57ab8c745",
+      "GenerationId": "c364292a81c74e2f884e0b025bb0e099",
+      "Epoch": 1,
+      "Backend": "LinuxSupervisor",
+      "HostInstanceId": "ca85786f92b34b42b12ac30db2cc8e6c",
+      "BootId": "ba07b8f0-3abe-4bf5-bbb9-8e4697660e1e"
+    },
+    "ShutdownAttempts": 1,
+    "StoppedEvidence": "OwnedScopeEmpty",
+    "Terminals": {
+      "client": {
+        "ExitCode": 0,
+        "EOF": true,
+        "TermiosRestored": true,
+        "CapturedBytes": 4431
+      },
+      "web": {
+        "ExitCode": 0,
+        "EOF": true,
+        "TermiosRestored": true,
+        "CapturedBytes": 0
+      },
+      "bridge": {
+        "ExitCode": 0,
+        "EOF": true,
+        "TermiosRestored": true,
+        "CapturedBytes": 510
+      }
+    },
+    "Guardian": {
+      "echild": true,
+      "driverExitCode": 0,
+      "emergencySignals": 0,
+      "reaped": 1,
+      "failures": 0,
+      "deadline": false
+    },
+    "AudioCriterion": "schema1 typed flags/ranges, two missing playlists and five unavailable cues, stable44 replies; no audio persistence/device claim",
+    "DiagnosticCorrection": "Initial posthoc assumption flags=false rejected. Synthetic driver config uses PascalCase while actual StateManager uses case-sensitive camelCase SharedJsonOptions; DTO uses GameSettings defaults true/65/true/75. Runtime and existing response bytes unchanged. No audio settings mutation/device/browser execution."
+  },
+  "VerifiedAtUTC": "2026-10-08T07:14:25.545044+00:00",
+  "FinalEvidenceCarrier": "9e277a67534f718e8456e92e46b3a807ecdade2a",
+  "FinalCarrierRawBlobsUnchanged": [
+    {
+      "Path": "original-owner-live-manifest.json",
+      "GitBlob": "acd9a15662fba0fcf2bf086d0ded4b79006b0355"
+    },
+    {
+      "Path": "original-owner-live-evidence.zip",
+      "GitBlob": "758872dd9eec5794ae4838218e5503360b93400c"
+    },
+    {
+      "Path": "original-owner-live-result.json",
+      "GitBlob": "b2dac5b0ed9cdd6af7cffc0b517ccdad8bbcf1f3"
+    },
+    {
+      "Path": "original-owner-live-http-responses.json",
+      "GitBlob": "fd107da40ec15bacd282c876ff23594f32b4e527"
+    },
+    {
+      "Path": "original-owner-live-guardian.json",
+      "GitBlob": "65787fec7540656c9a32d8346944b23f7a59c2ac"
+    },
+    {
+      "Path": "original-owner-live-meaningful-http-proof.json",
+      "GitBlob": "ab67ead6c609f041a215f25b67e5932050e5f211"
+    },
+    {
+      "Path": "original-owner-live-diagnostic-source.json",
+      "GitBlob": "1bbb9e5e9a529aa65dfd1e5cb0709663cbf9f0be"
+    }
+  ],
+  "ParentFinalReadbackAndFreshRestoreConfirmed": true
+}

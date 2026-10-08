@@ -1,0 +1,75 @@
+{
+  "SourceCommit": "0067874e15f479327dc37268fc891f51e3a2713d",
+  "Files": [
+    {
+      "Path": "catalog-audit.json",
+      "Bytes": 103,
+      "SHA256": "7873b1202375f1918faf548db57bb3c9bee61876ab36372b7394ebf26c6da290"
+    },
+    {
+      "Path": "catalog-summary.json",
+      "Bytes": 1601,
+      "SHA256": "eb75e4f2b650b84865fd5073818cfdabd00b1845a197288cd05dfd5755976c28"
+    },
+    {
+      "Path": "independent-review.json",
+      "Bytes": 1205,
+      "SHA256": "68d2b7f5b47c3841f0df9d969f641c2585bc82101a88044e29034d723c8bdbce"
+    },
+    {
+      "Path": "input-diagnostics.json",
+      "Bytes": 1025,
+      "SHA256": "92cd941b81cb76ac72ae07b0f91f69f04b89864aef15058f37340cd6d640a8d9"
+    },
+    {
+      "Path": "native-components.json",
+      "Bytes": 3524,
+      "SHA256": "3f0866e357be895285833932007390014f7e90b86381da0f8e33a802e7b13750"
+    },
+    {
+      "Path": "ordinary-shutdown.json",
+      "Bytes": 616,
+      "SHA256": "6c4197d8fa96e0d47a85db49e9b502f8403b705c90a4719729a8eaf0d941bb8b"
+    },
+    {
+      "Path": "ordinary-startup.json",
+      "Bytes": 323,
+      "SHA256": "ff8fc0b491dd00875ac7085c7caa09de6002c16333d461733bf2584703f96ea2"
+    },
+    {
+      "Path": "ordinary-transaction.json",
+      "Bytes": 628,
+      "SHA256": "c377bcb6aa031adb5e614dff884ce42a2dbd883315e6f8e6e943d913691c917e"
+    },
+    {
+      "Path": "plan-only-summary.json",
+      "Bytes": 2825,
+      "SHA256": "67b4175eeac76c08dcfd4af85235457aa57542ce1b5b025f8a10e5faad447a90"
+    },
+    {
+      "Path": "runner-summary.json",
+      "Bytes": 2094,
+      "SHA256": "1c7f07cbec0027da74170045f9984f94a8c16285e072488072f1f00595df779e"
+    },
+    {
+      "Path": "selection-linux.json",
+      "Bytes": 1020,
+      "SHA256": "e7c87b31e7c9f37fd152342fe7fd94f8487ec1102a58497e5b158566e37677df"
+    },
+    {
+      "Path": "selection-windows.json",
+      "Bytes": 505,
+      "SHA256": "970ee71c37dd94f289bd7bbe3a1875a6e58f908082ee9f7c4aa6fddb66554984"
+    },
+    {
+      "Path": "source-provenance.json",
+      "Bytes": 2545,
+      "SHA256": "08aad7d3d92304332651a546a1ee83b6bfcdf9bfd10adc198b589d5eade70d66"
+    },
+    {
+      "Path": "test-cases.json",
+      "Bytes": 6289,
+      "SHA256": "f2b67c45972ec744c4b5262c821d919f55537d43ba0287515b479bbea332c192"
+    }
+  ]
+}

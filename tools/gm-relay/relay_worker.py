@@ -7,6 +7,15 @@ import sys
 from relay_contract import RelayError, publish_response, read_bounded, read_request, request_close
 
 
+def output(value):
+    # The worker is a JSON protocol even when stdout is a Windows pipe whose
+    # default text encoding cannot represent the retained Unicode prompt.
+    # JSON escapes keep Unicode exact for consumers using legacy pipe codepages;
+    # packet/prompt files retain their original bytes, with no escaping rewrite.
+    sys.stdout.buffer.write((json.dumps(value, ensure_ascii=True) + '\n').encode('utf8'))
+    sys.stdout.buffer.flush()
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command', required=True)
@@ -20,17 +29,17 @@ def main():
     try:
         if args.command == 'close':
             request_close(args.queue)
-            print(json.dumps(dict(CloseRequested=True, ClosedObserved=False)))
+            output(dict(CloseRequested=True, ClosedObserved=False))
         else:
             directory = args.request.resolve()
             request = read_request(directory.parent, directory)
             if args.command == 'inspect':
                 header = json.loads(request.header_bytes)
-                print(json.dumps(dict(Request=header, Prompt=request.prompt.decode('utf8'),
-                                      GameRequest=request.game_request.decode('utf8')), ensure_ascii=False))
+                output(dict(Request=header, Prompt=request.prompt.decode('utf8'),
+                            GameRequest=request.game_request.decode('utf8')))
             else:
                 publish_response(request, read_bounded(args.packet), adapter_id=args.adapter)
-                print(json.dumps(dict(Published=True, Executed=False, Accepted=False)))
+                output(dict(Published=True, Executed=False, Accepted=False))
         return 0
     except (RelayError, OSError, UnicodeError) as ex:
         print(type(ex).__name__ + ': ' + str(ex), file=sys.stderr)

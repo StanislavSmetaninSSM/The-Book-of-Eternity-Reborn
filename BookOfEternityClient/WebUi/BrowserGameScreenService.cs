@@ -29,7 +29,10 @@ public sealed class BrowserGameScreenService
         _media = media;
     }
 
-    public async Task<BrowserGameScreenDto> BuildAsync()
+    public Task<BrowserGameScreenDto> BuildAsync() =>
+        SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, BuildCoreAsync);
+
+    private async Task<BrowserGameScreenDto> BuildCoreAsync()
     {
         await _stateManager.RefreshGameStateAsync();
         var state = _stateManager.CurrentState;

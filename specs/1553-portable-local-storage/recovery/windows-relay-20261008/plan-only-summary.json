@@ -1,0 +1,112 @@
+{
+  "Categories": [
+    "gm-relay-native-windows",
+    "gm-relay-reusable-contract",
+    "gm-relay-reusable-main",
+    "gm-relay-transport",
+    "gm-relay-repair"
+  ],
+  "Reasons": [
+    {
+      "category": "gm-relay-native-windows",
+      "reason": "Actual native console/pipes/gate repair and original Job cleanup",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    },
+    {
+      "category": "gm-relay-reusable-contract",
+      "reason": "Shared exact bytes/identity/publication/close negative cases affected by gate backend",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    },
+    {
+      "category": "gm-relay-reusable-main",
+      "reason": "Linux original production Bridge/fixed helper/retirement affected by shared terminal adapter and worker stdout",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    },
+    {
+      "category": "gm-relay-transport",
+      "reason": "Linux raw input/output, close-before-snapshot and held child ordering preserved by extracted POSIX adapter",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    },
+    {
+      "category": "gm-relay-repair",
+      "reason": "Linux rejected response/repair consumers of the shared persistent relay",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "3ce1ab52b0a4e41dbe9717b52681236bd368c9b9",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 1.5293977,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 1.2490441,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 1.7800402,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0045097,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 18,
+  "WallTime": "00:00:12.5424768",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 39,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "gm-relay-native-windows-unit-001",
+      "gm-relay-repair-unit-002",
+      "gm-relay-reusable-contract-unit-003",
+      "gm-relay-reusable-main-unit-004",
+      "gm-relay-transport-unit-005"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

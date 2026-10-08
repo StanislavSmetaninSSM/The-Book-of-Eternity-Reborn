@@ -22,7 +22,10 @@ public sealed class BrowserLifecycleDashboardService
         _validation = validation;
     }
 
-    public async Task<BrowserLifecycleDashboardDto> BuildDashboardAsync()
+    public Task<BrowserLifecycleDashboardDto> BuildDashboardAsync() =>
+        SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, BuildDashboardCoreAsync);
+
+    private async Task<BrowserLifecycleDashboardDto> BuildDashboardCoreAsync()
     {
         var session = await _sessionStatus.BuildStatusAsync();
         return await BuildDashboardAsync(session);
@@ -53,7 +56,10 @@ public sealed class BrowserLifecycleDashboardService
             Entrypoints: BuildEntrypoints(session));
     }
 
-    public async Task<BrowserValidationSummaryDto> BuildValidationAsync()
+    public Task<BrowserValidationSummaryDto> BuildValidationAsync() =>
+        SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, BuildValidationCoreAsync);
+
+    private async Task<BrowserValidationSummaryDto> BuildValidationCoreAsync()
     {
         List<ValidationIssue> issues;
         try

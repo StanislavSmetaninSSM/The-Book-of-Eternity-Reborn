@@ -86,6 +86,7 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<ExplorerWebPromptSessionService>();
         builder.Services.AddSingleton<ExplorerWebCommandService>();
         builder.Services.AddSingleton<BrowserPlayerActionService>();
+        builder.Services.AddSingleton<BrowserRequestAdmission>();
 
         var frontendAssets = LocalWebUiFrontendAssets.Resolve(options.FrontendAssetsPath);
         var app = builder.Build();
@@ -108,14 +109,19 @@ public static class LocalWebUiHost
             }
         });
 
+        // State handlers share mutable services and may retain the physical main
+        // guard across a full validation. Queue sibling HTTP work before that guard.
+        // Load completion/cancel must remain outside: they release a retained Load.
+        var stateApi = app.MapGroup(string.Empty)
+            .AddEndpointFilter(app.Services.GetRequiredService<BrowserRequestAdmission>());
         app.MapGet("/", () => ServeFrontendIndex(frontendAssets));
-        app.MapGet("/api/main-menu", async (LocalWebUiMainMenuService menu) => await menu.BuildAsync());
-        app.MapPost("/api/saves/create", async (BrowserCreateSaveRequest request, LocalWebUiMainMenuService menu) =>
+        stateApi.MapGet("/api/main-menu", async (LocalWebUiMainMenuService menu) => await menu.BuildAsync());
+        stateApi.MapPost("/api/saves/create", async (BrowserCreateSaveRequest request, LocalWebUiMainMenuService menu) =>
         {
             var result = await menu.CreateManualSaveAsync(request);
             return CreateSaveResponse(result);
         });
-        app.MapPost("/api/saves/load", async (BrowserLoadSaveRequest request, LocalWebUiMainMenuService menu, BrowserLoadStateService state, HttpContext context) =>
+        stateApi.MapPost("/api/saves/load", async (BrowserLoadSaveRequest request, LocalWebUiMainMenuService menu, BrowserLoadStateService state, HttpContext context) =>
         {
             var result = await menu.LoadSaveAsync(request, state.BuildAsync,context.RequestAborted);
             return LoadSaveResponse(result);
@@ -124,7 +130,7 @@ public static class LocalWebUiHost
             LoadSaveResponse(await menu.CompleteLoadAsync(request)));
         app.MapPost("/api/saves/load-cancel", async (BrowserLoadCompletionRequest request,LocalWebUiMainMenuService menu)=>
             LoadSaveResponse(await menu.CancelLoadAsync(request)));
-        app.MapPost("/api/saves/load-state", async (BrowserLoadStateRequest request, BrowserLoadStateService state) =>
+        stateApi.MapPost("/api/saves/load-state", async (BrowserLoadStateRequest request, BrowserLoadStateService state) =>
         {
             try { return Results.Json(await state.BuildAsync(request), WebJsonOptions); }
             catch (Exception)
@@ -138,9 +144,9 @@ public static class LocalWebUiHost
         // map_viewer.html and the Vite React client, so all three surfaces stay
         // in lockstep. The local web UI shell calls window.BookOfEternityMap.mount.
         app.MapGet("/assets/map-viewer.js", () => Results.Content(LocalMapViewerAssets.Bundle, "application/javascript; charset=utf-8"));
-        app.MapGet("/api/health", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
-        app.MapGet("/api/session", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
-        app.MapGet("/api/game-screen", async (BrowserGameScreenService gameScreen) =>
+        stateApi.MapGet("/api/health", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
+        stateApi.MapGet("/api/session", async (LocalWebUiSessionStatusService status) => await status.BuildStatusAsync());
+        stateApi.MapGet("/api/game-screen", async (BrowserGameScreenService gameScreen) =>
         {
             try
             {
@@ -151,7 +157,7 @@ public static class LocalWebUiHost
                 return Results.Json(new { error = ex.Message }, WebJsonOptions, statusCode: StatusCodes.Status404NotFound);
             }
         });
-        app.MapGet("/api/client/settings", async Task<IResult> (BrowserClientSettingsService settings) =>
+        stateApi.MapGet("/api/client/settings", async Task<IResult> (BrowserClientSettingsService settings) =>
         {
             try { return Results.Json(await settings.BuildAsync(), WebJsonOptions); }
             catch (InvalidDataException)
@@ -159,14 +165,14 @@ public static class LocalWebUiHost
                 return Results.Conflict(new { error = "Не удалось безопасно прочитать настройки. Сохранённое состояние требует проверки.", persistenceStatus = "blocked" });
             }
         });
-        app.MapPost("/api/client/settings", async (BrowserClientSettingsUpdateRequest request, BrowserClientSettingsService settings) =>
+        stateApi.MapPost("/api/client/settings", async (BrowserClientSettingsUpdateRequest request, BrowserClientSettingsService settings) =>
         {
             var result = await settings.UpdateAsync(request);
             return result.Success
                 ? Results.Json(result.Settings, WebJsonOptions)
                 : Results.Conflict(new { error = result.Message, persistenceStatus = result.Disposition.ToString().ToLowerInvariant() });
         });
-        app.MapGet("/api/audio/settings", async Task<IResult> (BrowserAudioService audio) =>
+        stateApi.MapGet("/api/audio/settings", async Task<IResult> (BrowserAudioService audio) =>
         {
             try { return Results.Json(await audio.BuildSettingsAsync(), WebJsonOptions); }
             catch (InvalidDataException)
@@ -174,7 +180,7 @@ public static class LocalWebUiHost
                 return Results.Conflict(new { error = "Не удалось безопасно прочитать настройки. Сохранённое состояние требует проверки.", persistenceStatus = "blocked" });
             }
         });
-        app.MapPost("/api/audio/settings", async Task<IResult> (BrowserAudioSettingsUpdateRequest request, BrowserAudioService audio) =>
+        stateApi.MapPost("/api/audio/settings", async Task<IResult> (BrowserAudioSettingsUpdateRequest request, BrowserAudioService audio) =>
         {
             try { return Results.Json(await audio.UpdateSettingsAsync(request), WebJsonOptions); }
             catch (BrowserSettingsWriteException ex)
@@ -183,20 +189,20 @@ public static class LocalWebUiHost
             }
         });
         app.MapGet("/api/audio/assets/{assetId}", (string assetId, BrowserAudioService audio) => audio.ServeAsset(assetId));
-        app.MapGet("/api/lifecycle/dashboard", async (BrowserLifecycleDashboardService lifecycle) =>
+        stateApi.MapGet("/api/lifecycle/dashboard", async (BrowserLifecycleDashboardService lifecycle) =>
             await lifecycle.BuildDashboardAsync());
-        app.MapPost("/api/lifecycle/validate", async (BrowserLifecycleDashboardService lifecycle) =>
+        stateApi.MapPost("/api/lifecycle/validate", async (BrowserLifecycleDashboardService lifecycle) =>
             await lifecycle.BuildValidationAsync());
         app.MapGet("/api/explorer/command-coverage", () => BrowserCommandCoverageService.Build());
-        app.MapPost("/api/explorer/command", async (ExplorerWebCommandRequest request, ExplorerWebCommandService commandService) =>
+        stateApi.MapPost("/api/explorer/command", async (ExplorerWebCommandRequest request, ExplorerWebCommandService commandService) =>
             await commandService.ExecuteAsync(request));
-        app.MapGet("/api/explorer/prompt-sessions/{sessionId}", async (string sessionId, ExplorerWebCommandService commandService) =>
+        stateApi.MapGet("/api/explorer/prompt-sessions/{sessionId}", async (string sessionId, ExplorerWebCommandService commandService) =>
             await commandService.GetPromptSessionAsync(sessionId));
-        app.MapPost("/api/explorer/prompt-sessions/submit", async (ExplorerPromptSessionSubmitRequest request, ExplorerWebCommandService commandService) =>
+        stateApi.MapPost("/api/explorer/prompt-sessions/submit", async (ExplorerPromptSessionSubmitRequest request, ExplorerWebCommandService commandService) =>
             await commandService.SubmitPromptSessionAsync(request));
-        app.MapPost("/api/explorer/prompt-sessions/cancel", async (ExplorerPromptSessionCancelRequest request, ExplorerWebCommandService commandService) =>
+        stateApi.MapPost("/api/explorer/prompt-sessions/cancel", async (ExplorerPromptSessionCancelRequest request, ExplorerWebCommandService commandService) =>
             await commandService.CancelPromptSessionAsync(request));
-        app.MapPost("/api/explorer/player-action", async (BrowserPlayerActionRequest request, BrowserPlayerActionService playerAction) =>
+        stateApi.MapPost("/api/explorer/player-action", async (BrowserPlayerActionRequest request, BrowserPlayerActionService playerAction) =>
             await playerAction.SubmitAsync(request));
         app.MapGet("/api/media/{mediaId}", (string mediaId, LocalMediaService media) =>
         {
@@ -214,33 +220,33 @@ public static class LocalWebUiHost
                 fileDownloadName: null,
                 enableRangeProcessing: true);
         });
-        app.MapPost("/api/media/generate", async (BrowserMediaGenerateRequest request, BrowserMediaGenerationService gen) =>
+        stateApi.MapPost("/api/media/generate", async (BrowserMediaGenerateRequest request, BrowserMediaGenerationService gen) =>
             Results.Json(await gen.GenerateAsync(request), WebJsonOptions));
-        app.MapGet("/api/qte/state", async (QteWebInteractionService qte) =>
+        stateApi.MapGet("/api/qte/state", async (QteWebInteractionService qte) =>
             await qte.BuildStateAsync());
-        app.MapPost("/api/qte/offer", async (QteWebOfferDecisionRequest request, QteWebInteractionService qte) =>
+        stateApi.MapPost("/api/qte/offer", async (QteWebOfferDecisionRequest request, QteWebInteractionService qte) =>
             await qte.ResolveOfferDecisionAsync(request));
-        app.MapPost("/api/qte/action", async (QteWebActionRequest request, QteWebInteractionService qte) =>
+        stateApi.MapPost("/api/qte/action", async (QteWebActionRequest request, QteWebInteractionService qte) =>
             await qte.ResolveActionAsync(request));
-        app.MapGet("/api/qte/practice", async (QteWebInteractionService qte) =>
+        stateApi.MapGet("/api/qte/practice", async (QteWebInteractionService qte) =>
             await qte.BuildPracticeStateAsync());
-        app.MapPost("/api/qte/practice/start", async (QtePracticeStartRequest request, QteWebInteractionService qte) =>
+        stateApi.MapPost("/api/qte/practice/start", async (QtePracticeStartRequest request, QteWebInteractionService qte) =>
             await qte.StartPracticeAttemptAsync(request));
-        app.MapPost("/api/qte/practice/action", async (QtePracticeActionRequest request, QteWebInteractionService qte) =>
+        stateApi.MapPost("/api/qte/practice/action", async (QtePracticeActionRequest request, QteWebInteractionService qte) =>
             await qte.ResolvePracticeActionAsync(request));
-        app.MapPost("/api/qte/practice/retry", async (QteInteractionRequest request, QteWebInteractionService qte) =>
+        stateApi.MapPost("/api/qte/practice/retry", async (QteInteractionRequest request, QteWebInteractionService qte) =>
             await qte.RetryPracticeAttemptAsync(request.InteractionToken));
-        app.MapPost("/api/qte/practice/exit", async (QteInteractionRequest request, QteWebInteractionService qte) =>
+        stateApi.MapPost("/api/qte/practice/exit", async (QteInteractionRequest request, QteWebInteractionService qte) =>
             await qte.ExitPracticeAttemptAsync(request.InteractionToken));
-        app.MapGet("/api/qte/daren", async (QteWebInteractionService qte) =>
+        stateApi.MapGet("/api/qte/daren", async (QteWebInteractionService qte) =>
             await qte.BuildDarenShowcaseStateAsync());
-        app.MapPost("/api/qte/daren/start", async (QteInteractionRequest request, QteWebInteractionService qte) =>
+        stateApi.MapPost("/api/qte/daren/start", async (QteInteractionRequest request, QteWebInteractionService qte) =>
             await qte.StartDarenShowcaseAsync(request.InteractionToken));
-        app.MapPost("/api/qte/daren/action", async (DarenShowcaseActionRequest request, QteWebInteractionService qte) =>
+        stateApi.MapPost("/api/qte/daren/action", async (DarenShowcaseActionRequest request, QteWebInteractionService qte) =>
             await qte.ResolveDarenShowcaseActionAsync(request));
-        app.MapPost("/api/qte/daren/retry", async (QteInteractionRequest request, QteWebInteractionService qte) =>
+        stateApi.MapPost("/api/qte/daren/retry", async (QteInteractionRequest request, QteWebInteractionService qte) =>
             await qte.RetryDarenShowcaseAsync(request.InteractionToken));
-        app.MapPost("/api/qte/daren/exit", async (QteInteractionRequest request, QteWebInteractionService qte) =>
+        stateApi.MapPost("/api/qte/daren/exit", async (QteInteractionRequest request, QteWebInteractionService qte) =>
             await qte.ExitDarenShowcaseAsync(request.InteractionToken));
 
         app.MapFallback((HttpContext context) =>

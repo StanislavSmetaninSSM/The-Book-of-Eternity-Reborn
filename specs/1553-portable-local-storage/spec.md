@@ -1,3 +1,39 @@
+## Active original-owner HTTP reads — owner-approved T055, 2026-10-08
+
+[Separate follow-up](http-original-owner-plan.md): browser state reads while the
+original GM run is active must participate through that original owner and its
+exact generation for the entire operation, including final close. Preserve typed
+payloads and authority refusal. The host queue alone does not supply this grant.
+Load remains quiescent-only at its existing boundaries; its IPC cannot borrow
+filesystem admission. No fence weakening, new owner, fabricated status or model
+request. Prior Windows qualification explicitly excluded this active-GM case.
+
+## Browser HTTP admission — owner-approved T054, 2026-10-08
+
+The separately approved [HTTP plan](windows-http-plan.md) addresses proven
+parallel request contention on empty, ordinary NewGame and synthetic SaveLoad
+roots. Queue this web host's state API handlers before their existing bounded
+physical guard acquisition. Preserve every storage, generation and main-owner
+check, typed response and full validation. Cancelled queued requests must not
+enter handlers or release someone else's permit; failures must release admission
+and retain their actual error response. Matched Load completion/cancel endpoints
+must bypass the queue to release the original pending Load; static/media files
+and pure command metadata also bypass. No global lock timeout increase, validation
+cache, synthetic successful response, model call or game/GM schema/prompt change.
+Long state operations still delay queued state requests; this is correctness,
+not a validation/image-generation latency improvement.
+
+## Native Windows relay follow-up — owner approved 2026-10-08
+
+Source #1553. Implement the bounded [Windows relay plan](relay-windows-plan.md):
+native Unicode/multiline terminal input with mode restoration, child output
+polling and interprocess gate, preserving shared protocol/POSIX behavior and
+original Job ownership. No provider requests, installs, WSL, security changes or
+game/GM-authored contract changes. Frozen relay0067874e has Windows24/24 and
+separate parent-accepted Linux32/32 evidence. The separately approved HTTP fix
+above now has causal empty/ordinary/synthetic-root evidence and bounded Windows
+qualification; see the HTTP plan for exact results and remaining limitations.
+
 ## Current final-readiness boundary — owner-approved deferral
 
 Owner accepts explicit OwnedTerminal/NativeLineage Linux use while mandatory actual systemd S2/S3 remain unavailable/deferred and backend OFF. Native Windows validation is scheduled AFTER completion/merge in parent-coordinated «Лориан-Codex bridge»; it is not a pre-merge PASS gate. [Current accepted/deferred map and bounded final plan](final-readiness.md) supersedes historical next-step labels below. Parent handles protection/reviews/merge; no merge here. Source #1553, 2026-10-08.

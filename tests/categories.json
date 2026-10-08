@@ -1,6 +1,41 @@
 {
   "schemaVersion": 1,
   "categories": [
+    {"id":"browser-read-authority","responsibility":"T055 four real HTTP read entry points refuse Stopping authority and finalization failure, retaining the same generation; validation must not mask refusal as HTTP200","excludes":"No synthetic record qualifies live-owner success; no provider calls, actual Linux owner belongs to browser-original-owner-linux","changeHints":["BookOfEternityClient/WebUi/LocalWebUiSessionStatusService.cs","BookOfEternityClient/WebUi/BrowserGameScreenService.cs","BookOfEternityClient/WebUi/BrowserLifecycleDashboardService.cs"],"related":[],"requirements":{"frontendBuild":false,"exclusive":true},"timeoutMinutes":3,"expectedSeconds":null,"selectors":[{"project":"integration","tests":["BookOfEternityClient.Tests.BrowserReadAuthorityTests.*"]}]},
+    {"id":"browser-original-owner-linux","responsibility":"T055 actual production Bridge and idle shared relay: four serial plus six parallel HTTP DTOs, ten exact original pin close receipts, unchanged owner/generation, no prompt requests and original queue/terminal shutdown","excludes":"Windows direct ConPTY has no production main coordinator; no readiness override, synthetic Running owner, model/provider calls or gameplay acceptance","changeHints":["BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.HttpReads.cs","BookOfEternityClient.Tests/ProductionMainLinuxFixture.cs"],"related":[],"requirements":{"frontendBuild":false,"exclusive":true,"ciRunner":"ubuntu-24.04"},"timeoutMinutes":3,"expectedSeconds":null,"selectors":[{"project":"unit","tests":["BookOfEternityClient.Tests.BrowserOriginalOwnerLinuxTests.*"]}]},
+    {
+      "id": "portable-load-browser-required-generation",
+      "responsibility": "Actual Save/Load followed by complete required-generation browser refresh: current, stale, missing and unreadable-settings outcomes in independent roots",
+      "excludes": "Live GM continuation, user saves, other bundle read/closing cuts owned by portable-load-browser-refresh",
+      "changeHints": ["BookOfEternityClient/WebUi/LocalWebUiHost.cs", "BookOfEternityClient/WebUi/BrowserLoadStateService.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_RequiresCompleteEstablishedGeneration"] }]
+    },
+    {
+      "id": "browser-http-admission-lifetime",
+      "responsibility": "Actual filter cancellation entry/permit ownership and real Kestrel aborted shutdown with a surviving owned handler",
+      "excludes": "No GM/provider, filesystem authority changes, normal shutdown qualification or unrelated browser routes",
+      "changeHints": ["BookOfEternityClient/WebUi/BrowserRequestAdmission.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "windows-latest" },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.LocalWebUiRequestAdmissionLifetimeTests.*"] }]
+    },
+    {
+      "id": "browser-http-admission",
+      "responsibility": "Real HTTP state request admission outside the physical guard retry window, cancellation/failure release, out-of-band Load completion/cancel and static/media delivery; independent physical guard refusal remains authoritative",
+      "excludes": "No provider/GM launch, user saves, fresh-GM continuation or unrelated gameplay; does not shorten validation or change filesystem authority",
+      "changeHints": ["BookOfEternityClient/WebUi/LocalWebUiHost.cs", "BookOfEternityClient/WebUi/BrowserRequestAdmission.cs"],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "windows-latest" },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [{ "project": "integration", "tests": ["BookOfEternityClient.Tests.LocalWebUiRequestAdmissionTests.*"] }]
+    },
     {
       "id": "gm-main-linux-guide",
       "responsibility": "Installed Linux configuration example consumed by actual inert launcher reader, preserving configured command/model/cwd/input profile and disabled original worker inventory; default/malformed refusal setup",
@@ -14506,8 +14541,8 @@
     },
     {
       "id": "portable-load-browser-refresh",
-      "responsibility": "Actual browser HTTP typed load identity and complete exact-generation required refresh bundle; failure returns no partial surfaces. Uses per-test owned roots.",
-      "excludes": "Live browser access/visual QA, unchanged filesystem/resource/console cohorts, unrelated browser routes.",
+      "responsibility": "Actual browser HTTP bundle read/finalization cuts, save-ID admission and replacement lock identity; failure returns no partial surfaces. Uses per-test owned roots.",
+      "excludes": "Required-generation full Save/Load refresh scenarios belong to portable-load-browser-required-generation. No live browser access/visual QA, unchanged filesystem/resource/console cohorts or unrelated routes.",
       "changeHints": [
         "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
         "BookOfEternityClient/WebUi/BrowserLoadStateService.cs"
@@ -14523,7 +14558,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_*",
+          "BookOfEternityClient.Tests.LocalWebUiHostTests.LoadStateEndpoint_KeepsWholeBundleBoundThroughRequiredReads",
             "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_LoadsOnlyMenuIssuedSaveIds",
             "BookOfEternityClient.Tests.LocalWebUiHostTests.SaveLoadEndpoint_BlocksLoadWhenBrowserWriteIsBlocked",
             "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteSessionReplacementAsync_FailedOldOperationDoesNotReleaseNewSameOwnerLock"
@@ -16881,7 +16916,8 @@
       "related": [],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": true
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
@@ -16934,7 +16970,8 @@
       "related": [],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": true
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
@@ -17003,7 +17040,7 @@
     {
       "id": "gm-relay-reusable-contract",
       "responsibility": "T043 shared relay worker exact bytes/request identity, bounded atomic once-only response publication and queue-close/refusal under isolated synthetic data",
-      "excludes": "No model calls, game acceptance, terminal/manager/device/native Windows execution",
+      "excludes": "No model calls, game acceptance, terminal/manager/device integration; local worker/gate is cross-platform",
       "changeHints": [
         "tools/gm-relay",
         "BookOfEternityClient.Tests/GmRelayReusableTests.cs"
@@ -17011,7 +17048,8 @@
       "related": [],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": false
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 2,
       "expectedSeconds": null,
@@ -17045,7 +17083,8 @@
       ],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": true
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
@@ -17054,6 +17093,37 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmRelayReusableTests.ProductionBridge_RelocatedWorkerConsumerAndOriginalRetirement"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gm-relay-native-windows",
+      "responsibility": "Native Windows developer relay Unicode bracketed paste/submit, exact worker bytes, real helper success/error, close child/EOF and original ConPTY Job cleanup; independent-process gate and console restoration; component console streams explicitly prepared, ordinary untouched Bridge separately verified",
+      "excludes": "No Linux/systemd, model requests, gameplay or automatic profile readiness",
+      "changeHints": [
+        "tools/gm-relay",
+        "BookOfEternityClient.Tests/GmRelayWindowsTests.cs",
+        "tests/fixtures/ProductionMain/relay-windows-checks.py"
+      ],
+      "related": [
+        {
+          "id": "gm-relay-reusable-contract",
+          "when": "Shared worker contract or native gate changes"
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "windows-latest"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmRelayWindowsTests.*"
           ]
         }
       ]

@@ -6,6 +6,49 @@ Current access boundary after accepted5f663533: owner approval and parent config
 
 Current T043 state: bounded driver correction source0a3d963f has causal REDs and fresh14/14 controlled GREEN, independent Sol source/evidence/metadata PASS; catalog419/11156 valid0executed. Actual controlled ordinary NewGame/client/daemon/Bridge cancellation reaches original Stopped ACK/allpeer I/O. Separate held original pin proves drain timeout before lifecycle acquisition and retained logical Uncertain despite physical cleanup. Production runtime unchanged; historical og10 Uncertain/request/pending unchanged; exact og10 client cause unproven. No provider retry/network/auth change, new provider calls0/acceptedGMturns0. Owner approval/config publication reported; current CONNECT check blocked403. Accepted5f663533 has completed publication/restore; new access receipt closes separately. [Handoff](opencode-current-live-handoff.md).
 
+## Active original-owner HTTP follow-up 2026-10-08
+
+- [x] T055-HTTP-ORIGINAL-OWNER Source #1553, owner/parent authorized separate
+  active relay/session HTTP500 cause after completed Windows carrier1df88385.
+  Linux baselineca2f817b shows original Running/Ready session/game-screen500
+  even serially, missing participating original-owner admission; queue-only
+  correction is insufficient. [Plan](http-original-owner-plan.md). Real original
+  GM/relay causal regression, unchanged owner/generation/Load rules, bounded
+  independent Windows/Linux evidence and exact remote recovery required. No
+  model/provider calls or unrelated changes. Runtime3d6cfd24 and native Windows
+  33/33PASS published with causal8-case RED. Linux carrier7afb1934 directly
+  verified:1case causalRED and3/3GREEN including10exact original HTTP closes.
+  Catalog441/11207 andPlanOnly14descriptors83planned0executed valid. Original
+  installed live133/133meaningful200, exact original RPC/I-O/retirement and
+  guardian cleanup verified in finalLinuxcarrier9e277a67; independent review
+  PASS. Source/evidence recovered fromGitHub; boundedT055complete, #1553open,
+  no merge. Final delivery ref/readback is checked after metadata publication.
+
+## Native Windows follow-up 2026-10-08
+
+Source #1553, owner-approved [plan](relay-windows-plan.md).
+- [x] T053-WINDOWS-RELAY Shared protocol/POSIX preservation, native Unicode/input
+  restoration, child polling, gate; causal tests, real ConPTY/worker/helper/close/
+  original Job cleanup, Astra XHigh review and exact remote recovery.
+  Native bounded implementation is reviewed: source0067874e,24/24 PASS,
+  final carrier19d79b26 Astra XHigh PASS, catalog436/11196/0executed,
+  GitHub-only29 changed files/14 payloads restored clean. Parent accepted separate
+  native Linux32/32 on exact source0067874e, independent Sol6.1/xhigh PASS;
+  [Linux carrier100939f9](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/100939f9e07e66d6933af6712e87a86af2206c8e/specs/1553-portable-local-storage/relay-linux-regression-20261008.md).
+- [x] T054-WINDOWS-HTTP Compare synthetic Save/Load/restart HTTP 500 with clean
+  valid root, collect real server exception/stack, then repair proven cause with
+  parallel/repeated reads, Save/Load and shutdown checks.
+  Separate approved [diagnosis plan](windows-http-plan.md), branch based5ff403ed;
+  relay runtime remains frozen. Actual clean/ordinary/synthetic HTTP stacks prove
+  main-owner guard contention. Runtime/tests3d205d31:33/33 PASS, no skips/timeouts/
+  duplicates, original cleanup true; native65GETs62x200+3expectedempty404, actual
+  SaveLoadCommitted/fullbundle, restartpayloadmatches, four normalhostshutdowns.
+  Independent Astra XHigh source/evidence PASS; valid439/11204catalog0executed.
+  Browsermenu/settings/all5stateAPI200, but overallsmokeFAIL on favicon404;
+  CLIwrapperCtrlCexit1/productexitunknown, ownedPIDsabsent. No latency/liveGM/
+  whole-game/LinuxHTTPclaim. Finalcarrier remote/readback/GitHub-only recovery
+  remains the writer delivery guard. [Linux reproduction](windows-http-linux-reproduction.md).
+
 # Tasks: Trusted local storage and cross-platform runtime
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)

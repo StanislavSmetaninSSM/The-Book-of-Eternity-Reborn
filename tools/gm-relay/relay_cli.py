@@ -3,9 +3,10 @@
 No model/network call, canned answer, terminal capability override or run authority.
 This process and its fixed helper child are owned by the original M1 terminal.
 """
-import argparse,hashlib,json,os,select,signal,subprocess,sys,termios,time,tty,uuid
+import argparse,hashlib,json,os,signal,subprocess,sys,time,uuid
 from pathlib import Path
 from relay_contract import atomic_write_once, execution_gate, RelayGateUnavailable
+from relay_platform import Terminal, poll_child_output
 def sha(data):return hashlib.sha256(data).hexdigest()
 def write_once(path,data):
     atomic_write_once(path,data)
@@ -18,13 +19,13 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--session',required=True);parser.add_argument('--queue',required=True);parser.add_argument('--model',default='gpt-6.1-sol')
     args=parser.parse_args();session=Path(args.session).resolve();queue=Path(args.queue).resolve();queue.mkdir(exist_ok=True)
     if any(queue.iterdir()):raise ValueError('Relay requires its original fresh queue; no replay')
-    fd=sys.stdin.fileno();initial=termios.tcgetattr(fd);tty.setraw(fd)
+    terminal=Terminal(sys.stdin.fileno(),sys.stdout.fileno())
     stop=False;closing=False;active=None;child=None;output=bytearray();draft=bytearray();paste=None;escape=bytearray();ordinal=0;metadata_error=None
     def stopped(*unused):
         nonlocal stop;stop=True
     signal.signal(signal.SIGTERM,stopped);signal.signal(signal.SIGINT,stopped)
     def render(state='NEUTRAL READY',text=b''):
-        os.write(sys.stdout.fileno(),b'\x1b[2J\x1b[H'+state.encode()+b'\r\nRELAY> '+text.replace(b'\n',b'\r\n')+b'\r\n')
+        terminal.write(b'\x1b[2J\x1b[H'+state.encode()+b'\r\nRELAY> '+text.replace(b'\n',b'\r\n')+b'\r\n')
     def close_ack():
         if not (queue/'closed.json').exists():save(queue/'closed.json',dict(ExecutionDisabled=True,ChildExited=True,IoDrained=True,RelayPid=os.getpid()))
     def record_execution(value):
@@ -53,8 +54,9 @@ def main():
         while not stop:
             if (queue/'close-request.json').exists():closing=True
             if child is not None:
-                if select.select([child.stdout],[],[],0)[0]:
-                    part=os.read(child.stdout.fileno(),65536);output.extend(part)
+                part=poll_child_output(child.stdout)
+                if part is not None:
+                    output.extend(part)
                     if len(output)>1048576:raise ValueError('Response child output bound exceeded')
                     if not part and child.poll() is not None:
                         child.stdout.close();code=child.returncode;child=None
@@ -96,12 +98,15 @@ def main():
                     if child is None:record_execution(dict(Executed=False,Failure=failure))
                     else:metadata_error=failure # Popen succeeded; retain active/child until actual exit/I-O.
                     render('RELAY ERROR')
-            if not select.select([fd],[],[],.02)[0]:continue
-            data=os.read(fd,16384)
+            data=terminal.read(.02)
+            if data is None:continue
             if not data:break
             for b in data:
                 if closing or child is not None or active is not None:continue
                 if paste is not None:
+                    # ConPTY maps incoming LF to console CR, even in raw mode.
+                    # Only paste content maps back to LF; actual CR still submits.
+                    if os.name=='nt' and b==13:b=10
                     paste.append(b)
                     if paste.endswith(b'\x1b[201~'):
                         draft.extend(paste[:-6]);paste=None
@@ -129,6 +134,6 @@ def main():
                 child.terminate();child.wait(timeout=2)
                 child.stdout.close()
             except subprocess.TimeoutExpired:pass
-        termios.tcsetattr(fd,termios.TCSANOW,initial)
+        terminal.close()
     return 0
 if __name__=='__main__':sys.exit(main())

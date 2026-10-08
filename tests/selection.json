@@ -2,51 +2,115 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "gm-main-linux-guide",
-      "reason": "Documented installed Linux profile consumed by original inert launcher data functions; preserve arbitrary command/model/cwd/profile and disabled inventory",
+      "category": "gm-load-early-ack",
+      "reason": "Premature application ACK cannot launch a fresh owner",
       "contracts": [
         "#1553",
-        "T052-FINAL-READINESS"
+        "T055-HTTP-ORIGINAL-OWNER"
       ]
     },
     {
-      "category": "gm-main-linux-launcher",
-      "reason": "Installed Linux foreground route after auxiliary launcher, early-exit and presentation changes since accepted M1",
+      "category": "gm-load-browser-entry",
+      "reason": "Actual original owner Load bundle and fresh epoch require confirmed application",
       "contracts": [
         "#1553",
-        "T052-FINAL-READINESS"
+        "T055-HTTP-ORIGINAL-OWNER"
       ]
     },
     {
-      "category": "gm-load-installed-profile",
-      "reason": "Original stop/Load/fresh launch retains archive CLI/model/arguments/cwd/input profile",
+      "category": "browser-original-owner-linux",
+      "reason": "Actual original production Bridge/idle relay causal RED/GREEN, receipts and owned shutdown",
       "contracts": [
         "#1553",
-        "T052-FINAL-READINESS"
+        "T055-HTTP-ORIGINAL-OWNER"
       ]
     },
     {
-      "category": "gm-load-ordinary-schema",
-      "reason": "Actual console and HTTP canonical schema1 generation plus full refresh bundle after current-session/storage changes",
+      "category": "browser-read-authority",
+      "reason": "All four public read boundaries refuse Stopping authority and failed finalization without successful DTOs",
       "contracts": [
         "#1553",
-        "T052-FINAL-READINESS"
+        "T055-HTTP-ORIGINAL-OWNER"
       ]
     },
     {
-      "category": "gm-main-affected-managed",
-      "reason": "Exact participating/finalizer/ambiguity/no-replay consumers after bootstrap, cancellation and artifact-detection edits",
+      "category": "portable-load-browser-required-generation",
+      "reason": "Preserve all four exact-generation Save/Load/refresh controls after splitting the slow native category; no cases dropped",
       "contracts": [
         "#1553",
-        "T052-FINAL-READINESS"
+        "T054-WINDOWS-HTTP"
       ]
     },
     {
-      "category": "test-ci-platform-contracts",
-      "reason": "Causal hosted startup rejection: permitted action references and actual fail-closed installed Node22.12+ frontend prerequisite; preserve exact category routing and failure gate",
+      "category": "browser-http-admission-lifetime",
+      "reason": "Review regression for host disposal versus surviving handler and exact cancelled queue permit ownership",
       "contracts": [
         "#1553",
-        "T052-CI-PR-ENABLE"
+        "T054-WINDOWS-HTTP"
+      ]
+    },
+    {
+      "category": "browser-http-admission",
+      "reason": "Causal real HTTP parallel admission, cancellation/failure release and Load/static bypass; physical owner refusal preserved",
+      "contracts": [
+        "#1553",
+        "T054-WINDOWS-HTTP"
+      ]
+    },
+    {
+      "category": "portable-settings-endpoints",
+      "reason": "Actual GET/POST settings and audio handlers now share host admission",
+      "contracts": [
+        "#1553",
+        "T054-WINDOWS-HTTP"
+      ]
+    },
+    {
+      "category": "portable-load-browser-refresh",
+      "reason": "Real Save/Load and exact generation bundle routes cross the new host boundary",
+      "contracts": [
+        "#1553",
+        "T054-WINDOWS-HTTP"
+      ]
+    },
+    {
+      "category": "gm-relay-native-windows",
+      "reason": "Actual native console/pipes/gate repair and original Job cleanup",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    },
+    {
+      "category": "gm-relay-reusable-contract",
+      "reason": "Shared exact bytes/identity/publication/close negative cases affected by gate backend",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    },
+    {
+      "category": "gm-relay-reusable-main",
+      "reason": "Linux original production Bridge/fixed helper/retirement affected by shared terminal adapter and worker stdout",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    },
+    {
+      "category": "gm-relay-transport",
+      "reason": "Linux raw input/output, close-before-snapshot and held child ordering preserved by extracted POSIX adapter",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    },
+    {
+      "category": "gm-relay-repair",
+      "reason": "Linux rejected response/repair consumers of the shared persistent relay",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
       ]
     }
   ]

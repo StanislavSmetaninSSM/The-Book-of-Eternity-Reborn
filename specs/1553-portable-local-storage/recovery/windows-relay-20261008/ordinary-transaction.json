@@ -1,0 +1,26 @@
+{
+  "Source": "0067874e15f479327dc37268fc891f51e3a2713d",
+  "QueueClosed": {
+    "ExecutionDisabled": true,
+    "ChildExited": true,
+    "IoDrained": true,
+    "RelayPid": 3412
+  },
+  "AutomaticProfileQualified": false,
+  "RequestCount": 1,
+  "ModelRequests": 0,
+  "WorkerPromptExact": true,
+  "GameplayQualified": false,
+  "CompletionRequestId": "ordinary-native-request",
+  "PromptExact": true,
+  "PasteAloneSubmitted": false,
+  "ExplicitConsoleRebinding": false,
+  "NativeWindows": true,
+  "Execution": {
+    "Executed": true,
+    "ExitCode": 0,
+    "ChildExited": true,
+    "IoDrained": true
+  },
+  "OrdinaryBridge": true
+}

@@ -1,0 +1,14 @@
+{
+  "command": "diagnostics",
+  "ok": true,
+  "error": null,
+  "state": "OperatorNotReady",
+  "helperPid": 31908,
+  "shellPid": 34624,
+  "terminalRunId": "8a4743388aae441286cdb788f5fd4ec0",
+  "terminalOwnerRetained": true,
+  "terminalUncertain": false,
+  "terminalStop": null,
+  "relayReady": true,
+  "relayError": false
+}

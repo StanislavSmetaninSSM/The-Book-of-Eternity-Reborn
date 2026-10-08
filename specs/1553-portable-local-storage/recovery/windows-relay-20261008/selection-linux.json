@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "gm-relay-reusable-contract",
+      "reason": "Shared exact bytes/identity/publication/close negative cases affected by gate backend",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    },
+    {
+      "category": "gm-relay-reusable-main",
+      "reason": "Linux original production Bridge/fixed helper/retirement affected by shared terminal adapter and worker stdout",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    },
+    {
+      "category": "gm-relay-transport",
+      "reason": "Linux raw input/output, close-before-snapshot and held child ordering preserved by extracted POSIX adapter",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    },
+    {
+      "category": "gm-relay-repair",
+      "reason": "Linux rejected response/repair consumers of the shared persistent relay",
+      "contracts": [
+        "#1553",
+        "T053-WINDOWS-RELAY"
+      ]
+    }
+  ]
+}

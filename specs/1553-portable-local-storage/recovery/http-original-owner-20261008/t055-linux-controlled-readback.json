@@ -1,0 +1,108 @@
+{
+  "Carrier": "7afb19349519bacb959b5ccad3069226c669efa1",
+  "VerifiedAtUTC": "2026-10-08T07:01:52.844686+00:00",
+  "Results": [
+    {
+      "Color": "red",
+      "Source": "0a2843af69c521d7507a9e036cb5494d8c9d73cb",
+      "Archive": {
+        "Name": "original-owner-red-evidence.zip",
+        "Bytes": 282597,
+        "SHA256": "ed3eca7591b7d02092641a9458b90aa45f977711cf3bb3fbb7690a9534568f18"
+      },
+      "VerifiedArchiveEntries": 40,
+      "VerifiedSourcePins": 17,
+      "Tests": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserOriginalOwnerLinuxTests.ActualIdleRelay_PublicHttpReadsCloseOriginalPins",
+          "Outcome": "Failed"
+        }
+      ],
+      "Summary": {
+        "Total": 1,
+        "Executed": 1,
+        "Passed": 0,
+        "Failed": 1
+      },
+      "Guardians": [
+        {
+          "echild": true,
+          "driverExitCode": 1,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        }
+      ],
+      "HttpStatusCounts": {
+        "200": 4,
+        "500": 6
+      },
+      "ClosedPins": 2,
+      "OriginalStopAndQueueCloseVerified": true
+    },
+    {
+      "Color": "green",
+      "Source": "3d6cfd24898fa30b37764de688432455ac9a4660",
+      "Archive": {
+        "Name": "original-owner-green-evidence.zip",
+        "Bytes": 521653,
+        "SHA256": "fe3b9862cf6505f9a92fa7816618e7ba6b3cf2b1a95afdb51d5b2b981d7caa64"
+      },
+      "VerifiedArchiveEntries": 111,
+      "VerifiedSourcePins": 17,
+      "Tests": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_PrematureAckCannotAuthorizeFreshLaunch",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmLoadSessionLifecycleTests.BrowserHttp_LoadFullBundleCurrentAckFreshEpoch",
+          "Outcome": "Passed"
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserOriginalOwnerLinuxTests.ActualIdleRelay_PublicHttpReadsCloseOriginalPins",
+          "Outcome": "Passed"
+        }
+      ],
+      "Summary": {
+        "Total": 3,
+        "Executed": 3,
+        "Passed": 3,
+        "Failed": 0
+      },
+      "Guardians": [
+        {
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        },
+        {
+          "echild": true,
+          "driverExitCode": 0,
+          "emergencySignals": 0,
+          "reaped": 1,
+          "failures": 0,
+          "deadline": false
+        }
+      ],
+      "HttpStatusCounts": {
+        "200": 10,
+        "500": 0
+      },
+      "ClosedPins": 10,
+      "OriginalStopAndQueueCloseVerified": true
+    }
+  ]
+}
