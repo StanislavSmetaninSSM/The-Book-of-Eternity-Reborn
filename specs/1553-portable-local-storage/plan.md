@@ -1,3 +1,7 @@
+## Current final-readiness boundary — owner-approved deferral
+
+Owner accepts explicit OwnedTerminal/NativeLineage Linux use while mandatory actual systemd S2/S3 remain unavailable/deferred and backend OFF. Native Windows validation is scheduled AFTER completion/merge in parent-coordinated «Лориан-Codex bridge»; it is not a pre-merge PASS gate. [Current accepted/deferred map and bounded final plan](final-readiness.md) supersedes historical next-step labels below. Parent handles protection/reviews/merge; no merge here. Source #1553, 2026-10-08.
+
 Bounded source continuation: [S2A handoff](systemd-main-s2a-handoff.md), T041-SYSTEMD-S2A implemented runtimeb97b50a9/finaltests2ad77e29,42uniqueGREEN and independent design/source/evidencePASS. Read-only environment evidence confirms no accessible user manager; public backend stays closed. Concrete original cgroup observation and controlled consumers are implemented; full native S2/S3 remain unqualified. Native Windows is after merge, not a pre-merge gate.
 
 # T043 reusable relay final bounded verdict carrier

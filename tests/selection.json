@@ -2,19 +2,43 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "test-ci-platform-contracts",
-      "reason": "Pure CI platform routing, exact selection conservation, invalid input and stable workflow result contracts",
+      "category": "gm-main-linux-guide",
+      "reason": "Documented installed Linux profile consumed by original inert launcher data functions; preserve arbitrary command/model/cwd/profile and disabled inventory",
       "contracts": [
         "#1553",
-        "T052-CI-PLATFORM-SELECTION"
+        "T052-FINAL-READINESS"
       ]
     },
     {
-      "category": "test-ci-platform-affected",
-      "reason": "Existing catalog selection and inventory compatibility affected by optional ciRunner metadata",
+      "category": "gm-main-linux-launcher",
+      "reason": "Installed Linux foreground route after auxiliary launcher, early-exit and presentation changes since accepted M1",
       "contracts": [
         "#1553",
-        "T052-CI-PLATFORM-SELECTION"
+        "T052-FINAL-READINESS"
+      ]
+    },
+    {
+      "category": "gm-load-installed-profile",
+      "reason": "Original stop/Load/fresh launch retains archive CLI/model/arguments/cwd/input profile",
+      "contracts": [
+        "#1553",
+        "T052-FINAL-READINESS"
+      ]
+    },
+    {
+      "category": "gm-load-ordinary-schema",
+      "reason": "Actual console and HTTP canonical schema1 generation plus full refresh bundle after current-session/storage changes",
+      "contracts": [
+        "#1553",
+        "T052-FINAL-READINESS"
+      ]
+    },
+    {
+      "category": "gm-main-affected-managed",
+      "reason": "Exact participating/finalizer/ambiguity/no-replay consumers after bootstrap, cancellation and artifact-detection edits",
+      "contracts": [
+        "#1553",
+        "T052-FINAL-READINESS"
       ]
     }
   ]

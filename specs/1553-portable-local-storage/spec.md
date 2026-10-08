@@ -1,3 +1,7 @@
+## Current final-readiness boundary — owner-approved deferral
+
+Owner accepts explicit OwnedTerminal/NativeLineage Linux use while mandatory actual systemd S2/S3 remain unavailable/deferred and backend OFF. Native Windows validation is scheduled AFTER completion/merge in parent-coordinated «Лориан-Codex bridge»; it is not a pre-merge PASS gate. [Current accepted/deferred map and bounded final plan](final-readiness.md) supersedes historical next-step labels below. Parent handles protection/reviews/merge; no merge here. Source #1553, 2026-10-08.
+
 Implementation checkpoint clarification (2026-10-08): closed S2A original read-only cgroup source/controlled tests may progress without manager setup. Full systemd S2 positive environment and S3 public activation remain mandatory/open; native Windows verification is scheduled after merge by parent. See [source plan](systemd-main-s2-source-plan.md). Source #1553.
 
 ## Bounded reusable relay — reviewed source/evidence

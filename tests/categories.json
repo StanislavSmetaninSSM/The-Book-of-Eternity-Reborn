@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "gm-main-linux-guide",
+      "responsibility": "Installed Linux configuration example consumed by actual inert launcher reader, preserving configured command/model/cwd/input profile and disabled original worker inventory; default/malformed refusal setup",
+      "excludes": "Process or provider launch, live readiness, services, game state and native Windows qualification",
+      "changeHints": [
+        "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+        "scripts/tests/linux-main-guide.tests.ps1"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "powershell",
+          "tests": [
+            "scripts/tests/linux-main-guide.tests.ps1"
+          ]
+        }
+      ]
+    },
+    {
       "id": "test-ci-platform-affected",
       "responsibility": "Existing catalog validation, explicit selection and inventory contracts affected by optional CI runner metadata",
       "excludes": "Native Linux/Windows runtime qualification, hosted Actions execution, process/gameplay and unrelated runner reports",
@@ -1045,7 +1070,8 @@
       "related": [],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": true
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 3,
       "expectedSeconds": null,
@@ -1425,7 +1451,8 @@
       "related": [],
       "requirements": {
         "frontendBuild": false,
-        "exclusive": false
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
       },
       "timeoutMinutes": 3,
       "expectedSeconds": null,

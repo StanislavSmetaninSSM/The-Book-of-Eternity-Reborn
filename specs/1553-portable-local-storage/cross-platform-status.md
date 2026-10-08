@@ -1,3 +1,7 @@
+## Current final-readiness boundary — owner-approved deferral
+
+Owner accepts explicit OwnedTerminal/NativeLineage Linux use while mandatory actual systemd S2/S3 remain unavailable/deferred and backend OFF. Native Windows validation is scheduled AFTER completion/merge in parent-coordinated «Лориан-Codex bridge»; it is not a pre-merge PASS gate. [Current accepted/deferred map and bounded final plan](final-readiness.md) supersedes historical next-step labels below. Parent handles protection/reviews/merge; no merge here. Source #1553, 2026-10-08.
+
 # Cross-platform: текущий статус и восстановление
 
 ## Latest bounded maintained relay / final carrier
