@@ -35,13 +35,19 @@ F/R families below remain open; no full migration completion claim.
 
 A03 original control/PowerShell causal packet9a35:7complete1PASS6causalFAIL,
 independent gate7f904. Actual recoverable uncertainty admitted second recovery/write
-and Completed close; original close failure projection lost its true receipt. Minimal
-WIP correction preserves per-command result, absorbing unknown, truthful remote/local
+and Completed close; original close failure projection lost its true receipt. Accepted bounded
+correction preserves per-command result, absorbing unknown, truthful remote/local
 completion and outer follow-up. Source/selection PASSe33c, actual10/10 Linux GREEN;
 final independent evidence/carrier PASSd366. Local Stopped-main completion remains distinct from
 remote ACK, and the pre-receipt loss neighbor retains logical Unresolved. F13 wider
 helper path/read-witness/API migration remains open.
 [Actual evidence](recovery/storage-migration-participating-outcomes-20261008/manifest.json).
+
+F06 runtime47ce now has independent source/selection PASS and actual34/34 Linux
+GREEN (24 original +10 current boundaries/caller), with retained partial progress,
+complete archive/remaining cohort validation and typed unknown propagation. Final
+evidence/carrier review is pending; native Windows is unexecuted.
+[Exact evidence](recovery/storage-migration-inactive-evidence-20261008/manifest.json).
 
 # Storage migration inventory — 2026-10-08, review candidate
 
@@ -59,12 +65,13 @@ compensation and original accepted-handler carrier gaps were reproduced and corr
 Seven Linux cases PASS, including two known-failure rollback controls; independent
 source/evidence review PASS. [Evidence](recovery/storage-migration-accepted-green-20261008/manifest.json).
 Directory-specific uncertainty is corrected atfbec with15/15 Linux GREEN and independent source/evidence PASS. Treatment-owned settlement remains a separate tail.
-Windows Bridge ownerless status/participating route (A01/F15) remains source-confirmed,
-not native-executed: reviewed direction binds the original prepared ConPty/Job to the
-existing coordinator/status/stop/Load lifecycle. Conservative provider-labelled WMI
+Windows Bridge ownerless status/participating route (A01/F15) is corrected in the
+source-reviewed c45 candidate with seven Linux component controls; actual native
+ConPty/Job lifecycle execution remains unqualified. Conservative provider-labelled WMI
 restart observation never authorizes cold adoption or reboot recovery. Native Windows
-qualification remains external and unexecuted. Priority: Bridge, A03 existing control protocol,
-then F06 and remaining F04/F05/F13/F14/F16/F18 families.
+qualification remains external and unexecuted. Bounded Bridge/shared consumers and A03 gates above are accepted within their
+stated platforms. F06 now has the34-case Linux GREEN below; next are F04/F05 and
+remaining F13/F14/F16/F18, cleanup and treatment-storage tails.
 
 T062 restoration delta:9e30 source has10/10 Linux PASS including actual second
 mirror publication after baseline restoration; earlier7 affected recovery neighbors
@@ -124,11 +131,11 @@ counts, not defect counts. Existing F/T owners below are the single executable b
 |---|---|---|
 | R01/R04, A02 | F01/F08/F09, T062 | Bounded ordinary/browser19-case outcome slice83f; QTE/pre-turn final10 at9e30 plus7 separately pinned neighbors accepted. A02 direct/compensation/original accepted-handler7 at28eacf independently accepted. Their source/evidence links above supersede the audit's older candidate state. |
 | R04/R10, A04 | F01/F08, T062 | Actual unknown tree carrier, public Prepare, cleanup-to-notice and generation-close cuts reproduced. Common-carrier correctionfbec has15/15 Linux GREEN; independent source/evidence PASS; no full command-loop or whole-parent-operation atomicity claim. |
-| R14/R16/R21, A01 | F15/F07, T063 | Next: Windows original suspended ConPty/Job → same coordinator Prepared/Running/release/status/participating/Stop/Load. Retained bounded foreground WMI reader supplies a labelled startup observation before Prepared, never reboot/adoption authority. Original owner/close and native Windows body-required recipe; Linux shared/component evidence separately labelled. |
-| R15, A03 | F13/F08, T062/T063 | After Bridge: actual existing C# control → original PowerShell response loses outcome to bool. Reach known refusal, unknown publication and committed cleanup/close before minimal explicit disposition propagation. Preserve current control-only role allowlist and no replay. |
+| R14/R16/R21, A01 | F15/F07, T063 | Bounded adapter/owner/cleanup/probe/shared-consumer gates accepted as linked above; shared dispatch/Load5f150 has16 Linux PASS. Windows original prepared ConPty/Job activation c45 is source-reviewed with Linux7 component controls, native recipes unexecuted. Startup43e now freezes the same original post-recovery configuration (10 Linux PASS, independent cc178). WMI observation is never reboot authority; native Job faults/quarantine/Load and no universal Windows worker fence remain explicit limits. |
+| R15, A03 | F13/F08, T062/T063 | Actual six causal failures corrected at e33c: per-command publisher decisions, sticky uncertainty before another lease, outward semantic follow-up and exact original close/ACK with guarded local completion. Independent final d366 accepted10 Linux PASS; pre-receipt loss intentionally retains Unresolved. Broader GM helper generation/path/role/read-witness migration and native execution remain open; current control allowlist and no replay are preserved. |
 | R05 | F03/F04, T061/T063 | Console lifecycle accepted bounded Linux; corrected platform spellingd8b remains separate fromebd30 proof. Fresh Windows browser schema7 cutover still open, preserving original schema6 handler/refusal and signed direct-gacha admission. |
 | R06 | F05, T063 | Fresh Windows registered Daren profile/declared browser participant follows F04 admission/order/path cutover; old external evidence remains original-owned. Select actual public QTE/profile callers and exact bytes/absence/recovery. |
-| R07 | F06, T063 | After higher-priority outcomes: original inactive-snapshot retirement24 rows, exact diagnostic archive and sequential payload/authority/manifest-last deletion; current CAS/guarded enumeration, unknown cut retains archive. No diagnostic archive adoption or new all-or-none promise. |
+| R07 | F06, T063 | Original Linux24 baseline21PASS/3 physical-deletion failures preserved. Runtime47ce exact-byte CAS/fixed-tree/full-archive-and-remaining-cohort guards has independent source/selection PASS and actual34/34 Linux GREEN (24 original +10 current cuts/caller). Final evidence/carrier review pending. Partial removals remain committed, authority-missing retry refuses, unknown retains journal/archive; no diagnostic adoption or whole-cohort atomicity. Native Windows unexecuted. |
 | R03/R13 | F02/F09/F10, T062/T064 | Backup/distribution migrated individually; accepted restoration evidence above. Final QTE baseline cleanup remains: original ResolveActiveAction terminal result → actual backup deletion unknown/logger cut, sibling-directory/root pruning controls. Pre-turn cleanup similarly retains established outcome/evidence. |
 | R04/R12 | F08/F09/F12, T062 | Two treatment contours remain: helper/engine compensation actual publication uncertainty (preserve FailTaken restart blocker/HeldBlocked/Unsafe contracts), and successful treatment followed by actual runtime mirror uncertainty then truthful notice. Post-seal binding itself reads authority; not a third forward-write defect. Use direct original coordinator, avoid finally-reacquire fixture masking; no B2–B5 business resumption. |
 | R08/R09/R11 | F07/F08/F17, T063/T064 | Source-reviewed save/settings/load outcome contracts preserved. Autosave3 production callers propagate typed decisions; no additional bool defect found, so no speculative aggregate run. Remove only proven dead recursive helpers after reflection/script/name census and relevant guard. Native durability/close qualification remains scoped. |

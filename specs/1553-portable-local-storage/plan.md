@@ -1,3 +1,32 @@
+## F06 original-consumer GREEN checkpoint — 2026-10-08
+
+Runtime47ce03cf68ce5e92de9f0415ea0fa7be30984c2e independent SOURCE/SELECTION
+PASS, no findings. Fresh Plan165326 successfully built34/2/0 (52.2980295s).
+Actual165455 complete34/34PASS,2/2 descriptors,38.1849008s, clean exact source,
+no skips/duplicates and both cleanup flags true. [Raw source-pinned packet](recovery/storage-migration-inactive-evidence-20261008/manifest.json).
+Root and independent reviewer inspected both TRXs; independent RAW EVIDENCE
+PASS47ce, no findings. Final saved carrier hash/pin gate pending; no fresh remote restore of this F06 carrier is claimed yet.
+
+Original24 now include successful Linux retirement, readback retry, actual final
+manifest refusal after authority deletion and byte-identical refusal on clean retry.
+New10 positively reach archive rollback/absence conflict; source rollback/unknown/
+committed debt; prepublication generation replacement; second-deletion archive drift
+of an already removed source, remaining-source drift/new member; and the actual
+NormalizeRuntimeUiArtifacts consumer. Unknown retains complete archive/current
+journal and refuses cold admission. Committed manifest absence survives cleanup debt
+and later recovery. No earlier confirmed removal is resurrected. The additional
+publication cases are post-migration controls, not newly claimed historical RED.
+Discovery165559 valid475/11264, zero executed (9.6173359s).
+
+Native Windows remains unexecuted. A later native body-required recipe must exercise
+ordinary and extended-path spellings, exact bytes/absence and external hard-link
+name preservation, real sharing/close failures, known rollback/unknown/cold recovery
+and partial-removal refusal. The Linux34 selection is not a native qualification.
+Next authorized block: coherent fresh Windows browser/Daren F04/F05 admission,
+protocol classification and current path/consumer cutover; all other open tails
+remain in the reconciled inventory crosswalk. No GM-authored schema/command or
+player gameplay contract changed in F06; no prompt/example change is required.
+
 ## F06 exact-byte retirement implementation WIP — 2026-10-08
 
 Independent fixture/selection/design PASS3cbe5fa8; baseline evidence independently
