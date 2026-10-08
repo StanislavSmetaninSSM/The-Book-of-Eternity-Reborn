@@ -13,6 +13,7 @@ internal static class NativeHostScenarioDriver
 {
     internal static async Task<int> Main(string[] args)
     {
+        if(args.Length==3 && args[0]=="daemon-storage-bootstrap")return await GmDaemonStorageScenario.RunChildAsync(args[1],args[2]);
         if(args.Length==3 && args[0]=="terminal-main-helper-contract")return await GmHelperContractScenario.RunDriverAsync(args[2]);
         if(args.Length==5 && args[0]=="helper-current-bootstrap")return await GmHelperCurrentScenario.RunChildAsync(args[1],args[2],args[3],args[4]);
         if(args.Length==3 && args[0].StartsWith("terminal-main-helper-current-",StringComparison.Ordinal) && args[0] is not ("terminal-main-helper-current-running-owner" or "terminal-main-helper-current-admission-cancel"))return await GmHelperCurrentScenario.RunAsync(args[0]["terminal-main-helper-current-".Length..],args[2]);

@@ -38,6 +38,9 @@ other canonical producers and change the existing protocol's concurrency contrac
 | Terminal payload and repair progress snapshots | Migrate recursive `output`, `game_state`, `lore` enumeration, target file metadata, current repair and Ready checks (daemon3127–3134,3395–3397,3453–3482). Missing and blocked/invalid namespace are distinct; host path spelling must preserve literal Linux backslashes. |
 | Config and Bridge/daemon status consumed by decisions | Admitted byte reads, parse-only fallbacks, exact existing config defaults and input-binding policy. PID/status observations remain diagnostic, never owner authority. |
 | Watcher/startup/poll notifications | Remain wake-up hints; authoritative eligibility rechecks occur inside the original operation. No watcher event becomes generation/adoption authority. |
+| Observed terminal request-key cache | Admitted startup load (daemon5153–5177) feeds work suppression at5801. Preserve actual volatile observations on Add/save5180–5204; do not assume durable-write-before-cache is required or adopt a stale generation. |
+| Experience, lessons and trajectory inputs | Canonical inputs at478–515,898–921,998–1012,4007,4315,4374,4555,4729 feed derivative hints and ProcessTurn5821–5823. Preserve parse/hint policy while propagating actual storage refusal. |
+| Live-test notes backfill | Read/rewrite4728–4765 must condition its final write on exact observed bytes, preserving malformed lines and an intervening GM append permitted by1308/2659. An admitted read followed by unconditional write is insufficient. |
 | Repository context-pack source | `Copy-GmCanonicalFile` is called by `Copy-GmContextPackFile` for repository documentation. That source is intentionally outside game_session; its canonical destination already uses A03. Do not reclassify it as game-session read authority. |
 
 Current source examples: daemon3655–3666 pending/hash;5568–5635 QTE correlation;
@@ -92,7 +95,9 @@ Use a real neutral Running Bridge/main owner and actual PowerShell A03 context.
 Wait for that context's original admission before starting a separate legitimate
 writer pin. Pause the actual common publisher at `MemberPublished`, validating
 member index/path and exact bytes. The selected request/Ready is not a fabricated
-carrier; both A and B are valid inert packets with distinguishable keys/content.
+carrier; both A and B are minimal inert daemon-consumer packets with distinguishable keys/content.
+They exercise the original eligibility/correlation fields, not a complete client-produced
+QTE continuation or gameplay contract.
 
 | New row | Actual producer decision | Required consumer result |
 |---|---|---|
@@ -146,3 +151,26 @@ PlanOnly → actual bounded causal results/cleanup → preserve source/evidence 
 fresh builds/actual GREEN → discovery-only catalog → independent raw/artifact gates
 and parent fresh GitHub-only restore. All earlier migration families and native
 qualification limits remain in the main inventory; T062–T065 remain unchecked.
+
+## Frozen test-only fixture checkpoint
+
+The initial selection is exactly `portable-gm-daemon-qte-storage-causal-linux`
+(five new rows) plus `portable-gm-daemon-storage-delivery-neighbors` (four moved
+existing exact methods). The original broader category retains its other methods.
+No F14 production behavior changes; fresh build/PlanOnly and independent fixture/
+selection review precede any actual run. No RED or PASS is claimed at this checkpoint.
+
+The driver enters through MainRunFenceScenarioDriver after actual neutral Bridge
+startup, before other participating scenarios; it creates no unrelated manual
+beginMainOperation pin. The real control server serves the original PowerShell
+admission before the separate original-owner writer starts. Technical JSON markers
+are published only after complete temp-file writes. Synchronization records the
+actual command action: old finally status-write contention is never described as
+an admitted read. The lower delivery collaborator records the frozen payload and
+hash, returns truthful not-written, and never invokes a provider.
+
+Each row independently settles its writer, original PowerShell and helper I/O,
+then records same-owner Stopped/no retained authority. Forced termination or
+cleanup failure is fixture failure, not causal evidence. Unknown evidence is
+recorded before explicit fixture-owned byte repair and recovery for cleanup.
+Native execution and the remainder of the whole daemon migration remain open.

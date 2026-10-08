@@ -1,3 +1,14 @@
+## F14 test-only fixture checkpoint — 2026-10-08
+
+Frozen initial scope: five actual original-admitted QTE publication cases plus
+four exact delivery neighbors, owned by the two portable daemon categories in
+[the design](storage-migration-daemon-design.md). MainRunFence routing avoids the
+unrelated manual pin in MainOperationScenarioDriver. Completed technical markers,
+original child/helper joins and same-owner logical retirement are explicit oracles.
+No F14 runtime edits or actual execution; build and independent source/selection
+gates are pending. Minimal daemon-consumer packets do not qualify full client QTE
+continuations, native Windows, provider input or the full F14 unit.
+
 ## F14 design checkpoint; F13 bounded delivery accepted — 2026-10-08
 
 F13 final independent raw/artifact/docs PASS at38940493:1144 artifacts/194 pins,
