@@ -25,14 +25,6 @@ public sealed partial class GameEngineTurnLifecycleTests
         using var cut = new TreatmentStorageCut(mode);
         await using var context = await CreateHeldTreatmentPipelineContextAsync(null, hooks: cut.Hooks);
         cut.Attach(context);
-        if (mode == "engine_mirror")
-        {
-            var soul = ParseJsonObjectBytes((await context.ReadFileBytesAsync("game_state/meta/soul_state.json"))!);
-            soul["inkFeathers"] = new JsonObject { ["current"] = 17, ["total"] = 17 };
-            await context.FileSystem.WriteFileAtomicAsync(context.Lease, "game_state/meta/soul_state.json", soul.ToJsonString());
-            await context.FileSystem.WriteFileAtomicAsync(context.Lease, AfterlifeEntityProfileState.StatePath,
-                """{"schemaVersion":1,"profiles":[{"actorType":"player_soul","actorId":"player_soul","displayName":"Held fixture","realm":"Mortal World","currencies":{"inkFeathers":99,"lightSparks":0}}]}""");
-        }
         await context.ReleaseLeaseAsync();
         Exception? failure;
         Exception? disposalFailure = null;
@@ -42,6 +34,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         bool journalBeforeDispose = false;
         bool journalAfterDisposeExact = false;
         byte[]? retainedJournal = null;
+        byte[]? memberBeforeDispose = null;
+        byte[]? memberAfterDispose = null;
         MortalWoundTreatmentResourcePublicationTransaction? transaction = null;
         var store = new AgentConsoleStateStore();
         using var input = new AgentConsoleLiveInputSource(store, readTimeout: TimeSpan.FromSeconds(5));
@@ -59,10 +53,12 @@ public sealed partial class GameEngineTurnLifecycleTests
                 retainedJournal = File.ReadAllBytes(cut.JournalPath);
                 journalBeforeDispose = true;
                 cut.ReleaseHolder();
+                memberBeforeDispose = ReadOptionalTreatmentMember(cut.Target);
                 var leases = cut.LeaseAttempts;
                 var recoveries = cut.RecoveryEvents;
                 var attempts = cut.RestoreReadAttempts;
                 disposalFailure = await Record.ExceptionAsync(async () => await ((IAsyncDisposable)transaction).DisposeAsync());
+                memberAfterDispose = ReadOptionalTreatmentMember(cut.Target);
                 disposalLeases = cut.LeaseAttempts - leases;
                 disposalRecovery = cut.RecoveryEvents - recoveries;
                 disposalAttempts = cut.RestoreReadAttempts - attempts;
@@ -84,7 +80,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             cut.Armed = false;
             retainedJournal ??= File.Exists(cut.JournalPath) ? File.ReadAllBytes(cut.JournalPath) : null;
-            var memberBytes = cut.Target is null ? null : File.ReadAllBytes(cut.Target);
+            var memberBytes = mode == "compensate_dispose" ? memberBeforeDispose : ReadOptionalTreatmentMember(cut.Target);
             var publishedTreatmentRetained = cut.PublishedTreatmentImages.All(pair =>
                 File.Exists(pair.Key) && pair.Value.AsSpan().SequenceEqual(File.ReadAllBytes(pair.Key)));
             if (failure is not null) InvokePrivate(engine, "RecordGameLoopErrorObservation", failure);
@@ -109,13 +105,15 @@ public sealed partial class GameEngineTurnLifecycleTests
             var raw = new
             {
                 mode, cut.BusinessCutCount, cut.PublishedTreatmentMembers, cut.Cuts,
-                cut.Target, cut.TargetIndex, cut.SharingConflictObserved,
+                cut.Target, cut.TargetIndex, cut.SharingConflictObserved, cut.CutPhase, cut.CutPhaseStack,
+                cut.OriginalCohortRestoredBeforeCut, cut.BusinessReadPath,
+                MemberAfterDispose = memberAfterDispose is null ? null : Convert.ToBase64String(memberAfterDispose),
                 OriginalReceiptCaptured = cut.OriginalReceipt is not null,
                 cut.RestoreReadAttemptsAfterCut, cut.PublicationsAfterCut,
                 TypedCarrier = cut.OriginalUncertainty?.GetType().FullName,
                 Failure = failure?.ToString(), DisposalFailure = disposalFailure?.ToString(),
                 journalBeforeDispose, journalAfterDisposeExact, disposalLeases, disposalRecovery, disposalAttempts,
-                cut.MirrorDriftPrepared, cut.TreatmentResourceChanged, publishedTreatmentRetained,
+                cut.MirrorDriftPrepared, cut.MirrorBeforeValue, cut.MirrorForeignValue, cut.TreatmentResourceChanged, publishedTreatmentRetained,
                 BusinessCausePreserved = cut.HasBusinessCause(failure),
                 BusinessCause = cut.BusinessFailure.ToString(),
                 PublishedTreatmentImages = cut.PublishedTreatmentImages.ToDictionary(p => p.Key, p => Convert.ToBase64String(p.Value)),
@@ -134,7 +132,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.True(cut.PublishedTreatmentMembers > 0);
             Assert.NotNull(cut.OriginalUncertainty);
             Assert.NotNull(retainedJournal);
-            if (mode == "helper_restore") { Assert.Equal(1, cut.BusinessCutCount); Assert.True(cut.HasBusinessCause(failure)); }
+            if (mode == "helper_restore") { Assert.Equal(1, cut.BusinessCutCount); Assert.True(cut.OriginalCohortRestoredBeforeCut); Assert.True(cut.HasBusinessCause(failure)); }
             if (mode == "compensate_dispose") Assert.True(cut.SharingConflictObserved);
             else Assert.Equal(TreatmentStorageCut.ForeignBytes, memberBytes);
             if (mode == "engine_mirror")
@@ -175,6 +173,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
     }
 
+    private static byte[]? ReadOptionalTreatmentMember(string? path) =>
+        path is not null && File.Exists(path) ? File.ReadAllBytes(path) : null;
+
     private static Task<AcceptedTurnCanonicalStateRefresh.Result> NormalizeTreatmentStorageAsync(HeldTreatmentPipelineContext context) =>
         AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(context.FileSystem,
             new CanonicalStateNormalizer(context.FileSystem, NullLogger<CanonicalStateNormalizer>.Instance),
@@ -189,6 +190,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         private FileStream? _holder;
         private byte[]? _initialResourceBytes;
         private object? _originalRegistryState;
+        private string? _selectedMutationPath;
+        private string? _selectedPhase;
+        private string? _selectedStack;
+        private Dictionary<string, byte[]?> _originalBeforeImages = new(StringComparer.Ordinal);
         private readonly InvalidOperationException _forward = new("actual treatment publication cut");
         internal InvalidOperationException BusinessFailure { get; } = new("known post-publication treatment validation failure");
         private readonly EventHandler<FirstChanceExceptionEventArgs> _firstChance;
@@ -198,6 +203,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             Hooks = new FileSystemManagerHooks
             {
                 BeforeCanonicalWriteLockOpenAsync = BeforeLease,
+                BeforeCanonicalMutationAsync = BeforeMutation,
                 LocalPublicationRecoveryObserver = (_, _) => { if (Armed) RecoveryEvents++; },
                 AfterCanonicalReadInitialValidationAsync = Read,
                 LocalPublicationObserver = Published
@@ -225,6 +231,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal int PublicationsAfterCut { get; private set; }
         internal bool SharingConflictObserved { get; private set; }
         internal bool MirrorDriftPrepared { get; private set; }
+        internal int MirrorBeforeValue { get; private set; }
+        internal int MirrorForeignValue { get; private set; }
+        internal string? CutPhase { get; private set; }
+        internal string? CutPhaseStack { get; private set; }
+        internal bool OriginalCohortRestoredBeforeCut { get; private set; }
+        internal string? BusinessReadPath { get; private set; }
         internal bool TreatmentResourceChanged { get; private set; }
         internal Dictionary<string, byte[]> PublishedTreatmentImages { get; } = new(StringComparer.Ordinal);
         internal CoordinatedStatePublicationUncertainException? OriginalUncertainty { get; private set; }
@@ -238,20 +250,26 @@ public sealed partial class GameEngineTurnLifecycleTests
             _originalRegistryState = typeof(AcceptedTurnAuthorityRegistry).GetMethod("GetState",
                 BindingFlags.Static | BindingFlags.NonPublic)!.Invoke(null, [context.FileSystem, context.Lease]);
             _initialResourceBytes = File.ReadAllBytes(context.FileSystem.ResolvePath(ResourceMaterializationContract.StatePath));
+            _originalBeforeImages = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles
+                .Distinct(StringComparer.OrdinalIgnoreCase).ToDictionary(
+                    relative => context.FileSystem.ResolvePath(relative),
+                    relative => ReadOptionalTreatmentMember(context.FileSystem.ResolvePath(relative)), StringComparer.Ordinal);
         }
         private Task BeforeLease()
         {
             if (!Armed) return Task.CompletedTask;
             LeaseAttempts++;
             if (_mode == "engine_mirror" && !MirrorDriftPrepared && PublishedTreatmentMembers > 0 &&
-                OnStack("RefreshCanonicalStateAsync") && OnStack("RefreshGameStateAsync"))
+                OnStack("RefreshRuntimeStateAsync") && OnStack("RefreshGameStateAsync"))
             {
                 // Controlled external mirror drift after treatment publication, before the
                 // original runtime refresh takes its lease. The normalizer had repaired it.
                 var path = _context!.FileSystem.ResolvePath(AfterlifeEntityProfileState.StatePath);
                 var root = ParseJsonObjectBytes(File.ReadAllBytes(path));
                 var profile = root["profiles"]!.AsArray().OfType<JsonObject>().Single(p => p["actorType"]!.GetValue<string>() == "player_soul");
-                profile["currencies"]!.AsObject()["inkFeathers"] = 99;
+                MirrorBeforeValue = profile["currencies"]!["inkFeathers"]!.GetValue<int>();
+                MirrorForeignValue = checked(MirrorBeforeValue + 99);
+                profile["currencies"]!.AsObject()["inkFeathers"] = MirrorForeignValue;
                 File.WriteAllText(path, root.ToJsonString(), new UTF8Encoding(false));
                 MirrorDriftPrepared = true;
             }
@@ -266,29 +284,53 @@ public sealed partial class GameEngineTurnLifecycleTests
                 if (Cuts > 0) RestoreReadAttemptsAfterCut++;
             }
             if (_mode == "helper_restore" && BusinessCutCount == 0 && PublishedTreatmentMembers > 0 &&
-                OnStack("ValidatePublishedOutputAuthorityAsync") && OnStack("NormalizeAndValidateWithPlanAsync"))
+                string.Equals(path, WoundCarrierCatalog.PlayerPath, StringComparison.Ordinal) &&
+                !BytesEqual(_originalBeforeImages[_context!.FileSystem.ResolvePath(path)], ReadOptionalTreatmentMember(_context.FileSystem.ResolvePath(path))))
             {
-                BusinessCutCount++;
+                BusinessCutCount++; BusinessReadPath = path;
                 throw BusinessFailure;
             }
+            return Task.CompletedTask;
+        }
+        private Task BeforeMutation(string relativePath)
+        {
+            if (!Armed || Cuts != 0) return Task.CompletedTask;
+            // Generic rollback skips an already-equal image. A subsequent durable
+            // command write with the COMPLETE original cohort already restored therefore
+            // identifies the original transaction's forced restoration, without requiring
+            // its async ancestors to remain on the physical stack.
+            var durable = relativePath == AcceptedMechanicsPlan.WoundCommandPath ||
+                relativePath == WoundAcceptedTurnSnapshotContract.PendingResolutionPath;
+            var restored = _mode == "helper_restore" && BusinessCutCount == 1 && durable &&
+                _originalBeforeImages.All(pair => BytesEqual(pair.Value, ReadOptionalTreatmentMember(pair.Key)));
+            var selected = _mode switch
+            {
+                "helper_restore" => restored,
+                "compensate_dispose" => SettlementArmed && durable,
+                _ => MirrorDriftPrepared && relativePath == AfterlifeEntityProfileState.StatePath
+            };
+            if (restored) OriginalCohortRestoredBeforeCut = true;
+            _selectedMutationPath = selected ? _context!.FileSystem.ResolvePath(relativePath) : null;
+            _selectedPhase = selected ? (_mode == "engine_mirror" ? "profile-mirror-refresh" : "original-transaction-restoration") : null;
+            _selectedStack = selected ? new StackTrace().ToString() : null;
             return Task.CompletedTask;
         }
         private void Published(TrustedLocalPublicationPhase phase, int index)
         {
             if (!Armed || phase != TrustedLocalPublicationPhase.MemberPublished) return;
-            if (OnStack("NormalizeAccumulatedStateWithTreatmentPublicationTransactionAsync")) PublishedTreatmentMembers++;
             if (Cuts > 0) { PublicationsAfterCut++; return; }
-            var restoring = OnStack("RestoreExactBeforeImagesAsync");
-            var select = _mode switch
-            {
-                "helper_restore" => BusinessCutCount == 1 && restoring && OnStack("FinishHelperFailureAsync"),
-                "compensate_dispose" => SettlementArmed && restoring,
-                _ => OnStack("ApplyPlayerSoulProfileClientAuthorityForRefreshAsync") && OnStack("RefreshCanonicalStateAsync")
-            };
-            if (!select) return;
             using var json = ReadJournalMetadata(File.ReadAllBytes(JournalPath));
             var target = json.RootElement.GetProperty("Members")[index].GetProperty("Path").GetString()!;
+            var receipt = _originalRegistryState!.GetType().GetField("_openTreatmentPublicationReceipt",
+                BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(_originalRegistryState);
+            if (BusinessCutCount == 0 && !SettlementArmed && receipt is MortalWoundTreatmentPublicationTakeReceipt &&
+                new[] { ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,
+                    WoundCarrierCatalog.PlayerPath, WoundHistoryState.HistoryPath }
+                    .Any(relative => string.Equals(target, _context!.FileSystem.ResolvePath(relative), StringComparison.Ordinal)))
+                PublishedTreatmentMembers++;
+            if (_selectedMutationPath is null || !string.Equals(target, _selectedMutationPath, StringComparison.Ordinal)) return;
             if (_mode == "engine_mirror" && !string.Equals(target, _context!.FileSystem.ResolvePath(AfterlifeEntityProfileState.StatePath), StringComparison.Ordinal)) return;
+            CutPhase = _selectedPhase; CutPhaseStack = _selectedStack;
             OriginalReceipt = Assert.IsType<MortalWoundTreatmentPublicationTakeReceipt>(
                 _originalRegistryState!.GetType().GetField("_openTreatmentPublicationReceipt",
                     BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(_originalRegistryState));
@@ -314,6 +356,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             else File.WriteAllBytes(target, ForeignBytes);
             throw _forward;
         }
+        private static bool BytesEqual(byte[]? left, byte[]? right) =>
+            left is null ? right is null : right is not null && left.AsSpan().SequenceEqual(right);
         private static JsonDocument ReadJournalMetadata(byte[] bytes) =>
             bytes.AsSpan().StartsWith("BOELP2\r\n"u8)
                 ? JsonDocument.Parse(bytes.AsMemory(16, checked((int)BinaryPrimitives.ReadInt64LittleEndian(bytes.AsSpan(8, 8)))))

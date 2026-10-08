@@ -1,3 +1,21 @@
+## Treatment observed fixture correction candidate — 2026-10-08
+
+Failure carrier ef1 preserves the incomplete actual run. The exact retired engine
+root was subsequently archived and removed; runner process cleanup did not imply
+fixture cleanup. No runtime fix or accepted causal RED follows.
+
+Three bounded fixture corrections: retain genuine admitted soul/profile setup and
+introduce only the already-designed post-treatment mirror drift; capture optional
+member bytes before original Dispose and after it (absence is evidence); count actual
+journal treatment members while the real receipt is open instead of deep async caller
+presence. The known helper fault is now an actual changed wound-output read after real
+treatment publication. Its subsequent command/pending prepublication boundary must
+find the COMPLETE original normalizer cohort exactly restored, distinguishing forced
+durable transaction restoration from generic rollback's equal-image skip. Record the
+actual prepublication phase/stack and exact journal member; stack text is diagnostic.
+The original helper caller and exact receipt remain unchanged. Fresh fixture review,
+matching PlanOnly and actual3 are required; previous timeout is not a completed RED.
+
 ## Treatment first actual fixture failure — 2026-10-08
 
 Matching clean121f Plan221155 succeeded3/one/zero42.0687393s. Actual221310

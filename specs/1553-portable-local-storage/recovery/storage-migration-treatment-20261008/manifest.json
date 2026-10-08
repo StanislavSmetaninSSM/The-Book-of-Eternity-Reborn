@@ -168,6 +168,12 @@
         "source": "/tmp/boe-treatment-121f-live-repair.json",
         "sha256": "1ac2e4cc192107272581aa3d0ea2dcce64f07af264b6759f90aa163d10d5aa23",
         "originalSha256": "1ac2e4cc192107272581aa3d0ea2dcce64f07af264b6759f90aa163d10d5aa23"
+      },
+      {
+        "path": "initial-actual-timeout-owned-root.tar.gz",
+        "source": "/tmp/boe-treatment-121f-timeout-root.tar.gz",
+        "sha256": "48f6ac96b2ebf3384731777a56830951480ccf944a5e7a834a86db78477d6f47",
+        "originalSha256": "fb472dd57d6741e8cddfc524a68b07ed534d990a125aa2a5ae713b9469a0bd9a"
       }
     ],
     "sourcePins": [
@@ -215,6 +221,7 @@
         "path": "tests/selection.json",
         "sha256": "d23e5edcdc8aaaa343a83bfb02e5fe93c6d136266dd4b4e9f58c2556c3e6b52e"
       }
-    ]
+    ],
+    "manualOwnedFixtureCleanup": "After runner process retirement, exact engine root was archived then removed; no other root touched."
   }
 }
