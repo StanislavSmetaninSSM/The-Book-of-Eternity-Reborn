@@ -1,3 +1,13 @@
+## A01 readonly planning correction — 2026-10-08
+
+The first readonly PlanOnly refused catalog loading before build/discovery/execution:
+related used a string instead of the required id/when object. Correct the descriptor;
+this is a configuration failure with zero executed tests, not a causal RED. Preserve
+the original log under recovery/storage-migration-owner-20261008/readonly-plan-config-failure.log.
+Run only the new readonly row before runtime correction. Final corrected selection
+will contain25 cases: prior23 plus exact quiescent bound-close and actual tree
+uncertainty/generation-replacement closing neighbors. Native27 remains unexecuted.
+
 ## A01 reached original-owner purpose RED — 2026-10-08
 
 Source5b26 original Running owner direct-purpose row reached ordinary positive

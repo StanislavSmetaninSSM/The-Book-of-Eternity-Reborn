@@ -17692,7 +17692,10 @@
         "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
       ],
       "related": [
-        "gm-main-finalization-capability-linux"
+        {
+          "id": "gm-main-finalization-capability-linux",
+          "when": "Finalization acquisition or mutation capability changes"
+        }
       ],
       "requirements": {
         "frontendBuild": false,
