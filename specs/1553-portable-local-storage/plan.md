@@ -1,3 +1,24 @@
+## T062 browser causal checkpoint — 2026-10-08
+
+At source22b465e, fresh PlanOnly19/3 succeeded; ordinary facade and actual
+AgentConsole projection completed10/10 PASS (14.926s). Original browser9
+completed7PASS/2FAIL (12.920s): after reached spend+refresh, unknown soul bytes
+and retained Uncertain rollback evidence, runtime incorrectly returns to the old
+snapshot and notice falsely reports restored state. No skips/timeouts/duplicates;
+all selections and owned cleanup complete. [Raw source-pinned evidence](recovery/storage-migration-browser-outcomes-red-20261008/manifest.json).
+
+Minimal F11 correction invokes runtime rollback only after confirmed disk restore,
+and uses the actual disposition/follow-up when sanitizing a public notice. Confirmed
+files plus runtime-callback failure retain RolledBack with follow-up; text no longer
+mislabels every such failure as cleanup. This does not create or qualify a new
+continuation barrier. Real StateManager restore assigns the saved state and applies
+settings. A failing callback control establishes disk/follow-up semantics only.
+These F11 changes await fresh build and GREEN. Independent source/evidence review
+and catalog discovery remain pending. QTE/pre-turn compensation and ordinary close
+classification remain separate open causal follow-ups; all-family migration is open.
+
+### Earlier T062 checkpoint (superseded by the results above)
+
 ## T062 current causal checkpoint — 2026-10-08
 
 Source d8b3f774: corrected F03 platform caller has16/16 Linux PASS (11.237s),

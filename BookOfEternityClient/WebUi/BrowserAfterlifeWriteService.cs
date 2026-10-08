@@ -2662,7 +2662,7 @@ public sealed class BrowserAfterlifeWriteService
         if (result.Success)
             return BrowserPromptWriteResult.Completed(title, message, payload);
 
-        var failureMessage = SanitizeLocalWriteMessage(result.Message);
+        var failureMessage = SanitizeLocalWriteMessage(result);
         return BrowserPromptWriteResult.Failed(
             result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
             result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
@@ -2700,7 +2700,7 @@ public sealed class BrowserAfterlifeWriteService
         if (result.Success)
             return BrowserPromptWriteResult.Completed(title, message, payload);
 
-        var failureMessage = SanitizeLocalWriteMessage(result.Message);
+        var failureMessage = SanitizeLocalWriteMessage(result);
         return BrowserPromptWriteResult.Failed(
             result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
             result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
@@ -2736,7 +2736,7 @@ public sealed class BrowserAfterlifeWriteService
         if (result.Success)
             return BrowserPromptWriteResult.Completed(title, messageFactory(), payload);
 
-        var failureMessage = SanitizeLocalWriteMessage(result.Message);
+        var failureMessage = SanitizeLocalWriteMessage(result);
         return BrowserPromptWriteResult.Failed(
             result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
             result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
@@ -2751,8 +2751,14 @@ public sealed class BrowserAfterlifeWriteService
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
 
-    private static string SanitizeLocalWriteMessage(string message)
+    private static string SanitizeLocalWriteMessage(BrowserLocalWriteResult result)
     {
+        if (result.Disposition == BrowserPreparedWriteDisposition.Uncertain)
+            return "Результат локальной записи не подтверждён. Требуется проверка текущего состояния; не повторяйте операцию до завершения восстановления.";
+        if (result.Disposition == BrowserPreparedWriteDisposition.RolledBack && result.NeedsFollowUp)
+            return "Локальная запись отменена, файлы восстановлены. Завершение восстановления требует проверки текущего состояния.";
+
+        var message = result.Message;
         if (string.IsNullOrWhiteSpace(message))
             return "Локальная запись не выполнена.";
 
@@ -2765,9 +2771,11 @@ public sealed class BrowserAfterlifeWriteService
             .Replace("game_session", "текущая игровая сессия", StringComparison.Ordinal)
             .Replace("lease", "срока блокировки", StringComparison.Ordinal);
 
-        return ContainsBrowserTradeDiagnosticFragment(sanitized)
+        if (!ContainsBrowserTradeDiagnosticFragment(sanitized))
+            return sanitized;
+        return result.Disposition == BrowserPreparedWriteDisposition.RolledBack
             ? "Локальная запись не выполнена, состояние восстановлено: действие временно ждёт проверки ГМ. Завершите или обновите текущий запрос, затем повторите действие."
-            : sanitized;
+            : "Локальная запись не выполнена. Требуется проверка текущего запроса.";
     }
 
     private static bool ContainsBrowserTradeDiagnosticFragment(string value) =>

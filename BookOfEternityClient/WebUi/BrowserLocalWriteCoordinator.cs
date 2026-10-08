@@ -346,9 +346,12 @@ public sealed partial class BrowserLocalWriteCoordinator
                         rollbackFailure = restoreEx;
                     }
 
+                    // Runtime before-images describe restored canonical files only. A failed
+                    // restore must retain the last confirmed runtime observation as well.
                     try
                     {
-                        afterRollback?.Invoke();
+                        if (rollbackConfirmed)
+                            afterRollback?.Invoke();
                     }
                     catch (Exception runtimeRestoreEx)
                     {
@@ -363,7 +366,7 @@ public sealed partial class BrowserLocalWriteCoordinator
                 writeLease.ExternalPublicationContext = null;
                 writeLease.MutationIntentRecorder = null;
                 backups?.DarenTransaction?.Dispose();
-            backups?.LocalTransaction?.Access.Dispose();
+                backups?.LocalTransaction?.Access.Dispose();
                 await TryReleaseAsync(writeLease, lockLease);
             }
 
@@ -375,7 +378,7 @@ public sealed partial class BrowserLocalWriteCoordinator
                     $"Browser-write отменён, rollback восстановлен: {ex.Message}", BrowserPreparedWriteDisposition.RolledBack)
                     with { NeedsFollowUp = rollbackFailure != null,
                         Message = rollbackFailure == null ? $"Browser-write отменён, rollback восстановлен: {ex.Message}"
-                            : $"Browser-write отменён, файлы восстановлены; служебная очистка требует проверки: {ex.Message}" }
+                            : $"Browser-write отменён, файлы восстановлены; завершение восстановления требует проверки: {ex.Message}" }
                 : BrowserLocalWriteResult.Failed(
                     $"Browser-write отменён; rollback завершён не полностью: {ex.Message}; {rollbackFailure.Message}", BrowserPreparedWriteDisposition.Uncertain);
         }
