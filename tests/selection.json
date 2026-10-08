@@ -262,6 +262,15 @@
         "FR-010",
         "A01"
       ]
+    },
+    {
+      "category": "gm-main-startup-probe-host-linux",
+      "reason": "Original host retains the reviewed foreground probe across actual control requests and disposal; causal shared seam-only RED before lifecycle guard. Native Windows remains unexecuted.",
+      "contracts": [
+        "#1553",
+        "FR-010",
+        "A01"
+      ]
     }
   ]
 }

@@ -17805,6 +17805,31 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-startup-probe-host-linux",
+      "responsibility": "A01 actual BridgeHost control-loop and foreground disposal retain a genuine preseeded controlled startup probe until original process and owned I/O settle. No OS override or Windows production branch.",
+      "excludes": "Native WMI/ConPTY/Job, provider performance, main launch and worker execution.",
+      "changeHints": [
+        "BookOfEternityGMBridge/BridgeHost.StartupObservation.cs",
+        "BookOfEternityGMBridge/Program.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmBridgeStartupObservationTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

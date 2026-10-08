@@ -1,3 +1,21 @@
+## A01 shared Bridge baseline and probe seam — 2026-10-08
+
+Clean a864 baseline actual134015 is5/5PASS,3/3complete46.6114543s, both cleanup
+flags true; fresh PlanOnly133528 built successfully5/0. Original status3 and
+console Load positive/debt2 remain bounded Linux evidence.
+[Raw baseline and source pins](recovery/storage-migration-bridge-consumers-20261008/manifest.json).
+
+Independent design review approved one retained per-host probe, separate diagnostics,
+bounded lifecycle refusal and exceptional foreground settlement outside both locks.
+New-start admission closes before drain; cancellation/gate disposal follows actual
+settlement. Current checkpoint introduces only constructor injection/shared read
+helper and two causal component tests: actual RunAsync/pipe control, and Dispose.
+Tests preseed a genuine original controlled process through that helper on Linux;
+they do not activate Windows production, create a terminal or prove a native defect.
+Self-termination plus test-owned release keeps RED cleanup observed. Lifecycle fix
+and Windows consumer wiring are still unimplemented/unrun here. Next exact2 fresh
+PlanOnly/actual, then minimal guard; no repeat of accepted baseline5 before changes.
+
 ## A01 original Bridge consumer block — 2026-10-08
 
 Root fresh direct GitHub restoration of3bb2954a is clean25424 tracked/fsck0;
