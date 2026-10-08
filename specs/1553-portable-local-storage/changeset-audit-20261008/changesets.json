@@ -1,0 +1,256 @@
+[
+  {
+    "sha": "f6dc2a1ce3e73f5e6940f686c97b863c9f7a8173",
+    "parents": [
+      "db39d863c9c05050291b67d1f42f9a4ef6c020f2",
+      "1fc5e59b253c358a8622df66a4e9459f5f3fe78b"
+    ],
+    "subject": "Merge pull request #1554: preserve wound materialization WIP",
+    "comparisonParent": "1fc5e59b253c358a8622df66a4e9459f5f3fe78b",
+    "changedCount": 0
+  },
+  {
+    "sha": "6381a9507baae6bb2531e22e9a0ace839f03985f",
+    "parents": [
+      "f6dc2a1ce3e73f5e6940f686c97b863c9f7a8173"
+    ],
+    "subject": "Integrate qualified portable Linux console and local storage (#1555)",
+    "comparisonParent": "f6dc2a1ce3e73f5e6940f686c97b863c9f7a8173",
+    "changedCount": 21565
+  },
+  {
+    "sha": "68144f912b825bfa2d19f62ff53c57047e5c4b84",
+    "parents": [
+      "6381a9507baae6bb2531e22e9a0ace839f03985f"
+    ],
+    "subject": "test: WIP native Windows relay regression coverage for #1553 [skip ci]",
+    "comparisonParent": "6381a9507baae6bb2531e22e9a0ace839f03985f",
+    "changedCount": 9
+  },
+  {
+    "sha": "521e90f28f3f6859293be40bd4f2ecbfc0375760",
+    "parents": [
+      "68144f912b825bfa2d19f62ff53c57047e5c4b84"
+    ],
+    "subject": "fix: WIP native Windows relay terminal pipes and gate [skip ci]",
+    "comparisonParent": "68144f912b825bfa2d19f62ff53c57047e5c4b84",
+    "changedCount": 3
+  },
+  {
+    "sha": "1ce0cea7414ae27eed549e62e5e3a4d9d1462b98",
+    "parents": [
+      "521e90f28f3f6859293be40bd4f2ecbfc0375760"
+    ],
+    "subject": "fix: preserve Windows relay backend at canonical tools path [skip ci]",
+    "comparisonParent": "521e90f28f3f6859293be40bd4f2ecbfc0375760",
+    "changedCount": 1
+  },
+  {
+    "sha": "98945e6e15cff6d4ef341ebf3ff104d63242e4fd",
+    "parents": [
+      "1ce0cea7414ae27eed549e62e5e3a4d9d1462b98"
+    ],
+    "subject": "test: WIP diagnose native relay console fixture startup [skip ci]",
+    "comparisonParent": "1ce0cea7414ae27eed549e62e5e3a4d9d1462b98",
+    "changedCount": 3
+  },
+  {
+    "sha": "63e26d1ae0e0c75e6bf2c6d7754baf96a3058e35",
+    "parents": [
+      "98945e6e15cff6d4ef341ebf3ff104d63242e4fd"
+    ],
+    "subject": "fix: WIP preserve native console Unicode and paste line endings [skip ci]",
+    "comparisonParent": "98945e6e15cff6d4ef341ebf3ff104d63242e4fd",
+    "changedCount": 4
+  },
+  {
+    "sha": "b8f700b6f765432731b72cbc1a43284fe2c8857f",
+    "parents": [
+      "63e26d1ae0e0c75e6bf2c6d7754baf96a3058e35"
+    ],
+    "subject": "fix: emit worker JSON as exact UTF8 on native Windows [skip ci]",
+    "comparisonParent": "63e26d1ae0e0c75e6bf2c6d7754baf96a3058e35",
+    "changedCount": 2
+  },
+  {
+    "sha": "0067874e15f479327dc37268fc891f51e3a2713d",
+    "parents": [
+      "b8f700b6f765432731b72cbc1a43284fe2c8857f"
+    ],
+    "subject": "fix: preserve worker JSON Unicode through Windows pipe readers [skip ci]",
+    "comparisonParent": "b8f700b6f765432731b72cbc1a43284fe2c8857f",
+    "changedCount": 2
+  },
+  {
+    "sha": "3ce1ab52b0a4e41dbe9717b52681236bd368c9b9",
+    "parents": [
+      "0067874e15f479327dc37268fc891f51e3a2713d"
+    ],
+    "subject": "docs: WIP preserve native Windows relay verification and platform selection [skip ci]",
+    "comparisonParent": "0067874e15f479327dc37268fc891f51e3a2713d",
+    "changedCount": 16
+  },
+  {
+    "sha": "5ff403ed998f7e04dadf6179fba614252bcfd2cf",
+    "parents": [
+      "3ce1ab52b0a4e41dbe9717b52681236bd368c9b9"
+    ],
+    "subject": "docs(relay): record reviewed native Windows evidence and audit [skip ci]",
+    "comparisonParent": "3ce1ab52b0a4e41dbe9717b52681236bd368c9b9",
+    "changedCount": 8
+  },
+  {
+    "sha": "406423aea14dfa4231853913f9ab298756270432",
+    "parents": [
+      "5ff403ed998f7e04dadf6179fba614252bcfd2cf"
+    ],
+    "subject": "WIP(http): preserve native server exception diagnostic harness [skip ci]",
+    "comparisonParent": "5ff403ed998f7e04dadf6179fba614252bcfd2cf",
+    "changedCount": 4
+  },
+  {
+    "sha": "ad5b7e3cfd61823b41e16dd8488ef06432e9cd34",
+    "parents": [
+      "406423aea14dfa4231853913f9ab298756270432"
+    ],
+    "subject": "WIP(http): preserve actual clean and synthetic lock-timeout stacks [skip ci]",
+    "comparisonParent": "406423aea14dfa4231853913f9ab298756270432",
+    "changedCount": 5
+  },
+  {
+    "sha": "9dfa154d90f3da003d186fc1e3781d2cbd405b91",
+    "parents": [
+      "ad5b7e3cfd61823b41e16dd8488ef06432e9cd34"
+    ],
+    "subject": "WIP(http): add causal request admission and authority controls before fix [skip ci]",
+    "comparisonParent": "ad5b7e3cfd61823b41e16dd8488ef06432e9cd34",
+    "changedCount": 8
+  },
+  {
+    "sha": "7e4d66df17f933b1d9a4d9e7e36a6202bb84a272",
+    "parents": [
+      "9dfa154d90f3da003d186fc1e3781d2cbd405b91"
+    ],
+    "subject": "WIP(http): queue state handlers before original physical guard [skip ci]",
+    "comparisonParent": "9dfa154d90f3da003d186fc1e3781d2cbd405b91",
+    "changedCount": 6
+  },
+  {
+    "sha": "b238e4ea946db38a5782d3c793b87a1e345a7c17",
+    "parents": [
+      "7e4d66df17f933b1d9a4d9e7e36a6202bb84a272"
+    ],
+    "subject": "WIP(http): preserve incomplete run and add shutdown lifetime regression [skip ci]",
+    "comparisonParent": "7e4d66df17f933b1d9a4d9e7e36a6202bb84a272",
+    "changedCount": 10
+  },
+  {
+    "sha": "3d205d317244b977460fc5537f66fa35e8bc567b",
+    "parents": [
+      "b238e4ea946db38a5782d3c793b87a1e345a7c17"
+    ],
+    "subject": "fix: preserve HTTP admission through aborted host shutdown",
+    "comparisonParent": "b238e4ea946db38a5782d3c793b87a1e345a7c17",
+    "changedCount": 6
+  },
+  {
+    "sha": "c5e3680e13122ddc88e76af7db075ceccf6f1680",
+    "parents": [
+      "3d205d317244b977460fc5537f66fa35e8bc567b"
+    ],
+    "subject": "test: preserve native Windows HTTP33 green and Linux reproduction",
+    "comparisonParent": "3d205d317244b977460fc5537f66fa35e8bc567b",
+    "changedCount": 4
+  },
+  {
+    "sha": "ee1c2fa552dcb397db09f5da82db770b0af7c21d",
+    "parents": [
+      "c5e3680e13122ddc88e76af7db075ceccf6f1680"
+    ],
+    "subject": "docs: qualify Windows HTTP recovery and retain browser limitation",
+    "comparisonParent": "c5e3680e13122ddc88e76af7db075ceccf6f1680",
+    "changedCount": 14
+  },
+  {
+    "sha": "1df88385818d722595e2bed41245afdc00e416e5",
+    "parents": [
+      "ee1c2fa552dcb397db09f5da82db770b0af7c21d"
+    ],
+    "subject": "docs: retain final HTTP branch selection inventory",
+    "comparisonParent": "ee1c2fa552dcb397db09f5da82db770b0af7c21d",
+    "changedCount": 3
+  },
+  {
+    "sha": "dcce45d76c588d31b5e54942e19ed144b70a6ce9",
+    "parents": [
+      "1df88385818d722595e2bed41245afdc00e416e5"
+    ],
+    "subject": "docs: WIP T055 original-owner HTTP admission plan",
+    "comparisonParent": "1df88385818d722595e2bed41245afdc00e416e5",
+    "changedCount": 3
+  },
+  {
+    "sha": "0a2843af69c521d7507a9e036cb5494d8c9d73cb",
+    "parents": [
+      "dcce45d76c588d31b5e54942e19ed144b70a6ce9"
+    ],
+    "subject": "test: WIP real original-owner HTTP admission regressions",
+    "comparisonParent": "dcce45d76c588d31b5e54942e19ed144b70a6ce9",
+    "changedCount": 11
+  },
+  {
+    "sha": "09f965d911d504454535fcd81d6c5cceade51f8e",
+    "parents": [
+      "0a2843af69c521d7507a9e036cb5494d8c9d73cb"
+    ],
+    "subject": "test: retain T055 causal Windows RED and owned helper cleanup",
+    "comparisonParent": "0a2843af69c521d7507a9e036cb5494d8c9d73cb",
+    "changedCount": 7
+  },
+  {
+    "sha": "3d6cfd24898fa30b37764de688432455ac9a4660",
+    "parents": [
+      "09f965d911d504454535fcd81d6c5cceade51f8e"
+    ],
+    "subject": "fix: participate in original owner for complete browser read operations",
+    "comparisonParent": "09f965d911d504454535fcd81d6c5cceade51f8e",
+    "changedCount": 4
+  },
+  {
+    "sha": "36ca49618da5ea37ace8bac54336410d0ae00b60",
+    "parents": [
+      "3d6cfd24898fa30b37764de688432455ac9a4660"
+    ],
+    "subject": "docs: retain T055 Windows 33-case GREEN and Linux qualification boundary",
+    "comparisonParent": "3d6cfd24898fa30b37764de688432455ac9a4660",
+    "changedCount": 5
+  },
+  {
+    "sha": "f22809819ebf6a4f6c78c77064d898df927676d1",
+    "parents": [
+      "36ca49618da5ea37ace8bac54336410d0ae00b60"
+    ],
+    "subject": "docs: retain T055 inventory and verified Linux causal owner receipts",
+    "comparisonParent": "36ca49618da5ea37ace8bac54336410d0ae00b60",
+    "changedCount": 7
+  },
+  {
+    "sha": "b3b9c54bde95cd5ba3470c1d04b0e00559227bde",
+    "parents": [
+      "f22809819ebf6a4f6c78c77064d898df927676d1"
+    ],
+    "subject": "docs: publish combined relay and HTTP verification handoff [skip ci]",
+    "comparisonParent": "f22809819ebf6a4f6c78c77064d898df927676d1",
+    "changedCount": 5
+  },
+  {
+    "sha": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+    "parents": [
+      "6381a9507baae6bb2531e22e9a0ace839f03985f",
+      "b3b9c54bde95cd5ba3470c1d04b0e00559227bde"
+    ],
+    "subject": "Merge pull request #1556: native Windows relay and browser HTTP owner admission",
+    "comparisonParent": "6381a9507baae6bb2531e22e9a0ace839f03985f",
+    "changedCount": 77
+  }
+]

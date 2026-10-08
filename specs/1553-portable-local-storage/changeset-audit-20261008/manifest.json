@@ -1,0 +1,47 @@
+{
+  "base": "1fc5e59b253c358a8622df66a4e9459f5f3fe78b",
+  "main": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "migration": "26b36a08e833849db3e3176355e8d61c88100d2f",
+  "equalBaselineIntegrationTree": true,
+  "baselineTree": "24de5ac0f178963c3781fca177b8f75835bb20d5",
+  "netChangedFiles": 21629,
+  "historyUnionFiles": 21629,
+  "historyOnlyFiles": 0,
+  "commits": 28,
+  "byKind": {
+    "build-config": 8,
+    "documentation": 11,
+    "test-support-catalog": 343,
+    "production-source-config": 193,
+    "script-native": 18,
+    "specification": 70,
+    "historical-evidence": 20982,
+    "historical-recovery-fixture": 4
+  },
+  "byFamily": {
+    "test-runner-catalog-ci": 47,
+    "governance-build-docs": 18,
+    "web-coordinator-http": 34,
+    "affected-test-neighbors": 48,
+    "storage-and-load": 108,
+    "game-lifecycle-commands": 23,
+    "gm-workers-native": 108,
+    "desktop-input-audio": 29,
+    "gm-main-bridge-protocol": 91,
+    "settings-publication": 9,
+    "frontend-load-save-settings": 28,
+    "normalizer-gameplay-consumers": 14,
+    "launcher-daemon-relay": 16,
+    "specifications": 70,
+    "evidence-fixture": 20986
+  },
+  "referenceCorpusRows": 8364,
+  "lexicalReferenceRows": 52706,
+  "boundaryGroups": 28,
+  "limits": [
+    "All changed path metadata enumerated; family-level semantic review is not every-edge proof.",
+    "Historical evidence blobs/archives not decompressed or treated as current test results.",
+    "Reflection/generated paths/string concatenation can escape literal boundary keys.",
+    "No builds, tests, discovery, PlanOnly, native probes or live processes executed."
+  ]
+}
