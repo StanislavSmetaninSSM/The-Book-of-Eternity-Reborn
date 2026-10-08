@@ -1,3 +1,21 @@
+## Treatment mirror prerequisite correction — 2026-10-08
+
+Isolated0ec5 actual223135 completed1/1FAIL15.0220035s with all cleanup true.
+First post-treatment lease was reached, but the base held fixture contains no
+player_soul profile; the fixture Single call failed before publication. This is
+preserved setup failure, not mirror Unknown or causal RED.
+
+The existing fixture gains a null-default callback after base seeding and BEFORE
+LiveTurnPreparation/snapshot/plan sealing. Only this mirror case uses it, to seed
+consistent soul17/profile17 through the current canonical profile projection and
+ordinary owned writes. After genuine context creation the exact player identity and
+both17 values are asserted before arming. Only late post-treatment drift writes99;
+the actual profile MemberPublished must project17 using the SAME retained open receipt.
+Existing first-new-lease matcher is unchanged. The persistent player_soul profile uses
+the supported Chaos Sea realm while the current soul/held treatment remain Mortal;
+no lifecycle transition or new gameplay rule is introduced. No repeat of accepted two
+causal rows; focused fixture review and fresh matching Plan1 precede another actual.
+
 Mirror-only initial Plan49e7 was rejected before build/discovery by catalog schema:
 related entries require objects with id/when, not strings. Zero execution; corrected
 metadata keeps exact one-case scope. No runtime or fixture-body change follows.

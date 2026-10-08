@@ -2979,7 +2979,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         bool composePublication = true,
         FileSystemManagerHooks? hooks = null,
         MortalItemPublicationBaselineFixture baselineFixture =
-            MortalItemPublicationBaselineFixture.None)
+            MortalItemPublicationBaselineFixture.None,
+        Func<FileSystemManager, Task>? configureBeforePreparation = null)
     {
         Assert.True(
             fault is null || hooks is null,
@@ -3006,6 +3007,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             await SeedMortalItemPublicationBaselineFixtureAsync(
                 fileSystem,
                 baselineFixture);
+            if (configureBeforePreparation is not null)
+                await configureBeforePreparation(fileSystem);
             var prepared = await new LiveTurnPreparationService(fileSystem)
                 .PrepareAsync(new LiveTurnPreparationOptions
                 {

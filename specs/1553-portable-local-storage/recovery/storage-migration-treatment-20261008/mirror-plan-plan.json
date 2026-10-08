@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-treatment-mirror-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0ec5f29b3d8a83d91fd289c29c465533e7317893",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 45.438297,
+  "Descriptors": [
+    {
+      "Name": "portable-treatment-mirror-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-treatment-mirror-causal-linux",
+      "Categories": [
+        "portable-treatment-mirror-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TreatmentStorage_OriginalEngineMirrorUncertaintyRetainsDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TreatmentStorage_OriginalEngineMirrorUncertaintyRetainsDecision",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

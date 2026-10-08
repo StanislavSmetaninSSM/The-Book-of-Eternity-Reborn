@@ -327,5 +327,109 @@
         "sha256": "3bacf2c2294c88b10acd0d137c153ba2e219acc93903e74cad155081474d4705"
       }
     ]
+  },
+  "mirrorFixture": {
+    "source": "0ec5f29b3d8a83d91fd289c29c465533e7317893",
+    "qualification": "Exact1 completed15.0220035s FAIL, cut0. Original base fixture has no player_soul profile; fixture Single failed at reached post-publication lease. No publisher Unknown. Ownedrootremoved/bothcleanup.",
+    "artifacts": [
+      {
+        "path": "mirror-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-223012-175-167870-0efb68cc55ce412fb967418cc35226f7-categories/Build-integration.log",
+        "sha256": "5693edcebb38c83e6802f779c43bf5ec1d5f4217f1c456745e497112b4e1a14e",
+        "originalSha256": "1dbe2073b68c0b942cdbabaded6de79077bfe5d34d8212ebb5a469872d4227fe"
+      },
+      {
+        "path": "mirror-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-223012-175-167870-0efb68cc55ce412fb967418cc35226f7-categories/dotnet-test.log",
+        "sha256": "a2a1d885df0135a7c63ce4ea6681b0aab5c119ded92a65209effa22fdffd2063",
+        "originalSha256": "382b8c2a8acc73056f9db5b5996a93ba1a0e01477fd3d48f288d98c3f4aa1e8b"
+      },
+      {
+        "path": "mirror-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-223012-175-167870-0efb68cc55ce412fb967418cc35226f7-categories/plan.json",
+        "sha256": "bf19c59eb92bb2ae45196c11ca974b84c493f01766c8dba118417fc10f7b7f46",
+        "originalSha256": "bf19c59eb92bb2ae45196c11ca974b84c493f01766c8dba118417fc10f7b7f46"
+      },
+      {
+        "path": "mirror-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-223012-175-167870-0efb68cc55ce412fb967418cc35226f7-categories/summary.json",
+        "sha256": "3eccf22118c9947d60f0224357394454fa7a8f3561d9ec5811ef8eb8c70309fa",
+        "originalSha256": "3eccf22118c9947d60f0224357394454fa7a8f3561d9ec5811ef8eb8c70309fa"
+      },
+      {
+        "path": "mirror-fixture-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-223135-543-168386-c5e25813e22a41adb7d9a2dc3dfa55fe-categories/dotnet-test.log",
+        "sha256": "58502416aa43e9783d4255cdbf450d9fb45540beae52abb1d6d2cdcf088a0502",
+        "originalSha256": "6df7ae962c2362249d94fed40657dd97fa1316a4a08b58229080b5bad7b65e52"
+      },
+      {
+        "path": "mirror-fixture-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-223135-543-168386-c5e25813e22a41adb7d9a2dc3dfa55fe-categories/plan.json",
+        "sha256": "97ca71a834af766768304d53305b1b030d198e7834f61772e561ee9f7ce4acfc",
+        "originalSha256": "97ca71a834af766768304d53305b1b030d198e7834f61772e561ee9f7ce4acfc"
+      },
+      {
+        "path": "mirror-fixture-portable-treatment-mirror-causal-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-223135-543-168386-c5e25813e22a41adb7d9a2dc3dfa55fe-categories/portable-treatment-mirror-causal-linux-integration-001.trx",
+        "sha256": "bbeebfbc6b4e95ddb7cda3eb7a39b3f197e0d2cfc8435cf6fb46414b0f6c4e83",
+        "originalSha256": "31c2e937198f6069f9a6a2ac8c591738f8d93d46dd8ce7c7f65d8cdc1dc4d1d2"
+      },
+      {
+        "path": "mirror-fixture-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-223135-543-168386-c5e25813e22a41adb7d9a2dc3dfa55fe-categories/summary.json",
+        "sha256": "84813f0bd7b9f4eebc50912b1779f16f994e154b8de8abddd11f2ae1e33d936a",
+        "originalSha256": "84813f0bd7b9f4eebc50912b1779f16f994e154b8de8abddd11f2ae1e33d936a"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.TreatmentStorageOutcome.cs",
+        "sha256": "6b8cf18a1ee9df46c5d23baea56b0a896a8d046506580650f1dc62d9a5152523"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.cs",
+        "sha256": "ea4cfd9e7ed64bb1096f290518d12869755fe5351f509e4daa0e3bc9b3fe89cc"
+      },
+      {
+        "path": "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+        "sha256": "07bed61b9604d200db23823bb28c81930d87b0ebea2ea5b760710be0d5fa0562"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+        "sha256": "d7bd84ca21435ed86ac279432722d08d1f466b142e288068b11df83082071b4e"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "dc9a7da0614e05ec48297293b7b03b52fa9a71e5d4ac3eb229b1cc181e898618"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "sha256": "86ba1ecf5b2ae813fb7d68b8a7eb05ad4da49cde93cc809ed7e95ea3098a4628"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "sha256": "176b0af190ab7c536f3af98303753e8bd9fba00ac0b81b44f879648789b8f013"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
+        "sha256": "4e248b04c73731e2cc0c5c4b35e69d1bdbd141a6bace970cabba7e64589b0f70"
+      },
+      {
+        "path": "BookOfEternityClient/Core/StateManager.cs",
+        "sha256": "fdf7fa9d071c750a18a27eab0d0ac25dd2d036a3eec06544fe639fd699c4d997"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "c0d39b8c2a75da9da309d051c26d643e3437a03982ce4bdde8dd84ecf967a1a2"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "dc52246b8be5fe43814e3c37146f0275046e793e33c0a1633b3375d517460e2c"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+        "sha256": "3bacf2c2294c88b10acd0d137c153ba2e219acc93903e74cad155081474d4705"
+      }
+    ]
   }
 }

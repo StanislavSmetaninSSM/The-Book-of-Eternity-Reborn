@@ -29,7 +29,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     private async Task RunTreatmentStorageScenarioAsync(string mode)
     {
         using var cut = new TreatmentStorageCut(mode);
-        await using var context = await CreateHeldTreatmentPipelineContextAsync(null, hooks: cut.Hooks);
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(null, hooks: cut.Hooks,
+            configureBeforePreparation: mode == "engine_mirror" ? cut.SeedConsistentMirrorAsync : null);
         cut.Attach(context);
         await context.ReleaseLeaseAsync();
         Exception? failure;
@@ -120,7 +121,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 TypedCarrier = cut.OriginalUncertainty?.GetType().FullName,
                 Failure = failure?.ToString(), DisposalFailure = disposalFailure?.ToString(),
                 journalBeforeDispose, journalAfterDisposeExact, disposalLeases, disposalRecovery, disposalAttempts,
-                cut.MirrorDriftPrepared, cut.MirrorLeaseStack, cut.MirrorLeaseAttempt, cut.MirrorBeforeValue, cut.MirrorForeignValue, cut.TreatmentResourceChanged, publishedTreatmentRetained,
+                cut.InitialMirrorConsistent, cut.MirrorPublishedAuthority17, cut.MirrorDriftPrepared, cut.MirrorLeaseStack, cut.MirrorLeaseAttempt, cut.MirrorBeforeValue, cut.MirrorForeignValue, cut.TreatmentResourceChanged, publishedTreatmentRetained,
                 BusinessCausePreserved = cut.HasBusinessCause(failure),
                 BusinessCause = cut.BusinessFailure.ToString(),
                 PublishedTreatmentImages = cut.PublishedTreatmentImages.ToDictionary(p => p.Key, p => Convert.ToBase64String(p.Value)),
@@ -144,6 +145,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             else Assert.Equal(TreatmentStorageCut.ForeignBytes, memberBytes);
             if (mode == "engine_mirror")
             {
+                Assert.True(cut.InitialMirrorConsistent);
+                Assert.True(cut.MirrorPublishedAuthority17);
                 Assert.True(cut.MirrorDriftPrepared);
                 Assert.NotEqual(cut.MirrorBeforeValue, cut.MirrorForeignValue);
                 Assert.Equal(4, cut.PublishedTreatmentImages.Count);
@@ -198,6 +201,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         private FileStream? _holder;
         private byte[]? _initialResourceBytes;
         private object? _originalRegistryState;
+        private MortalWoundTreatmentPublicationTakeReceipt? _mirrorReceipt;
         private string? _selectedMutationPath;
         private string? _selectedPhase;
         private string? _selectedStack;
@@ -238,6 +242,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal int RestoreReadAttemptsAfterCut { get; private set; }
         internal int PublicationsAfterCut { get; private set; }
         internal bool SharingConflictObserved { get; private set; }
+        internal bool InitialMirrorConsistent { get; private set; }
+        internal bool MirrorPublishedAuthority17 { get; private set; }
         internal bool MirrorDriftPrepared { get; private set; }
         internal string? MirrorLeaseStack { get; private set; }
         internal int MirrorLeaseAttempt { get; private set; }
@@ -252,9 +258,32 @@ public sealed partial class GameEngineTurnLifecycleTests
         internal CoordinatedStatePublicationUncertainException? OriginalUncertainty { get; private set; }
         internal MortalWoundTreatmentPublicationTakeReceipt? OriginalReceipt { get; private set; }
         internal string JournalPath => Path.Combine(_context!.FileSystem.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+        internal async Task SeedConsistentMirrorAsync(FileSystemManager files)
+        {
+            // Called before LiveTurnPreparation creates any immutable snapshot/plan.
+            await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
+            var soul = ParseJsonObjectBytes((await files.ReadFileBytesAsync(lease, "game_state/meta/soul_state.json"))!);
+            soul["inkFeathers"] = new JsonObject { ["current"] = 17, ["total"] = 17 };
+            var profiles = ParseJsonObjectBytes(Encoding.UTF8.GetBytes(
+                """{"schemaVersion":1,"profiles":[{"actorType":"player_soul","actorId":"player_soul","displayName":"Held fixture","realm":"Chaos Sea","currencies":{"inkFeathers":17,"lightSparks":0}}]}"""));
+            profiles = AfterlifeEntityProfileState.ProjectCanonicalRoot(profiles, null);
+            AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthority(profiles, soul, null);
+            await files.WriteFileAtomicAsync(lease, "game_state/meta/soul_state.json", soul.ToJsonString());
+            await files.WriteFileAtomicAsync(lease, AfterlifeEntityProfileState.StatePath, profiles.ToJsonString());
+        }
         internal void Attach(HeldTreatmentPipelineContext context)
         {
             _context = context;
+            if (_mode == "engine_mirror")
+            {
+                var soul = ParseJsonObjectBytes(File.ReadAllBytes(context.FileSystem.ResolvePath("game_state/meta/soul_state.json")));
+                var profiles = ParseJsonObjectBytes(File.ReadAllBytes(context.FileSystem.ResolvePath(AfterlifeEntityProfileState.StatePath)));
+                var profile = Assert.Single(profiles["profiles"]!.AsArray().OfType<JsonObject>().Where(p =>
+                    p["actorType"]!.GetValue<string>() == "player_soul" && p["actorId"]!.GetValue<string>() == "player_soul"));
+                Assert.Equal(17, soul["inkFeathers"]!["current"]!.GetValue<int>());
+                Assert.Equal(17, profile["currencies"]!["inkFeathers"]!.GetValue<int>());
+                InitialMirrorConsistent = true;
+            }
             // Retain the real already-populated generation registry under the fixture's
             // existing lease. At the cut we observe its actual taken receipt; no token is minted.
             _originalRegistryState = typeof(AcceptedTurnAuthorityRegistry).GetMethod("GetState",
@@ -279,11 +308,15 @@ public sealed partial class GameEngineTurnLifecycleTests
                 // is after that scope. Retain its stack as evidence, not selection authority.
                 MirrorLeaseStack = new StackTrace().ToString();
                 MirrorLeaseAttempt = LeaseAttempts;
+                _mirrorReceipt = (MortalWoundTreatmentPublicationTakeReceipt)_originalRegistryState!.GetType()
+                    .GetField("_openTreatmentPublicationReceipt", BindingFlags.Instance | BindingFlags.NonPublic)!
+                    .GetValue(_originalRegistryState)!;
                 var path = _context!.FileSystem.ResolvePath(AfterlifeEntityProfileState.StatePath);
                 var root = ParseJsonObjectBytes(File.ReadAllBytes(path));
                 var profile = root["profiles"]!.AsArray().OfType<JsonObject>().Single(p => p["actorType"]!.GetValue<string>() == "player_soul");
                 MirrorBeforeValue = profile["currencies"]!["inkFeathers"]!.GetValue<int>();
-                MirrorForeignValue = checked(MirrorBeforeValue + 99);
+                Assert.Equal(17, MirrorBeforeValue);
+                MirrorForeignValue = 99;
                 profile["currencies"]!.AsObject()["inkFeathers"] = MirrorForeignValue;
                 File.WriteAllText(path, root.ToJsonString(), new UTF8Encoding(false));
                 MirrorDriftPrepared = true;
@@ -352,6 +385,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             Target = target; TargetIndex = index; PublishedBytes = File.ReadAllBytes(target); Cuts++;
             if (_mode == "engine_mirror")
             {
+                Assert.Same(_mirrorReceipt, OriginalReceipt);
+                var published = ParseJsonObjectBytes(PublishedBytes);
+                var publishedProfile = published["profiles"]!.AsArray().OfType<JsonObject>().Single(p =>
+                    p["actorType"]!.GetValue<string>() == "player_soul" && p["actorId"]!.GetValue<string>() == "player_soul");
+                MirrorPublishedAuthority17 = publishedProfile["currencies"]!["inkFeathers"]!.GetValue<int>() == 17;
                 foreach (var relative in new[] { ResourceMaterializationContract.StatePath,
                     ResourceMaterializationContract.HistoryPath, WoundCarrierCatalog.PlayerPath, WoundHistoryState.HistoryPath })
                 {
