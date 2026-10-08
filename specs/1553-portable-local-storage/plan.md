@@ -1,3 +1,23 @@
+## F04/F05 shared baseline complete — 2026-10-08
+
+Independent baseline SOURCE/SELECTION PASS534a52f4. Fresh Plan170150 built46/2/0
+(49.6470090s); actual170554 complete46/46PASS23+23,2/2descriptors18.1366428s,
+clean exact source, no skips/duplicates and both cleanup flags true. [Raw/source-pinned baseline](recovery/storage-migration-browser-daren-20261008/manifest.json).
+This preserves current Linux behavior before coherent Windows cutover; it is not a
+native Windows failure reproduction or qualification. Runtime/test bodies unchanged.
+
+Next: freeze new whole-protocol/mixed-before-effects controls and body-required
+native recipes, then independent design/fixture gate before runtime. Read-only
+classification must cover manifests AND cleanup-only roots, retain exact unknown
+bytes and refuse old/current mixed recovery ownership before effects. Schema6 stays
+legacy, JSON schema7 cleanup stays current; never infer authentic6 from edited7.
+Current scratch filtering must normalize then filter to browser root before deriving
+session-relative names (external Daren scratch can be outside GameSession). Normalize
+current registered profile, RecordIntent member operands and cleanup allowed paths;
+use existing OS-aware ordinary member comparison while preserving exact grants,
+BrowserLocalAccess root/generation and stored JSON tuples. Existing Linux distinct
+case behavior remains. Direct-gacha requires separate exact signed-adoption neighbors.
+
 ## F04/F05 bounded original-consumer baseline WIP — 2026-10-08
 
 F06 independent final source/evidence/carrier PASS2f373cb3/runtime47ce, no findings:

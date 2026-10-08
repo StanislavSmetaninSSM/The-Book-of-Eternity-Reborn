@@ -1,0 +1,166 @@
+{
+  "scope": "F04/F05 original browser/schema routing and Daren profile consumers. Actual Linux shared baseline; native Windows remains unexecuted. Original legacy evidence keeps its handler or explicit refusal; no whole-operation atomic restoration promise.",
+  "baseline": {
+    "qualification": "Independent baseline SOURCE/SELECTION PASS534a. Shared Linux existing46 unchanged cases, not a Windows causal RED or native qualification. No runtime changes.",
+    "planned": 46,
+    "executed": 46,
+    "passed": 46,
+    "failed": 0,
+    "seconds": 18.1366428,
+    "source": "534a52f49f5ff7eb5825885725d5068c6925ad48",
+    "artifacts": [
+      {
+        "path": "baseline-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-170150-365-94975-496e1e1527a7483ab1d2f5c92592d06e-categories/Build-integration.log",
+        "sha256": "50e03c234c0cb2447043ee2c329c97407b9fa37eafbeb99c2f60036e8dce68ba",
+        "originalSha256": "a70c420526677e27f2b38b9ed6764af7ebbaa7e528ad4363d15b0b868b7b9a29"
+      },
+      {
+        "path": "baseline-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-170150-365-94975-496e1e1527a7483ab1d2f5c92592d06e-categories/dotnet-test.log",
+        "sha256": "bb862b59bc8eb1dea7e771bfd04c640b88cc33988d2b22450b194bd357c5d08b",
+        "originalSha256": "751f71d10705939bf202901cc81f7993e279162aaabcdab04ec4d9eb6ad5686a"
+      },
+      {
+        "path": "baseline-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-170150-365-94975-496e1e1527a7483ab1d2f5c92592d06e-categories/plan.json",
+        "sha256": "f7b20e0d7590cc6e7c4346ee09131597fe6eeae3261fb22a38d830fcfa1b573c",
+        "originalSha256": "f7b20e0d7590cc6e7c4346ee09131597fe6eeae3261fb22a38d830fcfa1b573c"
+      },
+      {
+        "path": "baseline-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-170150-365-94975-496e1e1527a7483ab1d2f5c92592d06e-categories/summary.json",
+        "sha256": "1852894efe6f7ac862be70c31e6036d30ece4349351bf32414326d5d6129d8e5",
+        "originalSha256": "1852894efe6f7ac862be70c31e6036d30ece4349351bf32414326d5d6129d8e5"
+      },
+      {
+        "path": "baseline-plan-driver-boe-browser-daren-baseline-plan.log.gz",
+        "source": "/tmp/boe-browser-daren-baseline-plan.log",
+        "sha256": "f26e524b43d4bfd0cdb28cd72daac8da77b3ccc1e63daab0c53a2d6b6fa7c127",
+        "originalSha256": "e58157441ee0707222c98642e5679743ecbc827d356acc8ab80322676ce54e0c"
+      },
+      {
+        "path": "baseline-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-170554-737-95421-dd6c9116635841ff97003f859f1eee2c-categories/dotnet-test.log",
+        "sha256": "c5b26ec9b813a4b4b063a54d4abad2d0c7c289b8a45f536d1b6cd5e0e431d60c",
+        "originalSha256": "f7e25914a67d61e8cf7d3c6ab006930f6bc7bbabe263e75bb10393d0b4e80315"
+      },
+      {
+        "path": "baseline-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-170554-737-95421-dd6c9116635841ff97003f859f1eee2c-categories/plan.json",
+        "sha256": "43ef15050135497d6eee197f666224a6ffb23702aeca626478b03bd5fd3275f2",
+        "originalSha256": "43ef15050135497d6eee197f666224a6ffb23702aeca626478b03bd5fd3275f2"
+      },
+      {
+        "path": "baseline-portable-browser-protocol-consumers-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-170554-737-95421-dd6c9116635841ff97003f859f1eee2c-categories/portable-browser-protocol-consumers-linux-integration-001.trx",
+        "sha256": "e84be8b445f1714e2c2e1ce88efc81a0edd632f3205fb592c4b79338d0314e6a",
+        "originalSha256": "5525eca9ae41e3c18d84a24233dd86f78dd23aa537252853abb0b5ea9b456a0c"
+      },
+      {
+        "path": "baseline-portable-daren-protocol-consumers-linux-integration-002.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-170554-737-95421-dd6c9116635841ff97003f859f1eee2c-categories/portable-daren-protocol-consumers-linux-integration-002.trx",
+        "sha256": "6ea8b8311f82b156b7e5d2a3836d205d2c9e29e5d51465bcc814ba9d632141d3",
+        "originalSha256": "6d1467f3225bae4c00c3d8ee84c79639e6ae97b96b4e68791a5b215ec6ba0806"
+      },
+      {
+        "path": "baseline-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-170554-737-95421-dd6c9116635841ff97003f859f1eee2c-categories/summary.json",
+        "sha256": "01aec02cbaf69361472c0c4ff5884e7defc823b898424140d9a1d2294732ca11",
+        "originalSha256": "01aec02cbaf69361472c0c4ff5884e7defc823b898424140d9a1d2294732ca11"
+      },
+      {
+        "path": "baseline-driver-boe-browser-daren-baseline.log.gz",
+        "source": "/tmp/boe-browser-daren-baseline.log",
+        "sha256": "4d4780d217c5649de9c0797fa82523c5b18b353c0614c3bd146d537a2658bb5b",
+        "originalSha256": "965257ef85ab2562b2dc5480784c251b316b9627f4d39da550ccd3b5ed3d5490"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "3609e8e9b045925ff5081756748fe2ab3b8f26d112af4b435672b43bbcca8390"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+        "sha256": "5eaa52316f4b1f51ed49911b938aa5042785f547d325c0d6a48c5a2a372992b6"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs",
+        "sha256": "4b41101fba008170640edcb82fce1a3a0ae36769c899335e36be2f811236bbb7"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "sha256": "48757ddc150e2899014f234ceb68a557a68d5aea1bafdbc2dc602afa7e88217a"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs",
+        "sha256": "edc49b28ed6a75346b83538ec550058afc7a889535232d6e92320c427ff43e56"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+        "sha256": "e6e740c5bc59a682b458168680bdd578e37f29d396d64b0b4ccbdff0416c1da2"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalBrowser.cs",
+        "sha256": "4626edeb96be79417e03510c3b2a763a9e2c87e2938cf6b7dd8f18827f6ef837"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalRecovery.cs",
+        "sha256": "b815317fa8b8adc65ded4da692b151e359603e782cc7f6f2c4c58745ca5d9ffb"
+      },
+      {
+        "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalDirectGacha.cs",
+        "sha256": "4416fa9a8002ed65fba07505edbdf17065652c254072846e526f8317a2359ed4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs",
+        "sha256": "04e73dcd304197c578349d22487d1e90a17fcb0675e9958c94c07fdb7a853be8"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+        "sha256": "2a786979f80bd5003f41cbc30bd33ceee8af03a66f99f546761c3c97a7edb647"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxTests.cs",
+        "sha256": "39552cd948c01a23ae77625ef1a581a8b3031a2adee4f54574dabafec50b718e"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxBoundaryTests.cs",
+        "sha256": "4540aae8567ecd3b9124e0838d0a111674c5df495f225e80aa54c455fb5cb03a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxBoundaryTests.External.cs",
+        "sha256": "facc58bb177cbfd924f03cc1c9bb0a3ec2800a78abbb4cc00cbe153f028e0e96"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/BrowserRollbackLinuxBoundaryTests.Recovery.cs",
+        "sha256": "9f1b08b3511fab820eb476834f8abd21c6c564dd3aae8c62bdf5b3171c9ad2f1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxTests.cs",
+        "sha256": "0634da994a648114a9367917a5c723dc22114ea279fa7abc1ea750e0be66a3d9"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxTests.Consumers.cs",
+        "sha256": "25901cfcb19554ff8e3abd8cfd4fd96e778f46a4da8c414015e91795c970efd6"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxBoundaryTests.cs",
+        "sha256": "37ecb0d7508ad687a789fa5844986fdc36fea35bbde5e99c7ffb6f1de95b3fbf"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/DarenStandaloneLinuxFixture.cs",
+        "sha256": "5427bd7b18d5137828ff5c2a15d4cfe447b74447803e120f68bab5161da80026"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "dd15181be35fc4eec01e5c644e9f26cce2a99888122ecc83647e853d75b2952e"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "43e29b7c2ff3dee059b5c5b5a3f6c2b3116b115b389a4b43a6b7bc0ad3df6018"
+      }
+    ]
+  }
+}
