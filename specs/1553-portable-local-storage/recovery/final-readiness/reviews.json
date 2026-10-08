@@ -17,6 +17,20 @@
       "Stale unrun guide status replaced"
     ]
   },
-  "evidence": "pending",
-  "metadata": "pending"
+  "evidence": {
+    "source": "5a7fb8d1e1fa8ada39cee857b7fcbc82719df847",
+    "verdict": "PASS subject to named corrected metadata",
+    "uniquePassed": 30,
+    "currentPins": 75,
+    "actualStopSeparateFromGuardian": true,
+    "metadataCorrections": [
+      "Relay reuse24 unchanged+1 reviewed test-runner delta; S2A16 unchanged"
+    ]
+  },
+  "metadata": "pending separate review",
+  "sourceCorrection": {
+    "source": "3f9c388e4fca9192e8246afbfed9461c972049b7",
+    "verdict": "PASS",
+    "scope": "Owned test child fixture checkout pin only; caller unchanged"
+  }
 }

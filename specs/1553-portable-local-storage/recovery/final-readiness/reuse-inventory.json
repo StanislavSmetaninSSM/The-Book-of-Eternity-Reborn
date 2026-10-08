@@ -1,6 +1,6 @@
 {
   "relay-reusable": {
-    "matchedRuntimePins": 25,
+    "matchedRuntimePins": 24,
     "paths": [
       "tools/gm-relay/relay_contract.py",
       "tools/gm-relay/relay_cli.py",
@@ -25,13 +25,20 @@
       "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
       "BookOfEternityGMBridge/TerminalScreen.cs",
       "BookOfEternityGMBridge/BridgeHost.PromptDispatch.cs",
-      "scripts/test-csharp.ps1",
       "scripts/build-linux-supervisor.ps1"
     ],
     "excludedChangedSelectionMetadata": [
       "tests/categories.json",
       "tests/selection.json"
-    ]
+    ],
+    "reviewedTestRunnerDelta": {
+      "path": "scripts/test-csharp.ps1",
+      "acceptedSha256": "e45449841a14c9f8a3695d915155cd14a144b58be51997fcfc504ba9526d8ad1",
+      "currentSha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "reason": "Owned child BOE_REPO_ROOT pins exact current checkout after causal fixture-root failure; no application/relay/fixture transport change",
+      "qualification": "schema-managed-green18PASS and prior explicit-root diagnostic7PASS",
+      "relayReplayRequired": false
+    }
   },
   "systemd-main-s2a": {
     "matchedRuntimePins": 16,
@@ -80,7 +87,7 @@
       "NewExecutions": 0
     }
   ],
-  "RuntimeChangesSinceAcceptedRelay": [
+  "ApplicationTreeChangedPathsSinceAcceptedRelay": [
     "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
     "BookOfEternityClient/Services/GmRuntime/LinuxSystemdCgroupFiles.cs",
     "BookOfEternityClient/Services/GmRuntime/SystemdCgroupSource.cs"
