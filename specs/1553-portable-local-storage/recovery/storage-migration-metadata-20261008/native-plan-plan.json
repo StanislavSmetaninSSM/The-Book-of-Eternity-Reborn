@@ -1,0 +1,50 @@
+{
+  "Categories": [
+    "gm-main-metadata-native-windows"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "76d8d83af4245758a0b3a118cc56086b54d8971a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.0998338,
+  "Descriptors": [
+    {
+      "Name": "gm-main-metadata-native-windows-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-metadata-native-windows",
+      "Categories": [
+        "gm-main-metadata-native-windows"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeColdPartialNamespaceCannotGuessFreshInitialization|FullyQualifiedName=BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeForeignStageOrNamespaceRetainsDebtAndForeignEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativePublicationFaultRetainsExactPlanAndOriginalGuard|FullyQualifiedName=BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeSharingRefusalRetainsBeforeAndRetriesSameReplacement|FullyQualifiedName=BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeUnknownAfterRenameCannotBeOverwrittenByFrozenRetry",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 32,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeColdPartialNamespaceCannotGuessFreshInitialization",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeForeignStageOrNamespaceRetainsDebtAndForeignEvidence",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativePublicationFaultRetainsExactPlanAndOriginalGuard",
+          "Cases": 22
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeSharingRefusalRetainsBeforeAndRetriesSameReplacement",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeUnknownAfterRenameCannotBeOverwrittenByFrozenRetry",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

@@ -86,5 +86,164 @@
         "originalSha256": "38de3b5e24ee5893d1d3199ffa77c5440fa15ca7dd556695a47ce254e63553da"
       }
     ]
+  },
+  "green": {
+    "source": "76d8d83af4245758a0b3a118cc56086b54d8971a",
+    "executed": 7,
+    "passed": 7,
+    "failed": 0,
+    "wallSeconds": 6.9080159,
+    "cleanupComplete": true,
+    "nativePlanned": 32,
+    "nativeExecuted": 0,
+    "qualification": "Linux original metadata preservation only. Native32 compiled/discovered via PlanOnly but not executed. Independent isolated adapter source/evidence review pending; owner/worker/Bridge unchanged.",
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+        "sha256": "c70aa68406d915d027c402623cc8716c4b3c24fb36c5b93c431687d7a248d6cb"
+      },
+      {
+        "path": "BookOfEternityClient/Core/PhysicalFileAuthority.cs",
+        "sha256": "84b5cd866cbc2a6c091d608afbf167fbd61199d0891987c2b32b6c1549bd3bca"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmMainRunFenceTests.cs",
+        "sha256": "76c71ca3ddd2cb694c66525cd9b0372296a02da4495c971582c822f560e3ab7c"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmMainMetadataWindowsTests.cs",
+        "sha256": "968d5295d2b06a38e6267104486e9abb24cd497d4326ca6c68ee952315e5cb61"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "7740393a3638b72fe5d03bb966560570f6b05b0f6bf0ebc2a55d99a1d017884c"
+      },
+      {
+        "path": "specs/1553-portable-local-storage/main-run-fence-design.md",
+        "sha256": "abd23f3cff503d4f0470d3129092185c0fe814f65b26f21fd04a3a5128b242a7"
+      }
+    ],
+    "artifacts": [
+      {
+        "path": "green-plan-Build-unit.log.gz",
+        "source": "TestResults/test-categories/20261008-121452-434-43298-b92243b13e4d405789076743d36cbbd3-categories/Build-unit.log",
+        "sha256": "f57d80d93ac75aa0cf477cdef73e2854027448372f8ef4a6f8ee101cb00f9e9c",
+        "originalSha256": "1a626ad5f2dd3eb8c6baeda77c35a710d58f05034894c0928f4ebd9b0a283c48"
+      },
+      {
+        "path": "green-plan-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-121452-434-43298-b92243b13e4d405789076743d36cbbd3-categories/dotnet-test.log",
+        "sha256": "06664ef7b8cee11c6434da12117327f812326f17711ad62bfce29d1d7768173a",
+        "originalSha256": "f40b377a7786b5f40e4d4873077b4dcb00e2cd66b0bd093a37e2fb44d80b430e"
+      },
+      {
+        "path": "green-plan-plan.json",
+        "source": "TestResults/test-categories/20261008-121452-434-43298-b92243b13e4d405789076743d36cbbd3-categories/plan.json",
+        "sha256": "d18b2923e190a51b25ca5a01bf2e74e0eeb9b685b2469c376cde60c1b23f52f3",
+        "originalSha256": "d18b2923e190a51b25ca5a01bf2e74e0eeb9b685b2469c376cde60c1b23f52f3"
+      },
+      {
+        "path": "green-plan-summary.json",
+        "source": "TestResults/test-categories/20261008-121452-434-43298-b92243b13e4d405789076743d36cbbd3-categories/summary.json",
+        "sha256": "85006a6c2dffb848ce0e7ccdfe1361154fccc19a17b30508d6fce14af90b429e",
+        "originalSha256": "85006a6c2dffb848ce0e7ccdfe1361154fccc19a17b30508d6fce14af90b429e"
+      },
+      {
+        "path": "green-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-121536-623-43589-ae5a4c78bcf5481f882c28ea3972ddc5-categories/dotnet-test.log",
+        "sha256": "3e41b532d4186b00b5d818d75b62696e545e2d14e9eafa0effed23fe117f258a",
+        "originalSha256": "c007bff76ba471a83708036e5c9251ef70496d6bc9f4493d5da3106f2b2e0f03"
+      },
+      {
+        "path": "green-gm-main-metadata-ordering-linux-unit-001.trx.gz",
+        "source": "TestResults/test-categories/20261008-121536-623-43589-ae5a4c78bcf5481f882c28ea3972ddc5-categories/gm-main-metadata-ordering-linux-unit-001.trx",
+        "sha256": "043c921dafcb3177a4047e7074ec11b4770a2e9ca68cc3d6803dbbbc6deb282c",
+        "originalSha256": "41217beed8665eb78b57d6649e189219a3d7d96ed388eea6d8dab1e5fd66f24d"
+      },
+      {
+        "path": "green-plan.json",
+        "source": "TestResults/test-categories/20261008-121536-623-43589-ae5a4c78bcf5481f882c28ea3972ddc5-categories/plan.json",
+        "sha256": "0c9ef38588978ea3a6ef623066ab49bba6def6897060927810f8fc4bd48f0b33",
+        "originalSha256": "0c9ef38588978ea3a6ef623066ab49bba6def6897060927810f8fc4bd48f0b33"
+      },
+      {
+        "path": "green-summary.json",
+        "source": "TestResults/test-categories/20261008-121536-623-43589-ae5a4c78bcf5481f882c28ea3972ddc5-categories/summary.json",
+        "sha256": "aadd4a534a51b893675014c5d822656cc147cb66faed1860837e2c7456d76195",
+        "originalSha256": "aadd4a534a51b893675014c5d822656cc147cb66faed1860837e2c7456d76195"
+      },
+      {
+        "path": "native-plan-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-121611-151-43798-96d57cf5c9cb44b99d4b5be5b710f73d-categories/dotnet-test.log",
+        "sha256": "6831780618d6c184e70dad276d2fa06154891776c8837279fc85f2d4aaecb752",
+        "originalSha256": "50f391ee5a5b276a3e26c0d1eccf8a8b906c7f4a7023ed5aec8fe802afaa6266"
+      },
+      {
+        "path": "native-plan-plan.json",
+        "source": "TestResults/test-categories/20261008-121611-151-43798-96d57cf5c9cb44b99d4b5be5b710f73d-categories/plan.json",
+        "sha256": "819c2c2b75d1f26eff65bcc7fd771293e9049374b50ee3d40498f6c3d6526fc7",
+        "originalSha256": "819c2c2b75d1f26eff65bcc7fd771293e9049374b50ee3d40498f6c3d6526fc7"
+      },
+      {
+        "path": "native-plan-summary.json",
+        "source": "TestResults/test-categories/20261008-121611-151-43798-96d57cf5c9cb44b99d4b5be5b710f73d-categories/summary.json",
+        "sha256": "e1eef1bb29ec12f8d8b20dd07cd1844e6f39931fa931641fc80ef1b0b7f5af8b",
+        "originalSha256": "e1eef1bb29ec12f8d8b20dd07cd1844e6f39931fa931641fc80ef1b0b7f5af8b"
+      },
+      {
+        "path": "catalog-Build-integration.log.gz",
+        "source": "TestResults/test-categories/20261008-121633-512-43913-2060408764044094a03ead468e7be6cc-categories/Build-integration.log",
+        "sha256": "d46fad9e790bb266d63f8a541d61f2c6523c3c8a70e5eb2bfc96722b9ecefe33",
+        "originalSha256": "536a728b83f8bd3d209c736b1388116a4256ec4a58112c0f50d3958525bdb135"
+      },
+      {
+        "path": "catalog-Build-unit.log.gz",
+        "source": "TestResults/test-categories/20261008-121633-512-43913-2060408764044094a03ead468e7be6cc-categories/Build-unit.log",
+        "sha256": "d709a979a02a33d6f6585f24554bcfe6873a24f81c89819cd2b1e1714b812799",
+        "originalSha256": "02adcb350daa8c529fbbe0d543da992329994631addf66a29fe4c2364d625ed9"
+      },
+      {
+        "path": "catalog-catalog-audit.json",
+        "source": "TestResults/test-categories/20261008-121633-512-43913-2060408764044094a03ead468e7be6cc-categories/catalog-audit.json",
+        "sha256": "ee2b17a13e85371045279ac683fd0c364de4a76a8da56f5077c3aa958521b0c6",
+        "originalSha256": "ee2b17a13e85371045279ac683fd0c364de4a76a8da56f5077c3aa958521b0c6"
+      },
+      {
+        "path": "catalog-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-121633-512-43913-2060408764044094a03ead468e7be6cc-categories/dotnet-test.log",
+        "sha256": "72fd52c838185bbd82e2339dc1fc9f5a2559aab92f055047b8c1d78e4d9a2893",
+        "originalSha256": "f5fdae1e78df6a6db6f1a729c935fa79fe89e50338ff253ec75bb49ee3c36750"
+      },
+      {
+        "path": "catalog-summary.json",
+        "source": "TestResults/test-categories/20261008-121633-512-43913-2060408764044094a03ead468e7be6cc-categories/summary.json",
+        "sha256": "27a9fb50309a3278481d247fa7d3b9c2c5d04fa67f70aeaafc735528b88058b4",
+        "originalSha256": "27a9fb50309a3278481d247fa7d3b9c2c5d04fa67f70aeaafc735528b88058b4"
+      },
+      {
+        "path": "green-plan-runner.log.gz",
+        "source": "/tmp/boe-1553-metadata-green-plan.log",
+        "sha256": "ecc4f897f99889bebaebd947bc9e881585c8ea4580e712183ce2e84abbabe1b4",
+        "originalSha256": "e89c89dba785b702e80bb46a85b3a6f176081afb887952b8bc8856c44452ed74"
+      },
+      {
+        "path": "green-runner.log.gz",
+        "source": "/tmp/boe-1553-metadata-green.log",
+        "sha256": "c9825f048c80e8e7587e976d023ea3e1f8f5932066ffd139e4355312c5ee95a4",
+        "originalSha256": "936372c0077de6ff62f31e0f9f3a54749f88275b432a1258fa93a83c8e9457e6"
+      },
+      {
+        "path": "native-plan-runner.log.gz",
+        "source": "/tmp/boe-1553-metadata-native-plan.log",
+        "sha256": "6cafa111c00b39debbce65d0f640b93065fb7244e35a4c07930c45956d315839",
+        "originalSha256": "4a8ac73950772bad016d8b5fe1639d1b66b25776c7eeec2059b1850c0aa5e37e"
+      },
+      {
+        "path": "catalog-runner.log.gz",
+        "source": "/tmp/boe-1553-metadata-catalog.log",
+        "sha256": "4f5de12416ff983635177107f4d24699dcd6a43c4e19838be8d5998bd8a91116",
+        "originalSha256": "d96e2f6ce3018bfd95bda707186b56580090f8a25ba4a83546d7ad0e18fecc89"
+      }
+    ]
   }
 }

@@ -1,3 +1,22 @@
+## A01 metadata component evidence checkpoint — 2026-10-08
+
+Frozen76d8d83a: fresh Linux7 build/PlanOnly and7/7PASS6.908s, full selection,
+cleanup complete; separate native Windows32 PlanOnly confirms compiled discovery,
+0executed. Discovery-only catalog455/11242 valid,0executed. [Exact raw packets and
+source pins](recovery/storage-migration-metadata-20261008/manifest.json). Independent
+isolated adapter review pending. No Windows durability/ConPTY/production activation
+claim. Next owner conjunction must require positively absent worker namespace and
+no retained worker context on Windows at Open, original/remote admission AND held
+remote mutation; finalization/independent cleanup remain possible. Linux retained
+worker inventory behavior stays unchanged. Captured provider observation precedes
+Prepared, never permits reboot/cold nonterminal adoption.
+
+Boot source/evidence independently accepted atfed43297:16 exact PASS, no findings.
+Parent restored exacte8d32ac3 from GitHub into a new clean checkout (25202 files,
+connectivity fsck PASS), verified68 stored/expanded artifacts+35 source pins across
+accepted-turn, directory, Bridge baseline and boot packets; no tests in restore.
+That proof ends ate8, not the later metadata carrier.
+
 ## A01 isolated native metadata adapter WIP — 2026-10-08
 
 Existing783ddfcc Linux baseline7/7PASS8.150s, full selection and owned cleanup;
