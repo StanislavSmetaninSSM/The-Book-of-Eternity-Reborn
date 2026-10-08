@@ -18133,6 +18133,83 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-browser-protocol-consumers-linux",
+      "responsibility": "F04/F05 exact23 existing original browser coordinator, cumulative intent, pending/common recovery ordering, refusal/cleanup-only evidence, dynamic directory rollback and declared external/public QTE consumers.",
+      "excludes": "Broad browser/Load/main-owner suites, direct-gacha neighbors unless separately selected, native Windows execution, schema7 rewritten as6 as proof of authentic old recovery, whole-operation atomic restoration.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+        "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs",
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts",
+        "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CommitsExistingAndAbsentMembers",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_CallbackFailureRestoresExactBaselineAndAbsence",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxTests.RealCoordinator_ExplicitOriginalLeasePublishesWithoutAmbientAuthority",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.SharedWriteAppendCompareExchangeDelete_RecordAndRestoreFirstBaseline",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.SuccessfulFirstWriteThenFailedLaterWrite_PreservesCumulativeAuthority",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InterruptedRealTransaction_FreshManagerRestoresBeforeReturningLease",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CommittedCleanupDebt_FreshManagerCleansManifestOrTypedOrphan",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DirectoryMemberDeletion_RestoresDeclaredBytesOnCallbackFailure",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.InvalidOrUnsupportedEvidence_RefusesBeforeRecoveryAndRetainsExactBytes",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.OldEmptyOrphanCleanupIntent_IsRetainedWithoutMutation",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingMemberDecision_SettlesBeforeBrowserRollback",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.DeclaredActualProfileStore_CommitsOrRestoresExactBaseline",
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ActualQteWebRewardResolution_UsesDeclaredPortableParticipant"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-daren-protocol-consumers-linux",
+      "responsibility": "F05 exact23 existing original standalone profile/public console QTE, byte/absence/read/no-op/cancellation, actual publication rollback, committed debt and uncertainty controls.",
+      "excludes": "Broad browser/Load/main-owner suites, direct-gacha neighbors unless separately selected, native Windows execution, schema7 rewritten as6 as proof of authentic old recovery, whole-operation atomic restoration.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.BrowserLocalStorage.cs",
+        "BookOfEternityClient/Core/FileSystemManager.DarenLocalStorage.cs",
+        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+        "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts",
+        "BookOfEternityClient/Services/DarenRewardProfileFileStore.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.RealProfileService_CreateUpgradeFreshReadAndOriginalGrant",
+            "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.PublicConsoleQte_CompletesOriginalStandaloneRouteWithoutBootstrap",
+            "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExactStoreAndOriginalQteRollback_RestoreBytesOrOriginalAbsence",
+            "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.ExistingProfileRead_NormalizesThroughRealStore",
+            "BookOfEternityClient.Tests.DarenStandaloneLinuxTests.SupportedCheckAbsentRestoreAndPreCancel_HaveNoPreparationEffects",
+            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualProfilePublicationCut_ConfirmsExactRollbackOrOriginalAbsence",
+            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.RealCompletionCommittedDebt_FreshOriginalRecoveryKeepsReward",
+            "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery"
+          ]
+        }
+      ]
     }
   ]
 }

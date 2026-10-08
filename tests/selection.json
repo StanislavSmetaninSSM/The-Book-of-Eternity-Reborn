@@ -398,6 +398,32 @@
         "F06",
         "T063-REMAINING-CONSUMERS"
       ]
+    },
+    {
+      "category": "portable-browser-protocol-consumers-linux",
+      "reason": "F04/F05 baseline for coherent whole-consumer schema routing, recovery order and exact registered profile cutover. Existing methods unchanged; finite shared Linux evidence only, never native Windows qualification.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-005",
+        "FR-006",
+        "F04",
+        "F05",
+        "T063-REMAINING-CONSUMERS"
+      ]
+    },
+    {
+      "category": "portable-daren-protocol-consumers-linux",
+      "reason": "F04/F05 baseline for coherent whole-consumer schema routing, recovery order and exact registered profile cutover. Existing methods unchanged; finite shared Linux evidence only, never native Windows qualification.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-005",
+        "FR-006",
+        "F04",
+        "F05",
+        "T063-REMAINING-CONSUMERS"
+      ]
     }
   ]
 }

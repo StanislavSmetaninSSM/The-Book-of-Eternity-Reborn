@@ -1,3 +1,41 @@
+## F04/F05 bounded original-consumer baseline WIP — 2026-10-08
+
+F06 independent final source/evidence/carrier PASS2f373cb3/runtime47ce, no findings:
+34 Linux PASS,30 stored/expanded artifacts and47 historical Git pins verified.
+Parent fresh direct GitHub restore PASS at exact2f373cb3 in
+`/workspace/boe-1553-migration-inactive-evidence-restore`: clean26169 tracked files,
+fsck--no-dangling exit0, all30 stored/expanded hashes and47 historical Git pins
+match. No builds/tests in restore; remote branch matched2f373 and main remainsd024.
+
+Next baseline selects exactly46 existing unchanged Linux cases in two categories:
+`portable-browser-protocol-consumers-linux`23 and
+`portable-daren-protocol-consumers-linux`23. Browser scope: coordinator3, cumulative2,
+interrupted1, committed cleanup2, dynamic directory1, malformed/unsupported5, empty
+legacy orphan1, pending member1, pending manifest scratch1, confirmed cleanup1,
+declared external4, public QTE1. Daren scope: original profile/QTE/read/restore/no-op7,
+publication phase12, committed debt2, actual post-intent authority loss2. No broad
+browser boundary/Load/main-owner selection. These are shared-route baseline controls;
+Windows-only missing activation is not dynamically reproduced on Linux. Selection
+metadata only; runtime and test bodies unchanged, build/actual/independent gate pending.
+
+Reviewed next direction: read-only whole browser evidence protocol classification
+before any old/current recovery effects; fresh schema7 on both platforms while
+original schema<=6 and empty cleanup intent retain original Windows handler or
+explicit refusal. Unknown/mixed evidence refuses with exact bytes. Current preflight
+then common journal settlement then current browser recovery remains ordered under
+the original main/worker/generation/purpose admission. Fix normalized current scratch
+filter and slash-relative paths, the sole registered Daren absolute spelling and
+context-first original external transaction dispatch; preserve exact Ordinal grants,
+sequential browser restore, signed direct-gacha mapping, runtime outcome and cleanup.
+Do not bump legacy schema6 constant or manufacture archive/JSON ownership.
+
+Direct-gacha signed adoption requires a separate exact consumer selection after its
+delta is frozen, not an implicit broad category. New classifier/mixed-before-effect
+fixtures and native ordinary/extended path/current/old-handler recipes follow review.
+The existing schema7 manifest rewritten to6 only proves refusal, never authentic
+schema6 recovery. Native bodies remain unexecuted; no supported Windows claim follows
+from the proposed baseline. No runtime change before baseline and bounded design review.
+
 ## F06 original-consumer GREEN checkpoint — 2026-10-08
 
 Runtime47ce03cf68ce5e92de9f0415ea0fa7be30984c2e independent SOURCE/SELECTION
