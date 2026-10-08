@@ -1,0 +1,16 @@
+{
+  "TimestampUTC": "2026-10-08T06:56:20.261552+00:00",
+  "DeletedOwnedClosedImmutableShip": "/tmp/reusable-relay-83f885854c80413ab144e655748d6444/ship",
+  "PackageFilesVerified": 694,
+  "Manifest": "original-owner-red-manifest.json",
+  "OriginalShutdownVerified": true,
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 1,
+    "emergencySignals": 0,
+    "reaped": 1,
+    "failures": 0,
+    "deadline": false
+  },
+  "KeptStateHistoryMainRecordsNativePackageEvidence": true
+}

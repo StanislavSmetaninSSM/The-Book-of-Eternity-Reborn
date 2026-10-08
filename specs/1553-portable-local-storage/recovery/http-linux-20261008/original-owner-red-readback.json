@@ -1,0 +1,35 @@
+{
+  "Commit": "b4d77ac31b894c28196efcf85cfea81da4a832b8",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-red-manifest.json",
+      "Bytes": 156739,
+      "GitBlob": "d497741f570f8390ec7de375072b1bed79a39065",
+      "SHA256": "4382456889eb437b730ecd550975279c061d69d058744705eee091d03a26b182"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-red-evidence.zip",
+      "Bytes": 282597,
+      "GitBlob": "581c834ad4d97851a4eb813a11c9f3207e2e67f8",
+      "SHA256": "ed3eca7591b7d02092641a9458b90aa45f977711cf3bb3fbb7690a9534568f18"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-red-scenario.json",
+      "Bytes": 22119,
+      "GitBlob": "d35bfaad2874ec04218c433e8ad1b3194bfb9068",
+      "SHA256": "bdb1725a46aa57ad48f38f36df21f6d21bd770c7fc09f05fcb4e6be9b100a96b"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-red-guardian.json",
+      "Bytes": 97,
+      "GitBlob": "f7ca2c996b9df2b162b6a7ed981258e3de0b53d3",
+      "SHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/http-linux-20261008/original-owner-tests-only-delta.patch",
+      "Bytes": 2100,
+      "GitBlob": "69b0be4081eb066c619a1f1535a3ce2b8125125b",
+      "SHA256": "d242edbd54268444de5b53e38d7401154cda29220bb39df35ad2848a8a540d3e"
+    }
+  ]
+}

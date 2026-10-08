@@ -195,3 +195,22 @@ GREEN3d6cfd24898fa30b37764de688432455ac9a4660 is now supplied. Its exact Linux
 selection and a fresh ordinaryNewGame/133HTTP installed web-relay comparison are
 next; old contention33 and prior baselines will not be rerun. Independent Sol
 verification review is in progress. Product code remains read-only.
+
+
+T055 GREEN targeted receipt: exact3d6cfd24898fa30b37764de688432455ac9a4660,
+selection-linux.json via the same targeted runner/Parallelism1, fresh build:
+3/3 executed PASS,3/3 descriptors,141.0582708s, no timeout/duplicate/skip and
+complete owned/runtime cleanup. Original idle relay HTTP case now has10/10
+meaningful200 DTOs and10matching original Completed closes; no prompt/model call,
+no readiness override and exact original queue-close/stop. Actual browser Load
+full-bundle/fresh-epoch and premature-ACK consumers also pass separately with
+three guardianECHILD/0emergency/no deadline and physical original retirement.
+This does not replace the required genuine installed NewGame/localhost comparison,
+which is next. All source/fixture/package pins are in original-owner-green-manifest.
+
+Capture caveat: fixture-preparation.Cwd records the earlier neutral placeholder
+work Ж directory. Actual relay cwd is Ready.shellWorkingDirectory (game_session);
+that observed original status is authoritative. Original artifacts are unchanged.
+Only closed immutable test ships were removed after all hashes and logical stop
+proofs were saved, to free disk for the requested next live package. Root state,
+history, main metadata, native packages and raw evidence remain.

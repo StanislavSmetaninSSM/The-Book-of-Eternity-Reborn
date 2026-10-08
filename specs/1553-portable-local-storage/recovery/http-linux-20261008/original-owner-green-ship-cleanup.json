@@ -1,0 +1,17 @@
+[
+  {
+    "DeletedOwnedImmutableShip": "/tmp/relay-linux-regression-github-final/checkout/TestResults/production-main/6e8d026a5f9b4b01896d6ae114c131ea/ship",
+    "VerifiedPackageFiles": 684,
+    "LogicalRetirementAndGuardianVerified": true
+  },
+  {
+    "DeletedOwnedImmutableShip": "/tmp/relay-linux-regression-github-final/checkout/TestResults/production-main/f008e0cee36146338233088dc5ee5900/ship",
+    "VerifiedPackageFiles": 684,
+    "LogicalRetirementAndGuardianVerified": true
+  },
+  {
+    "DeletedOwnedImmutableShip": "/tmp/reusable-relay-d004db5d2ab84477b06a64be45a28f7d/ship",
+    "VerifiedPackageFiles": 694,
+    "LogicalRetirementAndGuardianVerified": true
+  }
+]
