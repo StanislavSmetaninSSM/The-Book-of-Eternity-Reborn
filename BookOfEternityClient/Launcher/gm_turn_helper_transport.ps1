@@ -98,13 +98,14 @@ function Open-BoeHelperScope {
         $process.StandardInput.WriteLine((@{sequence=0L;action='open';mode=$Mode}|ConvertTo-Json -Compress));$process.StandardInput.Flush()
         $reply=Read-BoeHelperFrame $context
         if($reply.state -ceq 'admission-cancelled' -and $reply.effectiveOutcome -eq 2){
+            $context.closed=$true;$context.closeOutcome=2;$context.terminalClose=$reply.terminalClose;$context.closeObserved=$reply.closeObserved
             $cancelled=[OperationCanceledException]::new('Original helper admission was cancelled.')
             $cancelled.Data['BoeHelperStorageFailure']=$true
             $cancelled.Data['OriginalTerminalClose']=$reply.terminalClose
             $cancelled.Data['OriginalCloseObserved']=$reply.closeObserved
             throw $cancelled
         }
-        if(-not $reply.ok -or $reply.state -cne 'active' -or $reply.sequence -ne 0 -or $reply.generation -cnotmatch '^[0-9a-f]{32}$' -or ($ExpectedGeneration -and $reply.generation -cne $ExpectedGeneration)){throw 'Helper admission identity is invalid.'}
+        if(-not $reply.ok -or $reply.state -cne 'active' -or $reply.sequence -ne 0 -or $reply.generation -cnotmatch '^[0-9a-f]{32}$' -or ($ExpectedGeneration -and $reply.generation -cne $ExpectedGeneration)){$context.lost=$true;throw 'Helper admission identity is invalid.'}
         $context.originalClose=$reply.originalClose;$context.generation=$reply.generation
         return $context
     } catch {Complete-BoeHelperTransport $context;throw (New-BoeStorageFailure 'Original initialized helper admission refused.' $_.Exception)}
@@ -170,17 +171,24 @@ function Invoke-BoeHelperRequest {
     $buffer=[IO.MemoryStream]::new()
     try {
         do {
+            # A valid negative command reply retains its storage classification.
+            # Only malformed successful transfer data below becomes transport loss.
             $chunk=Send-BoeHelperFrame $context @{action='response-chunk';transfer=$id;offset=$buffer.Length}
-            if($chunk.transfer -cne $id -or $chunk.offset -ne $buffer.Length){$context.lost=$true;throw (New-BoeStorageFailure 'Original helper response chunk identity changed.' $null)}
-            $bytes=[Convert]::FromBase64String($chunk.bytes)
-            if($bytes.Length -gt 32768 -or $buffer.Length+$bytes.Length -gt $reply.length -or ($bytes.Length -eq 0 -and $reply.length -ne 0)){$context.lost=$true;throw (New-BoeStorageFailure 'Original helper response chunk length changed.' $null)}
-            $buffer.Write($bytes,0,$bytes.Length)
+            try {
+                if($chunk.transfer -cne $id -or $chunk.offset -ne $buffer.Length){throw 'Original helper response chunk identity changed.'}
+                $bytes=[Convert]::FromBase64String($chunk.bytes)
+                if($bytes.Length -gt 32768 -or $buffer.Length+$bytes.Length -gt $reply.length -or ($bytes.Length -eq 0 -and $reply.length -ne 0)){throw 'Original helper response chunk length changed.'}
+                $buffer.Write($bytes,0,$bytes.Length)
+            } catch {$context.lost=$true;throw (New-BoeStorageFailure 'Original helper response chunk is invalid; no replay.' $_.Exception)}
         } while(-not $chunk.complete)
-        $bytes=$buffer.ToArray()
-        if($bytes.LongLength -ne $reply.length -or (Get-BoeSha256Hex $bytes) -cne $reply.hash){$context.lost=$true;throw (New-BoeStorageFailure 'Original helper response length/hash changed.' $null)}
-        return ConvertFrom-BoeJsonMutable -Json ($utf8.GetString($bytes))
+        try {
+            $bytes=$buffer.ToArray()
+            if($bytes.LongLength -ne $reply.length -or (Get-BoeSha256Hex $bytes) -cne $reply.hash){throw 'Original helper response length/hash changed.'}
+            return ConvertFrom-BoeJsonMutable -Json ($utf8.GetString($bytes))
+        } catch {$context.lost=$true;throw (New-BoeStorageFailure 'Original helper response payload is invalid; no replay.' $_.Exception)}
     } finally {$buffer.Dispose()}
 }
+
 function Read-BoeBytes {
     param([string]$Path)
     if(-not $script:BoeHelperScope){return Invoke-BoeHelperScope -Body {Read-BoeBytes $Path}}

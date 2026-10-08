@@ -54,9 +54,10 @@ internal static class GmHelperCurrentScenario
             File.WriteAllText(receipt,JsonSerializer.Serialize(new{Phase=phase,Path=path,ProcessId=Environment.ProcessId,Cuts=1}));
             report["OriginalContractRaceReached"]=true;
         }
+        using var observedOutput=new ResponseObserver(Console.OpenStandardOutput(),folder,report);
         try {var exit=mode=="admission-cancel"
-                ?await GmTurnHelperControl.RunInterruptibleAsync(files,Console.OpenStandardInput(),Console.OpenStandardOutput(),expected)
-                :await GmTurnHelperControl.RunAsync(files,Console.OpenStandardInput(),Console.OpenStandardOutput(),expected=="initialize"?null:expected);report["ExitCode"]=exit;return exit;}
+                ?await GmTurnHelperControl.RunInterruptibleAsync(files,Console.OpenStandardInput(),observedOutput,expected)
+                :await GmTurnHelperControl.RunAsync(files,Console.OpenStandardInput(),observedOutput,expected=="initialize"?null:expected);report["ExitCode"]=exit;return exit;}
         catch(Exception failure){report["Failure"]=failure.ToString();report["Cancelled"]=failure is OperationCanceledException;report["ExitCode"]=2;return 2;}
         finally {report["Completed"]=true;report["PublicationCuts"]=cuts;report["LeaseOpens"]=leases;report["RecoveryPhases"]=recovery;await File.WriteAllTextAsync(Path.Combine(folder,$"helper-child-{Environment.ProcessId}.json"),JsonSerializer.Serialize(report));}
     }
@@ -143,6 +144,28 @@ internal static class GmHelperCurrentScenario
         }
         async Task WaitFile(string name){var timeout=Stopwatch.StartNew();while(!File.Exists(Path.Combine(folder,name))){if(timeout.Elapsed>TimeSpan.FromSeconds(5))throw new TimeoutException("Actual helper boundary not reached: "+name);await Task.Delay(10);}}
     }
+    private sealed class ResponseObserver(Stream output,string folder,Dictionary<string,object?> report):Stream
+    {
+        public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer,CancellationToken cancellationToken=default)
+        {
+            if(buffer.Length>1&&File.Exists(Path.Combine(folder,"corrupt-response"))&&!report.ContainsKey("ResponseDecodeCut"))
+            {
+                var value=System.Text.Json.Nodes.JsonNode.Parse(buffer.Span)!.AsObject();
+                if(value.ContainsKey("complete")&&value.ContainsKey("bytes"))
+                {
+                    report["OriginalResponseFrame"]=Encoding.UTF8.GetString(buffer.Span);
+                    value["bytes"]="%%%";buffer=JsonSerializer.SerializeToUtf8Bytes(value);report["ResponseDecodeCut"]=1;
+                }
+            }
+            await output.WriteAsync(buffer,cancellationToken);
+        }
+        public override Task FlushAsync(CancellationToken token)=>output.FlushAsync(token);
+        public override void Flush()=>output.Flush();
+        public override bool CanRead=>false;public override bool CanSeek=>false;public override bool CanWrite=>true;
+        public override long Length=>throw new NotSupportedException();public override long Position{get=>throw new NotSupportedException();set=>throw new NotSupportedException();}
+        public override int Read(byte[] b,int o,int c)=>throw new NotSupportedException();public override long Seek(long o,SeekOrigin s)=>throw new NotSupportedException();public override void SetLength(long l)=>throw new NotSupportedException();
+        public override void Write(byte[] b,int o,int c)=>WriteAsync(b.AsMemory(o,c)).AsTask().GetAwaiter().GetResult();
+    }
     [DllImport("libc",EntryPoint="pidfd_send_signal",SetLastError=true)]
     private static extern int Signal(SafeFileHandle identity,int signal,IntPtr info,uint flags);
 
@@ -164,6 +187,20 @@ internal static class GmHelperCurrentScenario
         Require(result.RootElement.GetProperty("Success").GetBoolean(),"Actual PowerShell control did not complete its assertions.");
         var joined=result.RootElement.GetProperty("Joined").EnumerateArray().ToArray();
         Require(joined.Select(x=>x.GetProperty("ProcessId").GetInt32()).Distinct().Count()==joined.Length,"Duplicate joined original helper.");
+        Require(joined.All(x=>x.GetProperty("ExitedBeforeDispose").GetBoolean()),"An original process required forced disposal.");
+        if(mode=="nested-default")
+        {
+            Require(joined.Length==1,"Nested default role launched a dedicated helper or lost its original process.");
+            var original=joined[0];
+            Require(original.GetProperty("ExitCode").GetInt32()==0&&original.GetProperty("LocalScopeCompleted").GetBoolean()&&original.GetProperty("Outcome").GetInt32()==0&&!original.GetProperty("CloseObserved").GetBoolean()&&original.GetProperty("TerminalClose").ValueKind==JsonValueKind.Null,"Original default role did not settle its exact local completion.");
+        }
+        if(mode=="large-read")
+        {
+            var production=result.RootElement.GetProperty("ProductionHelperPids").EnumerateArray().Select(x=>x.GetInt32()).ToArray();
+            Require(production.Length==2&&joined.Length==2&&production.SequenceEqual(joined.Select(x=>x.GetProperty("ProcessId").GetInt32()))&&joined.All(x=>x.GetProperty("ExitCode").GetInt32()==0&&x.GetProperty("LocalScopeCompleted").GetBoolean()),"Actual production factory/CLI Init+read did not join its two original helpers.");
+            Require(Directory.GetFiles(folder,"helper-child-*.json").Length==0,"Production factory control used a substituted helper bootstrap.");
+            evidence["ActualProductionFactoryAndCli"]=true;
+        }
         var reports=new List<JsonElement>();
         foreach(var path in Directory.GetFiles(folder,"helper-child-*.json"))
         {
@@ -172,6 +209,7 @@ internal static class GmHelperCurrentScenario
             Require(item.GetProperty("Completed").GetBoolean()&&original.GetProperty("ExitedBeforeDispose").GetBoolean()&&original.GetProperty("ExitCode").GetInt32()==item.GetProperty("ExitCode").GetInt32(),"Original helper was not joined at its real exit.");
         }
         evidence["ActualHelperChildren"]=reports;
+        if(mode=="chunk-hash")Require(reports.Sum(x=>x.TryGetProperty("ResponseDecodeCut",out var cut)?cut.GetInt32():0)==1,"Actual response decode cut was not reached exactly once.");
         if(mode is "known-rollback" or "publication-unknown" or "committed-debt")Require(reports.Sum(x=>x.GetProperty("PublicationCuts").GetInt32())==1,"Selected actual publication cut did not occur exactly once.");
         if(mode=="known-rollback")Require(File.ReadAllBytes(files.ResolvePath(Target)).SequenceEqual(Before)&&!File.Exists(Journal(files)),"Known rollback did not preserve exact before bytes.");
         if(mode=="publication-unknown")Require(File.ReadAllBytes(files.ResolvePath(Target)).SequenceEqual(new byte[]{41,43,47})&&File.Exists(Journal(files)),"Actual unknown evidence was lost.");

@@ -1,3 +1,32 @@
+## F13 same-row transport/production launch refinements — 2026-10-08
+
+Within existing53, large-read now retains the actual production process factory and
+Program --gm-turn-helper path for both Init and read, checking two exact original
+PID/exit/local-close pairs and zero injected-bootstrap reports. Hook-dependent rows
+remain component/consumer tests with the disclosed TestSupport factory.
+
+The existing chunk-hash row additionally corrupts one actual response chunk after its
+original C# emission, proves the reached frame cut, and requires the PS transport-loss
+latch to refuse both later read and Initialize without launching another helper. This
+is a new GREEN control, not historical causal RED. Decode catches surround malformed
+successful payloads only; valid negative storage replies retain their classification.
+No case count or production fault selector changed. Compilation and review are pending.
+
+## F13 bounded review corrections after successful build — 2026-10-08
+
+Clean678e Plan195707 compiled both projects, selected exact53/6 and executed zero
+(70.7241069s, exit0, both cleanup flags true). It is archived as intermediate build
+and selection evidence only. No actual GREEN has run.
+
+The focused correction requires every current-control joined process to have exited
+before disposal, including the default A03 child with no dedicated report; its exact
+local completion/exit is checked. Native original scripts retain UTF8 BOM and the
+previous process-local ExecutionPolicy Bypass argument. Response decoding failures
+(base64/UTF8/JSON as well as length/hash) now latch transport loss, and malformed
+admission identity does likewise; a valid cancelled admission retains the actual
+received close/ACK projection. These changes need frozen review and a fresh matching
+build before the same finite53 execution. Native PS5.1 remains unexecuted.
+
 ## F13 competing-Ready fixture target correction — 2026-10-08
 
 The actual read hook now selects the existing request before Ready witness capture.

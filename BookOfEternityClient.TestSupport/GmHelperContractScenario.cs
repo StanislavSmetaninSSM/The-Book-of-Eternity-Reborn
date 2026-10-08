@@ -61,9 +61,9 @@ internal static class GmHelperContractScenario
             var glue=Path.Combine(TestRepoPaths.RepoRoot,"tests/fixtures/GmTurnHelper/contract-bootstrap.ps1");
             string Q(string value)=>"'"+value.Replace("'","''")+"'";
             command=Regex.Replace(command,@"(?m)^\. '[^\r\n]*GM_Turn_Helper\.ps1'[ \t]*$",m=>m.Value+Environment.NewLine+". "+Q(glue)+" -Folder "+Q(folder)+" -TestSupport "+Q(typeof(GmHelperContractScenario).Assembly.Location));
-            await File.WriteAllTextAsync(Path.Combine(folder,"owned.ps1"),command,new UTF8Encoding(false));
+            await File.WriteAllTextAsync(Path.Combine(folder,"owned.ps1"),command,new UTF8Encoding(OperatingSystem.IsWindows()));
             var start=new ProcessStartInfo(OperatingSystem.IsWindows()?"powershell.exe":"pwsh"){UseShellExecute=false,RedirectStandardOutput=true,RedirectStandardError=true};
-            foreach(var arg in new[]{"-NoLogo","-NoProfile","-NonInteractive","-File",Path.Combine(folder,"owned.ps1")})start.ArgumentList.Add(arg);
+            foreach(var arg in new[]{"-NoLogo","-NoProfile","-NonInteractive","-ExecutionPolicy","Bypass","-File",Path.Combine(folder,"owned.ps1")})start.ArgumentList.Add(arg);
             var execution=await JoinAsync(start,TimeSpan.FromSeconds(25));evidence["ExitCode"]=execution.ExitCode;evidence["StdOut"]=execution.StdOut;evidence["StdErr"]=execution.StdErr;
             var joined=File.Exists(Path.Combine(folder,"joined.jsonl"))?File.ReadAllLines(Path.Combine(folder,"joined.jsonl")).Select(x=>JsonDocument.Parse(x)).ToArray():[];
             try

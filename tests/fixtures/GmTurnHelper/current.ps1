@@ -2,16 +2,21 @@ param([string]$RepoRoot,[string]$SessionPath,[string]$Scenario,[string]$Folder,[
 $ErrorActionPreference='Stop'
 . (Join-Path $RepoRoot 'BookOfEternityClient/Launcher/gm_main_operation.ps1')
 . (Join-Path $RepoRoot 'BookOfEternityClient/Launcher/GM_Turn_Helper.ps1')
+$script:ActualHelperFactory=${function:Start-BoeHelperProcess};$script:ProductionHelperPids=[Collections.Generic.List[int]]::new()
 $script:Joined=[Collections.Generic.List[object]]::new();$script:OriginalDispose=${function:Dispose-GmOperationTransport}
 function Dispose-GmOperationTransport {
  param($Context)
  if($Context.disposed){return (& $script:OriginalDispose $Context)}
  $pidValue=$Context.process.Id;$exited=$Context.process.WaitForExit(3500)
  & $script:OriginalDispose $Context
- $script:Joined.Add([pscustomobject]@{ProcessId=$pidValue;ExitedBeforeDispose=$exited;ExitCode=$Context.exitCode;OriginalClose=$Context.originalClose;TerminalClose=$Context.terminalClose;CloseObserved=$Context.closeObserved;Outcome=$Context.closeOutcome;Uncertain=$Context.publicationUncertain;Lost=$Context.lost;LastReply=$Context.lastCommandReply})
+ $script:Joined.Add([pscustomobject]@{ProcessId=$pidValue;ExitedBeforeDispose=$exited;ExitCode=$Context.exitCode;OriginalClose=$Context.originalClose;TerminalClose=$Context.terminalClose;CloseObserved=$Context.closeObserved;LocalScopeCompleted=$Context.localScopeCompleted;Outcome=$Context.closeOutcome;Uncertain=$Context.publicationUncertain;Lost=$Context.lost;LastReply=$Context.lastCommandReply})
 }
 function Start-BoeHelperProcess {
  param([string]$Root,[AllowNull()][string]$ExpectedGeneration)
+ if($Scenario -ceq 'large-read'){
+  $original=& $script:ActualHelperFactory -Root $Root -ExpectedGeneration $ExpectedGeneration
+  $script:ProductionHelperPids.Add($original.Id);return $original
+ }
  $start=[Diagnostics.ProcessStartInfo]::new('dotnet');$start.UseShellExecute=$false;$start.RedirectStandardInput=$true;$start.RedirectStandardOutput=$true;$start.RedirectStandardError=$true
  $expected=if($ExpectedGeneration){$ExpectedGeneration}else{'initialize'}
  foreach($arg in @($TestSupport,'helper-current-bootstrap',$Root,$Folder,$expected,$Scenario)){[void]$start.ArgumentList.Add($arg)}
@@ -61,6 +66,14 @@ try {
    try {Expect-Refusal {Invoke-BoeHelperRequest @{action='publish';path=$target;bytes=[Convert]::ToBase64String($payload)}};Close-GmParticipatingOperation $context 1}
    finally{$script:BoeHelperScope=$null;Complete-BoeHelperTransport $context}
    Require ((Get-BoeSha256Hex ([IO.File]::ReadAllBytes((Join-Path $SessionPath $target)))) -ceq (Get-BoeSha256Hex $before)) 'Read role published bytes.'
+   if($Scenario -ceq 'chunk-hash'){
+    [IO.File]::WriteAllText((Join-Path $Folder 'corrupt-response'),'fixture-owned actual response cut')
+    Expect-Refusal {Read-BoeJson $target}
+    Require ($script:BoeHelperFailure -and $script:Joined[$script:Joined.Count-1].Lost) 'Malformed actual response was not retained as transport loss.'
+    $count=$script:Joined.Count;Expect-Refusal {Initialize-BoeGmTurnHelper $SessionPath};Expect-Refusal {Read-BoeJson $target}
+    Require ($script:Joined.Count -eq $count) 'Malformed response allowed a replacement helper process.'
+    Require ((Get-BoeSha256Hex ([IO.File]::ReadAllBytes((Join-Path $SessionPath $target)))) -ceq (Get-BoeSha256Hex $before)) 'Malformed response altered canonical bytes.'
+   }
   }
   'partial-close' {
    $context=Open-BoeHelperScope 'write' $SessionPath $script:BoeHelperGeneration;$id=[Guid]::NewGuid().ToString('N')
@@ -138,4 +151,4 @@ try {
  }
  $evidence.Success=$true
 } catch {$evidence.Failure=$_.Exception.ToString();throw}
-finally {$evidence.Joined=@($script:Joined.ToArray());[IO.File]::WriteAllText((Join-Path $Folder 'powershell.json'),($evidence|ConvertTo-Json -Depth 30 -Compress))}
+finally {$evidence.ProductionHelperPids=@($script:ProductionHelperPids.ToArray());$evidence.Joined=@($script:Joined.ToArray());[IO.File]::WriteAllText((Join-Path $Folder 'powershell.json'),($evidence|ConvertTo-Json -Depth 30 -Compress))}
