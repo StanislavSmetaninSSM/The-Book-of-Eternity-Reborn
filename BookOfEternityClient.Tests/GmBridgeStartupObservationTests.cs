@@ -66,7 +66,10 @@ public sealed class GmBridgeStartupObservationTests
                 Assert.False(disposal.IsCompleted);
                 Assert.False(cts.IsCancellationRequested);
                 Assert.False((bool)Field("_writeGateDisposed")!);
-                Assert.NotNull(await Record.ExceptionAsync(() => Call("StartShellAsync").WaitAsync(TimeSpan.FromSeconds(1))));
+                var restart = Call("StartShellAsync");
+                var refusal = await Record.ExceptionAsync(() => restart.WaitAsync(TimeSpan.FromSeconds(1)));
+                Assert.NotNull(refusal); Assert.IsNotType<TimeoutException>(refusal);
+                Assert.True(restart.IsCompleted);
                 Assert.False(probe.TrySettle());
             }
             else
