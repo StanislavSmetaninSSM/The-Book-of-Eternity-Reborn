@@ -6,6 +6,12 @@ namespace BookOfEternityClient.Core;
 // every input it consumes is witnessed again at the original publication cut.
 internal sealed class GmHelperCanonicalScope
 {
+    // A bounded protocol cause, without target paths or arbitrary exception text.
+    internal sealed class BaselineChangedException : InvalidOperationException
+    {
+        internal BaselineChangedException() : base("A helper baseline changed.") { }
+    }
+
     private readonly FileSystemManager _files;
     private readonly FileSystemManager.CanonicalWriteLease _lease;
     private readonly TrustedLocalFileScope _scope;
@@ -72,7 +78,7 @@ internal sealed class GmHelperCanonicalScope
             foreach(var item in _reads)
                 if(Hash(await _files.ReadFileBytesAsync(_lease,item.Key))!=item.Value) throw new InvalidDataException("A helper read witness changed.");
             foreach(var item in supplied)
-                if(Hash(await _files.ReadFileBytesAsync(_lease,item.Key))!=item.Value) throw new InvalidDataException("A helper baseline changed.");
+                if(Hash(await _files.ReadFileBytesAsync(_lease,item.Key))!=item.Value) throw new BaselineChangedException();
             foreach(var item in _kinds)
                 if(_scope.ObserveNamespace(_files.ResolvePath(item.Key)).Kind!=item.Value) throw new InvalidDataException("A helper namespace witness changed.");
             foreach(var item in _trees)

@@ -187,7 +187,9 @@ internal static class GmTurnHelperControl
                             // another command could finalize after a rejected chunk.
                             receiving=false;incoming.SetLength(0);outgoing=null;transfer=null;
                             if(failure is CoordinatedStatePublicationUncertainException) uncertain=true;
-                            await Reply(new {ok=false,sequence,errorKind="storage",publicationDisposition=publication?.Disposition.ToString(),
+                            await Reply(new {ok=false,sequence,errorKind="storage",
+                                errorCode=failure is GmHelperCanonicalScope.BaselineChangedException?"read-baseline-changed":null,
+                                publicationDisposition=publication?.Disposition.ToString(),
                                 publicationUncertain=uncertain,cleanupPending=publication?.Disposition==TrustedLocalPublicationDisposition.Committed&&publication.Failure!=null});
                         }
                     }

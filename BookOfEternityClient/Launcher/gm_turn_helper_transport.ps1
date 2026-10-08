@@ -74,7 +74,10 @@ function Send-BoeHelperFrame {
         $Context.publicationUncertain=$true
         if(-not $Context.uncertainCommandReply){$Context.uncertainCommandReply=$reply}
     }
-    if(-not $reply.ok){throw (New-BoeStorageFailure 'Dedicated helper storage or protocol operation refused.' $null)}
+    if(-not $reply.ok){
+        $message=if($reply.errorCode -ceq 'read-baseline-changed'){'File changed since Read-BoeJson; reread the current file before writing.'}else{'Dedicated helper storage or protocol operation refused.'}
+        throw (New-BoeStorageFailure $message $null)
+    }
     return $reply
 }
 function Complete-BoeHelperTransport {

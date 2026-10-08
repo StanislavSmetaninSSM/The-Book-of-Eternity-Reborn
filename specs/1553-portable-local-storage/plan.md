@@ -1,3 +1,21 @@
+## F13 bounded stale-read diagnostic correction — 2026-10-08
+
+Focused21P1F evidence is remote-persisted at19be (267 new artifacts/26 pins;
+complete helper packet916 artifacts/152 pins). The correction tags only the actual
+supplied-byte-baseline mismatch with an internal nontransient exception and emits
+a fixed bounded `read-baseline-changed` reply code. PowerShell maps that code to
+its established `changed since Read-BoeJson` diagnostic while retaining storage
+failure classification and a live original transport. Other refusal messages,
+publication decisions, witness checks and cleanup remain unchanged; no paths or
+arbitrary exception text enter frame metadata.
+
+The unchanged stale-RMW Fact now has one dedicated category, removed from its
+former owner; original semantic53 remains9+1+18+21+1+3. Proposed final selection20
+is current18 (the shared refusal/transport path changed), stale-RMW1 and the still
+unexecuted realm1. Original21, causal9 and A03 neighbors3 keep their already accepted
+source-era evidence. Independent source/selection gate and matching build precede
+actual20. No native or complete migration claim.
+
 ## F13 focused original-contract result — 2026-10-08
 
 Independent focused source/fixture/selection PASS6ed and matching Plan201824

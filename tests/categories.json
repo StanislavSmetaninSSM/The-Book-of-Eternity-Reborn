@@ -18374,7 +18374,7 @@
     },
     {
       "id": "portable-gm-helper-original-contracts-linux",
-      "responsibility": "F13 exact20 original public methods/22 rows: completion/QTE, serialization, mutable/stale read, NPC/Guardian/training, snapshot policy and actual spiritual publication/read witnesses. Original business assertions with genuine bootstrap and owned Linux pwsh/helper execution.",
+      "responsibility": "F13 exact19 original public methods/21 rows (stale-RMW is separately owned): completion/QTE, serialization, mutable/stale read, NPC/Guardian/training, snapshot policy and actual spiritual publication/read witnesses. Original business assertions with genuine bootstrap and owned Linux pwsh/helper execution.",
       "excludes": "No full helper/daemon cohort, provider, live GM or native Windows/PowerShell5.1. SIGINT proves the owned Linux helper role, not PowerShell keyboard interruption.",
       "changeHints": [
         "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
@@ -18407,7 +18407,6 @@
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonClampsDepthAbovePowerShellLimit",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonNormalizesPlayerFacingPowerShellLineBreakArtifacts",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_ReadBoeJsonReturnsObjectsThatAllowMissingPropertyDotAssignment",
-            "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeNpcTradeInventoryRequestFindsSameTurnInitialIdAndWritesReceipt",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeGuardianTradeInventoryRequestWritesCanonicalInventoryAndReceipt",
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesMortalShowcaseAndLeavesPendingForClientCleanup",
@@ -18421,6 +18420,24 @@
             "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationDoesNotAdoptCompetingReadyAsOverwriteBaseline"
           ]
         }
+      ]
+    },
+    {
+      "id": "portable-gm-helper-stale-read-diagnostic-linux",
+      "responsibility": "Original stale read-modify-write refusal and established changed-since-Read-BoeJson diagnostic through the owned dedicated helper.",
+      "excludes": "No broad helper cohort or native Windows/PowerShell5.1 execution.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GmHelperCanonicalScope.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmTurnHelperControl.cs",
+        "BookOfEternityClient/Launcher/gm_turn_helper_transport.ps1",
+        "BookOfEternityClient.IntegrationTests/GmTurnHelperContractTests.cs"
+      ],
+      "related": [],
+      "requirements": { "frontendBuild": false, "exclusive": true, "ciRunner": "ubuntu-24.04" },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        { "project": "integration", "tests": ["BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite"] }
       ]
     }
   ]
