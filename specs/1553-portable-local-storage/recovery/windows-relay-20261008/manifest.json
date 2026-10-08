@@ -2,6 +2,21 @@
   "SourceCommit": "0067874e15f479327dc37268fc891f51e3a2713d",
   "Files": [
     {
+      "Path": "catalog-audit.json",
+      "Bytes": 103,
+      "SHA256": "7873b1202375f1918faf548db57bb3c9bee61876ab36372b7394ebf26c6da290"
+    },
+    {
+      "Path": "catalog-summary.json",
+      "Bytes": 1601,
+      "SHA256": "eb75e4f2b650b84865fd5073818cfdabd00b1845a197288cd05dfd5755976c28"
+    },
+    {
+      "Path": "independent-review.json",
+      "Bytes": 1205,
+      "SHA256": "68d2b7f5b47c3841f0df9d969f641c2585bc82101a88044e29034d723c8bdbce"
+    },
+    {
       "Path": "input-diagnostics.json",
       "Bytes": 1025,
       "SHA256": "92cd941b81cb76ac72ae07b0f91f69f04b89864aef15058f37340cd6d640a8d9"
@@ -25,6 +40,11 @@
       "Path": "ordinary-transaction.json",
       "Bytes": 628,
       "SHA256": "c377bcb6aa031adb5e614dff884ce42a2dbd883315e6f8e6e943d913691c917e"
+    },
+    {
+      "Path": "plan-only-summary.json",
+      "Bytes": 2825,
+      "SHA256": "67b4175eeac76c08dcfd4af85235457aa57542ce1b5b025f8a10e5faad447a90"
     },
     {
       "Path": "runner-summary.json",

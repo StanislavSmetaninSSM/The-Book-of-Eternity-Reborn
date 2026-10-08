@@ -1,6 +1,6 @@
 # Native Windows relay implementation plan
 
-## Current checkpoint: native Windows GREEN, review and Linux pending
+## Current checkpoint: native Windows GREEN and independently reviewed; Linux pending
 
 Frozen runtime/tests: `0067874e15f479327dc37268fc891f51e3a2713d`.
 Native Windows selected run: **24/24 PASS**, 7 native cases plus 17 shared worker
@@ -15,13 +15,24 @@ manual bracketed paste without submission, actual CR with exact Russian/emoji/LF
 prompt, credential-free worker inspect/answer, unchanged real PowerShell helper
 completion, queue closure, then original Bridge shutdown. Same retained run
 `8a4743388aae441286cdb788f5fd4ec0`, original Job empty, cleanup true, authority
-false, host exit0. Host/shell/relay PIDs 31908/34624/3412 are gone. No NeutralPackage,
+false. Host exit0 and subsequent absence of host/shell/relay PIDs 31908/34624/3412
+were observed only in the executor tool transcript, not a retained raw file. No NeutralPackage,
 console rebinding, model request or user save. State stays OperatorNotReady:
 automatic T042 dispatch/readiness and accepted gameplay remain unqualified.
 
-Independent implementation/evidence review is pending. Linux regression is
-**not run** on HOME-PC. Existing source paths are retained but that is not a Linux
-PASS. HTTP diagnosis has not started. The original report reproduction remains
+Independent actual GPT-6 Astra XHigh review PASS at candidate
+`3ce1ab52b0a4e41dbe9717b52681236bd368c9b9`: no blocking findings; independently
+verified source/evidence hashes, original TRXs and ordinary Bridge artifacts.
+Native prompt tests do not force a split surrogate across reads; the pipe test
+does not deterministically wait for child exit before draining its final bytes.
+Those implementation boundaries were source-reviewed, not separately runtime-qualified.
+PlanOnly:5 descriptors/39 cases,0 executed. Catalog:436 categories/11196 methods/files,
+valid,0 executed. GitHub-only sparse restoration of candidate3ce1ab52 verified
+all25 changed files byte-for-byte and10 manifest payloads; source recovery only,
+not a fresh-restoration build. Final metadata carrier needs its own exact-tip check.
+Linux regression is **not run** on HOME-PC; parent runs it separately against
+the same frozen source0067874e. Existing source paths are retained but that is not
+a Linux PASS. HTTP diagnosis has not started. The original report reproduction remains
 limited to synthetic Save/Load and restart; compare clean valid data first.
 
 Reproduce from a prepared native Windows checkout (Python3.14.7 on PATH,
@@ -79,10 +90,10 @@ child EOF from temporary lack of bytes or process exit alone.
   `poll_child_output(stream)` distinguishing `None`, bytes and actual `b''` EOF.
   Integrate without packet/profile/authority changes. Add native execution_gate
   locking with typed timeout/release failure and never-unlinked lock identity.
-- [ ] Run native category and shared worker-contract cases; inspect PlanOnly and
+- [x] Run native category and shared worker-contract cases; inspect PlanOnly and
   catalog discovery. Linux selection: reusable-contract, reusable-main, transport,
   repair. Native Windows cannot claim Linux execution passed.
-- [ ] Update README/spec/tasks/selection and evidence; publish WIP before GPT-6
+- [x] Update README/spec/tasks/selection and evidence; publish WIP before GPT-6
   Astra XHigh review, resolve findings, verify remote SHA and GitHub-only recovery.
 
 Review focus: split surrogate pairs; quiet-but-live pipes; exit with buffered

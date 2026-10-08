@@ -134,8 +134,8 @@ to persist the subsequent outcome retains an unresolved state without close ACK.
 
 Ask the queue to close before cancellation/rollback. `close` requests closure;
 it does not claim ACK. API close publication and final open-check/immutable
-execution-snapshot publication serialize through one stable POSIX queue-local
-`.execution.lock`. Its inode remains for the queue lifetime; it is neither a
+execution-snapshot publication serialize through one stable queue-local
+`.execution.lock`: POSIX flock or a Windows one-byte lock. The file remains for the queue lifetime; it is neither a
 journal nor ownership. Acquisition is bounded to one second. Unavailable, timed
 out or unconfirmed serialization refuses execution/ACK (`RelayGateUnavailable`).
 Legacy direct-file close writers are retained without claiming this stronger
