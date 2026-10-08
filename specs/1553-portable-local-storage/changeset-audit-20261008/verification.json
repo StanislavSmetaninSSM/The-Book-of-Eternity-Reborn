@@ -1,0 +1,75 @@
+{
+  "scope": {
+    "base": "1fc5e59b253c358a8622df66a4e9459f5f3fe78b",
+    "main": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+    "indexMigration": "26b36a08e833849db3e3176355e8d61c88100d2f",
+    "sourceStatusCutoff": "186c3cf9c9d731ee6ce77780b687613504fa0406",
+    "laterRuntimeCommits": "Deferred to sole executor by parent instruction"
+  },
+  "independentReview": {
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "agent": "independent_completeness_review",
+    "result": "bounded PASS: document, inventory and source-traced registry only",
+    "reviewedCheckpoint": "8bdc8026c0b3db1f98bde43a2a058ffe2175355a plus inspected worktree amendments",
+    "closedComments": [
+      "Added AppendFileAtomicIfCurrentSessionAsync and private dispatch core to R01 keys; narrowed completeness wording to selected names",
+      "Attributed complete original-owner browser reads to 3d6cfd24 and linked all three service wrappers"
+    ],
+    "remainingSubstantialReportFindings": 0,
+    "limitations": [
+      "No runtime acceptance",
+      "No exhaustive dynamic/reflection/script/IPC/native semantic-edge proof",
+      "A02 partial source correction at186c; compensation-time and original-handler tails remain"
+    ]
+  },
+  "documentChecks": {
+    "dataRegeneration": "byte-identical",
+    "changedPathsExact": 21629,
+    "groups": 28,
+    "validPinnedSourceLinks": 82,
+    "referenceLines": 52781,
+    "runtimeExecuted": false
+  },
+  "inventoryExtraCheck": {
+    "everyChangedPathHasBaseOrMainBlob": true,
+    "duplicates": 0,
+    "netPathsEqualHistoryUnion": true
+  },
+  "diffCheck": "passed",
+  "authorizedChanges": "Only new report documents/data under this audit directory; no product, tests, scripts, CI or settings edits",
+  "runtimeExecuted": false,
+  "priorRemoteRestoration": {
+    "restoredFrom": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+    "branch": "1553-changeset-audit-cloud-20261008",
+    "sha": "8bdc8026c0b3db1f98bde43a2a058ffe2175355a",
+    "clean": true,
+    "matchingReportFiles": 10,
+    "hashes": {
+      "README.md": "18e46a157601fc23580a5204b15c9fae8c2e4e7dde91aa9dec3cdbed1fcafc92",
+      "boundary-keys.json": "029afc21c1b5d34d6d03c7f87617aeb05844edb3d3e1033128f39c2f173adaca",
+      "boundary-references.jsonl.gz": "c9011be73db43d58aef41d5ed054170d146f91390d014b16ac7f81cb282c31b5",
+      "boundary-registry.md": "96f1daad6089e6835b998f1713ef75262296097f635f8350fcc6e77d4c18d89b",
+      "build_inventory.py": "aa58b8384fb9defc15d05fad3ff46c6c4f2e90fae895bb0b11c908ee5c7d4443",
+      "changed-files.jsonl.gz": "ccf2027f66d2ed41db3536fd5eb557e21b27c0496b48b5efee27bed34a2a506b",
+      "changed-runtime-files.tsv": "0716e134c25f5bae25c29882c33dcdbaa67917adc3a3940c0f221f4f187c8de4",
+      "changesets.json": "171d858663b1c0eb575d059a7bf4ea4354d8af7f2f05453ceb66d510183c27a5",
+      "manifest.json": "73debd11e28aff35e2703b3c792b822b484447daf5fc23296eb10b4584a5e70f",
+      "reference-corpus.jsonl.gz": "c1291dd1f451a8800a6cee726c8a730e4fd5820d843c5fdc892213acd2c005fc"
+    }
+  },
+  "finalPublicationReadback": "Performed after this metadata commit; exact final remote SHA and clean-restore result are recorded in the handoff, not self-referentially inside this file.",
+  "reportContentSha256": {
+    "README.md": "d616b1dabfb5e87f49d3fcf31210b336fd4e7221195c257c8b5ceb09730e5636",
+    "boundary-keys.json": "ca9f1b7bd2fe7f28e017d3bbf675166955621b5ece6e6d145d07f3d74469bf94",
+    "boundary-references.jsonl.gz": "533cc90b3afe3f588166538190ac0bb10583d073eccfdba16d85c80c84645096",
+    "boundary-registry.md": "d32e2b088a429aaabd844d7d03fab353940da5b0d30e5af26f44840a1e430e45",
+    "build_inventory.py": "c038ca18842fb6d40112ec7ad111b6e563594af2e779fb0f90d1e9fb5c05dc5f",
+    "changed-files.jsonl.gz": "ccf2027f66d2ed41db3536fd5eb557e21b27c0496b48b5efee27bed34a2a506b",
+    "changed-runtime-files.tsv": "0716e134c25f5bae25c29882c33dcdbaa67917adc3a3940c0f221f4f187c8de4",
+    "changesets.json": "171d858663b1c0eb575d059a7bf4ea4354d8af7f2f05453ceb66d510183c27a5",
+    "current-migration-status.json": "47d2588e9b73375527bc4958a74c30943e4ee0e30e26f296e6eb614eed6a001e",
+    "manifest.json": "07aa2293caa02ab5663e1fbfa52211b23623248aedb2f4501963fd4cd6274ede",
+    "reference-corpus.jsonl.gz": "c1291dd1f451a8800a6cee726c8a730e4fd5820d843c5fdc892213acd2c005fc"
+  }
+}

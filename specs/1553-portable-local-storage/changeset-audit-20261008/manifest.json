@@ -36,7 +36,7 @@
     "evidence-fixture": 20986
   },
   "referenceCorpusRows": 8364,
-  "lexicalReferenceRows": 52706,
+  "lexicalReferenceRows": 52781,
   "boundaryGroups": 28,
   "limits": [
     "All changed path metadata enumerated; family-level semantic review is not every-edge proof.",

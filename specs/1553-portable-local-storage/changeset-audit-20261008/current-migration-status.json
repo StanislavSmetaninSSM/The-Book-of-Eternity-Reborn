@@ -1,0 +1,116 @@
+{
+  "main": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "indexMigration": "26b36a08e833849db3e3176355e8d61c88100d2f",
+  "changedProductionPaths": [
+    "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+    "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs"
+  ],
+  "findings": {
+    "A01": "unchanged; confirmed static publisher startup no-op; no native runtime claim",
+    "A02": "partial source correction c9233593; compensation-time and original GameEngine handler still open; executor owns work",
+    "A03": "unchanged; JSON outcome flattening proven; unsafe replay not proven",
+    "A04": "unchanged; console notice/type classification gap; no recovery bypass proven"
+  },
+  "sourcePins": [
+    {
+      "path": "BookOfEternityGMBridge/Program.cs",
+      "mainBlob": "e1cdeb2e48c66af0798eb5c2b507b55029be6a91",
+      "migrationBlob": "e1cdeb2e48c66af0798eb5c2b507b55029be6a91",
+      "unchanged": true,
+      "latestBlob": "e1cdeb2e48c66af0798eb5c2b507b55029be6a91",
+      "unchangedSinceIndex": true
+    },
+    {
+      "path": "BookOfEternityGMBridge/BridgeHost.StatusPublication.cs",
+      "mainBlob": "0278719061fba2a08c30be0f9e45814440f9df94",
+      "migrationBlob": "0278719061fba2a08c30be0f9e45814440f9df94",
+      "unchanged": true,
+      "latestBlob": "0278719061fba2a08c30be0f9e45814440f9df94",
+      "unchangedSinceIndex": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs",
+      "mainBlob": "30c7aa12262e351cc62b5b1585f87867eac35348",
+      "migrationBlob": "30c7aa12262e351cc62b5b1585f87867eac35348",
+      "unchanged": true,
+      "latestBlob": "30c7aa12262e351cc62b5b1585f87867eac35348",
+      "unchangedSinceIndex": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs",
+      "mainBlob": "2a35f3d6feec4630bbab5a27c17fd9ceee9d77ad",
+      "migrationBlob": "2a35f3d6feec4630bbab5a27c17fd9ceee9d77ad",
+      "unchanged": true,
+      "latestBlob": "5ba4a98f69d76f8828d154c62551b2d59b36c9bf",
+      "unchangedSinceIndex": false
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs",
+      "mainBlob": "d6e6347b8db4270c464c2c416eda7811f0357b5a",
+      "migrationBlob": "d6e6347b8db4270c464c2c416eda7811f0357b5a",
+      "unchanged": true,
+      "latestBlob": "f77d1cb812ace7b8dcc205e1d5bbc6651869b09f",
+      "unchangedSinceIndex": false
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs",
+      "mainBlob": "a56ee6f826e6aaaf2392f3d95d61de837b0bb392",
+      "migrationBlob": "a56ee6f826e6aaaf2392f3d95d61de837b0bb392",
+      "unchanged": true,
+      "latestBlob": "a56ee6f826e6aaaf2392f3d95d61de837b0bb392",
+      "unchangedSinceIndex": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "mainBlob": "75ac03e9180393c6b8dc6e0ec8d6295469cfc1fa",
+      "migrationBlob": "75ac03e9180393c6b8dc6e0ec8d6295469cfc1fa",
+      "unchanged": true,
+      "latestBlob": "75ac03e9180393c6b8dc6e0ec8d6295469cfc1fa",
+      "unchangedSinceIndex": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+      "mainBlob": "94f51e7078fc47500ee13486a3736304719f8afd",
+      "migrationBlob": "94f51e7078fc47500ee13486a3736304719f8afd",
+      "unchanged": true,
+      "latestBlob": "94f51e7078fc47500ee13486a3736304719f8afd",
+      "unchangedSinceIndex": true
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+      "mainBlob": "6c09fd7fd0e65bc7258853f32275fec6d550317a",
+      "migrationBlob": "6c09fd7fd0e65bc7258853f32275fec6d550317a",
+      "unchanged": true,
+      "latestBlob": "6c09fd7fd0e65bc7258853f32275fec6d550317a",
+      "unchangedSinceIndex": true
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "mainBlob": "7a094fbeb33225e008034b9c43545a5cfa486a48",
+      "migrationBlob": "7a094fbeb33225e008034b9c43545a5cfa486a48",
+      "unchanged": true,
+      "latestBlob": "7a094fbeb33225e008034b9c43545a5cfa486a48",
+      "unchangedSinceIndex": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs",
+      "mainBlob": "b2b13f437706452bdab82ed558ace8d5d3c07df7",
+      "migrationBlob": "b2b13f437706452bdab82ed558ace8d5d3c07df7",
+      "unchanged": true,
+      "latestBlob": "b2b13f437706452bdab82ed558ace8d5d3c07df7",
+      "unchangedSinceIndex": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "mainBlob": "597bface73e5541b83edb7dd850de343c0da4665",
+      "migrationBlob": "597bface73e5541b83edb7dd850de343c0da4665",
+      "unchanged": true,
+      "latestBlob": "597bface73e5541b83edb7dd850de343c0da4665",
+      "unchangedSinceIndex": true
+    }
+  ],
+  "executorEvidence": "plan at186c3cf9 reports direct3PASS;2compensation fixture failures with zero reached cuts; not auditor execution/qualification",
+  "runtimeExecutedByAuditor": false,
+  "migrationStatusCutoff": "186c3cf9c9d731ee6ce77780b687613504fa0406",
+  "cutoffPolicy": "Pinned at source-read186c3cf9 by parent instruction; later runtime commits are for the sole executor to reconcile. Full portability changeset audit ends at main d0241e71."
+}
