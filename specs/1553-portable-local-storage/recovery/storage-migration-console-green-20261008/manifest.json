@@ -1,0 +1,144 @@
+{
+  "source": "ebd645ccd671f086dc5eded9f5b7f4a96a71432d",
+  "platform": "Linux",
+  "categories": [
+    "portable-console-rollback-preparation",
+    "portable-pending-beforeimage-admission"
+  ],
+  "commands": [
+    "pwsh -NoLogo -NoProfile -Command ./scripts/test-csharp.ps1 -Category portable-console-rollback-preparation,portable-pending-beforeimage-admission -PlanOnly",
+    "pwsh -NoLogo -NoProfile -Command ./scripts/test-csharp.ps1 -Category portable-console-rollback-preparation,portable-pending-beforeimage-admission -NoBuild"
+  ],
+  "planned": 30,
+  "executed": 30,
+  "passed": 30,
+  "failed": 0,
+  "skipped": 0,
+  "duplicates": 0,
+  "descriptorsPlanned": 2,
+  "descriptorsCompleted": 2,
+  "complete": true,
+  "cleanupComplete": true,
+  "timedOut": false,
+  "wallSeconds": 22.9454943,
+  "sourceReview": "Independent Astra XHigh PASS exact ebd645cc; source review corrected reached cleanup/restage P2 with causal acd33e7b RED.",
+  "limits": [
+    "Component/original consumer and controlled failure tests, not live CLI/GM qualification.",
+    "Native Windows unexecuted.",
+    "Cold pre-handoff or incomplete cleanup refuses and retains evidence; no automatic resumable console transaction.",
+    "Other migration families and full FR-010 remain open.",
+    "Catalog and independent evidence review pending."
+  ],
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ConsoleRollback.cs",
+      "sha256": "94dfd34a1db29e1a1cf21859445563ebcd77d03e68fe5352661c6801eda6fd5c"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "sha256": "1a6311166b7123cd186e46213545c875858c98408a205ed67b68b364aad73d5d"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs",
+      "sha256": "3a632ae6077530fed9348bb9b624afb2aae69f6e9d918f12dbe73d51cb1f255c"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.ConsoleRollbackEvidence.cs",
+      "sha256": "b1459147d08c70da87ef3af069d954ee9004a395295dd94a5694c24bda8dcd62"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "5ee5a78d8e7ddbcd296921e721b6f5037380382b85a74d34fefd87b3b3c369c2"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+      "sha256": "6b67a56b86ae216a423335a1639f9bebc4a727f3783a51cbdf110a734829458e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "sha256": "fa94cbea79dfba212d4cdbc00d412949d06c0d1fbe63c0b9845df39a7b98f26a"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "sha256": "176b0af190ab7c536f3af98303753e8bd9fba00ac0b81b44f879648789b8f013"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ConsoleLocalTurnRollbackArtifacts.cs",
+      "sha256": "340d10cc5194b510cd95fcf2c8503b2a74038e359932cb481f54d853d2371713"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.TrustedLocalDirectGacha.cs",
+      "sha256": "4416fa9a8002ed65fba07505edbdf17065652c254072846e526f8317a2359ed4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "sha256": "e6e740c5bc59a682b458168680bdd578e37f29d396d64b0b4ccbdff0416c1da2"
+    },
+    {
+      "path": "BookOfEternityClient/Services/SaveLoadService.cs",
+      "sha256": "7fa47fde3347c90c1322629153d91fd9ee3751b2b87df75cc278114ed3e8177c"
+    },
+    {
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "sha256": "dd4c42143c7b9880e8c64733356da01a187440283350ab53df90000963b57cab"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "b502c25530f053967d53ead0b7922479d1ec6703bd8c90b69f4540d91ca558df"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "177679bf91602a32857f5d7e354eca6bbee96546cae6f60d934e121e03b26f93"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "plan-dotnet-test.log.gz",
+      "sha256": "1ba9881dfd12670fd657336261a348d5762072ebf28e70372e660507a3cc744c",
+      "originalSha256": "f5ea0dc4cbefe03e54a2d4b6d778442548fdbf52b5f06bc33db288d32de765d5",
+      "source": "TestResults/test-categories/20261008-100707-884-13125-8c5d4920a9224c3fad0d30df4e5c4fb4-categories/dotnet-test.log"
+    },
+    {
+      "path": "plan-plan.json",
+      "sha256": "6e611500134ef0818e3c6cc254576b4be807715525db30343b7a1c85025d1224",
+      "originalSha256": "6e611500134ef0818e3c6cc254576b4be807715525db30343b7a1c85025d1224",
+      "source": "TestResults/test-categories/20261008-100707-884-13125-8c5d4920a9224c3fad0d30df4e5c4fb4-categories/plan.json"
+    },
+    {
+      "path": "plan-summary.json",
+      "sha256": "96357140de236e90741d048688eea8a2fa2bada7858d0b66100889eb625f0ccd",
+      "originalSha256": "96357140de236e90741d048688eea8a2fa2bada7858d0b66100889eb625f0ccd",
+      "source": "TestResults/test-categories/20261008-100707-884-13125-8c5d4920a9224c3fad0d30df4e5c4fb4-categories/summary.json"
+    },
+    {
+      "path": "green-dotnet-test.log.gz",
+      "sha256": "15f9f5a5897a66227e9e77c85f847fedcafdf1c33fae278b7881a52c0c41ee94",
+      "originalSha256": "4798aaf56e7de239449510df5f95363fe9f4eaa713c370de330e8dbbd0b426bf",
+      "source": "TestResults/test-categories/20261008-100823-496-13359-86e8bda771fa4a4c91935d537b43f9f4-categories/dotnet-test.log"
+    },
+    {
+      "path": "green-plan.json",
+      "sha256": "1e9169f5e417174de3876d60ab1284b1bbaf9d2e0a0d4223bc8fc763d23224bf",
+      "originalSha256": "1e9169f5e417174de3876d60ab1284b1bbaf9d2e0a0d4223bc8fc763d23224bf",
+      "source": "TestResults/test-categories/20261008-100823-496-13359-86e8bda771fa4a4c91935d537b43f9f4-categories/plan.json"
+    },
+    {
+      "path": "green-portable-console-rollback-preparation-integration-001.trx",
+      "sha256": "f67827e104369d214a4b0a1003812717fe4300325551519504fb92c4333a5aad",
+      "originalSha256": "f67827e104369d214a4b0a1003812717fe4300325551519504fb92c4333a5aad",
+      "source": "TestResults/test-categories/20261008-100823-496-13359-86e8bda771fa4a4c91935d537b43f9f4-categories/portable-console-rollback-preparation-integration-001.trx"
+    },
+    {
+      "path": "green-portable-pending-beforeimage-admission-integration-002.trx",
+      "sha256": "f8032d1a078f3923f1e95cf024f4039d26c4ca581474d13e932e5c1ca85a4bdf",
+      "originalSha256": "f8032d1a078f3923f1e95cf024f4039d26c4ca581474d13e932e5c1ca85a4bdf",
+      "source": "TestResults/test-categories/20261008-100823-496-13359-86e8bda771fa4a4c91935d537b43f9f4-categories/portable-pending-beforeimage-admission-integration-002.trx"
+    },
+    {
+      "path": "green-summary.json",
+      "sha256": "de7767694e80c58da03f08bd0ec5c3c7e35156a9c536016661884c225c4cb1e3",
+      "originalSha256": "de7767694e80c58da03f08bd0ec5c3c7e35156a9c536016661884c225c4cb1e3",
+      "source": "TestResults/test-categories/20261008-100823-496-13359-86e8bda771fa4a4c91935d537b43f9f4-categories/summary.json"
+    }
+  ]
+}

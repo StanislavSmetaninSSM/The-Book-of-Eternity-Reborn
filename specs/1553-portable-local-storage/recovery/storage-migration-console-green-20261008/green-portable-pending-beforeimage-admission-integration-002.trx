@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="385364f4-bfc4-4a77-b746-7d7e19901170" name="@c61a5018b3fb 2026-10-08 10:08:38" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-08T10:08:38.9309655+00:00" queuing="2026-10-08T10:08:38.9309655+00:00" start="2026-10-08T10:08:35.2245479+00:00" finish="2026-10-08T10:08:46.2828289+00:00" />
+  <TestSettings name="default" id="5c154c2a-ea68-46e0-b82d-7e7ac9f2ea2b">
+    <Deployment runDeploymentRoot="_c61a5018b3fb_2026-10-08_10_08_38" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="49038cf0-dfbc-414f-afba-4fde0b13036f" testId="8893e426-75db-c6fe-5b8b-7365b53260e3" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: &quot;changed-bytes&quot;)" computerName="c61a5018b3fb" duration="00:00:00.4559878" startTime="2026-10-08T10:08:39.8237214+00:00" endTime="2026-10-08T10:08:39.8237216+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="49038cf0-dfbc-414f-afba-4fde0b13036f">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-25ca0d05354745479b70403d9579689f rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="29acef22-d775-4b3b-8f4f-befbf87ed80c" testId="de3c6512-bd05-3557-0629-5d013170fd69" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;changed-timestamp&quot;)" computerName="c61a5018b3fb" duration="00:00:00.5463881" startTime="2026-10-08T10:08:45.8124053+00:00" endTime="2026-10-08T10:08:45.8124054+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="29acef22-d775-4b3b-8f4f-befbf87ed80c">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-1c9669fd1d41451283e516a4a4b47c06 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="bdd1c269-81f1-46f0-9754-9205547e57ae" testId="c915952b-3165-1473-c656-06a38d4e0873" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;timestamp&quot;)" computerName="c61a5018b3fb" duration="00:00:00.6336907" startTime="2026-10-08T10:08:44.6152496+00:00" endTime="2026-10-08T10:08:44.6152498+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bdd1c269-81f1-46f0-9754-9205547e57ae">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-f54f1208ce394aa299ae8251a8e8e5b1 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="425a20b8-ba6f-411b-8888-15036ac1078b" testId="b3051b30-b579-4a32-0a0b-a68c0b5d7dbf" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;turnNumber&quot;)" computerName="c61a5018b3fb" duration="00:00:00.4376996" startTime="2026-10-08T10:08:41.3084106+00:00" endTime="2026-10-08T10:08:41.3084110+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="425a20b8-ba6f-411b-8888-15036ac1078b">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-8fdf784b1b634bcb97fdc36f16ae9590 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7dcc3404-4d97-4a5b-a7d6-50a733005918" testId="67711244-ea34-e3ba-ce72-9ce543b09cb3" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: &quot;changed-action&quot;)" computerName="c61a5018b3fb" duration="00:00:01.1550346" startTime="2026-10-08T10:08:38.5440075+00:00" endTime="2026-10-08T10:08:38.5440218+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7dcc3404-4d97-4a5b-a7d6-50a733005918">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-bd61a451367d4c1a8566e68eb1c16c97 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="6972824f-058a-4b62-8851-6d232502d54b" testId="e642bb2a-2c9e-5070-e9d1-7dbc20732b43" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: &quot;consumed-deletion-debt&quot;)" computerName="c61a5018b3fb" duration="00:00:00.8219711" startTime="2026-10-08T10:08:39.3685219+00:00" endTime="2026-10-08T10:08:39.3685222+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6972824f-058a-4b62-8851-6d232502d54b">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-da3ad45ba6d646bc8370ca438ba20468 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b63335e4-2e0b-46a0-9255-65063b106498" testId="d441d4de-d311-0860-19f0-c9df12611f46" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_OriginalCaptureValidatedRollbackAndCleanup" computerName="c61a5018b3fb" duration="00:00:00.4040410" startTime="2026-10-08T10:08:46.2204158+00:00" endTime="2026-10-08T10:08:46.2204162+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b63335e4-2e0b-46a0-9255-65063b106498">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-f2f827bcbd464768a795dcaf3f71e665 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="9e08dc91-2ff9-44a6-9d64-9dbdea9eb0d7" testId="a94bb284-0305-2553-99ce-92f0ad0a28d6" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;absent&quot;)" computerName="c61a5018b3fb" duration="00:00:00.7059547" startTime="2026-10-08T10:08:42.0119388+00:00" endTime="2026-10-08T10:08:42.0119391+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9e08dc91-2ff9-44a6-9d64-9dbdea9eb0d7">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-0de792c7827140e2aa6fe0661a660f7c rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7c10b54e-e0d8-4291-a49b-0ec11ba8d766" testId="06199588-211c-e764-fb53-16a7126ac1a4" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;changed-session&quot;)" computerName="c61a5018b3fb" duration="00:00:00.6493646" startTime="2026-10-08T10:08:45.2651431+00:00" endTime="2026-10-08T10:08:45.2651433+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7c10b54e-e0d8-4291-a49b-0ec11ba8d766">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-fd1d4bf1c43d49e39b5fd3aeaef1a5f5 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="b2be6145-c247-42ff-a334-85ab93325070" testId="2200e637-9ca7-14c4-89b1-39d0f73274f0" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: &quot;unmapped&quot;)" computerName="c61a5018b3fb" duration="00:00:00.5535399" startTime="2026-10-08T10:08:40.8660878+00:00" endTime="2026-10-08T10:08:40.8660880+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b2be6145-c247-42ff-a334-85ab93325070">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-081e6734c59b4c768d44b12cbc0c57d3 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5c93c173-5eeb-4adf-81ad-f4283abe51b0" testId="5bff032d-9616-101f-3d2c-82df402b3939" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;changed-turn&quot;)" computerName="c61a5018b3fb" duration="00:00:00.6636292" startTime="2026-10-08T10:08:43.9808748+00:00" endTime="2026-10-08T10:08:43.9808751+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5c93c173-5eeb-4adf-81ad-f4283abe51b0">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-3bee8392f9144e7bb68cdb291cefa160 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="c87e6662-dc24-4001-a562-b90957e6db00" testId="86528e03-ca07-4fb4-f57c-50d6be5d506b" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;sessionId&quot;)" computerName="c61a5018b3fb" duration="00:00:00.6782656" startTime="2026-10-08T10:08:43.3165663+00:00" endTime="2026-10-08T10:08:43.3165665+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c87e6662-dc24-4001-a562-b90957e6db00">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-3f8bfd4937794e8282880eea4bfed643 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="93afd8bb-8693-4977-b214-8abfe258c27b" testId="351e1053-2bdc-9adb-5e3c-a607868965f4" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: &quot;changed-request&quot;)" computerName="c61a5018b3fb" duration="00:00:00.4875748" startTime="2026-10-08T10:08:40.3119757+00:00" endTime="2026-10-08T10:08:40.3119759+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="93afd8bb-8693-4977-b214-8abfe258c27b">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-14c09718afc0484d8070acde3040d282 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="04bb7305-b5de-408c-8104-5bc83e9d31a6" testId="eb7e300d-3b92-eb79-dce7-aa53c86a79cb" testName="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;requestId&quot;)" computerName="c61a5018b3fb" duration="00:00:00.6248148" startTime="2026-10-08T10:08:42.6415133+00:00" endTime="2026-10-08T10:08:42.6415135+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="04bb7305-b5de-408c-8104-5bc83e9d31a6">
+      <Output>
+        <StdOut>FixtureCleanup root=/tmp/boe-gameengine-turnlifecycle-08db28154d624eab991923e12bfd2d78 rootRemoved=True</StdOut>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: &quot;consumed-deletion-debt&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="e642bb2a-2c9e-5070-e9d1-7dbc20732b43">
+      <Execution id="6972824f-058a-4b62-8851-6d232502d54b" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: &quot;changed-request&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="351e1053-2bdc-9adb-5e3c-a607868965f4">
+      <Execution id="93afd8bb-8693-4977-b214-8abfe258c27b" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;changed-timestamp&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="de3c6512-bd05-3557-0629-5d013170fd69">
+      <Execution id="29acef22-d775-4b3b-8f4f-befbf87ed80c" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;sessionId&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="86528e03-ca07-4fb4-f57c-50d6be5d506b">
+      <Execution id="c87e6662-dc24-4001-a562-b90957e6db00" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: &quot;changed-action&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="67711244-ea34-e3ba-ce72-9ce543b09cb3">
+      <Execution id="7dcc3404-4d97-4a5b-a7d6-50a733005918" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;changed-session&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="06199588-211c-e764-fb53-16a7126ac1a4">
+      <Execution id="7c10b54e-e0d8-4291-a49b-0ec11ba8d766" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: &quot;unmapped&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="2200e637-9ca7-14c4-89b1-39d0f73274f0">
+      <Execution id="b2be6145-c247-42ff-a334-85ab93325070" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;requestId&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="eb7e300d-3b92-eb79-dce7-aa53c86a79cb">
+      <Execution id="04bb7305-b5de-408c-8104-5bc83e9d31a6" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;timestamp&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="c915952b-3165-1473-c656-06a38d4e0873">
+      <Execution id="bdd1c269-81f1-46f0-9754-9205547e57ae" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;absent&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="a94bb284-0305-2553-99ce-92f0ad0a28d6">
+      <Execution id="9e08dc91-2ff9-44a6-9d64-9dbdea9eb0d7" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;turnNumber&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="b3051b30-b579-4a32-0a0b-a68c0b5d7dbf">
+      <Execution id="425a20b8-ba6f-411b-8888-15036ac1078b" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_OriginalCaptureValidatedRollbackAndCleanup" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="d441d4de-d311-0860-19f0-c9df12611f46">
+      <Execution id="b63335e4-2e0b-46a0-9255-65063b106498" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_TurnLifetime_OriginalCaptureValidatedRollbackAndCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity(cut: &quot;changed-turn&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="5bff032d-9616-101f-3d2c-82df402b3939">
+      <Execution id="5c93c173-5eeb-4adf-81ad-f4283abe51b0" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(cut: &quot;changed-bytes&quot;)" storage="/workspace/boe-1553-storage-migration/bookofeternityclient.integrationtests/bin/debug/net8.0/bookofeternityclient.integrationtests.dll" id="8893e426-75db-c6fe-5b8b-7365b53260e3">
+      <Execution id="49038cf0-dfbc-414f-afba-4fde0b13036f" />
+      <TestMethod codeBase="/workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineTurnLifecycleTests" name="DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="8893e426-75db-c6fe-5b8b-7365b53260e3" executionId="49038cf0-dfbc-414f-afba-4fde0b13036f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="de3c6512-bd05-3557-0629-5d013170fd69" executionId="29acef22-d775-4b3b-8f4f-befbf87ed80c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c915952b-3165-1473-c656-06a38d4e0873" executionId="bdd1c269-81f1-46f0-9754-9205547e57ae" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b3051b30-b579-4a32-0a0b-a68c0b5d7dbf" executionId="425a20b8-ba6f-411b-8888-15036ac1078b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="67711244-ea34-e3ba-ce72-9ce543b09cb3" executionId="7dcc3404-4d97-4a5b-a7d6-50a733005918" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e642bb2a-2c9e-5070-e9d1-7dbc20732b43" executionId="6972824f-058a-4b62-8851-6d232502d54b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d441d4de-d311-0860-19f0-c9df12611f46" executionId="b63335e4-2e0b-46a0-9255-65063b106498" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a94bb284-0305-2553-99ce-92f0ad0a28d6" executionId="9e08dc91-2ff9-44a6-9d64-9dbdea9eb0d7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="06199588-211c-e764-fb53-16a7126ac1a4" executionId="7c10b54e-e0d8-4291-a49b-0ec11ba8d766" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2200e637-9ca7-14c4-89b1-39d0f73274f0" executionId="b2be6145-c247-42ff-a334-85ab93325070" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5bff032d-9616-101f-3d2c-82df402b3939" executionId="5c93c173-5eeb-4adf-81ad-f4283abe51b0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="86528e03-ca07-4fb4-f57c-50d6be5d506b" executionId="c87e6662-dc24-4001-a562-b90957e6db00" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="351e1053-2bdc-9adb-5e3c-a607868965f4" executionId="93afd8bb-8693-4977-b214-8abfe258c27b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="eb7e300d-3b92-eb79-dce7-aa53c86a79cb" executionId="04bb7305-b5de-408c-8104-5bc83e9d31a6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="14" executed="14" passed="14" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.32]   Discovering: BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.66]   Discovered:  BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:01.69]   Starting:    BookOfEternityClient.IntegrationTests
+[xUnit.net 00:00:10.58]   Finished:    BookOfEternityClient.IntegrationTests
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

@@ -1,3 +1,37 @@
+## Current console migration checkpoint — 2026-10-08
+
+Frozen runtime/tests `ebd645ccd671f086dc5eded9f5b7f4a96a71432d`:
+**30/30 Linux PASS**, 16 console lifecycle +14 unchanged pending before-image
+neighbor cases, 2/2 complete descriptors, zero skips/duplicates/timeouts, complete
+owned cleanup, 22.945 seconds. Fresh PlanOnly30/2 succeeded (zero executed).
+[Raw GREEN and exact source pins](recovery/storage-migration-console-green-20261008/manifest.json).
+Independent Astra XHigh source gate PASS at this exact source. Discovery-only
+catalog and independent evidence review remain pending; T061 is not closed yet.
+
+The current console producer now uses common trusted-local publication and a
+separate generation-checked evidence cohort. An opaque marker makes absence-only
+preparation visible to cold refusal. Signed pending authority transfers complete
+storage admission ownership before original cancellation removes request/backups;
+restore authority remains the original snapshot/validated turn. Marker is not
+baseline/restore data. It is excluded from ordinary rollback enumeration and
+save/load, reconstructed only from validated signed payload, and retired last.
+Original per-file restore semantics remain. Completed restore with cleanup debt
+can only finish cleanup; new preparation must create a fresh snapshot afterward.
+
+[Preserved causal RED/build/fixture history](recovery/storage-migration-console-red-20261008/manifest.json):
+original3/1PASS2FAIL (legacy physical create-only route); expanded9/1PASS8FAIL
+(including actual unmarked absence-only admission); restage14/12PASS2FAIL confirms
+same/new-file cleanup-debt reuse, corrected before GREEN. Build failures and the
+IOException retry-count fixture failure are explicitly distinguished.
+
+Next: publish this evidence checkpoint, run discovery-only ValidateCatalog,
+independent evidence review, then proceed to T062 ordinary outcome/notification
+boundaries. T063–T065 and all other families stay open. Native Windows is unrun;
+no live GM, aggregate tests, CI, merge or #1536 B2–B5 work. Cold refusal before
+handoff/incomplete cleanup is retained evidence, not resumed-turn qualification.
+
+### Earlier implementation checkpoints (historical; superseded by the result above)
+
 ## Active storage migration inventory — 2026-10-08 (WIP)
 
 Independent Astra XHigh completeness followup accepted exact inventory carrier
