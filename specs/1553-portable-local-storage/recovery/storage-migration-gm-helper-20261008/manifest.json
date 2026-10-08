@@ -702,5 +702,186 @@
         "sha256": "d0a3c97da6373c6c8f80eb3bb3e261108c47a7838ff9411d0a9bad6c73a533d8"
       }
     ]
+  },
+  "realmCausal": {
+    "qualification": "Corrected fixture exact one case, actual symlink observed; original helper follows realm link and writes forbidden-world-write without failure. Desired refusal assertion fails after evidence. Original pwsh exits unforced, fresh canonical ownership available, healthy guardian. Combined with prior nine reached rows completes ten semantic causal failures; historical tenth fixture failure remains distinct. No runtime change/native qualification.",
+    "planned": 1,
+    "executed": 1,
+    "passed": 0,
+    "failed": 1,
+    "causalFailures": 1,
+    "fixtureFailures": 0,
+    "wallSeconds": 8.5401751,
+    "source": "c2bc51a1e00c565174d9b6aa9dbafdabc280355e",
+    "artifacts": [
+      {
+        "path": "realm-plan-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-191204-172-109185-e8610570319348ca8ee70c307ad3632a-categories/Build-unit.log",
+        "sha256": "7ab97944442c9db99c0fab743b79b6a5eb8c889920fd228896e4229877821c56",
+        "originalSha256": "4ba2e629cc6274d528bb4e639c529e49dc26ea97f479056dbdecab6a1041ade1"
+      },
+      {
+        "path": "realm-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-191204-172-109185-e8610570319348ca8ee70c307ad3632a-categories/dotnet-test.log",
+        "sha256": "fdd42f32534338fbabb935b416ad51cf8e0de57ba1f90c6f029e5ff3818f87ca",
+        "originalSha256": "66ae4baa4ba89947d033dcb771d3f01c5ec6ce738c3d87842df2ab13468017a2"
+      },
+      {
+        "path": "realm-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-191204-172-109185-e8610570319348ca8ee70c307ad3632a-categories/plan.json",
+        "sha256": "859faeee26849b1f5dfca823b663448c5a039447d7507220683416a043aa5c8b",
+        "originalSha256": "859faeee26849b1f5dfca823b663448c5a039447d7507220683416a043aa5c8b"
+      },
+      {
+        "path": "realm-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-191204-172-109185-e8610570319348ca8ee70c307ad3632a-categories/summary.json",
+        "sha256": "7c86f6055ae1ed8ec01286b9e11e6acb4652978279a3bbcaa10c481cd9c99dfc",
+        "originalSha256": "7c86f6055ae1ed8ec01286b9e11e6acb4652978279a3bbcaa10c481cd9c99dfc"
+      },
+      {
+        "path": "realm-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-191330-139-109764-855e69b781ac459c97e78afbbd65eec5-categories/dotnet-test.log",
+        "sha256": "874b4ef71b3635efbb64cad6585ca3ed0d8859bfc79c3aa97d7207a23f6a5e22",
+        "originalSha256": "a15195f111ced8d85cda2ad17bd77c9ddb74697784e9edb6a60dc3c235b20a5f"
+      },
+      {
+        "path": "realm-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-191330-139-109764-855e69b781ac459c97e78afbbd65eec5-categories/plan.json",
+        "sha256": "ad8399bf9cc1d41ec2e6ce6e60120ae17347c88f6223fbbd36804deb4bf71179",
+        "originalSha256": "ad8399bf9cc1d41ec2e6ce6e60120ae17347c88f6223fbbd36804deb4bf71179"
+      },
+      {
+        "path": "realm-actual-portable-gm-helper-realm-link-causal-linux-unit-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-191330-139-109764-855e69b781ac459c97e78afbbd65eec5-categories/portable-gm-helper-realm-link-causal-linux-unit-001.trx",
+        "sha256": "645aed6180afe2f785ec75ee5522ec98a3ed45f50aa620f68285156621c27830",
+        "originalSha256": "82f5c76b75ddfd0b03cfb69ff7e0ecf01d6d8ddf132ba86e1be6262d697dbbcc"
+      },
+      {
+        "path": "realm-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-191330-139-109764-855e69b781ac459c97e78afbbd65eec5-categories/summary.json",
+        "sha256": "51cad6abae8dae38c049f46f64c68bc2921ede876a554ef931a23cdd27ebfc56",
+        "originalSha256": "51cad6abae8dae38c049f46f64c68bc2921ede876a554ef931a23cdd27ebfc56"
+      },
+      {
+        "path": "realm-runner-boe-gm-helper-link-red.log.gz",
+        "source": "/tmp/boe-gm-helper-link-red.log",
+        "sha256": "80fafe324c9d7385857e1120736d0801dacebf0c07654da09b805fcf8493bcf8",
+        "originalSha256": "b8cbd9ecd453c97ae841a704e55082c689815a8e71ee488d4d4b0f1dcaaeb155"
+      },
+      {
+        "path": "realm-9d9f194-build-provenance.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/9d9f19415b87476db5e68ffdbb2773f0/build-provenance.json",
+        "sha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27",
+        "originalSha256": "f0b750a9177336894638d1dfb8fa3621d77ece6bc06b4ea07fb956baedcddf27"
+      },
+      {
+        "path": "realm-9d9f194-build.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/9d9f19415b87476db5e68ffdbb2773f0/build.log",
+        "sha256": "d1ec521c6bb57b0b6ab31ab3052c0bab6ec790d964bed339eb6274f5206b3481",
+        "originalSha256": "d639cf12b1b899997acded4d091e25301e7b0cfac031e78863c73f7749dc9365"
+      },
+      {
+        "path": "realm-9d9f194-guardian.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/9d9f19415b87476db5e68ffdbb2773f0/guardian.json",
+        "sha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+        "originalSha256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0"
+      },
+      {
+        "path": "realm-9d9f194-guardian.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/9d9f19415b87476db5e68ffdbb2773f0/guardian.log",
+        "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+        "originalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "realm-9d9f194-neutral-terminal-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/9d9f19415b87476db5e68ffdbb2773f0/neutral-terminal-manifest.json",
+        "sha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d",
+        "originalSha256": "71455bb6769d8ba9ad0e43b2586fba3b093f22053768ad6c3335de6d5409865d"
+      },
+      {
+        "path": "realm-9d9f194-package-manifest.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/9d9f19415b87476db5e68ffdbb2773f0/package-manifest.json",
+        "sha256": "5a86b02698156ee49f30ae6f45557ffbca1dc500746564da1c6ddd22e1ba2f6f",
+        "originalSha256": "5a86b02698156ee49f30ae6f45557ffbca1dc500746564da1c6ddd22e1ba2f6f"
+      },
+      {
+        "path": "realm-9d9f194-powershell.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/9d9f19415b87476db5e68ffdbb2773f0/powershell.json",
+        "sha256": "9699b8778f74cdd76b0760c20f74ac162f8b3e4a30f213da71826eb536a1259d",
+        "originalSha256": "9699b8778f74cdd76b0760c20f74ac162f8b3e4a30f213da71826eb536a1259d"
+      },
+      {
+        "path": "realm-9d9f194-scenario.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/native-terminal/9d9f19415b87476db5e68ffdbb2773f0/scenario.json",
+        "sha256": "d83b3cc560614042cabb47eff40494c33af4bd4ab1d6055e7bb7421e9a8ef3c3",
+        "originalSha256": "d83b3cc560614042cabb47eff40494c33af4bd4ab1d6055e7bb7421e9a8ef3c3"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Launcher/GM_Turn_Helper.ps1",
+        "sha256": "f24a483eb936b50f13faa8b7ab16aadefeba66a93b609dfdb04605ecccec5f1c"
+      },
+      {
+        "path": "BookOfEternityClient/Launcher/gm_main_operation.ps1",
+        "sha256": "d7a46514973be6be8797fba9b1a44dd7db7e20d457292e1317f01e86472cdcb6"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "ec05408d0e2d041133af2eb3c06c480783a68bcc53c10e7e79ef3c749c1a18bb"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+        "sha256": "06d1e16f65dfdd64ec6b9f75f6c60a1a9c7b079e59e685f3338a041f9a7b638b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+        "sha256": "288255dd158fc146cf017b2be9211c5f583bd71fba76b5572e89768225fa1e40"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "08c5b4542a54fb045b7dc4ed53b0244df95812b6bb7054b2559f5bb65960a3f0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+        "sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmMainParticipatingControl.cs",
+        "sha256": "693e601b81568ba9e6b478b57666f6e1d3f8eec172bc49b41958892ef2370642"
+      },
+      {
+        "path": "BookOfEternityClient/Services/SaveLoadService.Creation.cs",
+        "sha256": "881559a5e20ce76489f16a2fecda55dc5a7c932bceccd6eee3ad6d0cd6161982"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/GmTurnHelperStorageScenario.cs",
+        "sha256": "fc98680894411328558a119672cc5bc8ef4e6419dead4e585dde971a18ff2ee1"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+        "sha256": "c0d70996c7e77bd787dad1f31a5d0122540f5085064a87d00e70f99c12e511fb"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmTurnHelperStorageTests.cs",
+        "sha256": "489db102fe398b0de31a218486d3e8ea5fd4985e52e8f89699cee8a21d7fe1d7"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmOwnedTerminalLinuxTests.cs",
+        "sha256": "a71ecce4a60b8285b91e53f75fd0292b902b860ed664c02fc93695656ce3fda6"
+      },
+      {
+        "path": "tests/fixtures/GmTurnHelper/storage.ps1",
+        "sha256": "1df291475bd3fcafb28a42257cae28810ef7de523ff0bceee49c2c62d34f3995"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "0ce4f377fdc28051a05af26da539038dd3869b199a445474c6b396ce1dad1bbb"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "c1df2e48eb40d22f32c7671cd911ea9fb74e320e2dd6b5e7479ff91f1724a018"
+      }
+    ]
   }
 }

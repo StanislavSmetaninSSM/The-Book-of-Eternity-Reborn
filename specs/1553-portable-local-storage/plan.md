@@ -1,3 +1,25 @@
+## F13 causal evidence complete; implementation pending — 2026-10-08
+
+Focused parent/independent source, fixture and exact selection PASSc2bc. Fresh
+Plan191204: successful unit build75.9751514s, wall80.0292182s, clean c2bc,1/1/0,
+both cleanup flags true. Only the isolated realm-link case was executed afterward.
+Actual191330:1/1 FAIL in8.5401751s, clean c2bc, complete, both cleanup flags true.
+Raw9d9f19415b87476db5e68ffdbb2773f0 proves the actual symlink, helper Init success
+and no error, followed by exact forbidden-world-write bytes. The assertion fails
+on actual behavior. Original pwsh exits unforced, fresh canonical ownership is
+available, and the guardian reports ECHILD/driver1/no emergency/failure/deadline.
+No fixture cleanup failure remains in this corrected execution.
+
+Together with the original nine reached cases at82f, all ten semantic causal
+obligations have now reached their defects. The earlier ten-case mixed run remains
+nine causal failures plus one fixture failure; it is not rewritten as ten causal
+failures. All initial/corrected Plans, both actual runs, raw processes and source
+pins are preserved in the helper evidence manifest (105 artifacts/48 historical
+source pins). Production F13 implementation has not started. Causal evidence review
+precedes the accepted dedicated role/generation/leased policy/byte transport work;
+current-route controls and exact final selection still need their frozen source
+review. Native Windows/PowerShell5.1 and full migration remain open.
+
 ## F13 causal checkpoint and isolated realm-link correction — 2026-10-08
 
 Both parent and independent fixture/source/selection gates accepted82f; corrected

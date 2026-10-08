@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-gm-helper-realm-link-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "c2bc51a1e00c565174d9b6aa9dbafdabc280355e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.9734837,
+  "Descriptors": [
+    {
+      "Name": "portable-gm-helper-realm-link-causal-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-gm-helper-realm-link-causal-linux",
+      "Categories": [
+        "portable-gm-helper-realm-link-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperStorageTests.OriginalHelperRejectsRealmLinkBeforePolicyWrite",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperStorageTests.OriginalHelperRejectsRealmLinkBeforePolicyWrite",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}
