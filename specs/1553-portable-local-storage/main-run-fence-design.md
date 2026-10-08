@@ -63,10 +63,26 @@ in-process coordinator gate freezes transitions, not another durable journal.
 Standalone bounded ordinary-file I/O reuses trusted-local scope/publication
 primitives **below canonical recovery**; main metadata must never recursively call
 the canonical publisher. Publish frozen exact bytes through same-directory staging,
-file flush, atomic replacement and the platform directory durability barrier;
-acknowledge only after exact readback and required barriers. A platform without a
-qualified adapter refuses admission; this is application-process crash ordering,
-not power-loss/reboot salvage. Metadata retry repeats only that same frozen write,
+file flush, atomic replacement and the platform acknowledgement described below;
+acknowledge only after exact readback and required barriers. Linux retains its
+file flush plus directory and initialization-parent fsync. The Windows adapter
+uses exclusive `CreateDirectoryW`, fully flushed staging, same-directory
+`MoveFileExW(WRITE_THROUGH)` (plus `REPLACE_EXISTING` only for a frozen existing
+baseline), then reopens the actual final file for `Flush(true)` and exact readback.
+It never enables `COPY_ALLOWED` or delayed reboot moves. It reports
+`WindowsFileAcknowledged`, not a synthetic `DirectoryFlushed` or parent-fsync event.
+The same pending plan and original guard remain retained until every required step
+and readback succeeds; visible after-bytes alone are not acknowledgement.
+
+This is application-process ordering, not Windows directory-fsync equivalence or
+power-loss/reboot salvage. Microsoft's [MoveFileExW contract](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-movefileexw)
+describes WRITE_THROUGH flushing for copy/delete and does not establish universal
+namespace durability. [CreateDirectoryW](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createdirectoryw)
+provides exclusive final-name creation; [FlushFileBuffers](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-flushfilebuffers)
+requires the actual writable file handle. No volume flush or administrator privilege
+is added. Native adapter bodies remain unexecuted in the Linux cloud: source/build
+and Linux controls alone do not qualify Windows activation. Unsupported platforms
+still refuse admission. Metadata retry repeats only that same frozen write,
 never launch, input, stop signal or an unknown command.
 
 Missing means a verified absent entire `gm-runs` namespace under the original guard

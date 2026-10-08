@@ -1,0 +1,90 @@
+{
+  "baseline": {
+    "source": "783ddfcc305e3b94dfd0adc84094ef1aca2b7c7b",
+    "executed": 7,
+    "passed": 7,
+    "wallSeconds": 8.1499626,
+    "cleanupComplete": true,
+    "qualification": "Existing real Linux metadata CAS/debt/guard/parent barriers, before native adapter. Not Windows RED or native qualification.",
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+        "sha256": "e64d6de3a210fef5426537636d48a8a8e67b52aad98f10d873c819684ca66f09"
+      },
+      {
+        "path": "BookOfEternityClient/Core/PhysicalFileAuthority.cs",
+        "sha256": "41028e4d984c06ff1ea5d77c060d590c3a060ce99ca73cf4d568ffff526cb5ea"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmMainRunFenceTests.cs",
+        "sha256": "d13434775f875de39120d1adf9ed72d39c1821b916781096b12329ada8c18903"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "b0324b7919bb82e8e5895b22cc4182db0db60faededa35d8bbdad31a55da812d"
+      }
+    ],
+    "artifacts": [
+      {
+        "path": "baseline-plan-Build-unit.log.gz",
+        "source": "TestResults/test-categories/20261008-121133-071-42529-2a755f10bf6e467f81c88f4e78b14858-categories/Build-unit.log",
+        "sha256": "612e97b7849ab8f9aa71a02f3c9fba468cce35b078338ba6c0bdd08a3998b363",
+        "originalSha256": "c3e7c26850f9497e61a31acc8a795f27be25e93930029b01dc229ecc9af15767"
+      },
+      {
+        "path": "baseline-plan-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-121133-071-42529-2a755f10bf6e467f81c88f4e78b14858-categories/dotnet-test.log",
+        "sha256": "77321a988825246933b4c9ebe363480e1ad711446fa2684342d870d566080eb9",
+        "originalSha256": "4a940be56a9ac2b0f6571659cf0943c1482097f639cd51c6324a397ed3c303b4"
+      },
+      {
+        "path": "baseline-plan-plan.json",
+        "source": "TestResults/test-categories/20261008-121133-071-42529-2a755f10bf6e467f81c88f4e78b14858-categories/plan.json",
+        "sha256": "42d5e052166337f9e07a74e0e1a6bfcccf5cf162c4d2db0d3dccb0b6f13b87f2",
+        "originalSha256": "42d5e052166337f9e07a74e0e1a6bfcccf5cf162c4d2db0d3dccb0b6f13b87f2"
+      },
+      {
+        "path": "baseline-plan-summary.json",
+        "source": "TestResults/test-categories/20261008-121133-071-42529-2a755f10bf6e467f81c88f4e78b14858-categories/summary.json",
+        "sha256": "7d1dab7e2584c6e158dbed428860b8275fddf930f99b0e484d7962670d356b71",
+        "originalSha256": "7d1dab7e2584c6e158dbed428860b8275fddf930f99b0e484d7962670d356b71"
+      },
+      {
+        "path": "baseline-green-dotnet-test.log.gz",
+        "source": "TestResults/test-categories/20261008-121312-575-42803-da2b1786e10345a7bc099ae502585c4e-categories/dotnet-test.log",
+        "sha256": "3f9d5e1e76c730aa5ab6b6f3371894fc557ec72b23780893bcd7ce15852c7092",
+        "originalSha256": "eacc13abd458b99fdb4a10ab838db524746d1781b144951b7acf5697b8168fb4"
+      },
+      {
+        "path": "baseline-green-gm-main-metadata-ordering-linux-unit-001.trx.gz",
+        "source": "TestResults/test-categories/20261008-121312-575-42803-da2b1786e10345a7bc099ae502585c4e-categories/gm-main-metadata-ordering-linux-unit-001.trx",
+        "sha256": "4b1018ba87221cd150775f5975751aa4b4148ed44592635aa94084356030520c",
+        "originalSha256": "b1eb355267cc5bd8539976e3d207374a6d05bb9728c2dd69b29f64a7caf6903f"
+      },
+      {
+        "path": "baseline-green-plan.json",
+        "source": "TestResults/test-categories/20261008-121312-575-42803-da2b1786e10345a7bc099ae502585c4e-categories/plan.json",
+        "sha256": "f2c17a5d42501cda8471883be2d069b7deaf0f91461d06d6299e1470738ca062",
+        "originalSha256": "f2c17a5d42501cda8471883be2d069b7deaf0f91461d06d6299e1470738ca062"
+      },
+      {
+        "path": "baseline-green-summary.json",
+        "source": "TestResults/test-categories/20261008-121312-575-42803-da2b1786e10345a7bc099ae502585c4e-categories/summary.json",
+        "sha256": "705b170d570da001f5714ef789891cd20b18221de8ccdbc8fe71e508231a70fc",
+        "originalSha256": "705b170d570da001f5714ef789891cd20b18221de8ccdbc8fe71e508231a70fc"
+      },
+      {
+        "path": "baseline-plan-runner.log.gz",
+        "source": "/tmp/boe-1553-metadata-baseline-plan.log",
+        "sha256": "3a463547780eed5bee596060ce0cfc67c42e2cf45947e43a332091aa061dc7f1",
+        "originalSha256": "01c7eb28a9c95f406b90cd37cc2c0819d317cb8815a52d3e0d75d4c323d3363e"
+      },
+      {
+        "path": "baseline-green-runner.log.gz",
+        "source": "/tmp/boe-1553-metadata-baseline.log",
+        "sha256": "8e2111550575cc5f70b5af66c6b4389984436c5c73b9cd168ef5613ca79f3794",
+        "originalSha256": "38de3b5e24ee5893d1d3199ffa77c5440fa15ca7dd556695a47ce254e63553da"
+      }
+    ]
+  }
+}

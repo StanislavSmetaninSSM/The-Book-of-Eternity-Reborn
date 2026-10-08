@@ -79,7 +79,7 @@ public sealed class GmMainRunFenceTests : IDisposable
         var id=new GmSessionRunIdentity(_files.BasePath,Guid.NewGuid().ToString("N"),Guid.Empty.ToString("N"),1,
             GmSessionRunBackend.LinuxSupervisor,Guid.NewGuid().ToString("N"),"fixture-boot");
         var prepared=new GmSessionRunRecord(1,id,GmSessionRunDisposition.Prepared,null);
-        Assert.Throws<IOException>(()=>disk.Publish(null,prepared));Assert.True(disk.HasDebt);
+        Assert.Throws<IOException>(()=>disk.Publish(null,prepared));Assert.True(fired);Assert.True(disk.HasDebt);
         Assert.Throws<IOException>(()=>disk.Publish(null,prepared with{Disposition=GmSessionRunDisposition.Running}));
         Task<Exception?> contender;
         using(ExecutionContext.SuppressFlow())contender=Task.Run(()=>Record.ExceptionAsync(async()=>{await using var l=await _files.AcquireCanonicalWriteLeaseAsync();}));

@@ -147,6 +147,15 @@
         "A01",
         "T063-REMAINING-CONSUMERS"
       ]
+    },
+    {
+      "category": "gm-main-metadata-native-windows",
+      "reason": "Body-required native Windows adapter recipe; compile/discovery only here, never selected for actual Linux execution. Actual create/replace/debt/sharing/foreign/cold/guard and extended-path coverage must be executed by a native owner before qualification.",
+      "contracts": [
+        "#1553",
+        "A01",
+        "T063-REMAINING-CONSUMERS"
+      ]
     }
   ]
 }

@@ -1989,7 +1989,7 @@ internal static class PhysicalFileAuthority
                 ? StringComparison.OrdinalIgnoreCase
                 : StringComparison.Ordinal);
 
-    private static string ToWindowsExtendedPath(string path)
+    internal static string ToWindowsExtendedPath(string path)
     {
         var normalized = Path.GetFullPath(path);
         if (normalized.StartsWith(@"\\?\", StringComparison.Ordinal))

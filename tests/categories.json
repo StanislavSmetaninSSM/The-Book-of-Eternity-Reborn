@@ -17555,6 +17555,30 @@
           ]
         }
       ]
+    },
+    {
+      "id": "gm-main-metadata-native-windows",
+      "responsibility": "A01 native Windows create/replace metadata ordering, original guard and frozen debt retry on ordinary drive and extended paths; actual sharing, foreign stage/namespace, cold partial and unknown post-rename refusal. Bodies require Windows.",
+      "excludes": "No Linux execution, directory-fsync or power-loss guarantee, boot provider, main activation, ConPTY or worker lifecycle.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GmSessionRunPersistence.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "windows-latest"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

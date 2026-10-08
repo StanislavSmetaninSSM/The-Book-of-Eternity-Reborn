@@ -1,3 +1,19 @@
+## A01 isolated native metadata adapter WIP — 2026-10-08
+
+Existing783ddfcc Linux baseline7/7PASS8.150s, full selection and owned cleanup;
+[exact original artifacts](recovery/storage-migration-metadata-20261008/manifest.json).
+Apply reviewed native directory creation/same-dir write-through replacement/final
+file flush/readback mapping, retaining original guard and frozen debt on failure.
+Normalize only metadata/root spelling; exact grants remain unchanged. Strengthen
+existing Linux fault controls with explicit reached observer assertion. Add32
+body-required Windows cases (22 phase rows plus sharing2, foreign stage/namespace4,
+cold partial2, unknown post-rename2), compiled/discovered here, unexecuted natively.
+Native recipe: fresh PlanOnly then actual `gm-main-metadata-native-windows` on
+Windows against this adapter source; retain all raw evidence and real body counts.
+No native success, power-loss equivalence or Bridge activation is claimed. Fresh
+Linux7 verification and independent adapter source review pending; coordinator,
+worker conjunction and ConPTY consumers remain untouched.
+
 ## A01 isolated metadata ordering adapter baseline — 2026-10-08
 
 Split only seven existing metadata CAS/guard/retry/parent barrier cases into
