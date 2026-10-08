@@ -1,3 +1,50 @@
+## Treatment storage-tail design draft — 2026-10-08
+
+F17 final carrier2fcd6e92 has independent final source/selection/raw/artifact/docs
+PASS. Parent fresh GitHub-only restore `/workspace/boe-1553-dead-helpers-restore`
+is clean detached2fcd6e92, treea5c57bfbc8506cf985b1f30c7875ee33e6817ea2,
+27823 tracked files/no alternates/full fsck0;11 artifacts/seven current and five
+historical source pins reverified, no builds/tests in the restore.
+
+Only the two remaining R04/R12 storage contours are active; no B2–B5 gameplay work.
+Current source findings are not yet runtime failures. RestoreExactBeforeImagesAsync
+collects all exceptions and continues; RestoreAndSettleAsync records FailTaken then
+wraps a failure without closing its transaction, so actual Dispose may acquire again.
+The successful treatment helper result then crosses RefreshCanonicalStateAsync's
+runtime refresh: StateManager already propagates profile-mirror publication Unknown,
+but the engine compensation wrapper and direct-only GameLoop/AgentConsole classifiers
+can hide that established storage decision. Post-seal binding remains an authority read.
+
+Proposed causal three (exact fixture/source/selection gate still pending):
+- Genuine original held-treatment helper settlement under its original lease, with
+  an actual selected MemberPublished restoration cut becoming Unknown. Preserve the
+  exact typed cause, journal/member bytes, no later restore publication and FailTaken
+  restart blocker. Prefer the actual normalization failure caller if its initial
+  generic restoration does not mask the treatment-specific boundary.
+- Original transaction Compensate followed by its real Dispose lifecycle. A retained
+  FileShare.None handle at MemberPublished can force actual immediate recovery refusal;
+  release that same holder only after the first outcome, before Dispose, to distinguish
+  absorbing failure from accidental next-acquisition recovery. Prove reached counts;
+  unsupported sharing semantics are fixture failure, never a causal result.
+- Original engine ValidateAcceptedTurnOutcomeWithRepairLoopAsync after genuine treatment
+  publication, then actual StateManager profile-mirror MemberPublished Unknown. Record
+  established treatment result, mirror journal and original exception chain before
+  asserting the real AgentConsole error projection has recovery guidance/no retry promise.
+
+Reuse CreateHeldTreatmentPipelineContextAsync's legitimate authority and exact immutable
+before-images; its Dispose only releases its existing lease and removes the owned fixture.
+Do not reuse ResourcePublication tests' wrappers that reacquire in finally. Inspect unknown
+bytes/journal through retained fixture paths before any explicit repair/cleanup. Count actual
+lease/recovery/publication attempts across disposal; do not infer them from exception text.
+Use nontransient forward cuts so ordinary RolledBack retry cannot erase the intended fault.
+Preserve known Rearmed/HeldBlocked/Unsafe contracts, original first cause, no second spend,
+and original explicit-close semantics; no new transaction architecture or blanket main
+Unresolved marking. Existing runtime_refresh1/2 and Unsafe settlement methods are candidate
+bounded neighbors, to be selected from the final delta rather than the whole treatment suite.
+
+No treatment source/test change or execution yet. Design review is in progress; runtime
+implementation waits for interpreted causal evidence. T062–T065 remain unchecked.
+
 ## F17 exact unreachable-helper removal evidence — 2026-10-08
 
 F14 final carrier946419 has independent integrity/docs PASS414 artifacts/132 pins.
