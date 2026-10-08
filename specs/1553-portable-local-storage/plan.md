@@ -1,3 +1,41 @@
+## A01 original Bridge consumer block — 2026-10-08
+
+Root fresh direct GitHub restoration of3bb2954a is clean25424 tracked/fsck0;
+all85 stored/expanded cleanup artifacts and21 source pins verified, no tests run
+in restore. Latest recoverable accepted checkpoint is now3bb, notfd587.
+
+Bounded implementation order:
+1. Preserve actual shared consumer baseline: status admission/fault/stall3, exact
+   console Load fresh epoch1 and committed-cleanup-debt/no restart1. Fresh PlanOnly
+   then actual5 on frozen source. Their Linux catalog routing is explicit; no CI edit.
+2. Retain one startup-probe slot for the entire host. Bounded stop/restart/shutdown
+   refuses until actual TrySettle; startup debt keeps real control loop alive with
+   distinct not-ready diagnostics. Exceptional RunAsync/Dispose must foreground
+   await retained owner settlement before cancellation/disposal/return, never drop
+   the original task/CTS or claim clean shutdown. One controlled actual host/pipe
+   test reuses the reviewed self-terminating probe fixture, without OS overrides,
+   Windows coordinator or native PASS; first seam-only RED is labelled accordingly.
+3. Windows uses the existing suspended ConPTY.Prepare with original coordinator
+   RunId, Job binding, durable Prepared/Running and one ReleaseOriginal. Capture
+   real WMI observation before Prepared/lease, exact host worker absence conjunction,
+   no legacy ownerless launch. Cache Windows config independently of Linux worker
+   capability guard, preserve shell/bootstrap/manual readiness, fill status before
+   original publisher+Attach, await first owned publication. Keep original stop tasks.
+4. Load/stop normalize only root admission identity, preserve exact stored identity
+   and grants. Every fresh Running OR StartedNotReady receipt requires exact original
+   Running ACK/new run/terminal/installed generation, never _pty existence alone.
+   Client receipt validation must apply equally to both restarted states.
+5. Entire Windows worker dispatch borrows the original main operation pin and captured
+   input/session cancellation through its actual existing service. Preserve admitted
+   worker capability and original independent cleanup (accepted prior block), exact
+   close/no replay, no durable Windows ledger fabrication. Add causal original wait/
+   cancellation coverage at an explicitly disclosed controlled consumer seam.
+
+Each coupled source/evidence gate remains bounded. Native recipe must require real
+Windows WMI/ConPTY/Job/status/participating/Load bodies, including partial preparation,
+late inventory, metadata/status/close debt and root spelling. Linux controlled/shared
+PASS cannot qualify native execution. No live provider/GM or desktop execution here.
+
 ## A01 retained cleanup gate accepted — 2026-10-08
 
 Runtime9141d1ba independent Astra XHigh source/selection/evidence PASS, no findings.

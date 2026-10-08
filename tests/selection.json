@@ -244,6 +244,24 @@
         "FR-014",
         "A01"
       ]
+    },
+    {
+      "category": "gm-load-console-entry",
+      "reason": "A01 shared original stop/replacement/fresh epoch consumer changed by coherent Windows Load owner path; exact existing positive Linux body.",
+      "contracts": [
+        "#1553",
+        "FR-010",
+        "A01"
+      ]
+    },
+    {
+      "category": "gm-load-cleanup-debt",
+      "reason": "A01 preserve established committed Load cleanup debt with no fresh launch; exact existing Linux negative body.",
+      "contracts": [
+        "#1553",
+        "FR-010",
+        "A01"
+      ]
     }
   ]
 }
