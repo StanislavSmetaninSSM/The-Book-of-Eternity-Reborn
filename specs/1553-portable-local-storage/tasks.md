@@ -9,13 +9,16 @@ Current T043 state: bounded driver correction source0a3d963f has causal REDs and
 ## Native Windows follow-up 2026-10-08
 
 Source #1553, owner-approved [plan](relay-windows-plan.md).
-- [ ] T053-WINDOWS-RELAY Shared protocol/POSIX preservation, native Unicode/input
+- [x] T053-WINDOWS-RELAY Shared protocol/POSIX preservation, native Unicode/input
   restoration, child polling, gate; causal tests, real ConPTY/worker/helper/close/
   original Job cleanup, Astra XHigh review and exact remote recovery.
   Native bounded implementation is reviewed: source0067874e,24/24 PASS,
-  candidate3ce1ab52 Astra XHigh PASS, catalog436/11196/0executed, GitHub-only
-  candidate restoration verified. Linux regression is a separate parent gate;
-  final metadata carrier requires exact-tip readback/restoration.
+  candidate3ce1ab52 and metadata5ff403ed Astra XHigh PASS, catalog436/11196/0executed,
+  final5ff403ed GitHub-only29file/14payload restoration verified. Parent accepted
+  separate Linux32/32 at exact source0067874e, independent Sol PASS and verified
+  recovery; [carrier100939f9](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/100939f9e07e66d6933af6712e87a86af2206c8e/specs/1553-portable-local-storage/relay-linux-regression-20261008.md).
+  Only bounded developer relay is qualified; no gameplay or automatic Windows
+  T042 readiness claim. Final metadata carrier gets exact-tip readback/restoration.
 - [ ] T054-WINDOWS-HTTP Compare synthetic Save/Load/restart HTTP 500 with clean
   valid root, collect real server exception/stack, then repair proven cause with
   parallel/repeated reads, Save/Load and shutdown checks.

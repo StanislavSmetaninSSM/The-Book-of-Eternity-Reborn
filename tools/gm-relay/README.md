@@ -92,8 +92,10 @@ original Job stop. The automated component fixture explicitly opens its already
 attached console devices because the redirected test host supplies invalid
 standard handles; that setup is not used by the separate ordinary Bridge run.
 No model request, accepted gameplay turn or automatic T042 readiness is implied.
-The current Windows repair still requires the separately selected Linux
-regression run; retained POSIX source behavior alone does not qualify that run.
+The same frozen runtime0067874e also passed the separately executed32-case
+[Linux regression](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/100939f9e07e66d6933af6712e87a86af2206c8e/specs/1553-portable-local-storage/relay-linux-regression-20261008.md),
+independently reviewed and accepted by the parent. Windows and Linux evidence
+remain separate and do not qualify gameplay or provider compatibility.
 
 Example **synthetic transport-only** packet, no credentials:
 
