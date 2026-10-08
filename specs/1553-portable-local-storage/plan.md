@@ -1,3 +1,21 @@
+## A01 shared consumer GREEN — 2026-10-08
+
+Frozen5f1502b8 fresh PlanOnly143056 built16/5 with0 execution; actual143155
+completed16/16 PASS,5/5 descriptors,187.5047825s, clean source, no duplicates/skips,
+both cleanup flags true. Raw worker bodies reached actual slot wait and actual
+canonical-lock contention, cancelled from captured original input, settled dispatch
+before physical holder release, then retired the original owner with0 reservations.
+Load9 validates exact manual readiness and all foreign/malformed identities including
+well-formed foreign HostInstanceId; status3 and original consoleLoad2 also pass.
+Worker cancellation and extra identity row are GREEN extensions to the reached REDs.
+Independent source/selection/RED gate PASS; final evidence review pending.
+Discovery143531 valid466/11256, no unmapped/stale selectors,0 executed.
+[Raw source-pinned evidence](recovery/storage-migration-bridge-consumers-20261008/manifest.json).
+
+Next separate block is Windows original Prepared ConPTY/status/Load/dispatch
+activation and an explicit native body-required recipe. No Windows execution or
+whole migration acceptance follows from these shared Linux16 cases.
+
 ## A01 shared original consumers correction — 2026-10-08
 
 Corrected739c actual142549 is complete2/2FAIL12.4622173s with clean source and

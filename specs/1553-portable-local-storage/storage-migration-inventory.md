@@ -1,6 +1,7 @@
 > Current A01 checkpoint: shared probe-host71a561 independently accepted with3 actual
-> Linux cases, restored carrier5b6a6069. Next original consumer fixtures10 (worker2,
-> Load8) are WIP/unrun; Windows production activation/native qualification remains open.
+> Linux cases, restored carrier5b6a6069. Shared original dispatch/Load5f1502b8 now has
+> fresh16/16 Linux GREEN and source/selection/RED review PASS; evidence review pending.
+> Windows production activation/native qualification remains the next separate block.
 
 ## Current A01 adapter and owner gates
 
@@ -18,8 +19,13 @@ actual main plus NoLaunch worker authority; no actual worker launch. Exact exhau
 pin fallback preserves any prior canonical audit uncertainty until real Appended.
 [Cleanup evidence](recovery/storage-migration-main-cleanup-20261008/manifest.json).
 
-Next separate block: actual Bridge prepared ConPTY/Job/status/Load/worker consumers,
-including retained boot-probe cleanup debt and exact worker audit fallback. All other
+Shared original dispatch/Load now retains the same pin/captured cancellation and
+validates both started receipt states against the real new Running identity. Exact
+Linux16 passes (worker2/Load9/status3/consoleLoad2); no actual worker was launched.
+[Consumer evidence](recovery/storage-migration-bridge-consumers-20261008/manifest.json).
+Next separate block: Windows Bridge prepared ConPTY/Job/status/Load/worker activation.
+Windows legacy quarantine retains its Job/workspace/per-profile slot; verified absent
+Linux inventory is not a universal Windows worker quiescence/restart-fence claim. All other
 F/R families below remain open; no full migration completion claim.
 
 # Storage migration inventory — 2026-10-08, review candidate
