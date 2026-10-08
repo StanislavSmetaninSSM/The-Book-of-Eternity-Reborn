@@ -1,3 +1,13 @@
+## A01 probe fixture review correction — 2026-10-08
+
+Initial1b34 actual134524 executed2/2, both failed, cleanup true. Raw control stopped
+at ProductionMainConfiguration.Resolve15 before any owner/launch; no CLI/provider
+was launched. Independent review requires intentional inert config rather than
+relying on current defaults, and a positive Dispose entry witness before pending
+assertion. Added exact loaded empty-command assertion, actual _inputClosed witness
+and bounded concurrent start refusal. Initial raw evidence remains separate in the
+consumer manifest; runtime lifecycle guard is still unchanged. Next corrected2 RED.
+
 ## A01 shared Bridge baseline and probe seam — 2026-10-08
 
 Clean a864 baseline actual134015 is5/5PASS,3/3complete46.6114543s, both cleanup

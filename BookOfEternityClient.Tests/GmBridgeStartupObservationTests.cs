@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Services.GmRuntime;
+using BookOfEternityClient.Configuration;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -22,6 +23,11 @@ public sealed class GmBridgeStartupObservationTests
         Directory.CreateDirectory(root);
         var release = Path.Combine(root, "release");
         var session = Path.Combine(root, "game_session");
+        Directory.CreateDirectory(session);
+        File.WriteAllText(Path.Combine(session, "config.json"), JsonSerializer.Serialize(new {
+            GmBridgeEnabled = true, GmBridgeBackend = "OwnedTerminal", GmMainOwnerBackend = "NativeLineage",
+            GmCliLaunchCommand = ""
+        }));
         var starts = 0;
         var probe = new WindowsStartupObservationProbe(() =>
         {
@@ -39,6 +45,8 @@ public sealed class GmBridgeStartupObservationTests
             null, [session, pipe, probe], null)!;
         object? Field(string name) => type.GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host);
         Task Call(string name) => (Task)type.GetMethod(name, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)!.Invoke(host, null)!;
+        var loaded = (GameSettings)type.GetMethod("LoadBridgeConfig", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(host, null)!;
+        Assert.Empty(loaded.GmCliLaunchCommand); // intentional pre-launch refusal, never an environment default
         var cts = (CancellationTokenSource)Field("_cts")!;
         Task? run = null, disposal = null;
         Task<JsonDocument>? pendingRequest = null;
@@ -51,11 +59,15 @@ public sealed class GmBridgeStartupObservationTests
             if (mode == "dispose")
             {
                 disposal = Task.Run(() => ((IDisposable)host).Dispose());
-                await Task.Delay(100);
+                var entry = Stopwatch.StartNew();
+                while (!(bool)Field("_inputClosed")! && entry.Elapsed < TimeSpan.FromSeconds(2)) await Task.Delay(10);
+                Assert.True((bool)Field("_inputClosed")!, "Actual Dispose must enter before its pending-state assertion.");
                 Console.WriteLine($"disposeCompleted={disposal.IsCompleted};cancelled={cts.IsCancellationRequested};gateDisposed={Field("_writeGateDisposed")};starts={starts}");
                 Assert.False(disposal.IsCompleted);
                 Assert.False(cts.IsCancellationRequested);
                 Assert.False((bool)Field("_writeGateDisposed")!);
+                Assert.NotNull(await Record.ExceptionAsync(() => Call("StartShellAsync").WaitAsync(TimeSpan.FromSeconds(1))));
+                Assert.False(probe.TrySettle());
             }
             else
             {

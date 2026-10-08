@@ -108,5 +108,109 @@
         "sha256": "f9934d41d867f88ac8a2c7b686f92434f9a76df61b1fe83295a9ab778c5b6eee"
       }
     ]
+  },
+  "initialProbeRed": {
+    "planned": 2,
+    "executed": 2,
+    "failed": 2,
+    "complete": true,
+    "qualification": "Initial fixture lacks explicit inert launch config; raw control refused at ProductionMainConfiguration.Resolve line15 before owner/launch. Dispose scheduling needs positive entry witness. Corrected fixture required before causal acceptance.",
+    "source": "1b34c91b91a9bee576e7795124e3c4c6ce60a7bd",
+    "artifacts": [
+      {
+        "path": "probe-initial-plan-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134405-825-59959-f2d1a920be5b430d8048e250a46135c4-categories/Build-unit.log",
+        "sha256": "fadd6a2329ac812fe5feacf51e0e0d0488f2e63fa4c9e9c8b4734e2691d640e5",
+        "originalSha256": "a55e0e9b13214a8f0b27756cf0e3200af55e8db54a7f6aaa00a4c99a5821f65f"
+      },
+      {
+        "path": "probe-initial-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134405-825-59959-f2d1a920be5b430d8048e250a46135c4-categories/dotnet-test.log",
+        "sha256": "2495ea755f934d491a064bb662ea151639ef121ce530ff2d30ce01f389b2b9e5",
+        "originalSha256": "e5bccf569294d8f79dcc1250c6dd0e4c168a58cdc7c35464fb9d773288fbc5c2"
+      },
+      {
+        "path": "probe-initial-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134405-825-59959-f2d1a920be5b430d8048e250a46135c4-categories/plan.json",
+        "sha256": "931dae9be5984446fa309f2f931f8405c92a70712b5f628a95862baac045c6b7",
+        "originalSha256": "931dae9be5984446fa309f2f931f8405c92a70712b5f628a95862baac045c6b7"
+      },
+      {
+        "path": "probe-initial-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134405-825-59959-f2d1a920be5b430d8048e250a46135c4-categories/summary.json",
+        "sha256": "43a602d4f9d005b216a55024b26105272e22374e61f2afdcd3b9f4e2eb113733",
+        "originalSha256": "43a602d4f9d005b216a55024b26105272e22374e61f2afdcd3b9f4e2eb113733"
+      },
+      {
+        "path": "probe-initial-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134524-341-60374-2f65f3d32d134d4d879d675e45d39e41-categories/dotnet-test.log",
+        "sha256": "8cdd8feaf5cdda0de7311f194e726bbec0419b90ae8a9f9d9928ec0670df740c",
+        "originalSha256": "f7023fe166e6bc4f94df7bcebe04b45784cb6b468612ebb531acaa8d4f29e82f"
+      },
+      {
+        "path": "probe-initial-actual-gm-main-startup-probe-host-linux-unit-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134524-341-60374-2f65f3d32d134d4d879d675e45d39e41-categories/gm-main-startup-probe-host-linux-unit-001.trx",
+        "sha256": "a467d605f6cdbe8c229bfafc25066bf70d4f1a877b9985a51da742cc1ae64d9e",
+        "originalSha256": "bd1e457b263d8f737568e0b79388b5e36ffcdc7c4ed46e5feac798e2a263624f"
+      },
+      {
+        "path": "probe-initial-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134524-341-60374-2f65f3d32d134d4d879d675e45d39e41-categories/plan.json",
+        "sha256": "fb052f8a78c25b7a8ece5d8025c0e147512a935b3b58a2d9421f3aa81bb55cea",
+        "originalSha256": "fb052f8a78c25b7a8ece5d8025c0e147512a935b3b58a2d9421f3aa81bb55cea"
+      },
+      {
+        "path": "probe-initial-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261008-134524-341-60374-2f65f3d32d134d4d879d675e45d39e41-categories/summary.json",
+        "sha256": "06db558ec40262de722209897f603f1656477bc32fabef3f1efcf082d0e7b6f3",
+        "originalSha256": "06db558ec40262de722209897f603f1656477bc32fabef3f1efcf082d0e7b6f3"
+      },
+      {
+        "path": "probe-initial-plan-runner-boe-1553-probe-host-red-plan.log.gz",
+        "source": "/tmp/boe-1553-probe-host-red-plan.log",
+        "sha256": "63a4c5a5500bf915ef9b7c31d688c38c2f776b60f753886874c203a085ff3d5f",
+        "originalSha256": "10ecd271a8fe988788f7bfdca8de177d8a7810af07c07c6e20e75d4e0e261fd0"
+      },
+      {
+        "path": "probe-initial-actual-runner-boe-1553-probe-host-red-actual.log.gz",
+        "source": "/tmp/boe-1553-probe-host-red-actual.log",
+        "sha256": "f765434c56cdd77a9cf4f094b10a3c5ea621dafd50cbe2804be813734c93d9f9",
+        "originalSha256": "69be3b95c5c19c3d2a3212ecfc65d96a7e821ecf380dfe2e66dba1a6c28ae6b7"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityGMBridge/Program.cs",
+        "sha256": "2c1a43334d6391f84726fb54eaebf027f17b19ffd37599862f0c82798099f1d8"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.LoadSession.cs",
+        "sha256": "61055512203b6c639f2737858eb3e84dfc51863e466949cde965c1524d82b0c5"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/GmLoadSessionOperation.cs",
+        "sha256": "6c81145fdae9396dba4214861ce1465e40075d33009dc520c4257b48b271dc7d"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GmRuntime/WindowsStartupObservationProbe.cs",
+        "sha256": "1af28e67d431bf4e13673c44916cb4f8b543b787267ab5d4b8d4180f141f54b1"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "e86fd8d37da1ea13f29a868cc6c4c60c0256dbbd847f545d0bf8a366afaa0134"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "26eacb304bd66a955b90d29557b66f37a00d6d92ef590474758f8778083ecdea"
+      },
+      {
+        "path": "BookOfEternityGMBridge/BridgeHost.StartupObservation.cs",
+        "sha256": "4ee4b3683d64ccdd0a1567b1bf23aeb2c35bf83e37ddde469ca8153d7b0a5a9d"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/GmBridgeStartupObservationTests.cs",
+        "sha256": "ea95538b54a45d59400d18a50e782e951800a67d8b5daab89e7b122f9295232c"
+      }
+    ]
   }
 }
