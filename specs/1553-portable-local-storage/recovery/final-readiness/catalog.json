@@ -1,0 +1,125 @@
+{
+  "phase": "catalog",
+  "command": "pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild -TimeoutMinutes 5",
+  "revision": "9cac331d8d6ceaa88f71416959029c690a96849c",
+  "summary": {
+    "Categories": [
+      null
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": true,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "9cac331d8d6ceaa88f71416959029c690a96849c",
+      "WorkingTreeFingerprint": "3C4AD888DA7AD251D5B91FD8104A83E6901CEC5E8827AF9559AA6DBA14ACE70B",
+      "ChangedFiles": 1
+    },
+    "CatalogAudit": {
+      "Valid": true,
+      "Methods": 11194,
+      "Categories": 435,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0960172,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.1095302,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1447713,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0043217,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 5,
+    "WallTime": "00:00:12.8116081",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "sourcePins": [
+    {
+      "path": "README.md",
+      "size": 7769,
+      "sha256": "12882faa49e037e963b20eab56577119f3230747b560ebd9578e842533247832"
+    },
+    {
+      "path": "BookOfEternityClient/Launcher/CLI_Daemon_Quickstart.md",
+      "size": 13657,
+      "sha256": "edd73ec994fb2eae95bbc441f50846b0655063cf2ece34e71d6300c8cf651edf"
+    },
+    {
+      "path": "scripts/tests/linux-main-guide.tests.ps1",
+      "size": 4747,
+      "sha256": "f54141319363ae46c39a72cdf90ab908aa07cda2eef1a3afd80cdafbb5570e2f"
+    },
+    {
+      "path": "tests/categories.json",
+      "size": 1194593,
+      "sha256": "f333a7b142eb38f15303cddb827cc0472401fcf5601738cddcc92076522d0517"
+    },
+    {
+      "path": "tests/selection.json",
+      "size": 1404,
+      "sha256": "7654450596fab684974ca5f8491e461c5952642cd8560abf2e5d5d37b4f84ec6"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "recovery/final-readiness/catalog-catalog-audit.json.gz",
+      "size": 103,
+      "sha256": "8804d8cffaf5b6dd8aa747387eb2bc82a34748f4ccd78d6197d1cc5f87521b42",
+      "rawPath": "catalog-audit.json",
+      "rawSize": 103,
+      "rawSha256": "6e8fc6a54b8866082729bdfc8aebe4d91fba34af86e44c7f18acf03850165895"
+    },
+    {
+      "path": "recovery/final-readiness/catalog-dotnet-test.log.gz",
+      "size": 351119,
+      "sha256": "c08b7f74fe5c63f1a98df4a856f113234e944be082b9bec8d748fe9e76162d52",
+      "rawPath": "dotnet-test.log",
+      "rawSize": 3142531,
+      "rawSha256": "5098d8de4c5b3b9af572dc5146fdfc82691ded8c78dd2e9ba3ce67560c288799"
+    },
+    {
+      "path": "recovery/final-readiness/catalog-summary.json.gz",
+      "size": 601,
+      "sha256": "910044e27901eae174c19088637938137718b6b060e9c106aa69748ce090bd4a",
+      "rawPath": "summary.json",
+      "rawSize": 1404,
+      "rawSha256": "072735857a0b65e93c47da8a43acf9ed45a08ab008090c920c690269ed113322"
+    }
+  ]
+}

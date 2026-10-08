@@ -1,0 +1,107 @@
+{
+  "Task": "T052-FINAL-READINESS",
+  "Issue": "#1553",
+  "Base": "20bdeb6c42a8729acbfdf39d55f758d3e746240f",
+  "RuntimeChanges": false,
+  "SourceCorrection": "Only owned test child BOE_REPO_ROOT pin; installed setup documentation; exact CI metadata selection",
+  "Toolchain": {
+    "SDK": "10.0.401",
+    "Runtime8": "8.0.31",
+    "PowerShell": "7.5.4",
+    "NativeCompiler": "cc Debian14.2.0-19",
+    "Python": "3.12.14"
+  },
+  "FinalUniqueCases": 30,
+  "FinalPassed": 30,
+  "FinalFailed": 0,
+  "FinalDescriptors": 5,
+  "Runs": {
+    "guide": "final-readiness/guide-green.json",
+    "launcherAndProfile": "final-readiness/launcher-load-green.json",
+    "canonicalAndManaged": "final-readiness/schema-managed-green.json"
+  },
+  "HistoricalAttempts": {
+    "guideCausalInternal": {
+      "Passed": 2,
+      "Failed": 1,
+      "AdapterAccepted": 0
+    },
+    "ENOSPCPreparation": {
+      "Failed": 1,
+      "BehavioralReached": false
+    },
+    "FixtureRootPreparation": {
+      "Failed": 7,
+      "BehavioralReached": false
+    },
+    "ExplicitRootDiagnostic": {
+      "Passed": 7,
+      "SeparateFromPostFixGreen": true
+    }
+  },
+  "Catalog": {
+    "Categories": 435,
+    "Identities": 11194,
+    "Executed": 0,
+    "ExitCode": 0,
+    "Cleanup": "complete"
+  },
+  "PlanOnly": {
+    "EstimatedCases": 28,
+    "Descriptors": 5,
+    "Executed": 0,
+    "GuideActualExpandedCases": 3
+  },
+  "Guardian": {
+    "Invocations": 5,
+    "ECHILD": 5,
+    "Emergency": 0,
+    "Failures": 0,
+    "Deadlines": 0,
+    "Record": "final-readiness/launcher-fixtures.json",
+    "LogicalStopSeparate": true
+  },
+  "Cleanup": "All category runners complete; only completed failed attempt outputs and20previous logically closed package ship copies removed; oldUncertain/roots/evidence retained",
+  "SourcePins": "final-readiness/source-pins.json",
+  "EvidenceReuse": "final-readiness/reuse-inventory.json",
+  "WarningBudgets": {
+    "unit": 29,
+    "integration": 22,
+    "maximum": 158
+  },
+  "CI": {
+    "SelectionCategories": 5,
+    "Groups": 1,
+    "Runner": "ubuntu-24.04",
+    "WindowsJobs": 0,
+    "Hosted": "pending draft PR"
+  },
+  "Reviews": {
+    "Design": "PASS20bdeb6c",
+    "Source": "PASS0be9c979; minimal runner correction design PASS",
+    "FinalSourceEvidence": "pending",
+    "Metadata": "pending"
+  },
+  "Merge": {
+    "Performed": false,
+    "DefaultBranch": "main",
+    "DetailedProtection": "403 inaccessible by integration",
+    "ParentConfirmRequirements": true
+  },
+  "Deferred": {
+    "ActualSystemdS2S3": "owner approved defer/current backend off",
+    "NativeWindows": "after merge in parent HOME-PC task",
+    "ProductionWorkers": "remain closed",
+    "DesktopHardwarePositives": "unqualified",
+    "CodexOpenCode": "unqualified compatibility",
+    "GeneratedGameplayThroughLoad": "unqualified combined continuation",
+    "ColdRebootPowerLoss": "no guarantee"
+  },
+  "Delivery": {
+    "OrdinaryPush": "required",
+    "ExactRemoteAndByteReadback": "required",
+    "FreshGitHubOnlyRestore": "pending final carrier"
+  },
+  "GMRequests": 0,
+  "ServicesStarted": 0
+}
