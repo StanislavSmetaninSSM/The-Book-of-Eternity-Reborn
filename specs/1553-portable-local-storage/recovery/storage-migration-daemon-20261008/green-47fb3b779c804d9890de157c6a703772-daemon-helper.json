@@ -1,0 +1,1 @@
+{"ProcessId":150829,"InitialTurnReadRefusal":true,"CurrentCut":{"Mode":"cohort-read-refusal","Phase":"read","Path":"game_state/control/pending_turn_snapshot/output/daemon-declared.json","Count":1},"Completed":true,"ExitCode":0,"Contentions":0,"CanonicalReads":14,"RecoveryPhases":0}

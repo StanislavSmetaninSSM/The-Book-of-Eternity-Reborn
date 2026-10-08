@@ -1,0 +1,103 @@
+{
+  "Categories": [
+    "portable-gm-daemon-qte-storage-causal-linux",
+    "portable-gm-daemon-storage-delivery-neighbors",
+    "portable-gm-daemon-storage-current-linux",
+    "gm-main-helper-outcome-loss-neighbors",
+    "gm-main-helper-bounds-linux",
+    "portable-gm-daemon-helper-close-neighbor"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "8ddf1325f2c08ffc3ed29c4cf6381922ee6e0ad3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-main-helper-bounds-linux",
+      "Seconds": 4.8697522,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-main-helper-outcome-loss-neighbors",
+      "Seconds": 18.0598382,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-gm-daemon-helper-close-neighbor",
+      "Seconds": 4.6255573,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-gm-daemon-qte-storage-causal-linux",
+      "Seconds": 18.4992236,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-gm-daemon-storage-current-linux",
+      "Seconds": 48.9649521,
+      "BudgetMinutes": 5,
+      "Completed": true
+    },
+    {
+      "Category": "portable-gm-daemon-storage-delivery-neighbors",
+      "Seconds": 4.8177039,
+      "BudgetMinutes": 5,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.047639,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.033702,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0800975,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0037516,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:01:43.5351509",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 6,
+    "CompletedDescriptors": 6,
+    "PlannedCases": 27,
+    "CompletedCases": 27,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 27,
+    "Executed": 27,
+    "Passed": 27,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

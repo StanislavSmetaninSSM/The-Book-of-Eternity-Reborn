@@ -1,3 +1,30 @@
+## Current F14 bounded Linux delivery — 2026-10-08
+
+Runtime `8ddf1325` has independent SOURCE/FIXTURE/EXACT-SELECTION and RAW EVIDENCE
+PASS. Fresh Plan214049 compiled clean exact27/six/zero; actual214244 ran all27,
+six/six complete,27 PASS,103.5351509s,exit0,no duplicates/skips/timeouts, both
+cleanup flags true. Catalog214442 is valid489/11279,zero executed8.1347975s.
+
+All23 actual scenario/guardian folders were inspected. The five QTE original
+publication cuts reached once; actual daemon-request-end read contention now waits
+for recovered request/Ready decisions. Unknown preserves authentic journal before
+explicit fixture cleanup, dispatches nothing and closes original Failed1 with read
+marker/ACK, no fabricated publication Uncertain. Current14 covers positive conditional
+publication, exact retained competing Ready/GM-append bytes, coherent dynamic authority
+and mismatch/no observed-key adoption, cache generation, byte+metadata watermark
+refusal, initial-turn flag reset, exact post-send LastDelivery, chunk/path boundaries,
+and separate lost request-end/shape-invalid response. The two loss controls retire
+the original owner before local admission and naturally exit helper2 with no remote
+receipt/ACK/localcompletion/established outcome. All19 daemon owners retire as asserted;
+the separate A03 caught-loss neighbor intentionally remains logically Unresolved with
+Stop refusal while its physical guardian is healthy. No blanket logical-retirement claim.
+
+Saved packet now414 stored/expanded/original artifacts and132 historical Git source
+pins; final carrier integrity review and parent fresh GitHub-only restore follow.
+No native Windows, provider/desktop, full client QTE continuation or whole-migration
+claim. F17 exact dead helpers, treatment-storage tails, F10 cleanup, F16 media and F18
+fault-hook migration remain open under the existing queue; T062–T065 remain unchecked.
+
 ## F14 explicit inert current-fixture configuration — 2026-10-08
 
 Corrected clean cfb4 Plan213848 succeeded:27/six/zero executed,37.4337876s,

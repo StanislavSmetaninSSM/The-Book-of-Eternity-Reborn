@@ -1,3 +1,17 @@
+## Current F14 bounded runtime checkpoint — 2026-10-08
+
+The daemon now obtains canonical decision reads through its retained original A03
+connection, with short generation-bound snapshot leases, exact dynamic-cohort witnesses,
+bounded chunk frames and conditional common publication for observed notes/Ready bytes.
+Read refusal preserves the original Failed close/ACK separately from transport loss;
+outer polling/fatal diagnostics and parse/absence policies remain distinct. Runtime8dd
+has independent source/selection and raw evidence PASS27/27 Linux, six descriptors,
+103.5351509s; catalog489/11279 valid/zero. Saved packet414 artifacts/132 source pins is
+awaiting final carrier integrity and parent restore. Initial causal2P/3F+delivery4P
+atd376 remain preserved. Two local loss controls have no remote receipt; the separate
+A03 caught-loss neighbor retains logical Unresolved. Native Windows and full migration
+remain open.
+
 ## Current F13 bounded runtime checkpoint — 2026-10-08
 
 Dedicated generation-bound helper role, full policy/read/witness scope, chunked
@@ -10,7 +24,7 @@ PASS27388 files/full fsck0; helper packet1144 artifacts/194 pins verified.
 All earlier REDs and fixture failures remain disclosed. The A03 pre-receipt-loss
 neighbor retains logical Unresolved; physical cleanup is not blanket owner retirement.
 Native Windows/PowerShell5.1, PowerShell keyboard cancellation and full migration
-remain open. F14 daemon admission/read coherence is the next implementation family.
+remain open. F14 bounded Linux delivery is recorded above; native execution and remaining families stay open.
 
 ## Current F04/F05 checkpoint — 2026-10-08
 
@@ -96,7 +110,7 @@ ConPty/Job lifecycle execution remains unqualified. Conservative provider-labell
 restart observation never authorizes cold adoption or reboot recovery. Native Windows
 qualification remains external and unexecuted. Bounded Bridge/shared consumers and A03 gates above are accepted within their
 stated platforms. F06 has34-case Linux GREEN; F04/F05 has corrected57-case shared Linux GREEN with independent raw review PASS,
-final be3d carrier and parent fresh remote restore accepted. Remaining F13/F14/F16/F18, dead code, cleanup and treatment-storage tails stay open.
+final be3d carrier and parent fresh remote restore accepted. F13/F14 bounded Linux delivery is recorded above; native gaps, F16/F18, dead code, cleanup and treatment-storage tails stay open.
 
 T062 restoration delta:9e30 source has10/10 Linux PASS including actual second
 mirror publication after baseline restoration; earlier7 affected recovery neighbors
@@ -165,7 +179,7 @@ counts, not defect counts. Existing F/T owners below are the single executable b
 | R04/R12 | F08/F09/F12, T062 | Two treatment contours remain: helper/engine compensation actual publication uncertainty (preserve FailTaken restart blocker/HeldBlocked/Unsafe contracts), and successful treatment followed by actual runtime mirror uncertainty then truthful notice. Post-seal binding itself reads authority; not a third forward-write defect. Use direct original coordinator, avoid finally-reacquire fixture masking; no B2–B5 business resumption. |
 | R08/R09/R11 | F07/F08/F17, T063/T064 | Source-reviewed save/settings/load outcome contracts preserved. Autosave3 production callers propagate typed decisions; no additional bool defect found, so no speculative aggregate run. Remove only proven dead recursive helpers after reflection/script/name census and relevant guard. Native durability/close qualification remains scoped. |
 | R12/R26 | F11/F12/F19, T062/T065 | Actual failed browser rollback/runtime/notice accepted83f. HTTP/DTO/stale response ownership stays separate; retain current source-reviewed admission/Running ACK contracts. UI/cache/player notifications are not storage observers. No blanket callback-to-endpoint acceptance. |
-| R20 | F13/F14, T063 | F13 concrete design is current: dedicated helper role, generation before recovery, full policy/read/witness unit under one short lease, bounded chunk transport without a new document ceiling; design accepted; causal10 has ten semantic failures reached across original nine plus corrected realm-link one; old fixture failure remains preserved. Final bounded source/selection PASS45a; composed53 Linux passing obligations across6d26/6ed/45a, including exact stale-byte and realm refusal. Earlier fixture/diagnostic failures preserved; final raw/carrier and parent fresh restoration PASS38940493, native unexecuted. Old helper lock is distinct from the facade lock. F14 remains later: daemon original admitted QTE handler held MemberPublished cut must establish raw snapshot timing before guarded read/hash validation. Preserve watcher eligibility/poll fallback, source identity and no replay. |
+| R20 | F13/F14, T063 | F13 concrete design is current: dedicated helper role, generation before recovery, full policy/read/witness unit under one short lease, bounded chunk transport without a new document ceiling; design accepted; causal10 has ten semantic failures reached across original nine plus corrected realm-link one; old fixture failure remains preserved. Final bounded source/selection PASS45a; composed53 Linux passing obligations across6d26/6ed/45a, including exact stale-byte and realm refusal. Earlier fixture/diagnostic failures preserved; final raw/carrier and parent fresh restoration PASS38940493, native unexecuted. Old helper lock is distinct from the facade lock. F14 runtime8dd now has independent source/selection and actual27/27 Linux evidence PASS: original-connection snapshots, actual held publication QTE reads, complete dynamic cohort witnesses, exact notes/Ready conditional publication and marked refusal/real close projection. Initial causal failures are preserved; packet414/132 awaits final carrier/restore. Native and full client continuation remain unqualified; watcher hints/poll fallback, source identity and no replay are preserved. |
 | R25 | F16, T063 | Actual image cleanup consumer/counts and console image publication catch still open. Stop on storage uncertainty/replacement, preserve confirmed per-file counts. Canonical image/mod/world-profile directory recreation needs bounded generation/type guard, including gallery OpenImagesFolder→DesktopPathOpener default creation; preserve injected gallery creation/one-open/failure controls. Explicit external export and BasePath guardian library initialization stay distinct technical roots. |
 | R02/R13/R28 | F18, T064 | Reach-test ordinary vs physical/read/load callbacks, five named old ordinary FSM physical-hook tests, staged/spiritual/wound batching cuts and positive controls for zero-event assertions. MemberPublished is precommit; no async-void observer or nested canonical lease. Keep legacy/primitive/current-state-machine cuts with their real contract. |
 | R17/R18/R19 | F15, T063/T065 | Worker frame/peer/ApplyGate/synthetic bundle are independently typed ownership protocols. Audit found no new concrete stale consumer; preserve explicit platform capability refusal and original recovery handlers. Constructed paths/JSON/delegate edges remain checked at affected consumer boundaries, not converted wholesale to game journal. |
