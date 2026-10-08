@@ -108,3 +108,14 @@ admission filter. No skips, duplicates or timeout; owned cleanup complete.
 The correction removes IDisposable from the admission filter. Its managed-only
 semaphore never creates WaitHandle and remains alive with the in-flight handler;
 DI teardown cannot dispose it before the handler's finally. Final GREEN pending.
+
+Final targeted Windows GREEN at clean source3d205d317244b977460fc5537f66fa35e8bc567b:
+33/33 completed PASS, no skips/duplicates/timeout; original owned/runtime cleanup
+complete. Fresh integration build0errors/22warnings; wall9m25s. Descriptor counts
+9+2+10+4+8 are intact; both split Load categories finish within their unchanged
+5minute budgets. Independent lifetime/source review PASS. Actual native probes,
+SaveLoad/restart/browser and final evidence review remain pending.
+
+[Prior Linux coverage audit and exact RED/GREEN reproduction](windows-http-linux-reproduction.md)
+distinguish existing short overlapping Load HTTP scenarios from missing parallel
+startup state reads. No Windows-only cause or Linux HTTP GREEN is claimed.

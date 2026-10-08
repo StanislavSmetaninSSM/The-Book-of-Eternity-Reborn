@@ -4,6 +4,11 @@
   "IncompleteGreenSourceCommit": "7e4d66df17f933b1d9a4d9e7e36a6202bb84a272",
   "Files": [
     {
+      "Path": "final-green-original-results.zip",
+      "Bytes": 15106,
+      "SHA256": "7c7d612ac854be7c6201bb0cc4d675e58b2f1181c25313350b4b85cda6055c31"
+    },
+    {
       "Path": "first-green-incomplete-original-results.zip",
       "Bytes": 5815,
       "SHA256": "3f797302b1471427eed36d0169b2c60c568f59b9b1d8291d1f093edac648ec67"
@@ -44,5 +49,6 @@
       "SHA256": "1bf7fadf6b9ad1f98718367f71faf04075b12a28103b19d700143ce33ad041f9"
     }
   ],
-  "LifetimeRedSourceCommit": "b238e4ea946db38a5782d3c793b87a1e345a7c17"
+  "LifetimeRedSourceCommit": "b238e4ea946db38a5782d3c793b87a1e345a7c17",
+  "FinalRuntimeAndTestsCommit": "3d205d317244b977460fc5537f66fa35e8bc567b"
 }
