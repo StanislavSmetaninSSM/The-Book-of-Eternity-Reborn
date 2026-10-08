@@ -77,6 +77,15 @@ function Send-BoeHelperFrame {
     if(-not $reply.ok){throw (New-BoeStorageFailure 'Dedicated helper storage or protocol operation refused.' $null)}
     return $reply
 }
+function Complete-BoeHelperTransport {
+    param($Context)
+    try {Dispose-GmOperationTransport $Context}
+    finally {
+        if($Context.publicationUncertain -or $Context.lost){
+            $script:BoeHelperFailure=New-BoeStorageFailure 'The original GM helper decision requires follow-up; no replay or reinitialization.' $null
+        }
+    }
+}
 function Open-BoeHelperScope {
     param([string]$Mode,[string]$SessionPath,[AllowNull()][string]$ExpectedGeneration)
     if($global:BoeMainOperationContext){throw (New-BoeStorageFailure 'A dedicated GM helper cannot nest inside the default participating control.' $null)}
@@ -88,10 +97,17 @@ function Open-BoeHelperScope {
     try {
         $process.StandardInput.WriteLine((@{sequence=0L;action='open';mode=$Mode}|ConvertTo-Json -Compress));$process.StandardInput.Flush()
         $reply=Read-BoeHelperFrame $context
+        if($reply.state -ceq 'admission-cancelled' -and $reply.effectiveOutcome -eq 2){
+            $cancelled=[OperationCanceledException]::new('Original helper admission was cancelled.')
+            $cancelled.Data['BoeHelperStorageFailure']=$true
+            $cancelled.Data['OriginalTerminalClose']=$reply.terminalClose
+            $cancelled.Data['OriginalCloseObserved']=$reply.closeObserved
+            throw $cancelled
+        }
         if(-not $reply.ok -or $reply.state -cne 'active' -or $reply.sequence -ne 0 -or $reply.generation -cnotmatch '^[0-9a-f]{32}$' -or ($ExpectedGeneration -and $reply.generation -cne $ExpectedGeneration)){throw 'Helper admission identity is invalid.'}
         $context.originalClose=$reply.originalClose;$context.generation=$reply.generation
         return $context
-    } catch {Dispose-GmOperationTransport $context;throw (New-BoeStorageFailure 'Original initialized helper admission refused.' $_.Exception)}
+    } catch {Complete-BoeHelperTransport $context;throw (New-BoeStorageFailure 'Original initialized helper admission refused.' $_.Exception)}
 }
 function Invoke-BoeHelperScope {
     param([string]$Mode='read',[scriptblock]$Body)
@@ -108,7 +124,7 @@ function Invoke-BoeHelperScope {
         try {Close-GmParticipatingOperation $context $(if($failure){1}else{0})}
         catch {if(-not $failure){$failure=$_}}
         finally {
-            try {Dispose-GmOperationTransport $context}
+            try {Complete-BoeHelperTransport $context}
             finally {
                 $script:BoeHelperScope=$null
                 if($context.publicationUncertain -or $context.lost){
@@ -142,8 +158,14 @@ function Invoke-BoeHelperRequest {
         $chunk=[Convert]::ToBase64String($payload,[int]$offset,$count)
         [void](Send-BoeHelperFrame $context @{action='request-chunk';transfer=$id;offset=$offset;bytes=$chunk})
     }
-    $reply=Send-BoeHelperFrame $context @{action='request-end';transfer=$id}
-    if($reply.publicationDisposition -ceq 'Committed' -and $OnCommitted){& $OnCommitted}
+    $endSequence=$context.sequence+1L
+    try {$reply=Send-BoeHelperFrame $context @{action='request-end';transfer=$id}}
+    finally {
+        # A valid negative continuation reply may still carry the original
+        # committed publication. Advance only that exact received decision.
+        if($context.lastCommandReply.sequence -eq $endSequence -and
+            $context.lastCommandReply.publicationDisposition -ceq 'Committed' -and $OnCommitted){& $OnCommitted}
+    }
     if($reply.transfer -cne $id -or $reply.length -lt 0 -or $reply.hash -cnotmatch '^[0-9a-f]{64}$'){$context.lost=$true;throw (New-BoeStorageFailure 'Original helper transfer response is invalid.' $null)}
     $buffer=[IO.MemoryStream]::new()
     try {

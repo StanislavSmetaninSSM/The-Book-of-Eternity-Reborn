@@ -1,3 +1,27 @@
+## F13 cancellation and current-control draft checkpoint — 2026-10-08
+
+This checkpoint extends the unbuilt helper draft with an owned pre-active Linux
+SIGINT cancellation source. Expected-generation/main admission and the initial
+canonical lease receive the same token; active stdin remains sequential. An admitted
+cancellation retains original read-only finalization and projects its actual
+Cancelled close/ACK. Active EOF remains Unresolved. Default A03 is unchanged.
+
+The current-control fixture draft includes a real Running neutral owner, original
+helper pidfd SIGINT, actual canonical contention, and actual bound-closing observation
+before releasing the blocker. It must then join the same helper and verify its actual
+Cancelled receipt. This is an unexecuted Linux helper-role recipe, not PowerShell
+keyboard or native Windows qualification. Partial-transfer close is a separate control.
+Other draft controls cover multibyte large payloads, malformed chunks, read-role
+refusal, exact publication outcomes, persistent case-aware baselines, trusted paths,
+parse-only fallback and default-role separation. No current-control row has run.
+
+Failed-open/Init cleanup now retains transport loss/uncertainty; established Committed
+negative replies advance the destination baseline before their follow-up error escapes.
+The complete unit still needs compilation, original22 fixture migration/race cuts,
+exact category freeze, independent source/selection review and finite GREEN. This
+checkpoint is **uncompiled/unreviewed WIP**, not an accepted runtime result. Accepted
+causal109-artifact/48-pin evidence and parent fresh restoration676 remain unchanged.
+
 ## F13 dedicated transport and PowerShell unit WIP — 2026-10-08
 
 The dedicated CLI role now has an initial bounded-frame/chunk interpreter, original

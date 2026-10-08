@@ -90,11 +90,11 @@ internal static class SessionOperationContext
     /// The completed operation result. Established session replacement takes precedence over a storage failure;
     /// ordinary closing failures retain the original typed storage outcome and a separate diagnostic.
     /// </returns>
-    private static async Task<T> RunBoundCoreAsync<T>(FileSystemManager fileSystem,string expectedGeneration,Func<Task<T>> operation,FileSystemManager.CanonicalWriteLease? writeLease,Func<MainOperationOutcome>? capturedOutcome=null)
+    private static async Task<T> RunBoundCoreAsync<T>(FileSystemManager fileSystem,string expectedGeneration,Func<Task<T>> operation,FileSystemManager.CanonicalWriteLease? writeLease,Func<MainOperationOutcome>? capturedOutcome=null,CancellationToken admissionCancellation=default)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);ArgumentNullException.ThrowIfNull(operation);
         if(string.IsNullOrWhiteSpace(expectedGeneration))throw new ArgumentException("A session operation requires a generation.",nameof(expectedGeneration));
-        await using var main=fileSystem.BeginParticipatingMainAdmission();await main.AcquireAsync();
+        await using var main=fileSystem.BeginParticipatingMainAdmission();await main.AcquireAsync(admissionCancellation);
         Exception? failure=null;T? result=default;
         try {result=await RunBoundBodyAsync(fileSystem,expectedGeneration,operation,writeLease,capturedOutcome);}
         catch(Exception e){failure=e;throw;}
@@ -108,20 +108,20 @@ internal static class SessionOperationContext
     }
 
     internal static Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null) =>
-        RunParticipatingSessionAsync(files, operation, null, establishedOutcome, observeOriginalClose);
+        RunParticipatingSessionAsync(files, operation, null, establishedOutcome, observeOriginalClose, default);
 
     // Dedicated Init-bound callers never bootstrap or adopt a later generation.
-    internal static Task<T> RunParticipatingExpectedSessionAsync<T>(FileSystemManager files,string expectedGeneration,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null)
+    internal static Task<T> RunParticipatingExpectedSessionAsync<T>(FileSystemManager files,string expectedGeneration,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null,CancellationToken admissionCancellation=default)
     {
         if (!Guid.TryParseExact(expectedGeneration, "N", out var parsed) || parsed.ToString("N") != expectedGeneration)
             throw new InvalidDataException("An exact existing helper generation is required.");
-        return RunParticipatingSessionAsync(files, operation, expectedGeneration, establishedOutcome, observeOriginalClose);
+        return RunParticipatingSessionAsync(files, operation, expectedGeneration, establishedOutcome, observeOriginalClose, admissionCancellation);
     }
 
-    private static async Task<T> RunParticipatingSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,string? initializedGeneration,Func<MainOperationOutcome>? establishedOutcome,Action<MainOperationClose?,bool,bool>? observeOriginalClose)
+    private static async Task<T> RunParticipatingSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,string? initializedGeneration,Func<MainOperationOutcome>? establishedOutcome,Action<MainOperationClose?,bool,bool>? observeOriginalClose,CancellationToken admissionCancellation)
     {
         ArgumentNullException.ThrowIfNull(files);ArgumentNullException.ThrowIfNull(operation);
-        await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync();
+        await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync(admissionCancellation);
         Exception? failure=null;T? result=default;MainOperationOutcome outcome=MainOperationOutcome.Completed;
         try {
             string generation;
@@ -135,7 +135,7 @@ internal static class SessionOperationContext
                 // actual finalization or close can fail. Later reads use this value.
                 outcome=establishedOutcome?.Invoke()??MainOperationOutcome.Completed;
                 return value;
-            },null,()=>outcome);
+            },null,()=>outcome,admissionCancellation);
         } catch(Exception e){failure=e;outcome=establishedOutcome?.Invoke()??outcome;throw;}
         finally {
             outcome=failure==null?outcome:OutcomeFor(failure,outcome);

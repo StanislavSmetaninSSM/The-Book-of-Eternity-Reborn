@@ -23,7 +23,7 @@ internal static class MainRunFenceScenarioDriver
             var unchanged=record.AsSpan().SequenceEqual(File.ReadAllBytes(path)) && generation.AsSpan().SequenceEqual(File.ReadAllBytes(files.SessionGenerationPath));
             await File.WriteAllTextAsync(Path.Combine(folder,"unbound.json"),JsonSerializer.Serialize(new{Refused=refused,Unchanged=unchanged}));return refused==2 && unchanged?0:1;
         }
-        var result=new Dictionary<string,object?>(){["Mode"]=mode};object? host=null;Type? type=null;
+        var result=new Dictionary<string,object?>(){["Mode"]=mode};object? host=null;Type? type=null;GmSessionRunCoordinator? helperOwner=null;
         object? Field(string name)=>type!.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host);
         void Set(string name,object value)=>type!.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public)!.SetValue(host,value);
         async Task Call(string name){try{await (Task)type!.GetMethod(name,BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,null)!;}catch(TargetInvocationException e){throw e.InnerException!;}}
@@ -155,7 +155,20 @@ internal static class MainRunFenceScenarioDriver
             await Call("StartShellAsync");
             var owner=(GmSessionRunCoordinator)Field("_mainRun")!;var terminal=(IOwnedTerminalSession)Field("_pty")!;
             var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var old=Read();
-            if(mode.StartsWith("terminal-main-worker-dispatch-",StringComparison.Ordinal)) {
+            if(mode.StartsWith("terminal-main-helper-current-",StringComparison.Ordinal)) {
+                helperOwner=owner;
+                await owner.RunOperationAsync(async()=>{await GmHelperCurrentScenario.SeedAsync(files);return 0;});
+                using var control=new CancellationTokenSource();
+                var server=(Task)type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[control.Token])!;
+                try {
+                    var currentMode=mode["terminal-main-helper-current-".Length..];
+                    if(currentMode=="admission-cancel")await GmHelperCurrentScenario.CancelAdmissionAsync(files,owner,folder,result);
+                    else await GmHelperCurrentScenario.ExerciseAsync(currentMode,files,folder,result);
+                }finally {await control.CancelAsync();await server;}
+                await Call("StopShellAsync");
+                Require(owner.Record.Disposition==GmSessionRunDisposition.Stopped&&!owner.RetainsAuthority,"Helper fixture lost original main retirement.");
+            }
+            else if(mode.StartsWith("terminal-main-worker-dispatch-",StringComparison.Ordinal)) {
                 await MainWorkerDispatchScenario.RunAsync(mode["terminal-main-worker-dispatch-".Length..],root,package,host!,type!,owner,()=>Call("StopShellAsync"),result);
             }
             else if(mode.StartsWith("terminal-main-worker-cleanup-",StringComparison.Ordinal)) {
@@ -432,7 +445,7 @@ internal static class MainRunFenceScenarioDriver
         catch(Exception e){result["Failure"]=e.ToString();return 1;}
         finally
         {
-            if(host!=null){try{await Call("StopShellAsync");result["CleanupAttempted"]=true;}catch(Exception e){result["CleanupFailure"]=e.ToString();}try{((IDisposable)host).Dispose();}catch(Exception e){result["DisposeFailure"]=e.ToString();}}
+            if(host!=null){try{await Call("StopShellAsync");result["CleanupAttempted"]=true;if(helperOwner!=null){result["OriginalHelperOwnerRetired"]=helperOwner.Record.Disposition==GmSessionRunDisposition.Stopped&&!helperOwner.RetainsAuthority;Require((bool)result["OriginalHelperOwnerRetired"]!,"Original helper main did not retire.");}}catch(Exception e){result["CleanupFailure"]=e.ToString();}try{((IDisposable)host).Dispose();}catch(Exception e){result["DisposeFailure"]=e.ToString();}}
             await File.WriteAllTextAsync(Path.Combine(folder,"scenario.json"),JsonSerializer.Serialize(result));
         }
     }

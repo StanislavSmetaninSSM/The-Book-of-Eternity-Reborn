@@ -13,7 +13,7 @@ function Initialize-BoeGmTurnHelper {
     if($script:BoeHelperFailure){throw $script:BoeHelperFailure}
     $context=Open-BoeHelperScope 'initialize' $GameSessionPath $null
     try {Close-GmParticipatingOperation $context 0}
-    finally {Dispose-GmOperationTransport $context}
+    finally {Complete-BoeHelperTransport $context}
     $script:BoeGameSessionPath=$context.session
     $script:BoeHelperGeneration=$context.generation
     $script:BoeReadBaselines=[Collections.Generic.Dictionary[string,string]]::new($script:BoePathComparer)
@@ -65,6 +65,7 @@ function Read-BoeJson {
 function Get-BoeSha256Hex {
     param(
         [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
         [byte[]]$Bytes
     )
 

@@ -38,14 +38,29 @@ internal static class GmTurnHelperControl
         {
             if(args.Length!=5 || args[0]!="--gm-turn-helper" || args[1]!="--root" || args[3]!="--generation" || !Directory.Exists(args[2]))
                 throw new InvalidDataException("An explicit helper root and initialized generation are required.");
-            using var interrupt=OperatingSystem.IsLinux()?PosixSignalRegistration.Create(PosixSignal.SIGINT,c=>c.Cancel=true):null;
-            return await RunAsync(new FileSystemManager(args[2],NullLogger<FileSystemManager>.Instance),
+            return await RunInterruptibleAsync(new FileSystemManager(args[2],NullLogger<FileSystemManager>.Instance),
                 Console.OpenStandardInput(),Console.OpenStandardOutput(),args[4]=="initialize"?null:args[4]);
         }
         catch { Console.Error.WriteLine("Original GM helper admission or continuation refused; no replay."); return 2; }
     }
 
-    internal static async Task<int> RunAsync(FileSystemManager files,Stream input,Stream output,string? expectedGeneration)
+    internal static Task<int> RunAsync(FileSystemManager files,Stream input,Stream output,string? expectedGeneration) =>
+        RunCoreAsync(files,input,output,expectedGeneration,CancellationToken.None,null);
+
+    // The original foreground helper owns this signal registration. Cancellation
+    // withdraws only admission; once active, the original explicit close wins.
+    internal static async Task<int> RunInterruptibleAsync(FileSystemManager files,Stream input,Stream output,string? expectedGeneration)
+    {
+        using var cancellation=new CancellationTokenSource();
+        var gate=new object();var active=false;
+        using var interrupt=OperatingSystem.IsLinux()?PosixSignalRegistration.Create(PosixSignal.SIGINT,c=>{
+            c.Cancel=true;lock(gate){if(!active)cancellation.Cancel();}
+        }):null;
+        void BeginActive(){lock(gate){cancellation.Token.ThrowIfCancellationRequested();active=true;}}
+        return await RunCoreAsync(files,input,output,expectedGeneration,cancellation.Token,BeginActive);
+    }
+
+    private static async Task<int> RunCoreAsync(FileSystemManager files,Stream input,Stream output,string? expectedGeneration,CancellationToken admissionCancellation,Action? beginActive)
     {
         var reader=new MainOperationReader(input);
         var opening=await reader.ReadAsync<Frame>(CancellationToken.None)??throw new IOException("Helper opening is absent.");
@@ -53,7 +68,7 @@ internal static class GmTurnHelperControl
             (expectedGeneration==null)!=(opening.Mode=="initialize")) throw new InvalidDataException("Invalid helper admission role.");
         var generation=expectedGeneration??files.ObserveExistingHelperGeneration();
         var write=opening.Mode=="write";
-        var explicitClose=false; var uncertain=false; var closeReplyAttempted=false;
+        var explicitClose=false; var uncertain=false; var closeReplyAttempted=false; var becameActive=false;
         var remote=false; var observed=false; var localCompleted=false;
         long sequence=0;
         var outcome=MainOperationOutcome.Completed;
@@ -71,7 +86,7 @@ internal static class GmTurnHelperControl
             {
                 // Lease disposal happens before binding finalization reacquires its
                 // read-only closing lease; there is never a nested lock acquisition.
-                await using var lease=await files.AcquireCanonicalWriteLeaseAsync(write?FileSystemManager.CanonicalWritePurpose.SessionMutation:FileSystemManager.CanonicalWritePurpose.PublicationReadQuiescence);
+                await using var lease=await files.AcquireCanonicalWriteLeaseAsync(write?FileSystemManager.CanonicalWritePurpose.SessionMutation:FileSystemManager.CanonicalWritePurpose.PublicationReadQuiescence,admissionCancellation);
                 var config=await files.ReadFileBytesAsync(lease,"config.json")??throw new InvalidDataException("Initialized configuration is absent.");
                 _=StateManager.PrepareLocalLoadSettings(config);
                 var scope=new GmHelperCanonicalScope(files,lease,write);
@@ -81,6 +96,7 @@ internal static class GmTurnHelperControl
                 var receiving=false;
                 try
                 {
+                admissionCancellation.ThrowIfCancellationRequested();beginActive?.Invoke();becameActive=true;
                 await MainOperationReader.WriteAsync(output,new {ok=true,state="active",sequence,generation,
                     originalClose=files.DescribeMainOperationClose(MainOperationOutcome.Completed,false)},CancellationToken.None);
                     while(true)
@@ -176,13 +192,22 @@ internal static class GmTurnHelperControl
                         }
                     }
                 }
-                finally {if(!explicitClose)files.MarkMainOperationUnresolved();}
-            },()=>outcome,(close,ack,wasRemote)=>{terminalClose=close;observed=ack;remote=wasRemote;});
+                finally {if(becameActive&&!explicitClose)files.MarkMainOperationUnresolved();}
+            },()=>outcome,(close,ack,wasRemote)=>{terminalClose=close;observed=ack;remote=wasRemote;},admissionCancellation);
             localCompleted=!remote;await CloseReply(false);return 0;
+        }
+        catch(OperationCanceledException) when(!becameActive && admissionCancellation.IsCancellationRequested)
+        {
+            // Original bound finalization may wait for its read-only lease. The
+            // receipt below is observed only after that real fence/close settles.
+            outcome=MainOperationOutcome.Cancelled;
+            await MainOperationReader.WriteAsync(output,new {ok=false,state="admission-cancelled",sequence,
+                terminalClose,closeObserved=observed,effectiveOutcome=outcome},CancellationToken.None);
+            throw;
         }
         catch
         {
-            if(!explicitClose)files.MarkMainOperationUnresolved();
+            if(becameActive&&!explicitClose)files.MarkMainOperationUnresolved();
             else if(terminalClose!=null&&!closeReplyAttempted){try{await CloseReply(true);}catch{/* preserve original continuation failure */}}
             throw;
         }
