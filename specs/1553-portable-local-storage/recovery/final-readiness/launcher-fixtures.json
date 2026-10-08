@@ -1,0 +1,516 @@
+{
+  "ownedFixtures": [
+    {
+      "directory": "TestResults/production-main/66f9d60e1b4d4444b465453293af8b2c",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "artifacts": [
+        {
+          "path": "recovery/final-readiness/launcher-fixture-66f9d60e1b4d4444b465453293af8b2c-fixture-preparation.json.gz",
+          "sha256": "b83362a5591310b92f9f6f6bbf020891bacef954470200606b78d8cb7e8a45ea",
+          "rawSize": 1030,
+          "rawSha256": "19516c5f943433534ba8f88fac8656ae4feae7d503121ac23a85f9a60d1c047a"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-66f9d60e1b4d4444b465453293af8b2c-guardian.json.gz",
+          "sha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af",
+          "rawSize": 97,
+          "rawSha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-66f9d60e1b4d4444b465453293af8b2c-scenario.json.gz",
+          "sha256": "50574f18ee675fe3d2ea215b1cfbb73c1a7c319b869c6cffe1efa3718c75e3ac",
+          "rawSize": 3683,
+          "rawSha256": "f1163dbc9d34a6133ccab929f27957d4b80142ee74376a19b385c4d04da2a747"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-66f9d60e1b4d4444b465453293af8b2c-fixture-build.log.gz",
+          "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+          "rawSize": 0,
+          "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-66f9d60e1b4d4444b465453293af8b2c-publish-BookOfEternityGMBridge.log.gz",
+          "sha256": "174c91b9084c120675bdf11406407dc651eba878e541c04cba77cdddccc658e0",
+          "rawSize": 141,
+          "rawSha256": "965d0bd7e4e5b286ba698b1d317a88ccbc9f03aaa167348e8a1b23179faed302"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-66f9d60e1b4d4444b465453293af8b2c-ordinary.log.gz",
+          "sha256": "09da729abde21d0fbfe4dedc3688eb95cfdbf1af4dae911ac774efe1329f7f77",
+          "rawSize": 1409,
+          "rawSha256": "61b6e8a315686689596606ba13ec271be7c4645beebd6813eb3aa2779a3888d2"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-66f9d60e1b4d4444b465453293af8b2c-fixture-compiler-version.log.gz",
+          "sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+          "rawSize": 231,
+          "rawSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-66f9d60e1b4d4444b465453293af8b2c-helper-build.log.gz",
+          "sha256": "03ed4da4b7630927e2f927b749aafa9143530e5764b8bafaa3453fc698c633e9",
+          "rawSize": 114,
+          "rawSha256": "de10313fa7f8490e0a0eebcdf9dd61f5edd900a24b16960e4919b36d68ca0f66"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-66f9d60e1b4d4444b465453293af8b2c-guardian.log.gz",
+          "sha256": "7362286533697ddc238da8c6e713fc2bc90c69010a8049baf3de3a38fa2f0983",
+          "rawSize": 3039,
+          "rawSha256": "417e44be3f7947742eb6bfa335a81f6b94932f06a663fb2b503fbe1e9328529b"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-66f9d60e1b4d4444b465453293af8b2c-publish-BookOfEternityClient.log.gz",
+          "sha256": "f74b67593b37c13dca1f9aa25e48345dd24517a4db80235403a3c8132aa72b0e",
+          "rawSize": 137,
+          "rawSha256": "af0180836143ce9e593da3a8fae15d2bd5b03a3f6fbdec025a49bea5df075505"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-66f9d60e1b4d4444b465453293af8b2c-build-provenance.json.gz",
+          "sha256": "c7221a0b17c8f7cf3a3486af9e5c7fb4b705d86edf9012b26c3f09afdf81c812",
+          "rawSize": 1153,
+          "rawSha256": "f9cd04cde9282130f6878b88d0fcbbee6882e29e18b2fcba32fc469f6d3a30cc"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-66f9d60e1b4d4444b465453293af8b2c-package-manifest.json.gz",
+          "sha256": "08ae940e400bf06e2fc8b13974dc117163bf65a879d47dbf2215710ed05b11b8",
+          "rawSize": 968,
+          "rawSha256": "16f441367003641ca633536622ef9a21a4d96986c173b76e5ba63ac9addd260a"
+        }
+      ]
+    },
+    {
+      "directory": "TestResults/production-main/d5be59b022454523b89f2a22827d9254",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "artifacts": [
+        {
+          "path": "recovery/final-readiness/launcher-fixture-d5be59b022454523b89f2a22827d9254-fixture-preparation.json.gz",
+          "sha256": "f560caf893e379354d6ecfe30a69fb1f72bcc9af6e3c4e1b655f6ead2ba6aa08",
+          "rawSize": 1030,
+          "rawSha256": "d53800b048b222750a61a72c0e0e7211717d2dd67e8519f36ddb92ecf974281b"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-d5be59b022454523b89f2a22827d9254-guardian.json.gz",
+          "sha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af",
+          "rawSize": 97,
+          "rawSha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-d5be59b022454523b89f2a22827d9254-scenario.json.gz",
+          "sha256": "582ae184c4616bcd00dfb5359165ff7844e808da927c2f4f90355563d2b68b73",
+          "rawSize": 808,
+          "rawSha256": "e9f06b47a2643ea3a466f6f7a1aba2e32b46be45bfc764d2ceaac86c5bdc01fe"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-d5be59b022454523b89f2a22827d9254-fixture-build.log.gz",
+          "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+          "rawSize": 0,
+          "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-d5be59b022454523b89f2a22827d9254-publish-BookOfEternityGMBridge.log.gz",
+          "sha256": "82b4f809279eb345174a1aa8a6be229abd70c2337f807e250ef11259c890ccb6",
+          "rawSize": 141,
+          "rawSha256": "d6e6cd925f697dc9195c1d212231ad4a8c5c1524a4f266724b49a844a89368f7"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-d5be59b022454523b89f2a22827d9254-ordinary.log.gz",
+          "sha256": "005933f7143a6d2acd236a56893791a2571d5e89ee8a8fbfcf9f6f5d1659f69e",
+          "rawSize": 776,
+          "rawSha256": "9034766178eb4730bb580699412a7a5ce5c8dd36c1e4539d893e88b49f0206aa"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-d5be59b022454523b89f2a22827d9254-fixture-compiler-version.log.gz",
+          "sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+          "rawSize": 231,
+          "rawSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-d5be59b022454523b89f2a22827d9254-helper-build.log.gz",
+          "sha256": "30207c337449f785c3d0cfed02ee42b1f80097bbc993ccc15306b3cd1b096df1",
+          "rawSize": 114,
+          "rawSha256": "9a532b03c685605bf4e9fb5a9948e3639c1e14b4e0ac8ab2ecdd9f4dfc62e3ef"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-d5be59b022454523b89f2a22827d9254-guardian.log.gz",
+          "sha256": "5191805615f284274917cfae180c4bfc57f3d79177612d476a810735815ec742",
+          "rawSize": 736,
+          "rawSha256": "ba23b2e79fe36c5f64891aa86bba6437d9e7a09861e83281fde0b1d8df40edb7"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-d5be59b022454523b89f2a22827d9254-publish-BookOfEternityClient.log.gz",
+          "sha256": "6b3956a857d5d8911437abe3f608bb5a0eb8dc293606329c012ddf5f1e071fce",
+          "rawSize": 137,
+          "rawSha256": "65d2644adac8d6302564d42ea12965d2bdc4579dda36712acde61359e2e1eb1d"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-d5be59b022454523b89f2a22827d9254-daemon.log.gz",
+          "sha256": "282b445de4f3760fe9b358093ffc24a66261e910749f5dfd5720d44b76f6aa9b",
+          "rawSize": 595,
+          "rawSha256": "5f5767f26bde3c76cf5753e90cf29a1e50b3ea3ee6356f4de2e4f0efc2282c85"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-d5be59b022454523b89f2a22827d9254-build-provenance.json.gz",
+          "sha256": "c7221a0b17c8f7cf3a3486af9e5c7fb4b705d86edf9012b26c3f09afdf81c812",
+          "rawSize": 1153,
+          "rawSha256": "f9cd04cde9282130f6878b88d0fcbbee6882e29e18b2fcba32fc469f6d3a30cc"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-d5be59b022454523b89f2a22827d9254-package-manifest.json.gz",
+          "sha256": "08ae940e400bf06e2fc8b13974dc117163bf65a879d47dbf2215710ed05b11b8",
+          "rawSize": 968,
+          "rawSha256": "16f441367003641ca633536622ef9a21a4d96986c173b76e5ba63ac9addd260a"
+        }
+      ]
+    },
+    {
+      "directory": "TestResults/production-main/176c5176ac5e4eb984425f5a4dafadf3",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "artifacts": [
+        {
+          "path": "recovery/final-readiness/launcher-fixture-176c5176ac5e4eb984425f5a4dafadf3-fixture-preparation.json.gz",
+          "sha256": "58a069ae80e30157156fd40ad79a0e352d9f100bc451dcc3aee805d096d15e86",
+          "rawSize": 1030,
+          "rawSha256": "47474275c46875cfdd9dfaa629cf8972e65bdc1ba02c5200fee3d95aa463e330"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-176c5176ac5e4eb984425f5a4dafadf3-guardian.json.gz",
+          "sha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af",
+          "rawSize": 97,
+          "rawSha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-176c5176ac5e4eb984425f5a4dafadf3-scenario.json.gz",
+          "sha256": "b2de9a8a75402fbdd561bfd71520768aca882405d5bad8d85ed8b47241ef5aca",
+          "rawSize": 440776,
+          "rawSha256": "39bd2a7a874cd7fde1df6c6053029be4182da8b6e6dd29fe4cd18553a0d95ca2"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-176c5176ac5e4eb984425f5a4dafadf3-fixture-build.log.gz",
+          "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+          "rawSize": 0,
+          "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-176c5176ac5e4eb984425f5a4dafadf3-publish-BookOfEternityGMBridge.log.gz",
+          "sha256": "e348aa529d96cfed62460c05d7e70ef58878cd9f3d08f87e2ace7c89b9f85027",
+          "rawSize": 141,
+          "rawSha256": "ad9d100d1ed0ceb8d5caae5f07d499990322737bb0c8b1c27474053a388d2c0c"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-176c5176ac5e4eb984425f5a4dafadf3-fixture-compiler-version.log.gz",
+          "sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+          "rawSize": 231,
+          "rawSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-176c5176ac5e4eb984425f5a4dafadf3-helper-build.log.gz",
+          "sha256": "3ff7d00f3e10bf8591bb42f1a26fd49ff587972b5d1a3ece0ab1311d5a5b65f9",
+          "rawSize": 114,
+          "rawSha256": "8cd8084005a8028fb31df36caf3044fa78f282640011910025d0c361dfcff3e5"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-176c5176ac5e4eb984425f5a4dafadf3-publish-BookOfEternityClient.TestSupport.log.gz",
+          "sha256": "d98424a2982fb871fe2177d3c6fa8eb94204300143d9d30a535bb5c583928a38",
+          "rawSize": 161,
+          "rawSha256": "8cf2d4284837bbd0ae9930163b51e496da56f3511e0f2b1669ba57a62b6aa26d"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-176c5176ac5e4eb984425f5a4dafadf3-guardian.log.gz",
+          "sha256": "c1478cf151cbb800b53a2c79da683e5152a3e3d56c152ea4c7b04205e0511513",
+          "rawSize": 858,
+          "rawSha256": "953fc8fdb55487d8b880812c594246cc234c51c7a9765b6af22d59c45f551f26"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-176c5176ac5e4eb984425f5a4dafadf3-publish-BookOfEternityClient.log.gz",
+          "sha256": "3157a82dd7dc8c754e9ee49f93cdb2ba0b01c2aff2e3e43a0513217d789a1e24",
+          "rawSize": 137,
+          "rawSha256": "e293b3d2307d07bac66c5bbc941c4224d0c2e8c088f71a771fcc71f2290e3d32"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-176c5176ac5e4eb984425f5a4dafadf3-build-provenance.json.gz",
+          "sha256": "c7221a0b17c8f7cf3a3486af9e5c7fb4b705d86edf9012b26c3f09afdf81c812",
+          "rawSize": 1153,
+          "rawSha256": "f9cd04cde9282130f6878b88d0fcbbee6882e29e18b2fcba32fc469f6d3a30cc"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-176c5176ac5e4eb984425f5a4dafadf3-package-manifest.json.gz",
+          "sha256": "08ae940e400bf06e2fc8b13974dc117163bf65a879d47dbf2215710ed05b11b8",
+          "rawSize": 968,
+          "rawSha256": "16f441367003641ca633536622ef9a21a4d96986c173b76e5ba63ac9addd260a"
+        }
+      ]
+    },
+    {
+      "directory": "TestResults/production-main/0bdf428bfa0e450899fc7393cf5418af",
+      "guardian": null,
+      "artifacts": [
+        {
+          "path": "recovery/final-readiness/launcher-fixture-0bdf428bfa0e450899fc7393cf5418af-fixture-build.log.gz",
+          "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+          "rawSize": 0,
+          "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-0bdf428bfa0e450899fc7393cf5418af-publish-BookOfEternityGMBridge.log.gz",
+          "sha256": "579b7cb011a07004041f4f2219731774d98c56bcfdea2edd565a53d9749ba14f",
+          "rawSize": 141,
+          "rawSha256": "7b0bf7316cfced2f289f557d4024091136570cf23118639aadbb879a71904484"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-0bdf428bfa0e450899fc7393cf5418af-fixture-compiler-version.log.gz",
+          "sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+          "rawSize": 231,
+          "rawSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-0bdf428bfa0e450899fc7393cf5418af-helper-build.log.gz",
+          "sha256": "4b118beddb3508aebfef3783280df22cfec27aa600415f7badb67e470140781b",
+          "rawSize": 114,
+          "rawSha256": "14de9901a17b16937d3982a622a2d5d94310c576226dec2eb3cc109aaf822e51"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-0bdf428bfa0e450899fc7393cf5418af-publish-BookOfEternityClient.log.gz",
+          "sha256": "da5968248af21e5ebfd6b05ddfdac816d8d444ad74b9a39486685b4ba464a94b",
+          "rawSize": 137,
+          "rawSha256": "8ae12e775b9b7deffa23f5e4f559f7481638828616a593188f854bdd125c1f81"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-0bdf428bfa0e450899fc7393cf5418af-build-provenance.json.gz",
+          "sha256": "c7221a0b17c8f7cf3a3486af9e5c7fb4b705d86edf9012b26c3f09afdf81c812",
+          "rawSize": 1153,
+          "rawSha256": "f9cd04cde9282130f6878b88d0fcbbee6882e29e18b2fcba32fc469f6d3a30cc"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-0bdf428bfa0e450899fc7393cf5418af-package-manifest.json.gz",
+          "sha256": "08ae940e400bf06e2fc8b13974dc117163bf65a879d47dbf2215710ed05b11b8",
+          "rawSize": 968,
+          "rawSha256": "16f441367003641ca633536622ef9a21a4d96986c173b76e5ba63ac9addd260a"
+        }
+      ]
+    },
+    {
+      "directory": "TestResults/production-main/71cbe24d97e448cc935fcd56ca67af91",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "artifacts": [
+        {
+          "path": "recovery/final-readiness/launcher-fixture-71cbe24d97e448cc935fcd56ca67af91-fixture-preparation.json.gz",
+          "sha256": "6a4a25c495fefbab2242730fccc76386e13daff4aab3015946e4fc5f96e5ec15",
+          "rawSize": 1030,
+          "rawSha256": "0d2e1129c06a887d8e50f374f2ded33454558d3b1367925b6f810b1ebbac4d40"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-71cbe24d97e448cc935fcd56ca67af91-guardian.json.gz",
+          "sha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af",
+          "rawSize": 97,
+          "rawSha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-71cbe24d97e448cc935fcd56ca67af91-scenario.json.gz",
+          "sha256": "cb87c1b9c0402dc713abdd094b83b4c702209ee29584ee850f85d43a59fb7b64",
+          "rawSize": 762,
+          "rawSha256": "56e1996b60395c58c05fe023eae21ebeafc256cb6801dc8d1ace9841d9555473"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-71cbe24d97e448cc935fcd56ca67af91-fixture-build.log.gz",
+          "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+          "rawSize": 0,
+          "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-71cbe24d97e448cc935fcd56ca67af91-publish-BookOfEternityGMBridge.log.gz",
+          "sha256": "0cb50f848a9f6f450345fbd4d81279a4be5f3de06279abc573176e918bc3576f",
+          "rawSize": 141,
+          "rawSha256": "b03bc21dd799407d8b6ed7ea1cf5870930d1ea012f154bdb57dc8183ec231ab8"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-71cbe24d97e448cc935fcd56ca67af91-ordinary.log.gz",
+          "sha256": "92d2a11c4f22b7af7d5b2c426036c5d071e74989d56a56aac78db30f95f5ef0e",
+          "rawSize": 798,
+          "rawSha256": "09e6f2a24d9b9e31b31d017346db51acefe8876f1e4a10b49ea6d79c56881f3f"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-71cbe24d97e448cc935fcd56ca67af91-fixture-compiler-version.log.gz",
+          "sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+          "rawSize": 231,
+          "rawSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-71cbe24d97e448cc935fcd56ca67af91-helper-build.log.gz",
+          "sha256": "d84e43f0ce7d1148f78bd5524d1b8d1a5f2002d0fd5d8076879f6af4cb4120a8",
+          "rawSize": 114,
+          "rawSha256": "0315cc94f01f1b89a2b0eed79e02a965099c519806898c044b2203eadcdde360"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-71cbe24d97e448cc935fcd56ca67af91-guardian.log.gz",
+          "sha256": "e4a6392e03e86f16b30445fbf7cd7bca0e7e9260a0cd154f52cbcbccb1234dba",
+          "rawSize": 694,
+          "rawSha256": "a1b90a605070cae1fc40ed59574c5fca9c29ca173c02343e131055e0a1b7d61b"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-71cbe24d97e448cc935fcd56ca67af91-publish-BookOfEternityClient.log.gz",
+          "sha256": "a15876f9738c2a4795723566d52e693f87e1b80e8ca3d58b87b0b9d2f463c7f7",
+          "rawSize": 137,
+          "rawSha256": "99e600dd4656057b5f3bdaee553d9efb8b8aec0aa1ad9696a36daa8e120ba2fe"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-71cbe24d97e448cc935fcd56ca67af91-daemon.log.gz",
+          "sha256": "93646ce7cd7c9039d8ac7fd6cfcb5694d8becbbcd9fdfc864a4eadcd540dd414",
+          "rawSize": 619,
+          "rawSha256": "07d9a17fefc2a6160fae6b0c41852d1a469e2c2727aee6860d8c9188f63267c4"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-71cbe24d97e448cc935fcd56ca67af91-build-provenance.json.gz",
+          "sha256": "c7221a0b17c8f7cf3a3486af9e5c7fb4b705d86edf9012b26c3f09afdf81c812",
+          "rawSize": 1153,
+          "rawSha256": "f9cd04cde9282130f6878b88d0fcbbee6882e29e18b2fcba32fc469f6d3a30cc"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-71cbe24d97e448cc935fcd56ca67af91-package-manifest.json.gz",
+          "sha256": "08ae940e400bf06e2fc8b13974dc117163bf65a879d47dbf2215710ed05b11b8",
+          "rawSize": 968,
+          "rawSha256": "16f441367003641ca633536622ef9a21a4d96986c173b76e5ba63ac9addd260a"
+        }
+      ]
+    },
+    {
+      "directory": "TestResults/production-main/e9e6199d29044cc180c51642825d4219",
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      },
+      "artifacts": [
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-fixture-preparation.json.gz",
+          "sha256": "cd33c882ee7b164ac41a18fff94d25eb3ff992f883d7d61ddcf7783023da2de3",
+          "rawSize": 1030,
+          "rawSha256": "38f12cd6dcd0ea23d7a91b2ab621e887f43bac10328b23622b9b1752bdb22e4a"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-guardian.json.gz",
+          "sha256": "6f3648ca66d71d41ee5e4d749949ef582deb15b8fe4e614e98e1b2bf3cac93af",
+          "rawSize": 97,
+          "rawSha256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-scenario.json.gz",
+          "sha256": "dd778ec68986e6635b98f235e77ba1ba0915414a5141cdda27e73e0c95a03910",
+          "rawSize": 2827,
+          "rawSha256": "4b9944bceecf74cc006b4a3e51af8513651425fea91f1ea77af2a2c933f4edc1"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-consumer-boundaries.json.gz",
+          "sha256": "ea9cd825a12e3311f7b824bd911a8bf66f86159564e8b1a75ccff816a182a33c",
+          "rawSize": 7156,
+          "rawSha256": "af26187bc0f0440ab4e8171a89687b2d56f2c015df34c3320b58ccafff1be0d9"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-console-input.json.gz",
+          "sha256": "69f051339bdfebe43f661d4a286ba87724c8a8ccd61d3a80944bf2997aff673f",
+          "rawSize": 66,
+          "rawSha256": "f2437618bfbb095cfe7c123e0db6f2fb936d57d4f5baa49ed176f452d9acc1d8"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-actual-daemon-consumers.log.gz",
+          "sha256": "34d5848c995803cfd00c2f7f02d807e2069b51ffca60a40f05d2d7229ef13b69",
+          "rawSize": 1,
+          "rawSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-fixture-build.log.gz",
+          "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+          "rawSize": 0,
+          "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-publish-BookOfEternityGMBridge.log.gz",
+          "sha256": "f998271da9965f1dc1e87c6215d216f7a6b8150cc8c76b489684a96de4391cf0",
+          "rawSize": 141,
+          "rawSha256": "79406a3f8df9accc3a89fd70339f7c18f8b713a17070398e284506628ef03193"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-fixture-compiler-version.log.gz",
+          "sha256": "f7698da3aa63de0db2a20bbc79479a15f990934d441357a1c8b7557425e83c62",
+          "rawSize": 231,
+          "rawSha256": "78fc11ae2c3ff7c235eb18ed90989d18f6cc864fb27027f839368cd0888deebc"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-helper-build.log.gz",
+          "sha256": "66a206e3a71c7b916ec7f44b7fcc8360124621389bdbe091e13011adba18823a",
+          "rawSize": 114,
+          "rawSha256": "e2c5cbb3061ca8c4c218da2494c4a94be8a3583cb7ab2a830a6bfc527918316a"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-actual-console-health.log.gz",
+          "sha256": "aa768155ca38e5015384747dcde0ffd14e6b2fffb8e6e5c90d08d9e0672137fc",
+          "rawSize": 1750,
+          "rawSha256": "f4a1f20aa77f3e122de3830123f954c3741a889fc8420e68323f432fa40b3a07"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-publish-BookOfEternityClient.TestSupport.log.gz",
+          "sha256": "3275a01235bcfecd7cb2aa67281010c5b284e74744fbe2fd2f924dacf1cfd5cd",
+          "rawSize": 161,
+          "rawSha256": "3f771a438c1d48bfad9504e0efe4f302d48d72ab3a83d2974e52a1c5061c6d34"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-guardian.log.gz",
+          "sha256": "bf8553a7f66123f27e592f42172dcea55e6ad57069d5ea090b5922b0dd047dce",
+          "rawSize": 431,
+          "rawSha256": "12394c374eecd4f37c1e39fd8ff5eadeb04ffa33cbece40d4cdf05d81dc9c632"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-publish-BookOfEternityClient.log.gz",
+          "sha256": "aaa3792248ac3e7573532a98c7431982c818c851547f6e56be293a07ce0f3a16",
+          "rawSize": 137,
+          "rawSha256": "4b89c0984c6610988b0fffdd4775118e0f32f88c57f3a3fbc324c5ea5c1f1bbc"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-build-provenance.json.gz",
+          "sha256": "c7221a0b17c8f7cf3a3486af9e5c7fb4b705d86edf9012b26c3f09afdf81c812",
+          "rawSize": 1153,
+          "rawSha256": "f9cd04cde9282130f6878b88d0fcbbee6882e29e18b2fcba32fc469f6d3a30cc"
+        },
+        {
+          "path": "recovery/final-readiness/launcher-fixture-e9e6199d29044cc180c51642825d4219-package-manifest.json.gz",
+          "sha256": "08ae940e400bf06e2fc8b13974dc117163bf65a879d47dbf2215710ed05b11b8",
+          "rawSize": 968,
+          "rawSha256": "16f441367003641ca633536622ef9a21a4d96986c173b76e5ba63ac9addd260a"
+        }
+      ]
+    }
+  ],
+  "guardianCount": 5,
+  "guardianEmergency": 0,
+  "historicalRootsUnchanged": true
+}
