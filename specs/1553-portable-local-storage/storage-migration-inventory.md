@@ -1,19 +1,16 @@
-## Current F13 causal checkpoint — 2026-10-08
+## Current F13 bounded runtime checkpoint — 2026-10-08
 
-Dedicated helper design94f912 and corrected test-only fixture82f passed parent and
-independent gates. Actual190610:10 complete,0PASS10FAIL; nine reached causal failures
-and one realm-link setup/cleanup fixture failure. Nine logical ownership/unforced
-pwsh exits and all ten healthy physical guardians are separately recorded. Initial
-and corrected Plans plus raw evidence are retained in the current plan/manifest.
-The retained-path correction passed focused gates; isolated actual191330 reaches
-the symlink policy defect with unforced exit/logical ownership and healthy guardian.
-All ten semantic causal cases are now reached across9+1; final carrier676 is
-independently accepted and freshly restored. Full F13 dedicated transport/PS unit compiled and passed independent source/selection
-review at6d26. First actual53 selection executed52:32 PASS/20 fixture FAIL; the
-first30 are independently accepted, original22 needs corrected fixture follow-up,
-and realm1 was unexecuted. Focused23 is next; the old causal fixture failure and
-new mixed result remain disclosed. No full F13 evidence acceptance yet.
-Native Windows/PowerShell5.1 and the full migration remain open.
+Dedicated generation-bound helper role, full policy/read/witness scope, chunked
+owned transport, actual publication outcomes and original close are implemented.
+Independent source/selection PASS45a and composed unique53 Linux passing evidence:
+causal9/A03three at6d26, original21 at6ed, current18/stale1/realm1 at45a. Final20 is
+complete20 PASS/3 descriptors/68.3522951s; stale file-byte assertion now reached.
+Catalog485/11276 valid, zero executions. Final independent raw/carrier review and
+parent fresh remote restoration remain pending; helper packet1144 artifacts/194 pins.
+All earlier REDs and fixture failures remain disclosed. The A03 pre-receipt-loss
+neighbor retains logical Unresolved; physical cleanup is not blanket owner retirement.
+Native Windows/PowerShell5.1, PowerShell keyboard cancellation and full migration
+remain open. F14 daemon admission/read coherence is the next implementation family.
 
 ## Current F04/F05 checkpoint — 2026-10-08
 
@@ -168,7 +165,7 @@ counts, not defect counts. Existing F/T owners below are the single executable b
 | R04/R12 | F08/F09/F12, T062 | Two treatment contours remain: helper/engine compensation actual publication uncertainty (preserve FailTaken restart blocker/HeldBlocked/Unsafe contracts), and successful treatment followed by actual runtime mirror uncertainty then truthful notice. Post-seal binding itself reads authority; not a third forward-write defect. Use direct original coordinator, avoid finally-reacquire fixture masking; no B2–B5 business resumption. |
 | R08/R09/R11 | F07/F08/F17, T063/T064 | Source-reviewed save/settings/load outcome contracts preserved. Autosave3 production callers propagate typed decisions; no additional bool defect found, so no speculative aggregate run. Remove only proven dead recursive helpers after reflection/script/name census and relevant guard. Native durability/close qualification remains scoped. |
 | R12/R26 | F11/F12/F19, T062/T065 | Actual failed browser rollback/runtime/notice accepted83f. HTTP/DTO/stale response ownership stays separate; retain current source-reviewed admission/Running ACK contracts. UI/cache/player notifications are not storage observers. No blanket callback-to-endpoint acceptance. |
-| R20 | F13/F14, T063 | F13 concrete design is current: dedicated helper role, generation before recovery, full policy/read/witness unit under one short lease, bounded chunk transport without a new document ceiling; design accepted; causal10 has ten semantic failures reached across original nine plus corrected realm-link one; old fixture failure remains preserved. Exact53 passed source/selection review at6d26; first actual52 has32 PASS/20 fixture failures, with focused original22+unrun realm1 follow-up pending. Old helper lock is distinct from the facade lock. F14 remains later: daemon original admitted QTE handler held MemberPublished cut must establish raw snapshot timing before guarded read/hash validation. Preserve watcher eligibility/poll fallback, source identity and no replay. |
+| R20 | F13/F14, T063 | F13 concrete design is current: dedicated helper role, generation before recovery, full policy/read/witness unit under one short lease, bounded chunk transport without a new document ceiling; design accepted; causal10 has ten semantic failures reached across original nine plus corrected realm-link one; old fixture failure remains preserved. Final bounded source/selection PASS45a; composed53 Linux passing obligations across6d26/6ed/45a, including exact stale-byte and realm refusal. Earlier fixture/diagnostic failures preserved; final raw/carrier/restoration delivery gates pending, native unexecuted. Old helper lock is distinct from the facade lock. F14 remains later: daemon original admitted QTE handler held MemberPublished cut must establish raw snapshot timing before guarded read/hash validation. Preserve watcher eligibility/poll fallback, source identity and no replay. |
 | R25 | F16, T063 | Actual image cleanup consumer/counts and console image publication catch still open. Stop on storage uncertainty/replacement, preserve confirmed per-file counts. Canonical image/mod/world-profile directory recreation needs bounded generation/type guard, including gallery OpenImagesFolder→DesktopPathOpener default creation; preserve injected gallery creation/one-open/failure controls. Explicit external export and BasePath guardian library initialization stay distinct technical roots. |
 | R02/R13/R28 | F18, T064 | Reach-test ordinary vs physical/read/load callbacks, five named old ordinary FSM physical-hook tests, staged/spiritual/wound batching cuts and positive controls for zero-event assertions. MemberPublished is precommit; no async-void observer or nested canonical lease. Keep legacy/primitive/current-state-machine cuts with their real contract. |
 | R17/R18/R19 | F15, T063/T065 | Worker frame/peer/ApplyGate/synthetic bundle are independently typed ownership protocols. Audit found no new concrete stale consumer; preserve explicit platform capability refusal and original recovery handlers. Constructed paths/JSON/delegate edges remain checked at affected consumer boundaries, not converted wholesale to game journal. |

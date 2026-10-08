@@ -1,3 +1,36 @@
+## F13 complete bounded Linux evidence packet — 2026-10-08
+
+Runtime45a received parent and independent focused source/selection PASS. Matching
+Plan202402 built both selected projects,20/3/0,57.0824977s. Actual202629 executed
+20 unique cases,20 PASS,3/3 complete,68.3522951s, clean exact source, no skipped,
+duplicate or timed-out cases; both runner cleanup flags true. All20 original
+scenario/guardian records are retained and healthy. The unchanged stale-RMW Fact
+now reaches its exact generation2 byte assertion after the recognized refusal;
+realm-link reaches trusted-path refusal before the forbidden write. Current18
+again covers the actual production factory, large/chunked data, malformed replies,
+publication decisions, witness/path/role boundaries and original cancellation close.
+
+The composed semantic53 is deliberately source-era evidence, not a single run:
+- causal9 plus A03 neighbors3 at6d26 (actual200948),
+- original21 at6ed (actual201932),
+- current18 plus stale-RMW1 and realm1 at45a (actual202629).
+
+Original failed runs remain fully preserved: causal nine+corrected one, one old
+realm fixture failure, first runtime52 with20 fixture failures, then focused22
+with one diagnostic failure. The existing A03 caught-loss neighbor intentionally
+retains logical Unresolved/Stop refusal despite physical guardian cleanup. Unknown
+storage evidence is asserted retained before owned fixture cleanup; no blanket
+logical-retirement or operation-wide atomicity claim is made.
+
+Discovery202749 is valid485 categories/11276 methods, zero executions,8.5785830s,
+clean45a/both cleanup. Saved helper packet now1144 stored/expanded/original artifacts
+and194 historical source pins, including final225/26 and discovery3/16. Parent raw20
+verification PASS; independent final raw/carrier review and parent fresh GitHub-only
+restoration are the remaining delivery gates. No further runtime testing requested.
+Native Windows/PS5.1, real PowerShell keyboard cancellation, live GM/providers,
+whole game and the full migration remain unqualified. T062–T065 stay unchecked;
+F14 original admitted daemon reads are next, followed by the remaining inventory.
+
 ## F13 bounded stale-read diagnostic correction — 2026-10-08
 
 Focused21P1F evidence is remote-persisted at19be (267 new artifacts/26 pins;
@@ -25,8 +58,9 @@ fail-fast. All22 fixture scopes now record positive bootstrap insertion, complet
 original helper joins and released canonical ownership. The twenty prior fixture
 failures are corrected; one underlying diagnostic compatibility issue is now exposed.
 
-The stale read-modify-write is actually refused before publication, preserving the
-competing generation2 file. Its original script catches the historical diagnostic
+The stale read-modify-write is actually refused before publication. Its later
+generation2 byte assertion was not reached in this failed run, so preservation at
+that checkpoint was source-supported rather than a passed byte oracle. Its original script catches the historical diagnostic
 `changed since Read-BoeJson`; the new valid-negative reply instead surfaces only a
 generic storage refusal, so that script exits1. This is diagnostic loss, not an
 observed stale write. The exact21P1F runner/scenario/guardian/helper/script packet is
