@@ -1,5 +1,11 @@
 # T052-CI-PLATFORM-SELECTION
 
+Bounded CI repair complete at frozen source3464cd24: exact host groups preserve
+every selected category; stable final check requires success of all groups.
+Independent Sol6.1/xhigh design/source/evidence/metadata PASS (metadatafcf7fbf3),
+28distinct controlled assertions PASS. Final exact-carrier remote/readback/restore
+proof accompanies writer delivery; it does not imply hosted CI or game acceptance.
+
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), existing category workflow [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505).
 Base: ba52d1893799183508dbe7609d5d9c6e8cee05ea; sole writer; no runtime changes.
 
@@ -68,6 +74,8 @@ Writer independently verifies all29stored/expanded artifact hashes and final7pin
 [Final discovery](recovery/ci-platform-selection/final-discovery/manifest.json),
 [final plan](recovery/ci-platform-selection/final-plan/manifest.json),
 [review record](recovery/ci-platform-selection/review-verdicts.json).
-Metadata verdict and exact final carrier push/readback/freshGitHubrestore pending. Hosted Actions
+Metadata PASS at fcf7fbf3, no necessary fixes. Final thin verdict carrier records
+closure; exact remote/readback/freshGitHubrestore is the writer delivery gate,
+with final SHA/proof delivered separately. No further tests or runtime changes. Hosted Actions
 matrix and native Windows remain unexecuted; branch protection requirements
 remain unknown after the read-only403. No workflow_dispatch/PR/merge here.

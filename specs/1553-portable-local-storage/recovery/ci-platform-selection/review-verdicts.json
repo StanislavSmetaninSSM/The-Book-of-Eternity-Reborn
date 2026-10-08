@@ -20,8 +20,15 @@
       "verdict": "PASS",
       "fix": "Causal schema rejection and integer-only check",
       "verifiedDistinctGreen": 28
+    },
+    {
+      "stage": "metadata",
+      "revision": "fcf7fbf385500ac8a08140108e58b9c666422228",
+      "verdict": "PASS",
+      "verifiedStoredExpandedArtifacts": 29,
+      "verifiedFinalSourcePins": 7
     }
   ],
-  "metadataReview": "pending",
-  "freshGitHubOnlyRestore": "pending"
+  "metadataReview": "PASS",
+  "freshGitHubOnlyRestore": "Final exact-carrier delivery gate; proof reported with final SHA separately"
 }

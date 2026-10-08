@@ -7615,7 +7615,9 @@ Independent final actual **gpt-6.1-sol/xhigh PASS** at complete candidate `a5aef
 Current owner-authorized fallback: [T043-RELAY-GM-BOUNDED](relay-gm-bounded-plan.md), separate test transport with live Codex-agent generation; no OpenCode/provider compatibility claim or network bypass.
 Bounded CI repair T052-CI-PLATFORM-SELECTION, source #1553/#1505: accepted read-only
 audit identified fixed Windows workflow vs native Linux S2A fixtures. Independent
-Sol design PASS; explicit catalog runner groups, no dropped selection and stable
-all-groups-success check implemented. Only pure routing/catalog assertions, no
+Sol design/source/evidence/metadata PASS; frozen3464cd24,28distinct controlled
+PASS, catalog434/11193/0tests and PlanOnly2/0tests. Explicit catalog runner groups,
+no dropped selection and stable all-groups-success check implemented. Only pure
+routing/catalog assertions, no
 runtime cohorts or platform qualification. [Plan/handoff](ci-platform-selection.md).
 Systemd deferral/overall merge readiness still pending; Windows native is postmerge.
