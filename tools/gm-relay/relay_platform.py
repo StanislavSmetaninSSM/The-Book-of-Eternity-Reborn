@@ -1,6 +1,8 @@
 """Native terminal/pipe I/O only; no queue, model or process ownership authority."""
 import codecs
 import os
+import queue
+import threading
 import time
 
 
@@ -50,6 +52,15 @@ if os.name == 'nt':
     _kernel.PeekNamedPipe.argtypes = [wintypes.HANDLE, ctypes.c_void_p, wintypes.DWORD,
                                     ctypes.c_void_p, ctypes.POINTER(wintypes.DWORD), ctypes.c_void_p]
     _kernel.PeekNamedPipe.restype = wintypes.BOOL
+    _kernel.ReadConsoleW.argtypes = [wintypes.HANDLE, ctypes.c_void_p, wintypes.DWORD,
+                                    ctypes.POINTER(wintypes.DWORD), ctypes.c_void_p]
+    _kernel.ReadConsoleW.restype = wintypes.BOOL
+    _kernel.OpenThread.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+    _kernel.OpenThread.restype = wintypes.HANDLE
+    _kernel.CancelSynchronousIo.argtypes = [wintypes.HANDLE]
+    _kernel.CancelSynchronousIo.restype = wintypes.BOOL
+    _kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+    _kernel.CloseHandle.restype = wintypes.BOOL
 
 
 class _WindowsTerminal:
@@ -63,11 +74,22 @@ class _WindowsTerminal:
             if not _kernel.GetConsoleMode(handle, ctypes.byref(mode)):
                 raise ctypes.WinError(ctypes.get_last_error())
             self.initial.append(mode.value)
-        self.decoder = codecs.getincrementaldecoder('utf-16-le')('strict')
+        self.events = queue.Queue(maxsize=2)
+        self.stopping = threading.Event()
+        self.reader_start = threading.Event()
+        self.reader = None
+        self.reader_handle = None
         try:
             # VT input, extended flags, Ctrl+C signal; no line/echo/QuickEdit.
             self._set(self.input, (self.initial[0] | 0x0200 | 0x0080 | 0x0001) & ~(0x0002 | 0x0004 | 0x0040))
             self._set(self.output, self.initial[1] | 0x0001 | 0x0004)
+            self.reader = threading.Thread(target=self._read_console, name='relay-console-input')
+            self.reader.start()
+            # Retain the actual thread handle, never reopen by a later thread ID.
+            self.reader_handle = _kernel.OpenThread(0x0001, False, self.reader.native_id)
+            if not self.reader_handle:
+                raise ctypes.WinError(ctypes.get_last_error())
+            self.reader_start.set()
         except BaseException:
             self.close()
             raise
@@ -77,19 +99,41 @@ class _WindowsTerminal:
         if not _kernel.SetConsoleMode(handle, mode):
             raise ctypes.WinError(ctypes.get_last_error())
 
+    def _publish(self, value):
+        while not self.stopping.is_set():
+            try:
+                self.events.put(value, timeout=.02)
+                return
+            except queue.Full:
+                pass
+
+    def _read_console(self):
+        self.reader_start.wait()
+        decoder = codecs.getincrementaldecoder('utf-16-le')('strict')
+        try:
+            while not self.stopping.is_set():
+                buffer = ctypes.create_string_buffer(8192)
+                count = wintypes.DWORD()
+                if not _kernel.ReadConsoleW(self.input, buffer, 4096, ctypes.byref(count), None):
+                    if self.stopping.is_set():
+                        return
+                    raise ctypes.WinError(ctypes.get_last_error())
+                text = decoder.decode(buffer.raw[:count.value * 2], final=count.value == 0)
+                if text or not count.value:
+                    self._publish(text.encode('utf8'))
+                if not count.value:
+                    return
+        except Exception as ex:
+            self._publish(ex)
+
     def read(self, timeout):
-        deadline = time.monotonic() + timeout
-        while not msvcrt.kbhit():
-            remaining = deadline - time.monotonic()
-            if remaining <= 0:
-                return None
-            time.sleep(min(.005, remaining))
-        units = bytearray()
-        while len(units) < 8192 and msvcrt.kbhit():
-            units.extend(msvcrt.getwch().encode('utf-16-le', errors='surrogatepass'))
-        # A UTF-16 pair may cross polls. Do not replace malformed input silently.
-        text = self.decoder.decode(bytes(units), final=False)
-        return text.encode('utf8') if text else None
+        try:
+            value = self.events.get(timeout=timeout)
+        except queue.Empty:
+            return None
+        if isinstance(value, Exception):
+            raise value
+        return value
 
     def write(self, data):
         text = data.decode('utf8')
@@ -107,6 +151,25 @@ class _WindowsTerminal:
     def close(self):
         # Attempt both even if one restoration fails; never report success then.
         failure = None
+        self.stopping.set()
+        self.reader_start.set()
+        if self.reader is not None:
+            deadline = time.monotonic() + 2
+            while self.reader.is_alive() and time.monotonic() < deadline:
+                if self.reader_handle:
+                    # A read can start just after cancellation reports NOT_FOUND;
+                    # retry against the retained handle until actual thread exit.
+                    if not _kernel.CancelSynchronousIo(self.reader_handle):
+                        error = ctypes.get_last_error()
+                        if error != 1168:
+                            failure = ctypes.WinError(error)
+                self.reader.join(.02)
+            if self.reader.is_alive():
+                failure = OSError('Console input reader shutdown unconfirmed')
+            elif self.reader_handle:
+                if not _kernel.CloseHandle(self.reader_handle):
+                    failure = ctypes.WinError(ctypes.get_last_error())
+                self.reader_handle = None
         for handle, mode in zip((self.input, self.output), self.initial):
             try:
                 self._set(handle, mode)

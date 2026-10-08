@@ -104,6 +104,9 @@ def main():
             for b in data:
                 if closing or child is not None or active is not None:continue
                 if paste is not None:
+                    # ConPTY maps incoming LF to console CR, even in raw mode.
+                    # Only paste content maps back to LF; actual CR still submits.
+                    if os.name=='nt' and b==13:b=10
                     paste.append(b)
                     if paste.endswith(b'\x1b[201~'):
                         draft.extend(paste[:-6]);paste=None

@@ -106,14 +106,36 @@ elif mode == 'console':
     kernel.GetStdHandle.restype = wintypes.HANDLE
     kernel.GetConsoleMode.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)]
     kernel.GetConsoleMode.restype = wintypes.BOOL
+    kernel.SetStdHandle.argtypes = [wintypes.DWORD, wintypes.HANDLE]
+    kernel.SetStdHandle.restype = wintypes.BOOL
+    import msvcrt
+    original_streams = (sys.stdin, sys.stdout)
+    original_handles = [kernel.GetStdHandle(n & 0xffffffff) for n in (-10, -11)]
+    prepared = []
+    # Explicit component-fixture setup: these are the already-attached original
+    # ConPTY console devices, never AllocConsole or a substitute terminal. The
+    # untouched ordinary Bridge/outer-PTY route is verified separately.
+    for device, access in [('CONIN$', 'r'), ('CONOUT$', 'w')]:
+        prepared.append(open(device, access, encoding='utf8'))
+    sys.stdin, sys.stdout = prepared
+    for number, stream in zip((-10, -11), prepared):
+        assert kernel.SetStdHandle(number & 0xffffffff, msvcrt.get_osfhandle(stream.fileno()))
     def modes():
         result = []
+        observations = []
         for number in (-10, -11):
             value = wintypes.DWORD()
-            assert kernel.GetConsoleMode(kernel.GetStdHandle(number & 0xffffffff), ctypes.byref(value))
+            handle = kernel.GetStdHandle(number & 0xffffffff)
+            ok = kernel.GetConsoleMode(handle, ctypes.byref(value))
+            observations.append(dict(Which=number, Handle=handle, Ok=bool(ok), Error=ctypes.get_last_error(), Mode=value.value))
             result.append(value.value)
+        for stream in prepared:
+            value = wintypes.DWORD()
+            assert kernel.GetConsoleMode(msvcrt.get_osfhandle(stream.fileno()), ctypes.byref(value))
+            result.append(value.value)
+        (own / 'console-handles.json').write_text(json.dumps(observations))
+        assert all(item['Ok'] for item in observations), observations
         return result
-    before = modes()
     finished = threading.Event()
     def stop_requested():
         while not finished.wait(.02):
@@ -121,15 +143,23 @@ elif mode == 'console':
                 signal.raise_signal(signal.SIGTERM)
                 return
     watcher = threading.Thread(target=stop_requested, daemon=True)
-    import relay_cli
-    sys.argv = [str(tools / 'relay_cli.py'), '--session', str(own / 'session'),
-                '--queue', str(own / 'queue'), '--model', 'inert-native-windows']
-    watcher.start()
     try:
-        result = relay_cli.main()
+        before = modes()
+        import relay_cli
+        sys.argv = [str(tools / 'relay_cli.py'), '--session', str(own / 'session'),
+                    '--queue', str(own / 'queue'), '--model', 'inert-native-windows']
+        watcher.start()
+        try:
+            result = relay_cli.main()
+        finally:
+            finished.set(); watcher.join(1)
+            (own / 'console-modes.json').write_text(json.dumps({'Setup': 'ExplicitAttachedConsoleStreams', 'Before': before, 'After': modes()}))
     finally:
-        finished.set(); watcher.join(1)
-        (own / 'console-modes.json').write_text(json.dumps({'Before': before, 'After': modes()}))
+        sys.stdin, sys.stdout = original_streams
+        for number, handle in zip((-10, -11), original_handles):
+            assert kernel.SetStdHandle(number & 0xffffffff, handle)
+        for stream in prepared:
+            stream.close()
     sys.exit(result)
 else:
     raise AssertionError(mode)

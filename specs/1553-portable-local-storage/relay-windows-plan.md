@@ -73,3 +73,18 @@ consumer, EOF or original Job assertions. The shared17 cases were not executed
 because the native descriptor failed. All observed original Jobs cleaned up.
 Canonical tools/relay_platform.py required per-command core.ignorecase=false
 staging because repository also has Tools/. Both paths remain unchanged.
+
+Native diagnosis: both fixture GetStdHandle values (8/12) fail GetConsoleMode
+with Win32 error6 before relay import. Independent Astra XHigh source review
+finds no basis for changing production ConPtySession. Component fixture now
+explicitly opens attached CONIN$/CONOUT$, validates Win32 and actual CRT handles,
+checks mode restoration after setup and restores fixture handles/streams. This
+is not evidence for untouched ordinary Bridge startup; separate actual outer
+PTY verification is required. No AllocConsole or ownership substitution.
+
+Actual native outer-PTY probes demonstrate CRT getwch loses emoji and > and
+converts LF to CR; native ReadConsoleW preserves Unicode/> but ConPTY still
+converts LF to CR even with processed-input disabled. Candidate now uses a
+bounded console reader thread, retained thread handle, cancellation/join before
+mode restoration; CR maps to LF only inside Windows bracketed paste, never at
+submit. POSIX transport stays unchanged. GREEN/review remain pending.
