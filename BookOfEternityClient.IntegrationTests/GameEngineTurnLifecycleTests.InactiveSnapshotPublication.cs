@@ -33,22 +33,20 @@ public sealed partial class GameEngineTurnLifecycleTests
         var journalPath = Path.Combine(context.RootPath, ".boe_runtime/trusted-local-publication-v1/active.json");
         var foreign = Encoding.UTF8.GetBytes("actual-foreign-evidence-image");
         var sourcePublications = new List<string>();
-        var cut = 0; var diagnosticReads = 0;
+        var cut = 0;
         string? changedPath = null; byte[]? pendingJournal = null;
         Dictionary<string, byte[]>? atLateBoundary = null;
         var generationBefore = File.ReadAllBytes(context.FileSystem.SessionGenerationPath);
         var hooks = new FileSystemManagerHooks {
-            BeforeCanonicalReadOpenAsync = path => {
-                if (boundary == "archive_race" && path.StartsWith("diagnostics/", StringComparison.Ordinal) &&
-                    (changedPath == null || path == changedPath)) {
-                    changedPath ??= path;
-                    diagnosticReads++;
-                    if (diagnosticReads == 1) Assert.False(File.Exists(context.FileSystem.ResolvePath(path)));
-                    if (diagnosticReads == 2) {
-                        cut++;
-                        Directory.CreateDirectory(Path.GetDirectoryName(context.FileSystem.ResolvePath(path))!);
-                        File.WriteAllBytes(context.FileSystem.ResolvePath(path), foreign);
-                    }
+            BeforeCanonicalMutationAsync = path => {
+                if (boundary == "archive_race" && path.StartsWith("diagnostics/", StringComparison.Ordinal)) {
+                    Assert.Equal(0, cut);
+                    changedPath = path;
+                    var fullPath = context.FileSystem.ResolvePath(path);
+                    Assert.False(File.Exists(fullPath));
+                    Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
+                    File.WriteAllBytes(fullPath, foreign);
+                    cut++;
                 }
                 return Task.CompletedTask;
             },
@@ -155,7 +153,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         } else {
             Assert.Empty(sourcePublications);
             foreach (var pair in before) Assert.Equal(pair.Value, after[pair.Key]);
-            if (boundary == "archive_race") { Assert.Equal(2, diagnosticReads); Assert.Equal(foreign, after[changedPath!]); }
+            if (boundary == "archive_race") { Assert.Equal(foreign, after[changedPath!]); }
             else Assert.DoesNotContain(after.Keys, p => p.StartsWith("diagnostics/", StringComparison.Ordinal));
             Assert.False(File.Exists(journalPath));
         }

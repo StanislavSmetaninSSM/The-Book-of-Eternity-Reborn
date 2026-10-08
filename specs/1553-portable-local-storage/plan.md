@@ -3,8 +3,11 @@
 Test-only packet: ten new cases in `portable-inactive-snapshot-publication`, plus
 missing-authority retry assertions within the existing partial-removal row.
 Together with `portable-inactive-snapshot-evidence` the finite final selection is
-34 cases/two categories. Runtime is unchanged; new fixtures are unbuilt/unrun and
-await independent source/selection review. The baseline21PASS/3FAIL below remains
+34 cases/two categories. Runtime is unchanged. Initial56c871 Plan164632 built
+34/2/0 successfully (95.3652266s); no actual execution. Self-review corrected the
+archive absence-conflict fixture from an unreachable absent-read hook to the real
+mutation boundary. Corrected fixture awaits independent source/selection review;
+this conflict control is not claimed as a newly reproduced old-runtime defect. The baseline21PASS/3FAIL below remains
 the only executed F06 evidence. New current source publication cuts are not claimed
 as reached historical RED; the old physical deletion blocks them.
 
