@@ -40,6 +40,14 @@
         "#1553",
         "T052-FINAL-READINESS"
       ]
+    },
+    {
+      "category": "test-ci-platform-contracts",
+      "reason": "Causal hosted startup rejection: permitted action references and actual fail-closed installed Node22.12+ frontend prerequisite; preserve exact category routing and failure gate",
+      "contracts": [
+        "#1553",
+        "T052-CI-PR-ENABLE"
+      ]
     }
   ]
 }

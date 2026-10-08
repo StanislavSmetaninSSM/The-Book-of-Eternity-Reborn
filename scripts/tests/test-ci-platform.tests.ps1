@@ -42,6 +42,43 @@ function New-Selection([string[]]$Ids) {
     }) }
 }
 try {
+    Test-Case 'Workflow uses only actions permitted by the observed repository policy' {
+        $workflow = Get-Content (Join-Path $root '.github/workflows/dotnet-ci.yml') -Raw
+        $allowed = @('actions/checkout@v4', 'actions/setup-dotnet@v4', 'actions/upload-artifact@v4')
+        $actions = [regex]::Matches($workflow, '(?m)^\s*uses:\s*(\S+)\s*$')
+        Assert-That ($actions.Count -gt 0) 'Workflow action inventory is missing.'
+        foreach ($action in $actions) {
+            Assert-That ($action.Groups[1].Value -cin $allowed) "Disallowed action prevents all jobs: $($action.Groups[1].Value)"
+        }
+    }
+    Test-Case 'Actual frontend prerequisite accepts installed Node22.12+ and refuses unavailable incompatible or failed capability' {
+        $workflow = Get-Content (Join-Path $root '.github/workflows/dotnet-ci.yml') -Raw
+        Assert-That ($workflow -match '(?ms)^      - name: Verify preinstalled frontend Node\r?\n        if: matrix.frontend\r?\n        shell: pwsh\r?\n        run: \|\r?\n(.*?)(?=^      - name:)') 'Fail-closed preinstalled Node guard is missing.'
+        $guard = [scriptblock]::Create(($Matches[1] -replace '(?m)^          ', ''))
+        function node {
+            Assert-That ($args.Count -eq 1 -and $args[0] -ceq '--version') 'Real guard must probe the installed executable version.'
+            if ($script:nodeUnavailable) { throw [Management.Automation.CommandNotFoundException]::new('Controlled missing Node') }
+            $global:LASTEXITCODE = $script:nodeProbeExit
+            $script:nodeProbeResult
+        }
+        $previousExit = $global:LASTEXITCODE
+        try {
+            $script:nodeUnavailable = $false; $script:nodeProbeExit = 0
+            foreach ($version in @('v22.12.0', 'v22.23.3')) {
+                $script:nodeProbeResult = $version; & $guard
+            }
+            foreach ($version in @('v22.11.9', 'v20.19.0', 'v24.0.0', 'v22.12.0-beta', '', @('v22.12.0', 'unexpected'))) {
+                $script:nodeProbeResult = $version
+                Assert-Rejected { & $guard }
+            }
+            $script:nodeProbeResult = 'v22.12.0'; $script:nodeProbeExit = 1
+            Assert-Rejected { & $guard }
+            $script:nodeProbeExit = 0; $script:nodeUnavailable = $true
+            Assert-Rejected { & $guard }
+        }
+        finally { $global:LASTEXITCODE = $previousExit }
+        Assert-That ($workflow -match '(?ms)^      - name: Restore browser frontend dependencies\r?\n        if: matrix.frontend\r?\n        run: npm ci --prefix BookOfEternityClient.WebFrontend') 'Frontend restore must remain conditional and unchanged.'
+    }
     Test-Case 'Workflow routes explicit selection rather than fixed Windows host' {
         $workflow = Get-Content (Join-Path $root '.github/workflows/dotnet-ci.yml') -Raw
         Assert-That ($workflow -match 'scripts/plan-test-ci\.ps1' -and

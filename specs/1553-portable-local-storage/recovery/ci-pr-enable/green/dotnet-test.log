@@ -1,0 +1,79 @@
+RequestedLane: Categories
+EffectiveLane: Categories
+Filter: <pending validation>
+TimeoutMinutes: 7
+StartedUtc: 2026-10-08T02:39:30.8620327Z
+Owned process 'Revision': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Revision: stdout =====
+9fde68013d111040719bf868c074c756976f988c
+
+===== Revision: stderr =====
+
+===== Revision: exit 0 =====
+Owned process 'Changed-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== Changed-paths: stdout =====
+.github/workflows/dotnet-ci.yml
+docs/testing.md
+scripts/tests/test-ci-platform.tests.ps1
+specs/1553-portable-local-storage/plan.md
+specs/1553-portable-local-storage/tasks.md
+tests/selection.json
+
+===== Changed-paths: stderr =====
+
+===== Changed-paths: exit 0 =====
+Owned process 'New-paths': FileName=git; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=git
+
+===== New-paths: stdout =====
+
+===== New-paths: stderr =====
+
+===== New-paths: exit 0 =====
+Owned process 'test-ci-platform-contracts-powershell-001': FileName=/workspace/.onboarding/tools/pwsh/pwsh; UseShellExecute=False; CreateNoWindow=True; RedirectStandardOutput=True; RedirectStandardError=True; LauncherFileName=/workspace/.onboarding/tools/pwsh/pwsh
+
+===== test-ci-platform-contracts-powershell-001: stdout =====
+PASS Workflow uses only actions permitted by the observed repository policy
+Using runner Node.js v22.12.0
+Using runner Node.js v22.23.3
+PASS Actual frontend prerequisite accepts installed Node22.12+ and refuses unavailable incompatible or failed capability
+PASS Workflow routes explicit selection rather than fixed Windows host
+PASS Production matrix planner is available
+PASS Default Windows convention is retained without a portability claim
+PASS Linux-only selection produces one Linux job
+PASS Mixed jobs preserve every entry reason contract and order within group
+PASS Real S2A catalog routes native bodies to Linux and exact affected metadata to Windows
+PASS Frontend dependencies belong only to the relevant job
+PASS Catalog rejects runner []
+PASS Catalog rejects runner [self-hosted]
+PASS Catalog rejects runner [ubuntu-latest]
+PASS Catalog rejects runner [Windows-latest]
+PASS Catalog rejects runner [ubuntu-24.04
+other=x]
+PASS Schema one requires an integer rather than coercible text boolean or floating point
+PASS Empty schema unknown and duplicate selections fail without broad fallback
+PASS Missing reasons empty contracts and nontext contracts fail
+PASS CLI emits exact compact JSON to GitHub output without executing requests
+PASS Workflow keeps all groups artifacts warning budget and stable failure gate
+PASS Actual final workflow script rejects failed skipped cancelled and missing results
+PASS Actual materializer preserves JSON and refuses wrong catalog group or actual host
+CATEGORY-CONTRACT-RESULT passed=21 failed=0
+
+===== test-ci-platform-contracts-powershell-001: stderr =====
+
+===== test-ci-platform-contracts-powershell-001: exit 0 =====
+
+Category result
+  Categories: test-ci-platform-contracts
+  Filter: <none>
+  Timeout: 7 minute(s)
+  Wall time: 00:00:03.9720507
+  Exit code: 0
+  Timed out: False
+  Owned-tree cleanup: complete
+  Planned selection: descriptors=1, cases=1; completed descriptors=1, cases=21, complete=True
+  Tests: total=21, executed=21, passed=21, failed=0
+  Duplicate test IDs: 0
+  Results: /workspace/native-1553/TestResults/test-categories/20261008-023930-836-948013-e09f1a28ca0a44d7b2c1d313957688d5-categories
+  Log: /workspace/native-1553/TestResults/test-categories/20261008-023930-836-948013-e09f1a28ca0a44d7b2c1d313957688d5-categories/dotnet-test.log

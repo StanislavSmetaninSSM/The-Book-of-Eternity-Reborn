@@ -88,8 +88,12 @@ frontend-тестирования. Старые npm verify и test:player-facing
 Planner сохраняет все entries/reasons/contracts и группирует их по runner;
 пустой, неизвестный или неверный selection завершается отказом. Каждая группа
 проверяет фактическую ОС и запускает точный selection через test-csharp.ps1.
-Frontend готовится только для требующих его групп. Итоговый check
-`Selected category verification` требует успеха планирования и всех групп;
+Frontend готовится только для требующих его групп.
+Frontend-группа проверяет уже установленный на hosted runner Node.js 22.12+
+(major 22, минимум текущего lockfile); отсутствие, другая версия или ошибка
+проверки завершают группу отказом. Workflow не устанавливает Node и не меняет
+repository action allowlist; conditional `npm ci` сохраняется.
+Итоговый check `Selected category verification` требует успеха планирования и всех групп;
 failed/skipped/cancelled не являются PASS. Фактический native Windows прогон
 и hosted Actions исполнение указываются отдельно от локальных metadata-тестов.
 Перед интеграцией selection всё равно сверяется со всем intended diff:

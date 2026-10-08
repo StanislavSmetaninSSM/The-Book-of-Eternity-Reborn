@@ -61,13 +61,17 @@ jobs:
           New-Item -ItemType Directory -Path TestResults -Force | Out-Null
           $selection | ConvertTo-Json -Depth 20 | Set-Content TestResults/ci-selection.json -Encoding utf8NoBOM
 
-      - name: Setup Node 22
+      - name: Verify preinstalled frontend Node
         if: matrix.frontend
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.x
-          cache: npm
-          cache-dependency-path: BookOfEternityClient.WebFrontend/package-lock.json
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $nodeVersion = & node --version
+          if ($LASTEXITCODE -ne 0 -or $nodeVersion -isnot [string] -or
+              $nodeVersion -notmatch '^v22\.(\d+)\.\d+$' -or [int]$Matches[1] -lt 12) {
+            throw 'Frontend CI requires preinstalled Node.js 22.12+ (major 22); no installer or fallback is used.'
+          }
+          Write-Host "Using runner Node.js $nodeVersion"
 
       - name: Restore browser frontend dependencies
         if: matrix.frontend
