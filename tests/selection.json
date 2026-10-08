@@ -427,7 +427,7 @@
     },
     {
       "category": "portable-browser-protocol-admission-linux",
-      "reason": "F04/F05 four shared protocol-order controls before runtime cutover. Actual journal/member cut, all recovery phases, exact retained evidence and neutral positive; may already pass on Linux, not claimed RED.",
+      "reason": "F04/F05 five shared protocol-order controls. Existing4 plus actual neutral-only pending backup lifecycle; new1 is a GREEN fixture/behavior extension, not native Windows RED.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -440,7 +440,7 @@
     },
     {
       "category": "portable-browser-protocol-native-windows",
-      "reason": "F04/F05 finite28 native body-required recipe, compile/discovery ONLY in this cloud. Exact original6 Stage body extraction retains current routing and creates authentic native receipts; extended declared-profile pending rows exercise external scratch filtering.",
+      "reason": "F04/F05 finite30 native body-required recipe, compile/discovery ONLY in this cloud. Exact original6 Stage body extraction retains current routing and creates authentic native receipts; extended declared-profile pending rows exercise external scratch filtering. Neutral-only retained stage without browser7 ordinary/extended2 addresses the post-legacy admission ordering gap; still zero execution here.",
       "contracts": [
         "#1553",
         "FR-003",

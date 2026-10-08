@@ -1,3 +1,25 @@
+## F04/F05 neutral-only correction WIP — 2026-10-08
+
+Runtime242d Linux56 source/raw evidence remains valid; final acceptance is held on
+parent/independent P2: neutral-only direct-gacha backup plus authenticated pending
+stage classifies None. Windows original recovery branch then used the strict browser
+allowlist before common recovery, refusing the original scratch indefinitely.
+The prior native neutral recipe also had schema7 evidence and missed this branch.
+
+Bounded correction preserves ordering and revalidates after original handlers:
+fresh read-only classifier must still return None (neutral exact backups plus
+authenticated scratch/current generation), then all other legacy roots must be clear,
+then original common recovery, then the strict existing browser evidence check.
+Pre-handler Original+common refusal remains unchanged; no general scratch grant.
+
+One shared Linux lifecycle plus native ordinary/extended2 now make an actual
+MemberStaged cut, verify exact staged after-image, force actual unknown target/recovery
+refusal, explicitly repair the recorded before-image while retaining journal/stage,
+and require fresh recovery with exact original snapshot/no adoption/no browser7.
+New Linux1 is a GREEN extension, not a native RED. Final selection57 Linux and30 native
+compile/discovery only (87 PlanOnly); source/selection gate before actual57.
+No actual tests on this corrected source yet. Previous56 packet3066 remains preserved.
+
 ## F04/F05 runtime GREEN checkpoint — 2026-10-08
 
 Runtime242d1114847ad147b6b5475429bf67df6b34ba5a independent SOURCE/SELECTION

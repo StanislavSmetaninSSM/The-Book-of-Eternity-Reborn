@@ -210,4 +210,12 @@ public sealed partial class BrowserProtocolCutoverTests
         Assert.True(OperatingSystem.IsWindows(), "Native Windows protocol-order body required.");
         await InitializeAsync(extended); await CheckProtocolAdmissionAsync(mode);
     }
+    [Theory]
+    [InlineData(false)] [InlineData(true)]
+    public async Task WindowsNeutralPendingBackup_RecoversWithoutBrowserManifest(bool extended)
+    {
+        Assert.True(OperatingSystem.IsWindows(), "Native Windows neutral pending-backup body required.");
+        await InitializeAsync(extended); await CheckNeutralPendingBackupAsync();
+    }
+
 }

@@ -3767,10 +3767,17 @@ public partial class FileSystemManager
                             await ExplorerLocalTurnRollbackArtifacts.RecoverInterruptedBrowserWriteTransactionsAsync(this, writeLease);
                     }
                 });
-                EnsureNoLegacyStorageEvidence(writeLease);
+                // Original handlers may have changed the namespace/generation.
+                // Reclassify now: only neutral before-images and authenticated
+                // current scratch may remain before their original publisher runs.
+                if (ExplorerLocalTurnRollbackArtifacts.ClassifyBrowserStorageEvidence(this, writeLease) !=
+                    ExplorerLocalTurnRollbackArtifacts.BrowserStorageProtocol.None)
+                    throw new InvalidDataException("Browser protocol evidence remains after original recovery; bytes retained.");
+                EnsureNoLegacyStorageEvidence(allowPortableBrowser: true);
                 try
                 {
                     RecoverTrustedLocalStorage(writeLease);
+                    EnsureNoLegacyStorageEvidence(writeLease);
                 }
                 catch (Exception failure) when (purpose == CanonicalWritePurpose.SessionReplacement)
                 {

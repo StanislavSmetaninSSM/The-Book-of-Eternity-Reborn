@@ -18213,7 +18213,7 @@
     },
     {
       "id": "portable-browser-protocol-admission-linux",
-      "responsibility": "F04/F05 four actual current-journal protocol admission controls: mixed manifest, empty old cleanup intent and malformed current intent refuse before every recovery/mutation phase with exact evidence; neutral direct backup permits original recovery without adoption.",
+      "responsibility": "F04/F05 five actual current-journal protocol admission controls: mixed manifest, empty old cleanup intent and malformed current intent refuse before every recovery/mutation phase with exact evidence; neutral direct backup permits original recovery without adoption. Includes actual neutral-only MemberStaged journal recovery with no schema7 manifest and no adoption.",
       "excludes": "Native Windows qualification from Linux compile/discovery; signed direct-gacha adoption (separate exact consumers); whole-operation atomic restoration; arbitrary case-sensitive Windows destination semantics. Synthetic edited6 is only refusal metadata, never authentic legacy evidence.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/BrowserProtocolCutoverTests.cs",
@@ -18233,14 +18233,15 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery"
+            "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+            "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxNeutralPendingBackup_RecoversWithoutBrowserManifest"
           ]
         }
       ]
     },
     {
       "id": "portable-browser-protocol-native-windows",
-      "responsibility": "F04/F05 native28 body-required ordinary/extended path recipes: fresh schema7 ordinary and external members8, case-alias2, standalone/declared pending external4, cleanup protocols4, authentic unchanged original6 recovery2, whole-protocol order8.",
+      "responsibility": "F04/F05 native30 body-required ordinary/extended path recipes: fresh schema7 ordinary and external members8, case-alias2, standalone/declared pending external4, cleanup protocols4, authentic unchanged original6 recovery2, whole-protocol order8. Neutral-only pending backup ordinary/extended2 proves recovery without a schema7 transaction.",
       "excludes": "Native Windows qualification from Linux compile/discovery; signed direct-gacha adoption (separate exact consumers); whole-operation atomic restoration; arbitrary case-sensitive Windows destination semantics. Synthetic edited6 is only refusal metadata, never authentic legacy evidence.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/BrowserProtocolCutoverTests.cs",
@@ -18265,7 +18266,8 @@
             "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsPendingProfile_RecoversStandaloneOrDeclaredBytesOrAbsence",
             "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsCleanupOnlyProtocol_UsesItsOriginalHandler",
             "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsAuthenticOriginalSix_RecoversReceiptAndRetainsNeutralBackup",
-            "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery"
+            "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+            "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.WindowsNeutralPendingBackup_RecoversWithoutBrowserManifest"
           ]
         }
       ]

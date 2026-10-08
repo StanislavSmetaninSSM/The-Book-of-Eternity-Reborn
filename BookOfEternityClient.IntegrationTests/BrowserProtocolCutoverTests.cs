@@ -145,6 +145,55 @@ public sealed partial class BrowserProtocolCutoverTests(ITestOutputHelper output
         output.WriteLine($"Protocol={mode}; cut={cuts}; recoveryEvents={recoveryEvents}; mutations={mutations}");
     }
 
+    [Fact]
+    public async Task LinuxNeutralPendingBackup_RecoversWithoutBrowserManifest()
+    {
+        Assert.True(OperatingSystem.IsLinux(), "Actual Linux pending-backup body required.");
+        await InitializeAsync(); await CheckNeutralPendingBackupAsync();
+    }
+
+    private async Task CheckNeutralPendingBackupAsync()
+    {
+        var backup = AddNeutralBackup();
+        var relative = FileSystemManager.GetLocalRelativePath(_files.GameSessionPath, backup, OperatingSystem.IsWindows());
+        var initial = Snapshot(); var cuts = 0;
+        _publication = (phase, index) => {
+            if (phase != TrustedLocalPublicationPhase.MemberStaged || !SamePath(CurrentMember(index), backup)) return;
+            Assert.Equal(0, index); Assert.Equal(Before, File.ReadAllBytes(backup));
+            var stage = Assert.Single(Directory.GetFiles(Path.GetDirectoryName(backup)!, ".boe-local-*.stage"));
+            Assert.Equal(After, File.ReadAllBytes(stage));
+            cuts++; File.WriteAllBytes(backup, [99]);
+            throw new InvalidOperationException("Actual neutral backup staging cut.");
+        };
+        await using (var lease = await _files.AcquireCanonicalWriteLeaseAsync())
+        {
+            Assert.Null(lease.BrowserLocalAccess); Assert.Null(lease.ExternalPublicationContext);
+            await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(
+                () => _files.WriteFileAtomicBytesAsync(lease, relative, After));
+            Assert.Equal(1, cuts); Assert.Equal(new byte[] { 99 }, File.ReadAllBytes(backup));
+            Assert.True(File.Exists(JournalPath));
+            var journal = File.ReadAllBytes(JournalPath);
+            var stage = Assert.Single(Directory.GetFiles(Path.GetDirectoryName(backup)!, ".boe-local-*.stage"));
+            Assert.Equal(After, File.ReadAllBytes(stage));
+            // Controlled restoration of the exact recorded before-image only;
+            // retain the actual journal/stage for the original cold recovery.
+            File.WriteAllBytes(backup, Before);
+            Assert.Equal(journal, File.ReadAllBytes(JournalPath)); Assert.Equal(After, File.ReadAllBytes(stage));
+            Assert.Empty(Directory.GetFiles(_files.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root), "browser_write_manifest.json", SearchOption.AllDirectories));
+            Assert.Equal(ExplorerLocalTurnRollbackArtifacts.BrowserStorageProtocol.None,
+                ExplorerLocalTurnRollbackArtifacts.ClassifyBrowserStorageEvidence(_files, lease));
+        }
+        _publication = null;
+        var recovery = 0;
+        var fresh = Fresh(new() { LocalPublicationRecoveryObserver = (_, _) => recovery++ });
+        await using (var lease = await fresh.AcquireCanonicalWriteLeaseAsync()) { }
+        Assert.True(recovery > 0); Assert.Equal(Before, File.ReadAllBytes(backup));
+        Assert.False(File.Exists(JournalPath));
+        Assert.Empty(Directory.GetFiles(_root, ".boe-local-*", SearchOption.AllDirectories));
+        AssertSnapshot(initial); // No adoption/authority metadata was minted.
+        output.WriteLine($"NeutralOnly=True; cut={cuts}; recoveryEvents={recovery}; exactSnapshot=True");
+    }
+
     public void Dispose()
     {
         _mutation = null; _publication = null;
