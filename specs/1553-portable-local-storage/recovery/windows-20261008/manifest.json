@@ -71,8 +71,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 19651,
-      "sha256": "8D76EFAF3F7C858178DCF643D2B5B64FA634EC8A78B7F0AD2A587412E6CBD194"
+      "bytes": 21556,
+      "sha256": "FB2BD48981581830C4ADCB71C93A2040BC7EF62E64656542A4CCF2E28E227A46"
     },
     {
       "path": "selections/selection-windows-browser-repro.json",
