@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "browser-read-authority",
+      "reason": "All four public read boundaries refuse stopped authority and failed finalization without successful DTOs",
+      "contracts": [
+        "#1553",
+        "T055-HTTP-ORIGINAL-OWNER"
+      ]
+    }
+  ]
+}

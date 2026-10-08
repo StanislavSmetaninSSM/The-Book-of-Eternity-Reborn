@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "browser-read-authority",
+      "reason": "All four public read boundaries refuse stopped authority and failed finalization without successful DTOs",
+      "contracts": [
+        "#1553",
+        "T055-HTTP-ORIGINAL-OWNER"
+      ]
+    },
+    {
+      "category": "portable-load-browser-refresh",
+      "reason": "Nested reads retain caller binding and complete real Save/Load bundle",
+      "contracts": [
+        "#1553",
+        "T055-HTTP-ORIGINAL-OWNER"
+      ]
+    },
+    {
+      "category": "portable-load-browser-required-generation",
+      "reason": "All four exact-generation bundle acceptance/refusal controls",
+      "contracts": [
+        "#1553",
+        "T055-HTTP-ORIGINAL-OWNER"
+      ]
+    },
+    {
+      "category": "browser-http-admission",
+      "reason": "Original host request queue and physical guard refusal preserved",
+      "contracts": [
+        "#1553",
+        "T055-HTTP-ORIGINAL-OWNER"
+      ]
+    },
+    {
+      "category": "browser-http-admission-lifetime",
+      "reason": "Cancellation and original surviving handler retain their permit/lifetime semantics",
+      "contracts": [
+        "#1553",
+        "T055-HTTP-ORIGINAL-OWNER"
+      ]
+    }
+  ]
+}

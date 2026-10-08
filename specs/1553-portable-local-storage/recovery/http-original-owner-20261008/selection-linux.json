@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "browser-original-owner-linux",
+      "reason": "Actual original production Bridge/idle relay causal RED/GREEN, receipts and owned shutdown",
+      "contracts": [
+        "#1553",
+        "T055-HTTP-ORIGINAL-OWNER"
+      ]
+    },
+    {
+      "category": "gm-load-browser-entry",
+      "reason": "Actual original owner Load bundle and fresh epoch require confirmed application",
+      "contracts": [
+        "#1553",
+        "T055-HTTP-ORIGINAL-OWNER"
+      ]
+    },
+    {
+      "category": "gm-load-early-ack",
+      "reason": "Premature application ACK cannot launch a fresh owner",
+      "contracts": [
+        "#1553",
+        "T055-HTTP-ORIGINAL-OWNER"
+      ]
+    }
+  ]
+}

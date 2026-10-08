@@ -28,7 +28,8 @@ before relay startup; inspect stage records when deriving exact denominators.
 The serial `/api/session` stack is MainRunFence.AcquireAsync:65 through
 BrowserLocalWriteCoordinator.BuildStatusAsync:27. This path refuses a non-
 participating caller when an original main run exists. The 26 failures belong
-to session/game-screen in13 Running batches. Audio/settings work. This cause is
+to session/game-screen in13 Running batches. The measured audio route works; client settings are a source-backed control,
+not sampled in that baseline. This cause is
 distinct from exhaustion of the physical lock's finite retry budget.
 
 Source diagnosis: standalone session status takes a canonical lease without a
@@ -89,3 +90,9 @@ Windows independently preserves quiescent HTTP, queue and Load consumers.
 
 Current status: source/evidence diagnosis and independent design review complete;
 new runtime implementation and causal regression have not yet been executed.
+
+Tests-first WIP: new Linux production relay mode requires genuine idle output
+(no setReady), ten real Kestrel DTOs and matching original close receipts,
+then queue closure and original shutdown. Portable negative-only Stopping and
+finalization cuts cover all four public entries. These tests are not yet run.
+Selections live in recovery/http-original-owner-20261008. Runtime remains1df.

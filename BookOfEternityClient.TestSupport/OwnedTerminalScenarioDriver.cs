@@ -169,7 +169,11 @@ internal static partial class OwnedTerminalScenarioDriver
                 if (status.GetProperty("ready").GetBoolean()) break;
                 await Task.Delay(10);
             }
-            var ready = await Rpc(new { command="setReady", ready=true });
+            // HTTP admission is checked against observed idle output, never a
+            // readiness override. Existing scenarios retain their own controls.
+            var ready = mode=="production-main-relay-http-reads"
+                ? await Rpc(new { command="status" })
+                : await Rpc(new { command="setReady", ready=true });
             result["Ready"] = ready;
             if (!ready.GetProperty("ok").GetBoolean()) throw new InvalidOperationException("Actual session output did not produce a reliable idle view.");
             if(mode.StartsWith("production-main-early-exit",StringComparison.Ordinal))
@@ -192,6 +196,10 @@ internal static partial class OwnedTerminalScenarioDriver
             }
             var originalSession=type.GetField("_pty", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(host)!;
             if(mode.StartsWith("production-main-relay-",StringComparison.Ordinal)) {
+                if(mode=="production-main-relay-http-reads") {
+                    Require(ready.GetProperty("status").GetProperty("ready").GetBoolean(),"Original relay did not become ready from its own output.");
+                    await RunOriginalOwnerHttpReadsAsync(folder,host!,type,Rpc,result);result["Success"]=true;return 0;
+                }
                 await RunReusableRelayAsync(mode,folder,host!,type,Rpc,result);result["Success"]=true;return 0;
             }
             if(mode.StartsWith("production-main-daemon-",StringComparison.Ordinal)) {

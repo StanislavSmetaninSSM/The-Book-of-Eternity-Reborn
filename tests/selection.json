@@ -1,11 +1,78 @@
 {
   "schemaVersion": 1,
   "selections": [
-    { "category": "portable-load-browser-required-generation", "reason": "Preserve all four exact-generation Save/Load/refresh controls after splitting the slow native category; no cases dropped", "contracts": ["#1553", "T054-WINDOWS-HTTP"] },
-    { "category": "browser-http-admission-lifetime", "reason": "Review regression for host disposal versus surviving handler and exact cancelled queue permit ownership", "contracts": ["#1553", "T054-WINDOWS-HTTP"] },
-    { "category": "browser-http-admission", "reason": "Causal real HTTP parallel admission, cancellation/failure release and Load/static bypass; physical owner refusal preserved", "contracts": ["#1553", "T054-WINDOWS-HTTP"] },
-    { "category": "portable-settings-endpoints", "reason": "Actual GET/POST settings and audio handlers now share host admission", "contracts": ["#1553", "T054-WINDOWS-HTTP"] },
-    { "category": "portable-load-browser-refresh", "reason": "Real Save/Load and exact generation bundle routes cross the new host boundary", "contracts": ["#1553", "T054-WINDOWS-HTTP"] },
+    {
+      "category": "gm-load-early-ack",
+      "reason": "Premature application ACK cannot launch a fresh owner",
+      "contracts": [
+        "#1553",
+        "T055-HTTP-ORIGINAL-OWNER"
+      ]
+    },
+    {
+      "category": "gm-load-browser-entry",
+      "reason": "Actual original owner Load bundle and fresh epoch require confirmed application",
+      "contracts": [
+        "#1553",
+        "T055-HTTP-ORIGINAL-OWNER"
+      ]
+    },
+    {
+      "category": "browser-original-owner-linux",
+      "reason": "Actual original production Bridge/idle relay causal RED/GREEN, receipts and owned shutdown",
+      "contracts": [
+        "#1553",
+        "T055-HTTP-ORIGINAL-OWNER"
+      ]
+    },
+    {
+      "category": "browser-read-authority",
+      "reason": "All four public read boundaries refuse stopped authority and failed finalization without successful DTOs",
+      "contracts": [
+        "#1553",
+        "T055-HTTP-ORIGINAL-OWNER"
+      ]
+    },
+    {
+      "category": "portable-load-browser-required-generation",
+      "reason": "Preserve all four exact-generation Save/Load/refresh controls after splitting the slow native category; no cases dropped",
+      "contracts": [
+        "#1553",
+        "T054-WINDOWS-HTTP"
+      ]
+    },
+    {
+      "category": "browser-http-admission-lifetime",
+      "reason": "Review regression for host disposal versus surviving handler and exact cancelled queue permit ownership",
+      "contracts": [
+        "#1553",
+        "T054-WINDOWS-HTTP"
+      ]
+    },
+    {
+      "category": "browser-http-admission",
+      "reason": "Causal real HTTP parallel admission, cancellation/failure release and Load/static bypass; physical owner refusal preserved",
+      "contracts": [
+        "#1553",
+        "T054-WINDOWS-HTTP"
+      ]
+    },
+    {
+      "category": "portable-settings-endpoints",
+      "reason": "Actual GET/POST settings and audio handlers now share host admission",
+      "contracts": [
+        "#1553",
+        "T054-WINDOWS-HTTP"
+      ]
+    },
+    {
+      "category": "portable-load-browser-refresh",
+      "reason": "Real Save/Load and exact generation bundle routes cross the new host boundary",
+      "contracts": [
+        "#1553",
+        "T054-WINDOWS-HTTP"
+      ]
+    },
     {
       "category": "gm-relay-native-windows",
       "reason": "Actual native console/pipes/gate repair and original Job cleanup",
