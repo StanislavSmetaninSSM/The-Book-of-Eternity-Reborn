@@ -451,8 +451,12 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
             allowProfileRefresh.TrySetResult();
             var result = await gacha.WaitAsync(TimeSpan.FromSeconds(15));
             Assert.True(result.Success, result.Message);
-            var replacementFailure = await Record.ExceptionAsync(
+            var replacementObservationFailure = await Record.ExceptionAsync(
                 () => replacement.WaitAsync(TimeSpan.FromSeconds(15)));
+            Assert.True(replacement.IsCompleted,
+                "Replacement observation timed out before the original actor settled; diagnostic admission was not entered.");
+            var replacementFailure = await Record.ExceptionAsync(() => replacement);
+            Assert.Same(replacementFailure, replacementObservationFailure);
             if (replacementFailure != null)
             {
                 // Capture refusal state before any diagnostic admission can recover storage.

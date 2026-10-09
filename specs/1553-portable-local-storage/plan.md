@@ -1,3 +1,12 @@
+## F18 diagnostic observer correction — 2026-10-09
+
+Source review found one fixture ordering gap in f5dd: WaitAsync's timeout proxy could
+return before the original replacement settled. Before any diagnostic snapshot/admission,
+now require original replacement.IsCompleted, capture its original task exception, and
+require identity with the observed exception. A wait-only timeout therefore fails as an
+observation failure and enters only finally gate release/actual actor join. No original
+Clear outcome is inferred from a timeout proxy. Source4 gate remains pending.
+
 ## F18 diagnostic1 and dual-settlement3 — source WIP, 2026-10-09
 
 Independent RAW7/carrier PASS53b825d68a8bf2db72a8ebb0e19d15d9a36b9ad4 verifies19
