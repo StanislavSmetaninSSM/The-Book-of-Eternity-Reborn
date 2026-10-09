@@ -1,3 +1,22 @@
+## Original QTE2 / cold Launch2 actual causal baselines — WIP, 2026-10-09
+
+One freshintegrationPlan2242034/2 at998cfc99,0execution50.6730648s;
+separate actualQTE2243022=1knownPASS/1genuinecausalFAIL7.7248202s and
+ColdLaunch2244152=1knownPASS/1genuinecausalFAIL7.3890781s. Each1/1complete,
+bothcleanup/0skipduplicateTimeout/strict2roots. No aggregateGREEN4.
+Both actualoriginalowners/Intent/member0 reached samegenuineCSPmaskedsame
+lateclose, fullsettlement/noLater/Closing0. QTE known actualruntime/deferred
+continuation/currentvalidator PASS; Cold known actualgeneration/callbacksentinel,
+zeroPrepared/nativeprepareCalls/recordnull/retiredguard. SuccessfulfullLaunch
+not qualified. OriginalInteraction3 causal preserved immutableinitial25/24;
+[correctedQTEphase](recovery/storage-migration-original-interaction-close-20261009/manifest.json)
+adds13artifacts24pins (total38/48), not replayed oldsix.
+[Coldpacket](recovery/storage-migration-original-cold-main-launch-close-20261009/manifest.json)
+13artifacts15pins verifiedoriginals. Next exactly4Interaction+1Coldowningscope
+CSPcapture/rethrowexistingRelease(false,sameexception), preserve cores/order/
+returns/helpers/nativebarrier. Combinedcausal/source/exact10gate beforefreshGREEN.
+Catalogafterstablebatch; B2–B5/native/T061–T065/knownlateclose remainopen.
+
 ## Original cold GM Launch owning generation — test-first WIP, 2026-10-09
 
 Independent fixture/design/exact2 PASSf213d400 installedbyte-identical.
