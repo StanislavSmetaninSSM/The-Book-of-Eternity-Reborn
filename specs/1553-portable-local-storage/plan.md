@@ -1,3 +1,33 @@
+## Original terminal wait ownership — fixture WIP, 2026-10-09
+
+After independent diagnostic15 final PASSbeeced, continue the authorized migration.
+Independent bounded design review agrees: original wait and key tasks must settle
+before CTS disposal; exact wait CSP outranks ordinary UI/key failure, preserving that
+cause; cleanup cancellation cannot reverse an established Completed result. Actual
+Escape retains cancellation. No GM-authored schema/prompt or game rule changes.
+
+Exact selection8: seven original WaitForTerminalSignalAsync rows plus its existing
+fail-fast source guard. Two actual common-publisher cuts follow real15-second timeout
+and runtime-health detection (configured30 plus failed daemon status). Held original
+KeyAvailable positively enters before the real branch; timeout Unknown also releases
+with exact key failure. Existing Ready plus key failure, Escape, known timeout refusal,
+normal timeout publication, and genuine Status startup failure are controls. The UI
+failure positively holds original signal inspection before throwing. Per-case roots;
+actual input correlation/generation/prior committed images and authentic journal cuts.
+
+Fixture holds only UI/key or the current inspection callback, never another canonical
+writer. Real Status delegate exit is observed before bounded held-gate noncompletion;
+300ms observation is not the causal branch witness. Finally releases all fixture gates
+and awaits the original method and its actual compiler-owned wait task (reflection
+observation only), then confirms input callback exit before root removal. Historical
+RED cannot claim the discarded key task was joined; only GREEN source-owned joining
+plus callback counters can qualify that bounded lifetime. Native blocking-console
+interruptibility and original outer response cleanup remain separate/unqualified.
+
+Tests/category only, runtime unchanged. Independent fixture/exact8 review then fresh
+both-project Plan8 and actual8. Preserve all prior accepted cases without replay.
+Pool/store/ACK/full bridge/C2/F16/F18/remaining owners and final selection remain open.
+
 ## Repair/proposal diagnostics bounded GREEN — 2026-10-09
 
 Independent RED/carrier PASSf554, SOURCE/EXACT15 PASS386c78a77ec8a69c220ca7700f07d56bc97fa433.
@@ -12,7 +42,8 @@ controls retain original policy. Historical8PASS/7FAIL at4580 stays preserved.
 Fresh both-project discovery064614 at386c: **526 categories/11324 methods-files
 valid,0 tests**,20.1794058s, both cleanup flags; integration1.3679248s/unit10.8166169s.
 [Raw source-pinned carrier](recovery/storage-migration-repair-diagnostics-20261009/manifest.json)
-contains97 artifacts/57 pins. Final independent raw/catalog/carrier gate pending.
+contains97 artifacts/57 pins. Final independent raw/catalog/carrier/docs PASS
+atbeeced226322c24f6fce2f8fb2e1b44ac7f32a3a; all97 originals and57 pins verified.
 Earlier Ready12 remains accepted at11b/351 without replay; these are separate runs,
 not a single27 test run. No whole worker/bridge/terminal-wait/C2/native/double-close claim.
 

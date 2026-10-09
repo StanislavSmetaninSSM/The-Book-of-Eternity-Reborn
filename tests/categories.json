@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-terminal-wait-storage-linux",
+      "responsibility": "Original terminal wait seven finite scenarios: timeout/runtime-health actual publication uncertainty, exact secondary key failure, existing Ready completion, Escape, known timeout refusal/success, and early Status startup failure with original wait ownership; plus affected fail-fast source guard.",
+      "excludes": "No live GM/provider/process, full outer WaitForGmResponse rollback, arbitrary native blocking-input interruption, bridge/pool/C2/native-Windows or simultaneous lease-close fault qualification. RED retains the actual compiler-owned wait task for teardown; callback completion is not called key-task join.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalTerminalWaitOwnsTasksAndPreservesStorageOutcome"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineSourceGuardTests.GmResponseWaits_MustFailFastThroughHarnessTerminalErrorWhenRuntimeIsDead"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-worker-repair-diagnostics-linux",
       "responsibility": "Original proposal-only build/diagnostic, accepted worker and cleared repair trajectory, canonical-refresh report/cleanup and terminal helper preserve actual storage uncertainty, prior facts and known policy: seven causal and eight known rows.",
       "excludes": "No live worker/provider, original bridge-host dispatch execution, full accepted TryRun, full cleared-game validation, actual terminal wait/key lifetime, pool/store/ACK/C2/native or simultaneous close-fault claim. Accepted trajectory DTO is populated from a genuine storage apply with controlled validator.",

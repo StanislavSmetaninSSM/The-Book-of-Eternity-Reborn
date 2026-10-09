@@ -2,6 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-terminal-wait-storage-linux",
+      "reason": "T062 original terminal wait and owned-task settlement;7 finite real-consumer cases plus1 exact existing fail-fast source guard. Actual15-second timeout/health floors retained; no fake clock or process. Fixture WIP unbuilt/unrun. Earlier accepted helper15 and Ready12 untouched.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "FR-005",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-worker-repair-diagnostics-linux",
       "reason": "Actual15/15 Linux PASS386c78a7/064558 after fresh Plan15:7 original publication cuts preserve uncertainty/priorfacts/causes and stop canonical continuation;8 known controls preserve policy. Controlled-validator/reconstructed accepted DTO and terminal-helper limits explicit. PriorReady12 retained without replay.",
       "contracts": [
