@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "portable-preparation-manifest-outcome-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "c9a57df800d694f40cd598e01d6945463bfff23b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 41.7388069,
+  "Descriptors": [
+    {
+      "Name": "portable-preparation-manifest-outcome-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-preparation-manifest-outcome-causal-linux",
+      "Categories": [
+        "portable-preparation-manifest-outcome-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalEngineStopsAfterPublishedAuthority|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalLivePrepareStopsAfterPublishedRequest",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalEngineStopsAfterPublishedAuthority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalLivePrepareStopsAfterPublishedRequest",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

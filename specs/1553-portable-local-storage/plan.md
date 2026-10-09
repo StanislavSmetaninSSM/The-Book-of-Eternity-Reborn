@@ -1,3 +1,29 @@
+## Preparation isolated2 causal result and bounded runtime design — 2026-10-09
+
+Focused SOURCE/EXACT2 PASS c9a57df8. Matching Plan025816 freshly built integration38.4124261s,
+wall41.9904801s,2planned/1descriptor/0executed. Actual025917 complete2/2FAIL6.9667814s,exit1,
+no skip/duplicate/timeout,bothcleanup. Both now reach actual MemberPublished/index0 with valid prior
+manifest/authority correlation and first CSP; journal/foreign member and prior images remain exact.
+Live attempts request read1/mutation1 and separately readonly close1; engine authority attempts manifest
+read1/mutation1. Ordinary leases/publications/recovery observer phases0; subsequent recovery-generated
+CSP replaces the first decision. Same/final assertions remain unexecuted after first stop-oracle failure.
+Both owned roots removed. Packet adds14 artifacts/15 pins (total51/30); nine earlier causal rows were
+not repeated. These are eleven composed causal obligations, not one successful eleven-case run.
+
+Runtime design: direct-CSP exclusions at four initializers and original baseline/Live publication
+cleanup; capture first CSP before their original owned close and prebackup close. Prebackup stops
+immediately on primary CSP or a cleanup CSP, attaching the known capture cause to the latter. StageLocal
+skips canonical cleanup for primary CSP but always disposes its in-memory access. Queue preserves
+primary CSP; cleanup CSP retains the known queue cause. DirectGacha owner preserves primary CSP and
+retains known owner failure on cleanup CSP, skipping the finally backup deletion only after actual
+uncertainty. Known failures retain existing cleanup policy. No new admission, whole-cohort transaction,
+global latch, schema/gameplay change or simultaneous-close-fault execution claim.
+
+Proposed affected final21: eleven actual cuts plus original engine exact bytes/concurrent snapshot/
+known capture failure3, Live linked/replacement2, DirectGacha known cut3/consumed debt1, and AtomicCore
+known rollback-preparation lock release1. Exact membership/source sufficiency needs frozen review;
+no build or GREEN run is claimed yet. Earlier accepted unrelated units will not repeat.
+
 ## Preparation isolated manifest fixtures / exact2 WIP — 2026-10-09
 
 Initial11 carrier96aa preserves37 artifacts/15 pins and accepted nine-causal/two-fixture classification.
