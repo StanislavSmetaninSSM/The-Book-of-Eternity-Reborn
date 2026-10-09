@@ -1,3 +1,20 @@
+## Treatment progression original baseline actual2PASS/1causalFAIL — WIP, 2026-10-09
+
+FreshPlan2306373/1 at17e1d5a7,0exec49.2757138s; actual2307523complete=
+knownnormalPASS/uncertainPASS/known_closecausalFAIL22.8479006s,1/1bothcleanup/
+0skipduplicateTimeout/strict6rootsabsent. Realcurrent agreement progression
+schedulechanged before secondaryIO escaped originalAdvancefinally; actualowner/
+Intent/member0+closer1/fullsettlement/currentgeneration retained. Unknown already
+SAME CSP+TreatmentPublicationLeaseCloseFailure/fullsettlement/noLater/Closing0;
+normal actualProbe samecoordinates->CompleteFinalized PASS. No fakeknown outcome.
+[Packet](recovery/storage-migration-original-treatment-advance-close-20261009/manifest.json)
+originalraw/TRX/rows/sourcepins verified. Next exactly Advancefinally suppress
+closeerror also foractualvalid PublishedAgreementAdvanced; do not alter
+ClosesReceipt or ObserveClosure, receiptmuststillProbe thenComplete. Source/
+causal/exact3 gate beforefreshGREEN. EngineFinal draft2f3bbcd5 independentfixture/
+design/exact4PASS, uninstalled. Saveoptionalimagesroot draftreviewongoing.
+No GM-facing contract change/T061–T065/B2–B5/native completionclaim.
+
 ## Treatment progression actual original owner — test-first WIP, 2026-10-09
 
 Independentfixture/design/exact3 PASS61df2636 installedbyte-identical. Actualheld
