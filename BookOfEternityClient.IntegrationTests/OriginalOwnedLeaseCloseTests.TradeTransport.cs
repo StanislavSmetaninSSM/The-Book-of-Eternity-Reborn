@@ -15,11 +15,18 @@ public sealed partial class OriginalOwnedLeaseCloseTests
     [InlineData("npc_buy", false)] [InlineData("npc_buy", true)]
     [InlineData("npc_sell", false)] [InlineData("npc_sell", true)]
     [InlineData("npc_buyback", false)] [InlineData("npc_buyback", true)]
+    public Task OriginalNpcTradeOwnersRetainGenuinePublicationUncertaintyOnClose(string mode, bool uncertain) =>
+        RunOriginalTradeTransportCloseAsync(mode, uncertain);
+
+    [Theory]
     [InlineData("storage_deposit", false)] [InlineData("storage_deposit", true)]
     [InlineData("storage_retrieve", false)] [InlineData("storage_retrieve", true)]
     [InlineData("vehicle_deposit", false)] [InlineData("vehicle_deposit", true)]
     [InlineData("vehicle_retrieve", false)] [InlineData("vehicle_retrieve", true)]
-    public async Task OriginalTradeTransportOwnersRetainGenuinePublicationUncertaintyOnClose(string mode, bool uncertain)
+    public Task OriginalStorageTransportOwnersRetainGenuinePublicationUncertaintyOnClose(string mode, bool uncertain) =>
+        RunOriginalTradeTransportCloseAsync(mode, uncertain);
+
+    private async Task RunOriginalTradeTransportCloseAsync(string mode, bool uncertain)
     {
         Assert.True(OperatingSystem.IsLinux());
         var root = Path.Combine(Path.GetTempPath(), "boe-original-trade-transport-close-" + Guid.NewGuid().ToString("N"));
@@ -162,7 +169,7 @@ public sealed partial class OriginalOwnedLeaseCloseTests
             if (mode.StartsWith("npc_", StringComparison.Ordinal))
             {
                 var npcRoot = JsonNode.Parse((await files.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!)!.AsObject();
-                var npc = Assert.Single(npcRoot["UpdateNPCs"]!.AsArray().OfType<JsonObject>());
+                var npc = Assert.Single(npcRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>());
                 Assert.Equal(expectedKind == "npc_inventory", npc["inventory"]!.AsArray().OfType<JsonObject>().Any(i => i["itemId"]!.GetValue<string>() == itemId));
                 var status = JsonNode.Parse((await files.ReadFileAsync("game_state/core/player_status.json"))!)!.AsObject();
                 var amount = mode == "npc_buy" ? NpcTradeService.ComputeBuyPriceForValidation(20, 12, 14, "Neutral") : NpcTradeService.ComputeSellPriceForValidation(8, 12, 14, "Neutral");
@@ -237,7 +244,11 @@ public sealed partial class OriginalOwnedLeaseCloseTests
                 ["tradeInventory"] = new JsonObject { ["tradeCycleId"] = "world_trade_0", ["generatedAtWorldDate"] = 100, ["refreshAfterWorldDate"] = 43200, ["generationTradeTier"] = "Good", ["pricingTradeTier"] = "Neutral", ["items"] = slots },
                 ["tradeInventoryReceipts"] = new JsonArray(new JsonObject { ["requestId"] = "npc_trade_seed", ["npcId"] = "npc_merchant", ["npcName"] = "Merchant", ["tradeCycleId"] = "world_trade_0", ["merchantProfile"] = "GeneralGoods", ["status"] = "ready", ["itemCount"] = 7, ["resolvedAtTurn"] = 5, ["resolvedAtUtc"] = "2026-10-09T00:00:00Z" })
             };
-            await files.WriteFileAtomicAsync(NpcCoreChangesContract.NpcCorePath, new JsonObject { ["UpdateNPCs"] = new JsonArray(npc) }.ToJsonString());
+            var actor = MortalActorTestFixtures.CreateActor("npc_merchant", "loc_market", "Market square");
+            foreach (var property in npc.Where(p => p.Key is not "npcId" and not "currentLocation" and not "characteristics"))
+                actor[property.Key] = property.Value?.DeepClone();
+            actor["characteristics"]!["modifiedTrade"] = 14;
+            await files.WriteFileAtomicAsync(NpcCoreChangesContract.NpcCorePath, new JsonObject { ["NPCsInScene"] = new JsonArray(actor) }.ToJsonString());
             indexRoot = MortalItemTestFixture.CreateIndexForCarriers(stock.Select(i => (i, "npc_inventory", "npc_merchant", (string?)null)).Append((item, "player_inventory", "player", null)).ToArray());
             if (mode == "npc_buy") { itemId = "stock_1"; sourcePath = NpcCoreChangesContract.NpcCorePath; }
         }
@@ -257,7 +268,7 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         if (mode == "npc_buyback")
         {
             var sold = await new NpcTradeService(files, NullLogger<NpcTradeService>.Instance).SellAsync("npc_merchant", itemId, 6); Assert.True(sold.Success, sold.Message);
-            var actualNpc = JsonNode.Parse((await files.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!)!["UpdateNPCs"]![0]!;
+            var actualNpc = JsonNode.Parse((await files.ReadFileAsync(NpcCoreChangesContract.NpcCorePath))!)!["NPCsInScene"]![0]!;
             buybackId = Assert.Single(actualNpc["buybackInventory"]!.AsArray().OfType<JsonObject>())["buybackEntryId"]!.GetValue<string>();
             moneyBefore = JsonNode.Parse((await files.ReadFileAsync("game_state/core/player_status.json"))!)!["money"]!.GetValue<int>();
             sourcePath = NpcCoreChangesContract.NpcCorePath;

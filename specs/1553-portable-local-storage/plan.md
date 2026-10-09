@@ -1,3 +1,17 @@
+## NPC current-actor preparation correction installed — WIP, 2026-10-09
+
+Independent correctedfixture/selection gate PASS126f76a9, installedbyteidentically.
+RealMortalActorTestFixtures.CreateActor supplies canonicalNPCId/currentlocation/
+profile/characteristics, originaltrade fields copiedwithoutoldidentity/current
+locationaliases andmodifiedTrade14 retained. CurrentNPCsInScene root andtwo
+matchingreads; runtime/oracles/storageseed/cut unchanged. The original14Theory
+is splitNPC6/Storage8 wrappers overunchangedprivatebody; retirelivecombined
+category andadd2 coherentowners. Historicalinitial14packet unchanged.
+Fresh integrationNPCPlan6/actual6 only, UNBUILT/UNRUN; unchangedStorage4known
+PASS not replayed. Combinedcausal baseline will be source-pinnedStorage8+NPC6,
+not another14execution. Engine finalGREEN/raw/carrier PASSEFE50artifacts28pins;
+fullnew-ownercatalog pendingstablebatch. B2–B5paused/T061–T065unchecked.
+
 ## Engine actual GREEN8 and item-trade preparation split — WIP, 2026-10-09
 
 Fresh shared integration Plan214848 at0e20d0db builds22/2 (engine8 + trade14),

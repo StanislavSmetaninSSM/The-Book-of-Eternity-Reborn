@@ -2,8 +2,21 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-original-item-trade-transport-owning-close-linux",
-      "reason": "T063/T065 originalfixture0e20d0db sharedfreshPlan21484822/2; actualtrade21501514complete=4knownstoragePASS/4storagecausalFAIL/6NPCpreparationFAIL9.4425487s,1/1bothcleanup0skipdupTimeoutstrict14roots. NPC current actor authority seed incomplete before actualowner operation, not causalRED6. Packet31/21 immutable, runtime unchanged. Correct fixture to real current MortalActorTestFixtures actor/root, preserve oracles/storagerows; fresh focused NPC6 before correction of5owners. Engine8 actual separateGREEN notaggregate22. No broadgame/B2/native.",
+      "category": "portable-original-storage-transport-owning-close-linux",
+      "reason": "T063/T065 Originalstorage8 obligations reached at0e initial14 actual215015:4knownPASS/4causalFAIL, fullowner/cut/fullsettlement/strict14roots. CurrentTheory wrapper split8 independentPASS126f76a9, samebody/oracles/storageseed/runtime unchanged; no repeatedbaseline needed. Laterminimal original2scope correction needs relevantfreshGREEN8. Noresource-bearingstack/fullgame/B2/native/knownlateclose qualification.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063",
+        "T065"
+      ]
+    },
+    {
+      "category": "portable-original-npc-trade-owning-close-linux",
+      "reason": "T063/T065 Focused NPC6 preparation correction independentPASS126f76a9: currentcompleteactor/currentNPCsInScene, originaloperations/oracles unchanged. Initial14 source0e complete4knownstoragePASS/4storagecausalFAIL/6NPCpreparationFAIL preserved31/21 atEFE. FreshPlan6/actual6 before anyNPCruntimecorrection; no baselineStorage replay. UNBUILT/UNRUN. Noresource-bearingstack/fullgame/B2/native/knownlateclose qualification.",
       "contracts": [
         "#1553",
         "FR-002",
