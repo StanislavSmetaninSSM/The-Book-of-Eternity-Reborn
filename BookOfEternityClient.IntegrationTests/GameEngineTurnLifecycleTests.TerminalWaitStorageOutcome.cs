@@ -97,9 +97,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             // the old UI-error path never awaited it. This observes, not replaces,
             // the original task; no synthetic task is passed to production.
             var stateMachine = originalCall!.GetType().GetField("StateMachine", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!.GetValue(originalCall)!;
-            var waitField = Assert.Single(stateMachine.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic),
-                field => field.Name.StartsWith("<waitTask>", StringComparison.Ordinal));
-            originalWaitTask = Assert.IsAssignableFrom<Task>(waitField.GetValue(stateMachine));
+            originalWaitTask = Assert.Single(FindOriginalWaitTasks(stateMachine).Distinct());
             console.ReleaseUi.TrySetResult();
             // Positive original Status-delegate completion (or injected startup failure),
             // not a timer pretending the storage branch was reached.
@@ -196,6 +194,18 @@ public sealed partial class GameEngineTurnLifecycleTests
                 activeInspectionAtReturn = Volatile.Read(ref inspectionActive);
                 waitTaskCompletedAtReturn = originalWaitTask?.IsCompleted == true;
             }
+        }
+    }
+
+    private static IEnumerable<Task> FindOriginalWaitTasks(object holder)
+    {
+        foreach (var field in holder.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+        {
+            var value = field.GetValue(holder);
+            if (field.Name == "waitTask" || field.Name.StartsWith("<waitTask>", StringComparison.Ordinal))
+                yield return Assert.IsAssignableFrom<Task>(value);
+            else if (value?.GetType().FullName?.StartsWith(typeof(GameEngine).FullName + "+<>c__DisplayClass", StringComparison.Ordinal) == true)
+                foreach (var task in FindOriginalWaitTasks(value)) yield return task;
         }
     }
 
