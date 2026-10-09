@@ -1,3 +1,15 @@
+## F18 original file-GM transport — isolated fixture correction WIP, 2026-10-09
+
+Base46bd8866 preserves initial mid1 admission failure and9unrun. Only binding/staged/
+interruption file responders change: physical atomic UTF8-noBOM write+rename on exactly
+existing narrative_response, afterlife conflict and validation_repair_ready paths, Ready
+still written last with original observed correlation. Raw private-control assertions keep
+all original content/absence checks without claiming a client main lease. No client/runtime
+admission bypass, synthetic journal, new request/decision, worker substitution or deadline
+change. Original current-journal witnesses and actor joins remain. The shared interruption
+observer also affects two source-only postpublication/poststory callers; no fresh PASS claim.
+Next frozen source/fixture gate, fresh Plan11 then bounded Linux10; native worker1 unrun.
+
 ## F18 lifecycle initial actual — original file-responder admission blocked, 2026-10-09
 
 SOURCE/FIXTURE/EXACT11 PASS9f14 plus explicit native-host metadatae0d9. Fresh integration

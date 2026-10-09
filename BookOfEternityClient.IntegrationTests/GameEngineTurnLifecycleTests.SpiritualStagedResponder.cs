@@ -135,14 +135,14 @@ public sealed partial class GameEngineTurnLifecycleTests
                     var held = new Dictionary<string, byte[]>();
                     foreach (var path in new[] { SpiritualWoundCaptureCheckpointState.StatePath,
                         SpiritualWoundDecisionPendingState.StatePath, AcceptedMechanicsPlan.WoundCommandPath, AfterlifeSpiritualConflictState.StatePath })
-                        held[path] = (await fs.ReadFileBytesAsync(path))!;
+                        held[path] = await File.ReadAllBytesAsync(fs.ResolvePath(path), cancellationToken);
                     await WriteSpiritualStagedReadyAsync(fs, original, shared.A!, []);
                     var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(90);
                     while (File.Exists(fs.ResolvePath(readyPath)) && DateTime.UtcNow < deadline)
                         await Task.Delay(25, cancellationToken);
                     Assert.False(File.Exists(fs.ResolvePath(readyPath)), "Stale A Ready was not rejected at B.");
-                    foreach (var pair in held) Assert.Equal(pair.Value, await fs.ReadFileBytesAsync(pair.Key));
-                    var retainedB = ParseDependentSpiritualBytes((await fs.ReadFileBytesAsync(repairPath))!);
+                    foreach (var pair in held) Assert.Equal(pair.Value, await File.ReadAllBytesAsync(fs.ResolvePath(pair.Key), cancellationToken));
+                    var retainedB = ParseDependentSpiritualBytes(await File.ReadAllBytesAsync(fs.ResolvePath(repairPath), cancellationToken));
                     Assert.Equal(request.ContinuationId, retainedB["spiritualWoundContinuation"]!["continuationId"]!.GetValue<string>());
                     // Ready deletion precedes the engine's fresh B replay. Wait for its actual
                     // retry publication rather than competing with that replay's write lease.
@@ -168,27 +168,25 @@ public sealed partial class GameEngineTurnLifecycleTests
                     var retriedRequest = SpiritualWoundContinuationProtocol.ReadRequest(
                         JsonSerializer.SerializeToElement(rejection[SpiritualWoundContinuationProtocol.EnvelopeName]));
                     Assert.Equal(JsonSerializer.Serialize(request), JsonSerializer.Serialize(retriedRequest));
-                    await using (var lease = await fs.AcquireCanonicalWriteLeaseAsync(cancellationToken: cancellationToken))
-                    {
-                        Assert.False(fs.FileExists(lease, readyPath));
-                        foreach (var pair in held) Assert.Equal(pair.Value, await fs.ReadFileBytesAsync(lease, pair.Key));
-                    }
+                    Assert.False(File.Exists(fs.ResolvePath(readyPath)));
+                    foreach (var pair in held)
+                        Assert.Equal(pair.Value, await File.ReadAllBytesAsync(fs.ResolvePath(pair.Key), cancellationToken));
                     shared.StaleReadyRejections++;
                 }
                 JsonElement[] decisions = [];
                 if (stage == "decision")
                 {
-                    var narrative = ParseDependentSpiritualBytes((await fs.ReadFileBytesAsync("output/narrative_response.json"))!);
+                    var narrative = ParseDependentSpiritualBytes(await File.ReadAllBytesAsync(fs.ResolvePath("output/narrative_response.json"), cancellationToken));
                     narrative["response"] = "Чужое давление надломило волю души. Во втором и третьем обменах оба сохраняют давление; нового вреда нет.";
                     narrative["timestamp"] = DateTime.UtcNow.ToString("O");
-                    await fs.WriteFileAtomicAsync("output/narrative_response.json", narrative.ToJsonString());
+                    await WriteSpiritualFileGmJsonAsync(fs, "output/narrative_response.json", narrative.ToJsonString(), cancellationToken);
                     decisions = [AfterlifeResourceCutoverTests.CreateSpiritualStagedPlayerDecision(request.Offer!.OpportunityRef)];
                 }
                 else
                 {
                     var candidate = AfterlifeResourceCutoverTests.CreateSpiritualStagedCorrectionA(originalDraft);
                     if (stage == "b") candidate = AfterlifeResourceCutoverTests.CreateSpiritualStagedCorrectionB(candidate);
-                    await fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, candidate.ToJsonString());
+                    await WriteSpiritualFileGmJsonAsync(fs, AfterlifeSpiritualConflictState.StatePath, candidate.ToJsonString(), cancellationToken);
                     if (cut == "a_apply" && stage == "a")
                     {
                         Volatile.Write(ref shared.AppliedAWithoutReady, 1);
@@ -255,7 +253,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// The atomic Ready write task.
     /// </returns>
     private static Task WriteSpiritualStagedReadyAsync(FileSystemManager fs, TurnRequest original,
-        SpiritualWoundContinuationRequest request, JsonElement[] decisions) => fs.WriteFileAtomicAsync(
+        SpiritualWoundContinuationRequest request, JsonElement[] decisions) => WriteSpiritualFileGmJsonAsync(fs,
         "game_state/control/validation_repair_ready.json", JsonSerializer.Serialize(new
         {
             sessionId = original.SessionId, requestId = original.RequestId, turnNumber = original.TurnNumber,

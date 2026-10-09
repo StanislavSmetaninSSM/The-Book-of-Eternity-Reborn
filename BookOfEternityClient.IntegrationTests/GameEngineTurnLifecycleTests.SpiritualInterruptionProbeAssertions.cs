@@ -89,20 +89,16 @@ public sealed partial class GameEngineTurnLifecycleTests
                         Assert.Equal(42, repair.GetProperty("turnNumber").GetInt32());
                         Assert.Equal(0, repair.GetProperty("errors").GetArrayLength());
                         Assert.False(repair.GetProperty("fullTurnResubmissionRequired").GetBoolean());
-                        using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-                        deadline.CancelAfter(TimeSpan.FromSeconds(10));
-                        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync(cancellationToken: deadline.Token))
-                        {
-                            Assert.True(context.FileSystem.FileExists(lease, SpiritualWoundCaptureCheckpointState.StatePath));
-                            Assert.True(context.FileSystem.FileExists(lease, SpiritualWoundDecisionPendingState.StatePath));
-                            Assert.False(context.FileSystem.FileExists(lease, SpiritualWoundOpportunityReceiptState.StatePath));
-                        }
-                        await context.WriteExactJsonAsync("output/narrative_response.json", JsonSerializer.Serialize(new
+                        // This actor represents an external file GM, not a competing client operation.
+                        Assert.True(File.Exists(context.FileSystem.ResolvePath(SpiritualWoundCaptureCheckpointState.StatePath)));
+                        Assert.True(File.Exists(context.FileSystem.ResolvePath(SpiritualWoundDecisionPendingState.StatePath)));
+                        Assert.False(File.Exists(context.FileSystem.ResolvePath(SpiritualWoundOpportunityReceiptState.StatePath)));
+                        await WriteSpiritualFileGmJsonAsync(context.FileSystem, "output/narrative_response.json", JsonSerializer.Serialize(new
                         {
                             response = "Чужое давление надломило волю хранителя.", timestamp = DateTime.UtcNow.ToString("O")
                         }));
                         var decision = AfterlifeResourceCutoverTests.CreateSpiritualLifecycleMaterializeDecision(continuation.Offer!.OpportunityRef);
-                        await context.WriteExactJsonAsync("game_state/control/validation_repair_ready.json", JsonSerializer.Serialize(new
+                        await WriteSpiritualFileGmJsonAsync(context.FileSystem, "game_state/control/validation_repair_ready.json", JsonSerializer.Serialize(new
                         {
                             sessionId = request.SessionId, requestId = request.RequestId, turnNumber = 42,
                             timestamp = DateTime.UtcNow.ToString("O"), status = "success",
