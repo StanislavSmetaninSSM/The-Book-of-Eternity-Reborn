@@ -1,3 +1,25 @@
+## Ready/worker runtime correction — WIP/unbuilt/unrun, 2026-10-09
+
+Independent RED/carrier review accepted852c6f9b:9 genuine reached failures,3 known
+PASS,44 artifacts/32 pins. Four production files now preserve direct publication
+uncertainty through default audit, task-build, Ready diagnostics and original engine
+dispatch. Actual latest task, accepted ApplyReserved decision/proposal, known original
+cause and post-write Ready-created fact travel on the same exception. The full accepted
+TryRun owner attaches its actual decision; that specific caller remains source-qualified.
+
+BuildTask (conditional generation), latest-task, ApplyReserved, Ready and current-session
+audit capture body CSP before releasing their same owned lease, using the existing
+release helper. No ordinary failure/cancellation is reclassified as CSP, no global
+Dispose change, new public API or on-disk format. Required audit suppressFailure:false
+semantics unchanged; its separate owned close stays in the remaining owner inventory.
+Known best-effort audit and known Ready-failure policy are preserved.
+
+This is client-owned storage outcome handling; GM-authored schemas, prompts/examples,
+mechanics and commands do not change. Fresh Plan12, actual12 and both-project catalog
+validation remain pending after frozen source/exact-selection review. C2 CAS, full
+accepted worker execution, pool/store/ACK/trajectory/harness, native Windows and actual
+simultaneous body+close fault remain unqualified/open.
+
 ## Ready/worker causal RED — 2026-10-09
 
 Clean source8d2689753166d174b95878c13506602ad6e727a7; independent fixture correction

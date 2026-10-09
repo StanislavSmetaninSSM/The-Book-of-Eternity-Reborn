@@ -163,9 +163,17 @@ public sealed class GmWorkerValidationRepairDelegator
                 FallbackReason = ex.Message
             };
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
-            await RecordRouterEventAsync("validation-repair-task-build-failed", routing.Profile.WorkerId, null, ex.Message);
+            try
+            {
+                await RecordRouterEventAsync("validation-repair-task-build-failed", routing.Profile.WorkerId, null, ex.Message);
+            }
+            catch (CoordinatedStatePublicationUncertainException publicationFailure)
+            {
+                publicationFailure.Data["GmWorkerOriginalFailure"] = ex;
+                throw;
+            }
             return new GmWorkerValidationRepairDispatchResult
             {
                 Outcome = GmWorkerValidationRepairOutcome.TaskBuildFailed,
@@ -245,23 +253,34 @@ public sealed class GmWorkerValidationRepairDelegator
             };
         }
 
-        if (_hooks?.BeforeReadyPublicationAsync != null)
-            await _hooks.BeforeReadyPublicationAsync();
-        var readyPublication = await TryWriteReadySignalAsync(
-            boundTask,
-            run.Proposal,
-            readyBefore);
-        return new GmWorkerValidationRepairDispatchResult
+        try
         {
-            Outcome = readyPublication.SessionReplaced
-                ? GmWorkerValidationRepairOutcome.SessionReplaced
-                : GmWorkerValidationRepairOutcome.Applied,
-            Task = task,
-            RunResult = run,
-            ApplyDecision = decision,
-            ReadySignalCreated = readyPublication.Created,
-            FallbackReason = readyPublication.Diagnostic
-        };
+            if (_hooks?.BeforeReadyPublicationAsync != null)
+                await _hooks.BeforeReadyPublicationAsync();
+            var readyPublication = await TryWriteReadySignalAsync(
+                boundTask,
+                run.Proposal,
+                readyBefore);
+            return new GmWorkerValidationRepairDispatchResult
+            {
+                Outcome = readyPublication.SessionReplaced
+                    ? GmWorkerValidationRepairOutcome.SessionReplaced
+                    : GmWorkerValidationRepairOutcome.Applied,
+                Task = task,
+                RunResult = run,
+                ApplyDecision = decision,
+                ReadySignalCreated = readyPublication.Created,
+                FallbackReason = readyPublication.Diagnostic
+            };
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            // This owner has the real accepted decision; the Ready helper does not.
+            failure.Data["GmWorkerApplyDecision"] = decision;
+            failure.Data["GmWorkerTask"] = boundTask;
+            failure.Data["GmWorkerProposal"] = run.Proposal;
+            throw;
+        }
     }
 
     internal static bool CanAcceptExecution(GmWorkerTaskRunResult run, WorkerTaskPacket task) =>
@@ -307,7 +326,9 @@ public sealed class GmWorkerValidationRepairDelegator
         var currentRealm = string.Empty;
         string sessionGeneration;
         byte[]? readyBefore = null;
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try
         {
             sessionGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
             if (expectedSessionGeneration != null &&
@@ -361,6 +382,16 @@ public sealed class GmWorkerValidationRepairDelegator
                 contextHashes[path] = content == null ? "missing" : ComputeSha256(content);
             }
         }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
+        }
 
         var afterlifeContract = requiresAfterlifeRealmAuthority
             ? BuildAfterlifeRepairContract(realmGate, currentRealm, targetPaths)
@@ -380,15 +411,30 @@ public sealed class GmWorkerValidationRepairDelegator
 
     private async Task<bool> WriteLatestTaskIfCurrentAsync(WorkerTaskPacket task)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        if (!_fs.IsCurrentSessionGeneration(writeLease, task.SessionGeneration))
-            return false;
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try
+        {
+            if (!_fs.IsCurrentSessionGeneration(writeLease, task.SessionGeneration))
+                return false;
 
-        await _fs.WriteFileAtomicAsync(
-            writeLease,
-            LatestValidationRepairTaskPath,
-            GmWorkerJson.Serialize(task));
-        return true;
+            await _fs.WriteFileAtomicAsync(
+                writeLease,
+                LatestValidationRepairTaskPath,
+                GmWorkerJson.Serialize(task));
+            return true;
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            failure.Data["GmWorkerTask"] = task;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     private static WorkerAfterlifeTaskContract BuildAfterlifeRepairContract(
@@ -447,46 +493,67 @@ public sealed class GmWorkerValidationRepairDelegator
             SpiritualWoundContinuation = proposal.SpiritualWoundContinuation
         };
 
+        var readyCreated = false;
         try
         {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            if (!_fs.IsCurrentSessionGeneration(writeLease, sessionGeneration))
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            Exception? publicationUncertainty = null;
+            try
             {
-                return (
-                    false,
-                    "Worker repair belonged to a replaced game session generation; no ready signal was published.",
-                    true);
-            }
-
-            if (task.SpiritualWoundContinuation is not null)
-            {
-                var issues = await _applyGate.ValidateSpiritualContinuationAfterApplyAsync(proposal, task, writeLease);
-                if (issues.Count != 0)
-                    return (false, "Continuation changed before Ready publication: " + string.Join("; ", issues), false);
-                var result = await _fs.CompareExchangeFileBytesAsync(writeLease, ValidationRepairReadyPath,
-                    readyBefore, Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(ready)));
-                if (result == CanonicalFileMutationResult.Conflict)
-                    return (false, "A newer Ready response was preserved after worker apply.", false);
-            }
-            else
-            {
-                await _fs.WriteFileAtomicAsync(writeLease, ValidationRepairReadyPath, GmWorkerJson.Serialize(ready));
-            }
-
-            await _auditLog.AppendEventAsync(writeLease, new WorkerAuditEvent
-            {
-                EventId = GmWorkerAuditEventIdGenerator.Create(),
-                EventType = "validation-repair-ready-created",
-                WorkerId = proposal.WorkerId,
-                TaskId = proposal.TaskId,
-                ProposalId = proposal.ProposalId,
-                TimestampUtc = DateTimeOffset.UtcNow.ToString("O"),
-                Summary = "Created validation_repair_ready.json after accepted GM worker repair proposal.",
-                Details = new Dictionary<string, IReadOnlyList<string>>
+                if (!_fs.IsCurrentSessionGeneration(writeLease, sessionGeneration))
                 {
-                    ["readyPath"] = [ValidationRepairReadyPath]
+                    return (
+                        false,
+                        "Worker repair belonged to a replaced game session generation; no ready signal was published.",
+                        true);
                 }
-            });
+
+                if (task.SpiritualWoundContinuation is not null)
+                {
+                    var issues = await _applyGate.ValidateSpiritualContinuationAfterApplyAsync(proposal, task, writeLease);
+                    if (issues.Count != 0)
+                        return (false, "Continuation changed before Ready publication: " + string.Join("; ", issues), false);
+                    var result = await _fs.CompareExchangeFileBytesAsync(writeLease, ValidationRepairReadyPath,
+                        readyBefore, Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(ready)));
+                    if (result == CanonicalFileMutationResult.Conflict)
+                        return (false, "A newer Ready response was preserved after worker apply.", false);
+                }
+                else
+                {
+                    await _fs.WriteFileAtomicAsync(writeLease, ValidationRepairReadyPath, GmWorkerJson.Serialize(ready));
+                }
+
+                readyCreated = true;
+                await _auditLog.AppendEventAsync(writeLease, new WorkerAuditEvent
+                {
+                    EventId = GmWorkerAuditEventIdGenerator.Create(),
+                    EventType = "validation-repair-ready-created",
+                    WorkerId = proposal.WorkerId,
+                    TaskId = proposal.TaskId,
+                    ProposalId = proposal.ProposalId,
+                    TimestampUtc = DateTimeOffset.UtcNow.ToString("O"),
+                    Summary = "Created validation_repair_ready.json after accepted GM worker repair proposal.",
+                    Details = new Dictionary<string, IReadOnlyList<string>>
+                    {
+                        ["readyPath"] = [ValidationRepairReadyPath]
+                    }
+                });
+            }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                publicationUncertainty = failure;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
+            }
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            RetainReadyPublicationFacts(failure, task, proposal, readyCreated);
+            throw;
         }
         catch (SessionReplacedException ex)
         {
@@ -498,15 +565,36 @@ public sealed class GmWorkerValidationRepairDelegator
         catch (Exception ex)
         {
             var diagnostic = $"Worker repair was applied, but ready signal publication failed: {ex.Message}";
-            await TryRecordPostApplyDiagnosticAsync(
-                "validation-repair-ready-failed",
-                proposal,
-                sessionGeneration,
-                diagnostic);
+            try
+            {
+                await TryRecordPostApplyDiagnosticAsync(
+                    "validation-repair-ready-failed",
+                    proposal,
+                    sessionGeneration,
+                    diagnostic);
+            }
+            catch (CoordinatedStatePublicationUncertainException publicationFailure)
+            {
+                RetainReadyPublicationFacts(publicationFailure, task, proposal, readyCreated);
+                publicationFailure.Data["GmWorkerOriginalFailure"] = ex;
+                throw;
+            }
             return (false, diagnostic, false);
         }
 
         return (true, string.Empty, false);
+    }
+
+    private static void RetainReadyPublicationFacts(
+        CoordinatedStatePublicationUncertainException failure,
+        WorkerTaskPacket task,
+        WorkerProposal proposal,
+        bool readyCreated)
+    {
+        failure.Data["GmWorkerTask"] = task;
+        failure.Data["GmWorkerProposal"] = proposal;
+        if (readyCreated)
+            failure.Data["GmWorkerReadySignalCreated"] = true;
     }
 
     private async Task TryRecordPostApplyDiagnosticAsync(
@@ -530,7 +618,7 @@ public sealed class GmWorkerValidationRepairDelegator
                     Summary = summary
                 });
         }
-        catch
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
         {
             // The canonical repair already succeeded; diagnostics must not reclassify its ownership.
         }

@@ -7620,7 +7620,7 @@ public partial class GameEngine
                 FallbackReason = ex.Message
             };
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Failed to run GM worker validation repair. Legacy repair loop remains active.");
             return new GmWorkerValidationRepairDispatchResult

@@ -61,13 +61,27 @@ public sealed class GmWorkerAuditLog
         await using var admission = await _fs
             .CanonicalRootAuthorityIdentity
             .EnterGmWorkerAuditAppendAdmissionAsync(cancellationToken);
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(
             cancellationToken: cancellationToken);
-        if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
-            return false;
+        Exception? publicationUncertainty = null;
+        try
+        {
+            if (!_fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
+                return false;
 
-        await AppendEventCoreAsync(auditEvent, writeLease, cancellationToken);
-        return true;
+            await AppendEventCoreAsync(auditEvent, writeLease, cancellationToken);
+            return true;
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     internal async Task<GmWorkerAuditAppendDisposition>
@@ -133,9 +147,11 @@ public sealed class GmWorkerAuditLog
                     cancellationToken);
             }
         }
-        catch (Exception) when (suppressFailure)
+        catch (Exception failure) when (suppressFailure &&
+            failure is not CoordinatedStatePublicationUncertainException)
         {
-            // Audit is diagnostic telemetry and must not revoke an accepted canonical operation.
+            // Ordinary telemetry failure does not revoke an accepted operation.
+            // Unresolved canonical publication still blocks further work.
         }
     }
 
