@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-explorer-snapshot-exact-names-linux",
+      "reason": "T063/F16 test-first original incarnation inventory5, Explorer stage6/mark5 and four original incarnation/fresh-after-cleanup neighbors: finite20/1. Actual original retained owner, real durable restore then first cleanup IOException, byte/path/generation and owner-state witnesses; raw aliases/backslash/trim fail before fold/cleanup, Unicode/exact repeats positive. Installed UNBUILT/UNRUN; production incarnation/Explorer unchanged. Browser19/engine25 not replayed without changed boundary.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-browser-snapshot-native-noncandidates-linux",
       "reason": "T063/F16 browser actual184520 source4bff0b4f GREEN19/19 afterfreshintegrationPlan19/2,14.4416863s,complete2/2,bothcleanup,19ownedrootsabsent. Publicgacha7+borrowedqueue8+originalpublicgacha2+native-noncandidate2. Thirteen rawnegatives have0mutations/exactoldbytes/generation; Unicode/nativeexcludedpayload positives preservebytes/genuinebackups. Previous4PASS13causalRED andisolated2positive baseline immutable. Source/design/exact19 independentPASS; independent raw/carrier PASSd40351c2; freshbothcatalog184725586/11358 discovery0, finalcatalogcarrier pending. Otherproducers/owners/native/HTTP unqualified; engine25/firstLive42 not replayed.",
       "contracts": [

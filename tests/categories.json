@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-explorer-snapshot-exact-names-linux",
+      "responsibility": "Original incarnation raw inventory5 and Explorer stage6/mark5 preserve real retained rollback owner/evidence before normalization, fold or completed-owner cleanup. Four original incarnation/fresh-capture neighbors.",
+      "excludes": "No spiritual capture, other lease owners, full lifecycle, native Windows or B2 gameplay.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+        "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ExactExplorerNames.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalIncarnationInventoryAdmitsRawNamesBeforeCallerFolding",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalExplorerRawInputsPreserveActualCompletedRollbackEvidence",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-browser-snapshot-native-noncandidates-linux",
       "responsibility": "Two original browser gacha/borrowed queue positive controls preserve raw noncandidate game_state binary payload names/bytes (literal backslash and case-distinct siblings) while original JSON snapshot cohort excludes them.",
       "excludes": "No native general payload qualification, browser HTTP, other signed producers or game rule change.",

@@ -1,3 +1,28 @@
+## Incarnation/Explorer raw-input continuation — test-first WIP, 2026-10-09
+
+Installed 16 new original cases (incarnation inventory5, stage6, mark5) plus four
+original incarnation/fresh-after-cleanup controls: finite20/one category. Runtime
+unchanged. Eleven stage/mark rows obtain the real original owner, restore its
+before-image through the original method, then cut its first cleanup deletion.
+RestoreCompleted is established by production, never set by the fixture. Witnesses
+include the actual retained owner, every owner path/hash collection, full physical
+path/byte maps, generation and all canonical mutation attempts. Enumeration rows
+retain an actual active old capture. Unicode and exact-repeat positives are valid.
+
+Proposed correction: admit the exact current_world subtree on a short canonical
+lease and raw physical fixed request/manifest matches before HashSet/Replace.
+Keep the synchronous private signature used by original consumers. Explorer stage
+and mark admit raw caller arrays together with retained owner path collections
+before Trim/Distinct, cleanup or mutation; validate again under the owned lease.
+Mark uses the existing lease for FileExists. Reuse current namespace/close helpers;
+no new signing format, journal or GM rule. Independent fixture/design/exact20 gate,
+then fresh Plan20 and actual original baseline before minimal runtime correction.
+
+Browser final catalog/raw/carrier independent PASS4e22c30f (67artifacts/52pins,
+586categories/11358methods-files,0execution). Engine unit PASS7274da21 remains
+separate. Continue spiritual capture and remaining owners afterward. T061–T065
+remain unchecked and B2–B5 remain paused; no native/all-consumer qualification.
+
 ## Browser final evidence/catalog gate — 2026-10-09
 
 Independent AstraXHigh GREEN/raw/carrierPASSd40351c2: actual19/19,13negatives
