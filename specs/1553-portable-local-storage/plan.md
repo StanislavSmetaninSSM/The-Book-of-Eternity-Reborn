@@ -1,3 +1,24 @@
+## F18 Location8 / Resource4 — fixture WIP, 2026-10-09
+
+Port two original exact methods to the unchanged KnownRollbackPublicationCut helper.
+Arm only after genuine fixture setup/signed snapshot/current raw validations and tracked
+before-image capture. Location's old arm remains for the separately queued offscreen
+storage Fact; new optional forwarding hook is null elsewhere. Resource's local observer
+is null throughout setup. Keep complete original tracked cohorts/player outputs and
+world-map prerequisite. Raw helper checks run before facade reads, followed by exact
+CanonicalStateWriteException.RelativePath and original injected InnerException identity.
+Earlier sequential publications and their original compensation are legitimate; no
+whole-normalization single-journal or zero-later-publication promise is introduced.
+Two separate bounded owners8/4; source/fixture review and fresh integration Plan precede
+actual execution. Production unchanged; strict owned cleanup for selected rows.
+
+Guardian raw8 and8selection omissions are under final independent review atb190826a.
+Matching discovery132144:556categories/11343methods-files valid,0tests9.2671210s,bothcleanup;
+NoBuild is justified by unit fresh533/runtimeunchanged and integration fresh764.
+Known-rollback packet now28artifacts/originals28pins including this catalog. Selection
+atb190 is124; adding these two owners gives126. Remaining effects/wound/treatment/
+offscreen cuts,F16signed producers,ownedclose and whole registry stay open; B2–B5paused.
+
 ## F18 Guardian8 GREEN and intended-selection reconciliation — 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT8 PASS764818a9. Fresh integration Plan1318588/1,

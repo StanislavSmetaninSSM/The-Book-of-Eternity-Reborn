@@ -1,11 +1,13 @@
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "FullValidation")]
-public sealed partial class MortalLocationMaterializationLifecycleTests
+public sealed partial class MortalLocationMaterializationLifecycleTests(ITestOutputHelper output)
 {
     [Theory]
     [InlineData(MortalLocationMaterializationContract.WorldMapPath)]
@@ -20,33 +22,30 @@ public sealed partial class MortalLocationMaterializationLifecycleTests
         string failurePath)
     {
         await using var context = await MortalLocationMaterializationTestContext.CreateAsync();
+        using var owned = new CleanupOwnedFixture(context.RootPath, output.WriteLine);
         var backups = await ArrangeCombinedAcceptedTurnAsync(context);
-        var before = await context.CaptureBytesAsync(
+        var captured = await context.CaptureBytesAsync(
             CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
+        var before = captured.ToDictionary(pair => pair.Key,
+            pair => pair.Value == null ? null : Convert.FromBase64String(pair.Value), StringComparer.Ordinal);
         if (failurePath == MortalLocationMaterializationContract.WorldMapPath)
         {
             var rawMap = (await context.ReadJsonAsync(failurePath))!.AsObject();
             Assert.Single(rawMap["worldMapUpdates"]!["newLinks"]!.AsArray());
         }
-        context.ArmInjectedWriteFailure(failurePath);
+        var generationBefore = CleanupPublicationCut.ReadOptional(context.FileSystem.SessionGenerationPath);
+        var cut = new KnownRollbackPublicationCut(context.FileSystem.ResolvePath(failurePath));
+        cut.Attach(context.FileSystem);
+        context.CurrentPublicationObserver = cut.Hooks.LocalPublicationObserver;
 
         var failure = await Record.ExceptionAsync(() =>
             AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateAsync(
-                context.FileSystem,
-                context.Normalizer,
-                context.Validator,
-                backups));
+                context.FileSystem, context.Normalizer, context.Validator, backups));
 
-        Assert.NotNull(failure);
-        Assert.True(
-            failure.ToString().Contains(
-                "Injected Mortal location write failure",
-                StringComparison.Ordinal),
-            failure.ToString());
-        Assert.Equal(failurePath, context.InjectedPublishedPath);
-        var after = await context.CaptureBytesAsync(
-            CanonicalStateNormalizer.NormalizerRollbackTrackedFiles);
-        MortalLocationMaterializationAssertions.AssertExactBytes(before, after);
+        cut.AssertRestored(before, generationBefore, failure, output.WriteLine);
+        var writeFailure = Assert.IsType<CanonicalStateWriteException>(failure);
+        Assert.Equal(failurePath, writeFailure.RelativePath);
+        Assert.Same(cut.Failure, writeFailure.InnerException);
     }
 
     [Fact]

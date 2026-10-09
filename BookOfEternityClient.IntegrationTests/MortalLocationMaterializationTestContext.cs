@@ -25,7 +25,8 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
         Directory.CreateDirectory(RootPath);
         var hooks = new FileSystemManagerHooks
         {
-            AfterPhysicalFilePublishedAsync = AfterPhysicalFilePublishedAsync
+            AfterPhysicalFilePublishedAsync = AfterPhysicalFilePublishedAsync,
+            LocalPublicationObserver = (phase, index) => CurrentPublicationObserver?.Invoke(phase, index)
         };
         FileSystem = new FileSystemManager(
             RootPath,
@@ -50,6 +51,8 @@ internal sealed class MortalLocationMaterializationTestContext : IAsyncDisposabl
     internal string RootPath { get; }
 
     internal string? InjectedPublishedPath { get; private set; }
+
+    internal Action<TrustedLocalPublicationPhase, int>? CurrentPublicationObserver { get; set; }
 
     internal static async Task<MortalLocationMaterializationTestContext> CreateAsync()
     {

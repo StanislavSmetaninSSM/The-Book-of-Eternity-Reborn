@@ -5,10 +5,11 @@ using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class ResourceMaterializationLifecycleTests
+public sealed class ResourceMaterializationLifecycleTests(ITestOutputHelper output)
 {
     private static readonly string[] PlayerOutputPaths =
     {
@@ -25,29 +26,13 @@ public sealed class ResourceMaterializationLifecycleTests
     public async Task CommonPublicationFailureAfterPhysicalWrite_RestoresExactTurnSnapshot(
         string failurePath)
     {
-        var armed = false;
-        var injected = false;
-        var observedMutationPaths = new List<string>();
-        string? resolvedFailurePath = null;
+        KnownRollbackPublicationCut? cut = null;
         var hooks = new FileSystemManagerHooks
         {
-            AfterPhysicalFilePublishedAsync = path =>
-            {
-                if (armed)
-                    observedMutationPaths.Add(path);
-                if (armed &&
-                    !injected &&
-                    string.Equals(path, resolvedFailurePath, StringComparison.OrdinalIgnoreCase))
-                {
-                    injected = true;
-                    throw new InvalidDataException($"Injected publication failure at '{path}'.");
-                }
-
-                return Task.CompletedTask;
-            }
+            LocalPublicationObserver = (phase, index) => cut?.Hooks.LocalPublicationObserver?.Invoke(phase, index)
         };
         await using var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
-        resolvedFailurePath = context.FileSystem.ResolvePath(failurePath);
+        using var owned = new CleanupOwnedFixture(context.RootPath, output.WriteLine);
         await ResourceMaterializationValidationTests.SeedEmptyRootsAsync(context);
         await context.WriteExactJsonAsync(
             MortalItemIdentityState.StatePath,
@@ -71,21 +56,20 @@ public sealed class ResourceMaterializationLifecycleTests
             .Concat(PlayerOutputPaths)
             .Distinct(StringComparer.Ordinal)
             .ToArray();
-        var before = await context.CaptureAsync(trackedPaths);
-
-        armed = true;
-        var exception = await Record.ExceptionAsync(() =>
+        var captured = await context.CaptureAsync(trackedPaths);
+        var before = captured.ToDictionary(pair => pair.Key, pair => pair.Value.Bytes, StringComparer.Ordinal);
+        var generationBefore = CleanupPublicationCut.ReadOptional(context.FileSystem.SessionGenerationPath);
+        cut = new KnownRollbackPublicationCut(context.FileSystem.ResolvePath(failurePath));
+        cut.Attach(context.FileSystem);
+        var failure = await Record.ExceptionAsync(() =>
             AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateAsync(
-                context.FileSystem,
-                context.Normalizer,
-                context.Validator,
+                context.FileSystem, context.Normalizer, context.Validator,
                 new Dictionary<string, string>(StringComparer.Ordinal)));
 
-        Assert.True(
-            exception != null,
-            $"Expected an injected failure at '{failurePath}'. Observed: {string.Join(", ", observedMutationPaths)}");
-        Assert.True(injected, $"The failure hook for '{failurePath}' was not reached.");
-        await context.AssertUnchangedAsync(before);
+        cut.AssertRestored(before, generationBefore, failure, output.WriteLine);
+        var writeFailure = Assert.IsType<CanonicalStateWriteException>(failure);
+        Assert.Equal(failurePath, writeFailure.RelativePath);
+        Assert.Same(cut.Failure, writeFailure.InnerException);
     }
 
     [Fact]

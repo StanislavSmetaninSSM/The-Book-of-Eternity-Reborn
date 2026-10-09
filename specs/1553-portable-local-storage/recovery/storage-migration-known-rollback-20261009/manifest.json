@@ -212,5 +212,86 @@
         "sha256": "1169e4e2f993f77491749294516fbf7ff9d8dab697dc0e1b5daa13b593412664"
       }
     ]
+  },
+  "guardianCatalog": {
+    "source": "b190826a1d736efcb02819c6fcb33544c9a2f20e",
+    "artifacts": [
+      {
+        "path": "guardianCatalog-20261009-132144-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132144-129-355185-adab71e6a08c41f091fae8ab57e13c9d-categories/catalog-audit.json",
+        "sha256": "fa8402a6cb69ef4c29dfe763efb176fd6c4dd71344c5a6051cf5098a5453cc1a",
+        "originalSha256": "fa8402a6cb69ef4c29dfe763efb176fd6c4dd71344c5a6051cf5098a5453cc1a"
+      },
+      {
+        "path": "guardianCatalog-20261009-132144-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132144-129-355185-adab71e6a08c41f091fae8ab57e13c9d-categories/summary.json",
+        "sha256": "19a05d7835db8f6c91e45f00abd0ff231f5821c77ce87636ac4ec94e15a4e20b",
+        "originalSha256": "19a05d7835db8f6c91e45f00abd0ff231f5821c77ce87636ac4ec94e15a4e20b"
+      },
+      {
+        "path": "guardianCatalog-20261009-132144-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-132144-129-355185-adab71e6a08c41f091fae8ab57e13c9d-categories/dotnet-test.log",
+        "sha256": "a4dd7e70766c87307c57072296c2607fa6b5d25fce13b3ec414f06e98182dd77",
+        "originalSha256": "7e7985249fd9bce32d8c049509180de1f0154d549ca01bcbdef4a9e7c5b6719a"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/KnownRollbackPublicationCut.cs",
+        "sha256": "61f9416150ccff954902eb878fe1975ebdec6da9eaecd30393a35bd28aa05f02"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GuardianCorrectionServiceTests.cs",
+        "sha256": "f36a47f4e68a21455992a328e3c121118e649eed22ae4b2fec67feb1a5c54434"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/CanonicalResourceQuartetTestFixture.cs",
+        "sha256": "5b93bdaa9abcbd526cecb140abbb9a5de926e503570ef4eb240d7e04d211711e"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/AfterlifeActorMaterializationTestFixture.cs",
+        "sha256": "5e8f4acef14095e6674c77dd7391080ed576582e9e9551a9059ae38568255d14"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+        "sha256": "f500283845a561cd2066bcc930d159a4d597c365e2c370d45d86b007162b8739"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+        "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9"
+      },
+      {
+        "path": "BookOfEternityClient/Services/GuardianCorrectionService.cs",
+        "sha256": "cdb09fddfbcd8b1b0140a22e4baa23095be0ed2bdc6defb6b5cb676b5b2e564e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs",
+        "sha256": "f1f8b1cfbc1a1e972506848cb3f7f7bf5f8f496fc28a8de2d2da7f72f2759b69"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "7e5c714759b1074944d5c84c1a6da2c990a2b61488ac89a38672a84fcdb3c473"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "b2e820d5ea4de7b2e157d644ea7074727a9bb0de03e87e2ce38585d1765fcf19"
+      }
+    ]
   }
 }

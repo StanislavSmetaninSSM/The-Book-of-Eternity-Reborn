@@ -20548,6 +20548,56 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-location-known-rollback-publication",
+      "responsibility": "F18 original Location accepted refresh with item/faction/NPC companions: exact8 changed MemberPublished cuts, full tracked raw bytes/absence and generation restored by original operation, actual wrapped cause and strict owned cleanup.",
+      "excludes": "No whole normalization single-journal promise, foreign-byte uncertainty, physical identity, broad domain suite, live GM, native Windows or offscreen location-storage cut qualification. Existing semantic owner retained.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/MortalLocationMaterializationLifecycleTests.cs",
+        "BookOfEternityClient.IntegrationTests/KnownRollbackPublicationCut.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalLocationMaterializationLifecycleTests.AcceptedRefresh_CombinedWriteFailureRestoresEveryTrackedPathByteExact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-resource-known-rollback-publication",
+      "responsibility": "F18 original Resource common accepted refresh with player output retention: exact4 changed MemberPublished cuts, full tracked raw bytes/absence and generation restored by original operation, actual wrapped cause and strict owned cleanup.",
+      "excludes": "No whole normalization single-journal promise, foreign-byte uncertainty, physical identity, broad domain suite, live GM, native Windows or offscreen location-storage cut qualification. Existing semantic owner retained.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/ResourceMaterializationLifecycleTests.cs",
+        "BookOfEternityClient.IntegrationTests/KnownRollbackPublicationCut.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ResourceMaterializationLifecycleTests.CommonPublicationFailureAfterPhysicalWrite_RestoresExactTurnSnapshot"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -2,6 +2,26 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-resource-known-rollback-publication",
+      "reason": "T064 original normalizer physical-cut fixture port to real current MemberPublished. Preserve accepted-refresh complete compensation and CanonicalStateWriteException with actual selected cause; no whole-operation single-journal or native claim. Source/actual gates pending.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-location-known-rollback-publication",
+      "reason": "T064 original normalizer physical-cut fixture port to real current MemberPublished. Preserve accepted-refresh complete compensation and CanonicalStateWriteException with actual selected cause; no whole-operation single-journal or native claim. Source/actual gates pending.",
+      "contracts": [
+        "#1553",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-guardian-known-rollback-publication",
       "reason": "T064 original Guardian8 ported to actual MemberPublished at764818a9: actual1320268/8PASS with real cut1 per row, current journal/after-image proof,9exact tracked before-images/generation restored and owned roots removed. Original IOException policy retained; no runtime/native/whole-lifecycle claim.",
       "contracts": [
