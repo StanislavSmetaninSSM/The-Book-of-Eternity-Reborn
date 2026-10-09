@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-owned-api-close-consistency",
-      "reason": "Source-consistency final15: existing actual facade9 + explicit release-component3 + new actual conditional Unknown1 + original integration current/stale append1 and CAS conflict1. Existing broader owners unselected; no simultaneous self-owned double-fault execution claim.",
+      "reason": "Source-consistency final15 passes at a88d/023656: actual facade9 + explicit release-component3 + new actual conditional Unknown1 + original integration current/stale append1 and CAS conflict1. No simultaneous self-owned double-fault execution claim.",
       "contracts": [
         "#1553",
         "FR-003",

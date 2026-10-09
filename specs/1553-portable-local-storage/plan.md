@@ -1,7 +1,33 @@
+## Owned API close consistency final15 — 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT15 PASS a88d70f5. Matching Plan023543 freshly builds integration
+42.3757714s and unit12.6727163s,wall62.5375578,15planned/2descriptors/0executed. Actual023656
+completes15/15PASS,2/2descriptors,13.6134918s,exit0,no skip/duplicate/timeout,bothcleanup. Actual
+facade Unknown4/known rollback4/committed-debt1 pass; three original release-component cases pass;
+new conditional Append reaches actual member0 once, exact current generation and published65/66,
+same first-chance CSP and byte-identical retained journal/foreign bytes. All ten facade owned roots
+are explicitly removed. Original conditional current/stale return and CAS conflict integration2 pass.
+
+[Packet](recovery/storage-migration-owned-close-20261009/manifest.json) stores25 artifacts/11 Git
+source pins, locally checked saved/expanded/original bytes. Discovery023734 uses matching fresh
+both-project outputs:508categories/11298methods-files valid0executed,8.7411641s,exit0/bothcleanup.
+Independent final raw/carrier gate pending. This is source-consistency plus actual publication and
+explicit release-component evidence, not a self-owned simultaneous double-fault RED/GREEN claim.
+No global Dispose change, native/whole-game promise or replay of earlier accepted browser controls.
+
+Prepared-Shining final raw/carrier gate PASS1265 (47/27), bbf5PASS remains accepted with separate
+dead-source census5→0, helper-only Clear and generation/secondary-close qualifications. Latest actual
+parent GitHub-only full restore remains e5; all later carriers are pushed/read back, not newly restored.
+Next preparation design accepted for fixture construction: engine initializer4, authority-after-manifest1,
+second-backupUnknown1, known-capture→cleanupUnknown1; LivePrepare final request1; AtomicCore StageLocal
+second-backupUnknown1; original DirectGacha final request1 and known-queue→cleanupUnknown1 =11.
+Meaningful exact known controls follow final runtime delta. Preserve all prior committed evidence,
+first cause, no later canonical attempts, and required in-memory Browser access disposal. No live GM.
+
 ## Owned API close consistency / exact15 WIP — 2026-10-09
 
-Prepared-Shining final carrier1265 stores47 artifacts/27 pins; parent verification PASS, independent
-final gate pending. This next T062/T065 unit applies the already-tested Story Append close pattern
+Prepared-Shining final carrier1265 stores47 artifacts/27 pins; parent and independent
+final gate PASS. This next T062/T065 unit applies the already-tested Story Append close pattern
 to public Bytes (text delegates here), public CAS, private self-owned Delete, and internal self-owned
 session-checked Append. Each captures only direct actual CSP before its original lease disposal,
 then invokes unchanged ReleaseOwnedLeaseAsync(completed:false). No new lease, global latch,

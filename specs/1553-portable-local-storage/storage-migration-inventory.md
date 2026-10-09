@@ -1,4 +1,20 @@
-## Current Story outcome checkpoint — 2026-10-09
+## Current accepted / open map — 2026-10-09
+
+Latest tested source a88d70f5: owned API close consistency15/15 PASS; fresh matching both-project
+catalog508/11298 valid0. Final packet25/11 awaits independent carrier gate. This is actual publication
+plus explicit release-component evidence, not injected self-owned double-fault/native qualification.
+Prepared-Shining bounded5 atbbf/carrier1265 independently accepted47/27; Story12 atb79/carrier6ee
+accepted64/21; progression5 at2a372/carrier7f accepted48/25; Prepared remote8 at7cf/carrierc7 accepted59/26.
+Earlier F13/F14/F17/treatment/cleanup scoped acceptances below remain historical evidence, not new
+executions. Latest actual fresh GitHub-only full restore is e5; newer carrier restoration is pending.
+
+Open: connected preparation owners (engine/LivePrepare/browser/DirectGacha), Explorer whole-command
+outcomes, authoritative Ready/worker/audit/proposal continuations, C2 transport propagation, F16 media/
+listing/export/path admission, F18 exact fault/observer ports and final complete reconciliation.
+Generation-replacement policy of prepared-Shining helpers and native/secondary-close/full-gameplay
+claims remain unqualified. The following source-era receipts retain their original counts/revisions.
+
+## Historical Story source-era checkpoint — 2026-10-09
 
 Original Story append2 and life/incarnation/ascension catches now preserve actual CSP; public
 Append retains it before its original lease closes. Bounded final12 PASS atb79 (21.2819654s):
@@ -8,7 +24,7 @@ readonly finalization distinct, no whole-transition rollback. Packet64/21 verifi
 independent artifact/docs gate PASS6ee00c8b. Catalog505/11296 valid0 uses both matching fresh outputs.
 Prepared-Shining bounded final5 passes atbbf; other preparation owners/Explorer/Ready-worker/C2 and F16/F18 remain open.
 
-## Current progression outcome checkpoint — 2026-10-09
+## Historical progression source-era checkpoint — 2026-10-09
 
 Exactly three original catch exclusions at2a372 stop actual CSP in base/status processing, level
 marking and computed publication. Causal4 genuine failures become final4 PASS; original finite
@@ -20,7 +36,7 @@ not runtime replay. No full-turn/native/secondary-close guarantee or full migrat
 
 ## Current remaining source-only classification — 2026-10-09
 
-Owned-close consistency remains a separate source-only T062/T065 item: public Write→Bytes,
+Owned-close consistency source finding (superseded by bounded a88d correction above): public Write→Bytes,
 public CAS (current live CAS callers pass explicit leases), DeleteWithLock and internal owned
 AppendIfCurrentSession can lose a body CSP to a secondary lease disposal fault. Canonical lease
 Dispose retains release faults only. Apply the established direct-CSP-before-owned-disposal pattern
