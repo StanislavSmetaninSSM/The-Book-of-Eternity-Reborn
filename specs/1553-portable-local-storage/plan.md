@@ -1,3 +1,16 @@
+## Engine/media actual owning close installed — WIP, 2026-10-09
+
+Original RED6/ref/raw saved:21artifacts16pins,3knownPASS/3causalFAIL. Exactlythree
+actualowning scopes nowCSPcapture/rethrow + existingRelease(false,publicationFailure).
+EngineCapture unchanged boundfastpath andcoldlease; Browserinitialgeneration
+lease closes inoriginalprebinding scope beforeRunBound. ActualPNGcommit/pathcheck/
+referenceorder unchanged; read-only existingreferenceowner untouched. NohelperAPI/
+provider/gameplay/schema change. Fixture rawsamePrimary nowrequiresnonnullCSP,
+nooraclechange. InstalledUNBUILT/UNRUN; combinedRED/source/exact6 independentgate
+thenfreshPlan6/actual6. Inventorynext exact6 alreadydesignPASSa66eaa75 butnot
+installed. Combinednewownercatalog/finalinventory/restoreopen; B2–B5paused and
+T061–T065unchecked, nativeWindows/systemd/whole-client unqualified.
+
 ## Original engine/media causal RED6 — WIP, 2026-10-09
 
 Fixture7fe2bdb2/ref/raw4; freshPlan2124596/1,0execution46.5470915s. Actual212600

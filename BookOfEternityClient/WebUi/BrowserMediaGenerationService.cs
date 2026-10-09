@@ -67,8 +67,21 @@ public sealed class BrowserMediaGenerationService
             return new BrowserMediaGenerateResult(false, null, null, "Генерация изображений отключена в настройках.");
 
         string generation;
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
-            generation = _fs.GetOrCreateSessionGeneration(writeLease);
+        {
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            Exception? publicationFailure = null;
+            try { generation = _fs.GetOrCreateSessionGeneration(writeLease); }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                publicationFailure = failure;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    _fs, writeLease, completed: false, publicationFailure);
+            }
+        }
 
         try
         {
@@ -147,11 +160,25 @@ public sealed class BrowserMediaGenerationService
             return null;
         }
 
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        await _fs.WriteFileAtomicBytesAsync(
-            writeLease,
-            normalizedPath,
-            staged.Content);
-        return _mediaService.TryCreateReference(_fs.ResolvePath(normalizedPath));
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationFailure = null;
+        try
+        {
+            await _fs.WriteFileAtomicBytesAsync(
+                writeLease,
+                normalizedPath,
+                staged.Content);
+            return _mediaService.TryCreateReference(_fs.ResolvePath(normalizedPath));
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationFailure = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, publicationFailure);
+        }
     }
 }

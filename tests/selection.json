@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-original-engine-media-owning-close-linux",
-      "reason": "T063/T065 actual2126006complete3knownPASS/3causalFAIL7.271083s,allactual3owner/Intent reached/fullsettlement/strict6roots/bothcleanup. SamegenuineCSP maskedbylateownercloseIOException. Packet21/16 verified; nextsame-scopeCSPcapture/releasefalse only3owners, initialgenclosebeforeRunBound andactualmediareferenceorderpreserved. Source/exact6gate thenfreshPlan/actual6. NoEngineRun/provider/native/desktop/B2.",
+      "reason": "T063/T065 actual2126006complete3knownPASS/3causalFAIL7.271083s,allactual3owner/Intent reached/fullsettlement/strict6roots/bothcleanup. SamegenuineCSP maskedbylateownercloseIOException. Packet21/16 verified; Same-scopeCSPcapture/releasefalse installedUNBUILT/UNRUN only3owners, initialgenclosebeforeRunBound andactualmediareferenceorderpreserved. Source/exact6gate thenfreshPlan/actual6. NoEngineRun/provider/native/desktop/B2.",
       "contracts": [
         "#1553",
         "FR-002",

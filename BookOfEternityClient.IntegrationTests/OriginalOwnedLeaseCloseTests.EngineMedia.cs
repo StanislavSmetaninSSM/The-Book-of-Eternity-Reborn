@@ -132,7 +132,7 @@ public sealed partial class OriginalOwnedLeaseCloseTests
         var imageAfter = CleanupPublicationCut.ReadOptional(imagePath);
         output.WriteLine(JsonSerializer.Serialize(new { mode, uncertain, root, boundary, ownerState, acquisitionPauses, publicationPauses,
             stages, commitAcquisitionPauses, laterInitialOwnerClosed, result, attachments, closer.Calls, failure = failure?.ToString(),
-            samePrimary = ReferenceEquals(failure, cut.OriginalUncertainty), sameSecondary = ReferenceEquals(failure?.Data["CoordinatedLeaseReleaseFailure"], closeFailure),
+            samePrimary = cut.OriginalUncertainty != null && ReferenceEquals(failure, cut.OriginalUncertainty), sameSecondary = ReferenceEquals(failure?.Data["CoordinatedLeaseReleaseFailure"], closeFailure),
             lockAvailable, gateAvailable, generationBefore, generationAfter, imageBytes, imageAfter, activeAfter = original!.IsActive,
             ambientClosed = original.AmbientRegistration == null, mainClosed = original.MainAdmission == null,
             contextClosed = original.ExternalPublicationContext == null, Cut = cut.Evidence() }));
