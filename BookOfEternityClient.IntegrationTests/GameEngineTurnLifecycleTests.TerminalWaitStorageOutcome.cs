@@ -258,11 +258,12 @@ public sealed partial class GameEngineTurnLifecycleTests
             Invocations++;
             Started.TrySetResult();
             await ReleaseUi.Task;
+            await inspectionEntered;
             try
             {
                 if (startupFailure != null)
                 {
-                    await inspectionEntered; FailureObserved = true; throw startupFailure;
+                    FailureObserved = true; throw startupFailure;
                 }
                 return await func();
             }
