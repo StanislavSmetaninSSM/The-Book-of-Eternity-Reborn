@@ -566,7 +566,8 @@ public sealed class BrowserAfterlifeWriteService
                 : $"ГМ получит просьбу о переходе обитателя {resident.Entry.DisplayName} в Обитель {transferRequest.TargetAbodeName}.",
             payload: null);
 
-        return duplicateDuringWrite ? BuildDuplicateTransferRequestResult(resident) : writeResult;
+        return duplicateDuringWrite && !writeResult.NeedsFollowUp && !writeResult.ContinuationBlocked
+            ? BuildDuplicateTransferRequestResult(resident) : writeResult;
     }
 
     private async Task<BrowserPromptWriteResult?> TryBuildResidentRealmBlockerAsync(

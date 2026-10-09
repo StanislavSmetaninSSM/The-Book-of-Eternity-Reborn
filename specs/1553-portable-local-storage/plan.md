@@ -1,3 +1,10 @@
+## Browser fourth duplicate presenter correction — 2026-10-09
+
+Independent source review identified the fourth resident-transfer duplicate presenter omitted from cd4.
+Apply the identical no-follow-up/no-blocked guard there. All four duplicate presenters plus two archive
+message overrides now retain the actual projected follow-up. Exact31 unchanged and still unbuilt/unrun;
+these adjacent presenters remain source-qualified, not claimed as executed forge paths.
+
 ## Browser post-projection source closure WIP — 2026-10-09
 
 Afterlife three duplicate-request presenters used to replace the projected result, and two archive
