@@ -6410,7 +6410,6 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_RepeatedRawItemAdmissionRejectsChangedItemRoot",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_ResourceFreeCommonPlanKeepsOpenTransactionCarrierEmpty",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_UnsafeSettlementCannotFallThroughTerminalCatchAndPreCanonicalSettlementHasNoCatchAll",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HandleInvalidTriggerLifeEndRuntimeFailure_DeletesSignalAndWritesErrorLog",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HasCurrentSessionAsync_TerminalSoulDissipation_BlocksContinueSession",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IsPendingAbodeOfferingTurnAction_DetectsPlainAndInkFeatherOfferingTags",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LateTerminalAndIdleFlow_SessionReplacementAfterBinding_DoesNotTouchReplacement",
@@ -19441,6 +19440,33 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DiagnosticOnlyFailure_LeavesOneUsableRollbackForCallerAndPreservesReport",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DiagnosticOnlyReportWriteFailure_StillLeavesRollbackToCaller",
             "BookOfEternityClient.Tests.ShiningBlessingEffectStateTests.ApplyAcceptedTurnRuntimeEffectsAsync_ConsumesSocialAndLoreAndExpiresRoute"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-game-loop-diagnostic-outcome-linux",
+      "responsibility": "Original one-iteration GameLoop primary realm Unknown and known Text-input failure followed by real diagnostic Unknown; original invalid-life-end diagnostic stop and unchanged known successful logging/control removal.",
+      "excludes": "No fabricated CSP or direct observation-helper substitute. Final Error key is a controlled exit, not full gameplay/next action. No GM/provider/native/simultaneous secondary-close qualification.",
+      "changeHints": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GameLoopUnknown_OriginalLoopPresentsDecisionWithoutCanonicalDiagnosticContinuation",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GameLoopDiagnosticUnknown_OriginalInvalidLifeEndRetainsSignalAndCause",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HandleInvalidTriggerLifeEndRuntimeFailure_DeletesSignalAndWritesErrorLog"
           ]
         }
       ]

@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-game-loop-diagnostic-outcome-linux",
+      "reason": "Test-only exact4 original GameLoop/diagnostic consumer fixture WIP, unbuilt/unexecuted pending frozen source/fixture gate. Prior continuation12 retained without replay.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS"
+      ]
+    },
+    {
       "category": "portable-accepted-continuation-known-controls",
       "reason": "Five unchanged known controls PASS020ac/040831, protecting rollback authority/missing evidence, diagnostic caller ownership/known report refusal and real Shining effect success. Final12 complete17.7182074s with actual causal7.",
       "contracts": [

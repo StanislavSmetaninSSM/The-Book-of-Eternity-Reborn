@@ -1,3 +1,20 @@
+## GameLoop diagnostic4 test-only WIP — 2026-10-09
+
+Continuation final carrier122b3a04 passes independent/parent71/36 gate, actual12 accepted at020ac.
+Next exact4 = original EnterGameLoop two rows + original invalid-life-end helper Unknown + unchanged
+known successful helper1. Actual loop rows use genuine Chaos/Shining quartet, arm only first original
+Text-read after idle preparation, separate Spectre reentry confirmation, and real publisher cuts.
+Second row's original cause is a controlled known input-hook exception; diagnostic CSP itself is real.
+Error-key hook captures the actual snapshot, sets _inGame=false and queues Enter before any typed oracle;
+original loop is awaited to completion, then raw evidence/typed-private notice and no-later-work checks.
+No manual RecordGameLoopErrorObservation invocation or outward-loop Same assertion substitutes actual
+consumer behavior. Direct helper requires same CSP/known cause/exact signal retention. Existing probe's
+postcut admission refusal is fixture safety/attempt evidence, not a manufactured original publication.
+
+Production unchanged; four fixtures/category ownership unbuilt/unexecuted pending frozen independent
+SOURCE/FIXTURE/EXACT4 then matching Plan/build. Earlier accepted12 not replayed. Full normal gameplay,
+next user action, provider/native/secondary-close remain unqualified. Remaining queues unchanged.
+
 ## Accepted-continuation final12 complete — 2026-10-09
 
 Runtime/source020ac5e8 passed independent SOURCE/EXACT12. Matching Plan040734 freshly built integration
@@ -21,7 +38,7 @@ expanded/present-original artifacts +36 historical Git pins (causal29/15, green3
 source-only remaining censuses5/0). Existing unit source-contract Plan040906 refreshes unit build only
 12.7631273s/wall16.6377689s,1planned0executed. Catalog040944 uses both current project outputs:
 517categories/11311methods-files valid,0tests,7.8634374s,exit0,bothcleanup. No accepted tests replayed for
-catalog freshness. Final independent carrier/docs gate pending; latest actual full GitHub-only restore
+catalog freshness. Final independent/parent carrier/docs PASS122b3a04 (71/36); latest actual full GitHub-only restore
 e5 unchanged, final combined restore pending.
 
 Five parent/reviewer source-only completeness aids are now durable in this same packet: owned-close
