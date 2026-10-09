@@ -2,6 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-original-treatment-progression-advance-close-linux",
+      "reason": "T063/T065 independentlyapprovedfixture61df2636 exact3 byte-identical; actualreturnedtransaction disposal before prerequisiteasserts. ProductionAdvanceunchanged UNBUILT/UNRUN. FreshPlan3 then actualoriginal known/known_close/genuineCSP baseline. PublishedAgreementAdvanced remains ACTIVE Probe->Complete; storageonly noB2/native/fullgame.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063",
+        "T065"
+      ]
+    },
+    {
       "category": "portable-original-engine-snapshot-owning-close-linux",
       "reason": "T063/T065 runtime1fab649c; freshboth discovery230021605/11379,0exec64.5713977s; Plan2301318/1 NoBuild0exec3.9777799s; actual2301468/8PASS15.4275406s1/1bothcleanup/strict16roots0skipdupTimeout. Four actualsameCSP+secondary/fullsettlement/noLater/Closing0 andknownsignedarchive/stall/input/realbackup-nullcheckpoint/currentvalidator. Independentcausal/source/exact8PASS; finalGREEN/catalog/carriergatepending. Storageonly noB2/native/wholeflow/knownlateclose.",
       "contracts": [
@@ -496,7 +509,7 @@
     },
     {
       "category": "portable-mods-original-ui",
-      "reason": "F16 original /\u043c\u043e\u0434\u044b composed2: choices1@135881/142939 plus corrected detail1@5e0a/143241. Original2 baseline1PASS1old-path-oracleFAIL retained. Exact intentional manual line once, remaining technical/hidden-error checks and strict root cleanup; runtime unchanged, no desktop/native/whole-UI claim.",
+      "reason": "F16 original /моды composed2: choices1@135881/142939 plus corrected detail1@5e0a/143241. Original2 baseline1PASS1old-path-oracleFAIL retained. Exact intentional manual line once, remaining technical/hidden-error checks and strict root cleanup; runtime unchanged, no desktop/native/whole-UI claim.",
       "contracts": [
         "#1553",
         "T064-STORAGE-CUTS",
@@ -597,7 +610,7 @@
     },
     {
       "category": "portable-save-load-literal-names-linux",
-      "reason": "T063 F16 causal baseline1302114/4FAIL preserved; runtimea3c59545/source533078a9 actual1314544/4PASS within22. Exact held enumeration, Save\u2192typedLoad\u2192Save, manifested commit and positively reached literal MemberPublished rollback; no signed-producer or save-destination claim.",
+      "reason": "T063 F16 causal baseline1302114/4FAIL preserved; runtimea3c59545/source533078a9 actual1314544/4PASS within22. Exact held enumeration, Save→typedLoad→Save, manifested commit and positively reached literal MemberPublished rollback; no signed-producer or save-destination claim.",
       "contracts": [
         "#1553",
         "FR-005",
@@ -1023,7 +1036,7 @@
     },
     {
       "category": "portable-prepared-shining-outcome-linux",
-      "reason": "Final5 atbbf/023023 passes unchanged causal/known4 plus original pure gate1; same actual CSP/no later measured work. Dead private cluster is separately source-censused5\u21920, not a runtime RED.",
+      "reason": "Final5 atbbf/023023 passes unchanged causal/known4 plus original pure gate1; same actual CSP/no later measured work. Dead private cluster is separately source-censused5→0, not a runtime RED.",
       "contracts": [
         "#1553",
         "FR-003",

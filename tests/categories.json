@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-treatment-progression-advance-close-linux",
+      "responsibility": "Actual original held treatment AdvancePublishedAgreementWithProgressionAsync3: known publication, real lateclose attached to actual owning lease before ordinary publication, and actual genuine CSP plussecondaryclose. Real held preparation/canonicalrefresh/publishedagreement, actual progressioncontrol, current receipt Probe before and after known advance then actual Complete finalized. Exactoriginalowner/Intent/member0/fullsettlement/noLater/generation/strict6roots3cases withtransaction/Audio settled before roots.",
+      "excludes": "Storage publicationdecision/lifetime only; no whole treatment/game/B2-B5/liveGM/provider/nativeWindows/process qualification. Known_close is a real nonterminal accepted agreement and must retain ACTIVE receipt; do not add outcome to ClosesReceipt. Other owner knownlateclose unqualified.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalWoundTreatmentResourcePublicationTransaction.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.OriginalTreatmentAdvanceOwnedClose.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalTreatmentProgressionAdvanceRetainsItsActualDecisionOnClose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-engine-snapshot-owning-close-linux",
       "responsibility": "Four actual original Engine snapshot/repair owning methods8 known/genuine CSP plus secondary lateclose: inactive signed evidence archive actual blobs/index/hash/retirement; matched stall promotion real signed context; rejected signed correlated input deletion; repair baseline restore actual backups and null pending checkpoint. Actual owner/firstIntent/member0/fullsettlement/noLater/Closing0/generation, allotherGameSession bytes atIntent, Audio settlement before strict context+class roots.",
       "excludes": "Storage owning boundaries only; no pending-checkpoint branch/fullgame/GM/provider/native/Windows/B2-B5/ascension/finalized treatment quarantine qualification. Known controls have no injected closer; no whole-flow atomicity, prior publications remain permitted. Restore runtime refresh is read-only and excluded for unknown.",

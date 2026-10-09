@@ -1,3 +1,20 @@
+## Treatment progression actual original owner — test-first WIP, 2026-10-09
+
+Independentfixture/design/exact3 PASS61df2636 installedbyte-identical. Actualheld
+preparation/canonicalrefresh/publishedagreement, originalAdvance ownsactuallease.
+Knownnormal andknownlateclose attachedbeforeordinarypublication, uncertaingenuine
+CSP+secondarysameowner; exactfirstIntent/member0/fullsettlement/noLater/generation/
+strict6roots3cases. Actualreturnedtransaction asyncdisposal beforeasserts, Audio
+before roots. Knownactualschedulechanged/otherbytes/Probe samecoordinates->
+CompleteFinalized; unknownlatchedProbe throws SAME CSP withoutnewlease. Production
+Advanceunchanged UNBUILT/UNRUN; next freshintegrationPlan3 thenoriginalbaseline3.
+EngineSnapshotGREEN8/sharedcatalog evidence finalindependentPASS ecc36559; correct
+metadata names EngineCaptureGeneration/BrowsercoldGenerate/StagedCommit, Afterlife
+fouractualmethods; archiveREDfalse vsGREEN SAME CSP clarified, literalunicode
+selectiontext repaired withoutruntime/testchange. No replay needed. Existing
+catalog605/11379 nowprecedesthisnewfixture, nextcatalogafterstableblock.
+Do not change ClosesReceipt; T061–T065/B2–B5/native/otherknownlateclose stayopen.
+
 ## EngineSnapshot actual GREEN8 and shared ownership catalog — WIP, 2026-10-09
 
 Runtime/source1fab649c, independent causal/source/exact8 PASS. Fresh both-project
