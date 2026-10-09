@@ -2,6 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-original-normalizer-owning-close-linux",
+      "reason": "T063/T065 independently reviewed fixturefed1158a8/1: four actual unbound owning wrappers, real plan and item handoff/preflight, current journal cleanup and bootstrap item. Unknown actualIntent baseline avoids whole-flow promise, samegenuineCSP+secondaryclose/fullsettlement/noLater/Closing0/strict8roots. Runtime unchanged UNBUILT/UNRUN; fresh originalPlan8/actual8 before demonstrated correction. No prior accepted sets replayed.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063",
+        "T065"
+      ]
+    },
+    {
       "category": "portable-original-storage-transport-owning-close-linux",
       "reason": "T063/T065 runtimecf7d1b70 testedsource0dd57d32 freshPlan22035114/2 0exec51.6539458s; actual22044814/14PASS13.3951162s,2/2complete/bothcleanup/strict14roots0skipdupTimeout. NPC6+Storage8, same7 genuineCSP+secondary/fullsettlement/noLater/Closing0; actualknownDTO/settlement/carrier/history/currentvalidationPASS. Packet90/65, immutableinitial31/21+correctedNPCRED21/22; independentcausal/source/exact14PASS, finalGREEN/raw/carrierpending. Combinedcatalogpendingstablebatch; noresource-bearing/fullgame/B2/native/knownlateclosequalification.",
       "contracts": [

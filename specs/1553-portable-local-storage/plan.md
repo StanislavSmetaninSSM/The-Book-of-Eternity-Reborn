@@ -1,3 +1,19 @@
+## Original Normalizer owners — test-first WIP, 2026-10-09
+
+Independent fixture/design/exact8 PASSfed1158a installed byte-identically. Four
+actual unbound owning wrappers: generic current NPC journal cleanup, bootstrap
+current raw item, actual validated plan with matching genuine raw-item handoff,
+and accepted mechanics resource plan. Reviewer caught missing with_plan item
+handoff in initial draft before installation/build; corrected via actual item
+validation before resource validation and matching snapshot/binding authority.
+Known actual DTO/plan/receipts/history/current validators; unknown same genuine
+CSP+secondary original close/full settlement/noLater/Closing0/currentgeneration/
+strict8 roots. Unknown byte oracle compares actual selected Intent, permitting
+prior legitimate publications without whole-flow atomicity. Runtime unchanged
+UNBUILT/UNRUN; fresh Plan8/actual8 before any demonstrated owning-scope fix.
+Trade final GREEN/raw/carrier PASS1aa3a4b7,90artifacts65pins/raw41. Combined
+catalog pending stable batch; T061–T065 open/B2–B5 paused/native unqualified.
+
 ## Original NPC/transport actual GREEN14 — WIP final gate, 2026-10-09
 
 Runtime cf7d1b70, tested source0dd57d32ee51fc77cc32622d0707ce1e6be28c64.

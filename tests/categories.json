@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-normalizer-owning-close-linux",
+      "responsibility": "Four actual unbound CanonicalStateNormalizer owning wrappers8 known/genuine uncertainty-plus-secondary-close. Real validated common plan and raw-item handoff, ordinary current NPC journal note cleanup and current raw-item bootstrap. Same actual plan/real carrier-receipt/history/current validators, original owner/full settlement/generation/strict roots. Unknown byte oracle uses actual selected Intent, allowing legitimate prior publications.",
+      "excludes": "No held treatment publication coordinator, full accepted turn/game/console/browser/business B2-B5, native Windows/live GM/provider/process. Known controls have no injected late closer; no whole-flow atomicity claim.",
+      "changeHints": [
+        "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+        "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Normalizer.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalNormalizerOwnersRetainGenuinePublicationUncertaintyOnClose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-npc-trade-owning-close-linux",
       "responsibility": "Three actual original NPC Buy/Sell/BuyBack owning branches6 known/genuine publication uncertainty plus secondary lateclose. Complete current canonical actor/NPCsInScene identity/location/profile/characteristics, sealed resource-free stock/player items, real slots/receipts/current resources; buyback derives actual prior Sell. Actual DTO/money/slot/buyback/physicalcarrier/history/currentvalidation, original owner/fullsettlement/generation/other game_state bytes/strict roots.",
       "excludes": "No resource-bearing stacks, full trade/console-browser gameplay or business B2-B5, native Windows/live GM/provider/process. Known controls have no injected late closer. Three NPC owning branches only, borrowed/core APIs unchanged.",
