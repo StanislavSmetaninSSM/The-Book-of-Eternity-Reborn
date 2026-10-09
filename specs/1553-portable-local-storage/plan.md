@@ -1,3 +1,22 @@
+## F18 lifecycle initial actual — original file-responder admission blocked, 2026-10-09
+
+SOURCE/FIXTURE/EXACT11 PASS9f14 plus explicit native-host metadatae0d9. Fresh integration
+Plan145329 selects11/9,0execution87.6339543s. Actual145514 intended10/8 executes only
+midpublication1:1FAIL,0PASS,9UNRUN,22.2325971s,no timeout/duplicates,both runner cleanup.
+Original observer failed acquiring ordinary main admission at SpiritualInterruptionProbeAssertions:94
+while engine owns the turn. Local10s linked token expired; responses0/captures0. No current
+publication cut reached: this is file-GM fixture transport/admission failure, not atomicity RED.
+Both original actor joins completed; both owned roots removed. [Initial packet](recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json)
+11artifacts/originals17pins verified. Native worker remains unexecuted.
+
+Static inspection finds the same inappropriate client-facade writes/reads in binding/staged
+file responders: external file-GM replies must use physical file transport, not acquire the
+client's main operation while that engine is waiting. Next narrow fixture correction will
+preserve actual request/correlation and original payload/Ready ordering, use atomic external
+file responses only for existing GM-owned narrative/conflict/Ready paths, and raw reads for
+observer assertions. No production owner bypass, new runtime hook, deadline increase or B2
+implementation. Review this correction before rerunning reached mid1 and unrun file9.
+
 ## F18 original binding/staged/midpublication11 — fixture WIP, 2026-10-09
 
 Base1d643a73 (C4/recovery3 final independent RAW/CATALOG/CARRIER PASS). Existing binding2,
