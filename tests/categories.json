@@ -72,6 +72,36 @@
       ]
     },
     {
+      "id": "portable-cleanup-release-causal-linux",
+      "responsibility": "Two original browser UI-lock deletion publication-Unknown contours after confirmed committed cleanup or confirmed restoration. Actual lock MemberPublished, original result disposition, same cause/follow-up/continuation and no later work.",
+      "excludes": "No UI projection or unrelated lock/service routing; this is new causal evidence, not predeclared GREEN or native qualification.",
+      "changeHints": [
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+        "BookOfEternityClient/Services/LocalUiSessionLockService.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-cleanup-outcome-causal-linux",
+          "when": "Typed uncertainty stop and original browser result classification change."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 4,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CleanupUnknown_OriginalBrowserReleaseRetainsEstablishedOutcome"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-treatment-terminal-causal-linux",
       "responsibility": "Original pre-canonical terminal consumer typed publication Uncertain plus known safe HeldBlocked and failed restoration Aggregate. Actual command member/receipt and known failure distinctions; exact affected method neighbors.",
       "excludes": "No broad treatment/gameplay category or native Windows qualification.",

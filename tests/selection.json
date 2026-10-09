@@ -24,6 +24,17 @@
       ]
     },
     {
+      "category": "portable-cleanup-release-causal-linux",
+      "reason": "Two additional source-identified actual UIlock-delete cleanup boundaries after confirmed commit or restore. TryRelease runtime remains unchanged for causal reproduction; first exact20 is mixed verification/causal, not assumed allGREEN.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "FR-006",
+        "T062-STORAGE-OUTCOMES"
+      ]
+    },
+    {
       "category": "portable-treatment-terminal-causal-linux",
       "reason": "Final exact three for changed original terminal consumer: same typed uncertainty/own-lease-close and known safe/Unsafe settlement policies. Other thirteen passing obligations retained from their unchanged relevant sources.",
       "contracts": [

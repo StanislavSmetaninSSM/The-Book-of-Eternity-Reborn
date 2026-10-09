@@ -1014,8 +1014,11 @@ public partial class GameEngine
 
     private async Task CleanupPendingTurnSnapshotAsync(IEnumerable<string>? preservedRollbackPaths = null)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        CleanupPendingTurnSnapshot(writeLease, preservedRollbackPaths);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try { CleanupPendingTurnSnapshot(writeLease, preservedRollbackPaths); }
+        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
     }
 
     private void CleanupPendingTurnSnapshot(
@@ -1940,8 +1943,11 @@ public partial class GameEngine
     /// </summary>
     private async Task RestorePreTurnBackup(RollbackSnapshot snapshot)
     {
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
-            await RestorePreTurnBackupAsync(writeLease, snapshot);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try { await RestorePreTurnBackupAsync(writeLease, snapshot); }
+        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
         await RefreshRuntimeStateAfterExactRollbackAsync();
     }
 

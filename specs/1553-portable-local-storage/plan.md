@@ -1,3 +1,25 @@
+## F10 connected source corrections / proposed mixed20 — 2026-10-09
+
+Independent runtime review found owning-close seams before the new caller catches: original
+QTE deferred resume, engine RestorePreTurnBackup and CleanupPendingTurnSnapshot now preserve
+an actual CSP before disposing the same owned lease via the existing release helper. QTE known
+body failure is retained as diagnostic if a later successful-rollback cleanup produces actual CSP.
+No secondary close fault was injected; these are source sequencing corrections.
+
+Parent identified a further connected cleanup producer: TryReleaseAsync(lease,lock) itself can
+publish UI-lock deletion and currently swallows actual CSP. Two authentic added rows select that
+lock deletion AFTER confirmed commit/cleanup or restoration/cleanup. Commit proof observes the
+actual earlier Committed journal for the durable marker; its later normal removal is allowed.
+Restored-release records the legitimate afterRollback callback count1 BEFORE the cut and forbids
+additional callback execution afterwards. Exact known result/first cause and retained lock journal
+are required. The original three browser rows keep their preceding-phase semantics.
+
+TryRelease's runtime remains unchanged pending these two causal observations. Proposed exact20
+is original8+known10+release2; it is intentionally mixed current verification and new causal proof,
+not a claimed20GREEN. No build/actual until focused source/fixture/selection gate. If the first18
+pass while only release2 fail causally, retain that evidence and rerun only affected release2 after
+minimal correction/review. Any other failure is classified from its own reached evidence first.
+
 ## F10 cleanup runtime candidate / exact18 proposal — 2026-10-09
 
 Causal4aa packet independently accepted:32 stored/expanded/original artifacts and20 historical

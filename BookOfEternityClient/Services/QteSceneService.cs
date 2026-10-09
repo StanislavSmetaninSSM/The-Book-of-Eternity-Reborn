@@ -551,11 +551,10 @@ public sealed partial class QteSceneService
         int currentTurnNumber,
         bool allowPreexistingStateIssues = false)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        return await ResumeDeferredEffectResolutionAsync(
+        return await WithOwnedQteLeaseAsync(writeLease => ResumeDeferredEffectResolutionAsync(
             writeLease,
             currentTurnNumber,
-            allowPreexistingStateIssues);
+            allowPreexistingStateIssues));
     }
 
     internal async Task<QteSceneCompletion?> ResumeDeferredEffectResolutionAsync(
@@ -1843,6 +1842,7 @@ public sealed partial class QteSceneService
             response,
             terminalPaths);
         QteSceneCompletion? establishedCompletion = null;
+        Exception? priorFailure = null;
         try
         {
             response = await ApplyTerminalOutcomeValidatedStateChangesAsync(
@@ -1918,6 +1918,7 @@ public sealed partial class QteSceneService
         }
         catch (Exception originalFailure) when (originalFailure is not CoordinatedStatePublicationUncertainException)
         {
+            priorFailure = originalFailure;
             await RestoreQteNormalizationBaselineAfterFailureAsync(
                 writeLease,
                 baseline,
@@ -1930,6 +1931,7 @@ public sealed partial class QteSceneService
             try { CleanupQteNormalizationBaseline(writeLease, baseline); }
             catch (CoordinatedStatePublicationUncertainException uncertainty)
             {
+                if (priorFailure != null) uncertainty.Data["QteOperationFailure"] = priorFailure;
                 if (establishedCompletion != null)
                     uncertainty.Data["EstablishedQteCompletion"] = establishedCompletion;
                 throw;
@@ -1969,6 +1971,7 @@ public sealed partial class QteSceneService
                 .ToHashSet(StringComparer.Ordinal);
         }
 
+        Exception? priorFailure = null;
         try
         {
             await ApplyTerminalResourceOutcomeAsync(
@@ -2005,6 +2008,7 @@ public sealed partial class QteSceneService
         }
         catch (Exception originalFailure) when (originalFailure is not CoordinatedStatePublicationUncertainException)
         {
+            priorFailure = originalFailure;
             await RestoreQteNormalizationBaselineAfterFailureAsync(
                 writeLease,
                 baseline,
@@ -2014,7 +2018,12 @@ public sealed partial class QteSceneService
         }
         finally
         {
-            CleanupQteNormalizationBaseline(writeLease, baseline);
+            try { CleanupQteNormalizationBaseline(writeLease, baseline); }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                if (priorFailure != null) uncertainty.Data["QteOperationFailure"] = priorFailure;
+                throw;
+            }
         }
     }
 
@@ -2032,6 +2041,7 @@ public sealed partial class QteSceneService
         return await WithOwnedQteLeaseAsync(async writeLease =>
         {
             var baseline = await CaptureQteNormalizationBaselineAsync(writeLease, response);
+            Exception? priorFailure = null;
             try
             {
                 await ApplyTerminalOutcomeStateChangesCoreAsync(
@@ -2043,6 +2053,7 @@ public sealed partial class QteSceneService
             }
             catch (Exception originalFailure) when (originalFailure is not CoordinatedStatePublicationUncertainException)
             {
+                priorFailure = originalFailure;
                 await RestoreQteNormalizationBaselineAfterFailureAsync(
                     writeLease,
                     baseline,
@@ -2052,7 +2063,12 @@ public sealed partial class QteSceneService
             }
             finally
             {
-                CleanupQteNormalizationBaseline(writeLease, baseline);
+                try { CleanupQteNormalizationBaseline(writeLease, baseline); }
+                catch (CoordinatedStatePublicationUncertainException uncertainty)
+                {
+                    if (priorFailure != null) uncertainty.Data["QteOperationFailure"] = priorFailure;
+                    throw;
+                }
             }
         });
     }

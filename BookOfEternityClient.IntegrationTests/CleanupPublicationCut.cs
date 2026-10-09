@@ -42,6 +42,7 @@ internal sealed class CleanupPublicationCut : IDisposable
     internal bool Armed { get; set; }
     internal Func<string, JsonElement, bool>? Select { get; set; }
     internal Action? BeforeCut { get; set; }
+    internal Action<TrustedLocalPublicationPhase, int>? ObserveBeforeCut { get; set; }
     internal int Cuts { get; private set; }
     internal int Index { get; private set; } = -1;
     internal string? Target { get; private set; }
@@ -62,7 +63,9 @@ internal sealed class CleanupPublicationCut : IDisposable
         : JsonDocument.Parse(bytes);
     private void Published(TrustedLocalPublicationPhase phase, int index)
     {
-        if (!Armed || phase != TrustedLocalPublicationPhase.MemberPublished) return;
+        if (!Armed) return;
+        if (Cuts == 0) ObserveBeforeCut?.Invoke(phase, index);
+        if (phase != TrustedLocalPublicationPhase.MemberPublished) return;
         if (Cuts != 0) { LaterPublications++; return; }
         var journal = File.ReadAllBytes(JournalPath);
         using var parsed = Metadata(journal);

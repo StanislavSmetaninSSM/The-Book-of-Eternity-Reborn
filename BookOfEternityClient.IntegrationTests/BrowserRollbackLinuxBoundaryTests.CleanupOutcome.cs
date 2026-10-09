@@ -14,7 +14,14 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests
     [InlineData("operation")]
     [InlineData("restoration")]
     [InlineData("committed_cleanup")]
-    public async Task CleanupUnknown_OriginalBrowserBoundaryStopsContinuation(string mode)
+    public Task CleanupUnknown_OriginalBrowserBoundaryStopsContinuation(string mode) => RunCleanupBrowserAsync(mode);
+
+    [Theory]
+    [InlineData("committed_release")]
+    [InlineData("restored_release")]
+    public Task CleanupUnknown_OriginalBrowserReleaseRetainsEstablishedOutcome(string mode) => RunCleanupBrowserAsync(mode);
+
+    private async Task RunCleanupBrowserAsync(string mode)
     {
         using var ownedFixture = new CleanupOwnedFixture(_root, line => output.WriteLine(line));
         Assert.True(OperatingSystem.IsLinux());
@@ -32,12 +39,38 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests
         var rollbackCallback = 0;
         var callbackReached = false;
         var businessFailure = new InvalidOperationException("known browser callback failure");
-        cut.Select = (path, member) => mode == "committed_cleanup"
+        var releaseCut = mode.EndsWith("_release", StringComparison.Ordinal);
+        var committed = mode.StartsWith("committed_", StringComparison.Ordinal);
+        var rollbackCallbackAtCut = 0;
+        if (mode == "committed_release")
+            cut.ObserveBeforeCut = (phase, _) =>
+            {
+                if (phase != TrustedLocalPublicationPhase.Committed) return;
+                using var metadata = CleanupPublicationCut.Metadata(File.ReadAllBytes(cut.JournalPath));
+                Assert.True(metadata.RootElement.GetProperty("Committed").GetBoolean());
+                foreach (var member in metadata.RootElement.GetProperty("Members").EnumerateArray())
+                {
+                    var path = member.GetProperty("Path").GetString()!;
+                    if (path.EndsWith("browser_write_committed.marker", StringComparison.Ordinal) && member.GetProperty("After").GetProperty("Exists").GetBoolean())
+                        committedMarker = File.ReadAllBytes(path);
+                }
+            };
+        cut.Select = (path, member) => releaseCut
+            ? path == lockPath && !member.GetProperty("After").GetProperty("Exists").GetBoolean()
+            : mode == "committed_cleanup"
             ? path.EndsWith(".rollback", StringComparison.Ordinal) && !member.GetProperty("After").GetProperty("Exists").GetBoolean()
             : path == memberPath;
         cut.BeforeCut = () =>
         {
-            lockBeforeCut = File.ReadAllBytes(lockPath);
+            rollbackCallbackAtCut = rollbackCallback;
+            if (!releaseCut) lockBeforeCut = File.ReadAllBytes(lockPath);
+            else
+            {
+                Assert.False(File.Exists(lockPath));
+                Assert.Equal(committed ? After : Before, File.ReadAllBytes(memberPath));
+                Assert.Equal(committed ? 0 : 1, rollbackCallbackAtCut);
+                if (committed) Assert.NotNull(committedMarker);
+            }
             if (mode == "committed_cleanup")
             {
                 var marker = Directory.GetFiles(files.ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root), "browser_write_committed.marker", SearchOption.AllDirectories);
@@ -50,21 +83,26 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests
             Request, [Member], async lease =>
             {
                 callbackReached = true;
+                lockBeforeCut = File.ReadAllBytes(lockPath);
                 cut.Armed = mode == "operation";
                 await files.WriteFileAtomicBytesAsync(lease, Member, After);
                 cut.Armed = true;
-                if (mode == "restoration") throw businessFailure;
+                if (mode is "restoration" or "restored_release") throw businessFailure;
             }, prepareAfterRollback: () => () => rollbackCallback++));
         output.WriteLine(JsonSerializer.Serialize(new { mode, callbackReached, result, Failure = failure?.ToString(),
-            rollbackCallback, BusinessCauseRetained = cut.RetainsDiagnostic(businessFailure), lockBeforeCut, RetainedLock = CleanupPublicationCut.ReadOptional(lockPath), committedMarker,
+            rollbackCallback, rollbackCallbackAtCut, BusinessCauseRetained = cut.RetainsDiagnostic(businessFailure), lockBeforeCut, RetainedLock = CleanupPublicationCut.ReadOptional(lockPath), committedMarker,
             MemberBytes = CleanupPublicationCut.ReadOptional(memberPath), Cut = cut.Evidence() }));
         cut.AssertReachedAndStopped();
         Assert.True(callbackReached); Assert.Null(failure); Assert.NotNull(result);
-        if (mode == "restoration") Assert.True(cut.RetainsDiagnostic(businessFailure), "The actual uncertainty must retain the exact original callback failure.");
-        Assert.Equal(0, rollbackCallback); Assert.Equal(lockBeforeCut, File.ReadAllBytes(lockPath));
+        if (mode is "restoration" or "restored_release") Assert.True(cut.RetainsDiagnostic(businessFailure), "The actual uncertainty must retain the exact original callback failure.");
+        Assert.Equal(mode == "restored_release" ? 1 : 0, rollbackCallbackAtCut);
+        Assert.Equal(rollbackCallbackAtCut, rollbackCallback);
+        Assert.Equal(releaseCut ? CleanupPublicationCut.Foreign : lockBeforeCut, File.ReadAllBytes(lockPath));
         Assert.True(result.NeedsFollowUp); Assert.True(result.ContinuationBlocked);
-        Assert.Equal(mode == "committed_cleanup", result.Success);
-        Assert.Equal(mode == "committed_cleanup" ? BrowserPreparedWriteDisposition.Committed : BrowserPreparedWriteDisposition.Uncertain, result.Disposition);
-        if (mode == "committed_cleanup") { Assert.NotNull(committedMarker); Assert.Equal(After, File.ReadAllBytes(memberPath)); }
+        Assert.Equal(committed, result.Success);
+        Assert.Equal(committed ? BrowserPreparedWriteDisposition.Committed : mode == "restored_release"
+            ? BrowserPreparedWriteDisposition.RolledBack : BrowserPreparedWriteDisposition.Uncertain, result.Disposition);
+        if (committed) { Assert.NotNull(committedMarker); Assert.Equal(After, File.ReadAllBytes(memberPath)); }
+        if (mode == "restored_release") Assert.Equal(Before, File.ReadAllBytes(memberPath));
     }
 }
