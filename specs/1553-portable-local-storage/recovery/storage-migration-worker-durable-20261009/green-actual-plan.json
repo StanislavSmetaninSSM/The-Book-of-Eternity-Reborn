@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "portable-worker-durable-storage-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "670e42ac0bae82a42e3b1e242bdb9c2f54bd401e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.9298716,
+  "Descriptors": [
+    {
+      "Name": "portable-worker-durable-storage-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-worker-durable-storage-linux",
+      "Categories": [
+        "portable-worker-durable-storage-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalDurableCleanupAuditUsesRetainedPurpose|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalDurableWorkerPreservesPublicationFactsAndStopsCanonicalContinuation|FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalReaperWaitsForActualTerminalDecision",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 15,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalDurableCleanupAuditUsesRetainedPurpose",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalDurableWorkerPreservesPublicationFactsAndStopsCanonicalContinuation",
+          "Cases": 11
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalReaperWaitsForActualTerminalDecision",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

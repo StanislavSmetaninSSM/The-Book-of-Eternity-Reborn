@@ -1,4 +1,29 @@
-## Durable worker build-only correction — WIP, 2026-10-09
+## Durable worker bounded GREEN15 — evidence review pending, 2026-10-09
+
+Runtime670e42ac passed fresh Plan084603:15 cases/1 descriptor,0 executed,
+36.0992390s. Matching actual084648 completed **15/15 PASS**,1/1 descriptors,
+40.8464744s, no skips/duplicates/timeouts, both owned/runtime cleanup flags true.
+Independent source/selection gate remains PASS; final raw/carrier review pending.
+[Durable packet](recovery/storage-migration-worker-durable-20261009/manifest.json)
+now retains384 artifacts/originals260 historical source pins, including build-only
+failure, earlier14/3/1 runs and this exact15. Root separately parses authentic six
+nonCommitted journals, unchanged foreign/prior bytes and zero measured subsequent
+canonical work; confirms10 exact actual ACK bundles,15 original physical/guardian/
+removed-root cleanups and30 native source/binary pairs. A verifier comparison was
+corrected for original codec string enums versus diagnostic numeric enums; product
+tests and their results were unchanged.
+
+Delayed required-audit Unknown revokes subsequent acceptance while retaining actual
+prior publication/ACK and already-absent workspace. The original pending-terminal
+reaper physically settles but keeps workspace/audit/root/slot until the real decision
+finishes. Known cancellation/failure/success/warning/fallback and ordinary diagnostic
+refusals pass. First canonical CSP and actual secondary disposal fault remain distinct.
+Fresh both-project discovery and final source/raw review are next; unchanged accepted
+cohorts are not repeated. Nondurable diagnostic CSP, full Bridge-to-Store, native
+Windows, ACKfalse crash and actual secondary canonical lease-close remain unqualified.
+T061–T065/C2/F16/F18/other owning publishers/final selection stay open; B2–B5 paused.
+
+## Durable worker build-only correction — historical WIP, 2026-10-09
 
 Independent SOURCE/RAW-pending1/EXACT15 PASS at beca4100. Fresh Plan084020
 failed before discovery/execution: CS0136 at BridgePool683, nested catch variable
