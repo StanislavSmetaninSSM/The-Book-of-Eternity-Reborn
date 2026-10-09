@@ -20453,6 +20453,75 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-save-load-literal-names-linux",
+      "responsibility": "Exact native Linux payload spelling through held enumeration and actual Save→typed Load→Save; independent manifested Load commit/real rollback. Distinguish literal backslash from hierarchy, trailing backslash file, component backslash and arbitrary case pair; exact ZIP claims/hash/bytes, original generation/namespace/source/library/owned scratch.",
+      "excludes": "No signed pending producer acceptance, literal save destination names, Windows literal-name support, broad Save/Load suite or hostile owner races. Existing fixed-authority/path/hash/budget refusals remain.",
+      "changeHints": [
+        "BookOfEternityClient/Core/FileSystemManager.cs",
+        "BookOfEternityClient/Services/SaveLoadService.cs",
+        "BookOfEternityClient/Services/SaveLoadService.Loading.cs"
+      ],
+      "related": [
+        {
+          "id": "portable-save-native-names",
+          "when": "When producer/archive normalization changes, retain fixed-authority, manifest, alias and sandbox refusal contracts."
+        },
+        {
+          "id": "portable-load-native-names",
+          "when": "When producer/archive normalization changes, retain fixed-authority, manifest, alias and sandbox refusal contracts."
+        },
+        {
+          "id": "portable-load-alias-admission",
+          "when": "When producer/archive normalization changes, retain fixed-authority, manifest, alias and sandbox refusal contracts."
+        },
+        {
+          "id": "portable-save-load-zip-slip-neighbor",
+          "when": "When producer/archive normalization changes, retain fixed-authority, manifest, alias and sandbox refusal contracts."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.HeldEnumerationPreservesLiteralAndHierarchicalNativeNames",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.LiteralNativeNamesSurviveCurrentSaveTypedLoadSave",
+            "BookOfEternityClient.Tests.PortableLoadReplacementTests.IndependentlyManifestedLiteralNamesKeepExactLoadDecision"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-save-load-zip-slip-neighbor",
+      "responsibility": "Original exact archive sandbox escape rejection and retained live session, selected as a boundary neighbor for host-specific native-name normalization.",
+      "excludes": "No broad canonical-storage suite or acceptance of other native-name cases.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SaveLoadService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SaveLoadServiceTests.LoadGameAsync_RejectsZipSlipEntriesAndPreservesLiveSession"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -2,6 +2,28 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-save-load-zip-slip-neighbor",
+      "reason": "T063 F16 native-name normalization: new exact4 causal fixtures, then affected native case/hash/alias/sandbox neighbors. Test-first source only; runtime baseline/build/review pending. No signed producer or Windows qualification.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-save-load-literal-names-linux",
+      "reason": "T063 F16 native-name normalization: new exact4 causal fixtures, then affected native case/hash/alias/sandbox neighbors. Test-first source only; runtime baseline/build/review pending. No signed producer or Windows qualification.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "T063-REMAINING-CONSUMERS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-native-runtime-contention-windows",
       "reason": "T064 original native3 use MainOwnerLockContended before physical lock. Fix positive reach and original-task settlement; current cloud Linux only compiles/discovers, actual Windows remains unverified. Existing semantic owners retained.",
       "contracts": [

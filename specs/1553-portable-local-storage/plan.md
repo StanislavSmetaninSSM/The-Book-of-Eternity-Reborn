@@ -1,3 +1,27 @@
+## F16 exact native payload names — test-first WIP, 2026-10-09
+
+Read-only source map identifies host backslash folding in held enumeration and Save
+source-read/ZIP/manifest plus typed Load normalization. On Linux literal a\b differs
+from a/b; trailing backslash is a regular filename, not archive directory. Existing
+case-distinct acceptance does not cover these names. No runtime edit yet.
+
+New exact4: held enumeration+same-lease reads; current Save→typed Load→Save with exact
+ZIP FullName/manifest/hash/bytes; independently authored manifested commit/real exact
+MemberPublished rollback pair. Cohort includes literal/nested distinct bytes, literal
+directory component/trailing slash-character filename and case pair. Require original
+source/library preservation, generation/complete rollback namespace and owned scratch.
+Expected causal failures still unexecuted. Source/fixture gate and fresh integration
+Plan4 precede bounded actual4. Final neighbors proposed17: existing Save-native4,
+Load-native8, alias4, exact ZipSlip1; Plan/review must confirm counts.
+
+Minimal proposed runtime after causal gate: preserve host-relative spelling throughout
+actual enumeration/source read/entry and manifest identity/target resolution; host-aware
+directory classification/budget. Retain trim/colon/root/escape, fixed-authority,
+duplicate/ambiguous/double-claim/hash/source/library/topology/budget refusals. Signed
+pending producers intentionally reject unsupported cohorts and remain a separate slice;
+literal Save destination ZIP names also separate. No schema/GM contract change.
+Whole migration/physicalcuts/ownedclose/registry continue; B2–B5 paused.
+
 ## F18 native3 — source and compile qualification, 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT3 PASSbcd5f6e6. Fresh both-project Plan125552 selects
