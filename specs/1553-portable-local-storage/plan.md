@@ -1,3 +1,10 @@
+## Pending/control correction gate — 2026-10-09
+
+Independent correction/source/evidence PASS87e5b893:31artifacts/15pins and22
+preparation-only failures/strictroots verified. Map coverage wording narrowed
+precisely to allothergame_state files; generation/journal witnesses separate.
+Runtime unchanged. Fresh Plan22/actual22 next; no new gameplay/schema decision.
+
 ## Pending/control fixture physical root corrected — WIP, 2026-10-09
 
 Fresh Plan21114322/1,0execution109.5962576s succeeded. Actual21134022executed/
@@ -16,7 +23,7 @@ API owners22 known/unknown fixture independently PASS (draft5e514676): Guardian
 Write/Scoped/Clear/Health4, Shining Write/Scoped/Collection/Replace/Health5, power
 journal Append/Repair2. Scoped actualresolver/authority, actualpending JSON/absence
 and repairedjournal audit, inspected activeoriginalowner/context-null; latecloser
-only samegenuineCSP. Allothercanonical paths/bytes, currentgeneration, requestgate/
+only samegenuineCSP. Allothergame_state file paths/bytes, currentgeneration, requestgate/
 lease/ambient/main/rawlock settlement andstrict22roots. Current product callers
 scoped/clear/replace/health; directwrites/journal APIs dormant, no legacy-save
 compatibility or fulltrade/health semantics claim. Runtime unchanged, UNBUILT/
