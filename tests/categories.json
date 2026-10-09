@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-original-inventory-owning-close-linux",
+      "responsibility": "Three actual original public Inventory Drop/Split/Merge owning scopes6: genuine current sealed compatible resource-free stacks, actual receipts/index/pristine resources/authority. Known DTO/count/carrier/transitions and current validation; genuine actual publication uncertainty plus secondary late original close, no follow-up, full owner/lease/main/ambient/context/generation/lock settlement and strict roots.",
+      "excludes": "No resource-bearing stacks or full console/browser gameplay, business B2-B5, native Windows, live GM/provider/process. Ordinary known controls have no injected late closer. Actual owners only; borrowed APIs unchanged.",
+      "changeHints": [
+        "BookOfEternityClient/Services/InventoryManagementService.cs",
+        "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Inventory.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalInventoryOwnersRetainGenuinePublicationUncertaintyOnClose"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-original-engine-media-owning-close-linux",
       "responsibility": "Three actual owning scopes6 known/genuine-uncertainty plus lateclose: GameEngine unbound cold generation Capture, public BrowserMedia cold generation followed by actual existing reference, and public BrowserMedia warm generation actual local staged PNG commit. Original owner/context inspection, real typed media/generation/PNG results, mandatory closing lease count1or0, fulllease/generateGate settlement and strictroots.",
       "excludes": "No running engine/game, provider/HTTP, native desktop/audio/Windows, B2, whole media or engine lifecycle acceptance. Stage delegate is existing local seam; no positive external provider or live browser claim.",

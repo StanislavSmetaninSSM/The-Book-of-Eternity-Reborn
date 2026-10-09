@@ -1,3 +1,16 @@
+## Original Inventory owning publishers — test-first WIP, 2026-10-09
+
+Installed independently reviewed6-case Drop/Split/Merge original owner fixture,
+current sealed compatible resource-free stacks5+2 with real receipts/index/
+pristine resource authority, actual DTO/transition/immutable history validation.
+No resource-bearing stack or whole console/browser gameplay qualification.
+Runtime unchanged; fresh integration Plan6 then actual6 before correction.
+Genuine actual publication cut + same original owner late close; full settlement,
+all other game_state bytes/current generation and strict6 roots. Borrowed APIs
+unchanged; no GM schema/mechanic/authored output change. B2–B5 paused and
+T061–T065 unchecked. Engine/media GREEN6 atc042d5e2 raw24 verified, final
+independent GREEN gate pending; one new-owner catalog after Inventory/repair.
+
 ## Engine/media bounded GREEN6 — 2026-10-09
 
 Runtime9dea7198f7cd6659eff19eca575ba64183a6d490 originalRED/source/exact6
