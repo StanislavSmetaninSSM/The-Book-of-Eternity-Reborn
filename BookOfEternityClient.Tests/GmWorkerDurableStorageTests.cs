@@ -26,6 +26,9 @@ public sealed class GmWorkerDurableStorageTests(ITestOutputHelper output)
     [InlineData("reaper_audit_refused")]
     public Task OriginalDurableCleanupAuditUsesRetainedPurpose(string mode) => Run(mode);
 
+    [Fact]
+    public Task OriginalReaperWaitsForActualTerminalDecision() => Run("terminal_pending_reaper");
+
     private async Task Run(string mode)
     {
         string? folder = null;

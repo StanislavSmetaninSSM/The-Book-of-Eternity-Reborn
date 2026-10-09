@@ -17,6 +17,8 @@ internal static partial class NativePoolScenarioDriver
         var root = Path.Combine(output, "state-copy");
         var evidence = new Dictionary<string, object?> { ["Mode"] = mode, ["WorkerFixtureRoot"] = root };
         using var probe = new WorkerStorageOutcomeProbe();
+        var pendingReaper = mode == "terminal_pending_reaper";
+        var runAssigned = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var refusedDiagnostic = mode is "cleanup_audit_refused" or "reaper_audit_refused";
         var refusalStage = "run";
         var refusalWitnesses = new List<(string Stage, Exception Failure)>();
@@ -42,13 +44,13 @@ internal static partial class NativePoolScenarioDriver
         object? CanonicalFailure() => execution?.Authority.GetType().GetProperty("CanonicalPublicationFailure", flags)?.GetValue(execution.Authority);
         bool Ack() => execution != null && FenceField<bool>(execution, "_publicationAcknowledged");
         bool Recorded() => execution != null && Field(execution.Authority, "_publication") != null;
-        var disposal = mode == "inbox_unknown_dispose" ? new GmWorkerNativeObservationFault(GmWorkerNativeObservationFaultKind.DisposeOnce) : null;
+        var disposal = mode == "inbox_unknown_dispose" || pendingReaper ? new GmWorkerNativeObservationFault(GmWorkerNativeObservationFaultKind.DisposeOnce) : null;
         try
         {
             Directory.CreateDirectory(root);
             var known = new IOException("known original durable worker failure");
             var knownHits = 0; var workspaceCalls = 0; var reaperPasses = 0; var releases = 0;
-            var early = mode is "terminal_audit_unknown" or "timeout_audit_unknown" or "cancelled" or "known_failure";
+            var early = mode is "terminal_audit_unknown" or "timeout_audit_unknown" or "cancelled" or "known_failure" or "terminal_pending_reaper";
             var deferred = mode is "required_audit_unknown" or "cleanup_audit_refused" or "reaper_audit_refused" or "required_audit_unavailable";
             var delayed = mode == "required_audit_unknown";
             var uncertain = mode.Contains("unknown", StringComparison.Ordinal);
@@ -185,12 +187,40 @@ internal static partial class NativePoolScenarioDriver
                 BeforeWorkerReleaseAsync = () =>
                 {
                     releases++;
-                    if (mode is "terminal_audit_unknown" or "known_failure") { knownHits++; throw known; }
+                    if (mode is "terminal_audit_unknown" or "known_failure" or "terminal_pending_reaper") { knownHits++; throw known; }
                     if (mode == "timeout_audit_unknown") timeout.Cancel();
                     if (mode == "cancelled") cancelled.Cancel();
                     return Task.CompletedTask;
                 },
                 BeforeCompletionArbitrationAsync = actual => { originalCompletion = actual; return Task.CompletedTask; },
+                BeforeTerminalFailureDecisionAsync = async () =>
+                {
+                    if (!pendingReaper) return;
+                    await runAssigned.Task.WaitAsync(TimeSpan.FromSeconds(5));
+                    workspacePath = FenceField<GmWorkerExecutionWorkspace>(execution!, "_workspace")!.GameSessionPath;
+                    var beforeWorkspace = Snapshot(workspacePath);
+                    var beforeAudit = Bytes(auditPath);
+                    reaperPasses++; await reaper.RunPassAsync();
+                    var cleanup = Field(execution, "_cleanupOwner");
+                    var physical = cleanup != null && Field(cleanup, "_owner") == null
+                        && Field(cleanup, "_processHostLaunch") == null && Field(cleanup, "_workerCompletionTask") == null;
+                    var afterWorkspace = Snapshot(workspacePath);
+                    evidence["PendingPhase"] = new
+                    {
+                        originalRunIncomplete = originalRun != null && !originalRun.IsCompleted,
+                        physicalSettled = physical, disposeAttempts = disposal!.DisposeAttempts,
+                        workspaceCalls, beforeWorkspace, afterWorkspace, beforeAudit, afterAudit = Bytes(auditPath),
+                        workspaceExists = Directory.Exists(workspacePath), execution!.RetirementAcknowledged,
+                        slotHeld = SlotHeld(), rootLeaseActive = originalRootLease!.IsActive,
+                        reaper.EntryCount, reaper.OwnedCapacity
+                    };
+                    Require(originalRun != null && !originalRun.IsCompleted && physical && disposal.DisposeAttempts == 2,
+                        "original pending terminal operation and retry physical settlement were not observed");
+                    Require(workspaceCalls == 0 && Directory.Exists(workspacePath) && Same(beforeWorkspace, afterWorkspace)
+                        && Equal(beforeAudit, Bytes(auditPath)) && !execution!.RetirementAcknowledged
+                        && SlotHeld() && originalRootLease!.IsActive && reaper.EntryCount == 1 && reaper.OwnedCapacity == 1,
+                        "reaper finalized or wrote diagnostics before original terminal decision settled");
+                },
                 BeforeWorkspaceCleanupAsync = path =>
                 {
                     workspacePath = path; workspaceCalls++;
@@ -206,6 +236,7 @@ internal static partial class NativePoolScenarioDriver
             GmWorkerTaskRunResult? result = null;
             Exception? failure = null;
             originalRun = pool.RunTaskAsync(profile, task, cancelled.Token);
+            runAssigned.TrySetResult();
             try { result = await originalRun; }
             catch (Exception caught) { failure = caught; }
             var acceptedBeforeReaper = result?.HasValidatedExecutionFor(task) == true;
@@ -307,7 +338,7 @@ internal static partial class NativePoolScenarioDriver
                 Require(!SlotHeld() && reaper.EntryCount == 0 && reaper.OwnedCapacity == 0 && execution.RetirementAcknowledged && !originalRootLease.IsActive,
                     "known control did not retire original capacity");
                 if (mode == "cancelled") Require(failure is OperationCanceledException && result == null, "actual cancellation changed outcome");
-                else if (mode == "known_failure") Require(failure == null && result?.Status.State == WorkerBridgeState.Failed && knownHits == 1, "known worker failure policy changed");
+                else if (mode is "known_failure" or "terminal_pending_reaper") Require(failure == null && result?.Status.State == WorkerBridgeState.Failed && knownHits == 1, "known worker failure policy changed");
                 else Require(failure == null && result?.HasValidatedExecutionFor(task) == true && Ack() && Recorded(), "known warning/success lost actual published authority");
                 if (refusedDiagnostic)
                 {
@@ -330,6 +361,7 @@ internal static partial class NativePoolScenarioDriver
         catch (Exception failure) { evidence["Failure"] = failure.ToString(); return 1; }
         finally
         {
+            runAssigned.TrySetResult();
             AppDomain.CurrentDomain.FirstChanceException -= observeRefusal;
             // Separate fixture teardown never manufactures publication, retirement,
             // slot release or a successful assertion; retained logical debt is recorded above.

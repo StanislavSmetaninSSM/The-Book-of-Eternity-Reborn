@@ -2,6 +2,18 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-worker-terminal-cleanup-pending-linux",
+      "reason": "One new real original-reaper pass during pending terminal decision after actual owner DisposeOnce; causal fixture WIP, unbuilt/unrun. Same selected case belongs to durable15 union; no accepted cohort replay.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-014",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-worker-cleanup-admission-linux",
       "reason": "Focused three-row required-cleanup admission correction after actual 081224 exposed two retirement failures and one blocked required-audit cut. Source/unbuilt WIP; contained in later durable14 union. No repeat of the other eleven unchanged rows in the reachability run.",
       "contracts": [

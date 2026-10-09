@@ -2,6 +2,31 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-worker-terminal-cleanup-pending-linux",
+      "responsibility": "Original durable native owner with known pre-release failure and DisposeOnce: actual reaper pass while original terminal decision hook is pending settles physical ownership but must retain workspace, audit, retirement and slot/root until the actual original decision. One finite race control, no timer-based inference.",
+      "excludes": "No provider/live GM or public production Linux worker activation, native Windows, full original Bridge-to-Store, new crash/restart/published-disk ACK-false matrix, nondurable cleanup/reaper diagnostic Unknown, or actual secondary canonical lease-close fault. Prior prelaunch public Linux refusal remains separately evidenced, not replayed.",
+      "changeHints": [
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs",
+        "BookOfEternityClient/Services/GmWorkers/GmWorkerQuarantineReaper.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalReaperWaitsForActualTerminalDecision"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-worker-cleanup-admission-linux",
       "responsibility": "Three original durable-pool deferred-cleanup rows: actual ordinary diagnostic refusal, exact required audit through main/worker admission and original retirement; required-audit Unknown must reach its genuine publisher cut. Separate finite subset of durable storage qualification.",
       "excludes": "No provider/live GM or public production Linux worker activation, native Windows, full original Bridge-to-Store, new crash/restart/published-disk ACK-false matrix, nondurable cleanup/reaper diagnostic Unknown, or actual secondary canonical lease-close fault. Prior prelaunch public Linux refusal remains separately evidenced, not replayed.",
@@ -29,7 +54,7 @@
     },
     {
       "id": "portable-worker-durable-storage-linux",
-      "responsibility": "Fourteen original durable synthetic worker pool rows: real Store inbox/derived-audit and terminal/required-cleanup audit publication Unknown, durable deferred cleanup/reaper diagnostic admission refusals, delayed acceptance revocation, original physical settlement and retained workspace/slot/root capacity, known warning/cancellation/failure/fallback controls. Actual FSM generation and correlated original native worker/ledger/publication ACK.",
+      "responsibility": "Fifteen original durable synthetic worker pool rows: real Store inbox/derived-audit and terminal/required-cleanup audit publication Unknown, durable deferred cleanup/reaper diagnostic admission refusals, delayed acceptance revocation, original physical settlement and retained workspace/slot/root capacity, known warning/cancellation/failure/fallback controls. Actual FSM generation and correlated original native worker/ledger/publication ACK.",
       "excludes": "No provider/live GM or public production Linux worker activation, native Windows, full original Bridge-to-Store, new crash/restart/published-disk ACK-false matrix, nondurable cleanup/reaper diagnostic Unknown, or actual secondary canonical lease-close fault. Prior prelaunch public Linux refusal remains separately evidenced, not replayed.",
       "changeHints": [
         "BookOfEternityClient/Services/GmWorkers/GmWorkerProposalStore.cs",
@@ -51,7 +76,8 @@
           "project": "unit",
           "tests": [
             "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalDurableWorkerPreservesPublicationFactsAndStopsCanonicalContinuation",
-            "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalDurableCleanupAuditUsesRetainedPurpose"
+            "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalDurableCleanupAuditUsesRetainedPurpose",
+            "BookOfEternityClient.Tests.GmWorkerDurableStorageTests.OriginalReaperWaitsForActualTerminalDecision"
           ]
         }
       ]

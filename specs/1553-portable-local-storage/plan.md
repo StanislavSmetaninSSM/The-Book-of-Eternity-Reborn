@@ -1,3 +1,28 @@
+## Required cleanup admission reached; pending-phase fixture — WIP, 2026-10-09
+
+Independent SOURCE/RAW/EXACT3 PASS d4edc6d4;155 artifacts/originals52pins accepted.
+Fresh Plan0823333/1,0 executed79.1238198s; actual082526 clean d4 completes3/3,
+**2PASS/1 genuine FAIL**,14.0193361s,both cleanup flags,no skips/duplicates/timeouts.
+The two original deferred diagnostic controls now retire exactly once with one real
+required audit, keeping ordinary diagnostic refusals. Required-audit Unknown now
+reaches authentic nonCommitted member0 after actual ACK: original result remains
+wrongly acceptable, no shared canonical fault retained, one later ordinary admission
+attempt. Workspace was already deleted before this late cut; that factual absence
+must be preserved, never recreated. No receipt fallback. Three original physical/
+guardian/root cleanups and six native source/binary pairs verified in raw packet.
+
+New single pending-phase control addresses an independently identified race missing
+from14: actual known before-release failure +DisposeOnce transfers the original owner;
+inside original BeforeTerminalFailureDecisionAsync await one real reaper pass while
+the original task remains incomplete. It must settle second disposal/physical fields
+but preserve workspace/audit/retirement/root/slot. The hook then returns; original run
+and later reaper pass must settle known Failed plus legitimate final retirement.
+A per-case assignment signal ensures the original task reference exists; finally
+releases it. No invented outcome, hand-cleared debt, replacement cleanup owner or
+elapsed-time race assertion. Fifteen unique enclosing rows now span three methods;
+the new exact1 category avoids replaying previously observed cases for causal RED.
+Fixture only; pending-phase and canonical-fault runtime are still unimplemented.
+
 Exact3 is represented by a dedicated category/method using the same unchanged
 scenario helper. The enclosing durable category still owns the same14 unique rows
 across2 methods. This avoids replaying eleven unchanged cases just to qualify the

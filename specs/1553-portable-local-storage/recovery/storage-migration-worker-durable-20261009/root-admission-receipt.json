@@ -1,0 +1,55 @@
+{
+  "source": "d4edc6d4f3c62f0d2000b9bb806fd8ae470794ee",
+  "actual": "20261009-082526-223-295182-8e2bf37470cb41a9abd1318fc5ed0de9-categories",
+  "tests": {
+    "Total": 3,
+    "Executed": 3,
+    "Passed": 2,
+    "Failed": 1
+  },
+  "rows": [
+    {
+      "mode": "reaper_audit_refused",
+      "outcome": "Passed",
+      "cuts": 0,
+      "failure": null,
+      "laterReads": 0,
+      "laterMutations": 0,
+      "laterLeases": 0,
+      "retired": true,
+      "sameCSP": false,
+      "retainedCSP": false
+    },
+    {
+      "mode": "cleanup_audit_refused",
+      "outcome": "Passed",
+      "cuts": 0,
+      "failure": null,
+      "laterReads": 0,
+      "laterMutations": 0,
+      "laterLeases": 0,
+      "retired": true,
+      "sameCSP": false,
+      "retainedCSP": false
+    },
+    {
+      "mode": "required_audit_unknown",
+      "outcome": "Failed",
+      "cuts": 1,
+      "failure": "System.InvalidOperationException: canonical work continued after worker publication uncertainty\n   at BookOfEternityClient.Tests.WorkerStorageOutcomeProbe.Require(Boolean condition, String message) in /workspace/boe-1553-storage-migration/BookOfEternityClient.TestSupport/WorkerStorageOutcomeProbe.cs:line 124\n   at BookOfEternityClient.Tests.WorkerStorageOutcomeProbe.RequireStopped() in /workspace/boe-1553-storage-migration/BookOfEternityClient.TestSupport/WorkerStorageOutcomeProbe.cs:line 119\n   at BookOfEternityClient.Tests.NativePoolScenarioDriver.RunStorageOutcome(String mode, String package, String output) in /workspace/boe-1553-storage-migration/BookOfEternityClient.TestSupport/NativePoolScenarioDriver.StorageOutcome.cs:line 280",
+      "laterReads": 0,
+      "laterMutations": 0,
+      "laterLeases": 1,
+      "retired": false,
+      "sameCSP": false,
+      "retainedCSP": false
+    }
+  ],
+  "removedRoots": [
+    "/workspace/boe-1553-storage-migration/TestResults/native-pool/898c47cb7c0649ea87119dad98d32d40/state-copy",
+    "/workspace/boe-1553-storage-migration/TestResults/native-pool/b8de5dbdf2d84d67ac96642b021be6e1/state-copy",
+    "/workspace/boe-1553-storage-migration/TestResults/native-pool/b43adbc2a1bd48a4b7d10896fca74664/state-copy"
+  ],
+  "nativeSourceBinaryPairs": 6,
+  "classification": "Required-audit authentic canonical cut still allows later admission and retains validation acceptance; both original deferred diagnostic refusal/required retirement controls pass."
+}
