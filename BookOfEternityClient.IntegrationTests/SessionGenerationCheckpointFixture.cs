@@ -24,6 +24,7 @@ internal sealed class SessionGenerationCheckpointFixture
     internal string OriginalGeneration { get; private set; } = "";
     internal bool Rotated { get; private set; }
     internal int LaterInputReads { get; private set; }
+    internal Action<string>? BeforeMutation { get; set; }
 
     private SessionGenerationCheckpointFixture(string root, Action<string> output)
     {
@@ -36,7 +37,7 @@ internal sealed class SessionGenerationCheckpointFixture
                 AfterCanonicalReadAttemptAsync = path =>
                 { if (Rotated) _laterReads.Add("attempt:" + path); return Task.CompletedTask; },
                 BeforeCanonicalMutationBoundaryAsync = path =>
-                { if (Rotated) _laterMutations.Add(path); return Task.CompletedTask; },
+                { BeforeMutation?.Invoke(path); if (Rotated) _laterMutations.Add(path); return Task.CompletedTask; },
                 LocalPublicationObserver = (phase, _) =>
                 {
                     if (phase != TrustedLocalPublicationPhase.Committed) return;

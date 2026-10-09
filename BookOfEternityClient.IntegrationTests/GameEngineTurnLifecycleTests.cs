@@ -788,7 +788,9 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             sessionId,
             requestId,
             turnNumber,
-            status = "success"
+            status = "success",
+            timestamp = "2026-10-09T00:00:00Z",
+            filesModified = new[] { trackedPath }
         });
 
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
@@ -9107,7 +9109,16 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             pendingMemoryLegacy = (object?)null
         };
 
-        await SeedMortalLifeTransitionAuthorityAsync(preTurnSoul);
+        var seededSoul = JsonSerializer.SerializeToNode(preTurnSoul)!.AsObject();
+        seededSoul[AfterlifeSpiritualConflictState.SoulStateProfileProperty] =
+            AfterlifeSpiritualConflictState.CreateDefaultCombatProfile();
+        await SeedMortalLifeTransitionAuthorityAsync(seededSoul);
+        const string emptyWoundIdentity = """{"schemaVersion":1,"entries":[]}""";
+        const string emptyWoundHistory = """{"schemaVersion":1,"nextOrdinal":1,"transitions":[]}""";
+        Assert.True(WoundIdentityState.Parse(emptyWoundIdentity, WoundIdentityState.StatePath).IsValid);
+        Assert.True(WoundHistoryState.Parse(emptyWoundHistory, WoundHistoryState.HistoryPath).IsValid);
+        await _fs.WriteFileAtomicAsync(WoundIdentityState.StatePath, emptyWoundIdentity);
+        await _fs.WriteFileAtomicAsync(WoundHistoryState.HistoryPath, emptyWoundHistory);
         await WriteCurrentSoulStateToPendingSnapshotAsync();
         await WriteJsonAsync("input/turn_request.json", new
         {
@@ -9139,6 +9150,14 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var probe = await SessionGenerationCheckpointFixture.CreateAsync(_rootPath, line => _directGachaOutput?.WriteLine(line));
         var lifeRequests = 0;
+        var responseWritten = false;
+        var repairDispatchAttempts = 0;
+        probe.BeforeMutation = path =>
+        {
+            if (!responseWritten || path != "game_state/control/validation_repair_request.json") return;
+            repairDispatchAttempts++;
+            Assert.Fail("The current Life response must validate without dispatching provider repair.");
+        };
         var engine = CreateGameEngine(
             probe.ObserveInput(new QueuedConsoleInputSource(Enumerable.Repeat(Key(ConsoleKey.Enter), 4))),
             configureSettings: InertRealmSettings, fileSystem: probe.Files,
@@ -9161,6 +9180,17 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
                             requestRoot.GetProperty("sessionId").GetString(),
                             requestRoot.GetProperty("requestId").GetString(),
                             requestRoot.GetProperty("turnNumber").GetInt32());
+                        responseWritten = true;
+                        var validator = new ValidationService(probe.Files, NullLogger<ValidationService>.Instance);
+                        var errors = (await validator.ValidateGameStateAsync())
+                            .Where(issue => issue.Severity == IssueSeverity.Error)
+                            .Select(issue => new { issue.Code, issue.FilePath, issue.Expected, issue.Actual })
+                            .ToArray();
+                        _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new
+                        {
+                            kind = "f18-life-response-seed-validation", root = _rootPath, errors
+                        }));
+                        Assert.Empty(errors);
                         return;
                     }
 
@@ -9177,7 +9207,8 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
 
         var failure = await Record.ExceptionAsync(() => InvokePrivateTaskAsync(
             engine, "CheckLifeTransitions", acceptedSnapshotContext));
-        probe.Verify(failure, new { lifeRequests });
+        probe.Verify(failure, new { lifeRequests, repairDispatchAttempts });
+        Assert.Equal(0, repairDispatchAttempts);
         Assert.Equal(1, lifeRequests);
         Assert.False(File.Exists(Path.Combine(probe.Files.GameSessionPath, "error_log.txt")));
     }

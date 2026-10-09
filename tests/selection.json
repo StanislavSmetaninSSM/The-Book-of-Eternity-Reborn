@@ -2,8 +2,30 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-session-generation-life-finalization-linux",
+      "reason": "T064 isolated prerequisite correction after interrupted122606; Original Life evaluation dispatch and real current-schema accepted validation before same-admission generation rotation. Seed diagnostic does not replace accepted validation; no provider repair dispatch, exact replacement state and no later canonical reads/mutations/input. Fresh source review/build/actual pending.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
+      "category": "portable-session-generation-terminal-snapshot-linux",
+      "reason": "T064 isolated prerequisite correction after interrupted122606; Original contract-valid terminal snapshot, actual same-admission generation rotation and joined SessionReplaced outcome; exact replacement bytes and zero subsequent canonical reads/mutations/input. Isolated after malformed old Ready caused a protocol-error branch. Fresh source review/build/actual pending.",
+      "contracts": [
+        "#1553",
+        "FR-005",
+        "FR-006",
+        "T064-STORAGE-CUTS",
+        "T065-STORAGE-CLOSURE"
+      ]
+    },
+    {
       "category": "portable-session-generation-checkpoint-fixtures-linux",
-      "reason": "T064 source-qualified six obsolete independent-replacement interleavings plus connected guard: port to same original admission/checkpoint, actual generation publication and exact untouched replacement sentinels. Source/build/run pending; no runtime RED claimed.",
+      "reason": "T064 remaining4 original behavioral fixtures plus source guard. Interrupted122606 supplies no completed selection; run these5 only after isolated snapshot/Life prerequisite diagnosis.",
       "contracts": [
         "#1553",
         "FR-005",

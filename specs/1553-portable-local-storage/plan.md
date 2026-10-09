@@ -1,3 +1,25 @@
+## F18 generation fixture prerequisites — WIP, 2026-10-09
+
+Independent read-only diagnosis at10317774: snapshot original Ready lacks mandatory
+timestamp/filesModified, so it enters protocol rejection and reads current pending
+metadata before correct SessionReplaced. No replacementReady opened; no evidence for
+new public-reader/runtime change. Complete only that original Ready; retain strict
+zero-later-read oracle for the intended valid-success path. Malformed-Ready metadata
+reads remain explicit source-qualified behavior, not accepted stale-read safety.
+
+Life seed lacks current soul artTiers; actual mirror overwrites the otherwise complete
+player profile, explaining both missing spiritual arts. Fixture-local default combat
+profile and production-shaped empty wound authorities now precede signed snapshot.
+Actual parsers check both roots. Diagnostic real validation after synthetic response
+emits every error and fails before any provider wait; a fixture-local mutation hook
+also refuses unexpected repair dispatch. Genuine accepted-validation checkpoint remains
+required. No shared legacy helper or runtime/schema/GM contract change.
+
+Split selection into snapshot1, Life1 and remaining4behavior+guard5; source review and
+fresh integration build/Plan pending, then execute separate finite calls. Do not rerun
+or accept historical interrupted7. Packet preserves prior partial stdout/cleanup,
+not inferred TRX outcomes. Whole F18/F16/owned-close/registry still open; B2–B5 paused.
+
 ## F18 generation7 — interrupted actual, diagnosis pending, 2026-10-09
 
 Corrected3b5722db source/fixture/exact7 independently reviewed. Fresh integration
