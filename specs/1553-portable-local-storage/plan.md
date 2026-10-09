@@ -1,3 +1,36 @@
+## Prepared nested actual RED and minimal capture correction — WIP, 2026-10-09
+
+Explicit AstraXHigh fixture/design/exact11 PASSf6f9161f. Fresh both-projectPlan155040
+11/2,0execution65.5329710s (integration44.8091068s,unit13.1507023s). Actual155207
+runs integration10:4PASS/6FAIL,12.6545754s,complete1/2 and10/11selected; unit1UNRUN
+because of descriptor fail-fast.0skip/duplicate/timeout,bothcleanup,10owned roots removed.
+Six genuine config/lock MemberPublished Unknown cuts retain actual journal/foreign,
+unchanged generation and readonly closing1, but original operation attempts1–2later
+ordinary leases (post-service admission0–1). Measured later reads/mutations/recovery
+are zero; this does not erase the reached admission attempts. Healthy2 and confirmed
+rollback2 PASS; downstream assertions after first failing counter are unexecuted.
+[RED packet](recovery/storage-migration-prepared-nested-20261009/manifest.json) retains
+raw10outcomes/counters/cleanup and fresh Plan/build before the production correction.
+
+Only BrowserLocalWriteCoordinator.Prepared.cs changes: CapturePreparedResult blocks
+post-operation readmission on the existing binding for Uncertain or NeedsFollowUp;
+both outer catches route their retained result through capture. WithPreparedFollowUp
+remains pure; explicit-lease generation checks, replacement precedence and mandatory
+read-only finalization remain. No result disposition, retry, journal recovery or service
+semantics are fabricated. Next frozen source/RED gate, fresh both-projectPlan11,
+actual11, discovery-only catalog and final evidence review. No fresh GREEN claim yet.
+This client-owned storage correction changes no GM-authored schema/rule/example;
+no GM prompt migration is required. B2–B5 paused, remaining migration queues open.
+
+Prior independent RAW5/CATALOG/CARRIER PASS23d1beca:91artifacts/82pins and unchanged
+historical66/57, exact5 plus separate composed9; old B2 failure/nativeunrun unchanged.
+Owner persistence recommendation2026-10-09: on first Git/link/auth failure, repeat safe
+read-only transport check after a short pause, preserve local checkpoint and continue
+independent allowed work. Before retrying an uncertain write, re-read remoteSHA.
+Prefer ordinary commit/push; API fallback only after confirmed need and its approval.
+No credential/permission changes or approval bypass. Ordinary non-force pushes of
+23d1beca andf6f9161f both succeeded and ref/raw29+4 were independently verified.
+
 ## Prepared nested original services — test-first WIP, 2026-10-09
 
 Base23d1beca after actual five GREEN/source gate; lifecycle evidence review pending.

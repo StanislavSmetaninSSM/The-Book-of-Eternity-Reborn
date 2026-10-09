@@ -83,15 +83,15 @@ public sealed partial class BrowserLocalWriteCoordinator
         }
         catch (SessionReplacedException)
         {
-            return publicationOutcome != null ? WithPreparedFollowUp(publicationOutcome) : new(
+            return CapturePreparedResult(publicationOutcome != null ? WithPreparedFollowUp(publicationOutcome) : new(
                 BrowserPreparedWriteDisposition.Blocked, true,
-                "Игровая сессия изменилась до сохранения настроек. Обновите состояние книги.");
+                "Игровая сессия изменилась до сохранения настроек. Обновите состояние книги."));
         }
         catch
         {
-            return publicationOutcome != null ? WithPreparedFollowUp(publicationOutcome) : new(
+            return CapturePreparedResult(publicationOutcome != null ? WithPreparedFollowUp(publicationOutcome) : new(
                 BrowserPreparedWriteDisposition.Blocked, true,
-                "Запрос на изменение настроек заблокирован: локальное хранилище требует проверки перед записью.");
+                "Запрос на изменение настроек заблокирован: локальное хранилище требует проверки перед записью."));
         }
     }
 
@@ -99,6 +99,8 @@ public sealed partial class BrowserLocalWriteCoordinator
     {
         // The original participating scope closes from this capture. An explicit
         // publication result must be retained before runtime callbacks or cleanup.
+        if (result.Disposition == BrowserPreparedWriteDisposition.Uncertain || result.NeedsFollowUp)
+            SessionOperationContext.BlockPostOperationReadmission(_fs);
         if (_browserDecision.Value is { } captured)
             captured.Outcome = result.Disposition switch
             {

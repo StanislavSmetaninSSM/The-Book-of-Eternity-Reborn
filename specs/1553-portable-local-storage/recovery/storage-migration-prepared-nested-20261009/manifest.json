@@ -1,0 +1,254 @@
+{
+  "scope": "Original supported nested browser settings/audio outcomes; not HTTP routes/native audio/gameplay. Real config/lock publication, original result/cause/runtime/generation and no ordinary readmission after unresolved/follow-up; mandatory readonly close and strict fixture cleanup.",
+  "red": {
+    "source": "f6f9161f8cd272e53008d33cdcb160d6cc84086d",
+    "artifacts": [
+      {
+        "path": "red-20261009-155040-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-155040-505-383447-1e8d6ef2788c4b07a0d0c10af9308fd0-categories/plan.json",
+        "sha256": "7a9ce23f6ce3afff1c8cbbbb513ca7c77815dd971f5db5654a4da0858e004716",
+        "originalSha256": "7a9ce23f6ce3afff1c8cbbbb513ca7c77815dd971f5db5654a4da0858e004716"
+      },
+      {
+        "path": "red-20261009-155040-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-155040-505-383447-1e8d6ef2788c4b07a0d0c10af9308fd0-categories/summary.json",
+        "sha256": "f3f251b3040d70589c87bbc77e182001cf020d6105663fe344a03e3b748929ee",
+        "originalSha256": "f3f251b3040d70589c87bbc77e182001cf020d6105663fe344a03e3b748929ee"
+      },
+      {
+        "path": "red-20261009-155040-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-155040-505-383447-1e8d6ef2788c4b07a0d0c10af9308fd0-categories/Build-integration.log",
+        "sha256": "f668b6cc74cab50f2abc5d3747b56b6739b5d42731f3e8cb84ccfb6cfe765c99",
+        "originalSha256": "77c6d83cb2adb23f81366d0ae280f42d420fd78352d31ca44a109b74044aa6ee"
+      },
+      {
+        "path": "red-20261009-155040-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-155040-505-383447-1e8d6ef2788c4b07a0d0c10af9308fd0-categories/Build-unit.log",
+        "sha256": "bdb3158f1736ad6429379e17a676868b068f476291c220ade5ddab0b9dac0841",
+        "originalSha256": "175f21b31cfbbb2d16b97a000221f69bcc2cecbedbc8ffa442578a65feaa4778"
+      },
+      {
+        "path": "red-20261009-155040-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-155040-505-383447-1e8d6ef2788c4b07a0d0c10af9308fd0-categories/dotnet-test.log",
+        "sha256": "1e415637a8c6f5612e7294c4db13447410b79ee01522b84e40374b6aafc341a9",
+        "originalSha256": "bbeccc434fbe61f2e637252d7add7a831f7a623be0e4860a57024650118ff0cf"
+      },
+      {
+        "path": "red-20261009-155207-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-155207-440-383849-99f7fa9375b54c26b3aa41aeadce41bb-categories/plan.json",
+        "sha256": "7a72831be823a877dd4789f9e6c04438a6e6b5486713d02162a47da40c67cbac",
+        "originalSha256": "7a72831be823a877dd4789f9e6c04438a6e6b5486713d02162a47da40c67cbac"
+      },
+      {
+        "path": "red-20261009-155207-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-155207-440-383849-99f7fa9375b54c26b3aa41aeadce41bb-categories/summary.json",
+        "sha256": "d8587b70ad1e440af282638a40725f24d4b4a4ad785b8d21380233356cd338fc",
+        "originalSha256": "d8587b70ad1e440af282638a40725f24d4b4a4ad785b8d21380233356cd338fc"
+      },
+      {
+        "path": "red-20261009-155207-portable-prepared-nested-outcomes-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-155207-440-383849-99f7fa9375b54c26b3aa41aeadce41bb-categories/portable-prepared-nested-outcomes-integration-001.trx",
+        "sha256": "a5cb0d83620c401f261c9fc5d0e73ac43a178bcfdbe9fbbfcb536435e697d73a",
+        "originalSha256": "a9228111613d5dd61e02c7f3201430034cac2eb424a4f84c4628bcdbb4eeece0"
+      },
+      {
+        "path": "red-20261009-155207-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-155207-440-383849-99f7fa9375b54c26b3aa41aeadce41bb-categories/dotnet-test.log",
+        "sha256": "151f94364dd142541bb7d1ee0d77db13c44f5d311197f9baeec6aac0a3e8c0a0",
+        "originalSha256": "55385bafb806e7f756c2fed254d56d219e980366b7398722f74213b44751849d"
+      },
+      {
+        "path": "red-row-emitted-roots-after-run.json",
+        "source": "/tmp/boe-prepared-nested-red-rows/emitted-roots-after-run.json",
+        "sha256": "ef6997d08a9e48058e14f24edf9759a2185370539b49f4493914d07018b791c3",
+        "originalSha256": "ef6997d08a9e48058e14f24edf9759a2185370539b49f4493914d07018b791c3"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-9-1.json",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-9-1.json",
+        "sha256": "13946a88b43711fbe5fddf74a43b714d4ae452a7cabb3fd2d871f59a7ef6e9e8",
+        "originalSha256": "13946a88b43711fbe5fddf74a43b714d4ae452a7cabb3fd2d871f59a7ef6e9e8"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-9-0.json.gz",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-9-0.json",
+        "sha256": "d6d0bc2618a8164562ab93a612fe27c621ac244de15837aa4058cca39c3140b8",
+        "originalSha256": "45559290e4d6691f8ec419362f9d2859ab7147b4655f52e9fb64681960c1f503"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-8-1.json",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-8-1.json",
+        "sha256": "f0118df181565fd20861d03d98d79afbcf080cedb7257f9d2cfe4abc64dc453a",
+        "originalSha256": "f0118df181565fd20861d03d98d79afbcf080cedb7257f9d2cfe4abc64dc453a"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-8-0.json.gz",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-8-0.json",
+        "sha256": "44bf75733058689fcfdf4837a233d74edc06d352fca0e09a169c47381a3b43a4",
+        "originalSha256": "513f81c315515c68b0ba2d7462381e8e3a69fe361a370dd169504f2b6da76bd0"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-7-1.json",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-7-1.json",
+        "sha256": "c0ce093bd0546f5d5283b714aa157a80244dcbea9120126bf22b9482725c60cd",
+        "originalSha256": "c0ce093bd0546f5d5283b714aa157a80244dcbea9120126bf22b9482725c60cd"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-7-0.json.gz",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-7-0.json",
+        "sha256": "49b36e8c32751d408d7589f8ca5dd4abd79b4768c45c9fd9695ef584cf20be02",
+        "originalSha256": "543b766aa6193f2612b170ae7d8427c0486afcb53a259e7974e1176c86ac8f20"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-6-1.json",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-6-1.json",
+        "sha256": "60edaa0e597bf0440ce1f631b4793a50759d65b75d081072c0928d711d382adc",
+        "originalSha256": "60edaa0e597bf0440ce1f631b4793a50759d65b75d081072c0928d711d382adc"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-6-0.json.gz",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-6-0.json",
+        "sha256": "5f0eb0efecd4cc6854aa988fde4fdfed44054bb91f9868f448eb9ffa786f6e8b",
+        "originalSha256": "11f4572ba7f7d46b9a80da93ed11596d92391d44b47fc50b53f63d48320bac11"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-5-1.json",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-5-1.json",
+        "sha256": "523e50161a0a9847e37d66d467523a335fb3849032568b99f2620e62e5c7a41d",
+        "originalSha256": "523e50161a0a9847e37d66d467523a335fb3849032568b99f2620e62e5c7a41d"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-5-0.json.gz",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-5-0.json",
+        "sha256": "239256a8d0ec77a42b33cab642e5d9c01f18bb063308e0e9a0b09af4e89662f9",
+        "originalSha256": "4d7f6b4cd11219dcc7b5cc71b06d13e0f8524176b134a4ad2b310b68ca538c6d"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-4-1.json",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-4-1.json",
+        "sha256": "9b5aba4e67334e0c696051d0f0e5ffdaf5c747744c80932ba96d5f0c3dfb4d6e",
+        "originalSha256": "9b5aba4e67334e0c696051d0f0e5ffdaf5c747744c80932ba96d5f0c3dfb4d6e"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-4-0.json.gz",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-4-0.json",
+        "sha256": "ae5c739db419528b43241845997e195b79bfd8cdafd24b2de8e753aed1253da0",
+        "originalSha256": "54c60f51a040c3cffca0e72a9f75df00caf92244de393f3679e342c7f19228cf"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-3-1.json",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-3-1.json",
+        "sha256": "bc5c577e28db3c7984f3910aeebf7712924f98cd43e5fd1ba7bac594221a5c77",
+        "originalSha256": "bc5c577e28db3c7984f3910aeebf7712924f98cd43e5fd1ba7bac594221a5c77"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-3-0.json.gz",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-3-0.json",
+        "sha256": "9cd69e252cb3ead9240a4b9a0d7dcadcbb17d8b01ef14cca414ecf2bbc99cf51",
+        "originalSha256": "5e3764bfbfc95078f7e9596876e225e177b8807511728abe244db31d2fe80460"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-2-1.json",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-2-1.json",
+        "sha256": "9d61ae562ec8f8e5074125a0bfda7f13b641d93794efd2d1609f1a47eb785ef4",
+        "originalSha256": "9d61ae562ec8f8e5074125a0bfda7f13b641d93794efd2d1609f1a47eb785ef4"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-2-0.json.gz",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-2-0.json",
+        "sha256": "71a51e6cd88dc6f5d0699a7968e85f4db623da13eeaeddb18621e87ee177050c",
+        "originalSha256": "74a921f1895227a9adc4c250edd9b78d8b41c16e7e7d408198e18c9d4040b2a9"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-1-1.json",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-1-1.json",
+        "sha256": "675302aff2d6743a74e0851ec28dfe65c5dfaf3410cf32380607d91268a9351c",
+        "originalSha256": "675302aff2d6743a74e0851ec28dfe65c5dfaf3410cf32380607d91268a9351c"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-1-0.json",
+        "sha256": "e0c1d5b8a01db90a310e24dfaf7890b88c2b418271d89ae44d996234dcfb2e2b",
+        "originalSha256": "5784332f5e00aea0039346cb21fb46c729aa1cccfaea7e2675fd329692cb0124"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-0-1.json",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-0-1.json",
+        "sha256": "b8cf46d5ba793ce4a57407cdaaa34537e54442b0430641d919f3379af0a63419",
+        "originalSha256": "b8cf46d5ba793ce4a57407cdaaa34537e54442b0430641d919f3379af0a63419"
+      },
+      {
+        "path": "red-row-portable-prepared-nested-outcomes-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-prepared-nested-red-rows/portable-prepared-nested-outcomes-integration-001-0-0.json",
+        "sha256": "259e2125ebc2959be4817bd5e43a449d7d76e7b8a3bc03aee9eb22028945ba2a",
+        "originalSha256": "67b53857dc7e8241b13ca24d5fc57be4176da014f3c019da98a04aa5df7d1269"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/PreparedNestedSettingsOutcomeTests.cs",
+        "sha256": "0c00f760b7056bea8b9884198a5894132b121c884929c412c20d78fe59d3e55d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/PortablePreparedSettingsTests.cs",
+        "sha256": "3f6bd8059eff22ca35b589eb54bc864c014a352671915600219d0446ee8a87e5"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs",
+        "sha256": "8656c21118ab727dbd58722f98ea844ad27c802daa463de82638d5cbf6c14522"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+        "sha256": "14c0ffc1db6755fd73920b808092f18eccfa30669e35e2ca5ad8ab2f3b660b7e"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserClientSettingsService.cs",
+        "sha256": "5145b901bff15ff9a652f31646a4243b229fcb760584ea48fc14b92a2017daa7"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserAudioService.cs",
+        "sha256": "18ce7d62ee0671c069ba3ffa20fa4c8a8db8940e8a5918c6ecc9a4c7f46788df"
+      },
+      {
+        "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+        "sha256": "a755235e16d312a938ced39a0389f6445e154885855a3fe452e1d46d829dcfe1"
+      },
+      {
+        "path": "BookOfEternityClient/Core/StateManager.cs",
+        "sha256": "fdf7fa9d071c750a18a27eab0d0ac25dd2d036a3eec06544fe639fd699c4d997"
+      },
+      {
+        "path": "BookOfEternityClient/Core/StateManager.LocalSettings.cs",
+        "sha256": "4c8b6defec4d8ba56be1e78769c72da9706ef6fdf437f5d44adfe469dd782403"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "13c903de82527cec9f224bb15aa62946a0521e96a72d81c806762713f83cfbe0"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Services/LocalUiSessionLockService.cs",
+        "sha256": "d4468dda11a11917bd11441e9bdf06fe7402605db34679db77fe0ab39ab9bc4e"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AudioService.cs",
+        "sha256": "2236f56e7f3c6b626d249a480eb6065abe8fe4dbb311386606dbe40949d3f67c"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "8b6cd490a47f3682d124148b028295cc86a0d88fd5138b18bc0f95f9be63cd7e"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "7c3c07823822ef35ada877751532e5be25bd72cac6de60d674a23ba440066b17"
+      }
+    ]
+  }
+}
