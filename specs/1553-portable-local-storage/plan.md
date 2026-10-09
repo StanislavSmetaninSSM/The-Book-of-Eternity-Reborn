@@ -1,3 +1,29 @@
+## Story original-consumer causal7 checkpoint — 2026-10-09
+
+Frozen8acda8d6 independent SOURCE/FIXTURE/EXACT7 PASS. Matching Plan020533 freshintegration
+84.2426676s/wall88.0628811,7planned/1descriptor/0executed. Actual020715 completes7/7 in1descriptor,
+2PASS/5 reached causal failures,11.6482436s,exit1,no skips/duplicates/timeouts,bothcleanup. All seven
+actual story MemberPublished/index0 cuts reached. Known rollback2 passes exact restored Before,
+absent journal, original logged nontransient cause and outward best-effort completion.
+
+Unknown append2 returns normally instead of same actual CSP, with no later measured work. Original
+life/incarnation/ascension markers all reach genuine prerequisites and actual prior commits; their
+outer failure is subsequent recovery InvalidDataException and they attempt2/2/3 ordinary leases.
+Life/incarnation separately perform one original readonly closing lease; ascension has none. Later
+validated-open read/mutation/publication/recovery observer counts0 do not mean no recovery attempts:
+actual stacks enter recovery and refuse unknown bytes before those phases. Exact retained authentic
+journals/foreign story bytes and all eight prior images remain. Input1/1/0, unexpectedinput0 and
+requestattempts0; all seven owned roots explicitly removed. Transition Same/prior-image assertions
+after the failed lease count did not execute; raw independently retains those bytes and failures.
+
+[Story packet](recovery/storage-migration-story-20261009/manifest.json) contains29 stored/expanded/
+original artifacts and9 source pins, locally verified. Independent raw/carrier classification pending.
+No production changes yet. Supported minimal next runtime shape: exclude actual CSP from original
+Story append2 and transition3 generic catches, preserve same decision before public Append owned
+lease disposal. Keep known rollback/logging and partial earlier commits unchanged. Proposed final12
+is causal7 plus existing Story lease/replaced4 and life dispatch-failure1, subject frozen delta/selection
+review. No liveGM/native/full-turn/secondary-close qualification; all other source queues stay open.
+
 ## Story append / original transition test-only WIP — 2026-10-09
 
 Base accepted progression carrier7f706089, runtime2a372; source/raw/final integrity gates PASS,
