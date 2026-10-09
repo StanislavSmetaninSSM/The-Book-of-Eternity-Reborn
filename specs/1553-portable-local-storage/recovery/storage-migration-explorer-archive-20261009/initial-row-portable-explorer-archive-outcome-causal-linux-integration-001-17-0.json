@@ -1,0 +1,33 @@
+{
+  "mode": "attraction",
+  "command": "/хранители",
+  "target": "game_state/control/system_guardian_attraction.json",
+  "result": "",
+  "Failure": null,
+  "Inputs": 0,
+  "LaterInputs": 0,
+  "RequestAttempts": 0,
+  "pendingAtCut": null,
+  "priorAtCut": null,
+  "afterImages": null,
+  "ConsoleSelections": [],
+  "ActualSelections": [],
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

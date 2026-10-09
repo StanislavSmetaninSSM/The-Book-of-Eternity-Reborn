@@ -1,0 +1,667 @@
+{
+  "scope": "Original Explorer commands, archive reconciliation, ordered compensation and browser forge Submit storage evidence. Per-run causal versus fixture qualification in plan; no native/full-turn/secondary-close claim.",
+  "initial": {
+    "source": "5dc0a2a0cca403571072062670eb8761a6ae2c47",
+    "qualification": "Raw exact selected source/summary/TRX and owned evidence; causal versus fixture and assertion reach classified in plan.",
+    "artifacts": [
+      {
+        "path": "initial-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-050502-958-256431-a81aee041f824631949c64174e40fc48-categories/Build-integration.log",
+        "sha256": "00821b11918d47f90601c9f6639bc0224fc49ac745224cc3f33e5154d260e9d1",
+        "originalSha256": "4d27c3ffeed6d6807a6ea7ac4364f497ed0f0eed1374b7cee6716dc5a3e27bee"
+      },
+      {
+        "path": "initial-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-050502-958-256431-a81aee041f824631949c64174e40fc48-categories/dotnet-test.log",
+        "sha256": "47124a091f56125bbb3a2712c79c50d5b491d82c2db0e8b299ba620c73179d40",
+        "originalSha256": "15053adf35a28fc548f28a00a11d64eda9dc1eb3b2008254c1c8468945a9704b"
+      },
+      {
+        "path": "initial-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-050502-958-256431-a81aee041f824631949c64174e40fc48-categories/plan.json",
+        "sha256": "22e8a96f7c0557b6406af49f1db7c48ccfefe615fa595b4b189cd4e907db749a",
+        "originalSha256": "22e8a96f7c0557b6406af49f1db7c48ccfefe615fa595b4b189cd4e907db749a"
+      },
+      {
+        "path": "initial-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-050502-958-256431-a81aee041f824631949c64174e40fc48-categories/summary.json",
+        "sha256": "75fb3d8fdb98a6fbaa71a00481a2e9ed05afe75239104fd1f2733d96ac125036",
+        "originalSha256": "75fb3d8fdb98a6fbaa71a00481a2e9ed05afe75239104fd1f2733d96ac125036"
+      },
+      {
+        "path": "initial-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-050655-481-256783-b36413f6757849538e23a0317c63514a-categories/dotnet-test.log",
+        "sha256": "13ceb9b7034c6324cc6394f1a77f656261578263e994b4eb4d48cee02a394508",
+        "originalSha256": "8fde3cbc2319a0e9c18d287b4bdc8958a94b5aa4ea07817639a127f7cdb3e711"
+      },
+      {
+        "path": "initial-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-050655-481-256783-b36413f6757849538e23a0317c63514a-categories/plan.json",
+        "sha256": "a84e63293734ff28073005a76a08c62dfcc3a042204e5573ade0cb92af6cea24",
+        "originalSha256": "a84e63293734ff28073005a76a08c62dfcc3a042204e5573ade0cb92af6cea24"
+      },
+      {
+        "path": "initial-actual-portable-explorer-archive-outcome-causal-linux-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-050655-481-256783-b36413f6757849538e23a0317c63514a-categories/portable-explorer-archive-outcome-causal-linux-integration-001.trx",
+        "sha256": "eb5975b557a05bc49f2aab84eb0b6908ce42b14f14dfd43618295528a676b334",
+        "originalSha256": "2ab2fa0e623b823b11de935f8344c5acc8f4e3240afc733a3e29b1ab52ce7efc"
+      },
+      {
+        "path": "initial-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-050655-481-256783-b36413f6757849538e23a0317c63514a-categories/summary.json",
+        "sha256": "e961225eb42c5ad65f0f93abe9ebc9434f00a00560ab13d0b4c091fc4706b27f",
+        "originalSha256": "e961225eb42c5ad65f0f93abe9ebc9434f00a00560ab13d0b4c091fc4706b27f"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-0-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-0-0-journal.bin",
+        "sha256": "f0709de7ec372ffe0c0ecc0b1003dbab50f751467eb121a659d8fd69b152aa5b",
+        "originalSha256": "302a4b00fe38be9cb2630b2d8b6d531907f2ec72a8fb58dac66005b39ed3126d"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-0-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-0-0.json",
+        "sha256": "17964b9ba9bbc9528d90de1cae39b4fa6d73134f365b325ad444255a66893c67",
+        "originalSha256": "86d78e7b1fc7d2819b90fce85d1f917acafd1ce54d7d129b32f3bc39669faa9d"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-0-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-0-1.json",
+        "sha256": "c58a9c1ac56572a90d7b07f8f63c742036c5da8e11257479f3d7b04ca6477783",
+        "originalSha256": "c58a9c1ac56572a90d7b07f8f63c742036c5da8e11257479f3d7b04ca6477783"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-0-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-0-2.json",
+        "sha256": "7f13e06c3a05e0fe3c175c3f096b9e849d5e7a25068ef4439cf28606709fc5c1",
+        "originalSha256": "7f13e06c3a05e0fe3c175c3f096b9e849d5e7a25068ef4439cf28606709fc5c1"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-1-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-1-0-journal.bin",
+        "sha256": "289d7bdad746b3e602044b860437693483b7e9c97bfd58ab30305c08fdfa04fa",
+        "originalSha256": "248198dd9a47bbdaf50c39dd0c1167f27acf004c22470283e61de9daca5acf0b"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-1-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-1-0.json",
+        "sha256": "6a8232747be767565391c675b9bb08cd0817212f22dc7247395316ea35c5e5f6",
+        "originalSha256": "beee39d15b7b80d43807005e112c077d497608227ab38254e379a1400748033c"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-1-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-1-1.json",
+        "sha256": "79486afc4ff3f4ab68c94a761226ad42bb4ca6a53af6107e450be3ec674cf6e5",
+        "originalSha256": "79486afc4ff3f4ab68c94a761226ad42bb4ca6a53af6107e450be3ec674cf6e5"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-10-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-10-0-journal.bin",
+        "sha256": "0252e92fd8f31afae8e774bf63eaf33683a88192fcff2a5ec2995f3e492c07a5",
+        "originalSha256": "afa97de0788505dcce2e038990c0606504994b7dc4bcd25ae45d6b90a0b5b288"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-10-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-10-0.json",
+        "sha256": "5730722fb9f9db640c769cb1a095634b4ad117a222191f582f400f0b292b9f24",
+        "originalSha256": "1b79ef1212fb5c6a2d9881ded65fbe719d93550663cde5264794aed39a8142dc"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-10-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-10-1.json",
+        "sha256": "3eaa1d6e55555936c5a0298176b3dd02d8bfe3320e5c9079ed7ee6ac25c21b26",
+        "originalSha256": "3eaa1d6e55555936c5a0298176b3dd02d8bfe3320e5c9079ed7ee6ac25c21b26"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-11-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-11-0-journal.bin",
+        "sha256": "0d087c405faf42cc068434c303d25fbddd07d5835953afb54ee01a71e3cdb771",
+        "originalSha256": "04d3c5006e2d603b7d80c16b8e4f9d0eb27091091d2d426a53eb6d0adc781a4b"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-11-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-11-0.json",
+        "sha256": "40854924cf192d24adb28fd806c82293b1f0cff7f072b711958e40cab5f6db85",
+        "originalSha256": "8c5a473a1e764073d4122adebd2329221461b45cced9b3c146239c64504ff742"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-11-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-11-1.json",
+        "sha256": "ce5647786e3c5d37dea0bd250bd476d459dfbc60f45b00537ce1c458a9af1b0c",
+        "originalSha256": "ce5647786e3c5d37dea0bd250bd476d459dfbc60f45b00537ce1c458a9af1b0c"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-11-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-11-2.json",
+        "sha256": "0df7039d03b4e9f9f849dbce0fb3c420743a9da9bb90e671c19c5e426f32c0a5",
+        "originalSha256": "0df7039d03b4e9f9f849dbce0fb3c420743a9da9bb90e671c19c5e426f32c0a5"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-12-0.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-12-0.json",
+        "sha256": "6c797d206af92c4a2caa1cbd91063f8b498d83cf3c5e446c1a933c60b99752cd",
+        "originalSha256": "6c797d206af92c4a2caa1cbd91063f8b498d83cf3c5e446c1a933c60b99752cd"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-12-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-12-1.json",
+        "sha256": "f6174727ea3ca01ab915259d40e63b2b73855486f477750629487286e98b1c7e",
+        "originalSha256": "f6174727ea3ca01ab915259d40e63b2b73855486f477750629487286e98b1c7e"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-12-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-12-2.json",
+        "sha256": "0b4df71895fc41d377c4bd7226eb83655097d8218f0bac30104cacb8123646ad",
+        "originalSha256": "0b4df71895fc41d377c4bd7226eb83655097d8218f0bac30104cacb8123646ad"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-13-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-13-0-journal.bin",
+        "sha256": "72a7f25f97a4ddad9286b5f238e47b41569f397e8ac05c88bad76dc14dcaea66",
+        "originalSha256": "3ffddd1800fd7926f447bed3240d2136d2e76bf7c410acb10c8233093a2c0b38"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-13-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-13-0.json",
+        "sha256": "2b8c3b25398cbb461c430a58cea04aa08f63271101cbc162ada7412e9357edd1",
+        "originalSha256": "9cc1f17b41f3e4108bbd19c7719cdd61a7dd7b3bed9f5d29aece1ba279a324d7"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-13-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-13-1.json",
+        "sha256": "60e47708b260b066b61f9f513b40e5f125abfc4cfd4de380587ec1ba1bb873b0",
+        "originalSha256": "60e47708b260b066b61f9f513b40e5f125abfc4cfd4de380587ec1ba1bb873b0"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-13-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-13-2.json",
+        "sha256": "1a8fb243d8d27fba191ce3b6333f8191ce5275b7afb5cf0842681f6349a34fda",
+        "originalSha256": "1a8fb243d8d27fba191ce3b6333f8191ce5275b7afb5cf0842681f6349a34fda"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-14-0.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-14-0.json",
+        "sha256": "f3710c2698af28479339facc1d678c8292bc65b269c44cbb9c9e9bcfa9c8658f",
+        "originalSha256": "f3710c2698af28479339facc1d678c8292bc65b269c44cbb9c9e9bcfa9c8658f"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-14-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-14-1.json",
+        "sha256": "d7ba5ea82d21da59c1285ba4fa4c44bad51af057743c45cb896c9fb315f29964",
+        "originalSha256": "d7ba5ea82d21da59c1285ba4fa4c44bad51af057743c45cb896c9fb315f29964"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-14-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-14-2.json",
+        "sha256": "2e20fa6e627e8b6b3257834d17931c7ff3b444279b7ee4a06094e956c7e18a98",
+        "originalSha256": "2e20fa6e627e8b6b3257834d17931c7ff3b444279b7ee4a06094e956c7e18a98"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-15-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-15-0.json",
+        "sha256": "f72e133e69b8d0a424d94065848959bbf0c8083a952f74a1ed1cfa7fb42f4f7f",
+        "originalSha256": "8bb8905ba5bf80106cf70dc2033dd7c520b88f37181e617b85f5c3ad08003221"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-15-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-15-1.json",
+        "sha256": "36892b6689c4191cdac4cb3022aafbcf0f4ad34554fb2c2493c6312f29792fe0",
+        "originalSha256": "36892b6689c4191cdac4cb3022aafbcf0f4ad34554fb2c2493c6312f29792fe0"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-15-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-15-2.json",
+        "sha256": "a7ac5b7d61b0eaa7b7f54af66255f855c3f9abd65c21c22394b1ed92f0f6386b",
+        "originalSha256": "a7ac5b7d61b0eaa7b7f54af66255f855c3f9abd65c21c22394b1ed92f0f6386b"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-16-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-16-0-journal.bin",
+        "sha256": "f65bdf8075ecf1bb64625c1025a43697f817daab14d65487a8afe7eb0cecd0b0",
+        "originalSha256": "1bb7d001efd3cb7898f728ce95636b0fd2bca8327bcd65f06b44d9387c7f06eb"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-16-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-16-0.json",
+        "sha256": "5133df162ba27da784a820f30c16bec205134f12b22135896bf8e0e40e3ec1fd",
+        "originalSha256": "12354279350995c44b95e918c88eda3fcaff8638cfd2ce1e58588eb1c7470ca3"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-16-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-16-1.json",
+        "sha256": "27e3bad8c27a8bb3f499abbc8e1b1d4d39502e441ddcdf0d520466503b0699eb",
+        "originalSha256": "27e3bad8c27a8bb3f499abbc8e1b1d4d39502e441ddcdf0d520466503b0699eb"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-16-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-16-2.json",
+        "sha256": "c3ef160aa70125edd904373a38d69823f29eb819e9ea61c9838b7a4329947029",
+        "originalSha256": "c3ef160aa70125edd904373a38d69823f29eb819e9ea61c9838b7a4329947029"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-17-0.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-17-0.json",
+        "sha256": "384544be95dbf4c84624aff2108d3abda59f473e78e27bb8835428e79aa06b9c",
+        "originalSha256": "384544be95dbf4c84624aff2108d3abda59f473e78e27bb8835428e79aa06b9c"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-17-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-17-1.json",
+        "sha256": "b4d639e41ddf1cdf925a5fcd6edfe6929c4596f97200ae8b45908a526b9f6bc4",
+        "originalSha256": "b4d639e41ddf1cdf925a5fcd6edfe6929c4596f97200ae8b45908a526b9f6bc4"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-17-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-17-2.json",
+        "sha256": "2e1c0d1c3102d61e6b0015080117bcbbbaa5eb9ae542f6949419c4d64367bf53",
+        "originalSha256": "2e1c0d1c3102d61e6b0015080117bcbbbaa5eb9ae542f6949419c4d64367bf53"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-18-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-18-0-journal.bin",
+        "sha256": "b4ca8467834dc66399779365e10d180906ecfc3f2b87148697694d941d7ab7c8",
+        "originalSha256": "17081bdca4df65323de736f97ec503c9bfef4299ce60147a675dec8ce0673860"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-18-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-18-0.json",
+        "sha256": "6cbd3a4113470dbb4239a697fbb1d8fda2f7440681056e04ba53fc205b943ca1",
+        "originalSha256": "9472cef9a7ab62578f74d10567d3226c9030e7d5e02568f77f19aa14f414a024"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-18-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-18-1.json",
+        "sha256": "43ecee2dfa5b97977f32f5861617c9275c0cba34840e954343ea6ab1fe81f13d",
+        "originalSha256": "43ecee2dfa5b97977f32f5861617c9275c0cba34840e954343ea6ab1fe81f13d"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-18-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-18-2.json",
+        "sha256": "ce2727294c48601b829ec84121389e8e9881016a4fbdbfdbf73b9a33febcc4c6",
+        "originalSha256": "ce2727294c48601b829ec84121389e8e9881016a4fbdbfdbf73b9a33febcc4c6"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-19-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-19-0-journal.bin",
+        "sha256": "88c1691ae88941bcda7f6f0995c02392fca522482e096c723cb69e96000b2693",
+        "originalSha256": "de40a1e98ec4e939cd31b7f158ae542e555685e200397942b626d486604037c0"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-19-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-19-0.json",
+        "sha256": "951f5c986f8d993591ccd699ba670f0363fdd9093a509d1f07a436f40b0f9d41",
+        "originalSha256": "aac842750a8d1b903cda180031672fbc628e951168b92e048cc2946a820d0798"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-19-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-19-1.json",
+        "sha256": "ce913b5c9d4b60f76dbd63edcb2f8e2041d41d011b03558ed3c7967e0073b678",
+        "originalSha256": "ce913b5c9d4b60f76dbd63edcb2f8e2041d41d011b03558ed3c7967e0073b678"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-19-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-19-2.json",
+        "sha256": "8faf376bb044e13f788d139c6330bcf50a2f7d19fdf8a6fdac0707527b95f65c",
+        "originalSha256": "8faf376bb044e13f788d139c6330bcf50a2f7d19fdf8a6fdac0707527b95f65c"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-2-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-2-0-journal.bin",
+        "sha256": "8202fb00c18064010eb1acbfa18cdd389334e08c10af4ac106b520371bd73b44",
+        "originalSha256": "c08792d42d3eaefaab6e0967ba59ec064779088faae223354d10aa71bac3e247"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-2-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-2-0.json",
+        "sha256": "0054752abc78dc52d869b5bdc5d8b90f3ffb9108d4f24ba233fda0218a990b3e",
+        "originalSha256": "a14eef1b2947cbfb893fbe27d1f8cd0756457e2f95e5b5f165682e1551f9cae3"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-2-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-2-1.json",
+        "sha256": "5c056958acca7e97f93d1722b1ad04d8a2031ff39e56c460d2c49271d308fc7e",
+        "originalSha256": "5c056958acca7e97f93d1722b1ad04d8a2031ff39e56c460d2c49271d308fc7e"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-2-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-2-2.json",
+        "sha256": "25af967fa1a87d096956f125343e1fdf62fb10b9f97680268db6f90186ce3fb6",
+        "originalSha256": "25af967fa1a87d096956f125343e1fdf62fb10b9f97680268db6f90186ce3fb6"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-20-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-20-0-journal.bin",
+        "sha256": "a4b6ffee09534e9d102427b77156cb52c484f043e66bc2e94d5d7daeed7ecaa9",
+        "originalSha256": "0a4d542fe274b525090aab74845e920cc77e08ccc74851c114ea6daa946e253d"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-20-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-20-0.json",
+        "sha256": "3df402b97fdc611d4062c8a2792169aa8e98f0490bc797158e3a2d6c08838d80",
+        "originalSha256": "1b8c7ecc4fdd93a7f1c6a2562e68565a4784477272371bd7609dee34353b95d1"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-20-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-20-1.json",
+        "sha256": "91bb78f257a8edb97f88ff3de94019542b0167a6bc5a14cf6fa4dd026b6592ed",
+        "originalSha256": "91bb78f257a8edb97f88ff3de94019542b0167a6bc5a14cf6fa4dd026b6592ed"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-20-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-20-2.json",
+        "sha256": "f4e25972816f013e368b6d65677c5b5af4151727831ffb0a8cd8e76aed51bf05",
+        "originalSha256": "f4e25972816f013e368b6d65677c5b5af4151727831ffb0a8cd8e76aed51bf05"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-21-0.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-21-0.json",
+        "sha256": "e02f546ac093c92e4bd8885a3d482909438ff18cdb1d749a34fb4145caa49660",
+        "originalSha256": "e02f546ac093c92e4bd8885a3d482909438ff18cdb1d749a34fb4145caa49660"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-21-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-21-1.json",
+        "sha256": "2de5b54f40357c223529fbc68f37d48a2df069ddf29fbe0dbf5716276b0fe165",
+        "originalSha256": "2de5b54f40357c223529fbc68f37d48a2df069ddf29fbe0dbf5716276b0fe165"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-21-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-21-2.json",
+        "sha256": "d95b05026cc0652da027d47be2f69c787260fbc8f314a1ecfacc72c7478c4b24",
+        "originalSha256": "d95b05026cc0652da027d47be2f69c787260fbc8f314a1ecfacc72c7478c4b24"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-3-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-3-0-journal.bin",
+        "sha256": "f68387d4c719c391243a65216f81500d7ec69a744cef9da9c14f27dc650f6a47",
+        "originalSha256": "a8eeaad49eaec2d90e0ee571389a53f962a40375b532ceaa4f7a05016f123d2e"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-3-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-3-0.json",
+        "sha256": "48f74d05c2ea9fbb3e9fa5297160913a0aaf00d75b37db048323366e14d2789c",
+        "originalSha256": "8f85fb6f546b41113c76cdf40ba5274ce7bef8c9a6b4fd46b170c088552f9767"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-3-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-3-1.json",
+        "sha256": "3cb28a033e8d4f6147916c72f5696e4f22d281bf7813d58c98d156771c6d8c6d",
+        "originalSha256": "3cb28a033e8d4f6147916c72f5696e4f22d281bf7813d58c98d156771c6d8c6d"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-3-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-3-2.json",
+        "sha256": "6016a286b540fa33db4eb598af2601e1b54cba6b85122c98131c5bc6584a7579",
+        "originalSha256": "6016a286b540fa33db4eb598af2601e1b54cba6b85122c98131c5bc6584a7579"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-4-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-4-0-journal.bin",
+        "sha256": "9c5d7b337efcea9d0b137fb969d51cd05dd4eb2dbe5e55760ac5002a1b11c793",
+        "originalSha256": "56aebc26f340e29c0e22289e49e3bbd21fdebac4033e2ca98b63737e4a4fac16"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-4-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-4-0.json",
+        "sha256": "2dff56f251b45dfe51ea3db8aba9b09d49c7c16f820389f40b3ac939406183b1",
+        "originalSha256": "1b07668bd22dd261c30e2936260fab02cafc35f5e5f97e944ebd8da931db0904"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-4-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-4-1.json",
+        "sha256": "955d6d0667fab4b0d7df9243886f221634e9c2f2a127983fe36e5b792ba6dfed",
+        "originalSha256": "955d6d0667fab4b0d7df9243886f221634e9c2f2a127983fe36e5b792ba6dfed"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-4-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-4-2.json",
+        "sha256": "5248f35c648e424fc3c192dce5c47204e754733d60e92152302826df426e9e5a",
+        "originalSha256": "5248f35c648e424fc3c192dce5c47204e754733d60e92152302826df426e9e5a"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-5-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-5-0-journal.bin",
+        "sha256": "b4ee4714ecdbeff9c7c6705c7e765ef611823a992fb90a1c6ef0a97e1f064fff",
+        "originalSha256": "f5e36d1746ec3842c68af12eb184eeb5e5b06f7277c3b202396c7e9c5d70465f"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-5-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-5-0.json",
+        "sha256": "43e7997857a54617903eb141a491c0e624a217e8f6f0f8c7f203907f271febd4",
+        "originalSha256": "3bbb8dba5f5f2d5bd4030b8cc596ae1c82a8d618ce06f049958cd71748ef95ba"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-5-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-5-1.json",
+        "sha256": "e30715e258b16165b8aa97ea1adacdadf55bcb268bd3c9515306b4fd6792aa6f",
+        "originalSha256": "e30715e258b16165b8aa97ea1adacdadf55bcb268bd3c9515306b4fd6792aa6f"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-5-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-5-2.json",
+        "sha256": "65484825f15f7a29baa7d8413709b737bef02640ea09131b89155d3daeef33f5",
+        "originalSha256": "65484825f15f7a29baa7d8413709b737bef02640ea09131b89155d3daeef33f5"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-6-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-6-0-journal.bin",
+        "sha256": "39ec636e6bf907a9971230b6b1fe109885bc8622562545fd2d068298152c0861",
+        "originalSha256": "bb2604987340b9e8b2712ffc3b2f636e214820261d8ea383b3a116780050ea84"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-6-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-6-0.json",
+        "sha256": "58e3fbc091c504fbf3316eab0c7e495971295fda74024d6fb2fda2a1859bfe0b",
+        "originalSha256": "1d375d2644ece82a0a797befc03f9e7fbe6b67376d930a0da44aaf7a0e7514a8"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-6-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-6-1.json",
+        "sha256": "7a5b9d9eb16d97384f2d41867cdba0547a407c7560eeb56c4a2cf361ee5f1cab",
+        "originalSha256": "7a5b9d9eb16d97384f2d41867cdba0547a407c7560eeb56c4a2cf361ee5f1cab"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-6-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-6-2.json",
+        "sha256": "76946d122fd7e7917711f9b2c6f39de1ea9aaa72a74139b2c9b66761506597c8",
+        "originalSha256": "76946d122fd7e7917711f9b2c6f39de1ea9aaa72a74139b2c9b66761506597c8"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-7-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-7-0-journal.bin",
+        "sha256": "2ae42139a7a21bbbb5ab36fb6d24ad4fecb3a6e2fffa25649aa4591170203b58",
+        "originalSha256": "cc2132aa409c4e84b564518b537f4f5d5374d7e5bf278611b488243b9ad5ce65"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-7-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-7-0.json",
+        "sha256": "b8d2f050ff8e4cd542aeac2672c4755dfceda58edfe11060494d933799717275",
+        "originalSha256": "766fbe5179380dd9ef43c22e73daca36f3f735dae8261403b45be43ef8760b59"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-7-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-7-1.json",
+        "sha256": "8f985df8bcd25a477e6690f6b0d68be1fb09f63b4d1bbc33b7f2b76c1af96b30",
+        "originalSha256": "8f985df8bcd25a477e6690f6b0d68be1fb09f63b4d1bbc33b7f2b76c1af96b30"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-7-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-7-2.json",
+        "sha256": "10f127b0ae4d530ef72365a5808d81500d81e51c58e217a386c3e8d6a16dfb90",
+        "originalSha256": "10f127b0ae4d530ef72365a5808d81500d81e51c58e217a386c3e8d6a16dfb90"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-8-0.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-8-0.json",
+        "sha256": "7d201d04063414d6087ca562ce84c9a1cf942484627fa2f14628db6f229e8394",
+        "originalSha256": "7d201d04063414d6087ca562ce84c9a1cf942484627fa2f14628db6f229e8394"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-8-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-8-1.json",
+        "sha256": "bc97fd9379effa9ddb54cee831178c597ce2e5c866050e88407523a2b4901672",
+        "originalSha256": "bc97fd9379effa9ddb54cee831178c597ce2e5c866050e88407523a2b4901672"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-8-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-8-2.json",
+        "sha256": "17d472cfa821e13435df9066ffb98ab4fe857b59949c497df8b4ae561eba123b",
+        "originalSha256": "17d472cfa821e13435df9066ffb98ab4fe857b59949c497df8b4ae561eba123b"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-9-0-journal.bin.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-9-0-journal.bin",
+        "sha256": "1fc00f0499b18e8d2484ebb7c590da9aae8d26d33f853c568151aadced837fb8",
+        "originalSha256": "85e0a993bc1f09bd095668ceebb04c3400f315a98fb2da12d1ddd430dff0bb40"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-9-0.json.gz",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-9-0.json",
+        "sha256": "129c2709a0fd6792f7f6b5f0498448f2fc46e6922cfc2e4c04e7d3c6be1cd25b",
+        "originalSha256": "d41129b95583097f35ee81ba0fcc5856075455571809054a176b3f8912994be5"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-9-1.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-9-1.json",
+        "sha256": "fa66ada16ef2fce79a47bf4ce17d2b9f5bf3e6b4b55099ec869ad982d9bebc0d",
+        "originalSha256": "fa66ada16ef2fce79a47bf4ce17d2b9f5bf3e6b4b55099ec869ad982d9bebc0d"
+      },
+      {
+        "path": "initial-row-portable-explorer-archive-outcome-causal-linux-integration-001-9-2.json",
+        "source": "/tmp/boe-explorer-archive-initial/portable-explorer-archive-outcome-causal-linux-integration-001-9-2.json",
+        "sha256": "03ffad9ae181d65fc25356675dbf2f9211df7b6512e20dd0d968d51d0dadfc44",
+        "originalSha256": "03ffad9ae181d65fc25356675dbf2f9211df7b6512e20dd0d968d51d0dadfc44"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.cs",
+        "sha256": "688fb706869eccc721aa787af781452f49cd7407d108a5d54ab551db97f12172"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.StorageOutcome.cs",
+        "sha256": "3a9f85b0fdcaef86218257273dadf2a6bd10f4475fdeefc57a1f860a12ae0604"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/ExplorerModeCommandTests.Afterlife.cs",
+        "sha256": "ef3ad049ff4e356fb7d190ba6ba11e010efbb811844e9ca51b80c6842918833d"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ArchiveStorageOutcome.cs",
+        "sha256": "1774c2e5200cb600367c6e5d76e8cbddd4a7a32edc113712312e835d73cbd2ac"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "sha256": "165354067b7a85355b1b33cbf07f8cf9677344007043ea7098e09bc70e0286cb"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/WebUi/BrowserShiningRelicForgeParityTests.cs",
+        "sha256": "f1f79eb16681a8b03ca2138a0ec1dfa8ae2e689b5674fb9728b41d02b0013f99"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/WebUi/BrowserShiningRelicForgeParityTests.StorageOutcome.cs",
+        "sha256": "50f8b5fc480663f0844134a7fb44769d7229da1acb2eccf6e26c73fa097520e8"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+        "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/TestExplorerConsole.cs",
+        "sha256": "0b0c41d8bb1d3f4f337f231af3d2143dff8d72867dc73447a1937f7b59bc1516"
+      },
+      {
+        "path": "BookOfEternityClient.TestSupport/CanonicalResourceQuartetTestFixture.cs",
+        "sha256": "5b93bdaa9abcbd526cecb140abbb9a5de926e503570ef4eb240d7e04d211711e"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+        "sha256": "8b09e10e5922e7151e574bcd3306bfe692a5851cfc3d70fa0714e9c408ae1971"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "fea86112a179358626077a0957bd421794ee2f822e4f24e72584803619c6fd5d"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode.cs",
+        "sha256": "29e0fadf7f25d7399a09d6cde5eb8d4faba0063f3a990c045ab9114b52edba0b"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+        "sha256": "dd4c42143c7b9880e8c64733356da01a187440283350ab53df90000963b57cab"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.SoulRelicsArchiveInbox.cs",
+        "sha256": "09b67e7f48751f166ca929a20e32e52e2d48254d3a613cb68d17358dcc40da21"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs",
+        "sha256": "e68876ad141195d40ee4f81eb331b77b7979da29ec19c8f5323771e09c82a0e9"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.Treasury.cs",
+        "sha256": "8c9d296d51d7dc81f6a245068bdf8a753d2947e598c70fd603c9650ac20f5928"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Npcs.ListAndDetails.cs",
+        "sha256": "b87053391b17712612b82abf94315b8795ed5db16ba4439c2f9e9c2793e481ee"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.FactionsAndWorldNews.cs",
+        "sha256": "9c4334e9be4b5f701676ae376e7308a89ffeac3c9410c4c9c8771b39588431a8"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.TradeAndForge.cs",
+        "sha256": "24709acf679693f711a95f621fbe14a912a7ef4551da848a10915bca38e840a3"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.Politics.cs",
+        "sha256": "200565b27983728c3200517756d288ddbeb616e5d9809bf8444c0ac08e642656"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeArchiveCandidateService.cs",
+        "sha256": "122b3d2aa139749d79e15fbae293a66fd32d48f980f133fe32cb10d5b851e53a"
+      },
+      {
+        "path": "BookOfEternityClient/Services/AfterlifeArchiveActionState.cs",
+        "sha256": "462eecf745fcfed3c99c29241860dc6f771ebd327ce801a4cf0b8849316b8a24"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+        "sha256": "2fd7cc6f34bd4ad49d27e1fff2ad9abb4bbeb4f2bd3779c81e181c4a45189c1c"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserMortalWorldWriteService.cs",
+        "sha256": "524d0ab94ab03c0eaa09707da0bedfac1d20ad158aa1e426e0c1ca4a34b3c482"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserSarefStoryWriteService.cs",
+        "sha256": "142092791c24844eee69eb4a02062b8bc3c00f402ae556ff967c743b527cd7eb"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+        "sha256": "0373b719aa40ce7707628e2c574b26208268cc633f38a32b2ced2ddf96c1f19e"
+      },
+      {
+        "path": "BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs",
+        "sha256": "ec8d3719010fe29938e1669f9ba770c453309fb00681da2d62ed9b6e848ff4de"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "bdad2e0adc07a1154ef8a6653e509a576bcf829bac68b77c17cc59c171b039a9"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "9209f0886e984a1a79a764b0c0d0fdbb0fd6a0378dde7c1bea27c6df224332d1"
+      },
+      {
+        "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs",
+        "sha256": "7fbfce584b497c9124e8049de99b3fdadce71bef5852990ed551daa21592d8e7"
+      }
+    ]
+  }
+}

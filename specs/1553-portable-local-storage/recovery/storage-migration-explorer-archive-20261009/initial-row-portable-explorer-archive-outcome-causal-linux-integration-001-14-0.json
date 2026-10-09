@@ -1,0 +1,40 @@
+{
+  "mode": "leadership",
+  "command": "/shining_faction_leadership",
+  "target": "game_state/control/pending_shining_faction_leadership_transitions.json",
+  "result": "",
+  "Failure": null,
+  "Inputs": 5,
+  "LaterInputs": 0,
+  "RequestAttempts": 0,
+  "pendingAtCut": null,
+  "priorAtCut": null,
+  "afterImages": null,
+  "ConsoleSelections": [
+    {},
+    {},
+    {}
+  ],
+  "ActualSelections": [
+    "Хор Рассвета [dim](сила 73)[/]",
+    "отречение"
+  ],
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

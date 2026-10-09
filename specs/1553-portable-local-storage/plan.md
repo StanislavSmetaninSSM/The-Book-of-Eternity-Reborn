@@ -1,3 +1,33 @@
+## Explorer/Archive initial causal22 — 2026-10-09
+
+Frozen5dc0a2a0 passes independent SOURCE/FIXTURE/EXACT22. Plan050502 freshly builds integration
+85.9287163s/wall90.0930192s, exact22/1planned0executed. Actual050655 completes22/22,2PASS20FAIL,
+10.1870950s,exit1,no skips/duplicates/timeouts,both runner cleanup flags. Classification is16 genuine
+publication Unknown failures +4 fixture misses +2 known compensation PASS, not20 causal failures.
+All16 real cuts are actual MemberPublished/index0, actual original CSP, authentic uncommitted journal
+with SHA/exact retained bytes and foreign target; raw prior committed/compensation images remain exact.
+All42 explicit fixture-root receipts agree with physical absence. Downstream assertions after the first
+failing oracle remain unexecuted; raw comparisons are independently checked, not passed final assertions.
+
+Console normalization/equip/unequip/faction/forge and thrown-offering/Treasury compensation lose same-CSP
+and reach1–2 guarded inputs. Primary offering3 attempts two compensation admissions each; primary Treasury,
+candidate and bool-offering compensation each attempt one. Archive2 each attempt one ordinary admission
+plus separately tagged readonly closing1. Browser original forge Submit reaches9 validated-read hooks,
+1 mutation hook,1 ordinary admission +readonly closing1 after its real cut; safety refuses the admission,
+so no result/notification returns and form is not retired. All16 have zero later publication/recovery
+observer callbacks, which is not a claim of no attempted recovery. Known thrown offering/Treasury controls
+reach actual prepublication refusal once, genuine restoration Committed, exact baselines and no journal;
+ordinary known policy and evidence cleanup pass. No actual whole transaction rollback after Unknown claim.
+
+Four Cuts0 misses: companion anonymous JSON seed camel-cases required UpdateNPCs; empty guardian seed
+exits original attraction overview before input; political confirmation recipes use an obsolete label
+instead of actual Create pending request. Strict offered-choice wrapper refuses both, as intended. Correct
+only those four and isolate exact4 from the existing theory; retain16 causal+known2 without replay. No
+production change before causal classification/source gate. [Packet](recovery/storage-migration-explorer-archive-20261009/manifest.json)
+preserves88 saved/expanded/present-original artifacts and32 source-era Git pins; independent raw/carrier
+gate pending. Current fresh global catalog remains historicalfdc518/11313; this new fixture is not a fresh
+global discovery. Latest actual full GitHub-only restore e5; native/provider/double-close/fullplay unqualified.
+
 ## Explorer22 source-review fixture correction — 2026-10-09
 
 Frozen e37 is unbuilt/unexecuted. Independent review found two genuine recipe defects: obsolete attraction
