@@ -44,6 +44,8 @@ capture actual CSP before original generation-bound report-write/transient-delet
 Known best-effort/false/local flag semantics otherwise stay. Proposed final12 = causal7 + original known
 rollback authority/missing-backup2, diagnostic rollback ownership/write-refusal2, genuine Shining effects1.
 Frozen source/selection gate and fresh matching Plan required; no unrelated accepted selection replay.
+Source review caught the new related-category entry shape before any build; corrected to the existing
+{id,when} catalog contract. No runner failure or test execution is claimed for that draft.
 
 ## Accepted-continuation causal7 test-only WIP — 2026-10-09
 

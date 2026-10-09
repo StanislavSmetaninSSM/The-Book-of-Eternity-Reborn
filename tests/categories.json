@@ -19421,7 +19421,10 @@
         "BookOfEternityClient/Services/ProgressionScheduleService.cs"
       ],
       "related": [
-        "portable-accepted-continuation-outcome-causal-linux"
+        {
+          "id": "portable-accepted-continuation-outcome-causal-linux",
+          "when": "When changing actual uncertainty propagation at the original accepted continuation and bookkeeping consumers."
+        }
       ],
       "requirements": {
         "frontendBuild": false,
