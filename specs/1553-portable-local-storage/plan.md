@@ -1,3 +1,29 @@
+## Interaction actualGREEN8 / Cold actualGREEN2 / Engine causal8 — WIP, 2026-10-09
+
+One freshintegrationPlan22502518/4 atd4d09a57,0execution49.6657619s;
+separateactual Interaction2251278/8PASS12.4908305s2/2complete/strict8roots;
+Cold2251592/2PASS7.3376559s1/1complete/strict2roots;
+Engine2252258=4knownPASS/4genuinecausalFAIL15.1284377s1/1complete/strict16roots.
+Allbothcleanup/0skipduplicateTimeout. NoaggregateGREEN18.
+Interactionall4 andCold sameCSP+secondary/fullsettlement/noLater/Closing0,
+actualknownGuardianpower/receipt/Training900spend/receipt/Explorerhistory/
+QTEruntime/continuation/Coldactualgeneration+callback/noNativePreparation PASS.
+[Interactionpacket](recovery/storage-migration-original-interaction-close-20261009/manifest.json)
+66artifacts72pins (initial25/24+correctedQTERED13/24+GREEN28/24), originalsverified.
+[Coldpacket](recovery/storage-migration-original-cold-main-launch-close-20261009/manifest.json)
+26artifacts26pins originalsverified. Combinedsource/exact10PASS03752412;
+finalGREEN/raw/carrier gate next, knownlateclose/fullLaunch notqualified.
+Engine four actualoriginalowners/Intent/member0 reachsamegenuineCSPmaskedlateclose;
+inactivearchive outerordinarycatch returnsfalse; otherthree throwsecondaryIO.
+Fullsettlement/noLater/Closing0/currentgeneration and actualknownarchiveblobs/hash/
+retirement, correlatedinput deletion, stall report/matchingerror/delete, exact
+restoredworldfile/newfiledeletion/backups/currentvalidator PASS.
+[Enginepacket](recovery/storage-migration-original-engine-snapshot-close-20261009/manifest.json)
+33artifacts21pins originalsverified. Next minimalfour originalowning scopes
+CSPcapture/rethrowexistingRelease(false,sameexception) then combinedcausal/source/
+exact8gate andfreshGREEN8. Fullcatalog immediatelyafterthisacceptedstablebatch.
+B2–B5/native/fullgame/T061–T065/knownlateclose remainopen, no gameplaycontract change.
+
 ## Engine snapshot four original owners — test-first WIP, 2026-10-09
 
 Independentfixture/design/exact8 PASS3d988edd +911690b7/4094a6ce installedbyte-identical.

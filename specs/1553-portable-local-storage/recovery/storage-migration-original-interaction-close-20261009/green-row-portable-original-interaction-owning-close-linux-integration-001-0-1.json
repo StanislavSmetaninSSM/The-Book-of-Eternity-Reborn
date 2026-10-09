@@ -1,0 +1,18 @@
+{
+  "mode": "spirit_focus_training",
+  "KnownTrainingReceipt": {
+    "receiptId": "afterlife_training_receipt_6dfa888ce9754702a42d54d9e9ba6811",
+    "realm": "afterlife",
+    "sourceActorId": "self",
+    "sourceActorKind": "self_fallback",
+    "offerId": "self_spirit_focus_tier_2",
+    "targetId": "spirit_focus",
+    "targetName": "Средоточие Души",
+    "targetKind": "spirit_focus_self_training",
+    "targetValue": 2,
+    "inkFeathersSpent": 900,
+    "lightSparksSpent": 0,
+    "createdAtTurn": 22,
+    "createdAtUtc": "2026-10-09T22:51:35.3381368Z"
+  }
+}

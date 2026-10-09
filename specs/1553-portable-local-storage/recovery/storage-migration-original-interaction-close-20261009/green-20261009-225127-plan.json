@@ -1,0 +1,55 @@
+{
+  "Categories": [
+    "portable-original-interaction-owning-close-linux",
+    "portable-original-qte-acceptance-owning-close-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d4d09a57bb4ee47b9f8c43bcfe454dd018de68d8",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.8820377,
+  "Descriptors": [
+    {
+      "Name": "portable-original-interaction-owning-close-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-interaction-owning-close-linux",
+      "Categories": [
+        "portable-original-interaction-owning-close-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalInteractionOwnersRetainGenuinePublicationUncertaintyOnClose",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalInteractionOwnersRetainGenuinePublicationUncertaintyOnClose",
+          "Cases": 6
+        }
+      ]
+    },
+    {
+      "Name": "portable-original-qte-acceptance-owning-close-linux-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-qte-acceptance-owning-close-linux",
+      "Categories": [
+        "portable-original-qte-acceptance-owning-close-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalQteAcceptanceOwnerRetainsGenuinePublicationUncertaintyOnClose",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalQteAcceptanceOwnerRetainsGenuinePublicationUncertaintyOnClose",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}
