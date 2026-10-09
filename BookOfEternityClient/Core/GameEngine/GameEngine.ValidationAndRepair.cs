@@ -2392,29 +2392,43 @@ public partial class GameEngine
         string? expectedSessionGeneration = null)
     {
         const string path = "game_state/meta/guardians.json";
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        if (!string.IsNullOrWhiteSpace(expectedSessionGeneration))
-            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
-
-        var json = await _fs.ReadFileAsync(writeLease, path);
-        if (string.IsNullOrWhiteSpace(json))
-            return;
-
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
         try
         {
-            if (JsonNode.Parse(json) is not JsonObject root ||
-                !root.Remove(GuardianProjectState.QuestProgressUpdatesProperty))
-            {
-                return;
-            }
+            if (!string.IsNullOrWhiteSpace(expectedSessionGeneration))
+                ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
 
-            await _fs.WriteFileAtomicAsync(writeLease, path, root.ToJsonString(JsonOpts));
+            var json = await _fs.ReadFileAsync(writeLease, path);
+            if (string.IsNullOrWhiteSpace(json))
+                return;
+
+            try
+            {
+                if (JsonNode.Parse(json) is not JsonObject root ||
+                    !root.Remove(GuardianProjectState.QuestProgressUpdatesProperty))
+                {
+                    return;
+                }
+
+                await _fs.WriteFileAtomicAsync(writeLease, path, root.ToJsonString(JsonOpts));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to remove accepted-turn Guardian quest progress command surface.");
+                throw;
+            }
         }
-        catch (Exception ex)
+        catch (CoordinatedStatePublicationUncertainException failure)
         {
-            _logger.LogWarning(ex, "Failed to remove accepted-turn Guardian quest progress command surface.");
+            uncertainty = failure;
             throw;
         }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+        }
+
     }
 
     private static bool RequiresFreshNarrativePayload(string source)
@@ -7981,8 +7995,22 @@ public partial class GameEngine
 
     private async Task DeleteValidationRepairFilesAsync()
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        DeleteValidationRepairFiles(writeLease);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            DeleteValidationRepairFiles(writeLease);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+        }
+
     }
 
     private async Task DeleteValidationRepairFilesForSessionAsync(string expectedSessionGeneration)
@@ -8034,15 +8062,43 @@ public partial class GameEngine
 
     private async Task DeleteValidationRepairReadyCoreAsync()
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+        }
+
     }
 
     private async Task DeleteValidationRepairReadyForSessionAsync(string expectedSessionGeneration)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
-        _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+            _fs.DeleteFile(writeLease, ValidationRepairReadyPath);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+        }
+
     }
 
     private async Task WriteValidationRepairFileForSessionAsync(

@@ -1,3 +1,14 @@
+## Original engine cleanup correction installed — WIP, 2026-10-09
+
+Exactlyfour original cleanup scopes capture/rethrow genuine CSP and callexisting
+Release(false,samefailure). Originalbody/order, expectedgeneration checks and
+nested Guardian loggercatch retained; accepted cleanupForSession existingwrapper
+and read-onlyowner unchanged. Original4knownPASS/4causalFAIL source0ae19ff2
+retained at17af0b80/raw27; packet25artifacts14pins (27changed remote paths
+include manifest/plan), corrected earlier literal artifact count. Fixture/helper/
+category unchanged; runtimeUNBUILT/UNRUN before independentRED/source/exact8
+gate andfreshselectedGREEN8. No schema/pendingformat/GM mechanic change.
+
 ## Original engine cleanup causal baseline — WIP, 2026-10-09
 
 Fixture source0ae19ff2 fresh Plan2144588/1,0execution50.5939627s;
@@ -7,7 +18,7 @@ reached; genuine CSP masked bysame lateoriginalclose IOException. Fullsettlement
 no later mutation/read/recovery/acq/publication, Closing0; knownexact3or1
 deletions/Guardian retainedpayload andcommandremoval PASS.
 [Packet](recovery/storage-migration-original-engine-repair-close-20261009/manifest.json)
-27artifacts/14pins verifiedoriginals, immutableRED. Nextminimal4sameoriginalscopes
+25artifacts/14pins verifiedoriginals, immutableRED. Nextminimal4sameoriginalscopes
 CSPcapture/rethrowexistingRelease(false), preserveinternalGuardian logger/order
 andexpectedgeneration predicates. Inventory finalGREEN/raw/carrier PASS72a71dbe.
 No accepted GM semantic/game/native/B2 qualification; combinedcatalog pending.
