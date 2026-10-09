@@ -1,3 +1,19 @@
+## Engine exact-name causal baseline — WIP, 2026-10-09
+
+Source1a4dcbc2 (fixture teardown independently PASS): fresh integration Plan182128
+selects25/1,0execution55.7195451s. Actual182242 completes25/25,6PASS19causalFAIL,
+9.6264427s,0duplicate/timeout,bothcleanup. All22newrows emitted strict roots removed;
+three old original neighbors PASS retain original class cleanup. Producers14negative:
+case/fixed/output/story/cleanup aliases silentlyfold/omit; baseline backslash/trim/fixed
+reject too late after retained evidence removal and newcopy/init; backup trimreports
+IOException instead of raw representability refusal. Cleanup3 silentlyaccept rawinput;
+suppliedrollback2 rejectlate after oldevidence removal. Unicode3 and originalneighbors3
+PASS. Full actual before/after byte maps andgeneration retained, not inferredfrom tests.
+[Packet](recovery/storage-migration-engine-snapshot-20261009/manifest.json)55artifacts/22pins,
+including separate CS1061 preparationfailure0execution. No runtime correction yet.
+Next producer-only preflight at baseline/backup top and raw preserved cleanup validation;
+shared repair/restoration enumerator unchanged. No other producer/native qualification.
+
 ## Engine fixture build correction — WIP, 2026-10-09
 
 Fresh Plan181449 at21d15221 failed integration compilation at three AudioService.Dispose

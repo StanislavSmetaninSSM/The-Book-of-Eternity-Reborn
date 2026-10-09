@@ -1,0 +1,36 @@
+{
+  "route": "backup",
+  "mode": "case_alias",
+  "root": "/tmp/boe-gameengine-turnlifecycle-889fb446f24447279b784ac9d6a25987",
+  "names": [
+    "lore/Entry.json",
+    "lore/entry.json"
+  ],
+  "failure": null,
+  "before": {
+    "lore/entry.json": "//57AH0AIAA=",
+    "lore/Entry.json": "//57AH0AIAA=",
+    "game_state/control/pending_turn_snapshot.authority.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuYXV0aG9yaXR5Lmpzb24=",
+    "game_state/control/pending_turn_snapshot.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuanNvbg==",
+    "game_state/control/terminal_protocol_failure_request.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC90ZXJtaW5hbF9wcm90b2NvbF9mYWlsdXJlX3JlcXVlc3QuanNvbg==",
+    "game_state/meta/soul_state.json": "77u/eyJjdXJyZW50UmVhbG0iOiJDaGFvcyBTZWEifQ==",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/pending_turn_snapshot/old.bin": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3Qvb2xkLmJpbg=="
+  },
+  "after": {
+    "lore/entry.json.rollback.exact-engine-names": "//57AH0AIAA=",
+    "lore/entry.json": "//57AH0AIAA=",
+    "lore/Entry.json": "//57AH0AIAA=",
+    "game_state/control/pending_turn_snapshot.authority.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuYXV0aG9yaXR5Lmpzb24=",
+    "game_state/control/pending_turn_snapshot.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuanNvbg==",
+    "game_state/control/terminal_protocol_failure_request.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC90ZXJtaW5hbF9wcm90b2NvbF9mYWlsdXJlX3JlcXVlc3QuanNvbg==",
+    "game_state/meta/soul_state.json.rollback.exact-engine-names": "77u/eyJjdXJyZW50UmVhbG0iOiJDaGFvcyBTZWEifQ==",
+    "game_state/meta/soul_state.json": "77u/eyJjdXJyZW50UmVhbG0iOiJDaGFvcyBTZWEifQ==",
+    "game_state/inventory/item_identity_index.json.rollback.exact-engine-names": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/pending_turn_snapshot/old.bin": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3Qvb2xkLmJpbg=="
+  },
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJkMTNiZmU1YWU3OTQ0OTczODQyOWJhM2JmNGUzZWJiYSJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJkMTNiZmU1YWU3OTQ0OTczODQyOWJhM2JmNGUzZWJiYSJ9",
+  "resultReturned": true
+}
