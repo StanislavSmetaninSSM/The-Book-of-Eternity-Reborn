@@ -19924,6 +19924,56 @@
           ]
         }
       ]
+    },
+    {
+      "id": "portable-image-storage-operations-linux",
+      "responsibility": "Twelve finite original image operations: cleanup must use per-file common publication and stop Unknown while retaining prior deletions; ordinary refusal/counts, canonical-target export exclusion including aliases, true external export controls, original scene outcome, literal Linux filename roundtrip/staging and known post-commit logging. Offline per-instance HTTP only.",
+      "excludes": "No network/provider or actual desktop launch. Gallery/constructor directory preparation, mod/world-profile lists, story export, original settings/GameLoop continuation and native Windows remain separate. Raw bypass before migration is not an authentic journal Unknown.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ImageService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ImageStorageOutcomeTests.OriginalImageOperationsPreserveStorageOutcomeAndExactTargets"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "portable-image-export-known",
+      "responsibility": "Three existing original external image export controls: latest image choice, explicit overwrite and missing-source result; preserve these semantics when canonical destinations are excluded.",
+      "excludes": "No network/provider or actual desktop launch. Gallery/constructor directory preparation, mod/world-profile lists, story export, original settings/GameLoop continuation and native Windows remain separate. Raw bypass before migration is not an authentic journal Unknown.",
+      "changeHints": [
+        "BookOfEternityClient/Services/ImageService.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_CopiesLatestVersionToTargetDirectory",
+            "BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_DoesNotOverwriteExistingFileUnlessAllowed",
+            "BookOfEternityClient.Tests.ImageServiceTests.ExportEntityImage_MissingSource_ReturnsClearFailure"
+          ]
+        }
+      ]
     }
   ]
 }

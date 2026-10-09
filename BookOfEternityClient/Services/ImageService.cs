@@ -66,7 +66,8 @@ public class ImageService
     private readonly DesktopPathOpener _desktopPathOpener;
     private readonly Configuration.GameSettings _settings;
     private readonly LocalizationManager _loc;
-    private static readonly HttpClient _httpClient = new() { Timeout = TimeSpan.FromSeconds(120) };
+    private static readonly HttpClient DefaultHttpClient = new() { Timeout = TimeSpan.FromSeconds(120) };
+    private readonly HttpClient _httpClient;
     private readonly string _imageBaseDir;
 
     // Entity type subdirectories
@@ -93,11 +94,19 @@ public class ImageService
     public bool GenerateWithoutDisplay => _settings.GenerateImagesWithoutDisplay;
 
     public ImageService(Core.FileSystemManager fs, Configuration.GameSettings settings, LocalizationManager loc, ILogger<ImageService> logger, DesktopPathOpener? desktopPathOpener = null)
+        : this(fs, settings, loc, logger, desktopPathOpener, DefaultHttpClient)
+    {
+    }
+
+    // Per-instance transport boundary for deterministic offline publication checks.
+    internal ImageService(Core.FileSystemManager fs, Configuration.GameSettings settings, LocalizationManager loc,
+        ILogger<ImageService> logger, DesktopPathOpener? desktopPathOpener, HttpClient httpClient)
     {
         _fs = fs;
         _settings = settings;
         _loc = loc;
         _logger = logger;
+        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _desktopPathOpener = desktopPathOpener ?? new();
         _imageBaseDir = _fs.ResolvePath("images");
         Directory.CreateDirectory(_imageBaseDir);

@@ -1,3 +1,38 @@
+## F16 image publication/cleanup/export — bounded fixture WIP, 2026-10-09
+
+Source #1553,T062/T063/T064/T065 and R25/F16 inventory. Prerequisite C2 engine12
+final independent Astra XHigh catalog/carrier PASSaf431f82;116artifacts160pins.
+Next original ImageService unit covers per-file cleanup/counts, generated scene
+outcome and image export confinement. Gallery/constructor directory preparation,
+mod/world-profile listing, story export and snapshot path producers remain separate;
+no whole F16 or original settings/GameLoop continuation acceptance is implied.
+
+New finite12 uses independent current-generation roots and actual original public
+services. An internal per-instance HttpClient constructor supplies an offline handler
+returning2048synthetic bytes; the unchanged public signature still uses the same shared
+120s client. No live provider/network/desktop call occurs. This wiring is the only
+production delta before RED; write/delete/catch/path behavior is unchanged.
+
+Three cleanup rows preserve ordinary successful counts, expose a known per-file
+refusal and require an actual second-delete Unknown with the first confirmed deletion
+retained. Current raw File.Delete bypass may yield zero publisher callbacks and actual
+unprotected deletions; classify that source/byte-proven mechanism gap separately from
+an authentic journal Unknown, never claim an unreached cut as genuine CSP RED. Four
+exports compare normalized canonical and canonical-alias refusal BEFORE mkdir/copy
+against true external and external-alias success. Five generation rows cover actual
+scene Unknown/success, literal backslash generated/staged filenames and post-commit
+logger failure. Linux host identity must not rewrite a literal backslash as a separator.
+
+All new12 are unbuilt/unrun. Next independent source/fixture/exact12 gate, fresh Plan12
+and baseline; then demonstrated runtime migration. Known three existing external
+latest/overwrite/missing-source controls join GREEN15. Planned runtime keeps one
+original admitted cleanup lease across enumeration and per-file publications, stops
+CSP/session replacement, retains prior confirmed deletes, and claims no batch atomicity.
+Generated publication preserves original CSP through owning close and cannot lose a
+confirmed result to logging. Canonical image export is refused even through normalized
+or resolved ancestor aliases; truly external copy stays technical. No blanket BasePath
+or external hard-link guarantee, GM contract change or native Windows claim.
+
 ## Original C2 GameEngine accepted bounded12 — 2026-10-09
 
 Independent SOURCE/RED-RAW/EXACT12 PASS4b42709d. Tested runtime/source

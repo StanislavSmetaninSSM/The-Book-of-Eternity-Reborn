@@ -974,9 +974,37 @@
     },
     {
       "category": "portable-spiritual-c2-engine-outcome-linux",
-      "reason": "T062/T064 original C2 GameEngine causal fixture12 WIP. Nine authentic publisher cuts and three actual ordinary Escape controls; original signed snapshot, lawful selected wound and A/B progress. Source/fixture/exact12 review then fresh Plan12 and RED; do not replay accepted service26 without affected behavior.",
+      "reason": "Original C2 engine12 accepted at4b42709d/af431f82: nine authentic uncertainty cuts and three actual Escape/A-to-B controls; same original CSP, prior progress and zero subsequent canonical work. This bounded entry/wait/reconciliation cohort is unchanged and not replayed; whole-turn/native/secondary-close remain open.",
       "contracts": [
         "#1553",
+        "FR-003",
+        "FR-005",
+        "FR-006",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS"
+      ]
+    },
+    {
+      "category": "portable-image-storage-operations-linux",
+      "reason": "F16/T062/T064 new finite12 WIP source/fixture gate then Plan12/RED. Classify actual scene Unknown separately from raw cleanup bypass, canonical export violation, literal filename mismatch and known committed logging error. Per-instance offline HTTP has unchanged production default; no provider/display.",
+      "contracts": [
+        "#1553",
+        "F16",
+        "FR-002",
+        "FR-003",
+        "FR-005",
+        "FR-006",
+        "T062-STORAGE-OUTCOMES",
+        "T064-STORAGE-CUTS"
+      ]
+    },
+    {
+      "category": "portable-image-export-known",
+      "reason": "F16 preserves existing external destination/latest/overwrite/missing-source behavior. Three exact controls join GREEN with new12; no Windows-return-early traversal/junction body counted.",
+      "contracts": [
+        "#1553",
+        "F16",
+        "FR-002",
         "FR-003",
         "FR-005",
         "FR-006",
