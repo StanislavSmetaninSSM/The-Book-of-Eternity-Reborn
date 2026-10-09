@@ -1,0 +1,59 @@
+{
+  "Categories": [
+    "portable-prepared-remote-outcome-linux",
+    "portable-cleanup-prepared-neighbors"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "7cf3cdf99c04374711718545e14ca19b198d6810",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.4778644,
+  "Descriptors": [
+    {
+      "Name": "portable-cleanup-prepared-neighbors-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-cleanup-prepared-neighbors",
+      "Categories": [
+        "portable-cleanup-prepared-neighbors"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence|FullyQualifiedName=BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-prepared-remote-outcome-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-prepared-remote-outcome-linux",
+      "Categories": [
+        "portable-prepared-remote-outcome-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PreparedRemoteOutcomeTests.OriginalRemoteCloseRetainsPreparedPublicationDecision",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PreparedRemoteOutcomeTests.OriginalRemoteCloseRetainsPreparedPublicationDecision",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,23 @@
+## Prepared original remote receipt final8 checkpoint — 2026-10-09
+
+Runtime7cf3cdf9 independently source/exact8 PASS. Matching Plan013102 fresh unit/support/bridge
+build37.1860644s, wall40.9737922,8/2planned0executed. Actual013211 complete8/8PASS,
+2/2descriptors,14.4882009s,exit0,no skips/duplicates/timeouts,both cleanup flags. All three actual
+remote cases now pass desired immutable close outcomes: Committed3, RolledBack4, Uncertain5.
+Each retains exact original IDs/fullidentity, server receipt, client ACK/CloseObserved and owner
+query ClosedObserved/ClosingFailedfalse. Actual storage cut1/bytes/runtime Apply1-or0 and Unknown
+journal/UI-lock/no later pre-open-hook or mutation attempts pass; explicit evidence repair follows
+capture. All original owners retire and all physical guardians report ECHILD/no emergency/deadline/
+failures. Five known Prepared controls also pass; no unrelated AtomicCore branch rerun.
+
+[Saved packet](recovery/storage-migration-prepared-remote-20261009/manifest.json) contains59
+artifacts/26 historical source pins, including initial three real receipt failures. Independent final
+raw/carrier review pending; no new full GitHub clone claimed (latest parent restore remains e5).
+Global catalog discovery is deferred until the already-saved progression integration draft has its
+reviewed build; historical500/11291 belongs clean102d only. This scoped receipt proof does not
+qualify native Windows, injected secondary close failure, full browser UI or all migration tails.
+Next: independent final packet gate, then review frozen progression4 fixture before its own build.
+
 ## Prepared original remote capture correction WIP — 2026-10-09
 
 Independent raw causal3 PASS at54d; preserved carrier5033d7ec has29 artifacts/12 historical

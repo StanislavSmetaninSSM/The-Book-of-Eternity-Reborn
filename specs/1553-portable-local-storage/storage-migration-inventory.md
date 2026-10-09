@@ -1,3 +1,16 @@
+## Current Prepared original remote receipt checkpoint — 2026-10-09
+
+Connected source gap was causally reproduced through original Running neutral-owner IPC:
+all3 actual Prepared results closed Completed despite Committed/RolledBack/Uncertain publication.
+Isolated capture correction7cf retains the actual decision before callbacks/cleanup/close. Final8
+passes (remote3 +knownPrepared5),14.4882009s; exact original receipt/clientACK/fullidentity and
+actual journal/byte/no-continuation oracles pass. Packet59 artifacts/26 pins retains RED and GREEN;
+independent final carrier review pending. No new full restore, native/UI or secondary-close claim.
+Global catalog is deferred for the unbuilt progression integration draft; old500/11291 stays historical.
+Remaining source-audit candidates include progression/story append and enclosing transition catches,
+LiveTurnPreparation cleanup, browser rollback staging, and canonical snapshot initialization wrappers;
+these are not closed by this Prepared unit. F16/F18 remain open.
+
 ## Current F10 bounded cleanup checkpoint — 2026-10-09
 
 Original engine cleanup/staging, nested/final QTE cleanup, browser atomic cleanup/release and
@@ -5,8 +18,8 @@ Prepared explicit-Uncertain continuation are corrected through runtime102d. Pass
 composed26 unique Linux obligations:18@ef59782 +2@2755 +6@102d. Actual journals/foreign bytes,
 original outcomes/causes, zero reached later work and separate readonly finalization are retained;
 known cleanup refusal/committed debt/rollback policies and exact-directory sibling scope remain.
-Catalog500/11291 valid0. [Packet](recovery/storage-migration-cleanup-20261009/manifest.json)
-has111 artifacts/98 historical pins verified; final independent carrier/parent fresh restore pending.
+Historical catalog500/11291 valid0 at102d. [Packet](recovery/storage-migration-cleanup-20261009/manifest.json)
+has111 artifacts/98 historical pins verified; final independent carrier and parent fresh restore PASSe5.
 No remote main ACK, injected secondary close, full browser-QTE UI, native or whole-turn guarantee.
 Progression's three source-identified swallowing catches remain a separate T062 tail; F16/F18 open.
 
