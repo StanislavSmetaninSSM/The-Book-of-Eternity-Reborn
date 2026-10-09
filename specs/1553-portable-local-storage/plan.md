@@ -1,3 +1,30 @@
+## Story final12 / current catalog checkpoint — 2026-10-09
+
+Runtimeb79f3771 independent SOURCE/EXACT12 and RAW12 PASS. Matching Plan021100 rebuilt current
+integration41.3640666s and unit12.8615196s,wall61.6029878,12planned/3descriptors/0executed.
+Actual021219 complete12/12PASS in3descriptors,21.2819654s,exit0,no skipped/duplicate/timeout,
+bothcleanup. All seven actual story MemberPublished/index0 cuts reached. Known rollback2 retains
+exact Before/absent journal/same known logger exception and best-effort completion. Unknown5
+now executes/passes same-original-CSP and exact retained journal/foreign target assertions, with
+later measured read/mutation/ordinary-lease/publication/recovery phases0. Original life/incarnation
+readonly closing1 each remains separate; ascension0. All three eight-image comparisons now execute
+and pass, input1/1/0 and requestattempts0; all seven owned roots explicitly removed. Existing Story
+lease-wait/replaced4 and known life dispatch-failure1 pass without changing their bodies or policy.
+
+Current catalog021248 uses those fresh matching both-project outputs, discovery505categories/
+11296methods-files valid,0executed,8.1414832s,exit0/bothcleanup. It is not a broad test run.
+[Story packet](recovery/storage-migration-story-20261009/manifest.json) stores64 artifacts/21
+historical Git pins, locally checked stored/expanded/original equality and source hashes; final
+independent integrity/docs gate pending. Causal2P5F remains preserved separately, including its
+unexecuted downstream assertions. No native/full-transition/gameplay or injected secondary-close
+claim. Latest parent fresh GitHub-only restore remains e5; no intervening restoration is invented.
+
+Next bounded source-design: prepared-Shining clear/idle repair with actual original normalization
+and explicit helper-only limits where full bootstrap is not executed; closed private cluster may
+be retired with its already-confirmed exact census. Other preparation owners, Explorer, authoritative
+Ready/worker, C2 propagation and F16/F18 remain open; T062/T063 are not checked off. No GM-authored
+contract/schema/math change in this client-owned outcome unit, so no GM prompt/example edit.
+
 ## Story runtime correction / exact12 WIP — 2026-10-09
 
 Independent and parent raw classification accepted the reached Story causal7 at8ac; saved carrier

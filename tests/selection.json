@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-story-outcome-neighbors",
-      "reason": "Final Story12 includes unchanged unit lease-wait/replaced4 and original life dispatch-error1 for public Append owned-close/catch behavior; moved exact ownership without broad narrative/turn lifecycle replay.",
+      "reason": "Final Story12 atb79/021219 passes unchanged unit lease-wait/replaced4 and original life dispatch-error1 beside causal7; no broad narrative/turn lifecycle replay.",
       "contracts": [
         "#1553",
         "FR-003",
@@ -13,7 +13,7 @@
     },
     {
       "category": "portable-story-outcome-causal-linux",
-      "reason": "Causal actual020715 at8ac completes7: known rollback2 PASS, original append/transition5 reached Unknown failures. Actual journals/prior bytes/owned cleanup retained; runtime correction and final neighbors pending.",
+      "reason": "Causal7 at8ac completes2P5 genuine failures; final021219 atb79 passes all7 with same original CSP/no measured continuation, prior exact images, known rollback and owned cleanup. Final12 includes five exact known neighbors.",
       "contracts": [
         "#1553",
         "FR-003",
