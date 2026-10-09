@@ -1,3 +1,17 @@
+## Original engine cleanup causal baseline — WIP, 2026-10-09
+
+Fixture source0ae19ff2 fresh Plan2144588/1,0execution50.5939627s;
+actual2145578complete=4knownPASS/4causalFAIL7.6977858s,1/1bothcleanup,
+0skipduplicateTimeout/strict8roots. Allfour exactactualowners/Intent/cutindex0
+reached; genuine CSP masked bysame lateoriginalclose IOException. Fullsettlement,
+no later mutation/read/recovery/acq/publication, Closing0; knownexact3or1
+deletions/Guardian retainedpayload andcommandremoval PASS.
+[Packet](recovery/storage-migration-original-engine-repair-close-20261009/manifest.json)
+27artifacts/14pins verifiedoriginals, immutableRED. Nextminimal4sameoriginalscopes
+CSPcapture/rethrowexistingRelease(false), preserveinternalGuardian logger/order
+andexpectedgeneration predicates. Inventory finalGREEN/raw/carrier PASS72a71dbe.
+No accepted GM semantic/game/native/B2 qualification; combinedcatalog pending.
+
 ## Original engine repair/command cleanup — test-first WIP, 2026-10-09
 
 Installed independent fixture/design/exact8 PASS5051180b byteidentically. Four

@@ -1,0 +1,52 @@
+{
+  "mode": "guardian_command",
+  "uncertain": false,
+  "root": "/tmp/boe-original-engine-repair-close-28a653f928a045dfb67f2fe35fc00b98",
+  "boundary": "GameEngine+<RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync>",
+  "actualOwnerState": "BookOfEternityClient.Core.GameEngine+<RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync>d__515/<writeLease>5__1",
+  "acquisitionPauses": 1,
+  "publicationPauses": 1,
+  "attachments": 0,
+  "Calls": 0,
+  "failure": null,
+  "samePrimary": false,
+  "sameSecondary": false,
+  "lockAvailable": true,
+  "activeAfter": false,
+  "ambientClosed": true,
+  "mainClosed": true,
+  "contextClosed": true,
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiIwYWZjYjVmMzBjZDE0YzMyYjg5YTY2NzlmMGZkZGU0NSJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiIwYWZjYjVmMzBjZDE0YzMyYjg5YTY2NzlmMGZkZGU0NSJ9",
+  "targetAfter": "77u/ewogICJndWFyZGlhbnMiOiBbXSwKICAicmV0YWluZWQiOiAib3JpZ2luYWwiCn0=",
+  "beforeFiles": {
+    "/tmp/boe-original-engine-repair-close-28a653f928a045dfb67f2fe35fc00b98/game_session/game_state/control/gm_validation_repair_artifact_stall_report.json": "77u/eyJyZXRhaW5lZCI6ImdhbWVfc3RhdGUvY29udHJvbC9nbV92YWxpZGF0aW9uX3JlcGFpcl9hcnRpZmFjdF9zdGFsbF9yZXBvcnQuanNvbiJ9",
+    "/tmp/boe-original-engine-repair-close-28a653f928a045dfb67f2fe35fc00b98/game_session/game_state/control/validation_repair_request.json": "77u/eyJyZXRhaW5lZCI6ImdhbWVfc3RhdGUvY29udHJvbC92YWxpZGF0aW9uX3JlcGFpcl9yZXF1ZXN0Lmpzb24ifQ==",
+    "/tmp/boe-original-engine-repair-close-28a653f928a045dfb67f2fe35fc00b98/game_session/game_state/control/validation_repair_ready.json": "77u/eyJyZXRhaW5lZCI6ImdhbWVfc3RhdGUvY29udHJvbC92YWxpZGF0aW9uX3JlcGFpcl9yZWFkeS5qc29uIn0=",
+    "/tmp/boe-original-engine-repair-close-28a653f928a045dfb67f2fe35fc00b98/game_session/game_state/meta/guardians.json": "77u/eyJndWFyZGlhbnMiOltdLCJndWFyZGlhblF1ZXN0UHJvZ3Jlc3NVcGRhdGVzIjpbXSwicmV0YWluZWQiOiJvcmlnaW5hbCJ9"
+  },
+  "afterFiles": {
+    "/tmp/boe-original-engine-repair-close-28a653f928a045dfb67f2fe35fc00b98/game_session/game_state/control/gm_validation_repair_artifact_stall_report.json": "77u/eyJyZXRhaW5lZCI6ImdhbWVfc3RhdGUvY29udHJvbC9nbV92YWxpZGF0aW9uX3JlcGFpcl9hcnRpZmFjdF9zdGFsbF9yZXBvcnQuanNvbiJ9",
+    "/tmp/boe-original-engine-repair-close-28a653f928a045dfb67f2fe35fc00b98/game_session/game_state/control/validation_repair_request.json": "77u/eyJyZXRhaW5lZCI6ImdhbWVfc3RhdGUvY29udHJvbC92YWxpZGF0aW9uX3JlcGFpcl9yZXF1ZXN0Lmpzb24ifQ==",
+    "/tmp/boe-original-engine-repair-close-28a653f928a045dfb67f2fe35fc00b98/game_session/game_state/control/validation_repair_ready.json": "77u/eyJyZXRhaW5lZCI6ImdhbWVfc3RhdGUvY29udHJvbC92YWxpZGF0aW9uX3JlcGFpcl9yZWFkeS5qc29uIn0=",
+    "/tmp/boe-original-engine-repair-close-28a653f928a045dfb67f2fe35fc00b98/game_session/game_state/meta/guardians.json": "77u/ewogICJndWFyZGlhbnMiOiBbXSwKICAicmV0YWluZWQiOiAib3JpZ2luYWwiCn0="
+  },
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

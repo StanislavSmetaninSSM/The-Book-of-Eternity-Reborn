@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-original-engine-repair-owning-close-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0ae19ff26f91b8964ab1be41f7ec09f9ce464e2b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 50.3154829,
+  "Descriptors": [
+    {
+      "Name": "portable-original-engine-repair-owning-close-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-engine-repair-owning-close-linux",
+      "Categories": [
+        "portable-original-engine-repair-owning-close-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRepairCleanupOwnersRetainGenuineUncertaintyOnClose",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRepairCleanupOwnersRetainGenuineUncertaintyOnClose",
+          "Cases": 8
+        }
+      ]
+    }
+  ]
+}
