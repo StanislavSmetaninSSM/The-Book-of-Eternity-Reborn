@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-browser-snapshot-exact-names-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "59b83d0c58ed90d6632cfa9ba9092871d2f8380b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.6758851,
+  "Descriptors": [
+    {
+      "Name": "portable-browser-snapshot-exact-names-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-browser-snapshot-exact-names-linux",
+      "Categories": [
+        "portable-browser-snapshot-exact-names-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.OriginalBrowserGachaAdmitsRawSnapshotNamesBeforeStageOrSpend|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.OriginalBrowserQueueAdmitsRawInventoryAndRollbackBeforeCopiesOrFailureCleanup|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.FreshOriginalLeases_RetainPendingBackupAndBlockSecondPull|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 17,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.OriginalBrowserGachaAdmitsRawSnapshotNamesBeforeStageOrSpend",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.OriginalBrowserQueueAdmitsRawInventoryAndRollbackBeforeCopiesOrFailureCleanup",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.FreshOriginalLeases_RetainPendingBackupAndBlockSecondPull",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxTests.RealBrowserPull_PublishesExactPreSpendBackupAndQueuedTurn",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

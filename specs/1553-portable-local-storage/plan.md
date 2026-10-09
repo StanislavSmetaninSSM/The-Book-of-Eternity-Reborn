@@ -1,3 +1,21 @@
+## Browser original exact-name causal RED17 — WIP, 2026-10-09
+
+Fixture/design/exact17 independent AstraXHigh PASS59b83d0c. Fresh integration
+Plan18325217/1,0execution53.8184505s; actual18343617complete=4PASS13causalFAIL,
+14.3891770s,0skip/duplicate/timeout,bothcleanup. Publicgacha6negatives perform30–51
+actualmutations: silentaliases queue/spend successfully, backslash/trim fail mapped
+late androllback restoresfinaltree after49/51mutations. Borrowedqueue7negatives:
+aliassuccess after10/11writes; backslash/trim and rawsuppliedrollbackvalue failafter
+19–21writes anddelete4retainedoldfiles. Genuine originalbackup/getpending prerequisites
+andactualfullmaps/generation retained; Unicode2 andoldpublicgacha2 PASS.
+[Browser packet](recovery/storage-migration-browser-snapshot-20261009/manifest.json)
+24artifacts/13pins originalsverified,15newemittedrootsabsent; originaltwo retainstrict
+originalfixturecleanup output. No browserruntimechange yet. Minimalguardoutside
+publicExecuteAtomic andqueuecleanupcatch/Replace, preserving own JSON/lore eligible
+cohort+story/fixedphysicalmatches; notengine broadgame_state admission policy.
+Engine finalraw/catalog/carrier independentPASS7274da21,113artifacts/44pins,
+584/11355discovery0. Continue otherproducers/owners; B2–B5paused/T061–T065unchecked.
+
 ## Browser raw producer test-first — WIP, 2026-10-09
 
 Original publicgacha7+borrowedqueue8+originalpublicgacha2 finite17/onecategory
