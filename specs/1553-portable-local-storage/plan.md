@@ -1,3 +1,60 @@
+## SAFE STOP — migration #1553, model handoff, 2026-10-09
+
+Owner requested a safe stop for a separate next turn using Sol 6.1 xhigh. This does
+not switch the currently running model. Cloud workspace only; #1536/B2–B5 remain
+paused. No next implementation block, build, test, discovery or live GM was started
+for this stop. Active branch: `1553-storage-migration-cloud-20261008`.
+
+Published source WIP: `4fec2fbddfa511e6b140e22d10dc72a5d591d99b`.
+Independent Astra XHigh **SOURCE/FIXTURE/EXACT5 is pending, not assessed**. These
+five source changes have not been built or run. The last fresh integration build
+belongs to `3fe28a9df69cd943d0f920260ff3882274a0841e`; do not use it to execute4fec.
+
+Completed independent Astra XHigh **RAW4/CARRIER/HISTORY PASS** applies to
+`b875281d83ca50b596f35212e5af32d0903fad44`: four actual passing results,124journal
+witnesses, unchanged emitted generations and cleanup; all66artifacts/57sourcepins.
+Writer rechecked all66stored/decompressed/original artifacts and57pins at this stop.
+The original lifecycle result remains **composed9PASS**, **bindingcold1FAILED**
+(pre-existing B2 force_binding contract conflict), **nativeworker1UNRUN**. It is not
+one ten-case GREEN run. Earlier pending-review labels below are historical.
+
+**Exact next step after the separate user launch:** obtain independent Astra XHigh
+source/fixture/exact5 review of4fec. Only after that gate, run a fresh integration
+PlanOnly for exactly these three owners (2+2+1):
+
+```powershell
+./scripts/test-csharp.ps1 -Category @("portable-spiritual-dependent-file-recovery","portable-spiritual-interruption-finalization","portable-spiritual-automatic-cold-recovery") -PlanOnly -Parallelism 1
+```
+
+After the fresh build and exact-selection gate pass, run the same selection with
+`-NoBuild -Parallelism 1`; then one discovery-only `-ValidateCatalog -NoBuild` with
+fresh required project outputs. Preserve actual counts, failures and cleanup,
+independently review the evidence and publish the next checkpoint. Do not run the
+broad spiritual owner, Full/Fast/PreMerge, native Windows or a live GM here. The
+unchanged nine previously accepted cases need no replay without a new reason.
+
+Remaining migration queues are Prepared, Image source admission, F16 signed/ZIP
+producers, original owned-close consumers, authoritative inventory reconciliation
+and fresh GitHub-only restoration. T061–T065 remain unchecked. Preserve existing
+requirements, scenarios and authority; do not solve the deferred B2 contract here.
+An already-written local Prepared test sketch is preserved only as an inert
+[compressed draft](recovery/storage-migration-spiritual-lifecycle-20261009/PreparedNestedSettingsOutcomeTests.unreviewed-draft.cs.gz).
+It is not in a project, not compiled/run/reviewed, and provides no qualification.
+Do not apply it automatically or start that block before the current five gate.
+Draft original SHA256: `bb46fd2d01de88dd8dfe575024154f727a66339c531d562856e3241c9d4edb56`; original bytes: 11065.
+
+Stop verification: both delegated agents are completed; the final local process
+census found no dotnet/pwsh/testhost/vstest/MSBuild/Git process or active build/test
+writer. Earlier idle MSBuild nodes are no longer present. Source/evidence changes
+are frozen. Local Git HTTPS authentication was rejected; the existing connected
+GitHub app successfully read the remote branch4fec and unchanged
+main `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`. Use its non-force commit/ref API to
+preserve this WIP metadata and draft, then independently re-read the exact remote
+SHA and changed blobs. No credentials, CI, protection, main or issue state change.
+This checkpoint's exact carrier SHA and readback outcome belong in the final
+handoff. No fresh full GitHub-only clone of4fec or this carrier was performed;
+remote persistence is not a new full-checkout/build/recovery qualification.
+
 ## F18 shared-helper consumers5 — source WIP, 2026-10-09
 
 Baseb875281d preserves composed9/currentbindingB2failure/native1unrun; raw4 finalgate pending.
