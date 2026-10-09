@@ -1,3 +1,33 @@
+## Lore/realm runtime WIP and finite14 — 2026-10-09
+
+Independent raw and carrier1f6e73cb gates PASS (26/14); parent separately verified original7 raw and
+all owned roots. Four real Unknown losses and physical routing absence justify this bounded delta.
+Clear now guards original general mutation/current generation, enumerates only trusted current_world
+with rollback-name exclusions, preserves exact host spelling and deletes each file via explicit-lease
+ordinary publication. It retains sequential partial outcomes and directories, without a whole-tree
+transaction. Four direct CSP catch exclusions cover realm update and original MainMenu incarnation/
+reentry/ordinary return. Clear plus realm commit, ordinary return and Shining service preserve direct
+CSP before their same original owned lease closes using the existing release helper(completed:false).
+Known/non-CSP close, conflict, refusal and rollback behavior remain unchanged; no extra lease/latch.
+
+Closed source census removes three private physical wrappers: directory/untrusted wrappers already
+had declaration-only references, file wrapper had one Clear call and becomes unused by this migration.
+Four original references across tracked code/scripts/config become zero; exact before source and after
+file hash retained separately in the packet. No dead-code runtime RED or removal of backup/load primitives.
+Updated documentation source guard verifies same owned lease, current/general admission, trusted subtree,
+exact relative spelling and explicit-lease deletion instead of requiring the obsolete physical route.
+
+Final proposed14 = unchanged original7 + original Clear lease-wait, incarnation replacement, F03 exact
+restoration, realm pending-scenario/lore success, genuine ordinary-return quartet success, known pending
+blocker and changed source guard. Historical broad owners are unselected; selected methods do not overlap.
+No sparse9487 sharing-lock test used as positive rollback proof. Frozen independent source/selection gate
+and matching fresh integration+unit Plan/build precede actual14. No execution on this runtime yet.
+
+Precision: Life causal rows' later admission originates RestorePreTurnBackup through
+CleanupUndispatchedTransitionPrep/CheckLifeTransitions, not logging; the generic fixture safety message
+is not callgraph evidence. Shining rows attempt canonical logging. Earlier failures stop at lease-count
+assertions, leaving Same/final assertions unexecuted despite independently captured raw facts.
+
 ## Lore/realm causal and routing receipt — 2026-10-09
 
 Frozen7b4450ea source/fixture/exact7 passed independent review. Matching Plan032616 built integration

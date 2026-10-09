@@ -97,7 +97,7 @@ public partial class GameEngine
 
             return transition;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Ошибка обновления soul_state.json");
             return SoulRealmTransitionResult.Rejected;
@@ -124,135 +124,149 @@ public partial class GameEngine
                 "Incarnation realm transition cannot append a completed-life summary.");
         }
 
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        var soulJson = await _fs.ReadFileAsync(
-            writeLease,
-            "game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(soulJson))
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try
         {
+            var soulJson = await _fs.ReadFileAsync(
+                writeLease,
+                "game_state/meta/soul_state.json");
+            if (string.IsNullOrWhiteSpace(soulJson))
+            {
+                _logger.LogWarning(
+                    "Не удалось обновить soul_state.currentRealm до {NewRealm}: soul_state.json отсутствует или unreadable.",
+                    newRealm);
+                return null;
+            }
+
+            using var doc = JsonDocument.Parse(soulJson);
+            var root = doc.RootElement;
+            var dict = new Dictionary<string, object?>
+            {
+                ["soulName"] = root.TryGetProperty("soulName", out var sn) ? sn.GetString() : "",
+                ["soulFormDescription"] = root.TryGetProperty("soulFormDescription", out var sfd) ? sfd.GetString() : "",
+                ["previousSoulNames"] = root.TryGetProperty("previousSoulNames", out var previousSoulNames)
+                    ? JsonSerializer.Deserialize<object>(previousSoulNames.GetRawText())
+                    : Array.Empty<string>(),
+                ["currentRealm"] = newRealm
+            };
+            var existingInc = root.TryGetProperty("currentIncarnation", out var inc) &&
+                              inc.TryGetInt32(out var incVal)
+                ? incVal
+                : 0;
+            dict["currentIncarnation"] = cause == SoulRealmTransitionCause.IncarnationToMortalWorld
+                ? existingInc + 1
+                : existingInc;
+            dict["enlightenment"] = root.TryGetProperty("enlightenment", out var enl)
+                ? JsonSerializer.Deserialize<object>(enl.GetRawText())
+                : new { currentTier = "Новичок", experience = 0, level = 0 };
+            dict["inkFeathers"] = root.TryGetProperty("inkFeathers", out var f)
+                ? JsonSerializer.Deserialize<object>(f.GetRawText())
+                : new { current = 0, total = 0 };
+            dict["soulRelics"] = root.TryGetProperty("soulRelics", out var sr)
+                ? JsonSerializer.Deserialize<object>(sr.GetRawText())
+                : new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() };
+
+            var existingHistory = new List<object>();
+            if (root.TryGetProperty("livesHistory", out var lh) &&
+                lh.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var entry in lh.EnumerateArray())
+                    existingHistory.Add(JsonSerializer.Deserialize<object>(entry.GetRawText())!);
+            }
+            if (!string.IsNullOrWhiteSpace(lifeSummaryToAppend))
+            {
+                existingHistory.Add(new
+                {
+                    incarnation = dict["currentIncarnation"],
+                    summary = lifeSummaryToAppend,
+                    endedAt = DateTime.UtcNow.ToString("o"),
+                    turnsLived = _gameLoop.TurnNumber
+                });
+            }
+            dict["livesHistory"] = existingHistory;
+            foreach (var prop in root.EnumerateObject())
+            {
+                if (!dict.ContainsKey(prop.Name))
+                    dict[prop.Name] = JsonSerializer.Deserialize<object>(prop.Value.GetRawText());
+            }
+
+            var acceptedSoulRoot = JsonSerializer.SerializeToNode(dict, JsonOpts) as JsonObject
+                ?? throw new InvalidOperationException(
+                    "Не удалось построить accepted soul-state realm after-image.");
+            acceptedSoulRoot = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(
+                acceptedSoulRoot);
+            var acceptedProfilesRoot = await BuildPlayerSoulRealmAfterImageAsync(
+                newRealm,
+                writeLease);
+
+            JsonObject? acceptedGuardiansRoot = null;
+            if (cause == SoulRealmTransitionCause.MortalDeathToChaosSea)
+            {
+                var guardiansJson = await _fs.ReadFileAsync(
+                    writeLease,
+                    "game_state/meta/guardians.json");
+                if (!string.IsNullOrWhiteSpace(guardiansJson))
+                {
+                    var guardiansRoot = JsonNode.Parse(guardiansJson) as JsonObject
+                        ?? throw new InvalidOperationException(
+                            "guardians.json должен быть object root для client-owned return cycle.");
+                    acceptedGuardiansRoot = AfterlifeGuardianReturnCycleState.ProjectNewChaosReturn(
+                        guardiansRoot,
+                        Math.Max(1, existingInc));
+                }
+            }
+
+            var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+                _fs,
+                writeLease,
+                new AfterlifeOwnerResourceAcceptedState(
+                    Profiles: acceptedProfilesRoot,
+                    SoulState: acceptedSoulRoot,
+                    Guardians: acceptedGuardiansRoot),
+                Math.Max(1, _gameLoop.TurnNumber + 1));
+            if (!resourcePlan.IsValid)
+            {
+                _logger.LogWarning(
+                    "Realm transition {NewRealm} rejected by common resource authority: {Issues}",
+                    newRealm,
+                    string.Join("; ", resourcePlan.Issues.Select(issue =>
+                        $"{issue.Code}: {issue.Actual ?? issue.Message}")));
+                return null;
+            }
+            if (await AfterlifeOwnerResourceStateService.TryCommitAsync(
+                    _fs,
+                    writeLease,
+                    resourcePlan))
+            {
+                var publishedPaths = resourcePlan.OwnerAfterImages.Keys
+                    .Concat(new[]
+                    {
+                        ResourceMaterializationContract.StatePath,
+                        ResourceMaterializationContract.HistoryPath,
+                        CanonicalResourceOwnerAuthorityComposer.AuthorityPath
+                    })
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(static path => path, StringComparer.Ordinal)
+                    .ToArray();
+                return new SoulRealmTransitionResult(true, publishedPaths);
+            }
+
             _logger.LogWarning(
-                "Не удалось обновить soul_state.currentRealm до {NewRealm}: soul_state.json отсутствует или unreadable.",
+                "Realm transition {NewRealm} lost its exact owner/resource baseline before publication.",
                 newRealm);
             return null;
         }
-
-        using var doc = JsonDocument.Parse(soulJson);
-        var root = doc.RootElement;
-        var dict = new Dictionary<string, object?>
+        catch (CoordinatedStatePublicationUncertainException failure)
         {
-            ["soulName"] = root.TryGetProperty("soulName", out var sn) ? sn.GetString() : "",
-            ["soulFormDescription"] = root.TryGetProperty("soulFormDescription", out var sfd) ? sfd.GetString() : "",
-            ["previousSoulNames"] = root.TryGetProperty("previousSoulNames", out var previousSoulNames)
-                ? JsonSerializer.Deserialize<object>(previousSoulNames.GetRawText())
-                : Array.Empty<string>(),
-            ["currentRealm"] = newRealm
-        };
-        var existingInc = root.TryGetProperty("currentIncarnation", out var inc) &&
-                          inc.TryGetInt32(out var incVal)
-            ? incVal
-            : 0;
-        dict["currentIncarnation"] = cause == SoulRealmTransitionCause.IncarnationToMortalWorld
-            ? existingInc + 1
-            : existingInc;
-        dict["enlightenment"] = root.TryGetProperty("enlightenment", out var enl)
-            ? JsonSerializer.Deserialize<object>(enl.GetRawText())
-            : new { currentTier = "Новичок", experience = 0, level = 0 };
-        dict["inkFeathers"] = root.TryGetProperty("inkFeathers", out var f)
-            ? JsonSerializer.Deserialize<object>(f.GetRawText())
-            : new { current = 0, total = 0 };
-        dict["soulRelics"] = root.TryGetProperty("soulRelics", out var sr)
-            ? JsonSerializer.Deserialize<object>(sr.GetRawText())
-            : new { equipped = Array.Empty<object>(), stored = Array.Empty<object>() };
-
-        var existingHistory = new List<object>();
-        if (root.TryGetProperty("livesHistory", out var lh) &&
-            lh.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var entry in lh.EnumerateArray())
-                existingHistory.Add(JsonSerializer.Deserialize<object>(entry.GetRawText())!);
+            publicationUncertainty = failure;
+            throw;
         }
-        if (!string.IsNullOrWhiteSpace(lifeSummaryToAppend))
+        finally
         {
-            existingHistory.Add(new
-            {
-                incarnation = dict["currentIncarnation"],
-                summary = lifeSummaryToAppend,
-                endedAt = DateTime.UtcNow.ToString("o"),
-                turnsLived = _gameLoop.TurnNumber
-            });
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
         }
-        dict["livesHistory"] = existingHistory;
-        foreach (var prop in root.EnumerateObject())
-        {
-            if (!dict.ContainsKey(prop.Name))
-                dict[prop.Name] = JsonSerializer.Deserialize<object>(prop.Value.GetRawText());
-        }
-
-        var acceptedSoulRoot = JsonSerializer.SerializeToNode(dict, JsonOpts) as JsonObject
-            ?? throw new InvalidOperationException(
-                "Не удалось построить accepted soul-state realm after-image.");
-        acceptedSoulRoot = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(
-            acceptedSoulRoot);
-        var acceptedProfilesRoot = await BuildPlayerSoulRealmAfterImageAsync(
-            newRealm,
-            writeLease);
-
-        JsonObject? acceptedGuardiansRoot = null;
-        if (cause == SoulRealmTransitionCause.MortalDeathToChaosSea)
-        {
-            var guardiansJson = await _fs.ReadFileAsync(
-                writeLease,
-                "game_state/meta/guardians.json");
-            if (!string.IsNullOrWhiteSpace(guardiansJson))
-            {
-                var guardiansRoot = JsonNode.Parse(guardiansJson) as JsonObject
-                    ?? throw new InvalidOperationException(
-                        "guardians.json должен быть object root для client-owned return cycle.");
-                acceptedGuardiansRoot = AfterlifeGuardianReturnCycleState.ProjectNewChaosReturn(
-                    guardiansRoot,
-                    Math.Max(1, existingInc));
-            }
-        }
-
-        var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
-            _fs,
-            writeLease,
-            new AfterlifeOwnerResourceAcceptedState(
-                Profiles: acceptedProfilesRoot,
-                SoulState: acceptedSoulRoot,
-                Guardians: acceptedGuardiansRoot),
-            Math.Max(1, _gameLoop.TurnNumber + 1));
-        if (!resourcePlan.IsValid)
-        {
-            _logger.LogWarning(
-                "Realm transition {NewRealm} rejected by common resource authority: {Issues}",
-                newRealm,
-                string.Join("; ", resourcePlan.Issues.Select(issue =>
-                    $"{issue.Code}: {issue.Actual ?? issue.Message}")));
-            return null;
-        }
-        if (await AfterlifeOwnerResourceStateService.TryCommitAsync(
-                _fs,
-                writeLease,
-                resourcePlan))
-        {
-            var publishedPaths = resourcePlan.OwnerAfterImages.Keys
-                .Concat(new[]
-                {
-                    ResourceMaterializationContract.StatePath,
-                    ResourceMaterializationContract.HistoryPath,
-                    CanonicalResourceOwnerAuthorityComposer.AuthorityPath
-                })
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .OrderBy(static path => path, StringComparer.Ordinal)
-                .ToArray();
-            return new SoulRealmTransitionResult(true, publishedPaths);
-        }
-
-        _logger.LogWarning(
-            "Realm transition {NewRealm} lost its exact owner/resource baseline before publication.",
-            newRealm);
-        return null;
     }
 
     private Task<JsonObject?> BuildPlayerSoulRealmAfterImageAsync(string newRealm) =>

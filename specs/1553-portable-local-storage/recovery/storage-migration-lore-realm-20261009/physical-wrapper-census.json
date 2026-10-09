@@ -1,0 +1,37 @@
+{
+  "source": "7b4450ea66c2adce4861df47b2dcdad32d2d8a53",
+  "names": [
+    "DeleteCanonicalFileByFullPath",
+    "DeleteCanonicalDirectoryTreeByFullPath",
+    "DeleteUntrustedCanonicalNamespaceNode"
+  ],
+  "matches": [
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "line": 5983,
+      "text": "            DeleteCanonicalFileByFullPath(file);",
+      "fileSha256": "d2aec89979dfcf5471565271a50229c4288c0a3a40166f24d4755f62622a34de"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "line": 5987,
+      "text": "    private void DeleteCanonicalFileByFullPath(string fullPath)",
+      "fileSha256": "d2aec89979dfcf5471565271a50229c4288c0a3a40166f24d4755f62622a34de"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "line": 5995,
+      "text": "    private void DeleteCanonicalDirectoryTreeByFullPath(string fullPath)",
+      "fileSha256": "d2aec89979dfcf5471565271a50229c4288c0a3a40166f24d4755f62622a34de"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "line": 6010,
+      "text": "    private void DeleteUntrustedCanonicalNamespaceNode(",
+      "fileSha256": "d2aec89979dfcf5471565271a50229c4288c0a3a40166f24d4755f62622a34de"
+    }
+  ],
+  "afterMatches": [],
+  "afterFileSha256": "fea86112a179358626077a0957bd421794ee2f822e4f24e72584803619c6fd5d",
+  "qualification": "Closed three-wrapper source census: two helpers already declaration-only; file wrapper becomes unused after Clear migrates. No runtime RED for dead code. Tracked code/scripts/config exact-name and reflection-string census; active legacy backup/load primitives retained."
+}

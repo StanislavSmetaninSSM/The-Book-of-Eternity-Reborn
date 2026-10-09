@@ -2,8 +2,20 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-lore-realm-outcome-known-controls",
+      "reason": "Final bounded14 = original7 plus these seven affected policy/lease/current-generation/source controls. No broad lifecycle, sparse sharing-refusal proof, accepted preparation replay or simultaneous double-fault claim.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "T062-STORAGE-OUTCOMES",
+        "T063-REMAINING-CONSUMERS",
+        "T064-STORAGE-CUTS"
+      ]
+    },
+    {
       "category": "portable-lore-realm-outcome-causal-linux",
-      "reason": "Test-only unbuilt/unexecuted lore7: direct Clear routing1, original incarnation known/Unknown2, actual realm commit/reset2 and original Shining return2. Old raw path cannot reach common cut; finite pending-setup refusal bounds that route without GM. Freeze/source gate before Plan/actual.",
+      "reason": "Final lore/realm7 after genuine realmCSP4 plus physical-routing1/unreached-common1 and known restoration1 at7b. Actual runtime now routes original Clear and propagates same typed decision; source review and fresh matching execution remain required.",
       "contracts": [
         "#1553",
         "FR-003",

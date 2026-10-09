@@ -219,5 +219,23 @@
         "sha256": "dacc258dfeee913d0b29ffeb2d58d9c3e6ed7daf6f8dba9933e149e17175936d"
       }
     ]
+  },
+  "deadWrappers": {
+    "source": "7b4450ea66c2adce4861df47b2dcdad32d2d8a53",
+    "qualification": "Closed three-wrapper source census: two helpers already declaration-only; file wrapper becomes unused after Clear migrates. No runtime RED for dead code. Tracked code/scripts/config exact-name and reflection-string census; active legacy backup/load primitives retained.",
+    "artifacts": [
+      {
+        "path": "physical-wrapper-census.json",
+        "source": "/tmp/boe-lore-deletion-census.json",
+        "sha256": "7ac1d6a0aac07ba9fbfceb6e9cbf18cdfc4493bdc351871ddf2e4fc44b6938bc",
+        "originalSha256": "7ac1d6a0aac07ba9fbfceb6e9cbf18cdfc4493bdc351871ddf2e4fc44b6938bc"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "d2aec89979dfcf5471565271a50229c4288c0a3a40166f24d4755f62622a34de"
+      }
+    ]
   }
 }

@@ -721,8 +721,17 @@ public sealed class GmWorkerBridgeDocumentationTests
             "await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(this, lease, completed, failure);");
         AssertOrdered(fileSystemManager,
             "public async Task ClearCurrentWorldLoreAsync()",
-            "await using var writeLock = await AcquireCanonicalWriteLeaseAsync();",
-            "ClearCurrentWorldLoreCore();");
+            "var writeLease = await AcquireCanonicalWriteLeaseAsync();",
+            "ClearCurrentWorldLoreCore(writeLease);",
+            "catch (CoordinatedStatePublicationUncertainException failure)",
+            "this, writeLease, completed: false, operationFailure: publicationUncertainty);");
+        AssertOrdered(fileSystemManager,
+            "private void ClearCurrentWorldLoreCore(CanonicalWriteLease writeLease)",
+            "EnsureWorkerGeneralMutationAllowed(writeLease);",
+            "VerifyCurrentSessionOperation(writeLease);",
+            "var files = EnumerateLocalTreeFiles(",
+            "GetLocalRelativePath(GameSessionPath, file, OperatingSystem.IsWindows())",
+            "DeleteFile(writeLease, relativePath);");
         var clearWrapperOffset = fileSystemManager.IndexOf(
             "public async Task ClearGameStateAsync()",
             StringComparison.Ordinal);

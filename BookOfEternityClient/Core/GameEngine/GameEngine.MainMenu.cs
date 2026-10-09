@@ -1461,7 +1461,7 @@ public partial class GameEngine
                 WorldDirectiveService.PendingSetupPath,
                 ScenarioCoreService.ManifestPath);
         }
-        catch
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
         {
             await _explorer.RestoreStagedLocalTurnRollbackSnapshotAsync();
             throw;
@@ -2520,7 +2520,7 @@ public partial class GameEngine
                 return;
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             LogError(ex);
             AnsiConsole.MarkupLine("[red]Не удалось безопасно зафиксировать возвращение в Сияющую Обитель.[/]");
@@ -2639,111 +2639,125 @@ public partial class GameEngine
         }
 
         {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-
-        activeConflictBlocker = await AfterlifeSpiritualConflictState.TryDescribeActiveConflictBlockerAsync(
-            _fs,
-            "закройте активный духовный конфликт через mode=resolve или mode=repair_cancel перед return_to_chaos_sea");
-        blockingPendingContracts = await GetBlockingShiningPendingContractPathsCoreAsync(
-            deleteEmptyFiles: false);
-        if (activeConflictBlocker != null || blockingPendingContracts.Count > 0)
-        {
-            AnsiConsole.MarkupLine("[yellow]Состояние изменилось перед фиксацией выхода: появился активный conflict/pending contract. Возврат отменён.[/]");
-            return false;
-        }
-
-        var previousShiningJson = await _fs.ReadFileAsync(
-            writeLease,
-            ShiningAbodeState.StatePath);
-        if (string.IsNullOrWhiteSpace(previousShiningJson))
-            return false;
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
         try
         {
-            shiningRoot = JsonNode.Parse(previousShiningJson) as JsonObject
-                ?? throw new InvalidOperationException("shining_abode_state.json должен быть object root.");
-        }
-        catch
-        {
-            AnsiConsole.MarkupLine("[red]Состояние Сияющей Обители изменилось или повреждено перед фиксацией выхода.[/]");
-            return false;
-        }
 
-        rawOwnerStateIssue = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
-        if (!string.IsNullOrWhiteSpace(rawOwnerStateIssue) ||
-            !string.Equals(GetNodeString(shiningRoot["availability"]), "active", StringComparison.OrdinalIgnoreCase) ||
-            shiningRoot["preparedIncarnationPackage"] != null ||
-            shiningRoot["pendingNativeFactionDiscovery"] is not null)
-        {
-            AnsiConsole.MarkupLine("[yellow]Состояние Сияющей Обители изменилось перед фиксацией выхода. Возврат отменён fail-closed.[/]");
-            return false;
-        }
-
-        var previousSoulJson = await _fs.ReadFileAsync(
-            writeLease,
-            "game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(previousSoulJson))
-        {
-            AnsiConsole.MarkupLine("[red]Не удалось подтвердить текущий realm души. Возврат в Море Хаоса отменён.[/]");
-            return false;
-        }
-
-        JsonObject soulRoot;
-        try
-        {
-            soulRoot = JsonNode.Parse(previousSoulJson) as JsonObject
-                ?? throw new InvalidOperationException("soul_state.json должен быть object root.");
-        }
-        catch
-        {
-            AnsiConsole.MarkupLine("[red]soul_state.json повреждён и не позволяет безопасно запечатать Сияющую Обитель.[/]");
-            return false;
-        }
-
-        ShiningAbodeState.SealForChaosSeaReturn(shiningRoot);
-        soulRoot["currentRealm"] = "Chaos Sea";
-        soulRoot["enlightenment"] = CreateNewCycleEnlightenmentResetObject();
-        soulRoot["soulProgression"] = CreateNewCycleSoulProgressionResetObject();
-        var acceptedSoulRoot = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot);
-        try
-        {
-            var acceptedProfilesRoot = await BuildPlayerSoulRealmAfterImageAsync(
-                "Chaos Sea",
-                writeLease);
-            var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
+            activeConflictBlocker = await AfterlifeSpiritualConflictState.TryDescribeActiveConflictBlockerAsync(
                 _fs,
-                writeLease,
-                new AfterlifeOwnerResourceAcceptedState(
-                    Profiles: acceptedProfilesRoot,
-                    SoulState: acceptedSoulRoot,
-                    ShiningAbode: shiningRoot),
-                Math.Max(1, _gameLoop.TurnNumber + 1));
-            if (!resourcePlan.IsValid)
+                "закройте активный духовный конфликт через mode=resolve или mode=repair_cancel перед return_to_chaos_sea");
+            blockingPendingContracts = await GetBlockingShiningPendingContractPathsCoreAsync(
+                deleteEmptyFiles: false);
+            if (activeConflictBlocker != null || blockingPendingContracts.Count > 0)
             {
-                var issueSummary = string.Join(
-                    "; ",
-                    resourcePlan.Issues.Select(issue =>
-                        $"{issue.Code}: {issue.Actual ?? issue.Message}"));
-                _logger.LogWarning(
-                    "Shining-to-Chaos transition rejected by common resource authority: {Issues}",
-                    issueSummary);
-                AnsiConsole.MarkupLine(
-                    $"[red]Единый owner/resource plan отклонил переход: {Markup.Escape(issueSummary)}[/]");
+                AnsiConsole.MarkupLine("[yellow]Состояние изменилось перед фиксацией выхода: появился активный conflict/pending contract. Возврат отменён.[/]");
                 return false;
             }
-            if (!await AfterlifeOwnerResourceStateService.TryCommitAsync(
+
+            var previousShiningJson = await _fs.ReadFileAsync(
+                writeLease,
+                ShiningAbodeState.StatePath);
+            if (string.IsNullOrWhiteSpace(previousShiningJson))
+                return false;
+            try
+            {
+                shiningRoot = JsonNode.Parse(previousShiningJson) as JsonObject
+                    ?? throw new InvalidOperationException("shining_abode_state.json должен быть object root.");
+            }
+            catch
+            {
+                AnsiConsole.MarkupLine("[red]Состояние Сияющей Обители изменилось или повреждено перед фиксацией выхода.[/]");
+                return false;
+            }
+
+            rawOwnerStateIssue = ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot);
+            if (!string.IsNullOrWhiteSpace(rawOwnerStateIssue) ||
+                !string.Equals(GetNodeString(shiningRoot["availability"]), "active", StringComparison.OrdinalIgnoreCase) ||
+                shiningRoot["preparedIncarnationPackage"] != null ||
+                shiningRoot["pendingNativeFactionDiscovery"] is not null)
+            {
+                AnsiConsole.MarkupLine("[yellow]Состояние Сияющей Обители изменилось перед фиксацией выхода. Возврат отменён fail-closed.[/]");
+                return false;
+            }
+
+            var previousSoulJson = await _fs.ReadFileAsync(
+                writeLease,
+                "game_state/meta/soul_state.json");
+            if (string.IsNullOrWhiteSpace(previousSoulJson))
+            {
+                AnsiConsole.MarkupLine("[red]Не удалось подтвердить текущий realm души. Возврат в Море Хаоса отменён.[/]");
+                return false;
+            }
+
+            JsonObject soulRoot;
+            try
+            {
+                soulRoot = JsonNode.Parse(previousSoulJson) as JsonObject
+                    ?? throw new InvalidOperationException("soul_state.json должен быть object root.");
+            }
+            catch
+            {
+                AnsiConsole.MarkupLine("[red]soul_state.json повреждён и не позволяет безопасно запечатать Сияющую Обитель.[/]");
+                return false;
+            }
+
+            ShiningAbodeState.SealForChaosSeaReturn(shiningRoot);
+            soulRoot["currentRealm"] = "Chaos Sea";
+            soulRoot["enlightenment"] = CreateNewCycleEnlightenmentResetObject();
+            soulRoot["soulProgression"] = CreateNewCycleSoulProgressionResetObject();
+            var acceptedSoulRoot = GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot);
+            try
+            {
+                var acceptedProfilesRoot = await BuildPlayerSoulRealmAfterImageAsync(
+                    "Chaos Sea",
+                    writeLease);
+                var resourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
                     _fs,
                     writeLease,
-                    resourcePlan))
+                    new AfterlifeOwnerResourceAcceptedState(
+                        Profiles: acceptedProfilesRoot,
+                        SoulState: acceptedSoulRoot,
+                        ShiningAbode: shiningRoot),
+                    Math.Max(1, _gameLoop.TurnNumber + 1));
+                if (!resourcePlan.IsValid)
+                {
+                    var issueSummary = string.Join(
+                        "; ",
+                        resourcePlan.Issues.Select(issue =>
+                            $"{issue.Code}: {issue.Actual ?? issue.Message}"));
+                    _logger.LogWarning(
+                        "Shining-to-Chaos transition rejected by common resource authority: {Issues}",
+                        issueSummary);
+                    AnsiConsole.MarkupLine(
+                        $"[red]Единый owner/resource plan отклонил переход: {Markup.Escape(issueSummary)}[/]");
+                    return false;
+                }
+                if (!await AfterlifeOwnerResourceStateService.TryCommitAsync(
+                        _fs,
+                        writeLease,
+                        resourcePlan))
+                {
+                    AnsiConsole.MarkupLine("[red]Не удалось безопасно зафиксировать возвращение в Море Хаоса. Состояние откатилось к предыдущей версии.[/]");
+                    return false;
+                }
+            }
+            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
             {
-                AnsiConsole.MarkupLine("[red]Не удалось безопасно зафиксировать возвращение в Море Хаоса. Состояние откатилось к предыдущей версии.[/]");
+                LogError(ex);
+                AnsiConsole.MarkupLine("[red]Не удалось безопасно зафиксировать возвращение в Море Хаоса.[/]");
                 return false;
             }
         }
-        catch (Exception ex)
+        catch (CoordinatedStatePublicationUncertainException failure)
         {
-            LogError(ex);
-            AnsiConsole.MarkupLine("[red]Не удалось безопасно зафиксировать возвращение в Море Хаоса.[/]");
-            return false;
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
         }
         }
 

@@ -5965,79 +5965,34 @@ public partial class FileSystemManager
 
     public async Task ClearCurrentWorldLoreAsync()
     {
-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        ClearCurrentWorldLoreCore();
-    }
-
-    private void ClearCurrentWorldLoreCore()
-    {
-        var currentWorldPath = Path.Combine(_basePath, "game_session", "lore", "current_world");
-        if (!Directory.Exists(currentWorldPath))
-            return;
-
-        foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(currentWorldPath, "*"))
+        var writeLease = await AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try { ClearCurrentWorldLoreCore(writeLease); }
+        catch (CoordinatedStatePublicationUncertainException failure)
         {
-            if (file.Contains(".rollback.", StringComparison.OrdinalIgnoreCase))
-                continue;
-
-            DeleteCanonicalFileByFullPath(file);
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                this, writeLease, completed: false, operationFailure: publicationUncertainty);
         }
     }
 
-    private void DeleteCanonicalFileByFullPath(string fullPath)
+    private void ClearCurrentWorldLoreCore(CanonicalWriteLease writeLease)
     {
-        var relativePath = Path.GetRelativePath(GameSessionPath, fullPath)
-            .Replace(Path.DirectorySeparatorChar, '/')
-            .Replace(Path.AltDirectorySeparatorChar, '/');
-        DeleteFileCore(relativePath);
-    }
-
-    private void DeleteCanonicalDirectoryTreeByFullPath(string fullPath)
-    {
-        var relativePath = Path.GetRelativePath(GameSessionPath, fullPath)
-            .Replace(Path.DirectorySeparatorChar, '/')
-            .Replace(Path.AltDirectorySeparatorChar, '/');
-        var expectedFullPath = ResolvePath(relativePath);
-        using var parentAuthority = EnsureStableCanonicalParent(
-            relativePath,
-            expectedFullPath);
-        PhysicalFileAuthority.TryDeleteDirectoryTree(
-            parentAuthority,
-            expectedFullPath,
-            "Canonical directory-tree cleanup");
-    }
-
-    private void DeleteUntrustedCanonicalNamespaceNode(
-        string fullPath,
-        string authorityName)
-    {
-        var expectedFullPath = Path.GetFullPath(fullPath);
-        if (!IsSameOrDescendant(expectedFullPath, GameSessionPath) ||
-            string.Equals(
-                expectedFullPath,
-                Path.GetFullPath(GameSessionPath),
-                StringComparison.OrdinalIgnoreCase))
+        EnsureWorkerGeneralMutationAllowed(writeLease);
+        VerifyCurrentSessionOperation(writeLease);
+        var files = EnumerateLocalTreeFiles(
+            new TrustedLocalFileScope([GameSessionPath]),
+            ResolvePath("lore/current_world"),
+            exclude: path => path.Contains(".rollback.", StringComparison.OrdinalIgnoreCase));
+        foreach (var file in files)
         {
-            throw new InvalidDataException(
-                $"{authorityName} target is outside the canonical session.");
+            var relativePath = GetLocalRelativePath(GameSessionPath, file, OperatingSystem.IsWindows());
+            DeleteFile(writeLease, relativePath);
         }
-
-        if (!File.Exists(expectedFullPath) &&
-            !Directory.Exists(expectedFullPath))
-        {
-            return;
-        }
-
-        using var parentAuthority = PhysicalFileAuthority.EnsureStableDirectory(
-            GameSessionPath,
-            Path.GetDirectoryName(expectedFullPath)
-            ?? throw new InvalidDataException(
-                $"{authorityName} target has no parent directory."),
-            authorityName);
-        PhysicalFileAuthority.TryDeleteTree(
-            parentAuthority,
-            expectedFullPath,
-            authorityName);
     }
 
     internal static IEnumerable<string> EnumerateFilesWithoutFollowingReparsePoints(

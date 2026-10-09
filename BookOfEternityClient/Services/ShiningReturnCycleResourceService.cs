@@ -317,8 +317,19 @@ internal static class ShiningReturnCycleResourceService
         ShiningReturnCycleResourceFilePlan plan)
     {
         ArgumentNullException.ThrowIfNull(fs);
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        return await TryCommitAsync(fs, writeLease, plan);
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try { return await TryCommitAsync(fs, writeLease, plan); }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                fs, writeLease, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     internal static async Task<bool> TryCommitAsync(
