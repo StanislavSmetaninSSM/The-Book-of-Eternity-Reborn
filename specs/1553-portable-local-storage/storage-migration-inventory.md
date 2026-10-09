@@ -1,3 +1,13 @@
+## F16 exact native payload names — bounded evidence, 2026-10-09
+
+Runtime a3c59545 / source533078a9: exact22/22 Linux PASS13145419.4931150s, complete4/4,
+bothcleanup. Actual literal MemberPublished rollbackcut1 reached; exact Save/Load names
+and independent genuine-directory refusal covered. Historical causal4FAIL retained.
+Fresh both-project catalog555/11343valid0; original source/fixture gatePASS, final raw/
+carrier review pending. See current plan and literal-names packet. This closes only the
+native payload spelling slice; signed producers/save destination names/physicalcuts/
+ownedclose/whole registry remain. T061–T065 unchecked; B2–B5 paused; Windows unexecuted.
+
 ## F18 generation fixture obligations — composed evidence, 2026-10-09
 
 Six original consumer fixtures plus connected sourceguard now have composed7 Linux

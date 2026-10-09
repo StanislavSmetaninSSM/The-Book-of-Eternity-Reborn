@@ -1,0 +1,18 @@
+{
+  "kind": "f16-held-native-names",
+  "root": "/tmp/boe-portable-load-839cbeb1cf984346b98a98ab88269d76",
+  "names": [
+    "game_state/world/test_fixture_state.json",
+    "game_state/meta/soul_state.json",
+    "game_state/resources/resource_owner_authority.json",
+    "game_state/resources/resource_history.json",
+    "game_state/resources/resource_state.json",
+    "game_state/resources/resource_definitions.json",
+    "lore/case.bin",
+    "lore/Case.bin",
+    "lore/trailing\\",
+    "lore/literal\\pair.bin",
+    "lore/literal/pair.bin",
+    "mods/part\\leaf/member.bin"
+  ]
+}

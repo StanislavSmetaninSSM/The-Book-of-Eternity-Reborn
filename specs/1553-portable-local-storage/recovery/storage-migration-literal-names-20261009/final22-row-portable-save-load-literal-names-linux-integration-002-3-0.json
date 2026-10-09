@@ -1,0 +1,44 @@
+{
+  "kind": "f16-native-save-load-save",
+  "root": "/tmp/boe-portable-load-0afe6720215d425f81db619f26130e2f",
+  "expected": {
+    "lore/literal\\pair.bin": "5725F703AE3825C0812925AD80DC4ABC076A3623EC46602F978334367FFD1A36",
+    "lore/literal/pair.bin": "84C0E80A5A176B4C1FE6C2674E18C7EA58A6EA598B06AE981517B86B6D9515DA",
+    "mods/part\\leaf/member.bin": "80722C002EC49CCE4809036C50C80022F04D4ECA47FDAD81A1EF334465F02AAF",
+    "lore/trailing\\": "6FBB6C46FFBAE6A3D6A70568EF87AC3E358BCB1DC8B7FEA086289C56F382A4A6",
+    "lore/Case.bin": "46166DEF6167251891EE2ACDAE380F23D14C50523C8C154667A482A73E7E1813",
+    "lore/case.bin": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  "firstNames": [
+    "game_state/world/test_fixture_state.json",
+    "game_state/meta/soul_state.json",
+    "game_state/resources/resource_history.json",
+    "game_state/resources/resource_state.json",
+    "game_state/resources/resource_definitions.json",
+    "game_state/resources/resource_owner_authority.json",
+    "lore/case.bin",
+    "lore/Case.bin",
+    "lore/trailing\\",
+    "lore/literal\\pair.bin",
+    "lore/literal/pair.bin",
+    "mods/part\\leaf/member.bin",
+    "save_metadata.json"
+  ],
+  "secondNames": [
+    "game_state/world/test_fixture_state.json",
+    "game_state/meta/soul_state.json",
+    "game_state/resources/resource_state.json",
+    "game_state/resources/resource_history.json",
+    "game_state/resources/resource_definitions.json",
+    "game_state/resources/resource_owner_authority.json",
+    "lore/trailing\\",
+    "lore/literal\\pair.bin",
+    "lore/case.bin",
+    "lore/Case.bin",
+    "lore/literal/pair.bin",
+    "mods/part\\leaf/member.bin",
+    "save_metadata.json"
+  ],
+  "originalGeneration": "eyJzY2hlbWFWZXJzaW9uIjoxLCJnZW5lcmF0aW9uSWQiOiI2NDc1NzlhNTcyY2U0YzYxYWI3ODk1ZmVhY2NkYTkyYSJ9",
+  "loadedGeneration": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJlOGJlYWM5N2ZmM2U0ZTZlYTMwZDkzMWE2MWNmNDViNiJ9"
+}

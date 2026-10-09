@@ -1,3 +1,28 @@
+## F16 exact native payload names — bounded Linux GREEN, 2026-10-09
+
+Source/fixture/exact22 independent Astra XHigh gate PASS at533078a9; runtime a3c59545.
+Fresh integration Plan130835 builds and selects22/4,0execution44.6224246s. Actual131454
+completes22/22PASS19.4931150s, all4descriptors,0skip/duplicate/timeout,bothcleanup.
+Command: `./scripts/test-csharp.ps1 -Category @("portable-save-load-literal-names-linux", "portable-save-native-names", "portable-load-native-names", "portable-save-load-name-boundary-neighbors-linux") -NoBuild`.
+Plan uses the same categories with `-PlanOnly` and fresh build, without `-NoBuild`.
+Held enumeration keeps12 distinct names and same-lease bytes; Save→typedLoad→Save
+keeps every exact ZIP name/manifest/hash; independent Load commits or reaches the real
+literal MemberPublished cut1 and rolls back exact namespace/generation. Genuine slash
+ZIP directory carrying1byte refuses before preparation/lifecycle/publication (all0).
+Current case-distinct/alias/hash/ZipSlip neighbors pass. Emitted owned roots are absent.
+
+Fresh both-project `./scripts/test-csharp.ps1 -ValidateCatalog`131521 at533078a9 is
+555categories/11343methods-files valid,0tests,23.3312461s,bothcleanup. Integration was
+fresh for actual22; this later catalog also rebuilds unit against the changed Core.
+[Evidence packet](recovery/storage-migration-literal-names-20261009/manifest.json)
+includes original causal4FAIL/Plan21 plus final22/Plan22/catalog with source pins;
+parent integrity checked; final independent raw/catalog/carrier review pending.
+The two baseline Load cases had not reached rollback; the final rollback case does.
+No Windows execution, signed producer admission or literal save-destination claim.
+Client-owned host spelling correction adds no GM/game schema; no prompt/example change
+is required. Whole signed-producer, physical-cut, owned-close and registry queues remain;
+T061–T065 unchanged and B2–B5 paused. Main/CI/provider/desktop unchanged.
+
 ## F16 genuine directory negative — fixture WIP, 2026-10-09
 
 Fresh integration Plan130501 ata3c59545 selects exact21/4,0executed46.7447905s,
@@ -33,7 +58,7 @@ Final proposed exact21 uses new4 + existingSave-native4 + Load-native8 + exactbo
 (trimmed aliases4 and originalZipSlip1). Review caught broad alias-owner has more than4;
 use one explicit existing method instead. Save-native owner now explicitly Linux (its
 existing bodies assert Linux); no CI workflow/settings changed. Source/fixture/exact21
-review and fresh both-project build/Plan precede final actual. Other F16 signed producers,
+review and fresh integration build/Plan precede final actual; later catalog rebuilds both projects. Other F16 signed producers,
 literal save destination names, physicalcuts/ownedclose/whole registry remain open.
 
 ## F16 exact native payload names — test-first WIP, 2026-10-09
