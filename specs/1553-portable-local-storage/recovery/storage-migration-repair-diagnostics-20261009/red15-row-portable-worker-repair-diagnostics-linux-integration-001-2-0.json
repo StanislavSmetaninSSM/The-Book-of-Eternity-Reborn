@@ -1,0 +1,37 @@
+{
+  "mode": "no_worker",
+  "Failure": null,
+  "result": {
+    "Outcome": 1,
+    "TaskId": "",
+    "WorkerId": "",
+    "TaskType": 2,
+    "ProposalId": "",
+    "FallbackReason": "No enabled worker profile can handle task type Analysis."
+  },
+  "knownHits": 0,
+  "poolAttempts": [],
+  "before": null,
+  "after": null,
+  "KnownCauseRetained": false,
+  "PriorAtCut": null,
+  "afterImages": null,
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

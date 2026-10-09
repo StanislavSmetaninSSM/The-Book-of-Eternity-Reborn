@@ -1,3 +1,26 @@
+## Repair/proposal diagnostic causal RED — 2026-10-09
+
+Independent fixture/exact15 gate PASS4580be59b4d049966cee831e52dd1acbf21aac41.
+Fresh Plan064028 integration40.5839069s,15/1 planned,0 tests,wall44.4378769s.
+Actual064134 completes **15/15 =8PASS/7FAIL**,7.4376507s,both cleanup flags,
+no skipped/duplicate/timeout. All seven intended cuts are genuine original common
+MemberPublished/index0/CSP, with exact retained journals, hashes or delete absence,
+foreign targets and prior images. Root verifies15 explicit owned roots removed.
+[Full raw source-pinned evidence](recovery/storage-migration-repair-diagnostics-20261009/manifest.json).
+
+Failures distinguish two types: accepted/cleared trajectory and terminal writer swallow
+CSP, proposal initial-generation additionally attempts one later ordinary admission;
+proposal context-diagnostic and refresh report/cleanup already propagate same CSP but
+lose the exact earlier known exception. The latter are cause-retention failures,
+not new proof of swallowed CSP. Cleanup retains the independently committed report;
+accepted trajectory retains genuine accepted weather. Eight known controls pass.
+No fixture miss. Runtime correction follows these reached boundaries only.
+
+CaptureCurrentSessionGenerationAsync additionally owns conditional generation creation;
+that transitive owner remains in the remaining owned-publisher inventory (not exercised
+with absent generation by these engine fixtures). Full wait/key/bridge/pool/C2/native
+qualification remains open. No full migration completion or task checkbox change.
+
 ## Connected repair/proposal diagnostics — exact15 fixture WIP, 2026-10-09
 
 Previous Ready bounded unit final independent RAW/CATALOG/INTEGRITY/DOCS **PASS**
