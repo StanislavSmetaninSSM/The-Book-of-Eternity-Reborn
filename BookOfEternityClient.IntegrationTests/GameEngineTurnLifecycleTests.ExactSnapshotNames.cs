@@ -86,6 +86,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     [Theory]
     [InlineData("literal_backslash")]
     [InlineData("case_alias")]
+    [InlineData("outer_trim")]
     [InlineData("unicode")]
     public async Task OriginalEngineCleanupValidatesRawPreservedPathsBeforeDeletingEvidence(string mode)
     {
@@ -101,6 +102,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             {
                 "literal_backslash" => new[] { "lore/odd\\leaf.json.rollback.original" },
                 "case_alias" => new[] { "lore/Entry.json.rollback.original", "lore/entry.json.rollback.original" },
+                "outer_trim" => new[] { "lore/trailing.json.rollback.original " },
                 _ => new[] { "lore/ История.json.rollback.original" }
             };
             foreach (var path in preserved) PutExactEngineFile(path, Encoding.Unicode.GetBytes("exact original rollback"));
@@ -119,6 +121,45 @@ public sealed partial class GameEngineTurnLifecycleTests
                 Assert.False(after.ContainsKey(LiveTurnPreparationService.PendingTurnSnapshotDirectory + "/old.bin"));
             }
             else { Assert.IsType<InvalidDataException>(failure); AssertExactEngineTreeUnchanged(before, after); }
+        }
+        finally { GetPrivateField<AudioService>(engine, "_audioService").Dispose(); }
+    }
+
+    [Theory]
+    [InlineData("backup_value")]
+    [InlineData("validation_trim")]
+    public async Task OriginalEngineBaselineValidatesSuppliedRollbackBeforeChangingEvidence(string mode)
+    {
+        Assert.True(OperatingSystem.IsLinux());
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _directGachaOutput?.WriteLine(line));
+        const string tracked = "lore/codex_entries.json";
+        await _fs.WriteFileAtomicAsync(tracked, "{\"entries\":[]}");
+        var engine = CreateGameEngine(new ProgressionNoInput(),
+            settings => { settings.GmBridgeAutoStart = false; settings.MusicEnabled = false; settings.SoundEnabled = false; });
+        try
+        {
+            // Obtain the real original producer's object and existing exact backups.
+            // Disclose corruption of one caller-supplied path, without fabricating a
+            // publication result, signed authority or replacement capture owner.
+            var rollback = await InvokePrivateTaskResultAsync(engine, "CreatePreTurnBackup", "supplied-exact-engine");
+            var backups = Assert.IsType<Dictionary<string, string>>(rollback.GetType().GetProperty("BackupFiles")!.GetValue(rollback));
+            var actualBackup = backups[tracked];
+            Assert.Equal(File.ReadAllBytes(_fs.ResolvePath(tracked)), File.ReadAllBytes(_fs.ResolvePath(actualBackup)));
+            var suppliedPath = mode == "backup_value" ? "lore/odd\\leaf.json.rollback.supplied" : " " + tracked;
+            if (mode == "backup_value") backups[tracked] = suppliedPath;
+            else Assert.IsType<HashSet<string>>(rollback.GetType().GetProperty("ValidationSnapshotFiles")!.GetValue(rollback)).Add(suppliedPath);
+            foreach (var path in ExactEngineRetainedPaths)
+                PutExactEngineFile(path, Encoding.UTF8.GetBytes("retained-supplied-rollback-evidence:" + path));
+            var before = CaptureExactEngineFiles(); var generation = File.ReadAllBytes(_fs.SessionGenerationPath);
+            object? result = null;
+            var failure = await Record.ExceptionAsync(async () => result = await InvokePrivateTaskResultAsync(engine,
+                "CreateCanonicalBaselineSnapshotAsync", CreateSnapshotByteContractRequest("supplied-exact-engine"), rollback, "supplied-exact-engine"));
+            var after = CaptureExactEngineFiles();
+            _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new { mode, root = _rootPath, actualBackup, suppliedPath,
+                failure = failure?.ToString(), before, after, generationBefore = generation,
+                generationAfter = File.ReadAllBytes(_fs.SessionGenerationPath), resultReturned = result != null }));
+            Assert.Equal(generation, File.ReadAllBytes(_fs.SessionGenerationPath));
+            Assert.IsType<InvalidDataException>(failure); Assert.Null(result); AssertExactEngineTreeUnchanged(before, after);
         }
         finally { GetPrivateField<AudioService>(engine, "_audioService").Dispose(); }
     }

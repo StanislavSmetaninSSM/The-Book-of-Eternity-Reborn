@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "portable-engine-snapshot-exact-names-linux",
-      "responsibility": "Original engine baseline and pre-turn backup14 plus cleanup preservedpaths3 before cleanup/init/copy/fold, Unicode positives and three original byte/exclusion/staging neighbors.",
+      "responsibility": "Original engine baseline and pre-turn backup14 plus cleanup preservedpaths4 and actual supplied rollback2 before cleanup/init/copy/fold, Unicode positives and three original byte/exclusion/staging neighbors.",
       "excludes": "No browser/incarnation/Explorer/spiritual producer, other owners, native Windows or B2 gameplay.",
       "changeHints": [
         "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
@@ -23,6 +23,7 @@
           "tests": [
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineSnapshotProducerRefusesRawNamesBeforeChangingEvidence",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineCleanupValidatesRawPreservedPathsBeforeDeletingEvidence",
+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalEngineBaselineValidatesSuppliedRollbackBeforeChangingEvidence",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_GmBridgeStatus_IsExcludedFromRollbackAndValidationSnapshot",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.CreateCanonicalBaselineSnapshotAsync_OrdinaryTurnStagingFiles_AreValidationSnapshottedWithoutRollbackBaseline"
