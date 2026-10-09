@@ -30,6 +30,8 @@ public sealed class ImageSourceAdmissionTests(ITestOutputHelper output)
     [InlineData("lookup_link")]
     [InlineData("scene_output_link")]
     [InlineData("browser_existing")]
+    [InlineData("export_io")]
+    [InlineData("scene_text_pathlike")]
     public async Task OriginalImageSourcesAdmitBeforeLookupExportOrScene(string mode)
     {
         Assert.True(OperatingSystem.IsLinux());
@@ -114,6 +116,8 @@ public sealed class ImageSourceAdmissionTests(ITestOutputHelper output)
         var sourceReads = new List<string>();
         var recoveryBeforeSourceRead = new List<bool>();
         var recovered = new List<string>();
+        var sourceReadFailure = new IOException("Original source byte-read failure.");
+        var readIoCuts = 0;
         var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
             {
@@ -127,7 +131,8 @@ public sealed class ImageSourceAdmissionTests(ITestOutputHelper output)
                 BeforeCanonicalReadOpenAsync = path =>
                 {
                     sourceReads.Add(path);
-                    recoveryBeforeSourceRead.Add(!File.Exists(seedCut.JournalPath) && published.SequenceEqual(File.ReadAllBytes(weatherPath)));
+                    if (mode == "export_io" && path == relative) { readIoCuts++; throw sourceReadFailure; }
+                    recoveryBeforeSourceRead.Add(debt && !File.Exists(seedCut.JournalPath) && published.SequenceEqual(File.ReadAllBytes(weatherPath)));
                     return Task.CompletedTask;
                 },
                 LocalPublicationRecoveryObserver = (phase, _) => recovered.Add(phase.ToString())
@@ -140,7 +145,7 @@ public sealed class ImageSourceAdmissionTests(ITestOutputHelper output)
         {
             requests.Add(request.FileName); Assert.True(request.UseShellExecute); Assert.Empty(request.ArgumentList);
             admissionsAtAssociation = admissions;
-            recoveredAtAssociation = !File.Exists(seedCut.JournalPath) && published.SequenceEqual(File.ReadAllBytes(weatherPath));
+            recoveredAtAssociation = debt && !File.Exists(seedCut.JournalPath) && published.SequenceEqual(File.ReadAllBytes(weatherPath));
             if (!debt || recoveredAtAssociation != true) return;
             using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(2));
             var probe = files.AcquireCanonicalWriteLeaseAsync(cancellationToken: deadline.Token).GetAwaiter().GetResult();
@@ -174,7 +179,8 @@ public sealed class ImageSourceAdmissionTests(ITestOutputHelper output)
                         _ => { stages++; throw new InvalidOperationException("Existing image must not stage provider bytes."); });
                     browser = await browserService.GenerateAsync(new("ignored prompt", "npc", "actor"));
                 }
-                else await service.ProcessSceneImagePrompt(mode == "canonical_prompt_unknown" ? imagePath : mode == "external_prompt" ? outsideImage : "scene prompt");
+                else await service.ProcessSceneImagePrompt(mode == "canonical_prompt_unknown" ? imagePath : mode == "external_prompt" ? outsideImage
+                    : mode == "scene_text_pathlike" ? new string('x', 300) + ".png" : "scene prompt");
             });
         }
         finally { AnsiConsole.Console = previousConsole; }
@@ -185,6 +191,7 @@ public sealed class ImageSourceAdmissionTests(ITestOutputHelper output)
         {
             mode, root, relative, imagePath, outputImage, outsideImage, exportPath, imageBytes,
             failure = failure?.ToString(), seedFailure = seedFailure?.ToString(), selected, exported, exportedBytes, browser, stages,
+            readIoCuts, sameSourceReadFailure = ReferenceEquals(failure, sourceReadFailure),
             admissions, ordinaryAdmissions, closingAdmissions, closing, sourceReads, recoveryBeforeSourceRead, recovered, requests, admissionsAtAssociation,
             recoveredAtAssociation, releasedBeforeAssociation, debtCuts, journalBefore, journalAfter, weatherBefore, weatherAfter,
             originalGeneration, generationAfter = File.ReadAllBytes(files.SessionGenerationPath),
@@ -229,6 +236,19 @@ public sealed class ImageSourceAdmissionTests(ITestOutputHelper output)
                 Assert.True(browser!.Success, browser.ErrorMessage); Assert.NotNull(browser.MediaId); Assert.StartsWith("/api/media/", browser.Url);
                 Assert.Equal(0, stages); Assert.Equal(3, admissions); Assert.Equal(2, ordinaryAdmissions);
                 Assert.Equal(1, closingAdmissions); Assert.Empty(requests);
+            }
+            else if (mode == "export_io")
+            {
+                Assert.False(exported!.Success); Assert.Equal(ImageExportFailureReason.CopyFailed, exported.FailureReason);
+                Assert.Equal(imagePath, exported.SourcePath); Assert.Contains(sourceReadFailure.Message, exported.ErrorMessage);
+                Assert.Equal(1, readIoCuts); Assert.Equal(new[] { relative }, sourceReads); Assert.Equal(1, admissions);
+                Assert.Null(exportedBytes); Assert.False(Directory.Exists(Path.GetDirectoryName(exportPath)!));
+                Assert.Empty(recovered); Assert.Empty(requests);
+            }
+            else if (mode == "scene_text_pathlike")
+            {
+                Assert.Equal(outputImage, Assert.Single(requests)); Assert.Equal(1, admissions); Assert.Empty(sourceReads);
+                Assert.Empty(recovered); Assert.Equal(0, stages);
             }
             else
             {

@@ -1,3 +1,17 @@
+## Image review regression controls — test-first WIP, 2026-10-09
+
+Independent actual AstraXHigh RED/raw PASSc13ef915:33artifacts/15pins and prior
+14executed5P9causalF. Source changes required: ordinary selected byte-read IO moved
+outside original CopyFailed mapping; external/non-file .png prompt alias probing can
+throw NAME_MAX/path errors instead of ordinary scene processing. Added two original
+consumer controls BEFORE fixes: hook-thrown actual guarded source IOException must
+map CopyFailed with source/no destination; 300-character text ending.png must select
+recent output under one admission. No real provider/desktop process. Fixture weather
+observers now only read committed weather in debt cases, avoiding unrelated missing-file
+failure in healthy new rows. Exact selection becomes13new+3original=16/2; prior14
+history immutable. Runtime stillc13; no fix for these two findings yet. Next fixture
+gate, fresh Plan16/current-source causal execution, then narrow corrections/source gate.
+
 ## Image source causal14 baseline and admitted runtime — WIP, 2026-10-09
 
 Corrected fixture/design AstraXHigh PASSebc62065; metadata correction0be16735

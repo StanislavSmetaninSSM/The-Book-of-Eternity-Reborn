@@ -3,7 +3,7 @@
   "selections": [
     {
       "category": "portable-image-source-admission-linux",
-      "reason": "T063/R25/F16 causal14 baseline0be:5PASS/9causalFAIL, complete2/2, genuine Unknown/debt and links vs preserved external/browser/export controls. Minimal admitted-source runtime WIP is unbuilt/unrun; fresh Plan14/actual14 required. No provider/desktop/native/full-media qualification.",
+      "reason": "T063/R25/F16 bounded original sources: prior14causal baseline preserved; two review regressions now get test-first guarded export IO and long .png text controls. Current source c13 unqualified, newexact16/2 unbuilt/unrun; no provider/desktop/native/full-media claim.",
       "contracts": [
         "#1553",
         "FR-006",

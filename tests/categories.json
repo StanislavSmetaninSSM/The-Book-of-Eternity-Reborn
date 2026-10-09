@@ -3,7 +3,7 @@
   "categories": [
     {
       "id": "portable-image-source-admission-linux",
-      "responsibility": "Eleven finite original image source consumers: lookup/external-export/scene stop genuine retained Unknown, recover real Committed cleanup debt before canonical selection/read, refuse source links, preserve external prompt path behavior and original browser held-lease existing-image success.",
+      "responsibility": "Thirteen finite original image source consumers: lookup/external-export/scene stop genuine retained Unknown, recover real Committed cleanup debt before canonical selection/read, refuse source links, preserve external prompt path behavior and original browser held-lease existing-image success. Ordinary guarded export read IO retains CopyFailed; a long text prompt ending .png stays ordinary text.",
       "excludes": "No HTTP/network/provider, desktop process, native Windows or all-media qualification. Existing write/gallery cohort remains separate; detached source bytes and release before external work are source-reviewed.",
       "changeHints": [
         "BookOfEternityClient/Services/ImageService.cs",
@@ -13,7 +13,7 @@
       "related": [
         {
           "id": "portable-image-export-known",
-          "when": "Together with the eleven source-admission rows verifies original latest/overwrite/missing-source export semantics."
+          "when": "Together with the thirteen source-admission rows verifies original latest/overwrite/missing-source export semantics."
         }
       ],
       "requirements": {
