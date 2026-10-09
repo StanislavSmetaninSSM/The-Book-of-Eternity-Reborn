@@ -1,3 +1,22 @@
+## Prepared nested original services — test-first WIP, 2026-10-09
+
+Base23d1beca after actual five GREEN/source gate; lifecycle evidence review pending.
+Exact10 integration theory cases invoke original settings/audio services through supported
+SessionOperationContext→coordinator.RunBoundAsync composition: configUnknown2,
+configCommitted→lock-releaseUnknown2, healthy2, known-configRollback2, settings
+rollback→releaseUnknown1 and lock-acquireUnknown1. Existing original unit generation
+revocation1 is the exact neighboring guard. No actual HTTP-route qualification.
+Real publisher journal/foreign cut, original service result/cause, same generation,
+config/projection/runtime, settings gate release, late admission/read/mutation/recovery,
+read-only close distinction and disabled real audio disposal/strict owned-root cleanup
+are asserted. Primary capture blocker is tested before runtime changes; no production
+edit yet. The inert saved sketch remains historical, never a qualification claim.
+Next independent fixture/exact11/design gate, fresh both-projectPlan11 and bounded
+causal execution. Minimal proposed fix: CapturePreparedResult marks existing binding
+blocked for Uncertain or NeedsFollowUp; both outer catches route through capture.
+Same-lease generation verification and mandatory read-only finalization remain intact.
+B2–B5 paused; Image/F16/owned-close/current inventory/fresh restore remain open.
+
 ## F18 shared-helper five — Linux5/5 PASS, evidence review pending, 2026-10-09
 
 Continuation from published d8799cfde6c8401d4ab93e8399f6aa428387bdc0; both local

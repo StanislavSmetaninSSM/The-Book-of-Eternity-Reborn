@@ -2,6 +2,36 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "portable-prepared-nested-outcomes",
+      "responsibility": "Original browser settings/audio services in supported nested session/coordinator binding preserve actual config/lock decisions, runtime/generation and stop post-result readmission after uncertainty or cleanup follow-up.",
+      "excludes": "Actual HTTP routes, UI delivery, native audio playback, other prepared consumers, gameplay and B2-B5.",
+      "changeHints": [
+        "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.Prepared.cs",
+        "BookOfEternityClient.IntegrationTests/PreparedNestedSettingsOutcomeTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.PreparedNestedSettingsOutcomeTests.OriginalServicesInNestedBindingPreservePreparedDecision"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings"
+          ]
+        }
+      ]
+    },
+    {
       "id": "portable-spiritual-automatic-cold-recovery",
       "responsibility": "Original automatic guarantee cold recovery and repeated startup without a new GM decision, with settled raw observer.",
       "excludes": "Other spiritual lifecycles, native workers, force-binding B2 contract resolution and live GM.",
