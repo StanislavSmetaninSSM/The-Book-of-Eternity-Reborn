@@ -1,3 +1,28 @@
+## Original C2 GameEngine bounded GREEN12 — 2026-10-09
+
+Independent SOURCE/RED-RAW/EXACT12 PASS4b42709d. Tested runtime/source
+4b42709d43e1a602f9ff8fbfa4d779d963b93bae passes fresh Plan092905:
+12cases/1descriptor,0executed,46.5339703s. Matching actual093024 completes
+**12/12 PASS**,1/1descriptor,116.7724763s; both cleanup flags, no timeout/skip/
+duplicate. Exact category portable-spiritual-c2-engine-outcome-linux. Unchanged
+fixture48ed reaches the same nine real cuts and three ordinary controls.
+
+Root independently parses nine actual nonCommitted member0 journals (four writes,
+five deletions), exact retained journal/hash/foreign image and137–141 prior committed
+images. Same original CSP propagates with no result or subsequent canonical read,
+mutation, admission, recovery or publication. Actual prior A progress remains after
+Ready/request deletion cuts. Three real Escape controls publish requests and actual
+A→B with one durable progress row. All24 distinct owned roots are absent; no exact
+key-count or injected secondary-close proof is inferred from method/root settlement.
+[Saved engine packet](recovery/storage-migration-c2-engine-20261009/manifest.json)
+now111artifacts/originals120historicalpins, including separate compile0 and3P/9F RED.
+
+Next independent actual/raw/carrier gate and fresh both-project catalog discovery;
+then F16 original image/story export and remaining path/directory consumers. Source
+service26 remains accepted at47b/42ed, unchanged and not repeated. Complete accepted
+turn/C4/B2–B5, nativeWindows and actual secondary lease-close failure remain open;
+T061–T065 are not completed by this bounded12.
+
 ## Original C2 GameEngine causal9 and runtime WIP — 2026-10-09
 
 Independent SOURCE/FIXTURE/EXACT12 PASS48ed8618. Fresh Plan092250 succeeds

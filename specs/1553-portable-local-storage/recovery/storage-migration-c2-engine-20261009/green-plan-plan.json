@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-spiritual-c2-engine-outcome-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "4b42709d43e1a602f9ff8fbfa4d779d963b93bae",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 46.2339964,
+  "Descriptors": [
+    {
+      "Name": "portable-spiritual-c2-engine-outcome-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-spiritual-c2-engine-outcome-linux",
+      "Categories": [
+        "portable-spiritual-c2-engine-outcome-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalSpiritualEnginePreservesCanonicalPublicationOutcome",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalSpiritualEnginePreservesCanonicalPublicationOutcome",
+          "Cases": 12
+        }
+      ]
+    }
+  ]
+}
