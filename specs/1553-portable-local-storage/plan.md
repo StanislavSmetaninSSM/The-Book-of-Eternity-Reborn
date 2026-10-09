@@ -6,9 +6,13 @@ c7c56722 also has independent PASS59/26. Latest parent actual GitHub-only restor
 subsequent pushed carriers are not described as freshly restored. Same #1553 branch, sole writer.
 
 Finite proposed7 in portable-story-outcome-causal-linux: actual AppendTurn/AppendMarker Unknown2;
-corresponding nontransient MemberPublished failure with real member restoration/cleanup and exact
-before bytes2 (known best-effort policy); original CheckLifeTransitions/CheckGmIncarnationTrigger/
-CheckAscensionTrigger marker Unknown3. No production changes. New fixtures are unbuilt/unexecuted;
+corresponding nontransient MemberPublished failure with exact restored before bytes, absent journal
+and the same logged failure2 (known best-effort policy); original CheckLifeTransitions/CheckGmIncarnationTrigger/
+CheckAscensionTrigger marker Unknown3. No production changes. Review corrected an unreachable rollback-observer oracle: immediate
+PublishWithOutcome recovery does not forward the observer. The known rows instead retain actual
+forward publication, changed bytes, exact restored before image/absent journal and the same logged
+nontransient failure, which RequireCommitted rethrows only for RolledBack. No recovery-phase
+callback claim. New fixtures are unbuilt/unexecuted;
 frozen source/fixture/selection review must precede matching integration Plan7 and causal execution.
 Unreached prerequisites/cuts remain fixture evidence, not runtime RED.
 
@@ -18,7 +22,7 @@ validation; incarnation positively validates its accepted authority. Ascension s
 soul authority and invokes the original return-cycle commit. Marker cuts occur respectively before
 realm transition, after confirmed Mortal transition/reset, and after confirmed Shining handoff.
 Capture prior real Committed transaction IDs/paths and exact soul/Shining/resource/player images
-at the actual story MemberPublished, retain them afterward rather than require rollback to the old
+including actual profile/quartet authority at the story MemberPublished, retain them afterward rather than require rollback to the old
 realm. Exact authentic journal/foreign image and first actual CSP are captured before assertions;
 zero later reached read/mutation/ordinary-lease/publication/recovery phases is the bounded stop
 oracle, not a universal absence-of-attempt claim. Original readonly finalization remains separate.

@@ -50,8 +50,6 @@ public sealed partial class GameEngineTurnLifecycleTests
         FileSystemManager? files = null;
         var armed = false;
         var cuts = 0;
-        var restored = 0;
-        var cleanup = 0;
         byte[]? journalAtCut = null;
         byte[]? published = null;
         var known = new InvalidOperationException("known nontransient story publication failure");
@@ -59,12 +57,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var hooks = new FileSystemManagerHooks { LocalPublicationObserver = (phase, index) =>
         {
             if (!armed) return;
-            if (cuts != 0)
-            {
-                if (phase == TrustedLocalPublicationPhase.MemberRestored) restored++;
-                if (phase == TrustedLocalPublicationPhase.CleanupComplete) cleanup++;
-                return;
-            }
+            if (cuts != 0) return;
             if (phase != TrustedLocalPublicationPhase.MemberPublished) return;
             var path = Path.Combine(files!.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
             var bytes = File.ReadAllBytes(path);
@@ -85,9 +78,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             : story.AppendTurnAsync(3, "Chaos Sea", 0, "action", "known narrative"));
         var after = File.ReadAllBytes(files.ResolvePath(relative));
         var retainedJournal = CleanupPublicationCut.ReadOptional(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1", "active.json"));
-        _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new { marker, cuts, restored, cleanup, before, after, published,
+        _directGachaOutput?.WriteLine(JsonSerializer.Serialize(new { marker, cuts, before, after, published,
             journalAtCut, retainedJournal, Failure = failure?.ToString(), Logged = logger.Failure?.ToString() }));
-        Assert.Equal(1, cuts); Assert.Equal(1, restored); Assert.Equal(1, cleanup);
+        Assert.Equal(1, cuts);
         Assert.Null(failure); Assert.Same(known, logger.Failure); Assert.Equal(before, after); Assert.Null(retainedJournal);
         Assert.NotEqual(before, published);
     }
@@ -168,6 +161,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         var relative = mode switch { "life" => "stories/mortal_life_2.jsonl", "incarnation" => "stories/chaos_sea.jsonl", _ => "stories/shining_abode.jsonl" };
         var expectedMarker = mode switch { "life" => "[VOLUNTARY_END]", "incarnation" => "[INCARNATION]", _ => "[ASCENSION]" };
         var tracked = new[] { "game_state/meta/soul_state.json", ShiningAbodeState.StatePath,
+            AfterlifeEntityProfileState.StatePath, CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
             ResourceMaterializationContract.DefinitionsPath, ResourceMaterializationContract.StatePath,
             ResourceMaterializationContract.HistoryPath, "game_state/core/player_status.json" };
         var committed = new List<object>();
