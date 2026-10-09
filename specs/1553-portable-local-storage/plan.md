@@ -23,7 +23,12 @@ against true external and external-alias success. Five generation rows cover act
 scene Unknown/success, literal backslash generated/staged filenames and post-commit
 logger failure. Linux host identity must not rewrite a literal backslash as a separator.
 
-All new12 are unbuilt/unrun. Next independent source/fixture/exact12 gate, fresh Plan12
+At fixture7c30c6e7 fresh Plan094530 built the integration project and selected12/1,
+zero executed,89.4442718s, owned cleanup complete. No baseline ran. Independent
+review required two bounded oracle refinements before baseline: the known throwing
+save logger must be reached exactly once; cleanup_success now includes two versions
+of one entity plus a nonimage sentinel and proves latest retention/one entity deletion.
+Corrected12 is unbuilt/unrun. Next narrow independent readback, matching fresh Plan12
 and baseline; then demonstrated runtime migration. Known three existing external
 latest/overwrite/missing-source controls join GREEN15. Planned runtime keeps one
 original admitted cleanup lease across enumeration and per-file publications, stops

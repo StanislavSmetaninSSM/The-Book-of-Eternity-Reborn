@@ -68,6 +68,14 @@ public sealed class ImageStorageOutcomeTests(ITestOutputHelper output)
                 Seed("images/scenes/literal\\second.png", [3, 4]);
                 Seed("output/third.png", [5, 6]);
             }
+            if (mode == "cleanup_success")
+            {
+                Seed("images/npcs/keeper__img_old.png", [7, 8]);
+                Seed("images/npcs/keeper__img_latest.png", [9, 10]);
+                Seed("images/npcs/keep.txt", [11, 12]);
+                File.SetLastWriteTimeUtc(fs.ResolvePath("images/npcs/keeper__img_old.png"), new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+                File.SetLastWriteTimeUtc(fs.ResolvePath("images/npcs/keeper__img_latest.png"), new DateTime(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc));
+            }
             if (mode.StartsWith("export_", StringComparison.Ordinal)) Seed("images/npcs/original.png", handler.Bytes);
             foreach (var path in Directory.EnumerateFiles(fs.GameSessionPath, "*", SearchOption.AllDirectories))
                 if (!path.EndsWith(".lock", StringComparison.Ordinal)) probe.Committed[path] = File.ReadAllBytes(path);
@@ -152,12 +160,19 @@ public sealed class ImageStorageOutcomeTests(ITestOutputHelper output)
             }
             else
             {
+                if (mode == "entity_log_failure") Assert.Equal(1, logger.SaveLogs);
                 Assert.Null(failure); Assert.Equal(0, probe.Cut.Cuts); Assert.False(File.Exists(probe.Cut.JournalPath));
                 if (cleanup != null)
                 {
                     Assert.Equal(mode == "cleanup_known_error" ? 2 : 3, cleanup.DeletedSceneImages);
-                    Assert.Equal(0, cleanup.DeletedEntityImages);
-                    Assert.Equal(mode == "cleanup_known_error" ? 1 : 0, images.Count);
+                    Assert.Equal(mode == "cleanup_success" ? 1 : 0, cleanup.DeletedEntityImages);
+                    Assert.Single(images);
+                    if (mode == "cleanup_success")
+                    {
+                        Assert.Equal("images/npcs/keeper__img_latest.png", Assert.Single(images).Key);
+                        Assert.Equal(new byte[] { 9, 10 }, Assert.Single(images).Value);
+                        Assert.Equal(new byte[] { 11, 12 }, File.ReadAllBytes(fs.ResolvePath("images/npcs/keep.txt")));
+                    }
                     if (mode == "cleanup_known_error") Assert.Equal(3, mutationAttempts);
                 }
                 if (export != null)
