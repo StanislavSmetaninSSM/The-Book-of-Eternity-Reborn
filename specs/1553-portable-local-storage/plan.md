@@ -1,3 +1,22 @@
+## F10 release caller isolation / prepared causal1 — 2026-10-09
+
+Parent/reviewer caller census found Prepared and SaveCreation also use the boolean release helper.
+The new typed-preserving helper is therefore scoped to ExecuteAtomicCore; the original boolean
+fallback remains for those existing other consumers, avoiding a new save outcome regression.
+No save behavior or selection changes. The direct SessionReplaced atomic caller uses the typed
+path; any actual release uncertainty cannot be swallowed before caller observation.
+
+A new connected Prepared1 Fact exercises actual ExecutePreparedAsync returned Uncertain. Current
+runtime still unconditionally attempts lock release. The fixture requires real MemberPublished0,
+retained journal/foreign member and exact preexisting UI-lock bytes, no Apply, Uncertain/follow-up,
+and zero later measured work with separately identified readonly closing. It deliberately does NOT
+require a thrown CSP from a return-valued publication API. Only that object assertion is optional;
+all old10 retain its default requirement and every actual cut/evidence/stop oracle remains.
+
+Proposed next exact mixed3 = corrected release2 plus new prepared1 causal, after frozen focused
+review and matching build. This supersedes the previous exact2 proposal, not prior18 PASS.
+Prepared runtime remains unchanged before causal proof. No full settings/save/browser UI claim.
+
 ## F10 isolated release correction candidate — 2026-10-09
 
 Mixed carrier bdd10e39 is published with74 stored/expanded/original artifacts and47 historical

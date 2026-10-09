@@ -86,9 +86,10 @@ internal sealed class CleanupPublicationCut : IDisposable
         ActualUncertainty = OriginalUncertainty?.ToString(), LaterMutations, LaterReads, LaterLeases,
         ClosingLeases, PendingClosingLease = _closingLease, LaterRecovery, LaterPublications
     };
-    internal void AssertReachedAndStopped()
+    internal void AssertReachedAndStopped(bool requireTypedUncertainty = true)
     {
-        Assert.Equal(1, Cuts); Assert.Equal(0, Index); Assert.NotNull(OriginalUncertainty);
+        Assert.Equal(1, Cuts); Assert.Equal(0, Index);
+        if (requireTypedUncertainty) Assert.NotNull(OriginalUncertainty);
         Assert.Equal(JournalAtCut, ReadOptional(JournalPath)); Assert.Equal(Foreign, ReadOptional(Target!));
         Assert.Empty(LaterReads); Assert.Empty(LaterMutations); Assert.Equal(0, LaterPublications); Assert.Equal(0, LaterRecovery); Assert.Equal(0, LaterLeases);
         Assert.False(_closingLease);

@@ -21,6 +21,39 @@ public sealed partial class BrowserRollbackLinuxBoundaryTests
     [InlineData("restored_release")]
     public Task CleanupUnknown_OriginalBrowserReleaseRetainsEstablishedOutcome(string mode) => RunCleanupBrowserAsync(mode);
 
+    [Fact]
+    public async Task CleanupUnknown_OriginalPreparedOutcomeStopsLockRelease()
+    {
+        using var ownedFixture = new CleanupOwnedFixture(_root, line => output.WriteLine(line));
+        Assert.True(OperatingSystem.IsLinux());
+        using var cut = new CleanupPublicationCut();
+        var files = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, cut.Hooks);
+        cut.Attach(files);
+        await new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance).BootstrapLocalStorageAsync();
+        await files.WriteFileAtomicBytesAsync(Member, Before);
+        var coordinator = new BrowserLocalWriteCoordinator(files, new LocalUiSessionLockService(files));
+        var memberPath = files.ResolvePath(Member);
+        var lockPath = files.ResolvePath(LocalUiSessionLockService.LockPath);
+        byte[]? lockBefore = null;
+        var applied = false;
+        cut.Select = (path, _) => path == memberPath;
+        var result = await coordinator.ExecutePreparedAsync(Request, _ =>
+        {
+            lockBefore = File.ReadAllBytes(lockPath);
+            cut.Armed = true;
+            return Task.FromResult(new PreparedBrowserLocalWrite(
+                [new(Member, Before, After)], () => { applied = true; return Task.CompletedTask; }));
+        });
+        output.WriteLine(JsonSerializer.Serialize(new { mode = "prepared_unknown", result, applied,
+            lockBefore, RetainedLock = CleanupPublicationCut.ReadOptional(lockPath), Cut = cut.Evidence() }));
+        // This original consumer uses the actual returned publication outcome, not RequireCommitted.
+        cut.AssertReachedAndStopped(requireTypedUncertainty: false);
+        Assert.Equal(BrowserPreparedWriteDisposition.Uncertain, result.Disposition);
+        Assert.True(result.NeedsFollowUp); Assert.False(applied);
+        Assert.NotNull(lockBefore); Assert.Equal(lockBefore, File.ReadAllBytes(lockPath));
+    }
+
     private async Task RunCleanupBrowserAsync(string mode)
     {
         using var ownedFixture = new CleanupOwnedFixture(_root, line => output.WriteLine(line));

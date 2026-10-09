@@ -35,6 +35,17 @@
       ]
     },
     {
+      "category": "portable-cleanup-prepared-causal-linux",
+      "reason": "New connected original prepared outcome causal row. Original runtime still releases after explicit Uncertain; actual cut/evidence/no-later-work required. Mixed3 adds this causal control to corrected release2, not an assumed allGREEN run.",
+      "contracts": [
+        "#1553",
+        "FR-003",
+        "FR-004",
+        "FR-006",
+        "T062-STORAGE-OUTCOMES"
+      ]
+    },
+    {
       "category": "portable-treatment-terminal-causal-linux",
       "reason": "Final exact three for changed original terminal consumer: same typed uncertainty/own-lease-close and known safe/Unsafe settlement policies. Other thirteen passing obligations retained from their unchanged relevant sources.",
       "contracts": [

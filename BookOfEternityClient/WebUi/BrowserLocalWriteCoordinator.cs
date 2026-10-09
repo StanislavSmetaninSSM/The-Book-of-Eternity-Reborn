@@ -314,7 +314,7 @@ public sealed partial class BrowserLocalWriteCoordinator
             writeLease.MutationIntentRecorder = null;
             backups?.DarenTransaction?.Dispose();
             backups?.LocalTransaction?.Access.Dispose();
-            await TryReleaseAsync(writeLease, lockLease);
+            await TryReleasePreservingUncertaintyAsync(writeLease, lockLease);
             if (backups != null)
                 return CaptureBrowserResult(BrowserLocalWriteResult.Failed(
                     "Полномочия исходной транзакции потеряны; результат изменений не подтверждён. Служебные данные сохранены, автоматически повторять операцию нельзя.",
@@ -380,7 +380,7 @@ public sealed partial class BrowserLocalWriteCoordinator
                 ReleaseBrowserAccess(writeLease, backups, rollbackUncertainty);
                 if (rollbackUncertainty == null)
                 {
-                    try { await TryReleaseAsync(writeLease, lockLease); }
+                    try { await TryReleasePreservingUncertaintyAsync(writeLease, lockLease); }
                     catch (CoordinatedStatePublicationUncertainException uncertainty)
                     {
                         rollbackUncertainty = uncertainty;
@@ -422,7 +422,7 @@ public sealed partial class BrowserLocalWriteCoordinator
             return CaptureBrowserResult(BrowserLocalWriteResult.Completed(
                 "Browser-write завершён. " + committedUncertainty.Message).WithFollowUp());
         bool released;
-        try { released = await TryReleaseAsync(writeLease, lockLease); }
+        try { released = await TryReleasePreservingUncertaintyAsync(writeLease, lockLease); }
         catch (CoordinatedStatePublicationUncertainException uncertainty)
         {
             return CaptureBrowserResult(BrowserLocalWriteResult.Completed(
@@ -452,7 +452,7 @@ public sealed partial class BrowserLocalWriteCoordinator
         }
     }
 
-    private async Task<bool> TryReleaseAsync(
+    private async Task<bool> TryReleasePreservingUncertaintyAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
         LocalUiSessionLockLease lease)
     {
@@ -464,6 +464,14 @@ public sealed partial class BrowserLocalWriteCoordinator
         {
             return false;
         }
+    }
+
+    private async Task<bool> TryReleaseAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        LocalUiSessionLockLease lease)
+    {
+        try { return await _lockService.ReleaseAsync(writeLease, lease); }
+        catch { return false; }
     }
 
     private async Task<bool> TryReleaseAsync(LocalUiSessionLockLease lease)
