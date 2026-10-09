@@ -111,8 +111,21 @@ internal static class AfterlifeOwnerResourceStateService
         AfterlifeOwnerResourceStateFilePlan plan,
         params CoordinatedStateWriteHelper.PlannedWrite[] additionalWrites)
     {
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        return await TryCommitAsync(fs, writeLease, plan, additionalWrites);
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            return await TryCommitAsync(fs, writeLease, plan, additionalWrites);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(fs, writeLease, false, uncertainty);
+        }
     }
 
     internal static async Task<bool> TryCommitAsync(

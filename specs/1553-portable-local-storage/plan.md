@@ -1,3 +1,15 @@
+## Original Afterlife state uncertainty correction installed — WIP, 2026-10-09
+
+Exactly4 actual original owning scopes retain/rethrow same genuine CSP and
+existingRelease(fs,samelease,false,sameexception): OwnerResource TryCommit,
+BlessingBootstrap, ConsumeMemorySelection and Progression accepted outcome.
+Originalbody/order/return/core/resourceauthority/fixture/helper unchanged;
+pre-owner initialization/early returns remain outside their original scope.
+Actual original4knownPASS/4causalFAIL at3b195aa4 preserved in26artifact19pinpacket;
+NormalizerGREEN8 separately preserved50/44. Runtime UNBUILT/UNRUN before
+combined causal/source/exact8 gate and freshGREEN8. No knownlateclose/fullflow/
+fullgame/B2/native/GMschema/example qualification. Fullcatalog pendingstablebatch.
+
 ## Normalizer actual GREEN8 / Afterlife actual causal8 — WIP, 2026-10-09
 
 One fresh integration Plan22231416/2 at3b195aa4,0execution106.4841160s,

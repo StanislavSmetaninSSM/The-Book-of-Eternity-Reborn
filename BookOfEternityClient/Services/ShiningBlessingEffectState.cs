@@ -236,84 +236,97 @@ internal static class ShiningBlessingEffectState
         }
 
         const string soulPath = "game_state/meta/soul_state.json";
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        var soulStateJson = await fs.ReadFileAsync(writeLease, soulPath);
-        var soulRoot = ParseJsonNode(soulStateJson) as JsonObject;
-        if (soulRoot == null)
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
         {
-            return new BootstrapMaterializationResult(
-                false,
-                false,
-                null,
-                Array.Empty<string>(),
-                "Не удалось прочитать soul_state.json для materialization сияющих благословений.");
-        }
+            var soulStateJson = await fs.ReadFileAsync(writeLease, soulPath);
+            var soulRoot = ParseJsonNode(soulStateJson) as JsonObject;
+            if (soulRoot == null)
+            {
+                return new BootstrapMaterializationResult(
+                    false,
+                    false,
+                    null,
+                    Array.Empty<string>(),
+                    "Не удалось прочитать soul_state.json для materialization сияющих благословений.");
+            }
 
-        var existingEffectState = soulRoot[SoulStateProperty] as JsonObject;
-        var effectState = BuildPendingEffectsFromPreparedPackage(preparedPackage, currentIncarnation);
-        var summaryLines = new List<string>();
-        TryPrimeDescentEffects(soulRoot, effectState, 0, summaryLines);
-        summaryLines.InsertRange(0, BuildActivationSummaryLines(effectState));
+            var existingEffectState = soulRoot[SoulStateProperty] as JsonObject;
+            var effectState = BuildPendingEffectsFromPreparedPackage(preparedPackage, currentIncarnation);
+            var summaryLines = new List<string>();
+            TryPrimeDescentEffects(soulRoot, effectState, 0, summaryLines);
+            summaryLines.InsertRange(0, BuildActivationSummaryLines(effectState));
 
-        var rerollPlan = await ShiningBlessingRerollResourceService.BuildBootstrapAsync(
-            fs,
-            writeLease,
-            effectState,
-            currentIncarnation,
-            existingEffectState);
-        if (!rerollPlan.IsValid || rerollPlan.EffectStateAfterImage == null)
-        {
-            return new BootstrapMaterializationResult(
-                false,
-                false,
-                null,
-                Array.Empty<string>(),
-                "Не удалось materialize blessing_rerolls: " +
-                string.Join(
-                    "; ",
-                    rerollPlan.Issues.Select(static issue =>
-                        $"{issue.Code ?? "resource_issue"}: {issue.Actual ?? issue.Message}")));
-        }
-        effectState = rerollPlan.EffectStateAfterImage;
-        if (rerollPlan.IsReplay)
-        {
-            return new BootstrapMaterializationResult(
-                true,
-                false,
-                effectState,
-                Array.Empty<string>());
-        }
-
-        soulRoot[SoulStateProperty] = effectState;
-        var writes = await BuildImmediateBootstrapEffectWritesAsync(
-            fs,
-            writeLease,
-            effectState);
-        writes.AddRange(rerollPlan.Writes);
-        writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
-            soulPath,
-            soulStateJson,
-            GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts),
-            RequireCurrentBaseline: true));
-
-        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+            var rerollPlan = await ShiningBlessingRerollResourceService.BuildBootstrapAsync(
                 fs,
                 writeLease,
-                writes.ToArray()))
-        {
-            return new BootstrapMaterializationResult(
-                false,
-                false,
-                null,
-                Array.Empty<string>(),
-                "Не удалось атомарно materialize сияющие благословения: состояние изменилось во время bootstrap.");
-        }
+                effectState,
+                currentIncarnation,
+                existingEffectState);
+            if (!rerollPlan.IsValid || rerollPlan.EffectStateAfterImage == null)
+            {
+                return new BootstrapMaterializationResult(
+                    false,
+                    false,
+                    null,
+                    Array.Empty<string>(),
+                    "Не удалось materialize blessing_rerolls: " +
+                    string.Join(
+                        "; ",
+                        rerollPlan.Issues.Select(static issue =>
+                            $"{issue.Code ?? "resource_issue"}: {issue.Actual ?? issue.Message}")));
+            }
+            effectState = rerollPlan.EffectStateAfterImage;
+            if (rerollPlan.IsReplay)
+            {
+                return new BootstrapMaterializationResult(
+                    true,
+                    false,
+                    effectState,
+                    Array.Empty<string>());
+            }
 
-        return new BootstrapMaterializationResult(
-            true,
-            true,
-            effectState,
-            summaryLines);
+            soulRoot[SoulStateProperty] = effectState;
+            var writes = await BuildImmediateBootstrapEffectWritesAsync(
+                fs,
+                writeLease,
+                effectState);
+            writes.AddRange(rerollPlan.Writes);
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                soulPath,
+                soulStateJson,
+                GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot).ToJsonString(JsonOpts),
+                RequireCurrentBaseline: true));
+
+            if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                    fs,
+                    writeLease,
+                    writes.ToArray()))
+            {
+                return new BootstrapMaterializationResult(
+                    false,
+                    false,
+                    null,
+                    Array.Empty<string>(),
+                    "Не удалось атомарно materialize сияющие благословения: состояние изменилось во время bootstrap.");
+            }
+
+            return new BootstrapMaterializationResult(
+                true,
+                true,
+                effectState,
+                summaryLines);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(fs, writeLease, false, uncertainty);
+        }
     }
 
     public static async Task<RuntimeProcessingResult> ApplyAcceptedTurnRuntimeEffectsAsync(
@@ -504,50 +517,63 @@ internal static class ShiningBlessingEffectState
         int rerollsSpent)
     {
         const string soulPath = "game_state/meta/soul_state.json";
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        var soulJson = await fs.ReadFileAsync(writeLease, soulPath);
-        var soulRoot = ParseJsonNode(soulJson) as JsonObject;
-        if (soulRoot?[SoulStateProperty] is not JsonObject effectState ||
-            effectState["memorySelection"] is not JsonObject memorySelection ||
-            !string.Equals(GetNodeString(memorySelection["status"]), MemoryStatusPendingPreTurnOneSelection, StringComparison.OrdinalIgnoreCase))
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
         {
-            return false;
-        }
+            var soulJson = await fs.ReadFileAsync(writeLease, soulPath);
+            var soulRoot = ParseJsonNode(soulJson) as JsonObject;
+            if (soulRoot?[SoulStateProperty] is not JsonObject effectState ||
+                effectState["memorySelection"] is not JsonObject memorySelection ||
+                !string.Equals(GetNodeString(memorySelection["status"]), MemoryStatusPendingPreTurnOneSelection, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
 
-        ShiningBlessingRerollSpendFilePlan? spendPlan = null;
-        if (rerollsSpent > 0)
-        {
-            spendPlan = await ShiningBlessingRerollResourceService.BuildSpendAsync(
+            ShiningBlessingRerollSpendFilePlan? spendPlan = null;
+            if (rerollsSpent > 0)
+            {
+                spendPlan = await ShiningBlessingRerollResourceService.BuildSpendAsync(
+                    fs,
+                    writeLease,
+                    memorySelection,
+                    currentTurnNumber,
+                    rerollsSpent);
+                if (!spendPlan.IsValid)
+                    return false;
+            }
+
+            MarkConsumed(memorySelection, currentTurnNumber);
+            if (selectedCandidate != null)
+            {
+                memorySelection["selectedLifeIncarnation"] = selectedCandidate.Incarnation;
+                memorySelection["selectedLifeHint"] = selectedCandidate.LifeHint;
+                memorySelection["selectedLifeSummary"] = selectedCandidate.Summary;
+            }
+
+            soulRoot[SoulStateProperty] = effectState;
+            var writes = spendPlan?.Writes.ToList() ??
+                         new List<CoordinatedStateWriteHelper.PlannedWrite>();
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                soulPath,
+                soulJson,
+                GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot)
+                    .ToJsonString(JsonOpts),
+                RequireCurrentBaseline: true));
+            return await CoordinatedStateWriteHelper.TryCommitAsync(
                 fs,
                 writeLease,
-                memorySelection,
-                currentTurnNumber,
-                rerollsSpent);
-            if (!spendPlan.IsValid)
-                return false;
+                writes.ToArray());
         }
-
-        MarkConsumed(memorySelection, currentTurnNumber);
-        if (selectedCandidate != null)
+        catch (CoordinatedStatePublicationUncertainException failure)
         {
-            memorySelection["selectedLifeIncarnation"] = selectedCandidate.Incarnation;
-            memorySelection["selectedLifeHint"] = selectedCandidate.LifeHint;
-            memorySelection["selectedLifeSummary"] = selectedCandidate.Summary;
+            uncertainty = failure;
+            throw;
         }
-
-        soulRoot[SoulStateProperty] = effectState;
-        var writes = spendPlan?.Writes.ToList() ??
-                     new List<CoordinatedStateWriteHelper.PlannedWrite>();
-        writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
-            soulPath,
-            soulJson,
-            GuardianPolicyContracts.CreateCanonicalSoulStateWriteRoot(soulRoot)
-                .ToJsonString(JsonOpts),
-            RequireCurrentBaseline: true));
-        return await CoordinatedStateWriteHelper.TryCommitAsync(
-            fs,
-            writeLease,
-            writes.ToArray());
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(fs, writeLease, false, uncertainty);
+        }
     }
 
     public static async Task<int> GetPendingRelicRerollsAsync(

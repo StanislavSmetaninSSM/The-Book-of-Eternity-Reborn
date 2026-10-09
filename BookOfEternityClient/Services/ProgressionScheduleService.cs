@@ -626,16 +626,29 @@ public class ProgressionScheduleService
         }
 
         _ = await EnsureInitializedAsync();
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        var mutation = await PrepareAcceptedTurnOutcomeMutationAsync(
-            writeLease,
-            control);
-        if (!await TryCommitAcceptedTurnOutcomeMutationAsync(
-                writeLease,
-                mutation))
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
         {
-            throw new IOException(
-                "Progression accepted-turn outcome changed before its exact mutation could be committed.");
+            var mutation = await PrepareAcceptedTurnOutcomeMutationAsync(
+                writeLease,
+                control);
+            if (!await TryCommitAcceptedTurnOutcomeMutationAsync(
+                    writeLease,
+                    mutation))
+            {
+                throw new IOException(
+                    "Progression accepted-turn outcome changed before its exact mutation could be committed.");
+            }
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
         }
     }
 
