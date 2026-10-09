@@ -2,6 +2,32 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-save-optional-images-root-linux",
+      "reason": "T063/T065 independentlyapprovedfixture/design/exact2 PASSfcbd3064 installedbyteidentical. OriginalSaveunchanged UNBUILT/UNRUN; currentdefaultSavevalidation, optionalrootlinkvsnormalexactnames, realmanifest/observedrelative reads/fulloutsidebytes. SharedfreshPlan9/3 withTreatmentGREEN3+Engineoriginal4; separateactualSaveoriginal2 baseline. Noexternal-read claim/native/B2/fullSaveLoad.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063",
+        "T065"
+      ]
+    },
+    {
+      "category": "portable-original-engine-ascension-replay-close-linux",
+      "reason": "T063/T065 independentfixture/design/exact4 PASS2f3bbcd5 installedbyteidentical; actualmaxChaosSoul/currentquartet and finalizedheldhistoryExactReplay. Originalproductiontwoowners unchanged UNBUILT/UNRUN, exactraw maps/BOM-aware JSON onlypresentation/actualowner/cut/fullsettlement/noLater. NextonefreshPlanTreatmentGREEN3+Engineoriginal4 then separate actualruns. NoB2/native/fullgame/input/wholeflow claim.",
+      "contracts": [
+        "#1553",
+        "FR-002",
+        "FR-004",
+        "FR-005",
+        "FR-006",
+        "T063",
+        "T065"
+      ]
+    },
+    {
       "category": "portable-original-treatment-progression-advance-close-linux",
       "reason": "T063/T065 independentlyapprovedfixture61df2636 exact3 byte-identical; actualreturnedtransaction disposal before prerequisiteasserts. ProductionAdvanceunchanged UNBUILT/UNRUN. FreshPlan3 then actualoriginal known/known_close/genuineCSP baseline. PublishedAgreementAdvanced remains ACTIVE Probe->Complete; storageonly noB2/native/fullgame.",
       "contracts": [

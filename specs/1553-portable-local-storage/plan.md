@@ -1,3 +1,32 @@
+## Save optional images root — test-first WIP, 2026-10-09
+
+Independentfixture/design/exact2PASSfcbd3064 installedbyte-identical. Actualdefault
+Savevalidation/currentrealcoldgeneration/typedCreateSave; normalnpc/uppercaseScenes
+exactpayload+observedrelative reads, lower scenes excluded. Linkedoptionalroot
+skip requirement agreesexisting AddDirectorypolicy;0relativeimagesread/complete
+outsidepath+byte+link preservation, real Committed manifest exactkeys/hash/length,
+privateZIPcleanup/lock/strictroots. OriginalSaveunchanged UNBUILT/UNRUN, external
+file read has notbeendemonstrated. One sharedfreshintegrationPlan9/3 then separate
+actualTreatmentGREEN3 / Engineoriginal4 / Saveoriginal2; noaggregateGREEN9.
+Engine2f3bbcd5/Treatment02eca5d7 gatesPASS. Continue census and currentGitHub-only
+restore afteravailableconsumers, noB2/native/fullgame/legacySave qualification.
+
+## Engine ascension and finalized treatment replay owners — test-first WIP, 2026-10-09
+
+Independentfixture/design/exact4PASS2f3bbcd5 installedbyte-identical. Realmaximal
+ChaosSoul/currentquartet, inertoriginalEngine/state/ascension prerequisites;
+actualheldrefresh->Probe->CompleteFinalized->catalog0held1finalized->ExactReplay
+and matchingactualpersistedresult/narrative, thenoriginalquarantine. Actualfirst
+Intent/member0/owninglease/CSP+secondary/fullsettlement/noLater/Closing0/generation/
+strictroots. KnowncurrentShining/soul/resourcevalidator/ASCENSIONstory/lore/runtime,
+exactquarantinedcommand/pending/allotherbytes. BOMdecodedonlyforJSONpresentation;
+rawmaps exact. Originaltwo productionowners unchanged UNBUILT/UNRUN; ordinary
+consoleascensionrender remains, noinput/nativeprocess/provider/Engine.Run.
+Treatmentcausal/source/exact3 finalindependentPASS02eca5d7, freshGREEN3mayproceed.
+NextonefreshintegrationPlanTreatment3+Engine4 (+Save2iffixturegatePASS), separate
+actualexecutions, noaggregateGREEN. Saveoptionalroot stilluninstalledreview.
+T061–T065/B2–B5/native and methodcensus stayopen; noGM-facing contractchange.
+
 ## Treatment progression known advance close guard installed — WIP, 2026-10-09
 
 Exactly Advancefinally suppresseslateclose also for actualvalid
